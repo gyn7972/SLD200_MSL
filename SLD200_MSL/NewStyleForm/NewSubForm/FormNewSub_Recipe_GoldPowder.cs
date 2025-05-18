@@ -137,7 +137,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             UpdateRecipeFromUI();
             SaveRecipe();
 
-            MessageBox.Show("GoldPowder Recipe 저장 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("GoldPowder Recipe 저장 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void LoadRecipe()
@@ -170,6 +170,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else
             {
+                Equipment.stVisionRecipeSet = m_recipe;
                 mb1.ShowDialog("Information", "저장하였습니다.");
             }
         }

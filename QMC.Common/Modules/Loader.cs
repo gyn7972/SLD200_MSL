@@ -2872,11 +2872,13 @@ namespace QMC.Common.Modules
             //  자재 감지 센서가 설정된 시간 동안 감지되지 않을 경우에만 Pause 상태로 변경되도록 함.
             if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
             {
+                //감지 센서에 감지가 안되는게 문제인데.
                 if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
                 {
                     Equipment.Loader_LPort_Pause = true;
                 }
-                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000)))
+                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && 
+                    (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000))) //여기를 늘려놔야하나?
                 {
                     Equipment.Loader_LPort_Pause = true;
                 }
@@ -7519,7 +7521,25 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.MAlignerPutDown_Transfer_PickerVacuum_OffCheck:                                //  Transfer, Module Picker Vacuum Off 확인 (and M-Aligner Vacuum On 확인)
 
-                    if ((!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
+                    bool bRtn = true;
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center)
+                    {
+                        bRtn = bRtn && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center);
+
+                    }
+
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner)
+                    {
+                        bRtn = bRtn && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner);
+                    }
+
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)
+                    {
+                        bRtn = bRtn && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer);
+                    }
+
+                    if (bRtn &&
+                        (!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
                         !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
 
                         (!Equipment.Machine_VacuumStableTime_Enable ||
@@ -7549,29 +7569,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOff_Timeout);
 
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-
-                        //////////////////////////////////////////////////////////////////////////////////////////
-                        //  재시작 위치 저장용
-                        //
-                        Equipment.MachineStop_byTimeout_Loader = true;
-                        Loader_CurrentStatus_Save_StopedByTimeout();
-                        //
-                        //  재시작 위치 저장용
-                        //////////////////////////////////////////////////////////////////////////////////////////
-                        ///
-
-                        return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOff_Timeout);
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer 축, Module Picker Vacuum Off 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -7586,7 +7583,8 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.MAlignerPutDown_TransferZ_Move_ReadyPos2_1stStep_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인 (then Picker Blow Off)
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료");
 

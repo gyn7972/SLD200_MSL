@@ -330,7 +330,8 @@ namespace SLD200_MSL
             {
                 if (openForm.Name == m_formSiriusEditor.Name)
                 {
-                    if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(richTextBox_Recipe_TabRecipe_DrawingFile.Text))
+                    //  Sirius Edit 창을 열 때, 무조건 도면파일을 다시 불러오도록 변경. (얼라인 된 도면을 그대로 저장하는 경우가 있어서)
+                    //if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(richTextBox_Recipe_TabRecipe_DrawingFile.Text))
                     {
                         m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
                     }

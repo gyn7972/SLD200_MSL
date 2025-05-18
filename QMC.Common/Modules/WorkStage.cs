@@ -8560,9 +8560,8 @@ namespace QMC.Common.Modules
                 m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
                 //여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
 
-                //꼭 수정Test
-               //m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-               m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+               m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+               //m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.GoldPowderAlign_start)
             {

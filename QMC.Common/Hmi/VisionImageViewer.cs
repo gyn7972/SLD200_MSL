@@ -620,10 +620,10 @@ namespace QMC.Common.Hmi
         #region Constructor
         public VisionImageViewer()
         {
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
-                     ControlStyles.UserPaint |
-                     ControlStyles.OptimizedDoubleBuffer, true);
-            this.UpdateStyles();
+            //this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+            //         ControlStyles.UserPaint |
+            //         ControlStyles.OptimizedDoubleBuffer, true);
+            //this.UpdateStyles();
 
             //this.Timer = new SafeTimer();
             this.NormalOverlays = new OwnedOverlayCollection(this);
@@ -1509,7 +1509,11 @@ namespace QMC.Common.Hmi
         {
             if(this.m_GraphicsDisplay != null)
             {
-                m_Graphics.Render(this.m_GraphicsDisplay);
+                lock(m_Graphics)
+
+                { 
+                    m_Graphics.Render(this.m_GraphicsDisplay);
+                }
             }
             
         }
@@ -1823,7 +1827,7 @@ namespace QMC.Common.Hmi
 
             this.m_TopCaption = new Label();
             this.m_TopCaption.Dock = DockStyle.Top;
-            this.m_TopCaption.Height = 14;
+            this.m_TopCaption.Height = 0;
             this.m_TopCaption.ForeColor = Color.Lime;
             this.m_TopCaption.BackColor = Color.Transparent;
             this.m_TopCaption.MouseMove += M_TopCaption_MouseMove;
@@ -1831,7 +1835,7 @@ namespace QMC.Common.Hmi
 
             this.m_BottomCaption = new Label();
             this.m_BottomCaption.Dock = DockStyle.Bottom;
-            this.m_BottomCaption.Height = 14;
+            this.m_BottomCaption.Height = 0;
             this.m_BottomCaption.ForeColor = Color.Lime;
             this.m_BottomCaption.BackColor = Color.Transparent;
             this.m_BottomCaption.MouseMove += M_TopCaption_MouseMove;

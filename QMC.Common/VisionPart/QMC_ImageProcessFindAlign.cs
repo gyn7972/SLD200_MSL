@@ -244,6 +244,10 @@ namespace QMC.Common.VisionPart
             , double miscellaneous_FiducialMarkSocre = 0.7
             , bool bSpiralSearch = true)
         {
+
+            string strFileName = "d:\\Temp\\AlignOrg" + DateTime.Now.Ticks.ToString() + ".bmp";
+            IsImageSave = true;
+            SaveImage(pixelData, w, h, strFileName);
             if (bIsDarkCircleSearch == false)
             {
                 //pixelData = InversImage(pixelData);
@@ -403,7 +407,7 @@ namespace QMC.Common.VisionPart
             if (bFindCircle == false)
             {
                 circlesResult.Clear();
-                string strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
+                strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
                 IsImageSave = true;
                 SaveImage(pixelData, w, h, strFileName);
                 return new QMC_ImageProcessFindAlignResult();
@@ -469,8 +473,8 @@ namespace QMC.Common.VisionPart
             List<List<Point>> blobs = new List<List<Point>>();
 
             List<List<Point>> list = FindBrightBlobs(pixelData, w, h, w, Threshold); // 영상 밝기 바뀌면 70 이게 쓰레스 홀드 입니다. 이거 변경 해야 됩니다.
-            int MinArea = (int)(radius * radius * Math.PI * (1 - 0.2));
-            int MaxArea = (int)(radius * radius * Math.PI * (1 + 0.2));
+            int MinArea = (int)(radius * radius * Math.PI * (1 - 0.5));
+            int MaxArea = (int)(radius * radius * Math.PI * (1 + 0.5));
             blobs.AddRange(list.Where(t => t.Count() > MinArea && t.Count() < MaxArea).ToList());
             list.Clear();
             List<Circle> circles = new List<Circle>();
@@ -485,7 +489,7 @@ namespace QMC.Common.VisionPart
 
                 // Width와 Height의 비율 계산
                 float ratio = (float)width / height;
-                float filter = 0.05f;
+                float filter = 0.2f;
                 // 비율이 0.9~1.1 사이인 경우만 처리
                 if (ratio >= 1 - filter && ratio <= 1 + filter)
                 {
