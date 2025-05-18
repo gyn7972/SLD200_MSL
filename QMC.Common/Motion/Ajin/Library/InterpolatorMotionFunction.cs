@@ -15,8 +15,20 @@ namespace QMC.Common.Motion.Ajin.Motions
 {
     public class InterpolatorMotionFunction : MotionFunction
     {
+        static WorkStage workStage;
         public InterpolatorMotionFunction() : base()
         {
+            ModuleCollection m_collectionModules;
+            m_collectionModules = Equipment.Modules;
+
+            foreach (Module module in m_collectionModules)
+            {
+                if (module.Name == "WorkStage")
+                {
+                    workStage = module as WorkStage;
+                }
+            }
+
             string iniPath = Path.Combine(ConfigManager.GetConfigPath(), "SoftLimit(Do not delete or modify).ini");
             InterpolatorMotionFunction.LoadSoftLimitsFromIni(iniPath, this);
         }
@@ -137,7 +149,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                     if (!IsWithinSoftLimit(Axis, position, out msg))
                     {
                         Log.Write("SLD-200", "MC_MovePosition", msg);
-                        //Equipment.AlarmPost(Equipment.AlarmKey.eSoftLimitExceeded);
+                        workStage.AlarmPost(WorkStage.AlarmKey.SoftLimitFail);
                         return false;
                     }
                 }
@@ -214,7 +226,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                     if (!IsWithinSoftLimit(Axis, target, out msg))
                     {
                         Log.Write("SLD-200", "MC_MoveRelPosition", msg);
-                        //Equipment.AlarmPost(Equipment.AlarmKey.eSoftLimitExceeded);
+                        workStage.AlarmPost(WorkStage.AlarmKey.SoftLimitFail);
                         return false;
                     }
                 }
@@ -292,7 +304,6 @@ namespace QMC.Common.Motion.Ajin.Motions
         public bool MovePosition(XyCoordinate destPosition, double vel, double accel, double decel)
         {
             bool bRet = false;
-            string m_strTemp = "";
 
             try
             {
@@ -303,7 +314,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                 {
                     if (!string.IsNullOrEmpty(msgX)) Log.Write("SLD-200", "Motion", msgX);
                     if (!string.IsNullOrEmpty(msgY)) Log.Write("SLD-200", "Motion", msgY);
-                    //Equipment.AlarmPost(Equipment.AlarmKey.eSoftLimitExceeded);
+                    workStage.AlarmPost(WorkStage.AlarmKey.SoftLimitFail);
                     return false;
                 }
             }
@@ -429,7 +440,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                     string keyMin = $"{axis.UnitName}_{axis.Name}_Min";
                     string keyMax = $"{axis.UnitName}_{axis.Name}_Max";
 
-                    double minValue = -100.0;
+                    double minValue = -200.0;
                     double maxValue = 2000.0;
 
                     motionFunc.SetSoftLimit(axis.AxisNumber, minValue, maxValue);

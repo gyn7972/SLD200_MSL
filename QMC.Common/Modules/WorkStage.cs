@@ -1693,6 +1693,9 @@ namespace QMC.Common.Modules
             Home_Loader_Aligner_Vacuum_Off_Fail,
             ScannerCalibration_Timeout,
             ScannerCalibration_Fail,
+
+            SoftLimitFail,
+
             LastAlarm = 3999
         }
         protected override void InitAlarm()
@@ -2129,6 +2132,16 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
+
+            //SoftLimitFail
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.SoftLimitFail;
+            alarm.Title = "Motor";
+            alarm.Cause = "Motor SoftLimitFail.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
 
         }
 
@@ -14271,25 +14284,6 @@ namespace QMC.Common.Modules
                         return AlarmPost(AlarmKey.SocketAlignZMoveFail);
                     }
 
-                    //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
-                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z,
-                    //    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z))
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축 비전 검사 위치로 이동 완료");
-
-                    //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
-                    //}
-                    //else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) >= 60000)
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축 비전 검사 위치로 이동 실패. (Timeout)");
-
-                    //    //  알람 정지 (LED Bar - Red Blink)
-                    //    Equipment.MachineStop_byAlarm = true;
-
-                    //    return AlarmPost(AlarmKey.SocketAlignZMoveFail);
-                    //    timer_VisionAlign.Enabled = false;
-                    //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
-                    //}
                     break;
 
                 case (int)SocketAlign_Step.SocketAlign_toVision_AlignStart:                                           //  Align Start
@@ -14397,28 +14391,20 @@ namespace QMC.Common.Modules
                     }
                     else if (alignMode == AlignMode.GoldPowder)
                     {
-                        //Todo: TEST CODE :: 위치 확인 위해서.
-                        if (true)
+                        // 장비 코드!!!!
+                        if (Fiducial_circleFound && (Fiducial_circlesResult.Count > 0))
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 성공");
 
-                            double xOffset = 0.0;
-                            double yOffset = 0.0;
-                            //Test
-                            if (false)
-                            {
-                                //  Stage Center 가 0, 0 인 좌표계로 변환
-                                xOffset = ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) -
+                            //  Stage Center 가 0, 0 인 좌표계로 변환
+
+
+
+                            double xOffset = ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) -
                                                 (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
 
-                                yOffset = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y +
+                            double yOffset = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y +
                                                 ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
-                            }
-                            else
-                            {
-                                xOffset = 0.0;
-                                yOffset = 0.0;
-                            }
 
                             //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경.
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) - xOffset;
@@ -14428,9 +14414,9 @@ namespace QMC.Common.Modules
                                 + " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString()
                                 + ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
 
-                            //xyCoordinateAlignPositionLast = new XyCoordinate(m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
-                            //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
-                            //xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
+                            xyCoordinateAlignPositionLast = new XyCoordinate(m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
+                            xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
 
                             //  데이터 위치를 Scanner 위치로 변경
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X += Equipment.stOffsetDistance.FromScannerToFineCam.X;
@@ -14441,22 +14427,38 @@ namespace QMC.Common.Modules
                                 Equipment.StageOffset_forDrilling_X - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
                                 Equipment.StageOffset_forDrilling_Y - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
-                            if (true)
-                            {
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width = Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = Fiducial_circlesResult[0].Height * Config.ParamConfig.UpperVision_Scale_X;
 
-                            }
-                            else
-                            {
-                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width = Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
-                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = Fiducial_circlesResult[0].Height * Config.ParamConfig.UpperVision_Scale_X;
-
-                            }
+                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width = Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
+                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = Fiducial_circlesResult[0].Height * Config.ParamConfig.UpperVision_Scale_X;
 
                             m_nSocketAlign_FiducialCount++;
 
                             m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RemainedCheck;
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry");
+                            m_nSocketAlign_Retry_Max = 0;
+                            if (m_nSocketAlign_Retry_Count < m_nSocketAlign_Retry_Max)
+                            {
+                                m_nSocketAlign_Retry_Count++;
+
+                                //  테스트 하면서 조명값을 변경하여 재시도 하도록 한다.
+                                m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
+
+                                ////  알람 정지 (LED Bar - Red Blink)
+                                //Equipment.MachineStop_byAlarm = true;
+
+                                //timer_VisionAlign.Enabled = false;
+
+                                m_bAlignCompleted = true;
+                                m_bSocketAlign_OK = false;
+                                m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+                            }
                         }
                     }
                     break;
@@ -23763,6 +23765,8 @@ namespace QMC.Common.Modules
                         TickCount_Start((int)TickType.TICK_MAIN);
                         //여기서 변위센서 위치로 보낸다.
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+
+                        //DrillingData_SocketHeightCheckProcess_Start
                         //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck;
 
                         //아래 Test용. Test하고 막자.
@@ -28947,15 +28951,19 @@ namespace QMC.Common.Modules
             {
                 m_dOffset = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness;
             }
-            else
+            else if (m_AlignMode == AlignMode.GoldPowder)
             {
                 m_dOffset = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness;
             }
+            else
+            {
+                m_dOffset = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness;
+            }
 
-            //  좌표계 (기존)
-            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
-                vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset;
+                //  좌표계 (기존)
+                //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
+                    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset;
 
             MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
                                   lfVelocity, lfAccDec, lfAccDec);

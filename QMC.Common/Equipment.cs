@@ -68,6 +68,8 @@ namespace QMC.Common
 
         public static AlignMode m_AlignMode = AlignMode.Socket;
 
+
+
         public class InitDeviceStatus
         {
             public bool MotionIo { get; set; }
@@ -3273,8 +3275,7 @@ namespace QMC.Common
 
             return m_bRet;
         }
-
-
         public static bool m_bworkStageVacuumFail = false;
+
     }
 }
