@@ -3804,11 +3804,11 @@ namespace SLD200_MSL
             //workStage.marker.Start();
 
 
-            BarcodeQR2 barcodeQR2 = new BarcodeQR2("TEST123");
-            barcodeQR2.Width = 10;
-            barcodeQR2.Height = 10;
-            barcodeQR2.Location = new Vector2(-5, -5);
-            barcodeQR2.Rotate(90);
+            SpiralLab.Sirius.Text text = new SpiralLab.Sirius.Text("TEST123");
+            text.Width = 10;
+            text.CapHeight = 10;
+            text.Location = new Vector2(-5, -5);
+            text.Rotate(90);
 
             string m_strTemp = "";
             bool m_bScannerLib_Success = true;
@@ -3926,7 +3926,7 @@ namespace SLD200_MSL
                 IsEnablePens = false,
             };
 
-            barcodeQR2.Mark(markerArg);
+            text.Mark(markerArg);
 
             //return;
             ////loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_Widely_DoneCheck_Timeout);
