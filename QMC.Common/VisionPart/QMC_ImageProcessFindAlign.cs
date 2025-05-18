@@ -658,7 +658,7 @@ namespace QMC.Common.VisionPart
             }
         }
         public QMC_ImageProcessFindAlignResult FindGoldPowderForAutoTreshold(List<RectangleF> circlesResult,
-            byte[] pixelData, int w, int h, int radius, double dScore, double dSpec)
+            byte[] pixelData, int w, int h, int radius, double dScore, double dSpec, int nMaxInstance =20)
         {
 
             //List<RectangleF> result = new List<RectangleF>();
@@ -705,12 +705,18 @@ namespace QMC.Common.VisionPart
 
             });
             circlesResult.Clear();
-            foreach (var circle in BestCircle)
+            var orderbyCircle = BestCircle.OrderByDescending(t => t.Score);
+            int nResultCount = 0;
+            foreach (var circle in orderbyCircle)
             {
+                if (nResultCount >= nMaxInstance)
+                    break;
                 circlesResult.Add(circle.GetBoundery());
                 result.ScoreCollection.Add(circle.Score);
+                result.Circles.Add(circle);
+                nResultCount++;
             }
-            result.Circles.AddRange(BestCircle);
+            //result.Circles.AddRange(BestCircle);
 
             return result;
         }

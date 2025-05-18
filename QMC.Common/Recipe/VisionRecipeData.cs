@@ -70,8 +70,8 @@ namespace QMC.Common.Recipe
         public bool bGoldPowderIlluminationRedUse;
         public double dGoldPowderIlluminationExposureTime;
         public double dGoldPowderAxisZ_Offset;
-        public int dGoldPowderCircleMarkMaxInstance;
-        public int dGoldPowderCircleMarkFindCount;
+        public int nGoldPowderCircleMarkMaxInstance;
+        public int nGoldPowderCircleMarkFindCount;
 
         public bool SaveToIni(string path)
         {
@@ -160,8 +160,8 @@ namespace QMC.Common.Recipe
             NativeMethods.WritePrivateProfileString("GoldPowder", "RedUse", bGoldPowderIlluminationRedUse.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "ExposureTime", dGoldPowderIlluminationExposureTime.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "AxisZ_Offset", dGoldPowderAxisZ_Offset.ToString(), path);
-            NativeMethods.WritePrivateProfileString("GoldPowder", "CircleMarkMaxInstance", dGoldPowderCircleMarkMaxInstance.ToString(), path);
-            NativeMethods.WritePrivateProfileString("GoldPowder", "CircleMarkFindCount", dGoldPowderCircleMarkFindCount.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowder", "CircleMarkMaxInstance", nGoldPowderCircleMarkMaxInstance.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowder", "CircleMarkFindCount", nGoldPowderCircleMarkFindCount.ToString(), path);
 
 
             return bRet;
@@ -303,9 +303,9 @@ namespace QMC.Common.Recipe
                 NativeMethods.GetPrivateProfileString("GoldPowder", "AxisZ_Offset", "0.0", sb, sb.Capacity, path);
                 data.dGoldPowderAxisZ_Offset = Equipment.ToDouble(sb.ToString());
                 NativeMethods.GetPrivateProfileString("GoldPowder", "CircleMarkMaxInstance", "1", sb, sb.Capacity, path);
-                data.dGoldPowderCircleMarkMaxInstance = Equipment.ToInt(sb.ToString());
+                data.nGoldPowderCircleMarkMaxInstance = Equipment.ToInt(sb.ToString());
                 NativeMethods.GetPrivateProfileString("GoldPowder", "CircleMarkFindCount", "7", sb, sb.Capacity, path);
-                data.dGoldPowderCircleMarkFindCount = Equipment.ToInt(sb.ToString());
+                data.nGoldPowderCircleMarkFindCount = Equipment.ToInt(sb.ToString());
 
 
             }

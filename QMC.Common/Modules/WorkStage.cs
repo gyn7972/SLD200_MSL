@@ -14455,10 +14455,6 @@ namespace QMC.Common.Modules
                                 " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
                                 ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
 
-                            xyCoordinateAlignPositionLast = new XyCoordinate(m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
-                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
-                            xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
-
                             //  데이터 위치를 Scanner 위치로 변경
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X += 
                                 Equipment.stOffsetDistance.FromScannerToFineCam.X;
@@ -15709,15 +15705,19 @@ namespace QMC.Common.Modules
                     if (alignMode == AlignMode.GoldPowder &&
                         Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                     {
+                        int nMaxInstance = Equipment.stVisionRecipeSet.nGoldPowderCircleMarkMaxInstance;
+                        dWidth = Equipment.stVisionRecipeSet.dGoldPowderCircleMarkRadius;
+                        nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X);
+
                         result = Fiducial_aligner.FindGoldPowderForAutoTreshold(Fiducial_circlesResult,
                                                         bm_AlignRawData,
                                                         Camera_HighRes.Resolution.Width,
                                                         Camera_HighRes.Resolution.Height,
                                                         nWidthImageCount,
                                                         Equipment.stVisionRecipeSet.dGoldPowderCircleMarkScore,
-                                                        Equipment.stVisionRecipeSet.dGoldPowderCircleMarkSpec);
+                                                        Equipment.stVisionRecipeSet.dGoldPowderCircleMarkSpec, nMaxInstance);
                         //if (result.Circles.Count > 3)
-                        if (Fiducial_circlesResult.Count > Equipment.stVisionRecipeSet.dGoldPowderCircleMarkFindCount)
+                        if (Fiducial_circlesResult.Count > Equipment.stVisionRecipeSet.nGoldPowderCircleMarkFindCount)
                         {
                             Fiducial_circleFound = true;
                         }
@@ -23516,6 +23516,8 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
+                                m_AlignMode = AlignMode.Socket;
+
                                 m_bSocketAlign_OK = false;
 
                                 //  소켓 얼라인 실패했으니 화면 갱신해야 한다.
@@ -23627,11 +23629,11 @@ namespace QMC.Common.Modules
                     else if (m_AlignMode == AlignMode.GoldPowder)
                     {
                         //  Align 후 계산된 데이터 가져오기
-                        m_dALIGN_FACTOR_RotationCenter_X = 0;// m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
-                        m_dALIGN_FACTOR_RotationCenter_Y = 0;//m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
-                        m_dALIGN_FACTOR_Offset_X = 0;//m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
-                        m_dALIGN_FACTOR_Offset_Y = 0;//m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
-                        m_dALIGN_FACTOR_Theta = 0;//m_st4PointAlign_Result.dRotationAngle;
+                        m_dALIGN_FACTOR_RotationCenter_X =  m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
+                        m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
+                        m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
+                        m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
+                        m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle;
                     }
                     
                     AlignedDrillingData_Select_and_OffsetMove(m_nSocketNum_forAlign, 
@@ -43895,7 +43897,8 @@ namespace QMC.Common.Modules
 
             result.X += xyFineVisionPos.X;
             result.Y += xyFineVisionPos.Y;
-
+            result.X *= -1;
+            result.Y *= -1;
             return result;
         }
 
