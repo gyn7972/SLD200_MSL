@@ -18,6 +18,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using Point = System.Drawing.Point;
 
 using SpiralLab.Sirius;
+using QMC.Common.UI;
 
 //using OpenTK;
 //using OpenTK.Graphics.OpenGL;
@@ -329,14 +330,14 @@ namespace SLD200_MSL
             //  ACS and Ajin Motion 의 상태를 갱신하는 타이머
             timer_Motion_Status = new System.Windows.Forms.Timer();
             //timer_Motion_Status.Interval = 50;
-            timer_Motion_Status.Interval = 1;
+            timer_Motion_Status.Interval = 50;
             timer_Motion_Status.Tick += new System.EventHandler(Timer_Motion_StatusFunc);
             timer_Motion_Status.Enabled = true;
 
             //  Laser 1 Shot 을 위한 타이머
             timer_Laser1Shot = new System.Windows.Forms.Timer();
             //timer_Laser1Shot.Interval = 10;
-            timer_Laser1Shot.Interval = 1;
+            timer_Laser1Shot.Interval = 50;
             timer_Laser1Shot.Tick += new System.EventHandler(Timer_Laser1ShotFunc);
             timer_Laser1Shot.Enabled = false;
 
@@ -522,6 +523,7 @@ namespace SLD200_MSL
                 if (this.Visible == true)
                 {
                     m_visionImageViewer_LowRes.StartUpdateTask();
+                   
                 }
                 else
                 {
@@ -539,6 +541,23 @@ namespace SLD200_MSL
                 {
                     m_visionImageViewer_HighRes.StopUpdateTask();
                 }
+            }
+
+            if(this.Visible)
+            {
+                m_JogControl_Unloader.StartTimer();
+                m_JogControl_Scanner.StartTimer();
+                m_JogControl_Loader.StartTimer();
+
+                timer_Motion_Status.Enabled = true;
+
+            }
+            else
+            {
+                timer_Motion_Status.Enabled = false;
+                m_JogControl_Unloader.StopTimer();
+                m_JogControl_Scanner.StopTimer();
+                m_JogControl_Loader.StopTimer();
             }
         }
 
@@ -882,19 +901,19 @@ namespace SLD200_MSL
 
             if (!Equipment.AjinBoard_Opened)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
                 return;
             }
 
             if (!workStage.m_bHomeOK)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
                 return;
             }
 
-            var mb = new MessageBoxYesNo();
+            var mb = new QMC.Core.MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Center 를 카메라가 보고 있는 위치로 보내시겠습니까?"))
                 return;
 
@@ -952,19 +971,19 @@ namespace SLD200_MSL
 
             if (!Equipment.AjinBoard_Opened)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
                 return;
             }
 
             if (!workStage.m_bHomeOK)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
                 return;
             }
 
-            var mb = new MessageBoxYesNo();
+            var mb = new QMC.Core.MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "카메라를 현재 Scanner Center 위치로 보내시겠습니까?"))
                 return;
 
@@ -1013,19 +1032,19 @@ namespace SLD200_MSL
 
             if (!Equipment.AjinBoard_Opened)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
                 return;
             }
 
             if (!workStage.m_bHomeOK)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
                 return;
             }
 
-            var mb = new MessageBoxYesNo();
+            var mb = new QMC.Core.MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "카메라를 현재 Scanner Center 위치로 보내시겠습니까?"))
                 return;
 
@@ -1074,19 +1093,19 @@ namespace SLD200_MSL
 
             if (!Equipment.AjinBoard_Opened)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
                 return;
             }
 
             if (!workStage.m_bHomeOK)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
                 return;
             }
 
-            var mb = new MessageBoxYesNo();
+            var mb = new QMC.Core.MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Center 를 카메라가 보고 있는 위치로 보내시겠습니까?"))
                 return;
 
@@ -1140,12 +1159,12 @@ namespace SLD200_MSL
 
             if (!Equipment.AjinBoard_Opened)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
                 return;
             }
 
-            var mb = new MessageBoxYesNo();
+            var mb = new QMC.Core.MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "RVA 축을 제외한 모든 축의 서보를 OFF 하시겠습니까?"))
                 return;
 
@@ -1189,7 +1208,7 @@ namespace SLD200_MSL
                 //}
             }
 
-            var mb2 = new MessageBoxOk();
+            var mb2 = new QMC.Core.MessageBoxOk();
             mb2.ShowDialog("Information !", "RVA 축을 제외한 모든 축의 서보가 OFF 되었습니다.");
             return;
         }
@@ -1205,12 +1224,12 @@ namespace SLD200_MSL
 
             if (!Equipment.AjinBoard_Opened)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
                 return;
             }
 
-            var mb = new MessageBoxYesNo();
+            var mb = new QMC.Core.MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 축의 서보를 ON 하시겠습니까?"))
                 return;
 
@@ -1253,7 +1272,7 @@ namespace SLD200_MSL
             //    MC_Func.MC_SetServoOnOff((int)WorkStageParameter.AxisAjinEnum.RvaZ, true);
             //}
 
-            var mb2 = new MessageBoxOk();
+            var mb2 = new QMC.Core.MessageBoxOk();
             mb2.ShowDialog("Information !", "전 축 서보 ON 되었습니다.");
             return;
         }
@@ -1285,7 +1304,7 @@ namespace SLD200_MSL
                 Log.Write("CWA150SA", Equipment.User_Name, "Calibration 화면", "카메라 초기화, Wafer 카메라 해상도 최대");
                 //MessageBox.Show("Wafer 카메라 해상도가 최대입니다.\r\n\r\n[레티클 얼라인을 위해서는 Wafer 카메라의 이미지 해상도를 변경해야 합니다.]\r\n[Width : 2248,\tHeight : 1880]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "Wafer 카메라 해상도가 최대입니다.\r\n(아래 값으로 변경 요망)\r\n\r\n[Width : 2248, Height : 1880]");
                 return;
             }
@@ -1293,7 +1312,7 @@ namespace SLD200_MSL
             {
                 Log.Write("CWA150SA", Equipment.User_Name, "Calibration 화면", "카메라 초기화, Wafer 카메라 이미지 Offset 값 0");
 
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "Wafer 카메라 - 이미지 Offset 값이 0 입니다.     (0 < X < 200, 0 < Y < 168)\r\n\r\n[ Reticle Glass Center 조정 필요 ]");
                 return;
             }
@@ -1314,7 +1333,7 @@ namespace SLD200_MSL
             if (!workStage.Camera_HighRes.Opened ||
                 !workStage.Camera_LowRes.Opened)
             {
-                var mb1 = new MessageBoxOk();
+                var mb1 = new QMC.Core.MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }

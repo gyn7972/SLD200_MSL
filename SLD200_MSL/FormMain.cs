@@ -13,6 +13,8 @@ using System.Windows.Forms;
 using QMC.Core;
 using QMC.Common.Modules;
 using System.Windows.Documents;
+using SLD200.NewStyleForm.NewSubForm;
+using System.Threading;
 //using QMC.Common.UI;
 
 namespace SLD200_MSL
@@ -48,6 +50,10 @@ namespace SLD200_MSL
         private FormNew_Logout m_FormNew_Logout;
         private FormNew_Alarm m_FormNew_Alarm;
         private FormNew_AlarmLog m_FormNew_AlarmLog;
+
+        private FormNewSub_Recipe_Vision m_FormnewSub_RecipeVision;
+        private FormNewSub_Recipe_GoldPowder m_FormnewSub_Recipe_GoldPowder;
+
 
         private Form currentVisibleForm = null;
 
@@ -100,8 +106,12 @@ namespace SLD200_MSL
             this.m_FormSelectIO = new FormSelectIO();
 
             //  2025. 02. 04.  SCH : 새로운 Form 추가
+            this.FormNewSub_Recipe_Vision = new FormNewSub_Recipe_Vision();
+            this.FormNewSub_Recipe_GoldPowder = new FormNewSub_Recipe_GoldPowder();
+
             this.FormNew_Main = new FormNew_Main();
             this.FormNew_Recipe = new FormNew_Recipe();
+            this.FormNew_Recipe.SetRecipeTabs(FormNewSub_Recipe_Vision, FormNewSub_Recipe_GoldPowder);
             this.FormNew_Config = new FormNew_Config();
             this.FormNew_Setup = new FormNew_Setup();
             this.FormNew_Log = new FormNew_Log();
@@ -109,21 +119,18 @@ namespace SLD200_MSL
             this.FormNew_Alarm = new FormNew_Alarm();
             this.FormNew_AlarmLog = new FormNew_AlarmLog();
 
-
             FormTopShow();
             FormBottomShow();
             //FormMonitoringShow();
             FormNewMainShow();
-
             AlarmManager.Instance.PostAlarm += AlarmManager_PostAlarm;
-
         }
         
         private void AlarmManager_PostAlarm(Alarm alarm)
         {
             BeginInvoke(new Action(() =>
             {
-                this.FormNew_Alarm.Alarms = AlarmManager.Instance.Alarms;
+                this.FormNew_Alarm.Alarms = AlarmManager.Instance.Alarms;                
                 this.ShowAlarmForm(FormNew_Alarm);
             }));
         }
@@ -262,6 +269,18 @@ namespace SLD200_MSL
         {
             get { return this.m_FormNew_AlarmLog; }
             set { this.m_FormNew_AlarmLog = value; }
+        }
+
+        public FormNewSub_Recipe_Vision FormNewSub_Recipe_Vision
+        {
+            get { return this.m_FormnewSub_RecipeVision; }
+            set { this.m_FormnewSub_RecipeVision = value; }
+        }
+
+        public FormNewSub_Recipe_GoldPowder FormNewSub_Recipe_GoldPowder
+        {
+            get { return this.m_FormnewSub_Recipe_GoldPowder; }
+            set { this.m_FormnewSub_Recipe_GoldPowder = value; }
         }
 
 
@@ -553,6 +572,8 @@ namespace SLD200_MSL
         }
         public void ShowAlarmForm(Form form)
         {
+            Thread.Sleep(100);                      //  창이 너무 빨리 떠서 알람 코드가 안보이나?
+
             form.TopLevel = false;
             panelContent.Controls.Add(form);
             form.BringToFront();

@@ -1,4 +1,5 @@
 ﻿//using QMC.Core;
+using QMC.Common;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -150,7 +151,7 @@ namespace QMC.Aux
                 }
                 catch (System.Exception ex)
                 {
-                    //Log.Write(ex);
+                    Log.Write(ex);
                     return false;
                 }
             }
@@ -177,7 +178,7 @@ namespace QMC.Aux
             }
             catch (System.Exception ex)
             {
-                //Log.Write(ex);
+                Log.Write(ex);
                 return false;
             }
 

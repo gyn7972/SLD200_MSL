@@ -42,7 +42,7 @@ namespace QMC.Common.Parts
                                 UpdatePressure(dValue);
                             }
 
-                            Thread.Sleep(10);
+                            Thread.Sleep(100);
                         }
                         catch (Exception ex)
                         {
@@ -66,7 +66,7 @@ namespace QMC.Common.Parts
         {
             if (lowPassFilter == null)
             {
-                lowPassFilter = new LowPassFilter(0.01, newPressure);
+                lowPassFilter = new LowPassFilter(0.1, newPressure);
             }
             
             PressureValue = lowPassFilter.Filter(newPressure); ;

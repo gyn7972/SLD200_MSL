@@ -188,6 +188,7 @@
     </Compile>
     <Compile Include="Global\AreaInfo.cs" />
     <Compile Include="Global\GlobalHotkeyMessageFilter.cs" />
+    <Compile Include="Global\HoleAlignHelper.cs" />
     <Compile Include="Global\LayerInfo.cs" />
     <Compile Include="Global\ProcessManager.cs" />
     <Compile Include="Global\SocketInfo.cs" />
@@ -201,6 +202,8 @@
     <Compile Include="Modules\Scanner.cs" />
     <Compile Include="Modules\LaserConfig.cs" />
     <Compile Include="Modules\LaserRecipe.cs" />
+    <Compile Include="Recipe\ScannerCalManager.cs" />
+    <Compile Include="Recipe\VisionRecipeData.cs" />
     <Compile Include="SpiralLab\Sirius\QMCSiriusEditorForm.cs">
       <SubType>UserControl</SubType>
     </Compile>

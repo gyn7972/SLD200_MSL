@@ -288,7 +288,6 @@ namespace SLD200_MSL
                     break;
             }
 
-
             //  Recipe
             if (Equipment.Current_Recipe.Length > 0)
             {
@@ -306,7 +305,6 @@ namespace SLD200_MSL
                 label_Title_Recipe.Text = "Recipe not loaded.";
             }
 
-
             //  Drawing File
             if (Equipment.Current_DrawingFileName.Length > 0)
             {
@@ -323,10 +321,19 @@ namespace SLD200_MSL
             {
                 label_Title_DrawingFile.Text = "Drawing File not loaded.";
             }
-
-
-
             Equipment.Current_DrawingFileName = System.IO.Path.GetFileName(Equipment.stLayerRecipeSet[0].DrawingFile);
+
+            //  Alarm
+            if (AlarmManager.Instance.Alarms.Count > 0)
+            {
+                Alarm lastAlarm = AlarmManager.Instance.Alarms[0];
+
+                label_Title_AlarmMessage.Text = lastAlarm.Cause;
+            }
+            else
+            {
+                label_Title_AlarmMessage.Text = "";
+            }
         }
 
         public void LogInInfo()

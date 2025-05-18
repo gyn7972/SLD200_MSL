@@ -352,6 +352,7 @@
             this.label39 = new System.Windows.Forms.Label();
             this.listBox_Config_Vision_TeachingPositions = new System.Windows.Forms.ListBox();
             this.tabPage_Config_Laser = new System.Windows.Forms.TabPage();
+            this.button_Config__TabLaser_CalFilePopup = new System.Windows.Forms.Button();
             this.groupBox_Config_Laser_UVLaser = new System.Windows.Forms.GroupBox();
             this.groupBox37 = new System.Windows.Forms.GroupBox();
             this.baseLabel_Config_TabLaser_THGTemperature = new System.Windows.Forms.Label();
@@ -4965,6 +4966,7 @@
             // 
             // tabPage_Config_Laser
             // 
+            this.tabPage_Config_Laser.Controls.Add(this.button_Config__TabLaser_CalFilePopup);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox_Config_Laser_UVLaser);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox13);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox2);
@@ -4980,6 +4982,18 @@
             this.tabPage_Config_Laser.TabIndex = 3;
             this.tabPage_Config_Laser.Text = "Laser";
             this.tabPage_Config_Laser.UseVisualStyleBackColor = true;
+            // 
+            // button_Config__TabLaser_CalFilePopup
+            // 
+            this.button_Config__TabLaser_CalFilePopup.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config__TabLaser_CalFilePopup.Location = new System.Drawing.Point(528, 125);
+            this.button_Config__TabLaser_CalFilePopup.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config__TabLaser_CalFilePopup.Name = "button_Config__TabLaser_CalFilePopup";
+            this.button_Config__TabLaser_CalFilePopup.Size = new System.Drawing.Size(105, 46);
+            this.button_Config__TabLaser_CalFilePopup.TabIndex = 80;
+            this.button_Config__TabLaser_CalFilePopup.Text = "Cal File";
+            this.button_Config__TabLaser_CalFilePopup.UseVisualStyleBackColor = true;
+            this.button_Config__TabLaser_CalFilePopup.Click += new System.EventHandler(this.button_Config__TabLaser_CalFilePopup_Click);
             // 
             // groupBox_Config_Laser_UVLaser
             // 
@@ -5628,7 +5642,7 @@
             "Varioscan Coolant Return",
             "Laser Purge",
             "Scanner Purge",
-            "Varioscan Purge",
+            "Scanner Box Purge (Vario)",
             "Laser Enable"});
             this.checkedListBox_Config_Laser_DIO_Output.Location = new System.Drawing.Point(10, 25);
             this.checkedListBox_Config_Laser_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
@@ -8631,5 +8645,6 @@
         private System.Windows.Forms.Label Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport;
         private System.Windows.Forms.Label label67;
         private System.Windows.Forms.Label label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort;
+        private System.Windows.Forms.Button button_Config__TabLaser_CalFilePopup;
     }
 }

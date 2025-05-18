@@ -83,7 +83,7 @@ namespace SLD200_MSL
             timer_RtcInit.Enabled = true;
 
             SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged;
-            
+
         }
 
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
@@ -116,11 +116,11 @@ namespace SLD200_MSL
 
         private void SiriusView_OnCustomDraw(IView view)
         {
-            foreach(var layer in this.SiriusEditor.Document.Layers)
+            foreach (var layer in this.SiriusEditor.Document.Layers)
             {
-                if(layer.IsSelected)
+                if (layer.IsSelected)
                 {
-                    if(layer.Name.Contains("Hole"))
+                    if (layer.Name.Contains("Hole"))
                     {
                         DrawGrid(view);
                     }
@@ -207,20 +207,33 @@ namespace SLD200_MSL
 
             //  확장자 확인
             string m_strExt = System.IO.Path.GetExtension(strFileName);
-
+            IDocument doc = null;
             //  Sirius1
             if (m_strExt.ToUpper() == ".DXF")
             {
                 //SiriusEditor.Document.New();
-                var doc = DocumentSerializer.OpenDxf(strFileName);
+                doc = DocumentSerializer.OpenDxf(strFileName);
                 SiriusEditor.Document = doc;
             }
             else if (m_strExt.ToUpper() == ".SIRIUS")
             {
                 //SiriusEditor.Document.New();
-                var doc = DocumentSerializer.OpenSirius(strFileName);
-                SiriusEditor.Document = doc;
+                doc = DocumentSerializer.OpenSirius(strFileName);
+                
             }
+            if(doc!=null)
+            {
+                if (SiriusEditor.Document != null)
+                {
+                    if (SiriusEditor.Document.Views != null)
+                    {
+                        SiriusEditor.Document.Views.Clear();
+                    }
+                }
+                SiriusEditor.Document = doc;
+
+            }
+            
         }
 
         public bool Imported_DrawingFile_SameCheck(string strFileName)
@@ -256,6 +269,8 @@ namespace SLD200_MSL
 
             //  Arc 를 Polyline 으로 만들 경우
             Config.LwPolylineBulgeToLines = true;
+
+            Config.LwPolylineBulgeToLineMinThreshold = (float)0.001;
 
             if (Equipment.Machine_PolylineCurve_Resolution < 1)
                 Config.LwPolylineBulgePrecision = 100;
@@ -447,6 +462,7 @@ namespace SLD200_MSL
             //var marker = new MarkerDefault(0);
             workStage.marker = new MarkerDefault(0, " RTC6 Marker ");           //  Sirius1
             //workStage.marker = new MarkerRtc(0, " RTC6 Marker ");             //  Sirius2
+            //workStage.marker.ScannerRotateAngle = 90.0;                         //  Scanner 가공 Field 를 CCW 방향으로 90도 회전 (Scanner 좌표계와 Stage 좌표계가 일치하지 않음) - 일단 보류. 이걸 하면 Scanner Cal 좌표계가 바뀌기 때문에...
 
             //workStage.marker.Laser.Scanner.ScannerRotateAngle = 90.0;                     //  2022. 10. 12.  SCH : Scanner 가공 Field 를 CCW 방향으로 90도 회전
             //  (SLD-100 은 Scanner 와 Stage 방향이 일치하지 않음. Scanner 가 CW 방향으로 90도 돌아가 있음)
@@ -523,6 +539,7 @@ namespace SLD200_MSL
             //this.SiriusEditor.PowerMap = powerMap;
             //laser.PowerMap = powerMap;
             #endregion
+
 
             ////  Arc 를 Polyline 으로 만들 경우
             //if (workStage.Config.ParamConfig.ConvertArcToPolyline)
@@ -1005,6 +1022,7 @@ namespace SLD200_MSL
             int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
             int m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            int m_nMarking_ObjectCount = 0;                                     //  Marking Text 단어 개수
 
             int m_nLayerCount = 0;
 
@@ -1339,6 +1357,93 @@ namespace SLD200_MSL
                             }
                         }
                     }
+                    else if (layer.Name == "Marking")
+                    {
+                        //m_nDrawing_OutlineCount = layer.Count;
+                        //m_stDrawing_Outline = new stDrawingOutlineParam[m_nDrawing_OutlineCount];                   //  Outline 데이터
+
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
+                                    break;
+
+                                case EType.Text:
+                                case EType.Barcode1D:
+                                case EType.BarcodeDataMatrix:
+                                case EType.BarcodeDataMatrix2:
+                                case EType.BarcodeQRCode:
+                                case EType.BarcodeQRCode2:
+
+                                    if (m_nMarking_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        m_nListCount++;
+                                        break;
+                                    }
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    //m_nDrawing_Hole1Count = group.Count;
+                                    //m_stDrawing_Hole1 = new stDrawingHoleParam[m_nDrawing_Hole1Count];                          //  Hole1 데이터
+
+                                    //if (m_nThruhole_ObjectCount++ == m_nSocketNum)
+                                    //{
+                                    //    m_nListCount++;
+                                    //    break;
+                                    //}
+                                    break;
+                            }
+                        }
+                    }
                     else if (layer.Name == "Fiducial")
                     {
                         //m_nDrawing_FiducialCount = layer.Count;
@@ -1420,6 +1525,7 @@ namespace SLD200_MSL
             m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
             m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            m_nMarking_ObjectCount = 0;                                     //  Marking Text 단어 개수
 
 
             //  Layer 종류별 Count
@@ -1723,6 +1829,93 @@ namespace SLD200_MSL
                             }
                         }
                     }
+                    else if (layer.Name == "Marking")
+                    {
+                        //m_nDrawing_OutlineCount = layer.Count;
+                        //m_stDrawing_Outline = new stDrawingOutlineParam[m_nDrawing_OutlineCount];                   //  Outline 데이터
+
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
+                                    break;
+
+                                case EType.Text:
+                                case EType.Barcode1D:
+                                case EType.BarcodeDataMatrix:
+                                case EType.BarcodeDataMatrix2:
+                                case EType.BarcodeQRCode:
+                                case EType.BarcodeQRCode2:
+
+                                    if (m_nMarking_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        list.Add(entity);
+                                        break;
+                                    }
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    //m_nDrawing_Hole1Count = group.Count;
+                                    //m_stDrawing_Hole1 = new stDrawingHoleParam[m_nDrawing_Hole1Count];                          //  Hole1 데이터
+
+                                    //if (m_nThruhole_ObjectCount++ == m_nSocketNum)
+                                    //{
+                                    //    m_nListCount++;
+                                    //    break;
+                                    //}
+                                    break;
+                            }
+                        }
+                    }
                     else if (layer.Name == "Fiducial")
                     {
                         //m_nDrawing_FiducialCount = layer.Count;
@@ -1881,11 +2074,11 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (workStage.m_stDividedRegion_GroupData == null)
-            {
-                MessageBox.Show("Data Parsing 해야 합니다.", "Information!!");
-                return;
-            }
+            //if (workStage.m_stDividedRegion_GroupData == null)
+            //{
+            //    MessageBox.Show("Data Parsing 해야 합니다.", "Information!!");
+            //    return;
+            //}
 
             m_dOffsetX = Equipment.ToDouble(tb_ScannerOffset_X.Text);
             m_dOffsetY = Equipment.ToDouble(tb_ScannerOffset_Y.Text);
@@ -1949,194 +2142,6 @@ namespace SLD200_MSL
             ScannerOffset.Z = (float)Equipment.ToDouble(tb_ScannerOffset_Angle.Text);
 
             workStage.rtc.PrimaryHeadBaseOffset = ScannerOffset;
-        }
-
-        void RenameNewLayer(int Count)
-        {
-
-            List<string> list = new List<string>();
-            list.Add("Hole1");
-            list.Add("Thruhole");
-            list.Add("Fiducial");
-            list.Add("PreAlign");
-            list.Add("Outline");
-            list.Add("Marking");
-            if (Count > list.Count)
-            {
-                Count = list.Count;
-            }
-            var Document = this.SiriusEditor.Document;
-            for (int iter = 0; iter < Count; iter++)
-            {
-                var l = Document.Layers;
-                if (l.Count > iter)
-                {
-                    l[iter].Name = list[iter];
-                }
-                else
-                {
-                    var layer = new Layer();
-                    layer.Name = list[iter];
-                    l.Add(layer);
-                }
-            }
-        }
-        private void AddHoleLayer()
-        {
-            var Document = this.SiriusEditor.Document;
-            var l = Document.Layers;
-            var layer = new Layer();
-            int NextNo = l.Where(t => t.Name.Contains("Hole")).Count() + 1;
-            layer.Name = "Hole" + NextNo.ToString();
-            l.Insert(NextNo - 1, layer);
-        }
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.F7)
-            {
-                Group();
-            }
-            if (keyData == Keys.F8)
-            {
-                UnGroup();
-            }
-            if (keyData == Keys.Delete)
-            {
-                var Document = this.SiriusEditor.Document;
-                Document.Action.ActEntityDelete(Document.Action.SelectedEntity);
-            }
-            switch (keyData)
-            {
-                case Keys.Alt | Keys.D2:
-                    {
-                        RenameNewLayer(2);
-                    }
-                    break;
-                case Keys.Alt | Keys.D3:
-                    {
-                        RenameNewLayer(3);
-                    }
-                    break;
-                case Keys.Alt | Keys.D4:
-                    {
-                        RenameNewLayer(4);
-                    }
-                    break;
-                case Keys.Alt | Keys.D5:
-                    {
-                        RenameNewLayer(5);
-                    }
-                    break;
-                case Keys.Alt | Keys.D6:
-                    {
-                        RenameNewLayer(6);
-                    }
-                    break;
-                case Keys.Control | Keys.Alt | Keys.H:
-                    {
-                        AddHoleLayer();
-                    }
-                    break;
-                case Keys.Alt | Keys.H:
-                    {
-                        HoleGroup();
-                    }
-                    break;
-                case Keys.Alt | Keys.T:
-                    {
-                        ThruholeGroup();
-                    }
-                    break;
-                case Keys.Alt | Keys.F:
-                    {
-                        MoveToFiducial();
-                    }
-                    break;
-                case Keys.Alt | Keys.P:
-                    {
-                        MoveToPreAlign();
-                    }
-                    break;
-
-                case Keys.Control | Keys.Alt | Keys.M:
-                    {
-                        MoveToMarking();
-                    }
-                    break;
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        private void MoveToMarking()
-        {
-            MoveToGroup("Marking");
-        }
-
-        private void ThruholeGroup()
-        {
-            MoveToGroup("Thruhole");
-        }
-
-        private void MoveToPreAlign()
-        {
-            MoveToGroup("PreAlign");
-        }
-
-        private void MoveToGroup(string Name)
-        {
-            var Document = this.SiriusEditor.Document;
-            var l = Document.Layers;
-
-            var layer = l.Where(t => t.Name.Contains(Name)).FirstOrDefault();
-            MoveToGroup(Document, layer);
-        }
-        private void MoveToFiducial()
-        {
-            MoveToGroup("Fiducial");
-        }
-
-        private static void MoveToGroup(IDocument Document, Layer layer)
-        {
-            Document.Action.ActEntityCut(Document.Action.SelectedEntity);
-            Document.Action.ActEntityPasteClone(layer);
-        }
-
-        private void UnGroup()
-        {
-            var Document = this.SiriusEditor.Document;
-
-            Document.Action.ActEntityUngroup(Document.Action.SelectedEntity);
-        }
-
-        private void Group()
-        {
-            var Document = this.SiriusEditor.Document;
-            Document.Action.ActEntityGroup(Document.Action.SelectedEntity);
-
-
-        }
-
-        private void HoleGroup()
-        {
-            MoveToGroup("Hole1");
-
-
-        }
-
-        private void SelectLayer(string strName)
-        {
-            var Document = this.SiriusEditor.Document;
-            var l = Document.Layers;
-
-            var layer = l.Where(t => t.Name.Contains(strName)).FirstOrDefault();
-            if (layer is Layer Lay)
-            {
-                foreach (var v in l)
-                {
-                    v.IsSelected = false;
-                }
-                Lay.IsSelected = true;
-            }
         }
     }
 }

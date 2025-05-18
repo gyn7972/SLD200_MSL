@@ -194,7 +194,7 @@ namespace QMC.Common.Parts
                         coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_Y * (((WorkStage)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_Y ? 1 : -1);
                     }
                 }
-                else                                                        //  상부 카메라
+                else  //  상부 카메라
                 {
                     coordinate.X = (dX - this.Camera.Resolution.Width / 2) * ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_X * (((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X ? 1 : -1);
 
@@ -419,28 +419,26 @@ namespace QMC.Common.Parts
                         m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
                         //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
-                        Thread.Sleep(200);
-
+                        Thread.Sleep(100);
                         Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
                         Task<bool> resultY1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
-
                         resultX1.Wait();
                         resultY1.Wait();
                         if (!resultX1.Result || !resultY1.Result)
                         {
                             //  이동 실패 
-                            if(!bWaitPosX)
+                            if(!resultX1.Result)
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"X축 이동 실패"));
                                 m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                             }
-
-                            if (!bWaitPosY)
+                            if (!resultY1.Result)
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"Y축 이동 실패"));
                                 m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                             }
                         }
+                        Thread.Sleep(100);
                         //Thread.Sleep(500); //Sleep은 안하는게 좋음.
 
                         this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
@@ -457,7 +455,8 @@ namespace QMC.Common.Parts
                             if (m_dRadius[0] == 0)
                                 dRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
 
-                            this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, dScore, out firstPointSearchResult, out firstPointCoordinate);
+                            this.FindCircleDetection(dRadius, bIsDarkCircleSearch, 
+                                dSpec, dScore, out firstPointSearchResult, out firstPointCoordinate);
                         }
                         else
                         {
@@ -507,11 +506,10 @@ namespace QMC.Common.Parts
 
                     Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX2{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY2{xyInterpolatedCoordinate.Y}"));
 
-
                     m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
                     //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
-                    Thread.Sleep(200);
+                    Thread.Sleep(100);
 
                     // 비동기 대기 (UI에서 사용하면 안됨)
                     Task<bool> resultX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
@@ -534,6 +532,7 @@ namespace QMC.Common.Parts
                             m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                         }
                     }
+                    Thread.Sleep(100);
 
                     //nWait = 0;
                     //while (true)
@@ -550,7 +549,6 @@ namespace QMC.Common.Parts
                     //        break;
                     //    }
                     //}
-
                     //nWait = 0;
                     //while (true)
                     //{
@@ -596,8 +594,6 @@ namespace QMC.Common.Parts
 
                     if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우, 여기서 Out
                     {
-                        //m_Owner.m_nFindAlignMarkType = (int)WorkStage.AlignMarkType.ALIGN_2POINT;
-
                         if (secondPointSearchResult != null)
                         {
                             FirstPosition_ImageCoord = GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);                              //  이미지 좌표
@@ -636,22 +632,17 @@ namespace QMC.Common.Parts
                             // 꼭확인
                             // 1, 2번 마크 위치가.. 좌우 바뀌었는데...
                             //XyzCoordinate position1 = new XyzCoordinate(m_AlignPositions[0].X, m_AlignPositions[0].Y, 0.0);
-
                             //XyzCoordinate position2 = new XyzCoordinate(m_AlignPositions[1].X, m_AlignPositions[1].Y, 0.0);
-
                             //double dRefAngle = GetAngle(new XyCoordinate(position2.X,position2.Y), new XyCoordinate(position1.X, position1.Y));
                             //position1.X -= finalFirstPosition.X;
                             //position1.Y -= finalFirstPosition.Y;
                             //position2.X -= finalSecondPosition.X;
                             //position2.Y -= finalSecondPosition.Y;
-
                             //dAngle = GetAngle(new XyCoordinate(position2.X, position2.Y), new XyCoordinate(position1.X, position1.Y));
                             //dAngle -= dRefAngle;
 
                             XyzCoordinate position1 = new XyzCoordinate(m_AlignPositions[0].X, m_AlignPositions[0].Y, 0.0);
-
                             XyzCoordinate position2 = new XyzCoordinate(m_AlignPositions[1].X, m_AlignPositions[1].Y, 0.0);
-
                             double dRefAngle = GetAngle(new XyCoordinate(position1.X, position1.Y), new XyCoordinate(position2.X, position2.Y));
                             position1.X += finalFirstPosition.X;
                             position1.Y -= finalFirstPosition.Y;
@@ -660,6 +651,51 @@ namespace QMC.Common.Parts
 
                             dAngle = GetAngle(new XyCoordinate(position1.X, position1.Y), new XyCoordinate(position2.X, position2.Y));
                             dAngle -= dRefAngle;
+
+                        }
+
+                        //Test ::
+                        if(false) //구영남 - 1,2번 마크 위치에 따라 의심되면 TEST 해보자.
+                        {
+                            XyCoordinate base1 = new XyCoordinate(0,0);
+                            XyCoordinate base2 = new XyCoordinate(0, 0);
+                            XyCoordinate actual1 = new XyCoordinate(0, 0);
+                            XyCoordinate actual2 = new XyCoordinate(0, 0);
+                            
+                            // 기준 마크 위치
+                            base1 = m_AlignPositions[0];
+                            base2 = m_AlignPositions[1];
+
+                            // 정렬: 좌우/상하 순서 고정
+                            if (Math.Abs(base2.X - base1.X) < Math.Abs(base2.Y - base1.Y))
+                            {
+                                // 세로 방향 기준 정렬
+                                if (base1.Y > base2.Y)
+                                {
+                                    Swap(ref base1, ref base2);
+                                }
+                            }
+                            else
+                            {
+                                // 가로 방향 기준 정렬
+                                if (base1.X > base2.X)
+                                {
+                                    Swap(ref base1, ref base2);
+                                }
+                            }
+                            double dRefAngle = GetAngle(new XyCoordinate(base1.X, base1.Y), new XyCoordinate(base2.X, base2.Y));
+
+                            // 실측 마크 위치 (Offset 적용) : Y축이 반전이라는 전제인데.
+                            actual1.X = base1.X + finalFirstPosition.X;
+                            actual1.Y = base1.Y - finalFirstPosition.Y;
+                            actual2.X = base2.X + finalSecondPosition.X;
+                            actual2.Y = base2.Y - finalSecondPosition.Y;
+                            double dActualAngle = GetAngle(new XyCoordinate(actual1.X, actual1.Y), new XyCoordinate(actual2.X, actual2.Y));
+                            dAngle = dActualAngle - dRefAngle;
+
+                            Log.Write("SLD-200", "JigAligner_OnWork_PreAlign", $"Base1: ({base1.X:F3}, {base1.Y:F3}), Base2: ({base2.X:F3}, {base2.Y:F3})");
+                            Log.Write("SLD-200", "JigAligner_OnWork_PreAlign", $"Actual1: ({actual1.X:F3}, {actual1.Y:F3}), Actual2: ({actual2.X:F3}, {actual2.Y:F3})");
+                            Log.Write("SLD-200", "JigAligner_OnWork_PreAlign", $"RefAngle: {dRefAngle:F3}, ActualAngle: {dActualAngle:F3}, dAngle: {dAngle:F3}");
                         }
 
                         //true면 NaN
@@ -689,6 +725,13 @@ namespace QMC.Common.Parts
             }
             
             return ret;
+        }
+
+        private void Swap(ref XyCoordinate a, ref XyCoordinate b)
+        {
+            XyCoordinate temp = a;
+            a = b;
+            b = temp;
         }
 
         /// <summary>
@@ -817,7 +860,7 @@ namespace QMC.Common.Parts
                                 m_Owner.CoarseCamResultOveray.Add(overayEl);
 
                                 int FontSize = 50;
-                                string strScore = string.Format("Score : {0:0.00},Size:{1:0.00}  ", result.ScoreCollection[0], result.Circle[0].Radius*2* TempScale.X);
+                                string strScore = string.Format("Score : {0:0.00},Size:{1:0.00}  ", result.ScoreCollection[0], result.Circles[0].Radius*2* TempScale.X);
                                 Font font = new Font("verdana", FontSize, FontStyle.Bold);
                                 var textOveray = new TextVisionImageOverlay(strScore, new Point((int)v.Left, (int)v.Top - FontSize *3), font);
                                 textOveray.Visible = true;

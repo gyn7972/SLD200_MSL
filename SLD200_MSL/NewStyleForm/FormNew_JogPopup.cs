@@ -10,6 +10,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static QMC.Common.Equipment;
@@ -30,14 +31,20 @@ namespace SLD200.NewStyleForm
         private FormNewSub_JogPopup_Loader userform_Loader;
         private FormNewSub_JogPopup_Stage userform_Stage;
         private FormNewSub_JogPopup_Unloader userform_Unloader;
-
+        private TabPage SelectedTabPage = null;
         public FormNew_JogPopup()
         {
             InitializeComponent();
+            this.AutoScaleMode = AutoScaleMode.None;
 
             this.Load += FormNewSub_JogPopup_Load; // 여기서 Load 이벤트 연결
             this.FormClosing += FormNew_JogPopup_FormClosing; // 추가
             this.tabControl_JogPopup.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
+            this.tabControl_JogPopup.SelectedIndex = 1;
+            if(this.tabControl_JogPopup.TabPages.Count > 2)
+            {
+                SelectedTabPage = this.tabControl_JogPopup.TabPages[1];
+            }
         }
 
         private void FormNew_JogPopup_FormClosing(object sender, FormClosingEventArgs e)
@@ -54,20 +61,6 @@ namespace SLD200.NewStyleForm
         {
             if (m_bInitialized)
                 return;
-
-
-            //this.Size = new Size(1280, 1024);  // 원하는 사이즈
-            //this.MinimumSize = this.Size;
-            //Size 축소 / 확대 안되게 하기 위한 코드.
-            this.AutoScaleMode = AutoScaleMode.None;
-            this.AutoSize = false;
-            this.DoubleBuffered = true;
-            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            this.UpdateStyles();
-
-            this.tabControl_JogPopup.Dock = DockStyle.Fill;
-            tabControl_JogPopup.AutoSize = false;
-            
 
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
@@ -93,10 +86,25 @@ namespace SLD200.NewStyleForm
             InitializeTabs();
 
             // 타이머 초기화
-            timer_Status = new System.Windows.Forms.Timer();
-            timer_Status.Interval = 200; // 200ms 주기
-            timer_Status.Tick += Timer_Status_Tick;
-            timer_Status.Start();
+            //timer_Status = new System.Windows.Forms.Timer();
+            //timer_Status.Interval = 200; // 200ms 주기
+            //timer_Status.Tick += Timer_Status_Tick;
+            //timer_Status.Start();
+
+            Task.Factory.StartNew(() => 
+            { 
+                while(true)
+                {
+
+                    if (workStage.IsModuleClose)
+                    {
+                        break;
+                    }
+                    Thread.Sleep(200);
+                    Timer_Status_Tick(null, null);
+                }
+            });
+            //timer_Status.Stop();
 
             m_bInitialized = true;
         }
@@ -112,13 +120,13 @@ namespace SLD200.NewStyleForm
             {
                 m_bFormVisible = true;
                 OnShow();
-                timer_Status.Start();
+               // timer_Status.Start();
             }
             else if (!this.Visible && m_bFormVisible)
             {
                 m_bFormVisible = false;
                 OnHide();
-                timer_Status.Stop();
+                //timer_Status.Stop();
             }
         }
 
@@ -149,18 +157,18 @@ namespace SLD200.NewStyleForm
             try
             {
                 // 타이머 중복 호출 방지
-                timer_Status.Enabled = false;
+                //timer_Status.Enabled = false;
 
                 // 현재 선택된 탭에 따라 해당 UserControl의 상태만 업데이트
-                if (tabControl_JogPopup.SelectedTab == tabPage_Loader)
+                if (SelectedTabPage == tabPage_Loader)
                 {
                     userform_Loader?.UpdateStatus();
                 }
-                else if (tabControl_JogPopup.SelectedTab == tabPage_Stage)
+                else if (SelectedTabPage == tabPage_Stage)
                 {
                     userform_Stage?.UpdateStatus();
                 }
-                else if (tabControl_JogPopup.SelectedTab == tabPage_Unloader)
+                else if (SelectedTabPage == tabPage_Unloader)
                 {
                     userform_Unloader?.UpdateStatus();
                 }
@@ -171,22 +179,16 @@ namespace SLD200.NewStyleForm
             }
             finally
             {
-                timer_Status.Enabled = true;
+                //timer_Status.Enabled = true;
             }
         }
 
         private void InitializeTabs()
         {
-            tabPage_Loader.Dock = DockStyle.Fill;
-            tabPage_Stage.Dock = DockStyle.Fill;
-            tabPage_Unloader.Dock = DockStyle.Fill;
-            tabPage_Loader.AutoSize = false;
-            tabPage_Stage.AutoSize = false;
-            tabPage_Unloader.AutoSize = false;
-
             userform_Loader = new FormNewSub_JogPopup_Loader(this);
             userform_Stage = new FormNewSub_JogPopup_Stage(this);
             userform_Unloader = new FormNewSub_JogPopup_Unloader(this);
+
             userform_Loader.Dock = DockStyle.Fill;
             userform_Stage.Dock = DockStyle.Fill;
             userform_Unloader.Dock = DockStyle.Fill;
@@ -197,6 +199,8 @@ namespace SLD200.NewStyleForm
             tabPage_Loader.Controls.Add(userform_Loader);
             tabPage_Stage.Controls.Add(userform_Stage);
             tabPage_Unloader.Controls.Add(userform_Unloader);
+
+            
         }
 
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
@@ -216,6 +220,9 @@ namespace SLD200.NewStyleForm
                     userform_Unloader.OnShow();
                     break;
             }
+            TabControl tabControl = sender as TabControl;
+            int selectedIndex = tabControl.SelectedIndex;
+            SelectedTabPage = tabControl.SelectedTab;
         }
 
         public interface IJogControlProvider
@@ -227,51 +234,53 @@ namespace SLD200.NewStyleForm
         }
 
         // 축 JogMove 공통 처리
-        public void button_AxisJog_MouseDown(object sender, MouseEventArgs e)
+        public async void button_AxisJog_MouseDown(object sender, MouseEventArgs e)
         {
             Button btn = sender as Button;
             if (btn == null || btn.Tag == null)
                 return;
 
-            if (Equipment.AjinBoard_Opened)
+            //lock(this)
             {
-                string[] tagParts = btn.Tag?.ToString()?.Split(',');
-                if (tagParts == null || tagParts.Length != 3)
-                    return;
-
-                string unit = tagParts[0];         // 예: "WorkStage", "Loader"
-                string axisName = tagParts[1];     // 예: "X", "Y", "Z0", "TR_X"
-                double direction = Convert.ToDouble(tagParts[2]); // -1.0 또는 1.0
-
-                dynamic controller = GetControllerByUnit(unit);
-                if (controller == null) return;
-
-                int axis = GetAxisIndex(ref unit, axisName);
-                if (axis < 0) return;
-
-                Type_Motor_Speed speedType = GetMotorSpeedType(unit);
-
-                if (IsJogMoveContinuous(unit))
+                if (Equipment.AjinBoard_Opened)
                 {
-                    switch (unit)
+                    string[] tagParts = btn.Tag?.ToString()?.Split(',');
+                    if (tagParts == null || tagParts.Length != 3)
+                        return;
+
+                    string unit = tagParts[0];         // 예: "WorkStage", "Loader"
+                    string axisName = tagParts[1];     // 예: "X", "Y", "Z0", "TR_X"
+                    double direction = Convert.ToDouble(tagParts[2]); // -1.0 또는 1.0
+
+                    dynamic controller = GetControllerByUnit(unit);
+                    if (controller == null) return;
+
+                    int axis = GetAxisIndex(ref unit, axisName);
+                    if (axis < 0) return;
+
+                    Type_Motor_Speed speedType = GetMotorSpeedType(unit);
+                    if (IsJogMoveContinuous(unit))
                     {
-                        case "WorkStage": workStage.MovetoWorkStage_Jog_Positions((WorkStage.nAxis)axis, (int)direction, speedType); break;
-                        case "Loader": loader.MovetoLoader_Jog_Positions((Loader.nAxis)axis, (int)direction, speedType); break;
-                        case "Unloader": unloader.MovetoUnloader_Jog_Positions((Unloader.nAxis)axis, (int)direction, speedType); break;
+                        switch (unit)
+                        {
+                            case "WorkStage": workStage.MovetoWorkStage_Jog_Positions((WorkStage.nAxis)axis, (int)direction, speedType); break;
+                            case "Loader": loader.MovetoLoader_Jog_Positions((Loader.nAxis)axis, (int)direction, speedType); break;
+                            case "Unloader": unloader.MovetoUnloader_Jog_Positions((Unloader.nAxis)axis, (int)direction, speedType); break;
+                        }
                     }
-                }
-                else if (IsJogMoveStep(unit))
-                {
-                    double distance = GetStepDistance(unit);
-                    switch (unit)
+                    else if (IsJogMoveStep(unit))
                     {
-                        case "WorkStage": workStage.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType); break;
-                        case "Loader": loader.MovetoLoader_Rel_Positions((Loader.nAxis)axis, distance, (int)direction, speedType); break;
-                        case "Unloader": unloader.MovetoUnloader_Rel_Positions((Unloader.nAxis)axis, distance, (int)direction, speedType); break;
+                        double distance = GetStepDistance(unit);
+                        switch (unit)
+                        {
+                            case "WorkStage": workStage.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType); break;
+                            case "Loader": loader.MovetoLoader_Rel_Positions((Loader.nAxis)axis, distance, (int)direction, speedType); break;
+                            case "Unloader": unloader.MovetoUnloader_Rel_Positions((Unloader.nAxis)axis, distance, (int)direction, speedType); break;
+                        }
                     }
-                    //controller.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType);
                 }
             }
+            
         }
 
         // 축 JogStop 공통 처리
@@ -295,13 +304,16 @@ namespace SLD200.NewStyleForm
                 int axis = GetAxisIndex(ref unit, axisName);
                 if (axis < 0) return;
 
-                switch (unit)
+                // 연속 이동일 때만 정지
+                if (IsJogMoveContinuous(unit))
                 {
-                    case "WorkStage": workStage.MC_Func.MC_JogStop(axis); break;
-                    case "Loader": loader.MC_Func.MC_JogStop(axis); break;
-                    case "Unloader": unloader.MC_Func.MC_JogStop(axis); break;
+                    switch (unit)
+                    {
+                        case "WorkStage": workStage.MC_Func.MC_JogStop(axis); break;
+                        case "Loader": loader.MC_Func.MC_JogStop(axis); break;
+                        case "Unloader": unloader.MC_Func.MC_JogStop(axis); break;
+                    }
                 }
-                //controller.MC_Func.MC_JogStop(axis);
             }
         }
 
@@ -371,5 +383,7 @@ namespace SLD200.NewStyleForm
         {
             return GetJogProviderByUnit(unit)?.JogStepDistance ?? 0.0;
         }
+
+       
     }
 }

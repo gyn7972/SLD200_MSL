@@ -17,6 +17,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static QMC.Common.Equipment;
@@ -427,15 +428,13 @@ namespace SLD200_MSL
 
             SetScroll((int)WorkStage.CameraType.CAMERA_LOW);
 
-            //  조명값 변경
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[2].Value, 3);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 3);
             hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[2].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
             this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
-            ////  High Mag Camera 조명 끄기
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 1);
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 2);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, hScrollBarIlluminator_IR.Value);
+            Thread.Sleep(100);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
         }
 
         private void radioButton_VisionPopup_CameraSelection_HighMag_CheckedChanged(object sender, EventArgs e)
@@ -469,33 +468,15 @@ namespace SLD200_MSL
 
             SetScroll((int)WorkStage.CameraType.CAMERA_HIGH);
 
-
-            //  조명값 변경
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
-
             hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[1].Value;             //  고해상도 카메라 IR 조명 (2번, Index 는 1번)
             this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
             hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[0].Value;            //  고해상도 카메라 Red Ring 조명 (1번, Index 는 0번)
             this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
 
-            //if (radioButton_Light_IR.Checked)
-            //{
-            //    SetScroll(1);               
-            //    hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[1].Value;            //  고해상도 카메라 IR 조명 (2번, Index 는 1번)
-            //    this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
-            //}
-            //else
-            //{
-            //    SetScroll(0);
-            //    hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[0].Value;            //  고해상도 카메라 Red Ring 조명 (1번, Index 는 0번)
-            //    this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
-            //}
-
-            //  Low Mag Camera 조명 끄기
-            //CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            Thread.Sleep(100);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_Red.Value);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBarIlluminator_IR.Value);
         }
 
         private void radioButton_VisionPopup_DisplayMode_Live_CheckedChanged(object sender, EventArgs e)
@@ -1373,13 +1354,13 @@ namespace SLD200_MSL
                 detectedCircles.Clear();
                 //  좌표 표시
                 listBox_FindCircle_Result.Items.Clear();
-                for (int i = 0; i < result.Circle.Count; i++)
+                for (int i = 0; i < result.Circles.Count; i++)
                 {
-                    double dCxpx = result.Circle[i].CenterX;
-                    double dCypx = result.Circle[i].CenterY;
-                    double dCxmm = result.Circle[i].CenterX * workStage.Config.ParamConfig.LowerVision_Scale_X;
-                    double dCymm = result.Circle[i].CenterY * workStage.Config.ParamConfig.LowerVision_Scale_Y;
-                    dRaius = result.Circle[i].Radius * workStage.Config.ParamConfig.LowerVision_Scale_X;
+                    double dCxpx = result.Circles[i].CenterX;
+                    double dCypx = result.Circles[i].CenterY;
+                    double dCxmm = result.Circles[i].CenterX * workStage.Config.ParamConfig.LowerVision_Scale_X;
+                    double dCymm = result.Circles[i].CenterY * workStage.Config.ParamConfig.LowerVision_Scale_Y;
+                    dRaius = result.Circles[i].Radius * workStage.Config.ParamConfig.LowerVision_Scale_X;
                     listBox_FindCircle_Result.Items.Add((i + 1) + ".X(px) : " + dCxpx.ToString("F3"));
                     listBox_FindCircle_Result.Items.Add((i + 1) + ".Y(px) : " + dCypx.ToString("F3"));
                     listBox_FindCircle_Result.Items.Add((i + 1) + ".X(mm) : " + dCxmm.ToString("F3"));
@@ -1651,31 +1632,25 @@ namespace SLD200_MSL
             {
                 SetScroll(2);
 
-                ////  조명값 변경
-                CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[2].Value, 3);
-                CommonModule.Instance.Illuminator.TurnOnOff(true, 3);
                 hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[2].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
                 this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
-                ////  High Mag Camera 조명 끄기
-                CommonModule.Instance.Illuminator.TurnOnOff(false, 1);
-                CommonModule.Instance.Illuminator.TurnOnOff(false, 2);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, hScrollBarIlluminator_IR.Value);
+                Thread.Sleep(100);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 0, false);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
             }
             else
             {
                 SetScroll(1);
 
-                ////  조명값 변경
-                CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-                CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
-                CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-                CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
-
                 hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[1].Value;                //  고해상도 카메라 IR 조명 (2번, Index 는 1번)
                 this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
-                ////  Low Mag Camera 조명 끄기
-                CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                Thread.Sleep(100);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, workStage.Config.ListIlluminationChannel[0].Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBarIlluminator_IR.Value);
             }
         }
 
@@ -1685,17 +1660,13 @@ namespace SLD200_MSL
             {
                 SetScroll(0);
 
-                //  조명값 변경
-                CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-                CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
-                CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-                CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
-
                 hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[0].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
                 this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
-                ////  Low Mag Camera 조명 끄기
-                CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                Thread.Sleep(100);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_IR.Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, workStage.Config.ListIlluminationChannel[1].Value);
             }
         }
 
@@ -2017,10 +1988,6 @@ namespace SLD200_MSL
             workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             
-
-            ////  맵 데이터 변경
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-
             //  속도 설정
             if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
             {
@@ -2099,6 +2066,12 @@ namespace SLD200_MSL
             //}
 
 
+            //  Target 위치 계산
+            lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
+            lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+
+
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  맵 데이터 변경 (기준위치 : Scanner)
             //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
@@ -2106,10 +2079,6 @@ namespace SLD200_MSL
             workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-            //  Target 위치 계산
-            lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
             //  속도 설정
             if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
@@ -2529,7 +2498,7 @@ namespace SLD200_MSL
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
-                aligner.FindMetalPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                aligner.FindGoldPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
             }
             else
             {
@@ -2543,7 +2512,14 @@ namespace SLD200_MSL
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);                
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
-                aligner.FindMetalPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                //aligner.FindMetalPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                aligner.FindGoldPowderForAutoTreshold(circlesResult,
+                                                        bm_RawData,
+                                                        w,
+                                                        h,
+                                                        75,
+                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
             }
 
             if (circlesResult.Count > 0)

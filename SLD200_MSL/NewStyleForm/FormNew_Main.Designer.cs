@@ -61,7 +61,7 @@
             this.baseLabel_AverageOneCycle_Time = new SLD200_MSL.BaseLabel();
             this.progressBar_TotalRemained_Time = new System.Windows.Forms.ProgressBar();
             this.baseLabel_Total_RemainedTime = new SLD200_MSL.BaseLabel();
-            this.baseLabel_TotalRunning_Time = new SLD200_MSL.BaseLabel();
+            this.baseLabel_TotalRemain_Time = new SLD200_MSL.BaseLabel();
             this.progressBar_OneCycle_Time = new System.Windows.Forms.ProgressBar();
             this.baseLabel_CurrentOneCycle_TotalTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_CurrentOneCycle_ElapsedTime = new SLD200_MSL.BaseLabel();
@@ -584,7 +584,7 @@
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_AverageOneCycle_Time);
             this.baseGroupBox_WorkingTime.Controls.Add(this.progressBar_TotalRemained_Time);
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_Total_RemainedTime);
-            this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_TotalRunning_Time);
+            this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_TotalRemain_Time);
             this.baseGroupBox_WorkingTime.Controls.Add(this.progressBar_OneCycle_Time);
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_CurrentOneCycle_TotalTime);
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_CurrentOneCycle_ElapsedTime);
@@ -662,17 +662,17 @@
             this.baseLabel_Total_RemainedTime.TabIndex = 114;
             this.baseLabel_Total_RemainedTime.Text = "00:00:00";
             // 
-            // baseLabel_TotalRunning_Time
+            // baseLabel_TotalRemain_Time
             // 
-            this.baseLabel_TotalRunning_Time.AutoSize = true;
-            this.baseLabel_TotalRunning_Time.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.baseLabel_TotalRunning_Time.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_TotalRunning_Time.Location = new System.Drawing.Point(12, 97);
-            this.baseLabel_TotalRunning_Time.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabel_TotalRunning_Time.Name = "baseLabel_TotalRunning_Time";
-            this.baseLabel_TotalRunning_Time.Size = new System.Drawing.Size(135, 18);
-            this.baseLabel_TotalRunning_Time.TabIndex = 113;
-            this.baseLabel_TotalRunning_Time.Text = "Total Running Time";
+            this.baseLabel_TotalRemain_Time.AutoSize = true;
+            this.baseLabel_TotalRemain_Time.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseLabel_TotalRemain_Time.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_TotalRemain_Time.Location = new System.Drawing.Point(12, 97);
+            this.baseLabel_TotalRemain_Time.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel_TotalRemain_Time.Name = "baseLabel_TotalRemain_Time";
+            this.baseLabel_TotalRemain_Time.Size = new System.Drawing.Size(132, 18);
+            this.baseLabel_TotalRemain_Time.TabIndex = 113;
+            this.baseLabel_TotalRemain_Time.Text = "Total Remain Time";
             // 
             // progressBar_OneCycle_Time
             // 
@@ -1049,10 +1049,10 @@
             this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
             this.ImageViewer_Main_highs.Simulated = false;
             this.ImageViewer_Main_highs.Size = new System.Drawing.Size(263, 220);
-            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.ImageViewer_Main_highs.TabIndex = 189;
             this.ImageViewer_Main_highs.TabStop = false;
-            this.ImageViewer_Main_highs.UpdateDelayTime = 160;
+            this.ImageViewer_Main_highs.UpdateDelayTime = 200;
             this.ImageViewer_Main_highs.VisibleCrossLine = true;
             // 
             // groupBox_CoarseCam
@@ -1310,7 +1310,6 @@
             // baseLabel_Main_Divice_Status_BeamExpander
             // 
             this.baseLabel_Main_Divice_Status_BeamExpander.AutoSize = true;
-            this.baseLabel_Main_Divice_Status_BeamExpander.Enabled = false;
             this.baseLabel_Main_Divice_Status_BeamExpander.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_BeamExpander.ForeColor = System.Drawing.Color.Black;
             this.baseLabel_Main_Divice_Status_BeamExpander.Location = new System.Drawing.Point(159, 158);
@@ -1322,7 +1321,6 @@
             // 
             // pictureBox_Main_DiviceStatus_BeamExpander
             // 
-            this.pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
             this.pictureBox_Main_DiviceStatus_BeamExpander.Image = global::SLD200.Properties.Resources.DioEllipseOff;
             this.pictureBox_Main_DiviceStatus_BeamExpander.Location = new System.Drawing.Point(128, 155);
             this.pictureBox_Main_DiviceStatus_BeamExpander.Name = "pictureBox_Main_DiviceStatus_BeamExpander";
@@ -2239,6 +2237,7 @@
             this.groupBoxMain_MaterialInformation.PerformLayout();
             this.groupBox_ProcessingData.ResumeLayout(false);
             this.groupBox_FineCam.ResumeLayout(false);
+            this.groupBox_FineCam.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.groupBox_CoarseCam.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
@@ -2300,7 +2299,7 @@
         private BaseLabel baseLabel_AverageOneCycle_Time;
         private System.Windows.Forms.ProgressBar progressBar_TotalRemained_Time;
         private BaseLabel baseLabel_Total_RemainedTime;
-        private BaseLabel baseLabel_TotalRunning_Time;
+        private BaseLabel baseLabel_TotalRemain_Time;
         private System.Windows.Forms.ProgressBar progressBar_OneCycle_Time;
         private BaseLabel baseLabel_CurrentOneCycle_TotalTime;
         private BaseLabel baseLabel_CurrentOneCycle_ElapsedTime;

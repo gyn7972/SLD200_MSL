@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Lifetime;
 using System.Threading.Tasks;
@@ -11,12 +12,12 @@ namespace QMC.Common.VisionPart
 {
     public class QMC_ImageProcessFindAlignResult
     {
-        public List<Circle> Circle { get; set; }
+        public List<Circle> Circles { get; set; }
         public List<double> ScoreCollection { get; set; }
 
         public QMC_ImageProcessFindAlignResult()
         {
-            Circle = new List<Circle>();
+            Circles = new List<Circle>();
             ScoreCollection = new List<double>();
 
         }
@@ -43,7 +44,7 @@ namespace QMC.Common.VisionPart
             int h = bitmap.Height;
             bool m_bFindCircle = false;
 
-            var v=  FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h,
+            var v = FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h,
                 260, 0.05, ref m_bFindCircle, 0, 0, false);
 
             //var v = MatchCoordinates(listMetal, 3);
@@ -218,74 +219,7 @@ namespace QMC.Common.VisionPart
 
 
 
-        public List<RectangleF> FindCicles(QMC_ImageProcessFindAlignRecipe recipe, List<RectangleF> circlesResult, byte[] pixelData, int w, int h)
-        {
-            double defMin = 999999;
-            double def = 0;
-            byte[] HistoImage = HistogramEqualization(pixelData, w, h);
 
-            SaveImage(pixelData, w, h, "pixelData.bmp");
-            SaveImage(HistoImage, w, h, "HistoImage.bmp");
-            List<List<RectangleF>> circlesResults = new List<List<RectangleF>>();
-
-            Parallel.For(0, 16, new ParallelOptions { MaxDegreeOfParallelism = 16 }, (i, state) =>
-            {
-                int iter = i * 3;
-                double dRadius = 0;
-                byte[] bytes1 = new byte[HistoImage.Length];
-                Array.Copy(HistoImage, bytes1, HistoImage.Length);
-                //if (iter % 5 == 0)
-                {
-                    List<RectangleF> localCircles = new List<RectangleF>();
-                    double localDef = 0;
-
-
-                    QMC_ImageProcessFindAlignRecipe localRecipe = new QMC_ImageProcessFindAlignRecipe(recipe.Radius, recipe.Threshold);
-                    localRecipe.Threshold = 50 + iter;
-                    //RansacCircleFitter_Get(bytes1, w, h, localRecipe, localCircles);
-                    //blob(bytes1, w, h, localRecipe, localCircles);
-
-                    // 어두운 부분의 블랍을 찾음
-                    List<List<Point>> blobs = FindDarkBlobs(bytes1, w, h, w, localRecipe.Threshold);
-                    List<Point> outline = GetOutLine(blobs);
-                    if (outline != null)
-                    {
-                        List<PointF> polygons = new List<PointF>();
-                        foreach (var point in outline)
-                        {
-                            polygons.Add(new PointF(point.X, point.Y));
-                        }
-                        FindCircleRule(localRecipe, localCircles, outline, out dRadius);
-
-                        FindCircleFitter(localCircles, polygons, out dRadius);
-
-
-                        lock (circlesResults)
-                        {
-                            circlesResults.Add(localCircles);
-                        }
-                    }
-                }
-            });
-
-            foreach (var circle in circlesResults)
-            {
-                if (IsSameCircle(circle, out def))
-                {
-                    //break;
-                }
-                if (def < defMin)
-                {
-                    defMin = def;
-                    circlesResult.Clear();
-                    circlesResult.AddRange(circle);
-                    if (def < 3)
-                        break;
-                }
-            }
-
-            return circlesResult;
-        }
         public void SaveOutLine(List<PointF> outline, int w, int h, string filename)
         {
             byte[] images = new byte[w * h];
@@ -305,10 +239,10 @@ namespace QMC.Common.VisionPart
             SaveImage(images, w, h, filename);
         }
         public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult,
-            byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, 
+            byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound,
             int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true
             , double miscellaneous_FiducialMarkSocre = 0.7
-            ,bool bSpiralSearch = true)
+            , bool bSpiralSearch = true)
         {
 
             string strFileName = "d:\\Temp\\AlignOrg" + DateTime.Now.Ticks.ToString() + ".bmp";
@@ -322,7 +256,7 @@ namespace QMC.Common.VisionPart
             }
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
-            int nDivideCount = w / radius;
+            int nDivideCount = (int)(w / radius);
             int nStepX = (int)(radius / 2);
             int nStepY = (int)(radius / 2);
             int nDirectionX = 0;
@@ -331,7 +265,7 @@ namespace QMC.Common.VisionPart
             double dRadius = 0;
             float cx = 0;
             float cy = 0;
-            double dErrorRatio = 0.1;
+            double dErrorRatio = 0.2;
             int direction = 0; // 0: 오른쪽, 1: 위, 2: 왼쪽, 3: 아래
             int stepsInCurrentDirection = 1;
             int stepsTaken = 0;
@@ -341,7 +275,7 @@ namespace QMC.Common.VisionPart
                 X = w / 2,
                 Y = h / 2
             };
-            if(bSpiralSearch == false)
+            if (bSpiralSearch == false)
             {
                 nDivideCount = 3;
             }
@@ -371,7 +305,7 @@ namespace QMC.Common.VisionPart
                     {
                         dFirstSpec = 0.5;
                     }
-                    int nMaxCircleFirst = (int)(radius * 3);
+                    int nMaxCircleFirst = (int)(radius * 2);
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
                     if (nMaxCircleFirst > 2000)
@@ -379,10 +313,10 @@ namespace QMC.Common.VisionPart
                         nMaxCircleFirst = 2000;
                     }
                     double dAngleStep = 2;
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/2), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius / 2), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
                     points = polygon;
                     circlesResult.Clear();
-                    FindCircleFitter(circlesResult, points, out dRadius, 5);
+                    FindCircleFitter(circlesResult, points, out dRadius, 5, radius, dSpec);
 
                     if (nCenterX == 0 || nCenterY == 0)
                     {
@@ -402,7 +336,11 @@ namespace QMC.Common.VisionPart
 
                         cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
                         cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
-
+                        dErrorRatio = dSpec * 2;
+                        if (dErrorRatio < 0.2)
+                        {
+                            dErrorRatio = 0.2;
+                        }
                         polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
 
 
@@ -410,9 +348,9 @@ namespace QMC.Common.VisionPart
 
                         circlesResult.Clear();
                         double dRadius2 = 0;
-                        Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2);
+                        Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2, radius, dSpec);
 
-                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.1)
+                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.05)
                         {
                             //허상을 찾아는지 검사 한다.
                             double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
@@ -484,21 +422,21 @@ namespace QMC.Common.VisionPart
             points = polygon;
 
             circlesResult.Clear();
-            Circle resultCircle =  FindCircleFitter(circlesResult, points, out dRadius);
+            Circle resultCircle = FindCircleFitter(circlesResult, points, out dRadius, 4, radius, dSpec);
             QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
-            
+
             double dScore = IsRealCircle(resultCircle, dRadius, points, dSpec);
-            if (dScore > 0.8)
+            if (dScore > miscellaneous_FiducialMarkSocre)
             {
                 bFindCircle = true;
-                result.Circle.Add(resultCircle);
+                result.Circles.Add(resultCircle);
                 result.ScoreCollection.Add(dScore);
             }
             else
             {
                 circlesResult.Clear();
             }
-               
+
             return result;
         }
 
@@ -521,26 +459,25 @@ namespace QMC.Common.VisionPart
             return dScore;
         }
 
-        public List<RectangleF> FindMetalPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound)
+
+
+        public List<Circle> FindGoldPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound, int Threshold = 75, double dScore = 0.7, int radius = 0, double dSpec = 0.1)
         {
             List<RectangleF> circlesResultLocal = new List<RectangleF>();
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
             int nStepX = w / 80;
             int nStepY = h / 80;
-            int nDirectionX = 0;
-            int nDirectionY = 0;
-            bool bFindCircle = false;
-            double dRadius = 0;
-            float cx = 0;
-            float cy = 0;
+
             double dErrorRatio = 0.3;
             List<List<Point>> blobs = new List<List<Point>>();
 
-            List<List<Point>> list = FindBrightBlobs(pixelData, w, h, w, 70); // 영상 밝기 바뀌면 70 이게 쓰레스 홀드 입니다. 이거 변경 해야 됩니다.
-            blobs.AddRange(list.Where(t => t.Count() > 5000 && t.Count() < 25000).ToList());
+            List<List<Point>> list = FindBrightBlobs(pixelData, w, h, w, Threshold); // 영상 밝기 바뀌면 70 이게 쓰레스 홀드 입니다. 이거 변경 해야 됩니다.
+            int MinArea = (int)(radius * radius * Math.PI * (1 - 0.2));
+            int MaxArea = (int)(radius * radius * Math.PI * (1 + 0.2));
+            blobs.AddRange(list.Where(t => t.Count() > MinArea && t.Count() < MaxArea).ToList());
             list.Clear();
-
+            List<Circle> circles = new List<Circle>();
             foreach (List<Point> point in blobs)
             {
                 if (point.Count == 0)
@@ -552,7 +489,7 @@ namespace QMC.Common.VisionPart
 
                 // Width와 Height의 비율 계산
                 float ratio = (float)width / height;
-                float filter = 0.2f;
+                float filter = 0.05f;
                 // 비율이 0.9~1.1 사이인 경우만 처리
                 if (ratio >= 1 - filter && ratio <= 1 + filter)
                 {
@@ -593,7 +530,7 @@ namespace QMC.Common.VisionPart
                 circleFound = false;
 
                 circlesResult.Clear();
-                return circlesResult;
+                return circles;
             }
 
 
@@ -605,7 +542,21 @@ namespace QMC.Common.VisionPart
                 // Center 계산 (모든 Point의 평균)
                 float centerX = (float)point.Average(p => p.X);
                 float centerY = (float)point.Average(p => p.Y);
+                int nTotalCount = point.Count;
+                PointF center = new PointF(centerX, centerY);
+                float Myradius = (float)((medianWidth + medianHeight) / 4);
+                var pts = point.Where(p => GetDistance(p, center) < Myradius * 0.95).ToList();
+                int nInCount = pts.Count();
+                int nOutCount = nTotalCount - nInCount;
+                double dGuessInCount = Math.PI * Myradius * Myradius;
+                double Min = Math.Min(nTotalCount, dGuessInCount);
+                double Max = Math.Max(nTotalCount, dGuessInCount);
 
+                double dMyScore = ((nInCount - nOutCount) / dGuessInCount);
+                if (dMyScore < dScore)
+                    continue;
+                centerX = (float)point.Average(p => p.X);
+                centerY = (float)point.Average(p => p.Y);
                 // medianWidth와 medianHeight를 사용하여 RectangleF 생성
                 RectangleF rectangle = new RectangleF(
                     centerX - (float)medianWidth / 2,
@@ -613,150 +564,255 @@ namespace QMC.Common.VisionPart
                     (float)medianWidth,
                     (float)medianHeight
                 );
-
-                // circlesResult에 추가
-                circlesResult.Add(rectangle);
+                if (radius * (1 - dSpec) < Myradius && Myradius < radius * (1 + dSpec))
+                {
+                    circles.Add(new Circle(centerX, centerY, Myradius));
+                    //FindBestCircle()
+                    // circlesResult에 추가
+                    circlesResult.Add(rectangle);
+                }
             }
-            //foreach (List<Point> point in blobs) 
-            //{
-            //    int x = (int)point.Average(t => t.X);
-            //    int y = (int)point.Average(t => t.Y); 
-            //    //if (bFindCircle)
-            //    //    break;
-            //    //for (int x = 0; x < 20; x++)
-            //    {
 
 
+            return circles;
+        }
+
+        private void Sobel(byte[,] image, byte[] imgForeign, int nWidth, int nHeight, int nStride, int nApertureSize)
+        {
+            //sobel 알고리즘을 구현 한다.
+
+            int[,] m_nSobelX = new int[nApertureSize, nApertureSize];
+            int[,] m_nSobelY = new int[nApertureSize, nApertureSize];
+
+            int nValue = nApertureSize / 2;
+            for (int x = -nValue; x <= nValue; x++)
+            {
+                for (int y = -nValue; y <= nValue; y++)
+                {
+                    m_nSobelX[x + nValue, y + nValue] = x;
+                    m_nSobelY[x + nValue, y + nValue] = y;
+                }
+            }
+
+            int ThreadCount = 5;
+            int nStartY = nValue;
+            int nYIncreament = nHeight / ThreadCount;
+            System.Threading.Tasks.ParallelOptions opt = new System.Threading.Tasks.ParallelOptions();
+            opt.MaxDegreeOfParallelism = ThreadCount;
+            Parallel.Invoke(opt,
+                        () =>
+                        {
+                            Sobel(image, imgForeign, nWidth, nHeight, nStride, nApertureSize, m_nSobelX, m_nSobelY, nValue
+                                , nStartY, nStartY + nYIncreament);
+                        },
+                        () =>
+                        {
+                            Sobel(image, imgForeign, nWidth, nHeight, nStride, nApertureSize, m_nSobelX, m_nSobelY, nValue
+                                , nStartY + nYIncreament * 1, nStartY + nYIncreament * 2);
+                        }, () =>
+                        {
+
+                            Sobel(image, imgForeign, nWidth, nHeight, nStride, nApertureSize, m_nSobelX, m_nSobelY, nValue
+                                , nStartY + nYIncreament * 2, nStartY + nYIncreament * 3);
+                        }, () =>
+                        {
+
+                            Sobel(image, imgForeign, nWidth, nHeight, nStride, nApertureSize, m_nSobelX, m_nSobelY, nValue
+                                , nStartY + nYIncreament * 3, nStartY + nYIncreament * 4);
+                        }, () =>
+                        {
+
+                            Sobel(image, imgForeign, nWidth, nHeight, nStride, nApertureSize, m_nSobelX, m_nSobelY, nValue
+                                , nStartY + nYIncreament * 4, nHeight - nValue);
+                        });
+
+        }
+        private static void Sobel(byte[,] image, byte[] imgForeign, int nWidth, int nHeight, int nStride, int nApertureSize, int[,] m_nSobelX, int[,] m_nSobelY, int nValue
+           , int StartY, int EndY)
+        {
+            for (int y = StartY; y < EndY; y++)
+            {
+                int nStrideY = y * nStride;
+
+                for (int x = nValue; x < nWidth - nValue; x++)
+                {
+                    int myY = y;
+                    int myStrideY = nStrideY;
+                    int nGx = 0;
+                    int nGy = 0;
+                    for (int i = 0; i < nApertureSize; i++)
+                    {
+                        for (int j = 0; j < nApertureSize; j++)
+                        {
+                            nGx += image[x + i - nValue, myY + j - nValue] * m_nSobelX[i, j];
+                            nGy += image[x + i - nValue, myY + j - nValue] * m_nSobelY[i, j];
+                        }
+                    }
+                    int nG = Math.Abs(nGx) + Math.Abs(nGy);
+                    if (nG > 255)
+                    {
+                        nG = 255;
+                    }
+                    imgForeign[x + myStrideY] = (byte)nG;
+                }
+            }
+        }
+        public QMC_ImageProcessFindAlignResult FindGoldPowderForAutoTreshold(List<RectangleF> circlesResult,
+            byte[] pixelData, int w, int h, int radius, double dScore, double dSpec)
+        {
+
+            //List<RectangleF> result = new List<RectangleF>();
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+            List<Circle> BestCircle = new List<Circle>();
+            double dMaxCount = 0;
+            object obj = new object();
+            int nThresholdMax = 0;
+            Parallel.For(1, 20, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, threshold =>
+            {
+                int myThreshold = threshold * 7 + 50;
+                bool bFound = false;
+                var circles = FindGoldPowder(circlesResult, pixelData, w, h, ref bFound, myThreshold, dScore, radius, dSpec);
+                int nCount = 0;
+                foreach (var circle in circles)
+                {
+                    double dMin = Math.Min(circle.Radius, radius);
+                    double dMax = Math.Max(circle.Radius, radius);
+                    if (dMin / dMin > dScore)
+                    {
+                        nCount++;
+                    }
+                }
+                lock (obj)
+                {
+                    if (dMaxCount < nCount)
+                    {
+                        dMaxCount = nCount;
+                        BestCircle = circles;
+                        nThresholdMax = myThreshold;
 
 
-            //        polygon = FindCircleBoundary(pixelData, w, h, x, y, 50, 150, 3, 10);
-            //        //polygon = FindCircleBoundary(pixelData, w, h, 540, 1150, 50, 1000, 1);
-            //        points = polygon;
-            //        circlesResultLocal.Clear();
-            //        FindCircleFitter(circlesResultLocal, points, out dRadius, 5);
+                    }
+                    else if (dMaxCount == nCount)
+                    {
+                        if (nThresholdMax < myThreshold)
+                        {
+                            dMaxCount = nCount;
+                            BestCircle = circles;
+                            nThresholdMax = myThreshold;
+                        }
+                    }
+                }
 
-            //        cx = circlesResultLocal.Count > 0 ? circlesResultLocal[0].X + circlesResultLocal[0].Width / 2 : w / 2;
-            //        cy = circlesResultLocal.Count > 0 ? circlesResultLocal[0].Y + circlesResultLocal[0].Height / 2 : h / 2;
-            //        if (dRadius < 120 && dRadius > 80 && cx > 0 && cx < w
-            //            && cy < h && cy > 0)
-            //        {
+            });
+            circlesResult.Clear();
+            foreach (var circle in BestCircle)
+            {
+                circlesResult.Add(circle.GetBoundery());
+                result.ScoreCollection.Add(circle.Score);
+            }
+            result.Circles.AddRange(BestCircle);
 
-
-            //            cx = circlesResultLocal.Count > 0 ? circlesResultLocal[0].X + circlesResultLocal[0].Width / 2 : w / 2;
-            //            cy = circlesResultLocal.Count > 0 ? circlesResultLocal[0].Y + circlesResultLocal[0].Height / 2 : h / 2;
-
-            //            polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 5);
-
-
-            //            points = polygon;
-
-            //            circlesResultLocal.Clear();
-            //            double dRadius2 = 0;
-            //            FindCircleFitter(circlesResultLocal, points, out dRadius2, 5);
-
-            //            if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.3)
-            //            {
-            //                bFindCircle = true;
-            //                circlesResult.AddRange(circlesResultLocal);
-            //                //break;
-
-            //            }
-
-            //            //return circlesResult;
-            //        }
-            //        nDirectionX++;
-
-            //    }
-            //    nDirectionY++;
-
-
-            //}
-
-
-
-            //if (bFindCircle == false)
-            //{
-
-            //}
-
-
-            //circlesResultLocal.Clear();
-            //circlesResultLocal.AddRange(circlesResult);
-            //circlesResult.Clear();
-            ////circlesResult.Clear();
-            //foreach (var circle in circlesResultLocal)
-            //{
-            //    cx = circle.X + circle.Width / 2;
-            //    cy = circle.Y + circle.Height / 2;
-            //    polygon = FindCircleBoundary(pixelData, w, h, cx, cy, 50, 150, 0.25, 10);
-            //    points = polygon;
-
-            //    FindCircleFitter(circlesResult, points, out dRadius);
-            //}
-
-
-            return circlesResult;
+            return result;
         }
 
 
-        //private List<PointF> FindCircleBoundary(byte[] pixelData, int width, int height, float cx, float cy, int initialRadius = 50, int maxRadius = 1000, double angleStep = 0.11, int step = 10, bool bIsDarkCircleSearch = false)
-        //{
-        //    List<PointF> boundaryPoints = new List<PointF>();
+        public QMC_ImageProcessFindAlignResult FindCircleForFR4(byte[] pixelData, int w, int h, int r, double dSpec, double dScore)
+        {
+            List<RectangleF> circlesResult = new List<RectangleF>();
+            QMC_ImageProcessFindAlignResult Qmcresult = new QMC_ImageProcessFindAlignResult();
+            byte[,] image = new byte[w, h];
+            int nSum = 0;
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    image[x, y] = pixelData[y * w + x];
 
-        //    if (pixelData == null) //pixelData가 null인 경우 프로그램 다운.
-        //        return boundaryPoints;
+                }
+            }
+
+            Sobel(image, pixelData, w, h, w, 3);
+            int[] nHisto = new int[256];
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    nHisto[pixelData[y * w + x]]++;
+                }
+            }
+            int nCount = 0;
+            int nThreshold = 0;
+            int nNeedCount = (int)(r * r * Math.PI * 2);
+            for (int i = 0; i < nHisto.Length; i++)
+            {
+                nCount += nHisto[255 - i];
+                if (nCount > nNeedCount)
+                {
+                    nThreshold = 255 - i;
+                    break;
+                }
+            }
+            IsImageSave = true;
+            SaveImage(pixelData, w, h, "d:\\test\\Sobel.bmp");
+            List<PointF> polygons;
+            IOrderedEnumerable<List<Point>> blobSorted;
+            double dRadius;
+            Circle result;
+            bool bFind = false;
+            while (true)
+            {
+                circlesResult.Clear();
+                FindCircleFR4(pixelData, w, h, r, circlesResult, nThreshold, out polygons, out blobSorted, out dRadius, out result);
+
+                if (r * 0.95 < result.Radius && result.Radius < r * 1.05)
+                {
+                    if (result.Score > dScore)
+                    {
+                        bFind = true;
+                        Qmcresult.Circles.Add(result);
+                        return Qmcresult;
+                    }
+
+                }
+
+                nThreshold += 5;
+                if (nThreshold > 255)
+                    break;
+            }
 
 
-        //    maxRadius = Math.Min(Math.Min(width, height) / 2, maxRadius);
-        //    int pixelAverageCount = 20;
+            //if(polygons.Count > 1000)
+            //{
+            //    FindCircleFitter(circlesResult, polygons, out dRadius,1,r);
+            //}
 
-        //    for (double angle = 0; angle < 360; angle += angleStep)
-        //    {
-        //        double radian = angle * Math.PI / 180;
-        //        double maxDifference = 0;
-        //        double dSin = Math.Sin(radian);
-        //        double dCos = Math.Cos(radian);
-        //        PointF boundaryPoint = new PointF(cx, cy);
+            return Qmcresult;
+        }
 
+        private void FindCircleFR4(byte[] pixelData, int w, int h, int r, List<RectangleF> circlesResult, int nThreshold, out List<PointF> polygons, out IOrderedEnumerable<List<Point>> blobSorted, out double dRadius, out Circle result)
+        {
+            List<List<Point>> blobs = FindBrightBlobs(pixelData, w, h, w, (int)nThreshold);
+            result = new Circle();
+            polygons = new List<PointF>();
+            blobSorted = blobs.OrderByDescending(t => t.Count);
+            int No = 0;
+            dRadius = 0;
+            List<Point> Outline = GetOutLine(blobs);
+            if (Outline != null)
+            {
+                foreach (var v in Outline)
+                {
+                    polygons.Add(new PointF(v.X, v.Y));
+                }
+            }
 
-        //        // 병렬 처리
-        //        object lockObject = new object();
-        //        Parallel.For((int)initialRadius, (int)maxRadius, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, r =>
-        //        {
-        //            float x = cx + (int)(r * dCos);
-        //            float y = cy + (int)(r * dSin);
+            if (polygons.Count > 2 * Math.PI * r / 5)
+            {
+                result = FindCircleFitter(circlesResult, polygons, out dRadius, 3, r, 0.1);
 
-        //            if (x < 0 || x >= width || y < 0 || y >= height)
-        //                return;
+            }
 
-        //            double currentAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, true);
-        //            double nextAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, false);
-
-        //            double difference = 0; 
-
-        //            if(bIsDarkCircleSearch == false)
-        //            {
-        //                difference = (currentAverage - nextAverage) / nextAverage;
-
-        //            }
-        //            else
-        //            {
-        //                difference = (nextAverage - currentAverage) / currentAverage;
-        //            }
-        //                lock (lockObject)
-        //                {
-        //                    if (difference > maxDifference)
-        //                    {
-        //                        maxDifference = difference;
-        //                        boundaryPoint = new PointF(x, y);
-        //                    }
-        //                }
-        //        });
-        //        boundaryPoints.Add(boundaryPoint);
-        //    }
-
-        //    return boundaryPoints;
-        //}
+        }
 
         private List<PointF> FindCircleBoundary(byte[] pixelData, int width, int height, float cx, float cy, int initialRadius = 50, int maxRadius = 1000, double angleStep = 0.11, int step = 10, bool bIsDarkCircleSearch = false)
         {
@@ -799,9 +855,9 @@ namespace QMC.Common.VisionPart
                     //if (bIsDarkCircleSearch == false)
                     {
                         differenceW = (currentAverage - nextAverage) / nextAverage;
-                        
+
                     }
-                   // else
+                    // else
                     {
                         differenceD = (nextAverage - currentAverage) / currentAverage;
                     }
@@ -823,16 +879,15 @@ namespace QMC.Common.VisionPart
                 });
                 //double dW = GetDistance(boundaryPointW, new PointF(cx, cy));
                 //double dD = GetDistance(boundaryPointD, new PointF(cx, cy));
-                if(bIsDarkCircleSearch)
+                if (bIsDarkCircleSearch)
                 {
                     boundaryPoints.Add(boundaryPointD);
                 }
                 else
                 {
                     boundaryPoints.Add(boundaryPointW);
-                   
+
                 }
-               
             }
 
             return boundaryPoints;
@@ -929,22 +984,35 @@ namespace QMC.Common.VisionPart
         }
         private void SaveImage(byte[] image, int w, int h, string fileName)
         {
-            if(IsImageSave == false)
+            if (IsImageSave == false)
             {
                 return;
             }
-            Bitmap bitmap = new Bitmap(w, h, PixelFormat.Format8bppIndexed);
-            BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
-            //비트맵 8ibt Gray 파레트 추가
-            ColorPalette grayPalette = bitmap.Palette;
-            for (int i = 0; i < 256; i++)
+            try
             {
-                grayPalette.Entries[i] = Color.FromArgb(i, i, i);
+                // 디렉토리 없으면 생성
+                string dir = Path.GetDirectoryName(fileName);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                Bitmap bitmap = new Bitmap(w, h, PixelFormat.Format8bppIndexed);
+                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+                //비트맵 8ibt Gray 파레트 추가
+                ColorPalette grayPalette = bitmap.Palette;
+                for (int i = 0; i < 256; i++)
+                {
+                    grayPalette.Entries[i] = Color.FromArgb(i, i, i);
+                }
+                bitmap.Palette = grayPalette;
+                System.Runtime.InteropServices.Marshal.Copy(image, 0, bitmapData.Scan0, image.Length);
+                bitmap.UnlockBits(bitmapData);
+                bitmap.Save(fileName);
             }
-            bitmap.Palette = grayPalette;
-            System.Runtime.InteropServices.Marshal.Copy(image, 0, bitmapData.Scan0, image.Length);
-            bitmap.UnlockBits(bitmapData);
-            bitmap.Save(fileName);
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
         }
         int m_nFarField = 10;
         double dCutoffFrequence = 0.5;
@@ -1240,53 +1308,6 @@ namespace QMC.Common.VisionPart
             circles.Add(circle);
         }
 
-        private byte[] Sobel(byte[] pixelData, int width, int height)
-        {
-            byte[] result = new byte[pixelData.Length];
-            // 소벨 필터를 10 x 10으로 만들어줘
-
-            int[,] sobelX = new int[3, 3]
-                {
-                { -1, 0, 1 },
-                { -2, 0, 2 },
-                { -1, 0, 1 }
-            };
-
-            int[,] sobelY = new int[3, 3]
-            {
-                { 1, 2, 1 },
-                { 0, 0, 0 },
-                { -1, -2, -1 }
-            };
-            int filterSize = 3;
-
-            int stride = width;
-            for (int y = filterSize / 2; y < height - filterSize / 2; y++)
-            {
-                for (int x = filterSize / 2; x < width - filterSize / 2; x++)
-                {
-                    int index = y * stride + x;
-                    int sumX = 0;
-                    int sumY = 0;
-                    for (int j = -filterSize / 2; j <= filterSize / 2; j++)
-                    {
-                        for (int i = -filterSize / 2; i <= filterSize / 2; i++)
-                        {
-                            int pixelValue = pixelData[(y + j) * stride + (x + i)];
-                            sumX += pixelValue * sobelX[j + filterSize / 2, i + filterSize / 2];
-                            sumY += pixelValue * sobelY[j + filterSize / 2, i + filterSize / 2];
-                        }
-                    }
-                    int sum = Math.Abs(sumX) + Math.Abs(sumY);
-                    result[index] = (byte)Math.Min(sum, 255);
-                }
-            }
-
-
-
-            return result;
-        }
-
         private void FindCenter(List<Point> top, List<Point> bottom, List<Point> left, List<Point> right, out double dCenterX, out double dCenterY)
         {
             List<List<Point>> allCenters = new List<List<Point>> { top, bottom, left, right };
@@ -1348,55 +1369,19 @@ namespace QMC.Common.VisionPart
         }
 
 
-        private void RansacCircleFitter_Get(byte[] pixelData, int w, int h, QMC_ImageProcessFindAlignRecipe recipe, List<RectangleF> circles)
-        {
-
-            // 어두운 부분의 블랍을 찾음
-            List<List<Point>> blobs = FindDarkBlobs(pixelData, w, h, w, recipe.Threshold);
-            FindCircleFitter(recipe, circles, blobs);
-        }
-
-        private void FindCircleFitter(QMC_ImageProcessFindAlignRecipe recipe, List<RectangleF> circles, List<List<Point>> blobs)
-        {
-            // 가장 큰 블랍을 선택
-
-            List<Point> largestBlob = null;
-            int maxBlobSize = 0;
-
-            foreach (var blob in blobs)
-            {
-                if (blob.Count > maxBlobSize)
-                {
-                    maxBlobSize = blob.Count;
-                    largestBlob = blob;
-                }
-            }
-
-            if (largestBlob != null)
-            {
-                List<Point> outline = GetBlobOutline(largestBlob);
-                List<PointF> points = new List<PointF>();
-                foreach (var point in outline)
-                {
-                    //if (circlePoints1.IsPointInRange(point))
-                    {
-                        points.Add(new PointF(point.X, point.Y));
-                    }
-                }
-                double radius = 0;
-                FindCircleFitter(circles, points, out radius);
-            }
-        }
 
 
-        private static Circle FindCircleFitter(List<RectangleF> circles, List<PointF> points, out double radius, double threshold = 10)
+
+
+        private static Circle FindCircleFitter(List<RectangleF> circles, List<PointF> points, out double radius, double threshold = 10, int r = 0, double dSpec = 0.05)
         {
             int iter = points.Count;
             if (iter < 1000)
             {
                 iter = 1000;
             }
-            Circle fittedCircle = RansacCircleFitter.FitCircle(points, iter, threshold);
+
+            Circle fittedCircle = RansacCircleFitter.FitCircle(points, iter, threshold, r, dSpec);
             radius = fittedCircle.Radius;
             //center 로 RADIUS 만큼의 RectangleF을 구함
             RectangleF circle = new RectangleF((float)(fittedCircle.CenterX - radius), (float)(fittedCircle.CenterY - radius), (float)(2 * radius), (float)(2 * radius));

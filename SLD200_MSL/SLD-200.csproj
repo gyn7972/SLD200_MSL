@@ -335,6 +335,12 @@
     <Compile Include="NewStyleForm\FormNew_AlarmLog.Designer.cs">
       <DependentUpon>FormNew_AlarmLog.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\FormNew_CalFilePopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_CalFilePopup.Designer.cs">
+      <DependentUpon>FormNew_CalFilePopup.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStyleForm\FormNew_JogPopup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -685,6 +691,12 @@
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.Designer.cs">
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_GoldPowder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_GoldPowder.Designer.cs">
+      <DependentUpon>FormNewSub_Recipe_GoldPowder.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_Vision.cs">
       <SubType>UserControl</SubType>
@@ -1395,6 +1407,9 @@
     <EmbeddedResource Include="NewStyleForm\FormNew_AlarmLog.resx">
       <DependentUpon>FormNew_AlarmLog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\FormNew_CalFilePopup.resx">
+      <DependentUpon>FormNew_CalFilePopup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_JogPopup.resx">
       <DependentUpon>FormNew_JogPopup.cs</DependentUpon>
     </EmbeddedResource>
@@ -1517,6 +1532,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.resx">
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_GoldPowder.resx">
+      <DependentUpon>FormNewSub_Recipe_GoldPowder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_Vision.resx">
       <DependentUpon>FormNewSub_Recipe_Vision.cs</DependentUpon>

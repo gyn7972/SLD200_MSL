@@ -4916,6 +4916,16 @@ namespace SLD200_MSL
                 this.baseToggleButtonDivision.UpdateToggleStatus(false);
             }
         }
+
+        internal void StopTimer()
+        {
+            timerJogControl.Stop();
+        }
+
+        internal void StartTimer()
+        {
+            timerJogControl.Start();
+        }
         #endregion
     }
 }

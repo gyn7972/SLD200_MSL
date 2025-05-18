@@ -89,6 +89,9 @@ namespace QMC.Common
                 Saver.Close();
             }
 
+            // 4. 마지막 알람 메세지를 Title bar 에 보이게
+
+
             //m_Alarms.Add(alarm);
             //if (PostAlarm != null)
             //{

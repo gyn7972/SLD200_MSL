@@ -502,6 +502,9 @@ namespace QMC.Common.Modules
 
             Complete                                                        //  완료
         }
+        private StackerModulePutdownWaitingPos_Step m_prevStacker0PutdownStep = StackerModulePutdownWaitingPos_Step.None;
+        private StackerModulePutdownWaitingPos_Step m_prevStacker1PutdownStep = StackerModulePutdownWaitingPos_Step.None;
+
         #endregion
 
 
@@ -720,6 +723,8 @@ namespace QMC.Common.Modules
 
             Complete                                                        //  완료
         }
+        private Unloader_Transfer_Step m_prevUnloaderTransferStep = Unloader_Transfer_Step.None;
+
         #endregion
 
 
@@ -1272,6 +1277,8 @@ namespace QMC.Common.Modules
                 m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
             }
 
+
+            StackerModulePutdownWaitingPos_Step currentStep = (StackerModulePutdownWaitingPos_Step)m_nStacker0_ModulePutdownWaitingPos_Step;
             switch (m_nStacker0_ModulePutdownWaitingPos_Step)
             {
                 case (int)StackerModulePutdownWaitingPos_Step.Start:
@@ -1716,6 +1723,13 @@ namespace QMC.Common.Modules
                     m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
                     break;
             }
+
+            if (currentStep != m_prevStacker0PutdownStep)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Stacker0Putdown", $"Step: {currentStep}");
+                m_prevStacker0PutdownStep = currentStep;
+            }
+
             return 0;
         }
 
@@ -1954,7 +1968,7 @@ namespace QMC.Common.Modules
                 m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
             }
 
-
+            StackerModulePutdownWaitingPos_Step currentStep = (StackerModulePutdownWaitingPos_Step)m_nStacker1_ModulePutdownWaitingPos_Step;
             switch (m_nStacker1_ModulePutdownWaitingPos_Step)
             {
                 case (int)StackerModulePutdownWaitingPos_Step.Start:
@@ -2504,6 +2518,13 @@ namespace QMC.Common.Modules
                     m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
                     break;
             }
+
+            if (currentStep != m_prevStacker1PutdownStep)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Stacker1Putdown", $"Step: {currentStep}");
+                m_prevStacker1PutdownStep = currentStep;
+            }
+
             return 0;
         }
 
@@ -2711,6 +2732,7 @@ namespace QMC.Common.Modules
                 }
             }
 
+            Unloader_Transfer_Step currentStep = (Unloader_Transfer_Step)m_nUnloader_Transfer_Step;
             switch (m_nUnloader_Transfer_Step)
             {
                 case (int)Unloader_Transfer_Step.Start:
@@ -4742,6 +4764,12 @@ namespace QMC.Common.Modules
                     break;
             }
 
+            if (currentStep != m_prevUnloaderTransferStep)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "UnloaderTransfer", $"Step: {currentStep}");
+                m_prevUnloaderTransferStep = currentStep;
+            }
+
             return 0;
         }
 
@@ -6735,15 +6763,18 @@ namespace QMC.Common.Modules
         public double GetEncUnloaderPos_Motor(Unloader.nAxis nAxis)
         {
             double dEncPos = -999.999;
-            try
+            //lock (this)
             {
-                dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+                try
+                {
+                    dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+                return dEncPos;
             }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-            }
-            return dEncPos;
         }
         public void StoptoUnloader_Motor(Unloader.nAxis nAxis)
         {
@@ -7273,43 +7304,41 @@ namespace QMC.Common.Modules
                 switch (nAxis)
                 {
                     case Unloader.nAxis.Z0:
-                        if (!IsInterlock_UnloaderPortR_Enabled()) return bRtn = false;
+                        if (!IsInterlock_UnloaderPortR_Enabled() || !IsUnloaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Unloader.nAxis.Z1:
-                        if (!IsInterlock_UnloaderPortL_Enabled()) return bRtn = false;
+                        if (!IsInterlock_UnloaderPortL_Enabled() || !IsUnloaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Unloader.nAxis.TR_Z:
-                        if (!IsInterlock_UnloaderTransferZ_Enabled()) return bRtn = false;
+                        if (!IsInterlock_UnloaderTransferZ_Enabled() || !IsUnloaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Unloader.nAxis.TR_X:
-                        if (!IsInterlock_UnloaderTransferX_Enabled()) return bRtn = false;
+                        if (!IsInterlock_UnloaderTransferX_Enabled() || !IsUnloaderMoving(nAxis)) return bRtn = false;
                         break;
                 }
 
+                //if (IsUnloader_Positions((Unloader.nAxis)nAxis, dPos))
                 {
-                    if (IsUnloader_Positions((Unloader.nAxis)nAxis, dPos) == false)
+                    switch (typeSpeed)
                     {
-                        switch (typeSpeed)
-                        {
-                            case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
-                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
-                                break;
-                            case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
-                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
-                                break;
-                            default:
-                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
-                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
-                                break;
-                        }
-
-                        MC_Func.MC_MovePosition((int)nAxis, dPos, dVelocity, dAcc, dAcc);
+                        case Type_Motor_Speed.Fine:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                            break;
+                        case Type_Motor_Speed.Coarse:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                            break;
+                        default:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                            break;
                     }
 
-                    bRtn = true;
+                    MC_Func.MC_MovePosition((int)nAxis, dPos, dVelocity, dAcc, dAcc);
                 }
+
+                bRtn = true;
                 //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
                 //Log.Write("SLD-200", Equipment.User_Name, strTemp);
             }
@@ -7320,18 +7349,7 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-        public bool IsUnloader_Positions(Unloader.nAxis nAxis, double dPos)
-        {
-            bool bRtn = false;
-
-            if (MC_Func.MC_GetDone((int)nAxis) &&
-                MC_Func.MC_PosTolerance((int)nAxis, dPos))
-            {
-                bRtn = true;
-            }
-
-            return bRtn;
-        }
+        
         public bool MovetoUnloader_Jog_Positions(Unloader.nAxis nAxis, int nDirection, Type_Motor_Speed typeSpeed)
         {
             bool bRtn = false;
@@ -7379,16 +7397,16 @@ namespace QMC.Common.Modules
                 switch (nAxis)
                 {
                     case Unloader.nAxis.Z0:
-                        if (!IsInterlock_UnloaderPortR_Enabled()) return bRtn = false;
+                        if (!IsInterlock_UnloaderPortR_Enabled() || !IsUnloaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Unloader.nAxis.Z1:
-                        if (!IsInterlock_UnloaderPortL_Enabled()) return bRtn = false;
+                        if (!IsInterlock_UnloaderPortL_Enabled() || !IsUnloaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Unloader.nAxis.TR_Z:
-                        if (!IsInterlock_UnloaderTransferZ_Enabled()) return bRtn = false;
+                        if (!IsInterlock_UnloaderTransferZ_Enabled() || !IsUnloaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Unloader.nAxis.TR_X:
-                        if (!IsInterlock_UnloaderTransferX_Enabled()) return bRtn = false;
+                        if (!IsInterlock_UnloaderTransferX_Enabled() || !IsUnloaderMoving(nAxis)) return bRtn = false;
                         break;
                 }
 
@@ -7422,43 +7440,59 @@ namespace QMC.Common.Modules
             return bRtn;
         }
 
+        public bool IsUnloaderMoving(Unloader.nAxis nAxis)
+        {
+            // signal 정확하게 파악하고 맞춰보자.
+            bool bRtn = false;
+            bool bDone = MC_Func.MC_GetDone((int)nAxis);
+            bool bInposition = MC_Func.MC_GetInposition((int)nAxis);
+            if (bDone || bInposition)
+            {
+                //true: 구동 안함.
+                Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
+                return bRtn = true;
+            }
+
+            //false: 구동 중, 
+            return bRtn;
+        }
+        public bool IsUnloader_Positions(Unloader.nAxis nAxis, double dPos)
+        {
+            bool bRtn = false;
+            bool bDone = MC_Func.MC_GetDone((int)nAxis);
+            bool bInposition = MC_Func.MC_GetInposition((int)nAxis);
+            bool bPosTolerance = MC_Func.MC_PosTolerance((int)nAxis, dPos);
+            
+            if (bDone && bInposition && bPosTolerance)
+            {
+                //true: 구동 안함.
+                Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
+                return bRtn = true;
+            }
+            //false: 구동 중, 
+            return bRtn;
+        }
         public Task<bool> WaitUntilUnloaderInPositionAsync(Unloader.nAxis axis, double targetPos, int timeoutMs = 20000)
         {
             return Task.Run(() =>
             {
+                Thread.Sleep(100);  //처음 동작 후 바로 확인 할 수도 있기 때문에 Sleep 좀 주자.
                 int wait = 0;
                 const int interval = 5;
-
                 while (wait < timeoutMs)
                 {
                     Thread.Sleep(interval);
-
-                    if (MC_Func.MC_GetDone((int)axis) &&
-                        MC_Func.MC_PosTolerance((int)axis, targetPos))
+                    if (IsUnloader_Positions(axis, targetPos))
                     {
+                        Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
                         return true;
                     }
                     wait += interval;
                 }
-
                 Log.Write("Timeout", $"[Unloader] Axis {axis} timeout at {timeoutMs}ms");
                 return false;
             });
         }
 
-        public bool IsUnloaderMoving(Unloader.nAxis axis)
-        {
-            // signal 정확하게 파악하고 맞춰보자.
-            bool bRtn = false;
-            bool bDone = MC_Func.MC_GetDone((int)axis);
-            bool bInposition = MC_Func.MC_GetInposition((int)axis);
-            if (!bDone || !bInposition)
-            {
-                return bRtn = true;
-            }
-
-            //false: 구동 중, true: 구동 안함.
-            return bRtn = false;
-        }
     }
 }

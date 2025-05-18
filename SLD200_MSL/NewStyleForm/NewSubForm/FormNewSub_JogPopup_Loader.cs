@@ -34,6 +34,8 @@ namespace SLD200.NewStyleForm.NewSubForm
         public FormNewSub_JogPopup_Loader(FormNew_JogPopup parent)
         {
             InitializeComponent();
+            this.AutoScaleMode = AutoScaleMode.None;
+
             m_Parent = parent;
             this.Load += FormNewSub_JogPopup_Loader_Load; // 여기서 Load 이벤트 연결
 
@@ -46,10 +48,10 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
 
             //Size 축소 / 확대 안되게 하기 위한 코드.
-            this.AutoScaleMode = AutoScaleMode.None;
-            this.DoubleBuffered = true;
-            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            this.UpdateStyles();
+            //this.AutoScaleMode = AutoScaleMode.None;
+            //this.DoubleBuffered = true;
+            //this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            //this.UpdateStyles();
 
             
 
@@ -144,7 +146,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 { Loader.nAxis.Z0, label_JogPopup_EncPosition_LD_Z0 },
                 { Loader.nAxis.Z1, label_JogPopup_EncPosition_LD_Z1 },
                 { Loader.nAxis.TR_X, label_JogPopup_EncPosition_LD_TRX },
-                { Loader.nAxis.TR_Z, label_JogPopup_EncPosition_LD_TRX },
+                { Loader.nAxis.TR_Z, label_JogPopup_EncPosition_LD_TRZ },
                 { Loader.nAxis.ALN_X, label_JogPopup_EncPosition_LD_ALNX },
                 { Loader.nAxis.ALN_Y, label_JogPopup_EncPosition_LD_ALNY },
             };
@@ -163,7 +165,26 @@ namespace SLD200.NewStyleForm.NewSubForm
             foreach (var pair in loaderAxisLabelMap)
             {
                 double pos = loader.GetEncLoaderPos_Motor(pair.Key);
-                pair.Value.Text = FormatPos(pos);
+
+                SetValue(pair.Value, FormatPos(pos));
+            }
+        }
+
+        void SetValue(Label control, string text, bool isVisible = true)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetValue(control, text, isVisible);
+                }));
+
+            }
+            else
+            {
+                control.Text = text;
+                control.Visible = isVisible;
             }
         }
     }
