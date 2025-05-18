@@ -10,6 +10,16 @@ namespace QMC.Common.Global
 {
     public class HoleAlignHelper
     {
+        public class HoleDeviation
+        {
+            public AlignPoint Nominal { get; set; }     // 도면 기준
+            public AlignPoint Detected { get; set; }    // Vision 검출
+            public double OffsetX => Detected.X - Nominal.X;
+            public double OffsetY => Detected.Y - Nominal.Y;
+            public double Distance => Math.Sqrt(OffsetX * OffsetX + OffsetY * OffsetY);
+        }
+
+
         public class AlignPoint
         {
             public float X;
@@ -31,7 +41,13 @@ namespace QMC.Common.Global
             }
         }
 
-        public static Dictionary<int, AlignPoint> CalculateAlignmentPoints(
+        public class AlignResult
+        {
+            public Dictionary<int, AlignPoint> CornerPoints { get; set; } = new Dictionary<int, AlignPoint>();
+            public List<AlignPoint> AllPoints { get; set; } = new List<AlignPoint>();
+        }
+
+        public static AlignResult CalculateAlignmentPoints(
                     int nSocketNum,
                     stDividedRegion_GroupData[] stDividedRegion_GroupData,
                     int sampleCount = 20)
@@ -85,15 +101,18 @@ namespace QMC.Common.Global
                 }
             }
 
-            return GetFourCornerAlignmentCenters(allPoints, sampleCount);
+            return GetFourCornerAlignmentCentersWithAll(allPoints, sampleCount);
         }
 
-        public static Dictionary<int, AlignPoint> GetFourCornerAlignmentCenters(List<AlignPoint> allPoints, int sampleCount = 20)
+        public static AlignResult GetFourCornerAlignmentCentersWithAll(List<AlignPoint> allPoints, int sampleCount = 20)
         {
-            Dictionary<int, AlignPoint> result = new Dictionary<int, AlignPoint>();
+            AlignResult result = new AlignResult();
+            var cornerPoints = result.CornerPoints;
 
             if (allPoints == null || allPoints.Count == 0)
                 return result;
+
+            result.AllPoints = allPoints;  // 전체 데이터 저장
 
             float centerX = allPoints.Average(p => p.X);
             float centerY = allPoints.Average(p => p.Y);
@@ -117,13 +136,48 @@ namespace QMC.Common.Global
                 );
             }
 
-            // 인덱스 매핑
-            result[0] = GetAverage(bottomLeft);   // BL
-            result[1] = GetAverage(topLeft);      // TL
-            result[2] = GetAverage(topRight);     // TR
-            result[3] = GetAverage(bottomRight);  // BR
+            cornerPoints[0] = GetAverage(bottomLeft);   // BL
+            cornerPoints[1] = GetAverage(topLeft);      // TL
+            cornerPoints[2] = GetAverage(topRight);     // TR
+            cornerPoints[3] = GetAverage(bottomRight);  // BR
+            cornerPoints[4] = GetAverage(allPoints);    // 전체 평균
 
             return result;
+        }
+
+        public static List<HoleDeviation> MatchClosestHoles(List<AlignPoint> nominalHoles, List<AlignPoint> detectedHoles)
+        {
+            List<HoleDeviation> matched = new List<HoleDeviation>();
+            List<AlignPoint> remainingDetected = new List<AlignPoint>(detectedHoles);
+
+            foreach (var nominal in nominalHoles)
+            {
+                if (remainingDetected.Count == 0)
+                    break;
+
+                // 가장 가까운 홀을 찾음
+                var closest = remainingDetected
+                    .OrderBy(d => GetDistance(nominal, d))
+                    .First();
+
+                matched.Add(new HoleDeviation
+                {
+                    Nominal = nominal,
+                    Detected = closest
+                });
+
+                // 중복 매칭 방지
+                remainingDetected.Remove(closest);
+            }
+
+            return matched;
+        }
+
+        private static double GetDistance(AlignPoint a, AlignPoint b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            return Math.Sqrt(dx * dx + dy * dy);
         }
     }
 }
