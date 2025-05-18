@@ -63,9 +63,9 @@ namespace QMC.Common
             Socket,
             GoldPowder,
 
-            Thruhole,
-            Outline,
-            Marking,
+            //Thruhole,
+            //Outline,
+            //Marking,
         }
 
         #endregion
