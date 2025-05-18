@@ -102,7 +102,6 @@ namespace SLD200_MSL
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.UpdateStyles();
-
             //this.Load += FormNew_Main_Load;
 
             ModuleCollection m_collectionModules;
@@ -167,7 +166,7 @@ namespace SLD200_MSL
             Equipment.SetEqpSiriusViewer(new SpiralLab.Sirius.SiriusViewerForm());
             Equipment.SetEqpSiriusViewerOrg( new SpiralLab.Sirius.SiriusViewerForm());
 
-            //  Fiducial Align Data 를 보여주는 ListView 설정
+            // Fiducial Align Data 를 보여주는 ListView 설정
             listView_Main_FiducialAlignData.View = View.Details;
             listView_Main_FiducialAlignData.GridLines = true;         //  구분선 표시
             listView_Main_FiducialAlignData.FullRowSelect = true;     //  한줄씩 선택 설정
@@ -218,13 +217,6 @@ namespace SLD200_MSL
             InitializeDeviceStatusBindings();
             InitAxisLabelMap();
 
-
-            ////  Main Status 타이머
-            //timer_Main_Status = new System.Windows.Forms.Timer();
-            //timer_Main_Status.Interval = 100;
-            //timer_Main_Status.Tick += new System.EventHandler(Timer_MainStatus_Func);
-            //timer_Main_Status.Enabled = true;
-
             Task.Factory.StartNew(() => 
             {
                 while(true)
@@ -237,10 +229,11 @@ namespace SLD200_MSL
                     Timer_MainStatus_Func();
                 }
             });
+
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
             Equipment.CycleTimer_LaserDrilling.LoadFromIni("LaserDrilling", strPath);
 
-            if(Machine_LaserType_CO2)
+            if (Machine_LaserType_CO2)
             {
                 baseLabel_Main_Divice_Status_PowermeterBds.Visible = false;
                 baseLabel_Main_Divice_Status_PowermeterBds.Enabled = false;
@@ -255,9 +248,10 @@ namespace SLD200_MSL
                 pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
             }
             this.FormClosing += FormNew_Main_FormClosing;
-            
-                //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
-            Comm_Init();
+
+            //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
+            if (workStage.m_bHomeOK)
+                Comm_Init();
 
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
         }
@@ -1035,8 +1029,6 @@ namespace SLD200_MSL
                 {
                     Log.Write(ex);
                 }
-
-
                 try
                 {
                     if (this.IsHandleCreated && !this.IsDisposed)
@@ -1127,9 +1119,9 @@ namespace SLD200_MSL
                 m_bNeedAutoRunStop = true;
             }
 
-            //UpdateInitStatusFromComm();
+            if (workStage.m_bHomeOK)
+                UpdateInitStatusFromComm();
 
-            
         }
 
         // -----------------------
@@ -1427,6 +1419,9 @@ namespace SLD200_MSL
                 //  이것저것 다 리셋 - 끝
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 ///
+
+                //통신 초기화
+                Comm_Init();
 
                 workStage.m_bHomeOK = false;
                 m_bHomeProgress_Show = true;
@@ -3428,6 +3423,11 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            //  테스트용 코드
+            //workStage.m_LaserDrillingWork_Start = true;
+            workStage.m_ProductAlign_Start = true;
+            workStage.m_nSocketAlign_MainStep = 1;
+            return;
             //#region Marker Test (load from sirius file)
             //var dlg = new OpenFileDialog();
             //dlg.Filter = "sirius data files (*.sirius)|*.sirius|dxf cad files (*.dxf)|*.dxf|All Files (*.*)|*.*";
@@ -3855,7 +3855,6 @@ namespace SLD200_MSL
                 int oneCycleProgress = (int)(oneCycle.TotalSeconds / goalOneCycleSec * 100);
                 SetValue(progressBar_OneCycle_Time, Math.Min(progressBar_OneCycle_Time.Maximum, Math.Max(0, oneCycleProgress)));
                 
-
                 // ---- Total 누적 시간 표시 ---- -> 남은 시간 계산 필요.
                 SetValue(baseLabel_Total_RemainedTime, totalElapsed.ToString(@"hh\:mm\:ss"));
                 int totalProgress = (int)(totalElapsed.TotalSeconds / goalTotalSec * 100);

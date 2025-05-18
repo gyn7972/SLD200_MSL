@@ -47,7 +47,6 @@ namespace SLD200_MSL
         {
             InitializeComponent();
 
-
             // 현재 디렉터리 가져오기
             var currentDirectory = System.Environment.CurrentDirectory;
 
@@ -63,16 +62,17 @@ namespace SLD200_MSL
                 m_path = currentDirectory; // 기본값으로 현재 디렉터리 경로 사용
             }
 
+            Alarms = AlarmManager.Instance.Alarms;
 
             this.StartPosition = FormStartPosition.CenterScreen;
-
             this.VisibleChanged += FormNew_Alarm_VisibleChanged;
         }
 
         private void FormNew_Alarm_Load(object sender, EventArgs e)
         {
-            InitDataGridViewColumn();            
+            InitDataGridViewColumn();
 
+            Alarms = AlarmManager.Instance.Alarms;
             if (Alarms != null && Alarms.Count > 0)
             {
                 baseDataGridViewAlarm.DataSource = null;
@@ -139,6 +139,7 @@ namespace SLD200_MSL
 
         private void ButtonComfirm_Click(object sender, EventArgs e)
         {
+
             if (Alarms != null && Alarms.Count > 0)
             {
                 if (baseDataGridViewAlarm.SelectedCells != null)

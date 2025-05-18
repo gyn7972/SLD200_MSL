@@ -30,7 +30,8 @@ namespace QMC.Common
             bool bRet = false;
             try
             {
-                string strConnection = "SERVER=" + Server + ";DATABASE=" + Database + ";UID=" + UID + ";PASSWORD=" + Password;
+                string strConnection = "Data Source=LPM-100\\SQLEXPRESS;Initial Catalog=SMT_INLINE;User ID=qmc1;Password=q1234!;TrustServerCertificate=True";
+                //string strConnection = "SERVER=" + Server + ";DATABASE=" + Database + ";UID=" + UID + ";PASSWORD=" + Password;
                 m_sqlConnection.ConnectionString = strConnection;
                 m_sqlConnection.Open();
                 bRet = true;
