@@ -35160,14 +35160,13 @@ namespace QMC.Common.Modules
             string m_strTemp;
             bool success = true;
 
-            SpiralLab.Sirius.Text markingText = new SpiralLab.Sirius.Text();
+            //SpiralLab.Sirius.Text markingText = new SpiralLab.Sirius.Text();
             SpiralLab.Sirius.SiriusText markingSiriusText = new SpiralLab.Sirius.SiriusText();
             SpiralLab.Sirius.Barcode1D markingBarcode1D = new SpiralLab.Sirius.Barcode1D();
             SpiralLab.Sirius.BarcodeDataMatrix markingBarcodeDataMatrix = new SpiralLab.Sirius.BarcodeDataMatrix();
             SpiralLab.Sirius.BarcodeDataMatrix2 markingBarcodeDataMatrix2 = new SpiralLab.Sirius.BarcodeDataMatrix2();
             SpiralLab.Sirius.BarcodeQR markingBarcodeQR = new SpiralLab.Sirius.BarcodeQR();
             SpiralLab.Sirius.BarcodeQR2 markingBarcodeQR2 = new SpiralLab.Sirius.BarcodeQR2();
-
 
             //  Marking 가공 파라미터 세팅
             bool m_bScannerLib_Success = true;
@@ -35273,9 +35272,10 @@ namespace QMC.Common.Modules
 
             m_bScannerLib_Success &= rtc.CtlSpeed((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerJumpSpeed, (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerDrillingSpeed);
 
+
             var markerArg = new MarkerArgDefault()
             {
-                Document = null,
+                Document = Equipment.GetEqpSiriusViewerDocument(),
                 Rtc = rtc,
                 Laser = laser,
                 IsEnablePens = false,       //  Marking Layer 에서 세팅한 가공 파라미터를 사용하기 위해서 false 로 설정. (true : 내부에서 생성된 Pen 의 Default 파라미터로 가공)
@@ -35287,17 +35287,28 @@ namespace QMC.Common.Modules
                 case EType.Text:
                     Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, TrueType Text 가공 Start");
 
-                    markingText = new SpiralLab.Sirius.Text(m_strEntityData);
+                    SpiralLab.Sirius.Text markingText = new SpiralLab.Sirius.Text(m_strEntityData);
+                    //markingText = new SpiralLab.Sirius.Text(m_strEntityData);
 
+                    markingText.IsMarkerable = true;
                     markingText.IsHatchable = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use;
                     markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
 
                     markingText.Width = (float)m_nEntityWidth;
                     markingText.CapHeight = (float)m_nEntityHeight;
                     markingText.Rotate((float)(90.0 + m_dRotateAngle));
+                    //markingText.Location = new Vector2((markingText.BoundRect.Width / (float)2.0), -(markingText.BoundRect.Height / (float)2.0));
                     markingText.Location = new Vector2((markingText.BoundRect.Width / (float)2.0), -(markingText.BoundRect.Height / (float)2.0));
+                    
+                    var markerArg1 = new MarkerArgDefault()
+                    {
+                        Document = Equipment.GetEqpSiriusViewerDocument(),
+                        Rtc = rtc,
+                        Laser = laser,
+                        IsEnablePens = false,       //  Marking Layer 에서 세팅한 가공 파라미터를 사용하기 위해서 false 로 설정. (true : 내부에서 생성된 Pen 의 Default 파라미터로 가공)
+                    };
 
-                    m_bScannerLib_Success &= markingText.Mark(markerArg);
+                    m_bScannerLib_Success &= markingText.Mark(markerArg1);
                     break;
 
                 case EType.SiriusText:

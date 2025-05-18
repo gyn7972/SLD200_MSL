@@ -1756,9 +1756,13 @@ namespace QMC.Common.Hmi
                                         {
                                             for (int i = 0; i < resultOverlays.Count; i++)
                                             {
+                                                lock(bufferedGrphics)
+                                                {
+                                                    if (resultOverlays[i].Visible == true)
+                                                        resultOverlays[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
 
-                                                if (resultOverlays[i].Visible == true)
-                                                    resultOverlays[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
+                                                }
+
                                             }
                                         }
                                        
