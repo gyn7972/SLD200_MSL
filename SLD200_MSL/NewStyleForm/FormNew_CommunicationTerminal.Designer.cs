@@ -44,6 +44,9 @@ namespace SLD200_MSL
             this.button_CommTerminal_Disconnect = new System.Windows.Forms.Button();
             this.tabControl_CommTestFunction = new System.Windows.Forms.TabControl();
             this.tabPage_Illuminator = new System.Windows.Forms.TabPage();
+            this.baseLabel1Value = new SLD200_MSL.BaseLabel();
+            this.baseLabelMax = new SLD200_MSL.BaseLabel();
+            this.baseLabelMin = new SLD200_MSL.BaseLabel();
             this.hScrollBarIlluminator = new System.Windows.Forms.HScrollBar();
             this.radioButton_IlluminatorChannel_1 = new System.Windows.Forms.RadioButton();
             this.radioButton_IlluminatorChannel_0 = new System.Windows.Forms.RadioButton();
@@ -54,6 +57,13 @@ namespace SLD200_MSL
             this.button_PowerMeter_Stage_ContinuousReading = new System.Windows.Forms.Button();
             this.button_PowerMeter_Stage_ReadOnce = new System.Windows.Forms.Button();
             this.tabPage_MotorizedBeamExpander = new System.Windows.Forms.TabPage();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button_BeamExpander_Mrad_MoveCommand = new System.Windows.Forms.Button();
+            this.textBox_BeamExpander_Mrad_Position = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.button_BeamExpander_Zoom_MoveCommand = new System.Windows.Forms.Button();
+            this.textBox_BeamExpander_Zoom_Position = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.tabPage_DustCollector_Upper = new System.Windows.Forms.TabPage();
             this.button_DustCollector_Upper_WriteCommand = new System.Windows.Forms.Button();
             this.textBox_DustCollector_Upper_Data = new System.Windows.Forms.TextBox();
@@ -79,13 +89,13 @@ namespace SLD200_MSL
             this.button_LaserHeightSensor_ReadValue = new System.Windows.Forms.Button();
             this.button_LaserHeightSensor_MeasurementMode = new System.Windows.Forms.Button();
             this.button_LaserHeightSensor_SettingMode = new System.Windows.Forms.Button();
-            this.baseLabel1Value = new SLD200_MSL.BaseLabel();
-            this.baseLabelMax = new SLD200_MSL.BaseLabel();
-            this.baseLabelMin = new SLD200_MSL.BaseLabel();
+            this.button_BeamExpander_Zoom_InitCommand = new System.Windows.Forms.Button();
+            this.button_BeamExpander_Mrad_InitCommand = new System.Windows.Forms.Button();
             this.tabControl_CommTestFunction.SuspendLayout();
             this.tabPage_Illuminator.SuspendLayout();
             this.tabPage_PowerMeter_BDS.SuspendLayout();
             this.tabPage_PowerMeter_Stage.SuspendLayout();
+            this.tabPage_MotorizedBeamExpander.SuspendLayout();
             this.tabPage_DustCollector_Upper.SuspendLayout();
             this.tabPage_DustCollector_Lower.SuspendLayout();
             this.tabPage_ElectroPneumaticRegulator.SuspendLayout();
@@ -258,6 +268,38 @@ namespace SLD200_MSL
             this.tabPage_Illuminator.Text = "Illuminator";
             this.tabPage_Illuminator.UseVisualStyleBackColor = true;
             // 
+            // baseLabel1Value
+            // 
+            this.baseLabel1Value.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.baseLabel1Value.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel1Value.Location = new System.Drawing.Point(28, 80);
+            this.baseLabel1Value.Name = "baseLabel1Value";
+            this.baseLabel1Value.Size = new System.Drawing.Size(223, 23);
+            this.baseLabel1Value.TabIndex = 9;
+            this.baseLabel1Value.Text = "0";
+            this.baseLabel1Value.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // baseLabelMax
+            // 
+            this.baseLabelMax.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMax.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMax.Location = new System.Drawing.Point(212, 134);
+            this.baseLabelMax.Name = "baseLabelMax";
+            this.baseLabelMax.Size = new System.Drawing.Size(55, 23);
+            this.baseLabelMax.TabIndex = 12;
+            this.baseLabelMax.Text = "255";
+            this.baseLabelMax.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabelMin
+            // 
+            this.baseLabelMin.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMin.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMin.Location = new System.Drawing.Point(18, 136);
+            this.baseLabelMin.Name = "baseLabelMin";
+            this.baseLabelMin.Size = new System.Drawing.Size(22, 23);
+            this.baseLabelMin.TabIndex = 11;
+            this.baseLabelMin.Text = "0";
+            // 
             // hScrollBarIlluminator
             // 
             this.hScrollBarIlluminator.Location = new System.Drawing.Point(10, 106);
@@ -361,6 +403,15 @@ namespace SLD200_MSL
             // 
             // tabPage_MotorizedBeamExpander
             // 
+            this.tabPage_MotorizedBeamExpander.Controls.Add(this.button_BeamExpander_Mrad_InitCommand);
+            this.tabPage_MotorizedBeamExpander.Controls.Add(this.button_BeamExpander_Zoom_InitCommand);
+            this.tabPage_MotorizedBeamExpander.Controls.Add(this.button2);
+            this.tabPage_MotorizedBeamExpander.Controls.Add(this.button_BeamExpander_Mrad_MoveCommand);
+            this.tabPage_MotorizedBeamExpander.Controls.Add(this.textBox_BeamExpander_Mrad_Position);
+            this.tabPage_MotorizedBeamExpander.Controls.Add(this.label9);
+            this.tabPage_MotorizedBeamExpander.Controls.Add(this.button_BeamExpander_Zoom_MoveCommand);
+            this.tabPage_MotorizedBeamExpander.Controls.Add(this.textBox_BeamExpander_Zoom_Position);
+            this.tabPage_MotorizedBeamExpander.Controls.Add(this.label8);
             this.tabPage_MotorizedBeamExpander.Location = new System.Drawing.Point(4, 67);
             this.tabPage_MotorizedBeamExpander.Name = "tabPage_MotorizedBeamExpander";
             this.tabPage_MotorizedBeamExpander.Padding = new System.Windows.Forms.Padding(3);
@@ -368,6 +419,82 @@ namespace SLD200_MSL
             this.tabPage_MotorizedBeamExpander.TabIndex = 1;
             this.tabPage_MotorizedBeamExpander.Text = "Mot. Beam Expander";
             this.tabPage_MotorizedBeamExpander.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button2.Location = new System.Drawing.Point(197, 115);
+            this.button2.Margin = new System.Windows.Forms.Padding(6);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(171, 34);
+            this.button2.TabIndex = 36;
+            this.button2.Text = "Get Current Position";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button_BeamExpander_Mrad_MoveCommand
+            // 
+            this.button_BeamExpander_Mrad_MoveCommand.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_BeamExpander_Mrad_MoveCommand.Location = new System.Drawing.Point(261, 55);
+            this.button_BeamExpander_Mrad_MoveCommand.Margin = new System.Windows.Forms.Padding(6);
+            this.button_BeamExpander_Mrad_MoveCommand.Name = "button_BeamExpander_Mrad_MoveCommand";
+            this.button_BeamExpander_Mrad_MoveCommand.Size = new System.Drawing.Size(107, 34);
+            this.button_BeamExpander_Mrad_MoveCommand.TabIndex = 35;
+            this.button_BeamExpander_Mrad_MoveCommand.Text = "Mrad Move";
+            this.button_BeamExpander_Mrad_MoveCommand.UseVisualStyleBackColor = true;
+            this.button_BeamExpander_Mrad_MoveCommand.Click += new System.EventHandler(this.button_BeamExpander_Mrad_MoveCommand_Click);
+            // 
+            // textBox_BeamExpander_Mrad_Position
+            // 
+            this.textBox_BeamExpander_Mrad_Position.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_BeamExpander_Mrad_Position.Location = new System.Drawing.Point(195, 55);
+            this.textBox_BeamExpander_Mrad_Position.Margin = new System.Windows.Forms.Padding(6);
+            this.textBox_BeamExpander_Mrad_Position.Name = "textBox_BeamExpander_Mrad_Position";
+            this.textBox_BeamExpander_Mrad_Position.Size = new System.Drawing.Size(64, 24);
+            this.textBox_BeamExpander_Mrad_Position.TabIndex = 34;
+            // 
+            // label9
+            // 
+            this.label9.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(7, 54);
+            this.label9.Margin = new System.Windows.Forms.Padding(6);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(187, 24);
+            this.label9.TabIndex = 33;
+            this.label9.Text = "Mrad Position (float, 4 digits) :";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_BeamExpander_Zoom_MoveCommand
+            // 
+            this.button_BeamExpander_Zoom_MoveCommand.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_BeamExpander_Zoom_MoveCommand.Location = new System.Drawing.Point(261, 9);
+            this.button_BeamExpander_Zoom_MoveCommand.Margin = new System.Windows.Forms.Padding(6);
+            this.button_BeamExpander_Zoom_MoveCommand.Name = "button_BeamExpander_Zoom_MoveCommand";
+            this.button_BeamExpander_Zoom_MoveCommand.Size = new System.Drawing.Size(107, 34);
+            this.button_BeamExpander_Zoom_MoveCommand.TabIndex = 32;
+            this.button_BeamExpander_Zoom_MoveCommand.Text = "Zoom Move";
+            this.button_BeamExpander_Zoom_MoveCommand.UseVisualStyleBackColor = true;
+            this.button_BeamExpander_Zoom_MoveCommand.Click += new System.EventHandler(this.button_BeamExpander_Zoom_MoveCommand_Click);
+            // 
+            // textBox_BeamExpander_Zoom_Position
+            // 
+            this.textBox_BeamExpander_Zoom_Position.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_BeamExpander_Zoom_Position.Location = new System.Drawing.Point(195, 9);
+            this.textBox_BeamExpander_Zoom_Position.Margin = new System.Windows.Forms.Padding(6);
+            this.textBox_BeamExpander_Zoom_Position.Name = "textBox_BeamExpander_Zoom_Position";
+            this.textBox_BeamExpander_Zoom_Position.Size = new System.Drawing.Size(64, 24);
+            this.textBox_BeamExpander_Zoom_Position.TabIndex = 31;
+            // 
+            // label8
+            // 
+            this.label8.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(7, 8);
+            this.label8.Margin = new System.Windows.Forms.Padding(6);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(187, 24);
+            this.label8.TabIndex = 30;
+            this.label8.Text = "Zoom Position (float, 4 digits) :";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tabPage_DustCollector_Upper
             // 
@@ -654,37 +781,29 @@ namespace SLD200_MSL
             this.button_LaserHeightSensor_SettingMode.UseVisualStyleBackColor = true;
             this.button_LaserHeightSensor_SettingMode.Click += new System.EventHandler(this.button_LaserHeightSensor_SettingMode_Click);
             // 
-            // baseLabel1Value
+            // button_BeamExpander_Zoom_InitCommand
             // 
-            this.baseLabel1Value.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.baseLabel1Value.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel1Value.Location = new System.Drawing.Point(28, 80);
-            this.baseLabel1Value.Name = "baseLabel1Value";
-            this.baseLabel1Value.Size = new System.Drawing.Size(223, 23);
-            this.baseLabel1Value.TabIndex = 9;
-            this.baseLabel1Value.Text = "0";
-            this.baseLabel1Value.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button_BeamExpander_Zoom_InitCommand.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_BeamExpander_Zoom_InitCommand.Location = new System.Drawing.Point(380, 9);
+            this.button_BeamExpander_Zoom_InitCommand.Margin = new System.Windows.Forms.Padding(6);
+            this.button_BeamExpander_Zoom_InitCommand.Name = "button_BeamExpander_Zoom_InitCommand";
+            this.button_BeamExpander_Zoom_InitCommand.Size = new System.Drawing.Size(107, 34);
+            this.button_BeamExpander_Zoom_InitCommand.TabIndex = 37;
+            this.button_BeamExpander_Zoom_InitCommand.Text = "Zoom Init";
+            this.button_BeamExpander_Zoom_InitCommand.UseVisualStyleBackColor = true;
+            this.button_BeamExpander_Zoom_InitCommand.Click += new System.EventHandler(this.button_BeamExpander_Zoom_InitCommand_Click);
             // 
-            // baseLabelMax
+            // button_BeamExpander_Mrad_InitCommand
             // 
-            this.baseLabelMax.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabelMax.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMax.Location = new System.Drawing.Point(212, 134);
-            this.baseLabelMax.Name = "baseLabelMax";
-            this.baseLabelMax.Size = new System.Drawing.Size(55, 23);
-            this.baseLabelMax.TabIndex = 12;
-            this.baseLabelMax.Text = "255";
-            this.baseLabelMax.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // baseLabelMin
-            // 
-            this.baseLabelMin.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabelMin.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMin.Location = new System.Drawing.Point(18, 136);
-            this.baseLabelMin.Name = "baseLabelMin";
-            this.baseLabelMin.Size = new System.Drawing.Size(22, 23);
-            this.baseLabelMin.TabIndex = 11;
-            this.baseLabelMin.Text = "0";
+            this.button_BeamExpander_Mrad_InitCommand.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_BeamExpander_Mrad_InitCommand.Location = new System.Drawing.Point(380, 55);
+            this.button_BeamExpander_Mrad_InitCommand.Margin = new System.Windows.Forms.Padding(6);
+            this.button_BeamExpander_Mrad_InitCommand.Name = "button_BeamExpander_Mrad_InitCommand";
+            this.button_BeamExpander_Mrad_InitCommand.Size = new System.Drawing.Size(107, 34);
+            this.button_BeamExpander_Mrad_InitCommand.TabIndex = 38;
+            this.button_BeamExpander_Mrad_InitCommand.Text = "Mrad Init";
+            this.button_BeamExpander_Mrad_InitCommand.UseVisualStyleBackColor = true;
+            this.button_BeamExpander_Mrad_InitCommand.Click += new System.EventHandler(this.button_BeamExpander_Mrad_InitCommand_Click);
             // 
             // FormNew_CommunicationTerminal
             // 
@@ -715,6 +834,8 @@ namespace SLD200_MSL
             this.tabPage_Illuminator.PerformLayout();
             this.tabPage_PowerMeter_BDS.ResumeLayout(false);
             this.tabPage_PowerMeter_Stage.ResumeLayout(false);
+            this.tabPage_MotorizedBeamExpander.ResumeLayout(false);
+            this.tabPage_MotorizedBeamExpander.PerformLayout();
             this.tabPage_DustCollector_Upper.ResumeLayout(false);
             this.tabPage_DustCollector_Upper.PerformLayout();
             this.tabPage_DustCollector_Lower.ResumeLayout(false);
@@ -780,5 +901,14 @@ namespace SLD200_MSL
         private Button button_LaserHeightSensor_SettingMode;
         private Button button_LaserHeightSensor_MeasurementMode;
         private Button button_LaserHeightSensor_ReadValue;
+        private Button button_BeamExpander_Mrad_MoveCommand;
+        private TextBox textBox_BeamExpander_Mrad_Position;
+        private Label label9;
+        private Button button_BeamExpander_Zoom_MoveCommand;
+        private TextBox textBox_BeamExpander_Zoom_Position;
+        private Label label8;
+        private Button button2;
+        private Button button_BeamExpander_Mrad_InitCommand;
+        private Button button_BeamExpander_Zoom_InitCommand;
     }
 }

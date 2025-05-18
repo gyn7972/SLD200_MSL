@@ -61,6 +61,8 @@ namespace QMC.Common.Parts
 
         public enum StackerTable
         {
+            None = -1,
+
             Stacker_0 = 0,
             Stacker_1
         }

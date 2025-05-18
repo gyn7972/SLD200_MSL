@@ -61,7 +61,11 @@ namespace QMC.Common
         {
             PreAlign,
             Socket,
-            GoldPowder
+            GoldPowder,
+
+            Thruhole,
+            Outline,
+            Marking,
         }
 
         #endregion
@@ -468,7 +472,7 @@ namespace QMC.Common
             public double Miscellaneous_CircleStartAngleCircle1time;  //  Rotation Start Angle Circle 1 time (degree)
             public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
             public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
-            public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
+            public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.8X, 1:1.0X, 2:1.1X, 3:1.2X)
             public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral_Polyline, 2:Spiral_Arc, 3:Spiral_Circle)
             public bool Miscellaneous_HoleSortByDistance_Use;               //  Sort By Distance Use (true: Use, false: Not Use)
             public double Miscellaneous_HoleSortingDistance;            //  Hole Sorting Distance (mm)
@@ -508,11 +512,17 @@ namespace QMC.Common
             public bool DustCollectorLower_Disable;                     //  Dust Collector Lower Disable (true: Disable, false: Enable)
 
             public bool MarkingData_SiriusTemplate_Use;                 //  Sirius Template 파일을 이용한 가공을 할 경우
-            public string MarkingTemplate_SiriusFile;                   //  Marking Template File Path and Name
-            public string MarkingTemplate_EntityData;                   //  Marking Template Entity 에 집어넣을 데이터
-            public int MarkingTemplate_EntityData_Type;                 //  Marking Template Entity 타입 (Text, SiriusText, 1D Barcode, Data Matrix, QR, QR2)
+            public int MarkingTemplate_EntityData_DataType;             //  Marking Template Entity Data 타입 (Text, SiriusText, 1D Barcode, Data Matrix, QR, QR2)
+            public bool MarkingTemplate_EntityData_TextType;            //  Marking Template Entity Data Text Type (true: Fixed Text, false: Serial Number)
             public double MarkingTemplate_EntityData_Width;             //  Marking Template Entity Width
             public double MarkingTemplate_EntityData_Height;            //  Marking Template Entity Height
+            public string MarkingTemplate_EntityData_PrefixData;        //  Marking Template Entity Prefix Data
+            public int MarkingTemplate_EntityData_StartNumber;          //  Marking Template Entity Start Number
+            public int MarkingTemplate_EntityData_Digits;               //  Marking Template Entity Digits 
+            public int MarkingTemplate_EntityData_IncreaseStep;         //  Marking Template Entity Increase Step (or Decrease)
+            public string MarkingTemplate_EntityData_SuffixData;        //  Marking Template Entity Suffix Data
+            public bool MarkingTemplate_EntityData_Hatch_Use;           //  Marking Template Entity Hatch Use (true: Use, false: Not Use)
+            public double MarkingTemplate_EntityData_Hatch_Spacing;     //  Marking Template Entity Hatch Spacing
 
             public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
         }
@@ -649,6 +659,13 @@ namespace QMC.Common
 
         //  도면 렌더링 분해능
         public static int SiriusDrawing_Rendering_Resolution { set; get; } = 50;
+
+
+        //  BET Zoom 별 Mrad 위치값
+        public static double BET_0_8X_Mrad { set; get; } = 0.5;            //  BET 0.8X Zoom
+        public static double BET_1_0X_Mrad { set; get; } = 0.24;            //  BET 1.0X Zoom
+        public static double BET_1_1X_Mrad { set; get; } = 0.11;            //  BET 1.1X Zoom
+        public static double BET_1_2X_Mrad { set; get; } = 0.02;            //  BET 1.2X Zoom
 
 
         //  Scanner Calibration Parameter
@@ -1221,12 +1238,17 @@ namespace QMC.Common
 
                 //  Marking Template
                 stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use = false;                         //  Sirius Template 파일을 이용한 가공을 할 경우
-                stLayerRecipeSet[i].MarkingTemplate_SiriusFile = "";                                //  Marking Template File Path and Name
-                stLayerRecipeSet[i].MarkingTemplate_EntityData = "";                                //  Marking Template Entity 에 집어넣을 데이터
-                stLayerRecipeSet[i].MarkingTemplate_EntityData_Type = 0;                            //  Marking Template Entity Type (Text, SiriusText, 1D Barcode, Data Matrix, QR, QR2)
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_DataType = 0;                        //  Marking Template Entity Data Type (Text, SiriusText, 1D Barcode, Data Matrix, QR, QR2)
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_Width = 0.0;                         //  Marking Template Entity Width
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_Height = 0.0;                        //  Marking Template Entity Height
-
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_TextType = true;                     //  Marking Template Entity Data Text Type (true: Fixed Text, false: Serial Number)
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_PrefixData = "";                     //  Marking Template Entity Prefix Data
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber = 0;                     //  Marking Template Entity Start Number
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits = 0;                          //  Marking Template Entity Digits
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep = 0;                    //  Marking Template Entity Increase Step (or Decrease)
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData = "";                     //  Marking Template Entity Suffix Data
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use = false;                   //  Marking Template Entity Hatch Use (true: Use, false: Not Use)
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = 0.2;                 //  Marking Template Entity Hatch Spacing
 
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
             }
@@ -1280,6 +1302,13 @@ namespace QMC.Common
 
             //  도면 렌더링  분해능
             SiriusDrawing_Rendering_Resolution = 50;
+
+
+            //  BET 별 Mrad
+            BET_0_8X_Mrad = 0.5;                //  BET 0.8X Zoom
+            BET_1_0X_Mrad = 0.24;               //  BET 1.0X Zoom
+            BET_1_1X_Mrad = 0.11;               //  BET 1.1X Zoom
+            BET_1_2X_Mrad = 0.02;               //  BET 1.2X Zoom
 
 
             Scanner_Calibration_LaserFrequency = 0.0;            //  Scanner Calibration Laser Frequency
@@ -3053,6 +3082,16 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Sirius_Drawing", "Rendering_Resolution", "50", temp, 255, strFIle);
             Equipment.SiriusDrawing_Rendering_Resolution = Equipment.ToInt(temp.ToString());
 
+            //  BET 별 Mrad
+            NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_08X", "0.5", temp, 255, strFIle);
+            Equipment.BET_0_8X_Mrad = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_10X", "0.24", temp, 255, strFIle);
+            Equipment.BET_1_0X_Mrad = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_11X", "0.11", temp, 255, strFIle);
+            Equipment.BET_1_1X_Mrad = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_12X", "0.02", temp, 255, strFIle);
+            Equipment.BET_1_2X_Mrad = Equipment.ToDouble(temp.ToString());
+            
 
             ////  Scanner Calibration parameter
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", "5000.0", temp, 255, strFIle);
