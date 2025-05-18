@@ -173,6 +173,7 @@ namespace SLD200_MSL
         private void FormNew_Alarm_VisibleChanged(object sender, EventArgs e)
         {
             //InitDataGridViewColumn();
+            Alarms = AlarmManager.Instance.Alarms;
             if (Alarms != null && Alarms.Count > 0)
             {
                 baseDataGridViewAlarm.DataSource = null;

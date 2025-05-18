@@ -1358,6 +1358,7 @@ namespace QMC.Common.Hmi
 
         public void Display()
         {
+            return;
             try
             {
                 if (Simulated != true)
@@ -2038,7 +2039,7 @@ namespace QMC.Common.Hmi
                                 this.m_IsChanged = true;
                                 UpdateOverlay(false);
                                 this.DrawToBuffer(this.m_Graphics);
-                                this.Invalidate();
+                                //this.Invalidate(new Rectangle(0,0,this.Width,this.Height));
                                 //this.Refresh();
                             }
                         }

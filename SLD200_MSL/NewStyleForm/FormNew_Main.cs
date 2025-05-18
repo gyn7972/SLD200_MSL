@@ -229,7 +229,7 @@ namespace SLD200_MSL
             {
                 while(true)
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                     if (this.IsClosedForm)
                     {
                         break;
@@ -1127,7 +1127,7 @@ namespace SLD200_MSL
                 m_bNeedAutoRunStop = true;
             }
 
-            UpdateInitStatusFromComm();
+            //UpdateInitStatusFromComm();
 
             
         }

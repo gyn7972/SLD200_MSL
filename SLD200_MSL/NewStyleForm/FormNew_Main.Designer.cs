@@ -1049,10 +1049,10 @@
             this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
             this.ImageViewer_Main_highs.Simulated = false;
             this.ImageViewer_Main_highs.Size = new System.Drawing.Size(263, 220);
-            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.ImageViewer_Main_highs.TabIndex = 189;
             this.ImageViewer_Main_highs.TabStop = false;
-            this.ImageViewer_Main_highs.UpdateDelayTime = 160;
+            this.ImageViewer_Main_highs.UpdateDelayTime = 200;
             this.ImageViewer_Main_highs.VisibleCrossLine = true;
             // 
             // groupBox_CoarseCam
@@ -2237,6 +2237,7 @@
             this.groupBoxMain_MaterialInformation.PerformLayout();
             this.groupBox_ProcessingData.ResumeLayout(false);
             this.groupBox_FineCam.ResumeLayout(false);
+            this.groupBox_FineCam.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.groupBox_CoarseCam.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
