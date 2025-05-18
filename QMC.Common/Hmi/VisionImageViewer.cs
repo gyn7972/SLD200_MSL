@@ -27,13 +27,44 @@ using System.Threading;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.Linq;
 using QMC.Common.Modules;
+using System.Runtime.InteropServices;
 //using QMC.eFramework.Vision.Tools;
 
 namespace QMC.Common.Hmi
 {
+
+
     [System.Drawing.ToolboxBitmap(typeof(PictureBox))]
     public class VisionImageViewer : PictureBox
     {
+        #region DllImport
+		
+        [DllImport("gdi32.dll")]
+        static extern int SetStretchBltMode(IntPtr hdc, int iStretchMode);
+
+        private const int HALFTONE = 4;
+        [DllImport("gdi32.dll")]
+        static extern bool BitBlt(
+    IntPtr hdcDest, int nXDest, int nYDest, int nWidth, int nHeight,
+    IntPtr hdcSrc, int nXSrc, int nYSrc, int dwRop);
+        [DllImport("gdi32.dll")]
+        static extern bool DeleteDC(IntPtr hdc);
+
+        [DllImport("gdi32.dll")]
+        static extern bool DeleteObject(IntPtr hObject);
+        [DllImport("gdi32.dll")]
+        static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
+
+        [DllImport("gdi32.dll")]
+        static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+        [DllImport("gdi32.dll", SetLastError = true)]
+        private static extern bool StretchBlt(
+    IntPtr hdcDest, int nXOriginDest, int nYOriginDest, int nWidthDest, int nHeightDest,
+    IntPtr hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc,
+    int dwRop);
+        private const int SRCCOPY = 0x00CC0020; 
+        #endregion
+
         #region Define
         [Serializable]
         public enum MenuItems
@@ -561,6 +592,7 @@ namespace QMC.Common.Hmi
         #region Field
         private BufferedGraphicsContext m_Context;
         private BufferedGraphics m_Graphics;
+        private Graphics m_GraphicsDisplay;
         private Bitmap m_bitmap;
         private System.Drawing.Graphics m_doubleBuffer;
         private OwnedOverlayCollection m_NormalOverlays;
@@ -1430,7 +1462,7 @@ namespace QMC.Common.Hmi
                     if (this.m_Graphics == null) return;
 
                     this.DrawToBuffer(this.m_Graphics);
-
+                    this.RenderForDisplay(this.m_Graphics);
                     //this.m_Graphics.Render(Graphics.FromHwnd(this.Handle));
                     //this.Refresh();
                 }
@@ -1461,6 +1493,7 @@ namespace QMC.Common.Hmi
                     if (this.m_Graphics == null) return;
 
                     this.DrawToBuffer(this.m_Graphics);
+                    this.RenderForDisplay(this.m_Graphics);
                 }
 
             }
@@ -1470,6 +1503,16 @@ namespace QMC.Common.Hmi
                 this.Invalidate();
             }
         }
+
+        private void RenderForDisplay(BufferedGraphics m_Graphics)
+        {
+            if(this.m_GraphicsDisplay != null)
+            {
+                m_Graphics.Render(this.m_GraphicsDisplay);
+            }
+            
+        }
+
 
         /// <summary>
         /// Display를 정지한다.
@@ -1979,13 +2022,13 @@ namespace QMC.Common.Hmi
         public void StartUpdateTask()
         {
 
-
+            
             ResumeDisplay();
             if (m_task != null)
             {
                 return;
             }
-            
+            m_GraphicsDisplay = this.CreateGraphics();
 
             m_task = Task.Factory.StartNew(() =>
             {
@@ -2038,7 +2081,8 @@ namespace QMC.Common.Hmi
                                 this.m_IsChanged = true;
                                 UpdateOverlay(false);
                                 this.DrawToBuffer(this.m_Graphics);
-                                this.Invalidate();
+                                this.RenderForDisplay(this.m_Graphics);
+                                //this.Invalidate();
                                 //this.Refresh();
                             }
                         }
