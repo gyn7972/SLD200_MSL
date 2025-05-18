@@ -310,6 +310,10 @@ namespace QMC.Common.VisionPart
             , double miscellaneous_FiducialMarkSocre = 0.7
             ,bool bSpiralSearch = true)
         {
+
+            string strFileName = "d:\\Temp\\AlignOrg" + DateTime.Now.Ticks.ToString() + ".bmp";
+            IsImageSave = true;
+            SaveImage(pixelData, w, h, strFileName);
             if (bIsDarkCircleSearch == false)
             {
                 //pixelData = InversImage(pixelData);
@@ -465,7 +469,7 @@ namespace QMC.Common.VisionPart
             if (bFindCircle == false)
             {
                 circlesResult.Clear();
-                string strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
+                strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
                 IsImageSave = true;
                 SaveImage(pixelData, w, h, strFileName);
                 return new QMC_ImageProcessFindAlignResult();
