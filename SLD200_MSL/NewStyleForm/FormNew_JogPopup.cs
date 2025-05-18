@@ -10,6 +10,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static QMC.Common.Equipment;
@@ -30,7 +31,7 @@ namespace SLD200.NewStyleForm
         private FormNewSub_JogPopup_Loader userform_Loader;
         private FormNewSub_JogPopup_Stage userform_Stage;
         private FormNewSub_JogPopup_Unloader userform_Unloader;
-
+        private TabPage SelectedTabPage = null;
         public FormNew_JogPopup()
         {
             InitializeComponent();
@@ -39,6 +40,11 @@ namespace SLD200.NewStyleForm
             this.Load += FormNewSub_JogPopup_Load; // 여기서 Load 이벤트 연결
             this.FormClosing += FormNew_JogPopup_FormClosing; // 추가
             this.tabControl_JogPopup.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
+            this.tabControl_JogPopup.SelectedIndex = 1;
+            if(this.tabControl_JogPopup.TabPages.Count > 2)
+            {
+                SelectedTabPage = this.tabControl_JogPopup.TabPages[1];
+            }
         }
 
         private void FormNew_JogPopup_FormClosing(object sender, FormClosingEventArgs e)
@@ -80,10 +86,24 @@ namespace SLD200.NewStyleForm
             InitializeTabs();
 
             // 타이머 초기화
-            timer_Status = new System.Windows.Forms.Timer();
-            timer_Status.Interval = 200; // 200ms 주기
-            timer_Status.Tick += Timer_Status_Tick;
-            timer_Status.Start();
+            //timer_Status = new System.Windows.Forms.Timer();
+            //timer_Status.Interval = 200; // 200ms 주기
+            //timer_Status.Tick += Timer_Status_Tick;
+            //timer_Status.Start();
+
+            Task.Factory.StartNew(() => 
+            { 
+                while(true)
+                {
+
+                    if (workStage.IsModuleClose)
+                    {
+                        break;
+                    }
+                    Thread.Sleep(200);
+                    Timer_Status_Tick(null, null);
+                }
+            });
             //timer_Status.Stop();
 
             m_bInitialized = true;
@@ -100,13 +120,13 @@ namespace SLD200.NewStyleForm
             {
                 m_bFormVisible = true;
                 OnShow();
-                timer_Status.Start();
+               // timer_Status.Start();
             }
             else if (!this.Visible && m_bFormVisible)
             {
                 m_bFormVisible = false;
                 OnHide();
-                timer_Status.Stop();
+                //timer_Status.Stop();
             }
         }
 
@@ -137,18 +157,18 @@ namespace SLD200.NewStyleForm
             try
             {
                 // 타이머 중복 호출 방지
-                timer_Status.Enabled = false;
+                //timer_Status.Enabled = false;
 
                 // 현재 선택된 탭에 따라 해당 UserControl의 상태만 업데이트
-                if (tabControl_JogPopup.SelectedTab == tabPage_Loader)
+                if (SelectedTabPage == tabPage_Loader)
                 {
                     userform_Loader?.UpdateStatus();
                 }
-                else if (tabControl_JogPopup.SelectedTab == tabPage_Stage)
+                else if (SelectedTabPage == tabPage_Stage)
                 {
                     userform_Stage?.UpdateStatus();
                 }
-                else if (tabControl_JogPopup.SelectedTab == tabPage_Unloader)
+                else if (SelectedTabPage == tabPage_Unloader)
                 {
                     userform_Unloader?.UpdateStatus();
                 }
@@ -159,7 +179,7 @@ namespace SLD200.NewStyleForm
             }
             finally
             {
-                timer_Status.Enabled = true;
+                //timer_Status.Enabled = true;
             }
         }
 
@@ -200,6 +220,9 @@ namespace SLD200.NewStyleForm
                     userform_Unloader.OnShow();
                     break;
             }
+            TabControl tabControl = sender as TabControl;
+            int selectedIndex = tabControl.SelectedIndex;
+            SelectedTabPage = tabControl.SelectedTab;
         }
 
         public interface IJogControlProvider
@@ -360,5 +383,7 @@ namespace SLD200.NewStyleForm
         {
             return GetJogProviderByUnit(unit)?.JogStepDistance ?? 0.0;
         }
+
+       
     }
 }

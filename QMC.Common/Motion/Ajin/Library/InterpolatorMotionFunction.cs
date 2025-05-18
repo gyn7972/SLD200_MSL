@@ -15,8 +15,20 @@ namespace QMC.Common.Motion.Ajin.Motions
 {
     public class InterpolatorMotionFunction : MotionFunction
     {
+        static WorkStage workStage;
         public InterpolatorMotionFunction() : base()
         {
+            ModuleCollection m_collectionModules;
+            m_collectionModules = Equipment.Modules;
+
+            foreach (Module module in m_collectionModules)
+            {
+                if (module.Name == "WorkStage")
+                {
+                    workStage = module as WorkStage;
+                }
+            }
+
             string iniPath = Path.Combine(ConfigManager.GetConfigPath(), "SoftLimit(Do not delete or modify).ini");
             InterpolatorMotionFunction.LoadSoftLimitsFromIni(iniPath, this);
         }
@@ -128,24 +140,24 @@ namespace QMC.Common.Motion.Ajin.Motions
         }
         public  override bool MC_MovePosition(int Axis, double position, double vel, double accel, double decel)
         {
-            //try
-            //{
-            //    string msg;
-            //    if (!IsWithinSoftLimit(Axis, position, out msg))
-            //    {
-            //        Log.Write("SLD-200", "MC_MovePosition", msg);
-            //        //Equipment.AlarmPost(Equipment.AlarmKey.eSoftLimitExceeded);
-            //        return false;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Write(ex);
-            //}
-            
 
-            //lock (_axisLocks[Axis])
+            lock (_axisLocks[Axis])
             {
+                try
+                {
+                    string msg;
+                    if (!IsWithinSoftLimit(Axis, position, out msg))
+                    {
+                        Log.Write("SLD-200", "MC_MovePosition", msg);
+                        workStage.AlarmPost(WorkStage.AlarmKey.SoftLimitFail);
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+
                 int elapsed = 0;
                 //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && (workStage.Stage.Interpolator != null))
                 if (Equipment.MapDataStatus_Activate && (workStage.Stage.Interpolator != null))
@@ -203,26 +215,26 @@ namespace QMC.Common.Motion.Ajin.Motions
         }
         public override bool MC_MoveRelPosition(int Axis, double position, double vel, double accel, double decel)
         {
-            //try
-            //{
-            //    double current = MC_GetCmdPos(Axis);
-            //    double target = current + position;
-
-            //    string msg;
-            //    if (!IsWithinSoftLimit(Axis, target, out msg))
-            //    {
-            //        Log.Write("SLD-200", "MC_MoveRelPosition", msg);
-            //        //Equipment.AlarmPost(Equipment.AlarmKey.eSoftLimitExceeded);
-            //        return false;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Write(ex);
-            //}
-
-            //lock (_axisLocks[Axis])
+            lock (_axisLocks[Axis])
             {
+                try
+                {
+                    double current = MC_GetCmdPos(Axis);
+                    double target = current + position;
+
+                    string msg;
+                    if (!IsWithinSoftLimit(Axis, target, out msg))
+                    {
+                        Log.Write("SLD-200", "MC_MoveRelPosition", msg);
+                        workStage.AlarmPost(WorkStage.AlarmKey.SoftLimitFail);
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+
                 int elapsed = 0;
                 //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && (workStage.Stage.Interpolator != null))
                 if (Equipment.MapDataStatus_Activate && (workStage.Stage.Interpolator != null))
@@ -292,26 +304,24 @@ namespace QMC.Common.Motion.Ajin.Motions
         public bool MovePosition(XyCoordinate destPosition, double vel, double accel, double decel)
         {
             bool bRet = false;
-            string m_strTemp = "";
 
-            //try
-            //{
-            //    string msgX = "";
-            //    string msgY = "";
-            //    if (!IsWithinSoftLimit((int)WorkStage.nAxis.X, destPosition.X, out msgX) ||
-            //        !IsWithinSoftLimit((int)WorkStage.nAxis.Y, destPosition.Y, out msgY))
-            //    {
-            //        if (!string.IsNullOrEmpty(msgX)) Log.Write("SLD-200", "Motion", msgX);
-            //        if (!string.IsNullOrEmpty(msgY)) Log.Write("SLD-200", "Motion", msgY);
-            //        //Equipment.AlarmPost(Equipment.AlarmKey.eSoftLimitExceeded);
-            //        return false;
-            //    }
-            //}
-            //catch(Exception ex)
-            //{
-            //    Log.Write(ex);
-            //}
-            
+            try
+            {
+                string msgX = "";
+                string msgY = "";
+                if (!IsWithinSoftLimit((int)WorkStage.nAxis.X, destPosition.X, out msgX) ||
+                    !IsWithinSoftLimit((int)WorkStage.nAxis.Y, destPosition.Y, out msgY))
+                {
+                    if (!string.IsNullOrEmpty(msgX)) Log.Write("SLD-200", "Motion", msgX);
+                    if (!string.IsNullOrEmpty(msgY)) Log.Write("SLD-200", "Motion", msgY);
+                    workStage.AlarmPost(WorkStage.AlarmKey.SoftLimitFail);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
 
             //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && (workStage.Stage.Interpolator != null))
             if (Equipment.MapDataStatus_Activate && (workStage.Stage.Interpolator != null))
@@ -320,8 +330,6 @@ namespace QMC.Common.Motion.Ajin.Motions
                 //Log.Write("SLD-200", "MapData", m_strTemp);
 
                 XyCoordinate destPositionInterpolated = new XyCoordinate();
-
-
 
                 workStage.Stage.Interpolator.Interpolate(destPosition, ref destPositionInterpolated);
                 bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPositionInterpolated.X, vel, accel, decel);
@@ -391,7 +399,7 @@ namespace QMC.Common.Motion.Ajin.Motions
 
                 // Unloader รเ
                 foreach (Unloader.nAxis axis in Enum.GetValues(typeof(Unloader.nAxis)))
-                {
+                 {
                     list.Add(new AxisInfo
                     {
                         UnitName = "Unloader",
@@ -432,7 +440,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                     string keyMin = $"{axis.UnitName}_{axis.Name}_Min";
                     string keyMax = $"{axis.UnitName}_{axis.Name}_Max";
 
-                    double minValue = -100.0;
+                    double minValue = -200.0;
                     double maxValue = 2000.0;
 
                     motionFunc.SetSoftLimit(axis.AxisNumber, minValue, maxValue);

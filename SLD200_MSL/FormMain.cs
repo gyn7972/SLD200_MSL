@@ -119,17 +119,11 @@ namespace SLD200_MSL
             this.FormNew_Alarm = new FormNew_Alarm();
             this.FormNew_AlarmLog = new FormNew_AlarmLog();
 
-            
-
-
-
             FormTopShow();
             FormBottomShow();
             //FormMonitoringShow();
             FormNewMainShow();
-
             AlarmManager.Instance.PostAlarm += AlarmManager_PostAlarm;
-
         }
         
         private void AlarmManager_PostAlarm(Alarm alarm)

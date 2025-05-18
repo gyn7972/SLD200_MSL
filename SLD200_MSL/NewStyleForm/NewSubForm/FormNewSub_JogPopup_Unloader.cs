@@ -145,7 +145,25 @@ namespace SLD200.NewStyleForm.NewSubForm
             foreach (var pair in unloaderAxisLabelMap)
             {
                 double pos = unloader.GetEncUnloaderPos_Motor(pair.Key);
-                pair.Value.Text = FormatPos(pos);
+                SetValue(pair.Value, FormatPos(pos));
+            }
+        }
+
+        void SetValue(Label control, string text, bool isVisible = true)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetValue(control, text, isVisible);
+                }));
+
+            }
+            else
+            {
+                control.Text = text;
+                control.Visible = isVisible;
             }
         }
     }

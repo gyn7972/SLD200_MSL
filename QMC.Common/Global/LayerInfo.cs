@@ -1,4 +1,5 @@
 ﻿using QMC.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +10,8 @@ namespace QMC.Common
         public string LayerName { get; set; }
         public int LayerNumber { get; set; }
         public List<AreaInfo> Areas { get; set; }
+        public bool IsProcessed { get; set; } = false;
+        public DateTime? ProcessedTime { get; set; } = null;
 
         public LayerInfo(string name, int number)
         {
@@ -37,6 +40,9 @@ namespace QMC.Common
         {
             foreach (var area in Areas)
                 area.Reset();
+
+            IsProcessed = false;
+            ProcessedTime = null;
         }
     }
 }

@@ -137,7 +137,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             UpdateRecipeFromUI();
             SaveRecipe();
 
-            MessageBox.Show("GoldPowder Recipe 저장 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("GoldPowder Recipe 저장 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void LoadRecipe()
@@ -170,6 +170,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else
             {
+                Equipment.stVisionRecipeSet = m_recipe;
                 mb1.ShowDialog("Information", "저장하였습니다.");
             }
         }
@@ -299,8 +300,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text = m_recipe.dGoldPowderCircleMarkSpec.ToString("F3");
             textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text = m_recipe.dGoldPowderCircleMarkRadius.ToString("F3");
             textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text = m_recipe.dGoldPowderCircleMarkScore.ToString("F3");
-            textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text = m_recipe.dGoldPowderCircleMarkMaxInstance.ToString("F3");
-            textBox_Recipe_GoldPowder_Fiducial_FindCount.Text = m_recipe.dGoldPowderCircleMarkFindCount.ToString("F3");
+            textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text = m_recipe.nGoldPowderCircleMarkMaxInstance.ToString();
+            textBox_Recipe_GoldPowder_Fiducial_FindCount.Text = m_recipe.nGoldPowderCircleMarkFindCount.ToString();
 
             // 조명 사용 여부
             checkBox_Recipe_GoldPowder_Illuminator_Red.Checked = m_recipe.bGoldPowderIlluminationRedUse;
@@ -368,8 +369,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 m_recipe.dGoldPowderCircleMarkRadius = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text);
                 m_recipe.dGoldPowderCircleMarkSpec = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text);
                 m_recipe.dGoldPowderCircleMarkScore = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text);
-                m_recipe.dGoldPowderCircleMarkMaxInstance = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text);
-                m_recipe.dGoldPowderCircleMarkFindCount = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_FindCount.Text);
+                m_recipe.nGoldPowderCircleMarkMaxInstance = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text);
+                m_recipe.nGoldPowderCircleMarkFindCount = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_FindCount.Text);
             }
             catch (Exception ex)
             {

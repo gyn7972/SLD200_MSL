@@ -42,6 +42,9 @@ using System.Windows.Controls;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using Label = System.Windows.Forms.Label;
 using System.Numerics;
+using System.Reflection.Emit;
+using netDxf;
+using netDxf.Tables;
 
 namespace SLD200_MSL
 {
@@ -82,8 +85,7 @@ namespace SLD200_MSL
 
         private Thread m_MainStatusThread;
         private bool m_bMainStatusCycleExit;
-
-
+        protected bool IsClosedForm; 
         #region Action
         bool m_SiriusViewerRefresy;
         #endregion
@@ -95,13 +97,12 @@ namespace SLD200_MSL
         public FormNew_Main()
         {
             InitializeComponent();
-
+            IsClosedForm = false;
             //Size 축소 / 확대 안되게 하기 위한 코드.
             this.AutoScaleMode = AutoScaleMode.None;
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.UpdateStyles();
-
             //this.Load += FormNew_Main_Load;
 
             ModuleCollection m_collectionModules;
@@ -166,8 +167,8 @@ namespace SLD200_MSL
             Equipment.SetEqpSiriusViewer(new SpiralLab.Sirius.SiriusViewerForm());
             Equipment.SetEqpSiriusViewerOrg( new SpiralLab.Sirius.SiriusViewerForm());
 
-            //  Fiducial Align Data 를 보여주는 ListView 설정
-            listView_Main_FiducialAlignData.View = View.Details;
+            // Fiducial Align Data 를 보여주는 ListView 설정
+            listView_Main_FiducialAlignData.View = System.Windows.Forms.View.Details;
             listView_Main_FiducialAlignData.GridLines = true;         //  구분선 표시
             listView_Main_FiducialAlignData.FullRowSelect = true;     //  한줄씩 선택 설정
 
@@ -217,17 +218,23 @@ namespace SLD200_MSL
             InitializeDeviceStatusBindings();
             InitAxisLabelMap();
 
-
-            //  Main Status 타이머
-            timer_Main_Status = new System.Windows.Forms.Timer();
-            timer_Main_Status.Interval = 100;
-            timer_Main_Status.Tick += new System.EventHandler(Timer_MainStatus_Func);
-            timer_Main_Status.Enabled = true;
+            Task.Factory.StartNew(() => 
+            {
+                while(true)
+                {
+                    Thread.Sleep(200);
+                    if (this.IsClosedForm)
+                    {
+                        break;
+                    }
+                    Timer_MainStatus_Func();
+                }
+            });
 
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
             Equipment.CycleTimer_LaserDrilling.LoadFromIni("LaserDrilling", strPath);
 
-            if(Machine_LaserType_CO2)
+            if (Machine_LaserType_CO2)
             {
                 baseLabel_Main_Divice_Status_PowermeterBds.Visible = false;
                 baseLabel_Main_Divice_Status_PowermeterBds.Enabled = false;
@@ -241,13 +248,20 @@ namespace SLD200_MSL
                 pictureBox_Main_DiviceStatus_BeamExpander.Visible = false;
                 pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
             }
+            this.FormClosing += FormNew_Main_FormClosing;
 
-
-                //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
+            //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
+            if (workStage.m_bHomeOK)
                 Comm_Init();
 
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
         }
+
+        private void FormNew_Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.IsClosedForm = true;
+        }
+
 
         private void OnUpdateResultOverlay(object sender, EventArgs e)
         {
@@ -280,6 +294,12 @@ namespace SLD200_MSL
                 this.ImageViewer_Main_highs.StartUpdateTask();
                 this.ImageViewer_Main_Lows.ResumeDisplay();
                 this.ImageViewer_Main_Lows.StartUpdateTask();
+
+                //this.ImageViewer_Main_highs.SuspendDisplay();
+                //this.ImageViewer_Main_highs.StopUpdateTask();
+                //this.ImageViewer_Main_Lows.SuspendDisplay();
+                //this.ImageViewer_Main_Lows.StopUpdateTask();
+
             }
             else if (!this.Visible && m_bFormVisible)
             {
@@ -329,45 +349,57 @@ namespace SLD200_MSL
         // 작업 상태 배열 초기화
         private void Initialize_SocketStatus(int columns, int rows, int subcolumns, int subrows)
         {
-            Columns = columns;
-            Rows = rows;
-            SubColumns = subcolumns;
-            SubRows = subrows;
-            SocketStatus = new int[Rows, Columns];
-            SocketRegionStatus = new int[SubRows, SubColumns];
-
-            // 모든 상태를 초기화 (0: 미작업)
-            for (int i = 0; i < Rows; i++)
+            if(pictureBox_ModuleProcessingStatus.InvokeRequired)
             {
-                for (int j = 0; j < Columns; j++)
+                this.Invoke(new System.Action(() =>
                 {
-                    SocketStatus[i, j] = 0;
-                }
+                    //화면에 출력.
+                    Initialize_SocketStatus(columns, rows, subcolumns, subrows);
+                }));
             }
-
-            for (int i = 0; i < SubRows; i++)
+            else
             {
-                for (int j = 0; j < SubColumns; j++)
+
+                Columns = columns;
+                Rows = rows;
+                SubColumns = subcolumns;
+                SubRows = subrows;
+                SocketStatus = new int[Rows, Columns];
+                SocketRegionStatus = new int[SubRows, SubColumns];
+
+                // 모든 상태를 초기화 (0: 미작업)
+                for (int i = 0; i < Rows; i++)
                 {
-                    SocketRegionStatus[i, j] = 0;
+                    for (int j = 0; j < Columns; j++)
+                    {
+                        SocketStatus[i, j] = 0;
+                    }
                 }
-            }
 
-            //  Cell Size 계산
-            CellSize_Width = pictureBox_ModuleProcessingStatus.Width / Columns;
-            CellSize_Height = pictureBox_ModuleProcessingStatus.Height / Rows;
+                for (int i = 0; i < SubRows; i++)
+                {
+                    for (int j = 0; j < SubColumns; j++)
+                    {
+                        SocketRegionStatus[i, j] = 0;
+                    }
+                }
 
-            Rows = Rows > 0 ? Rows : 1; // 최소 1행
-            Columns = Columns > 0 ? Columns : 1; // 최소 1열
-            CellSize_Width = CellSize_Width > 0 ? CellSize_Width : 1; // 최소 1픽셀
-            CellSize_Height = CellSize_Height > 0 ? CellSize_Height : 1; // 최소 1픽셀
+                //  Cell Size 계산
+                CellSize_Width = pictureBox_ModuleProcessingStatus.Width / Columns;
+                CellSize_Height = pictureBox_ModuleProcessingStatus.Height / Rows;
 
-            // PictureBox 크기 조정
-            if (pictureBox_ModuleProcessingStatus != null)
-            {
-                pictureBox_ModuleProcessingStatus.Width = Columns * CellSize_Width;
-                pictureBox_ModuleProcessingStatus.Height = Rows * CellSize_Height;
-                pictureBox_ModuleProcessingStatus.Invalidate(); // 다시 그리기
+                Rows = Rows > 0 ? Rows : 1; // 최소 1행
+                Columns = Columns > 0 ? Columns : 1; // 최소 1열
+                CellSize_Width = CellSize_Width > 0 ? CellSize_Width : 1; // 최소 1픽셀
+                CellSize_Height = CellSize_Height > 0 ? CellSize_Height : 1; // 최소 1픽셀
+
+                // PictureBox 크기 조정
+                if (pictureBox_ModuleProcessingStatus != null)
+                {
+                    pictureBox_ModuleProcessingStatus.Width = Columns * CellSize_Width;
+                    pictureBox_ModuleProcessingStatus.Height = Rows * CellSize_Height;
+                    pictureBox_ModuleProcessingStatus.Invalidate(); // 다시 그리기
+                }
             }
         }
 
@@ -935,12 +967,31 @@ namespace SLD200_MSL
                 PictureBox pic = kv.Value;
 
                 bool isInit = deviceStatusGetters.ContainsKey(key) && deviceStatusGetters[key]?.Invoke() == true;
+                SetValue(pic, isInit);
+                
+            }
+
+        }
+
+        private void SetValue(PictureBox pic, bool isInit)
+        {
+            if (pic.InvokeRequired)
+            {
+                pic.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+
+                    SetValue(pic, isInit);
+                }));
+
+            }
+            else
+            {
 
                 pic.Image = isInit
                     ? global::SLD200.Properties.Resources.DioEllipseOn
                     : global::SLD200.Properties.Resources.DioEllipseOff;
             }
-
         }
 
         // -----------------------
@@ -961,7 +1012,7 @@ namespace SLD200_MSL
         private (int, int) m_CompSocketRowCol, m_CompRegionRowCol;
         private int m_CompSocketStatus, m_CompRegionStatus;
 
-        private async void Timer_MainStatus_Func(object sender, EventArgs e)
+        private void Timer_MainStatus_Func()
         {
             // 동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
             // 중복 실행 방지
@@ -970,21 +1021,26 @@ namespace SLD200_MSL
 
             try
             {
-                await Task.Run(() =>
+                
+                try
                 {
-                    try
+                    DoHeavyLogicPart();
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+                try
+                {
+                    if (this.IsHandleCreated && !this.IsDisposed)
                     {
-                        DoHeavyLogicPart();
+                        this.UpdateUIControls();
                     }
-                    catch (Exception ex)
-                    {
-                        Log.Write(ex);
-                    }
-                });
+                }
+                catch (Exception ex)
+                {
 
-                if (this.IsHandleCreated && !this.IsDisposed)
-                {
-                    this.Invoke((System.Action)(() => UpdateUIControls()));
+                    Log.Write(ex);
                 }
             }
             catch (Exception ex)
@@ -994,7 +1050,7 @@ namespace SLD200_MSL
             finally
             {
                 _isMainStatusRunning = false;
-                timer_Main_Status.Enabled = true;
+               // timer_Main_Status.Enabled = true;
             }
         }
 
@@ -1064,9 +1120,9 @@ namespace SLD200_MSL
                 m_bNeedAutoRunStop = true;
             }
 
-            UpdateInitStatusFromComm();
+            if (workStage.m_bHomeOK)
+                UpdateInitStatusFromComm();
 
-            
         }
 
         // -----------------------
@@ -1091,7 +1147,25 @@ namespace SLD200_MSL
             if (m_bNeedHideProgressForm)
             {
                 m_bNeedHideProgressForm = false;
-                m_FormProgress.Hide();
+                if(m_FormProgress.InvokeRequired)
+                {
+                    if (m_FormProgress.InvokeRequired)
+                    {
+                        this.Invoke(new System.Action(() =>
+                        {
+                            //화면에 출력.
+                            m_FormProgress.Hide();
+                        }));
+
+                    }
+                    else
+                    {
+
+                        m_FormProgress.Hide();
+                    }
+                   
+                }    
+                
             }
 
             if (m_NeedDocumentSync)
@@ -1102,26 +1176,58 @@ namespace SLD200_MSL
 
                     if (SiriusViewer_Main.Document.Views != null)
                     {
+                        if (SiriusViewer_Main.InvokeRequired)
+                        {
+                            this.Invoke(new System.Action(() =>
+                            {
+                                //화면에 출력.
+                                SiriusViewer_Main.Document.Views.Clear();
+                            }));
 
-                        SiriusViewer_Main.Document.Views.Clear();
+                        }
+                        else
+                        {
+
+                            SiriusViewer_Main.Document.Views.Clear();
+                        }
+                        
                     }
                 }
                 catch (Exception ex)
                 {
                     Log.Write(ex);
                 }
-                SiriusViewer_Main.Document =(IDocument)Equipment.GetEqpSiriusViewerDocument();
+                if (SiriusViewer_Main.InvokeRequired)
+                {
+                    this.Invoke(new System.Action(() =>
+                    {
+                        //화면에 출력.
+                        SiriusViewer_Main.Document = (IDocument)Equipment.GetEqpSiriusViewerDocument();
+                    }));
+
+                }
+                else
+                {
+
+                    SiriusViewer_Main.Document = (IDocument)Equipment.GetEqpSiriusViewerDocument();
+                }
+                
             }
                         
-            label_Main_LaserStatus.Text = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF";
-            label_Main_LaserStatus.BackColor = workStage.GetLaserBusyStatus() ? Color.Red : Color.Black;
-            label_Main_LaserStatus.ForeColor = workStage.GetLaserBusyStatus() ? Color.White : Color.Lime;
+            string strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
+            SetValue(label_Main_LaserStatus, strText);
+            Color backcolor = workStage.GetLaserBusyStatus() ? Color.Red : Color.Black;
+            Color foreColor = workStage.GetLaserBusyStatus() ? Color.White : Color.Lime;
+
+            SetColor(label_Main_LaserStatus, backcolor, foreColor);
+
+            strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
+            SetValue(label_Main_LaserStatus, strText);
 
             // 상태 표시 CheckBox
             //checkBox_Main_Loader_Transfer_Pause.Checked = Equipment.Loader_Transfer_Pause;
-            checkBox_Main_Loader_LPort_Pause.Checked = Equipment.Loader_LPort_Pause;
-            checkBox_Main_Loader_RPort_Pause.Checked = Equipment.Loader_RPort_Pause;
-
+            SetValue(checkBox_Main_Loader_LPort_Pause, Equipment.Loader_LPort_Pause);
+            SetValue(checkBox_Main_Loader_RPort_Pause, Equipment.Loader_RPort_Pause);
             if (m_bNeedSocketArrayChange)
             {
                 m_bNeedSocketArrayChange = false;
@@ -1145,13 +1251,16 @@ namespace SLD200_MSL
 
             if(Equipment.AutoRunStatus)
             {
-                button_Main_Start.BackColor = Color.Lime;
-                button_Main_Start.ForeColor = Color.Black;
+                //button_Main_Start.BackColor = Color.Lime;
+                //button_Main_Start.ForeColor = Color.Black;
+
+                SetColor(button_Main_Start, Color.Lime, Color.Black);
             }
             else
             {
-                button_Main_Start.BackColor = Color.LightGray;
-                button_Main_Start.ForeColor = Color.Black;
+                SetColor(button_Main_Start, Color.LightGray, Color.Black);
+                //button_Main_Start.BackColor = Color.LightGray;
+                //button_Main_Start.ForeColor = Color.Black;
             }
 
             if (m_bNeedAutoRunStop)
@@ -1174,25 +1283,27 @@ namespace SLD200_MSL
 
             // label_Title_MESMessage
             // 여기에 자재 유/무에 대한 메세지 표시
-            label_Title_Stacker_LPort.Text = Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.";
-            label_Title_Stacker_LPort.BackColor = Equipment.Loader_LPort_Empty ? Color.Red : Color.Black;
-            label_Title_Stacker_LPort.ForeColor = Equipment.Loader_LPort_Empty ? Color.White : Color.Lime;
+            SetValue(label_Title_Stacker_LPort,Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
+            SetColor(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? Color.Red : Color.Black, Equipment.Loader_LPort_Empty ? Color.White : Color.Lime);
 
-            label_Title_Stacker_RPort.Text = Equipment.Loader_RPort_Empty ? "Loader_Stacker Right: 자재 없음." : "Loader_Stacker Right: 자재 있음.";
-            label_Title_Stacker_RPort.BackColor = Equipment.Loader_RPort_Empty ? Color.Red : Color.Black;
-            label_Title_Stacker_RPort.ForeColor = Equipment.Loader_RPort_Empty ? Color.White : Color.Lime;
+            SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
+            SetColor(label_Title_Stacker_LPort, Equipment.Loader_RPort_Empty ? Color.Red : Color.Black, Equipment.Loader_LPort_Empty ? Color.White : Color.Lime);
+
 
             //  소켓 가공 건너뛰기 (얼라인만 사용)
-            checkBox_Main_SocketDrilling_Pass.BackColor = Equipment.SocketDrilling_Skip ? Color.LightGreen : Color.White;
+            SetColor(checkBox_Main_SocketDrilling_Pass, Equipment.SocketDrilling_Skip ? Color.LightGreen : Color.LightGreen);
+
+
 
             //  EPRO 데이터 업데이트
-            label_Main_EPRO_Current_Pressure.Text = workStage.m_dEPRO_Value.ToString("0.0000"); 
-            label_Main_EPRO_Absorption_Judgment_Pressure.Text = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString("0.0000");
+            SetValue(label_Main_EPRO_Current_Pressure, workStage.m_dEPRO_Value.ToString("0.0000"));
+            SetValue(label_Main_EPRO_Absorption_Judgment_Pressure, Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString("0.0000"));
 
             // 장비 상태 UI에 반영
             UpdateDeviceStatusImages();
         }
 
+        
 
         private void button_Main_Home_Click(object sender, EventArgs e)
         {
@@ -1309,6 +1420,9 @@ namespace SLD200_MSL
                 //  이것저것 다 리셋 - 끝
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 ///
+
+                //통신 초기화
+                Comm_Init();
 
                 workStage.m_bHomeOK = false;
                 m_bHomeProgress_Show = true;
@@ -2577,8 +2691,6 @@ namespace SLD200_MSL
 
         private void button_Main_Reset_Click(object sender, EventArgs e)
         {
-            //  임시
-
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
@@ -2724,9 +2836,45 @@ namespace SLD200_MSL
             workStage.ResetRecovery();
             unloader.ResetRecovery();
             loader.ResetRecovery();
-            
 
+            //I/O - Off
+            if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
+            {
+                workStage.workStageParameter.DO_Stage_Vacuum(false);
+
+                mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Reset", "workStage - 자재 확인 바랍니다.");
+            }
+
+            if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
+            {
+                loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, false);
+
+                mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Reset", "Loader_Aligner - 자재 확인 바랍니다.");
+            }
+
+            if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner))
+                loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
+
+            if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))
+                loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
+
+            if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+            {
+                mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Reset", "Loader Picker - 자재 확인 및 버큠 Off 바랍니다.");
+            }
+
+            if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+            {
+                mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Reset", "Unloader Picker - 자재 확인 및 버큠 Off 바랍니다.");
+            }
         }
+            
 
         private void checkBox_Main_Loader_Transfer_Pause_CheckedChanged(object sender, EventArgs e)
         {
@@ -3947,6 +4095,7 @@ namespace SLD200_MSL
             return double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
         }
 
+        
         private void Motor_Position2()
         {
             if (!Equipment.AjinBoard_Opened)
@@ -3956,7 +4105,7 @@ namespace SLD200_MSL
             foreach (var pair in loaderAxisLabelMap)
             {
                 double pos = loader.GetEncLoaderPos_Motor(pair.Key);
-                pair.Value.Text = FormatPos(pos);
+                SetValue(pair.Value, FormatPos(pos));
             }
 
             // WorkStage
@@ -3967,19 +4116,19 @@ namespace SLD200_MSL
                     if (Equipment.Machine_LaserType_CO2)
                     {
                         double pos = workStage.GetEncWorkStagePos_Motor(pair.Key);
-                        pair.Value.Text = FormatPos(pos);
-                        pair.Value.Visible = true;
+                        //pair.Value.Text = FormatPos(pos);
+                        SetValue(pair.Value, FormatPos(pos),true);
+                        
                     }
                     else
                     {
-                        pair.Value.Text = "---.---";
-                        pair.Value.Visible = false;
+                        SetValue(pair.Value, "---.---", false);
                     }
                 }
                 else
                 {
                     double pos = workStage.GetEncWorkStagePos_Motor(pair.Key);
-                    pair.Value.Text = FormatPos(pos);
+                    SetValue(pair.Value, FormatPos(pos));
                 }
             }
 
@@ -3987,7 +4136,7 @@ namespace SLD200_MSL
             foreach (var pair in unloaderAxisLabelMap)
             {
                 double pos = unloader.GetEncUnloaderPos_Motor(pair.Key);
-                pair.Value.Text = FormatPos(pos);
+                SetValue(pair.Value, FormatPos(pos));
             }
         }
         private PointF ConvertScreenToReal(System.Drawing.Point location, double scale)
@@ -4005,6 +4154,11 @@ namespace SLD200_MSL
                     ImageViewer_Main_highs.Camera.StartLive();
                     ImageViewer_Main_Lows.Camera.StartLive();
                     var Document = this.SiriusViewer_Main.Document;
+                    if(Document.Views.Count == 0)
+                    {
+                        IView view = new ViewDefault(Document, SiriusViewer_Main.GLcontrol);
+                        Document.Views.Add(view);
+                    }
                     if (Document.Views.Count > 0)
                     {
                         var view = Document.Views.Last();
@@ -4060,17 +4214,20 @@ namespace SLD200_MSL
                 TimeSpan avgCycle = Equipment.CycleTimer_LaserDrilling.Average;
 
                 // ---- 1 Cycle Time 표시 ----
-                baseLabel_CurrentOneCycle_ElapsedTime.Text = oneCycle.ToString(@"hh\:mm\:ss");
-                int oneCycleProgress = (int)(oneCycle.TotalSeconds / goalOneCycleSec * 100);
-                progressBar_OneCycle_Time.Value = Math.Min(progressBar_OneCycle_Time.Maximum, Math.Max(0, oneCycleProgress));
+                SetValue(baseLabel_CurrentOneCycle_ElapsedTime, oneCycle.ToString(@"hh\:mm\:ss"));
 
+                int oneCycleProgress = (int)(oneCycle.TotalSeconds / goalOneCycleSec * 100);
+                SetValue(progressBar_OneCycle_Time, Math.Min(progressBar_OneCycle_Time.Maximum, Math.Max(0, oneCycleProgress)));
+                
                 // ---- Total 누적 시간 표시 ---- -> 남은 시간 계산 필요.
-                baseLabel_Total_RemainedTime.Text = totalElapsed.ToString(@"hh\:mm\:ss");
+                SetValue(baseLabel_Total_RemainedTime, totalElapsed.ToString(@"hh\:mm\:ss"));
                 int totalProgress = (int)(totalElapsed.TotalSeconds / goalTotalSec * 100);
-                progressBar_TotalRemained_Time.Value = Math.Min(progressBar_TotalRemained_Time.Maximum, Math.Max(0, totalProgress));
+               
+                SetValue(progressBar_TotalRemained_Time, Math.Min(progressBar_TotalRemained_Time.Maximum, Math.Max(0, totalProgress)));
 
                 // ---- Average 표시 ----
-                baseLabel_Average_OneCycleTime.Text = avgCycle.ToString(@"hh\:mm\:ss");
+                SetValue(baseLabel_Average_OneCycleTime, avgCycle.ToString(@"hh\:mm\:ss"));
+                
             }
             catch (Exception ex)
             {
@@ -4078,8 +4235,88 @@ namespace SLD200_MSL
             }
         }
 
+        private void SetColor(System.Windows.Forms.Control control, Color Backcolor)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetColor(control, Backcolor);
+                }));
 
+            }
+            else
+            {
 
+                SetColor(control, Backcolor, control.ForeColor);
+            }
+        }
+        private void SetColor(System.Windows.Forms.Control control, Color Backcolor,Color foreColor)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetColor(control, Backcolor, foreColor);
+                }));
 
+            }
+            else
+            {
+                control.BackColor = Backcolor;
+                control.ForeColor = foreColor;
+            }
+        }
+        void SetValue(Label control, string text, bool isVisible = true)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetValue(control, text, isVisible);
+                }));
+
+            }
+            else
+            {
+                control.Text = text;
+                control.Visible = isVisible;
+            }
+        }
+        private void SetValue(System.Windows.Forms.CheckBox control, bool value)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetValue(control, value);
+                }));
+
+            }
+            else
+            {
+                control.Checked = value;
+            }
+        }
+        private void SetValue(System.Windows.Forms.ProgressBar control, int v)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetValue(control, v);
+                }));
+
+            }
+            else
+            {
+                control.Value = v;
+            }
+        }
     }
 }
