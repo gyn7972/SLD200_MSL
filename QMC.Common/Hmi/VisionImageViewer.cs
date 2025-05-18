@@ -1509,7 +1509,11 @@ namespace QMC.Common.Hmi
         {
             if(this.m_GraphicsDisplay != null)
             {
-                m_Graphics.Render(this.m_GraphicsDisplay);
+                lock(m_Graphics)
+
+                { 
+                    m_Graphics.Render(this.m_GraphicsDisplay);
+                }
             }
             
         }

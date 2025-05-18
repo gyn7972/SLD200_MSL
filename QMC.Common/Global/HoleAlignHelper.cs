@@ -42,7 +42,8 @@ namespace QMC.Common.Global
                 return null;
 
             var group = stDividedRegion_GroupData[nSocketNum];
-            int regionCount = group.nGroup_Num;
+            //int regionCount = group.nGroup_Num;
+            int regionCount = group.nGroup_RegionCount;
 
             if (regionCount == 0)
             {
