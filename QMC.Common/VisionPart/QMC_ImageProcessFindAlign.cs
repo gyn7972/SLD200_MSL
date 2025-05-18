@@ -566,7 +566,7 @@ namespace QMC.Common.VisionPart
                 );
                 if (radius * (1 - dSpec) < Myradius && Myradius < radius * (1 + dSpec))
                 {
-                    circles.Add(new Circle(centerX, centerY, Myradius));
+                    circles.Add(new Circle(centerX, centerY, Myradius, (float)dMyScore));
                     //FindBestCircle()
                     // circlesResult¿¡ Ãß°¡
                     circlesResult.Add(rectangle);

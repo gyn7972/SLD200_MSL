@@ -23516,8 +23516,7 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_AlignMode = AlignMode.Socket;
-
+                                
                                 m_bSocketAlign_OK = false;
 
                                 //  소켓 얼라인 실패했으니 화면 갱신해야 한다.
@@ -23562,6 +23561,8 @@ namespace QMC.Common.Modules
                                     {
                                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Processing Skip Flag 저장 변수가 Null 입니다.");
                                     }
+
+                                    m_AlignMode = AlignMode.Socket;
 
                                     m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
