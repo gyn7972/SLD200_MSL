@@ -44,6 +44,7 @@ using Label = System.Windows.Forms.Label;
 using System.Numerics;
 using System.Reflection.Emit;
 using netDxf;
+using netDxf.Tables;
 
 namespace SLD200_MSL
 {
@@ -167,7 +168,7 @@ namespace SLD200_MSL
             Equipment.SetEqpSiriusViewerOrg( new SpiralLab.Sirius.SiriusViewerForm());
 
             // Fiducial Align Data 를 보여주는 ListView 설정
-            listView_Main_FiducialAlignData.View = View.Details;
+            listView_Main_FiducialAlignData.View = System.Windows.Forms.View.Details;
             listView_Main_FiducialAlignData.GridLines = true;         //  구분선 표시
             listView_Main_FiducialAlignData.FullRowSelect = true;     //  한줄씩 선택 설정
 
@@ -3795,6 +3796,11 @@ namespace SLD200_MSL
                     ImageViewer_Main_highs.Camera.StartLive();
                     ImageViewer_Main_Lows.Camera.StartLive();
                     var Document = this.SiriusViewer_Main.Document;
+                    if(Document.Views.Count == 0)
+                    {
+                        IView view = new ViewDefault(Document, SiriusViewer_Main.GLcontrol);
+                        Document.Views.Add(view);
+                    }
                     if (Document.Views.Count > 0)
                     {
                         var view = Document.Views.Last();
