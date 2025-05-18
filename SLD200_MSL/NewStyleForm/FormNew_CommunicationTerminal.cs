@@ -38,6 +38,8 @@ namespace SLD200_MSL
         private bool m_bPM_Stage_ReadOnce = false;
         private bool m_bPM_Stage_ReadContinuous = false;
 
+        private bool m_bBET_ReadOnce = false;
+
         public FormNew_CommunicationTerminal()
         {
             InitializeComponent();
@@ -153,6 +155,14 @@ namespace SLD200_MSL
                     else
                     {
                         label_CommTerminal_LinkStatus.Text = workStage.m_beamExpander_Comm.IsOpen ? "Connected" : "Disconnected";
+
+                        //  Beam Expander 읽었으면? 
+                        if (m_bBET_ReadOnce)
+                        {
+                            m_bBET_ReadOnce = false;
+
+                            label_CommunicationTerminal_ReceivedData.Text = string.Format("Beam Expander Zoom : {0}, Mrad : {1}", workStage.m_dBET_ZoomValue, workStage.m_dBET_MradValue);
+                        }
                     }
                     break;
 
@@ -667,6 +677,47 @@ namespace SLD200_MSL
             //  Laser Height Sensor : 측정값 읽기
 
             workStage.LaserSensor_Socket_ReadValue();
+        }
+
+        private void button_BeamExpander_Zoom_MoveCommand_Click(object sender, EventArgs e)
+        {
+            //  Beam Expander Zoom Position Move
+
+            double m_dZoom = Equipment.ToDouble(textBox_BeamExpander_Zoom_Position.Text);
+
+            workStage.BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.ZoomMotor, m_dZoom);
+        }
+
+        private void button_BeamExpander_Mrad_MoveCommand_Click(object sender, EventArgs e)
+        {
+            //  Beam Expander Mrad Position Move
+
+            double m_dMrad = Equipment.ToDouble(textBox_BeamExpander_Mrad_Position.Text);
+
+            workStage.BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor, m_dMrad);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //  Get Current Position
+
+            //workStage.BeamExpander_Send_GetCurrentStatus_Magnification_DivergenceAngle();
+
+            m_bBET_ReadOnce = true;
+        }
+
+        private void button_BeamExpander_Zoom_InitCommand_Click(object sender, EventArgs e)
+        {
+            //  Zoom Init
+
+            workStage.BeamExpander_Send_Motor_InitialPosition((int)WorkStage.nMotorizedBET.ZoomMotor);
+        }
+
+        private void button_BeamExpander_Mrad_InitCommand_Click(object sender, EventArgs e)
+        {
+            //  Mrad Init
+
+            workStage.BeamExpander_Send_Motor_InitialPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor);
         }
     }
 }

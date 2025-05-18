@@ -98,6 +98,14 @@ namespace SLD200_MSL
             timer_Recipe_Open.Tick += new System.EventHandler(Timer_RecipeOpen_Func);
             timer_Recipe_Open.Enabled = true;
 
+            //  Custom Marking Data 설정 (Recipe Load 전에는 비활성화)
+            textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = false;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+
+            //  Recipe Open 전에는 Hatch 모드가 Disable 이므로 Hatch Spacing 을 비활성화 한다.
+            textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
         }
 
         private void MachineType_Component_Enable(bool m_bLaserType)
@@ -975,16 +983,28 @@ namespace SLD200_MSL
                 //  Marking Template
                 NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Use", "false", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use = Convert.ToBoolean(temp.ToString());
-                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_File", "", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile = temp.ToString();
-                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData", "", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData = temp.ToString();
-                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Type", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Type = Equipment.ToInt(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_DataType", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_DataType = Equipment.ToInt(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Width", "5.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Width = Equipment.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Height", "5.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Height = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_TextType", "true", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_TextType = Convert.ToBoolean(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_PrefixData", "", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_PrefixData = temp.ToString();
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_StartNumber", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber = Equipment.ToInt(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Digits", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits = Equipment.ToInt(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_IncreaseStep", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep = Equipment.ToInt(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_SuffixData", "", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData = temp.ToString();
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Use", "false", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use = Convert.ToBoolean(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Spacing", "0.2", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = Equipment.ToDouble(temp.ToString());
 
                 NativeMethods.GetPrivateProfileString(strTemp, "ZCalFile_OffsetZ", "0.0", temp, 255, strFIle);
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = Equipment.ToDouble(temp.ToString());
@@ -1106,11 +1126,17 @@ namespace SLD200_MSL
 
                 //  Marking Template
                 Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use = ReadBool(data, "MarkingData_SiriusTemplate_Use", false);
-                Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile = ReadValue(data, "MarkingData_SiriusTemplate_File", "");
-                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData = ReadValue(data, "MarkingData_SiriusTemplate_EntityData", "");
-                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Type = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_Type", 0);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_DataType = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_DataType", 0);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Width = ReadDouble(data, "MarkingData_SiriusTemplate_EntityData_Width", 5.0);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Height = ReadDouble(data, "MarkingData_SiriusTemplate_EntityData_Height", 5.0);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_TextType = ReadBool(data, "MarkingData_SiriusTemplate_EntityData_TextType", true);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_PrefixData = ReadValue(data, "MarkingData_SiriusTemplate_EntityData_PrefixData", "");
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_StartNumber", 0);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_Digits", 0);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_IncreaseStep", 0);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData = ReadValue(data, "MarkingData_SiriusTemplate_EntityData_SuffixData", "");
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use = ReadBool(data, "MarkingData_SiriusTemplate_Hatch_Use", false);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = ReadDouble(data, "MarkingData_SiriusTemplate_Hatch_Spacing", 0.2);
             }
             
             return true;
@@ -1272,12 +1298,18 @@ namespace SLD200_MSL
 
                 //  Marking Template
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Use", Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_File", Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile, strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData, strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Type", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Type.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_DataType", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_DataType.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Width", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Width.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Height", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Height.ToString(), strFIle);
-
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_TextType", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_TextType.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_PrefixData", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_PrefixData.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_StartNumber", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Digits", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_IncreaseStep", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_SuffixData", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Use", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Spacing", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing.ToString(), strFIle);
+                
                 //  ZCalFile Offset Z Axis (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "ZCalFile_OffsetZ", Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString(), strFIle);
             }
@@ -1375,11 +1407,17 @@ namespace SLD200_MSL
 
                 //  Marking Template
                 layerDict["MarkingData_SiriusTemplate_Use"] = Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use.ToString();
-                layerDict["MarkingData_SiriusTemplate_File"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile.ToString();
-                layerDict["MarkingData_SiriusTemplate_EntityData"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData.ToString();
-                layerDict["MarkingData_SiriusTemplate_EntityData_Type"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Type.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_DataType"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_DataType.ToString();
                 layerDict["MarkingData_SiriusTemplate_EntityData_Width"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Width.ToString();
                 layerDict["MarkingData_SiriusTemplate_EntityData_Height"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Height.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_TextType"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_TextType.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_PrefixData"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_PrefixData.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_StartNumber"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_Digits"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_IncreaseStep"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_SuffixData"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData.ToString();
+                layerDict["MarkingData_SiriusTemplate_Hatch_Use"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use.ToString();
+                layerDict["MarkingData_SiriusTemplate_Hatch_Spacing"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
 
                 layerDict["ZCalFile_OffsetZ"] = Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString();
 
@@ -1726,12 +1764,18 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable = checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked;                                        //  하부 집진기 사용 여부
 
             //  Marking Template
-            Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use = checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked;                         //  집진기 Remote Mode 사용 여부
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile = richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData = textBox_Recipe_TabRecipe_CustomMarking_Data.Text;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Type = comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex;
+            Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use = checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_DataType = comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex;
             Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text) : 5.0;
             Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text) : 5.0;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType = radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked;                         //  true : Fixed Text, false : Serial Number
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData = textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber = textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text) : 1;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits = textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text) : 4;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep = textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text) : 1;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData = textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use = checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing = textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text) : 0.2;
 
             // 
             Equipment.stLayerRecipeSet[m_nLayerIndex].CalfileOffsetZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text) : 0.0;     //  Z-Axis Offset mm
@@ -1954,11 +1998,60 @@ namespace SLD200_MSL
 
                 //  Marking Template
                 checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
-                richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile.ToString();
-                textBox_Recipe_TabRecipe_CustomMarking_Data.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
-                comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Type.ToString());
+                comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_DataType.ToString());
                 textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width.ToString();
                 textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height.ToString();
+
+                if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)
+                {
+                    radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked = true;
+
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = false;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+                }
+                else
+                {
+                    radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Checked = true;
+
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = true;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+                }
+
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
+
+                if (comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex == 0)            //  True Type Font 일 때만 Hatch 활성화
+                {
+                    checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = true;
+                    textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
+
+                    if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use)
+                    {
+                        checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = true;
+
+                        textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
+                    }
+                    else
+                    {
+                        checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = false;
+
+                        textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
+                    }
+                }
+                else                                                                                //  그 외에는 비활성화
+                {
+                    checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = false;
+                    textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
+                }
+
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
 
 
                 //  Z-Axis Offset mm
@@ -2257,11 +2350,60 @@ namespace SLD200_MSL
 
             //  Marking Template
             checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
-            richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile.ToString();
-            textBox_Recipe_TabRecipe_CustomMarking_Data.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
-            comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Type.ToString());
+            comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_DataType.ToString());
             textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width.ToString();
             textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height.ToString();
+
+            if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)
+            {
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked = true;
+
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = false;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+            }
+            else
+            {
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Checked = true;
+
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = true;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+            }
+
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
+
+            if (comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex == 0)            //  True Type Font 일 때만 Hatch 활성화
+            {
+                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = true;
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
+
+                if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use)
+                {
+                    checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = true;
+
+                    textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
+                }
+                else
+                {
+                    checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = false;
+
+                    textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
+                }
+            }
+            else                                                                                //  그 외에는 비활성화
+            {
+                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = false;
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
+            }
+
+            textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
 
 
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[m_nIndex].CalfileOffsetZAxismm.ToString();//  하부 집진기 사용 여부
@@ -2430,11 +2572,62 @@ namespace SLD200_MSL
 
             //  Marking Template
             checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
-            richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile.ToString();
-            textBox_Recipe_TabRecipe_CustomMarking_Data.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
-            comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Type.ToString());
+            comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_DataType.ToString());
             textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width.ToString();
             textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height.ToString();
+
+            if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)
+            {
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked = true;
+
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Enabled = false;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = false;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+            }
+            else
+            {
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Checked = true;
+
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Enabled = true;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = true;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+            }
+
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
+
+            if (comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex == 0)            //  True Type Font 일 때만 Hatch 활성화
+            {
+                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = true;
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
+
+                if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use)
+                {
+                    checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = true;
+
+                    textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
+                }
+                else
+                {
+                    checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = false;
+
+                    textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
+                }
+            }
+            else                                                                                //  그 외에는 비활성화
+            {
+                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = false;
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
+            }
+            
+            textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
 
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
 
@@ -2591,37 +2784,65 @@ namespace SLD200_MSL
             }
         }
 
-        private void button_Recipe_TabRecipe_SiriusTemplateFile_Click(object sender, EventArgs e)
+        private void radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText_CheckedChanged(object sender, EventArgs e)
         {
-            int m_nReturn = -1;
+            //  Fixed Text
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Enabled = true;
 
-            var fileContent = string.Empty;
-            var filePath = string.Empty;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = false;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+        }
+        private void radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber_CheckedChanged(object sender, EventArgs e)
+        {
+            //  Serial Number
 
-            using (OpenFileDialog fd = new OpenFileDialog())
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Enabled = true;
+
+            textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = true;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+        }
+
+        private void comboBox_Recipe_TabRecipe_CustomMarking_DataType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //  True Type Font 일 때만 Hatch 활성화
+
+            int m_nIndex = comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex;
+
+            if (m_nIndex == 0) // True Type Font
             {
-                fd.CustomPlaces.Add(SLD200.Properties.Settings.Default.JobFolder);
+                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = true;
 
-                if (Equipment.DrawingFilePath.Length > 0)
+                if (checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked)
                 {
-                    fd.InitialDirectory = Equipment.DrawingFilePath;
+                    textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
                 }
                 else
                 {
-                    fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Recent);          //  최근 폴더
+                    textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
                 }
+            }
+            else
+            {
+                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = false;
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
+            }
+        }
 
-                fd.Filter = "sirius files (*.sirius)|*.sirius|All files (*.*)|*.*"; //필터 설정
-                fd.FilterIndex = 1; //1번 선택시 txt , 2번 선택시 *.*
+        private void checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            //  Hatch Enable
 
-                Log.Write("SLD-200", "Button Click", "Marking Data Template 도면 파일 불러오기");
-
-                if (fd.ShowDialog() == DialogResult.OK)
-                {
-                    filePath = fd.FileName;
-
-                    richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = filePath;
-                }
+            if (checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked)
+            {
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
+            }
+            else
+            {
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
             }
         }
     }

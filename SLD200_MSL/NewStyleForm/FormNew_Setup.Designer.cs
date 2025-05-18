@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -231,6 +231,7 @@
             this.label51 = new System.Windows.Forms.Label();
             this.label53 = new System.Windows.Forms.Label();
             this.tabPage_Setup_ScannerCalibration = new System.Windows.Forms.TabPage();
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save = new System.Windows.Forms.Button();
             this.button_Setup_ScannerCal_CameraStop = new System.Windows.Forms.Button();
             this.checkBox_Setup_ScannerCal_CirclePos = new System.Windows.Forms.CheckBox();
             this.label_Setup_ScannerCal_CirclePosY = new System.Windows.Forms.Label();
@@ -418,6 +419,14 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.label83 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_BET_Mrad_12x = new System.Windows.Forms.TextBox();
+            this.label82 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_BET_Mrad_11x = new System.Windows.Forms.TextBox();
+            this.label81 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_BET_Mrad_10x = new System.Windows.Forms.TextBox();
+            this.label80 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_BET_Mrad_08x = new System.Windows.Forms.TextBox();
             this.label78 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ModulePickup_1stDistance = new System.Windows.Forms.TextBox();
             this.label79 = new System.Windows.Forms.Label();
@@ -532,7 +541,6 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save = new System.Windows.Forms.Button();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -1203,14 +1211,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1263,14 +1271,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -3148,6 +3156,17 @@
             this.tabPage_Setup_ScannerCalibration.TabIndex = 5;
             this.tabPage_Setup_ScannerCalibration.Text = "Scanner Calibration";
             this.tabPage_Setup_ScannerCalibration.UseVisualStyleBackColor = true;
+            // 
+            // button_Setup_ScannerCal_Rtc6_Cal_File_Save
+            // 
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Location = new System.Drawing.Point(1068, 569);
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Name = "button_Setup_ScannerCal_Rtc6_Cal_File_Save";
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Size = new System.Drawing.Size(166, 35);
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.TabIndex = 172;
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Text = "Rtc6calFile Save";
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Click += new System.EventHandler(this.button_Setup_ScannerCal_Rtc6_Cal_File_Save_Click);
             // 
             // button_Setup_ScannerCal_CameraStop
             // 
@@ -5406,6 +5425,14 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.label83);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_BET_Mrad_12x);
+            this.groupBox13.Controls.Add(this.label82);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_BET_Mrad_11x);
+            this.groupBox13.Controls.Add(this.label81);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_BET_Mrad_10x);
+            this.groupBox13.Controls.Add(this.label80);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_BET_Mrad_08x);
             this.groupBox13.Controls.Add(this.label78);
             this.groupBox13.Controls.Add(this.textBox_Setup_Option_ModulePickup_1stDistance);
             this.groupBox13.Controls.Add(this.label79);
@@ -5468,10 +5495,94 @@
             this.groupBox13.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox13.Size = new System.Drawing.Size(1006, 419);
+            this.groupBox13.Size = new System.Drawing.Size(1328, 419);
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
+            // 
+            // label83
+            // 
+            this.label83.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label83.Location = new System.Drawing.Point(1068, 110);
+            this.label83.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label83.Name = "label83";
+            this.label83.Size = new System.Drawing.Size(187, 20);
+            this.label83.TabIndex = 126;
+            this.label83.Text = "Mrad Position  (BET 1.2x) :";
+            this.label83.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Option_BET_Mrad_12x
+            // 
+            this.textBox_Setup_Option_BET_Mrad_12x.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_BET_Mrad_12x.Location = new System.Drawing.Point(1259, 109);
+            this.textBox_Setup_Option_BET_Mrad_12x.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_BET_Mrad_12x.Name = "textBox_Setup_Option_BET_Mrad_12x";
+            this.textBox_Setup_Option_BET_Mrad_12x.Size = new System.Drawing.Size(59, 24);
+            this.textBox_Setup_Option_BET_Mrad_12x.TabIndex = 127;
+            this.textBox_Setup_Option_BET_Mrad_12x.Text = "0.02";
+            // 
+            // label82
+            // 
+            this.label82.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label82.Location = new System.Drawing.Point(1068, 82);
+            this.label82.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(187, 20);
+            this.label82.TabIndex = 124;
+            this.label82.Text = "Mrad Position  (BET 1.1x) :";
+            this.label82.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Option_BET_Mrad_11x
+            // 
+            this.textBox_Setup_Option_BET_Mrad_11x.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_BET_Mrad_11x.Location = new System.Drawing.Point(1259, 81);
+            this.textBox_Setup_Option_BET_Mrad_11x.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_BET_Mrad_11x.Name = "textBox_Setup_Option_BET_Mrad_11x";
+            this.textBox_Setup_Option_BET_Mrad_11x.Size = new System.Drawing.Size(59, 24);
+            this.textBox_Setup_Option_BET_Mrad_11x.TabIndex = 125;
+            this.textBox_Setup_Option_BET_Mrad_11x.Text = "0.11";
+            // 
+            // label81
+            // 
+            this.label81.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label81.Location = new System.Drawing.Point(1068, 54);
+            this.label81.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label81.Name = "label81";
+            this.label81.Size = new System.Drawing.Size(187, 20);
+            this.label81.TabIndex = 122;
+            this.label81.Text = "Mrad Position  (BET 1.0x) :";
+            this.label81.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Option_BET_Mrad_10x
+            // 
+            this.textBox_Setup_Option_BET_Mrad_10x.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_BET_Mrad_10x.Location = new System.Drawing.Point(1259, 53);
+            this.textBox_Setup_Option_BET_Mrad_10x.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_BET_Mrad_10x.Name = "textBox_Setup_Option_BET_Mrad_10x";
+            this.textBox_Setup_Option_BET_Mrad_10x.Size = new System.Drawing.Size(59, 24);
+            this.textBox_Setup_Option_BET_Mrad_10x.TabIndex = 123;
+            this.textBox_Setup_Option_BET_Mrad_10x.Text = "0.24";
+            // 
+            // label80
+            // 
+            this.label80.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label80.Location = new System.Drawing.Point(1068, 26);
+            this.label80.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label80.Name = "label80";
+            this.label80.Size = new System.Drawing.Size(187, 20);
+            this.label80.TabIndex = 120;
+            this.label80.Text = "Mrad Position  (BET 0.8x) :";
+            this.label80.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Option_BET_Mrad_08x
+            // 
+            this.textBox_Setup_Option_BET_Mrad_08x.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_BET_Mrad_08x.Location = new System.Drawing.Point(1259, 25);
+            this.textBox_Setup_Option_BET_Mrad_08x.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_BET_Mrad_08x.Name = "textBox_Setup_Option_BET_Mrad_08x";
+            this.textBox_Setup_Option_BET_Mrad_08x.Size = new System.Drawing.Size(59, 24);
+            this.textBox_Setup_Option_BET_Mrad_08x.TabIndex = 121;
+            this.textBox_Setup_Option_BET_Mrad_08x.Text = "0.5";
             // 
             // label78
             // 
@@ -6762,17 +6873,6 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button_Setup_ScannerCal_Rtc6_Cal_File_Save
-            // 
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Location = new System.Drawing.Point(1068, 569);
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Name = "button_Setup_ScannerCal_Rtc6_Cal_File_Save";
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Size = new System.Drawing.Size(166, 35);
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.TabIndex = 172;
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Text = "Rtc6calFile Save";
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.UseVisualStyleBackColor = true;
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Click += new System.EventHandler(this.button_Setup_ScannerCal_Rtc6_Cal_File_Save_Click);
-            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -7384,5 +7484,13 @@
         private System.Windows.Forms.TextBox textBox_Setup_Option_ModulePickup_1stDistance;
         private System.Windows.Forms.Label label79;
         private System.Windows.Forms.Button button_Setup_ScannerCal_Rtc6_Cal_File_Save;
+        private System.Windows.Forms.Label label82;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_BET_Mrad_11x;
+        private System.Windows.Forms.Label label81;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_BET_Mrad_10x;
+        private System.Windows.Forms.Label label80;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_BET_Mrad_08x;
+        private System.Windows.Forms.Label label83;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_BET_Mrad_12x;
     }
 }

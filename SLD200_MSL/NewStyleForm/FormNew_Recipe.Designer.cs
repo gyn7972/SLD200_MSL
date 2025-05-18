@@ -35,10 +35,29 @@
             this.tabControl_Recipe = new System.Windows.Forms.TabControl();
             this.tabPage_Recipe = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data = new System.Windows.Forms.TextBox();
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing = new System.Windows.Forms.TextBox();
+            this.label79 = new System.Windows.Forms.Label();
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable = new System.Windows.Forms.CheckBox();
+            this.label78 = new System.Windows.Forms.Label();
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber = new System.Windows.Forms.RadioButton();
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText = new System.Windows.Forms.RadioButton();
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix = new System.Windows.Forms.TextBox();
+            this.label45 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix = new System.Windows.Forms.TextBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType = new System.Windows.Forms.ComboBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this.button_Recipe_TabRecipe_SiriusTemplateFile = new System.Windows.Forms.Button();
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile = new System.Windows.Forms.RichTextBox();
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode = new System.Windows.Forms.CheckBox();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.label88 = new System.Windows.Forms.Label();
@@ -281,12 +300,6 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType = new System.Windows.Forms.ComboBox();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -407,79 +420,306 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing);
+            this.groupBox6.Controls.Add(this.label79);
+            this.groupBox6.Controls.Add(this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable);
+            this.groupBox6.Controls.Add(this.label78);
+            this.groupBox6.Controls.Add(this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber);
+            this.groupBox6.Controls.Add(this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText);
+            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix);
+            this.groupBox6.Controls.Add(this.label45);
+            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix);
+            this.groupBox6.Controls.Add(this.label26);
+            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase);
+            this.groupBox6.Controls.Add(this.label25);
+            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits);
+            this.groupBox6.Controls.Add(this.label24);
+            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber);
+            this.groupBox6.Controls.Add(this.label23);
             this.groupBox6.Controls.Add(this.comboBox_Recipe_TabRecipe_CustomMarking_DataType);
             this.groupBox6.Controls.Add(this.label22);
             this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height);
             this.groupBox6.Controls.Add(this.label19);
             this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width);
             this.groupBox6.Controls.Add(this.label18);
-            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_Data);
             this.groupBox6.Controls.Add(this.label16);
-            this.groupBox6.Controls.Add(this.button_Recipe_TabRecipe_SiriusTemplateFile);
-            this.groupBox6.Controls.Add(this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile);
             this.groupBox6.Controls.Add(this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode);
             this.groupBox6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox6.Location = new System.Drawing.Point(694, 585);
+            this.groupBox6.Location = new System.Drawing.Point(694, 528);
             this.groupBox6.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox6.Size = new System.Drawing.Size(506, 169);
+            this.groupBox6.Size = new System.Drawing.Size(506, 226);
             this.groupBox6.TabIndex = 92;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = " Marking Layer Data (If a marking layer exists) ";
             // 
-            // textBox_Recipe_TabRecipe_CustomMarking_Data
+            // textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing
             // 
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data.Location = new System.Drawing.Point(365, 84);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data";
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data.Size = new System.Drawing.Size(130, 24);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data.TabIndex = 80;
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data.Text = "TEST1234";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Location = new System.Drawing.Point(285, 199);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Name = "textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.TabIndex = 133;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = "0.2";
+            // 
+            // label79
+            // 
+            this.label79.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label79.Location = new System.Drawing.Point(138, 200);
+            this.label79.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(144, 21);
+            this.label79.TabIndex = 132;
+            this.label79.Text = "Hatch Spacing (mm) :";
+            this.label79.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable
+            // 
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Location = new System.Drawing.Point(15, 200);
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Name = "checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable";
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Size = new System.Drawing.Size(107, 21);
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.TabIndex = 131;
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Text = "Hatch Enable";
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.UseVisualStyleBackColor = true;
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable_CheckedChanged);
+            // 
+            // label78
+            // 
+            this.label78.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label78.Location = new System.Drawing.Point(413, 135);
+            this.label78.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(86, 24);
+            this.label78.TabIndex = 130;
+            this.label78.Text = "(n<0 : Dec.)";
+            this.label78.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber
+            // 
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Location = new System.Drawing.Point(112, 111);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Name = "radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Size = new System.Drawing.Size(130, 20);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.TabIndex = 129;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Text = "Serial Number";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.UseVisualStyleBackColor = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber_CheckedChanged);
+            // 
+            // radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText
+            // 
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Location = new System.Drawing.Point(112, 89);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Name = "radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Size = new System.Drawing.Size(130, 20);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.TabIndex = 128;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.TabStop = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Text = "Fixed Text";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.UseVisualStyleBackColor = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText_CheckedChanged);
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Location = new System.Drawing.Point(376, 164);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Size = new System.Drawing.Size(119, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.TabIndex = 127;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = "TEST";
+            // 
+            // label45
+            // 
+            this.label45.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label45.Location = new System.Drawing.Point(276, 162);
+            this.label45.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(97, 24);
+            this.label45.TabIndex = 126;
+            this.label45.Text = "Suffix :";
+            this.label45.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Location = new System.Drawing.Point(376, 55);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Size = new System.Drawing.Size(119, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.TabIndex = 125;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = "TEST";
+            // 
+            // label26
+            // 
+            this.label26.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label26.Location = new System.Drawing.Point(270, 54);
+            this.label26.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(103, 24);
+            this.label26.TabIndex = 124;
+            this.label26.Text = "Prefix  (Data) :";
+            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_Data_Increase
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Location = new System.Drawing.Point(376, 138);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Increase";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Size = new System.Drawing.Size(35, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.TabIndex = 123;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = "1";
+            // 
+            // label25
+            // 
+            this.label25.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label25.Location = new System.Drawing.Point(270, 135);
+            this.label25.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(103, 24);
+            this.label25.TabIndex = 122;
+            this.label25.Text = "Increase :";
+            this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_Data_Digits
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Location = new System.Drawing.Point(376, 112);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Digits";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Size = new System.Drawing.Size(35, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.TabIndex = 121;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = "4";
+            // 
+            // label24
+            // 
+            this.label24.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label24.Location = new System.Drawing.Point(270, 110);
+            this.label24.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(103, 24);
+            this.label24.TabIndex = 120;
+            this.label24.Text = "Digits :";
+            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Location = new System.Drawing.Point(376, 86);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Size = new System.Drawing.Size(35, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.TabIndex = 119;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = "1";
+            // 
+            // label23
+            // 
+            this.label23.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label23.Location = new System.Drawing.Point(270, 84);
+            this.label23.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(103, 24);
+            this.label23.TabIndex = 118;
+            this.label23.Text = "Start Number :";
+            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // comboBox_Recipe_TabRecipe_CustomMarking_DataType
+            // 
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Font = new System.Drawing.Font("Tahoma", 11F);
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.FormattingEnabled = true;
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Items.AddRange(new object[] {
+            "Text",
+            "SiriusText",
+            "1D Barcode",
+            "DataMatrix",
+            "QR"});
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Location = new System.Drawing.Point(112, 56);
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Name = "comboBox_Recipe_TabRecipe_CustomMarking_DataType";
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Size = new System.Drawing.Size(130, 26);
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.TabIndex = 117;
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Text = "Text";
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndexChanged += new System.EventHandler(this.comboBox_Recipe_TabRecipe_CustomMarking_DataType_SelectedIndexChanged);
+            // 
+            // label22
+            // 
+            this.label22.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label22.Location = new System.Drawing.Point(6, 55);
+            this.label22.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(104, 24);
+            this.label22.TabIndex = 85;
+            this.label22.Text = "Marking Type :";
+            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Location = new System.Drawing.Point(171, 164);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height";
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.TabIndex = 84;
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = "5.0";
+            // 
+            // label19
+            // 
+            this.label19.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label19.Location = new System.Drawing.Point(6, 162);
+            this.label19.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(162, 24);
+            this.label19.TabIndex = 83;
+            this.label19.Text = "(Height, mm) :";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Location = new System.Drawing.Point(171, 138);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width";
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.TabIndex = 82;
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = "5.0";
+            // 
+            // label18
+            // 
+            this.label18.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label18.Location = new System.Drawing.Point(6, 136);
+            this.label18.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(162, 24);
+            this.label18.TabIndex = 81;
+            this.label18.Text = "Data Size (Width, mm) :";
+            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label16
             // 
             this.label16.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label16.Location = new System.Drawing.Point(259, 83);
+            this.label16.Location = new System.Drawing.Point(6, 85);
             this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(104, 24);
             this.label16.TabIndex = 79;
-            this.label16.Text = "Marking Data :";
+            this.label16.Text = "Data Type :";
             this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // button_Recipe_TabRecipe_SiriusTemplateFile
-            // 
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Location = new System.Drawing.Point(28, 113);
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Name = "button_Recipe_TabRecipe_SiriusTemplateFile";
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Size = new System.Drawing.Size(118, 44);
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.TabIndex = 78;
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Text = "Template  File Select (.sirius)";
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.UseVisualStyleBackColor = true;
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Click += new System.EventHandler(this.button_Recipe_TabRecipe_SiriusTemplateFile_Click);
-            // 
-            // richTextBox_Recipe_TabRecipe_MarkingTemplateFile
-            // 
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Location = new System.Drawing.Point(28, 54);
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Name = "richTextBox_Recipe_TabRecipe_MarkingTemplateFile";
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Size = new System.Drawing.Size(203, 57);
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.TabIndex = 77;
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = "";
             // 
             // checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode
             // 
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.AutoSize = true;
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Location = new System.Drawing.Point(10, 25);
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Location = new System.Drawing.Point(10, 26);
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Name = "checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode";
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Size = new System.Drawing.Size(435, 21);
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Size = new System.Drawing.Size(492, 21);
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.TabIndex = 62;
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Text = "Processing by changing marking data to barcode (1D, 2D, QR etc)";
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Text = "Convert \"Text\" data to another type     [1D Barcode, DataMatrix, QR Code]";
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.UseVisualStyleBackColor = true;
             // 
             // groupBox15
@@ -731,11 +971,11 @@
             this.groupBox14.Controls.Add(this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower);
             this.groupBox14.Controls.Add(this.label48);
             this.groupBox14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox14.Location = new System.Drawing.Point(694, 237);
+            this.groupBox14.Location = new System.Drawing.Point(694, 225);
             this.groupBox14.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox14.Size = new System.Drawing.Size(231, 142);
+            this.groupBox14.Size = new System.Drawing.Size(231, 140);
             this.groupBox14.TabIndex = 86;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = " Dust Collector (Hz) ";
@@ -886,11 +1126,11 @@
             this.groupBox11.Controls.Add(this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter);
             this.groupBox11.Controls.Add(this.label42);
             this.groupBox11.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox11.Location = new System.Drawing.Point(694, 395);
+            this.groupBox11.Location = new System.Drawing.Point(694, 377);
             this.groupBox11.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox11.Size = new System.Drawing.Size(506, 175);
+            this.groupBox11.Size = new System.Drawing.Size(505, 139);
             this.groupBox11.TabIndex = 89;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = " Parameters for processing by converting a Hole into a Spiral ";
@@ -898,7 +1138,7 @@
             // label44
             // 
             this.label44.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label44.Location = new System.Drawing.Point(317, 30);
+            this.label44.Location = new System.Drawing.Point(317, 25);
             this.label44.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(169, 54);
@@ -909,10 +1149,10 @@
             // label43
             // 
             this.label43.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label43.Location = new System.Drawing.Point(27, 129);
+            this.label43.Location = new System.Drawing.Point(263, 92);
             this.label43.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(235, 38);
+            this.label43.Size = new System.Drawing.Size(237, 36);
             this.label43.TabIndex = 33;
             this.label43.Text = "(Angle Factor : The smaller the value, the smoother the spiral.)";
             this.label43.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -920,7 +1160,7 @@
             // button17
             // 
             this.button17.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button17.Location = new System.Drawing.Point(232, 103);
+            this.button17.Location = new System.Drawing.Point(219, 103);
             this.button17.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.button17.Name = "button17";
             this.button17.Size = new System.Drawing.Size(35, 25);
@@ -931,7 +1171,7 @@
             // textBox_Recipe_TabRecipe_SpiralParam_AngleFactor
             // 
             this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Location = new System.Drawing.Point(183, 103);
+            this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Location = new System.Drawing.Point(170, 103);
             this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Name = "textBox_Recipe_TabRecipe_SpiralParam_AngleFactor";
             this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Size = new System.Drawing.Size(45, 24);
@@ -941,10 +1181,10 @@
             // label39
             // 
             this.label39.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label39.Location = new System.Drawing.Point(5, 101);
+            this.label39.Location = new System.Drawing.Point(4, 101);
             this.label39.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(177, 24);
+            this.label39.Size = new System.Drawing.Size(165, 24);
             this.label39.TabIndex = 30;
             this.label39.Text = "Angle Factor :";
             this.label39.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -952,7 +1192,7 @@
             // button12
             // 
             this.button12.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button12.Location = new System.Drawing.Point(232, 78);
+            this.button12.Location = new System.Drawing.Point(219, 78);
             this.button12.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(35, 25);
@@ -963,7 +1203,7 @@
             // textBox_Recipe_TabRecipe_SpiralParam_Revolutions
             // 
             this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Location = new System.Drawing.Point(183, 78);
+            this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Location = new System.Drawing.Point(170, 78);
             this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Name = "textBox_Recipe_TabRecipe_SpiralParam_Revolutions";
             this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Size = new System.Drawing.Size(45, 24);
@@ -973,10 +1213,10 @@
             // label40
             // 
             this.label40.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label40.Location = new System.Drawing.Point(5, 76);
+            this.label40.Location = new System.Drawing.Point(4, 76);
             this.label40.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(177, 24);
+            this.label40.Size = new System.Drawing.Size(165, 24);
             this.label40.TabIndex = 27;
             this.label40.Text = "Number of Revolutions :";
             this.label40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -984,7 +1224,7 @@
             // button13
             // 
             this.button13.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button13.Location = new System.Drawing.Point(232, 53);
+            this.button13.Location = new System.Drawing.Point(219, 53);
             this.button13.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(35, 25);
@@ -995,7 +1235,7 @@
             // textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter
             // 
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Location = new System.Drawing.Point(183, 53);
+            this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Location = new System.Drawing.Point(170, 53);
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Name = "textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter";
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Size = new System.Drawing.Size(45, 24);
@@ -1005,10 +1245,10 @@
             // label41
             // 
             this.label41.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label41.Location = new System.Drawing.Point(5, 51);
+            this.label41.Location = new System.Drawing.Point(4, 51);
             this.label41.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(177, 24);
+            this.label41.Size = new System.Drawing.Size(165, 24);
             this.label41.TabIndex = 24;
             this.label41.Text = "Inner Diameter (mm) :";
             this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1016,7 +1256,7 @@
             // button16
             // 
             this.button16.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button16.Location = new System.Drawing.Point(232, 27);
+            this.button16.Location = new System.Drawing.Point(219, 27);
             this.button16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.button16.Name = "button16";
             this.button16.Size = new System.Drawing.Size(35, 25);
@@ -1027,7 +1267,7 @@
             // textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter
             // 
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Location = new System.Drawing.Point(183, 27);
+            this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Location = new System.Drawing.Point(170, 27);
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Name = "textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter";
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Size = new System.Drawing.Size(45, 24);
@@ -1037,10 +1277,10 @@
             // label42
             // 
             this.label42.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label42.Location = new System.Drawing.Point(5, 25);
+            this.label42.Location = new System.Drawing.Point(4, 25);
             this.label42.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(177, 24);
+            this.label42.Size = new System.Drawing.Size(165, 24);
             this.label42.TabIndex = 21;
             this.label42.Text = "Outer Diameter (mm) :";
             this.label42.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1058,11 +1298,11 @@
             this.groupBox10.Controls.Add(this.textBox_Recipe_TabRecipe_ModuleInformation_Width);
             this.groupBox10.Controls.Add(this.label34);
             this.groupBox10.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox10.Location = new System.Drawing.Point(946, 237);
+            this.groupBox10.Location = new System.Drawing.Point(946, 225);
             this.groupBox10.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox10.Size = new System.Drawing.Size(254, 142);
+            this.groupBox10.Size = new System.Drawing.Size(254, 140);
             this.groupBox10.TabIndex = 88;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = " Module Information ";
@@ -1188,7 +1428,7 @@
             this.groupBox9.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox9.Size = new System.Drawing.Size(231, 211);
+            this.groupBox9.Size = new System.Drawing.Size(231, 203);
             this.groupBox9.TabIndex = 87;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = " Process Options ";
@@ -1286,7 +1526,7 @@
             this.groupBox7.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox7.Size = new System.Drawing.Size(254, 174);
+            this.groupBox7.Size = new System.Drawing.Size(254, 168);
             this.groupBox7.TabIndex = 85;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = " Laser Set Points ";
@@ -1306,7 +1546,7 @@
             // label89
             // 
             this.label89.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label89.Location = new System.Drawing.Point(13, 146);
+            this.label89.Location = new System.Drawing.Point(13, 140);
             this.label89.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label89.Name = "label89";
             this.label89.Size = new System.Drawing.Size(162, 17);
@@ -1349,7 +1589,7 @@
             // button_PulseWidth_Calc
             // 
             this.button_PulseWidth_Calc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_PulseWidth_Calc.Location = new System.Drawing.Point(180, 120);
+            this.button_PulseWidth_Calc.Location = new System.Drawing.Point(180, 114);
             this.button_PulseWidth_Calc.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.button_PulseWidth_Calc.Name = "button_PulseWidth_Calc";
             this.button_PulseWidth_Calc.Size = new System.Drawing.Size(65, 43);
@@ -1361,7 +1601,7 @@
             // textBox_Recipe_TabRecipe_LaserParam_DutyCycle
             // 
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Location = new System.Drawing.Point(124, 120);
+            this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Location = new System.Drawing.Point(124, 114);
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Name = "textBox_Recipe_TabRecipe_LaserParam_DutyCycle";
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Size = new System.Drawing.Size(53, 24);
@@ -1393,7 +1633,7 @@
             // label20
             // 
             this.label20.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label20.Location = new System.Drawing.Point(5, 119);
+            this.label20.Location = new System.Drawing.Point(5, 113);
             this.label20.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(119, 24);
@@ -1417,7 +1657,7 @@
             this.groupBox167.Controls.Add(this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod);
             this.groupBox167.Controls.Add(this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P);
             this.groupBox167.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox167.Location = new System.Drawing.Point(946, 159);
+            this.groupBox167.Location = new System.Drawing.Point(946, 151);
             this.groupBox167.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox167.Name = "groupBox167";
             this.groupBox167.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -1429,7 +1669,7 @@
             // radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod
             // 
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Location = new System.Drawing.Point(137, 33);
+            this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Location = new System.Drawing.Point(137, 35);
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Name = "radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod";
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Size = new System.Drawing.Size(100, 20);
@@ -1441,7 +1681,7 @@
             // 
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true;
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Location = new System.Drawing.Point(17, 33);
+            this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Location = new System.Drawing.Point(17, 35);
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Name = "radioButton_Recipe_TabRecipe_ProcessPriority_P2P";
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Size = new System.Drawing.Size(110, 20);
@@ -2237,17 +2477,16 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Items.AddRange(new object[] {
-            "0.1X BET Position",
-            "0.5X BET Position",
-            "1.0X BET Position",
-            "1.5X BET Position",
-            "2.0X BET Position"});
+            "0.8X",
+            "1.0X",
+            "1.1x",
+            "1.2X"});
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Location = new System.Drawing.Point(198, 568);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Size = new System.Drawing.Size(186, 26);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.TabIndex = 92;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = "0.1X BET Position";
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = "1.0X BET Position";
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex
             // 
@@ -3436,76 +3675,6 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
-            // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width
-            // 
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Location = new System.Drawing.Point(365, 110);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width";
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Size = new System.Drawing.Size(130, 24);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.TabIndex = 82;
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = "5.0";
-            // 
-            // label18
-            // 
-            this.label18.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label18.Location = new System.Drawing.Point(259, 109);
-            this.label18.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(104, 24);
-            this.label18.TabIndex = 81;
-            this.label18.Text = "Width (mm) :";
-            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height
-            // 
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Location = new System.Drawing.Point(365, 136);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height";
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Size = new System.Drawing.Size(130, 24);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.TabIndex = 84;
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = "5.0";
-            // 
-            // label19
-            // 
-            this.label19.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label19.Location = new System.Drawing.Point(259, 135);
-            this.label19.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(104, 24);
-            this.label19.TabIndex = 83;
-            this.label19.Text = "Height (mm) :";
-            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label22
-            // 
-            this.label22.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label22.Location = new System.Drawing.Point(259, 56);
-            this.label22.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(104, 24);
-            this.label22.TabIndex = 85;
-            this.label22.Text = "Marking Type :";
-            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // comboBox_Recipe_TabRecipe_CustomMarking_DataType
-            // 
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Font = new System.Drawing.Font("Tahoma", 11F);
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.FormattingEnabled = true;
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Items.AddRange(new object[] {
-            "Text",
-            "SiriusText",
-            "1D Barcode",
-            "DataMatrix",
-            "QR"});
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Location = new System.Drawing.Point(365, 55);
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Name = "comboBox_Recipe_TabRecipe_CustomMarking_DataType";
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Size = new System.Drawing.Size(130, 26);
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.TabIndex = 117;
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Text = "Text";
-            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -3820,9 +3989,6 @@
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode;
-        private System.Windows.Forms.Button button_Recipe_TabRecipe_SiriusTemplateFile;
-        private System.Windows.Forms.RichTextBox richTextBox_Recipe_TabRecipe_MarkingTemplateFile;
-        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_Data;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width;
         private System.Windows.Forms.Label label18;
@@ -3830,5 +3996,21 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_Data_Digits;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_Data_Increase;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix;
+        private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.RadioButton radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber;
+        private System.Windows.Forms.RadioButton radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText;
+        private System.Windows.Forms.Label label78;
+        private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing;
+        private System.Windows.Forms.Label label79;
     }
 }

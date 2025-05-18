@@ -1261,6 +1261,13 @@ namespace SLD200_MSL
             textBox_Setup_Option_Sirius_Drawing_Resolution.Text = Equipment.SiriusDrawing_Rendering_Resolution.ToString();
 
 
+            //  BET 별 Mrad
+            textBox_Setup_Option_BET_Mrad_08x.Text = Equipment.BET_0_8X_Mrad.ToString();
+            textBox_Setup_Option_BET_Mrad_10x.Text = Equipment.BET_1_0X_Mrad.ToString();
+            textBox_Setup_Option_BET_Mrad_11x.Text = Equipment.BET_1_1X_Mrad.ToString(); 
+            textBox_Setup_Option_BET_Mrad_12x.Text = Equipment.BET_1_2X_Mrad.ToString();
+
+
             //  Options
             checkBox_Setup_Option_DoorEnable.Checked = Equipment.Machine_Door_Enable;
             checkBox_Setup_Option_VacuumSensorEnable.Checked = Equipment.Machine_VacuumSensor_Enable;
@@ -1772,6 +1779,17 @@ namespace SLD200_MSL
             Equipment.SiriusDrawing_Rendering_Resolution = Equipment.ToInt(textBox_Setup_Option_Sirius_Drawing_Resolution.Text);
             NativeMethods.WritePrivateProfileString("Sirius_Drawing", "Rendering_Resolution", textBox_Setup_Option_Sirius_Drawing_Resolution.Text, strFIle);
             SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
+
+            //  BET 별 Mrad
+            Equipment.BET_0_8X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_08x.Text);
+            NativeMethods.WritePrivateProfileString("BET_Mrad", "Mag_08X", textBox_Setup_Option_BET_Mrad_08x.Text, strFIle);
+            Equipment.BET_1_0X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_08x.Text);
+            NativeMethods.WritePrivateProfileString("BET_Mrad", "Mag_10X", textBox_Setup_Option_BET_Mrad_10x.Text, strFIle);
+            Equipment.BET_1_1X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_08x.Text);
+            NativeMethods.WritePrivateProfileString("BET_Mrad", "Mag_11X", textBox_Setup_Option_BET_Mrad_11x.Text, strFIle);
+            Equipment.BET_1_2X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_08x.Text);
+            NativeMethods.WritePrivateProfileString("BET_Mrad", "Mag_12X", textBox_Setup_Option_BET_Mrad_12x.Text, strFIle);
+            
 
             MessageBox.Show("Machine Option 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

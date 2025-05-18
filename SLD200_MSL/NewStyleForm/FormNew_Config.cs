@@ -641,6 +641,16 @@ namespace SLD200_MSL
             }
 
 
+            //  BET
+            if (workStage.m_beamExpander_Comm != null)
+            {
+                if (workStage.m_beamExpander_Comm.IsOpen)
+                {
+                    textBox_Config_BDS_BET_Zoom.Text = workStage.m_dBET_ZoomValue.ToString();
+                    textBox_Config_BDS_BET_Mrad.Text = workStage.m_dBET_MradValue.ToString();
+                }
+            }
+
 
             timer_Status.Enabled = true;
         }
@@ -5754,6 +5764,38 @@ namespace SLD200_MSL
                 FormCalfilePopup.Show();
                 FormCalfilePopup.Activate();
             }
+        }
+
+        private void Button_Config_BDS_BET_Zoom_Position_Move_Click(object sender, EventArgs e)
+        {
+            //  BET Zoom Move
+
+            double m_dZoom = Equipment.ToDouble(textBox_Config_BDS_BET_Zoom_Position.Text);
+
+            workStage.BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.ZoomMotor, m_dZoom);
+        }
+
+        private void Button_Config_BDS_BET_Mrad_Position_Move_Click(object sender, EventArgs e)
+        {
+            //  BET Mrad Move
+
+            double m_dMrad = Equipment.ToDouble(textBox_Config_BDS_BET_Mrad_Position.Text);
+
+            workStage.BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor, m_dMrad);
+        }
+
+        private void Button_Config_BDS_BET_Zoom_Init_Click(object sender, EventArgs e)
+        {
+            //  BET Zoom Init
+
+            workStage.BeamExpander_Send_Motor_InitialPosition((int)WorkStage.nMotorizedBET.ZoomMotor);
+        }
+
+        private void Button_Config_BDS_BET_Mrad_Init_Click(object sender, EventArgs e)
+        {
+            //  BET Mrad Init
+
+            workStage.BeamExpander_Send_Motor_InitialPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor);
         }
     }
 }
