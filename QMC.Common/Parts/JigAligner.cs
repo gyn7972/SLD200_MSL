@@ -840,16 +840,18 @@ namespace QMC.Common.Parts
                         foreach(var circle in result.Circles)
                         {
                             Fiducial_circlesResult.Add(circle.GetBoundery());
+                            bFind = true;
                         }
                     }
 
 
-                    if (Fiducial_circlesResult.Count > 0 && bFind == true)
+                    if (result.Circles.Count > 0 && bFind == true)
                     {
-                        double cx = Fiducial_circlesResult[0].X + (Fiducial_circlesResult[0].Width / 2);
-                        double cy = Fiducial_circlesResult[0].Y + (Fiducial_circlesResult[0].Height / 2);
+                        double cx = result.Circles[0].CenterX ;
+                        double cy = result.Circles[0].CenterY;
                         pmCircle.X = cx;
                         pmCircle.Y = cy;
+                        pmCircle.Score = result.Circles[0].Score;
 
                         //currentCoordinate 안쓰는디...
                         currentCoordinate.X = 0.0;
@@ -890,6 +892,7 @@ namespace QMC.Common.Parts
                                 Font font = new Font("verdana", FontSize, FontStyle.Bold);
                                 var textOveray = new TextVisionImageOverlay(strScore, new Point((int)v.Left, (int)v.Top - FontSize *3), font);
                                 textOveray.Visible = true;
+                                textOveray.Color = Color.Lime;
                                 m_Owner.CoarseCamResultOveray.Add(textOveray);
                             }
                             m_Owner.UpdateResultOveray?.Invoke(this.Camera, null);

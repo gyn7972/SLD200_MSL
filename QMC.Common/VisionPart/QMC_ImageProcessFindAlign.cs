@@ -777,6 +777,7 @@ namespace QMC.Common.VisionPart
                     {
                         bFind = true;
                         Qmcresult.Circles.Add(result);
+                        Qmcresult.ScoreCollection.Add(result.Score);
                         return Qmcresult;
                     }
 

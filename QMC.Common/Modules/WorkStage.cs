@@ -22075,12 +22075,21 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking, Pre Align Cycle 시작.");
 
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+                    //CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+                    //CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+                    //CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
+                    //CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
+                    //CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
+                    //CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+
+
+                    jigAligner_LowRes.Camera.SetExposureTime(Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime);
+
+                    SetLightingByChannel(LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
+                    Thread.Sleep(100);
+                    SetLightingByChannel(LightingChannel.FineCamRed, 4000, true);
+                    SetLightingByChannel(LightingChannel.FineCamIR, 0, false);
+
 
                     //Align Mark Pos - 도면에서 추출하여 전달.
                     // 소켓 1번과 동일한 얼라인 좌표로 얼라인 하기 위하여 아래와 같이 수정.
@@ -23943,7 +23952,7 @@ namespace QMC.Common.Modules
 
                     SetLightingByChannel(LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
                     Thread.Sleep(100);
-                    SetLightingByChannel(LightingChannel.FineCamRed, 0, false);
+                    SetLightingByChannel(LightingChannel.FineCamRed, 4000, true);
                     SetLightingByChannel(LightingChannel.FineCamIR, 0, false);
 
 

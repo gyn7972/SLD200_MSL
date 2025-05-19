@@ -853,31 +853,18 @@ namespace SLD200.NewStyleForm.NewSubForm
                 PatternMatchingResult SearchResult = null;
                 XyCoordinate PointCoordinate = new XyCoordinate();
 
-                if(nIsDarkCircleSearch <= 1)
+                ImageViewer_RecipeVision_Lows.ResultOverlays.Clear();
+                Owner.FindCircleDetection(dRadius, nIsDarkCircleSearch, dspec, dScore, out SearchResult, out PointCoordinate);
+                if (SearchResult != null)
                 {
-                    bool bSearch = false;
-                    if(nIsDarkCircleSearch == 0)
-                        bSearch = false;
-                    else if(nIsDarkCircleSearch == 1)
-                        bSearch = true;
-
-                    ImageViewer_RecipeVision_Lows.ResultOverlays.Clear();
-                    Owner.FindCircleDetection(dRadius, nIsDarkCircleSearch, dspec, dScore, out SearchResult, out PointCoordinate);
-                    if (SearchResult != null)
+                    foreach (var overlay in SearchResult.ResultOverlays)
                     {
-                        foreach (var overlay in SearchResult.ResultOverlays)
-                        {
-                            ImageViewer_RecipeVision_Lows.ResultOverlays.Add(overlay);
-                            overlay.Visible = true;
-                        }
+                        ImageViewer_RecipeVision_Lows.ResultOverlays.Add(overlay);
+                        overlay.Visible = true;
                     }
                 }
-                else if (nIsDarkCircleSearch == 2)
-                {
-
-                }
-
-
+               
+                
                 if (SearchResult != null && SearchResult.Values.Count > 0)
                 {
                     if (IsPixel == true)
