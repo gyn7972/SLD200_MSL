@@ -14383,8 +14383,6 @@ namespace QMC.Common.Modules
                             {
                                 if ((nSocketNum >= 0) && (nSocketNum < m_stOutLine_SocketData[0].nSocket_Num))
                                 {
-                                    double dPositionXCurX = 0.0;
-                                    double dPositionXCurY = 0.0;
                                     for (int i = 0; i < 4; i++)
                                     {
                                         //  4-Point 의 도면상 위치 데이터
@@ -14419,8 +14417,6 @@ namespace QMC.Common.Modules
                             {
                                 if ((nSocketNum >= 0) && (nSocketNum < m_stThruHole_SocketData[0].nSocket_Num))
                                 {
-                                    double dPositionXCurX = 0.0;
-                                    double dPositionXCurY = 0.0;
                                     for (int i = 0; i < 4; i++)
                                     {
                                         //  4-Point 의 도면상 위치 데이터
@@ -14455,8 +14451,6 @@ namespace QMC.Common.Modules
                             {
                                 if ((nSocketNum >= 0) && (nSocketNum < m_stMarking_SocketData.nRegion_ObjectTotalNum))
                                 {
-                                    double dPositionXCurX = 0.0;
-                                    double dPositionXCurY = 0.0;
                                     for (int i = 0; i < 4; i++)
                                     {
                                         //  4-Point 의 도면상 위치 데이터
@@ -14496,7 +14490,6 @@ namespace QMC.Common.Modules
                                 var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stDividedRegion_GroupData);
                                 // 전체 홀 리스트 사용
                                 //List<AlignPoint> allHoles = alignPositions.AllPoints;
-
 
                                 for (int i = 0; i < 4; i++)
                                 {
@@ -14872,9 +14865,10 @@ namespace QMC.Common.Modules
                             double averageOffsetX = matchCount > 0 ? totalOffsetX / matchCount : 0.0;
                             double averageOffsetY = matchCount > 0 ? totalOffsetY / matchCount : 0.0;
                             Log.Write("SLD-200", "Align", $"Average Offset - X: {averageOffsetX:F3}, Y: {averageOffsetY:F3}");
-                            
+
                             // 이거면 되것징!!!!
                             //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경.
+                            // GoldPowder는 +,+ -> -,- 로 변경
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = 
                                 MC_Func.MC_GetEncPos((int)nAxis.X) - averageOffsetX;
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = 
@@ -14923,11 +14917,6 @@ namespace QMC.Common.Modules
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
 
-                                ////  알람 정지 (LED Bar - Red Blink)
-                                //Equipment.MachineStop_byAlarm = true;
-
-                                //timer_VisionAlign.Enabled = false;
-
                                 m_bAlignCompleted = true;
                                 m_bSocketAlign_OK = false;
                                 m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
@@ -14942,11 +14931,11 @@ namespace QMC.Common.Modules
                     if(alignMode == AlignMode.GoldPowder)
                     {
                         // 골드파우더 에서 앵글 보상 할거면 아래 코드 삭제.
-                        double dOffsetX = 0;
-                        double dOffsetY = 0;
+                        //double dOffsetX = 0;
+                        //double dOffsetY = 0;
                         for(int iter = 0; iter < 4;iter ++)
                         {
-                            dOffsetX  += m_st4PointPosition_DwgPos[iter].ptFiducial_Center.X - m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
+                            //dOffsetX  += m_st4PointPosition_DwgPos[iter].ptFiducial_Center.X - m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
                             m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
 
                             strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
@@ -24150,9 +24139,6 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingData_PreAlign_Correction:                      //  가공 할 Socket Align 시작
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 시작.");
-
-                    //TickCount_Start((int)TickType.TICK_MAIN); //<-여기선 필요없음.
-
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction_Complete;
                     break;
 
@@ -24268,18 +24254,12 @@ namespace QMC.Common.Modules
                             //  Socket Align NG 이면, 다음 Socket 으로 이동
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 실패, 다음 Socket Align 해야함.");
 
-                            //timer_LaserDrillingWork.Enabled = false;
-                            //m_bExit = true;
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-                            //MessageBox.Show("Socket Align 실패", "Error");
-
 							//  소켓 얼라인 실패했으니 화면 갱신해야 한다.
                             m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
 
                             Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
                             Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
-                            //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-
+                            
                             GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
 
                             Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
@@ -24328,7 +24308,7 @@ namespace QMC.Common.Modules
                         m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
                         m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
                         m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
-                        m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle;
+                        m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle; // 0이 들어가는게 맞음. X,Y만 Align 수행.
                     }
                     
                     AlignedDrillingData_Select_and_OffsetMove(m_nSocketNum_forAlign, 
@@ -24535,23 +24515,14 @@ namespace QMC.Common.Modules
                         TickCount_Start((int)TickType.TICK_MAIN);
                         //여기서 변위센서 위치로 보낸다.
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
-
-                        //DrillingData_SocketHeightCheckProcess_Start
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck;
-
-                        //아래 Test용. Test하고 막자.
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.GoldPowderAlign_CompleteCheck;
                     }
                     break;
 
                 case (int)LaserDrilling_Step.GoldPowderAlign_CompleteCheck:
                     {
-                        // 어디로 가야하낭
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-
-                        //우선은 막고 -> Hole 가공 완료 하는 부분으로 보내면 될듯.
+                        // Test시 사용 시컨스 
+                        // 우선은 막고 -> Hole 가공 완료 하는 부분으로 보내면 될듯.
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.GoldPowderAlign_CompleteCheck;
-                        
                     }
                     break;
 
@@ -27446,7 +27417,8 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                     //Cycle Time
-                    CycleTimer_LaserDrilling.End();
+                    Equipment.CycleTimer_DoneModuleCount++;
+                    Equipment.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
                     m_strTemp = string.Format("LaserDrillingOneCycle Time: {0:0.000} sec", CycleTimer_LaserDrilling.Latest.Interval.TotalSeconds);
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
@@ -29178,7 +29150,8 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = -m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
 
-            //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
+            //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용.
+            //  Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
@@ -29239,7 +29212,8 @@ namespace QMC.Common.Modules
         private int LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck(ref int m_nZigZag_CurrentRow, ref int m_nZigZag_CurRow_FirstIndex, ref int m_nZigZag_CurRow_CurIndex, ref int m_nZigZag_CurRow_LastIndex)
         {
             int nNextStep;
-            if (m_nDividedRegion_Region_CurrentIndex < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[0].nRegion_Num)
+            if (m_nDividedRegion_Region_CurrentIndex < 
+                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[0].nRegion_Num)
             {
                 Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역이 남아 있음");
 
@@ -30492,7 +30466,6 @@ namespace QMC.Common.Modules
             {
                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 가공할 Socket 이 남아 있음");
 
-
                 //  임시 주석 처리
                 ////  가공중인 소켓 좌표 (메인 화면 표시용)
                 //Main_SocketPositions_CurrentSocketPosition.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.X;
@@ -30500,7 +30473,6 @@ namespace QMC.Common.Modules
                 //Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
                 //Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  진행중인 소켓 번호
                 //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-
 
                 m_nDrillingWork_Repeat_Count = 0;
                 m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?

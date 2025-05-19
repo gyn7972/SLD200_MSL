@@ -244,6 +244,9 @@ namespace QMC.Common
         public static double MainCycle_Interval { set; get; }                           //  Main Cycle 타이머의 Interval. 
 
 
+        public static int CycleTimer_TargetModuleCount = 0;
+        public static int CycleTimer_DoneModuleCount = 0;
+        public static int CycleTimer_NGSocketCount = 0;
         //  workStage 가공시간 계산을 위해 사용되는 변수
         public static CycleTimer CycleTimer_LaserDrilling = new CycleTimer();
 

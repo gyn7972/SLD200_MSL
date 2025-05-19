@@ -2500,6 +2500,7 @@ namespace SLD200_MSL
             unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = workStage.m_bMainWorkCycle_ResultOK_toRPort;
 
 
+            Equipment.CycleTimer_LaserDrilling.End();   // 현재 사이클 정지 : 정지 버튼 눌렀을때도 정지하고 다시 해야지.
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
             Equipment.CycleTimer_LaserDrilling.SaveToIni("LaserDrilling", strPath);
         }
@@ -3185,7 +3186,6 @@ namespace SLD200_MSL
                 ////////////////////////////////////////////////////////////////////////////
                 ////  Socket 선택 가공인지 확인용
                 ///
-
                 if (workStage.m_stDividedRegion_GroupData == null)              //  Parsing 해야 확인할 수 있는 데이터
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Start Button Click", "Data Parsing 진행. (GetDrillingData)");
@@ -3202,7 +3202,6 @@ namespace SLD200_MSL
                         if (layer.Name == "Hole1")
                         {
                             baseTextBox_SocketCountPerModule.Text = layer.Count.ToString();
-
                             foreach (var entity in layer)
                             {
                                 switch (entity.EntityType)
@@ -3505,6 +3504,12 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            //Test code
+            baseTextBox_SocketCountPerModule.Text = "12";
+            Equipment.CycleTimer_LaserDrilling.Start();
+            return;
+
+
             ////double number = 0.238;
 
             //byte[] data = new byte[16];
@@ -3536,10 +3541,6 @@ namespace SLD200_MSL
 
             //// 소수로 복원하려면
             //double number = nPos / 1000.0;
-
-
-
-
 
             //    int n_Count = 2;
             //double m_dRotateAngle = 0;
@@ -3726,10 +3727,6 @@ namespace SLD200_MSL
             //SiriusViewer_Main.Document = markerArg.Document;
 
             //return;
-
-
-
-
 
             //int n_Count = 2;
 
@@ -4056,10 +4053,29 @@ namespace SLD200_MSL
 
         private void button_AverageOneCycleTime_Clear_Click(object sender, EventArgs e)
         {
-            //Test
-            Equipment.CycleTimer_LaserDrilling.End();
-            string m_strTemp = string.Format("LaserDrillingOneCycle Time: {0:0.000} sec", Equipment.CycleTimer_LaserDrilling.Latest.Interval.TotalSeconds);
-            Log.Write("SLD-200", "Auto Run", m_strTemp);
+            try
+            {
+                // 평균 계산의 기반 데이터만 초기화 (누적 시간 유지)
+                Equipment.CycleTimer_LaserDrilling.Clear();
+
+                // 총 경과 시간 및 최근 사이클 시간도 명시적으로 초기화
+                Equipment.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
+                //Equipment.CycleTimer_LaserDrilling.Latest = new CycleTimer.CycleInfo(); // 또는 생성자에 맞게 초기화
+
+                // 완료 수량도 초기화
+                Equipment.CycleTimer_DoneModuleCount = 0;
+
+
+                // UI 갱신
+                UpdateCycleTimerUI();
+
+                // 로그 출력
+                Log.Write("SLD-200", Equipment.User_Name, "CycleTimer", "Average One Cycle Time만 초기화 완료");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
 
         private void InitAxisLabelMap()
@@ -4204,10 +4220,14 @@ namespace SLD200_MSL
         {
             try
             {
-                int goalOneCycleSec = 70;      // 목표 1사이클 시간 (초)
-                int goalTotalSec = 86400;      // 총 목표 시간 (초) - 24시간 <- 수량 및 1사이클에 따른 남은 시간 계산 필요.
+                string strModuleTargetCnt = GetValue(numericUpDown_Module_TargetCount);
+                int nModuleTargetCnt = Equipment.ToInt(strModuleTargetCnt);
+                Equipment.CycleTimer_TargetModuleCount = nModuleTargetCnt;
 
-                // 실시간 경과 시간
+                int totalCount = Equipment.CycleTimer_TargetModuleCount;
+                int doneCount = Equipment.CycleTimer_DoneModuleCount;
+                int NGCount = Equipment.CycleTimer_NGSocketCount;
+
                 TimeSpan oneCycle = Equipment.CycleTimer_LaserDrilling.IsRunning
                                     ? Equipment.CycleTimer_LaserDrilling.Elapsed
                                     : Equipment.CycleTimer_LaserDrilling.Latest.Interval;
@@ -4218,24 +4238,86 @@ namespace SLD200_MSL
                 // ---- 1 Cycle Time 표시 ----
                 SetValue(baseLabel_CurrentOneCycle_ElapsedTime, oneCycle.ToString(@"hh\:mm\:ss"));
 
-                int oneCycleProgress = (int)(oneCycle.TotalSeconds / goalOneCycleSec * 100);
-                SetValue(progressBar_OneCycle_Time, Math.Min(progressBar_OneCycle_Time.Maximum, Math.Max(0, oneCycleProgress)));
-                
-                // ---- Total 누적 시간 표시 ---- -> 남은 시간 계산 필요.
-                SetValue(baseLabel_Total_RemainedTime, totalElapsed.ToString(@"hh\:mm\:ss"));
-                int totalProgress = (int)(totalElapsed.TotalSeconds / goalTotalSec * 100);
-               
-                SetValue(progressBar_TotalRemained_Time, Math.Min(progressBar_TotalRemained_Time.Maximum, Math.Max(0, totalProgress)));
+                int oneCycleProgress = 0;
+                int totalProgress = 0;
+                TimeSpan remainedTime = TimeSpan.Zero;
 
-                // ---- Average 표시 ----
+                if (doneCount > 0 && totalCount > 0)
+                {
+                    double estimatedPerPieceTime = avgCycle.TotalSeconds;
+
+                    // 현재 사이클 진행률
+                    oneCycleProgress = (int)(oneCycle.TotalSeconds / estimatedPerPieceTime * 100);
+                    oneCycleProgress = Math.Min(100, Math.Max(0, oneCycleProgress));
+
+                    // 전체 진행률 (완료 개수 기준)
+                    totalProgress = (int)((double)doneCount / totalCount * 100);
+                    totalProgress = Math.Min(100, Math.Max(0, totalProgress));
+
+                    // 남은 시간 = 평균 * 남은 개수
+                    int remainCount = totalCount - doneCount;
+                    remainedTime = TimeSpan.FromSeconds(estimatedPerPieceTime * remainCount);
+                }
+
+                // ---- UI에 적용 ----
+                SetValue(progressBar_OneCycle_Time, Math.Min(progressBar_OneCycle_Time.Maximum, oneCycleProgress));
+                SetValue(baseLabel_Total_RemainedTime, remainedTime.ToString(@"hh\:mm\:ss"));
+                SetValue(progressBar_TotalRemained_Time, Math.Min(progressBar_TotalRemained_Time.Maximum, totalProgress));
                 SetValue(baseLabel_Average_OneCycleTime, avgCycle.ToString(@"hh\:mm\:ss"));
-                
+
+                string inputText = GetValue(baseTextBox_SocketCountPerModule);
+
+                //SetValue(baseTextBox_Module_TotalCount, 
+
+                SetValue(baseTextBox_Module_TotalCount, Equipment.CycleTimer_DoneModuleCount.ToString());
+
+                int nSocketCnt = inputText == "" ? 0 : ToInt(inputText);
+                int nSocketTotalCnt = totalCount * nSocketCnt;
+                SetValue(baseTextBox_TotalSocketCount, nSocketTotalCnt.ToString());
+                SetValue(baseTextBox_NGSocketCount, (nSocketTotalCnt - NGCount).ToString());
+
             }
             catch (Exception ex)
             {
-                Log.Write(ex);  // UI 다운 방지
+                Log.Write(ex);
             }
+
+            //try
+            //{
+            //    int goalOneCycleSec = 70;      // 목표 1사이클 시간 (초)
+            //    int goalTotalSec = 86400;      // 총 목표 시간 (초) - 24시간 <- 수량 및 1사이클에 따른 남은 시간 계산 필요.
+
+            //    // 실시간 경과 시간
+            //    TimeSpan oneCycle = Equipment.CycleTimer_LaserDrilling.IsRunning
+            //                        ? Equipment.CycleTimer_LaserDrilling.Elapsed
+            //                        : Equipment.CycleTimer_LaserDrilling.Latest.Interval;
+
+            //    TimeSpan totalElapsed = Equipment.CycleTimer_LaserDrilling.TotalElapsed;
+            //    TimeSpan avgCycle = Equipment.CycleTimer_LaserDrilling.Average;
+
+            //    // ---- 1 Cycle Time 표시 ----
+            //    SetValue(baseLabel_CurrentOneCycle_ElapsedTime, oneCycle.ToString(@"hh\:mm\:ss"));
+
+            //    int oneCycleProgress = (int)(oneCycle.TotalSeconds / goalOneCycleSec * 100);
+            //    SetValue(progressBar_OneCycle_Time, Math.Min(progressBar_OneCycle_Time.Maximum, Math.Max(0, oneCycleProgress)));
+
+            //    // ---- Total 누적 시간 표시 ---- -> 남은 시간 계산 필요.
+            //    SetValue(baseLabel_Total_RemainedTime, totalElapsed.ToString(@"hh\:mm\:ss"));
+            //    int totalProgress = (int)(totalElapsed.TotalSeconds / goalTotalSec * 100);
+
+            //    SetValue(progressBar_TotalRemained_Time, Math.Min(progressBar_TotalRemained_Time.Maximum, Math.Max(0, totalProgress)));
+
+            //    // ---- Average 표시 ----
+            //    SetValue(baseLabel_Average_OneCycleTime, avgCycle.ToString(@"hh\:mm\:ss"));
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Write(ex);  // UI 다운 방지
+            //}
         }
+
+        
 
         private void SetColor(System.Windows.Forms.Control control, Color Backcolor)
         {
@@ -4254,6 +4336,23 @@ namespace SLD200_MSL
                 SetColor(control, Backcolor, control.ForeColor);
             }
         }
+
+        private void button_PNLCount_Clear_Click(object sender, EventArgs e)
+        {
+            numericUpDown_Module_TargetCount.Value = 0;
+            baseTextBox_Module_TotalCount.Text = "0";
+            baseTextBox_Module_NGCount.Text = "0";
+            baseTextBox_TotalSocketCount.Text = "0";
+            baseTextBox_NGSocketCount.Text = "0";
+
+        }
+
+        private void button_TEST2_Click(object sender, EventArgs e)
+        {
+            Equipment.CycleTimer_DoneModuleCount++;
+            Equipment.CycleTimer_LaserDrilling.End();
+        }
+
         private void SetColor(System.Windows.Forms.Control control, Color Backcolor,Color foreColor)
         {
             if (control.InvokeRequired)
@@ -4269,6 +4368,23 @@ namespace SLD200_MSL
             {
                 control.BackColor = Backcolor;
                 control.ForeColor = foreColor;
+            }
+        }
+        private void SetValue(BaseTextBox control, string text, bool isVisible = true)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetValue(control, text, isVisible);
+                }));
+
+            }
+            else
+            {
+                control.Text = text;
+                control.Visible = isVisible;
             }
         }
         void SetValue(Label control, string text, bool isVisible = true)
@@ -4318,6 +4434,39 @@ namespace SLD200_MSL
             else
             {
                 control.Value = v;
+            }
+        }
+        private string GetValue(NumericUpDown control)
+        {
+            if (control.InvokeRequired)
+            {
+                return (string)this.Invoke(new Func<string>(() => control.Text));
+            }
+            else
+            {
+                return control.Text;
+            }
+        }
+        private string GetValue(System.Windows.Forms.TextBox control)
+        {
+            if (control.InvokeRequired)
+            {
+                return (string)this.Invoke(new Func<string>(() => control.Text));
+            }
+            else
+            {
+                return control.Text;
+            }
+        }
+        private string GetValue(System.Windows.Forms.Label control)
+        {
+            if (control.InvokeRequired)
+            {
+                return (string)this.Invoke(new Func<string>(() => control.Text));
+            }
+            else
+            {
+                return control.Text;
             }
         }
     }

@@ -152,6 +152,7 @@
             this.radioButton_Fiducial_Type_Circle = new System.Windows.Forms.RadioButton();
             this.radioButton_Fiducial_Type_GoldPowder = new System.Windows.Forms.RadioButton();
             this.groupBox_Fiducial_Color = new System.Windows.Forms.GroupBox();
+            this.radioButton_Fiducial_Ignor = new System.Windows.Forms.RadioButton();
             this.radioButton_Fiducial_Black = new System.Windows.Forms.RadioButton();
             this.radioButton_Fiducial_White = new System.Windows.Forms.RadioButton();
             this.textBox_Recipe_Fiducial_CircleScore = new System.Windows.Forms.TextBox();
@@ -174,7 +175,6 @@
             this.button_RecipeVision_AxisZ_Setting = new System.Windows.Forms.Button();
             this.label_RecipeVision_AxisZ_Setting = new System.Windows.Forms.Label();
             this.textBox_RecipeVision_AxisZ_Setting = new System.Windows.Forms.TextBox();
-            this.radioButton_Fiducial_Ignor = new System.Windows.Forms.RadioButton();
             this.groupBox_RecipeVision_Illumination.SuspendLayout();
             this.groupBox_RecipeVision_MarkMatching.SuspendLayout();
             this.groupBox_RecipeVision_MarkType.SuspendLayout();
@@ -457,10 +457,10 @@
             // radioButton_RecipeVision_Blob
             // 
             this.radioButton_RecipeVision_Blob.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_RecipeVision_Blob.Location = new System.Drawing.Point(88, 23);
+            this.radioButton_RecipeVision_Blob.Location = new System.Drawing.Point(96, 23);
             this.radioButton_RecipeVision_Blob.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_RecipeVision_Blob.Name = "radioButton_RecipeVision_Blob";
-            this.radioButton_RecipeVision_Blob.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_RecipeVision_Blob.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_Blob.TabIndex = 6;
             this.radioButton_RecipeVision_Blob.Text = "Circle";
             this.radioButton_RecipeVision_Blob.UseVisualStyleBackColor = true;
@@ -472,7 +472,7 @@
             this.radioButton_RecipeVision_Pattern.Location = new System.Drawing.Point(13, 23);
             this.radioButton_RecipeVision_Pattern.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_RecipeVision_Pattern.Name = "radioButton_RecipeVision_Pattern";
-            this.radioButton_RecipeVision_Pattern.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_RecipeVision_Pattern.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_Pattern.TabIndex = 5;
             this.radioButton_RecipeVision_Pattern.TabStop = true;
             this.radioButton_RecipeVision_Pattern.Text = "Pattern";
@@ -495,10 +495,10 @@
             // radioButton_RecipeVision_Circle
             // 
             this.radioButton_RecipeVision_Circle.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_RecipeVision_Circle.Location = new System.Drawing.Point(88, 23);
+            this.radioButton_RecipeVision_Circle.Location = new System.Drawing.Point(96, 23);
             this.radioButton_RecipeVision_Circle.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_RecipeVision_Circle.Name = "radioButton_RecipeVision_Circle";
-            this.radioButton_RecipeVision_Circle.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_RecipeVision_Circle.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_Circle.TabIndex = 6;
             this.radioButton_RecipeVision_Circle.Text = "Circle";
             this.radioButton_RecipeVision_Circle.UseVisualStyleBackColor = true;
@@ -511,7 +511,7 @@
             this.radioButton_RecipeVision_Type_Cross.Location = new System.Drawing.Point(13, 23);
             this.radioButton_RecipeVision_Type_Cross.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_RecipeVision_Type_Cross.Name = "radioButton_RecipeVision_Type_Cross";
-            this.radioButton_RecipeVision_Type_Cross.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_RecipeVision_Type_Cross.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_Type_Cross.TabIndex = 5;
             this.radioButton_RecipeVision_Type_Cross.TabStop = true;
             this.radioButton_RecipeVision_Type_Cross.Text = "Cross";
@@ -1044,10 +1044,10 @@
             // radioButton_RecipeVision_Black
             // 
             this.radioButton_RecipeVision_Black.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_RecipeVision_Black.Location = new System.Drawing.Point(88, 22);
+            this.radioButton_RecipeVision_Black.Location = new System.Drawing.Point(13, 23);
             this.radioButton_RecipeVision_Black.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_RecipeVision_Black.Name = "radioButton_RecipeVision_Black";
-            this.radioButton_RecipeVision_Black.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_RecipeVision_Black.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_Black.TabIndex = 6;
             this.radioButton_RecipeVision_Black.Text = "Black";
             this.radioButton_RecipeVision_Black.UseVisualStyleBackColor = true;
@@ -1056,10 +1056,10 @@
             // 
             this.radioButton_RecipeVision_White.Checked = true;
             this.radioButton_RecipeVision_White.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_RecipeVision_White.Location = new System.Drawing.Point(13, 22);
+            this.radioButton_RecipeVision_White.Location = new System.Drawing.Point(96, 23);
             this.radioButton_RecipeVision_White.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_RecipeVision_White.Name = "radioButton_RecipeVision_White";
-            this.radioButton_RecipeVision_White.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_RecipeVision_White.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_White.TabIndex = 5;
             this.radioButton_RecipeVision_White.TabStop = true;
             this.radioButton_RecipeVision_White.Text = "White";
@@ -1701,7 +1701,7 @@
             this.groupBox_Fiducial_MarkMatching.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox_Fiducial_MarkMatching.Name = "groupBox_Fiducial_MarkMatching";
             this.groupBox_Fiducial_MarkMatching.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.groupBox_Fiducial_MarkMatching.Size = new System.Drawing.Size(250, 48);
+            this.groupBox_Fiducial_MarkMatching.Size = new System.Drawing.Size(263, 48);
             this.groupBox_Fiducial_MarkMatching.TabIndex = 193;
             this.groupBox_Fiducial_MarkMatching.TabStop = false;
             this.groupBox_Fiducial_MarkMatching.Text = " Mark Matching ";
@@ -1709,7 +1709,7 @@
             // radioButton_Fiducial_Circle
             // 
             this.radioButton_Fiducial_Circle.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Fiducial_Circle.Location = new System.Drawing.Point(88, 23);
+            this.radioButton_Fiducial_Circle.Location = new System.Drawing.Point(96, 23);
             this.radioButton_Fiducial_Circle.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_Fiducial_Circle.Name = "radioButton_Fiducial_Circle";
             this.radioButton_Fiducial_Circle.Size = new System.Drawing.Size(60, 18);
@@ -1725,7 +1725,7 @@
             this.radioButton_Fiducial_Pattern.Location = new System.Drawing.Point(13, 23);
             this.radioButton_Fiducial_Pattern.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_Fiducial_Pattern.Name = "radioButton_Fiducial_Pattern";
-            this.radioButton_Fiducial_Pattern.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_Fiducial_Pattern.Size = new System.Drawing.Size(74, 18);
             this.radioButton_Fiducial_Pattern.TabIndex = 5;
             this.radioButton_Fiducial_Pattern.TabStop = true;
             this.radioButton_Fiducial_Pattern.Text = "Pattern";
@@ -1740,7 +1740,7 @@
             this.groupBox_Fiducial_MarkType.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox_Fiducial_MarkType.Name = "groupBox_Fiducial_MarkType";
             this.groupBox_Fiducial_MarkType.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.groupBox_Fiducial_MarkType.Size = new System.Drawing.Size(250, 48);
+            this.groupBox_Fiducial_MarkType.Size = new System.Drawing.Size(263, 48);
             this.groupBox_Fiducial_MarkType.TabIndex = 192;
             this.groupBox_Fiducial_MarkType.TabStop = false;
             this.groupBox_Fiducial_MarkType.Text = " Mark Type ";
@@ -1751,7 +1751,7 @@
             this.radioButton_Fiducial_Type_Circle.Location = new System.Drawing.Point(13, 23);
             this.radioButton_Fiducial_Type_Circle.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_Fiducial_Type_Circle.Name = "radioButton_Fiducial_Type_Circle";
-            this.radioButton_Fiducial_Type_Circle.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_Fiducial_Type_Circle.Size = new System.Drawing.Size(74, 18);
             this.radioButton_Fiducial_Type_Circle.TabIndex = 6;
             this.radioButton_Fiducial_Type_Circle.Text = "Circle";
             this.radioButton_Fiducial_Type_Circle.UseVisualStyleBackColor = true;
@@ -1761,7 +1761,7 @@
             this.radioButton_Fiducial_Type_GoldPowder.Checked = true;
             this.radioButton_Fiducial_Type_GoldPowder.Enabled = false;
             this.radioButton_Fiducial_Type_GoldPowder.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Fiducial_Type_GoldPowder.Location = new System.Drawing.Point(88, 23);
+            this.radioButton_Fiducial_Type_GoldPowder.Location = new System.Drawing.Point(96, 23);
             this.radioButton_Fiducial_Type_GoldPowder.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_Fiducial_Type_GoldPowder.Name = "radioButton_Fiducial_Type_GoldPowder";
             this.radioButton_Fiducial_Type_GoldPowder.Size = new System.Drawing.Size(109, 18);
@@ -1780,10 +1780,21 @@
             this.groupBox_Fiducial_Color.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox_Fiducial_Color.Name = "groupBox_Fiducial_Color";
             this.groupBox_Fiducial_Color.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.groupBox_Fiducial_Color.Size = new System.Drawing.Size(250, 48);
+            this.groupBox_Fiducial_Color.Size = new System.Drawing.Size(263, 48);
             this.groupBox_Fiducial_Color.TabIndex = 194;
             this.groupBox_Fiducial_Color.TabStop = false;
             this.groupBox_Fiducial_Color.Text = " Mark Matching Color ";
+            // 
+            // radioButton_Fiducial_Ignor
+            // 
+            this.radioButton_Fiducial_Ignor.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Fiducial_Ignor.Location = new System.Drawing.Point(179, 22);
+            this.radioButton_Fiducial_Ignor.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_Fiducial_Ignor.Name = "radioButton_Fiducial_Ignor";
+            this.radioButton_Fiducial_Ignor.Size = new System.Drawing.Size(76, 18);
+            this.radioButton_Fiducial_Ignor.TabIndex = 7;
+            this.radioButton_Fiducial_Ignor.Text = "Ignore";
+            this.radioButton_Fiducial_Ignor.UseVisualStyleBackColor = true;
             // 
             // radioButton_Fiducial_Black
             // 
@@ -1791,7 +1802,7 @@
             this.radioButton_Fiducial_Black.Location = new System.Drawing.Point(13, 23);
             this.radioButton_Fiducial_Black.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_Fiducial_Black.Name = "radioButton_Fiducial_Black";
-            this.radioButton_Fiducial_Black.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_Fiducial_Black.Size = new System.Drawing.Size(74, 18);
             this.radioButton_Fiducial_Black.TabIndex = 6;
             this.radioButton_Fiducial_Black.Text = "Black";
             this.radioButton_Fiducial_Black.UseVisualStyleBackColor = true;
@@ -1800,10 +1811,10 @@
             // 
             this.radioButton_Fiducial_White.Checked = true;
             this.radioButton_Fiducial_White.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Fiducial_White.Location = new System.Drawing.Point(88, 22);
+            this.radioButton_Fiducial_White.Location = new System.Drawing.Point(96, 23);
             this.radioButton_Fiducial_White.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_Fiducial_White.Name = "radioButton_Fiducial_White";
-            this.radioButton_Fiducial_White.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_Fiducial_White.Size = new System.Drawing.Size(76, 18);
             this.radioButton_Fiducial_White.TabIndex = 5;
             this.radioButton_Fiducial_White.TabStop = true;
             this.radioButton_Fiducial_White.Text = "White";
@@ -2048,17 +2059,6 @@
             this.textBox_RecipeVision_AxisZ_Setting.TabIndex = 223;
             this.textBox_RecipeVision_AxisZ_Setting.Text = "000";
             this.textBox_RecipeVision_AxisZ_Setting.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // radioButton_Fiducial_Ignor
-            // 
-            this.radioButton_Fiducial_Ignor.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Fiducial_Ignor.Location = new System.Drawing.Point(167, 22);
-            this.radioButton_Fiducial_Ignor.Margin = new System.Windows.Forms.Padding(4);
-            this.radioButton_Fiducial_Ignor.Name = "radioButton_Fiducial_Ignor";
-            this.radioButton_Fiducial_Ignor.Size = new System.Drawing.Size(60, 18);
-            this.radioButton_Fiducial_Ignor.TabIndex = 7;
-            this.radioButton_Fiducial_Ignor.Text = "Ignore";
-            this.radioButton_Fiducial_Ignor.UseVisualStyleBackColor = true;
             // 
             // FormNewSub_Recipe_Vision
             // 

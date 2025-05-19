@@ -1667,6 +1667,7 @@ namespace QMC.Common.Hmi
             {
                 if (visionImage == null)
                     return;
+
                 if (this.m_IsChanged == true)
                 {
                     try
@@ -1675,11 +1676,10 @@ namespace QMC.Common.Hmi
                         {
                             size = new SizeD(visionImage.Header.Width * this.Scale.Wheel, visionImage.Header.Height * this.Scale.Wheel);
 
+                            //확인 해봐야함.
                             if (visionImage.CustomizedData != null && this.IsViewCustomizedImage == true)
                             {
                                 Bitmap bmpCutImage = (Bitmap)visionImage.CustomizedData.GetVisionImage().CutImage(point, (Size)size);
-
-
                                 lock (bufferedGrphics)
                                 {
                                     if (bufferedGrphics.Graphics != null)
@@ -1707,8 +1707,6 @@ namespace QMC.Common.Hmi
                                     Console.WriteLine(ex.Message);
                                 }
 
-
-
                                 lock (bufferedGrphics)
                                 {
                                     if (bufferedGrphics.Graphics != null)
@@ -1721,14 +1719,13 @@ namespace QMC.Common.Hmi
 
                                         }
                                     }
-
                                 }
+
                                 if (bmpCutImage != null)
                                 {
                                     bmpCutImage.Dispose();
                                     bmpCutImage = null;
                                 }
-
                             }
 
                             lock (bufferedGrphics)
@@ -1746,8 +1743,8 @@ namespace QMC.Common.Hmi
                                 catch (Exception ex)
                                 {
                                     Log.Write(ex);
-                                    //Console.WriteLine(ex.Message);
                                 }
+
                                 OwnedOverlayCollection resultOverlays = this.ResultOverlays;
                                 {
                                     try
@@ -1758,6 +1755,7 @@ namespace QMC.Common.Hmi
                                             {
                                                 lock(bufferedGrphics)
                                                 {
+                                                    //Todo: 확인 해봐야함.
                                                     if (resultOverlays[i].Visible == true)
                                                     {
                                                         resultOverlays[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
@@ -1774,7 +1772,6 @@ namespace QMC.Common.Hmi
                                     catch (Exception ex)
                                     {
                                         Log.Write(ex);
-                                        //Console.WriteLine(ex.Message);
                                     }
                                 }
                             }
@@ -2043,8 +2040,6 @@ namespace QMC.Common.Hmi
         private static int TaskNO = 0;
         public void StartUpdateTask()
         {
-
-            
             ResumeDisplay();
             if (m_task != null)
             {
@@ -2079,8 +2074,6 @@ namespace QMC.Common.Hmi
                                             
                                             //Scale.Scale.Y = this.Height/ Camera.LatestImage.Header.Height;
                                             Scale.SetMousePoint(new Point(Camera.LatestImage.Header.Width / 2, Camera.LatestImage.Header.Height / 2));
-
-
                                         }
                                     }
                                     if (this.m_InputImage != null && Camera.LatestImage != null)
@@ -2153,17 +2146,15 @@ namespace QMC.Common.Hmi
                     {
                         Log.Write(ex);
                     }
-
-
                 //this.m_ResultOverlayCollection = module.ResultOverlays;
                 if (bRedraw)
                 {
                     this.Display();
                 }
-
             }
             //this.Display();
         }
+
         public void StopUpdateTask()
         {
             this.SuspendDisplay();
