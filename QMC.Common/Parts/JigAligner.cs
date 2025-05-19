@@ -450,15 +450,32 @@ namespace QMC.Common.Parts
                         }
                         else if(Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                         {
-                            bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bPreCircleColor;
-                            double dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
-                            double dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
-                            double dRadius = m_dRadius[0];
-                            if (m_dRadius[0] == 0)
-                                dRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
+                            if (Equipment.stVisionRecipeSet.nPreCircleColor <= 1)
+                            {
+                                bool bIsDarkCircleSearch = false;
+                                if (Equipment.stVisionRecipeSet.nPreCircleColor == 0)
+                                {
+                                    bIsDarkCircleSearch = false;
+                                }
+                                else if (Equipment.stVisionRecipeSet.nPreCircleColor == 1)
+                                {
+                                    bIsDarkCircleSearch = true;
+                                }
 
-                            this.FindCircleDetection(dRadius, bIsDarkCircleSearch, 
-                                dSpec, dScore, out firstPointSearchResult, out firstPointCoordinate);
+                                double dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
+                                double dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
+                                double dRadius = m_dRadius[0];
+                                if (m_dRadius[0] == 0)
+                                    dRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
+
+                                this.FindCircleDetection(dRadius, bIsDarkCircleSearch,
+                                    dSpec, dScore, out firstPointSearchResult, out firstPointCoordinate);
+                            }
+                            else if (Equipment.stVisionRecipeSet.nPreCircleColor == 2)
+                            {
+                                
+
+                            }
                         }
                         else
                         {
@@ -578,17 +595,35 @@ namespace QMC.Common.Parts
                     }
                     else if (Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                     {
-                        bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bPreCircleColor;
-                        double dSpec = 0.05;
-                        double dScore = 0.7;
-                        double dRadius = 0;
-                        dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
-                        dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
-                        dRadius = m_dRadius[1];// m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
-                        if (m_dRadius[1] == 0)
-                            dRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
+                        if (Equipment.stVisionRecipeSet.nPreCircleColor <= 1)
+                        {
+                            bool bIsDarkCircleSearch = false;
+                            if (Equipment.stVisionRecipeSet.nPreCircleColor == 0)
+                            {
+                                bIsDarkCircleSearch = false;
+                            }
+                            else if (Equipment.stVisionRecipeSet.nPreCircleColor == 1)
+                            {
+                                bIsDarkCircleSearch = true;
+                            }
 
-                        this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, dScore, out secondPointSearchResult, out secondPointCoordinate);
+                            double dSpec = 0.05;
+                            double dScore = 0.7;
+                            double dRadius = 0;
+                            dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
+                            dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
+                            dRadius = m_dRadius[1];// m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
+                            if (m_dRadius[1] == 0)
+                                dRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
+
+                            this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, dScore, out secondPointSearchResult, out secondPointCoordinate);
+                        }
+                        else if (Equipment.stVisionRecipeSet.nPreCircleColor == 2)
+                        {
+
+
+                        }
+                        
                     }
                     else
                     {
