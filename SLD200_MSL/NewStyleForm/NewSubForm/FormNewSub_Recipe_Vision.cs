@@ -261,7 +261,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 checkBox_RecipeVision_Illuminator_Red.Checked = Equipment.stVisionRecipeSet.bSocketIlluminationRedUse;
                 checkBox_RecipeVision_Illuminator_IR.Checked = Equipment.stVisionRecipeSet.bSocketIlluminationIRUse;
-                textBox_RecipeVision_Camera_ExposureTime.Text = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime.ToString();
+
+                textBox_RecipeVision_Camera_ExposureTime_High.Text = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime.ToString();
+
                 textBox_RecipeVision_AxisZ_Setting.Text = Equipment.stVisionRecipeSet.dSocketAxisZ_Offset.ToString();
 
                 // Pre Align
@@ -340,19 +342,30 @@ namespace SLD200.NewStyleForm.NewSubForm
                     radioButton_RecipeVision_Circle.Checked = true;
                 }
 
-                if (Equipment.stVisionRecipeSet.bPreCircleColor == true)
+                if (Equipment.stVisionRecipeSet.nPreCircleColor == 0)
                 {
-                    radioButton_RecipeVision_White.Checked = false;
                     radioButton_RecipeVision_Black.Checked = true;
+                    radioButton_RecipeVision_White.Checked = false;
+                    radioButton_RecipeVision_Ignore.Checked = false;
                 }
-                else
+                else if (Equipment.stVisionRecipeSet.nPreCircleColor == 1)
                 {
-                    radioButton_RecipeVision_White.Checked = true;
                     radioButton_RecipeVision_Black.Checked = false;
+                    radioButton_RecipeVision_White.Checked = true;
+                    radioButton_RecipeVision_Ignore.Checked = false;
                 }
+                else if (Equipment.stVisionRecipeSet.nPreCircleColor == 2)
+                {
+                    radioButton_RecipeVision_Black.Checked = false;
+                    radioButton_RecipeVision_White.Checked = false;
+                    radioButton_RecipeVision_Ignore.Checked = true;
+                }
+
                 this.textBox_RecipeVision_Circle_Spec.Text = Equipment.stVisionRecipeSet.dPreCircleMarkSpec.ToString();
                 this.textBox_RecipeVision_Circle_Size.Text = Equipment.stVisionRecipeSet.dPreCircleMarkRadius.ToString();
                 this.textBox_RecipeVision_Circle_Score.Text = Equipment.stVisionRecipeSet.dPreCircleMarkScore.ToString();
+                this.textBox_RecipeVision_Camera_ExposureTime_Low.Text = Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime.ToString();
+
 
                 this.radioButton_RecipeVision_Move_MoveMode_Fine.Checked = false;
                 this.radioButton_RecipeVision_Move_MoveMode_Coarse.Checked = true;
@@ -748,11 +761,15 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             if (radioButton_RecipeVision_Black.Checked)
             {
-                Equipment.stVisionRecipeSet.bPreCircleColor = true;
+                Equipment.stVisionRecipeSet.nPreCircleColor = 0;
             }
             else if (radioButton_RecipeVision_White.Checked)
             {
-                Equipment.stVisionRecipeSet.bPreCircleColor = false;
+                Equipment.stVisionRecipeSet.nPreCircleColor = 1;
+            }
+            else if (radioButton_RecipeVision_Ignore.Checked)
+            {
+                Equipment.stVisionRecipeSet.nPreCircleColor = 2;
             }
 
             if (radioButton_RecipeVision_Pattern.Checked)
@@ -810,38 +827,56 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
                 ImageViewer_RecipeVision_Lows.Display();
             }
-            else if(radioButton_RecipeVision_Blob.Checked)
+            else if (radioButton_RecipeVision_Blob.Checked)
             {
                 Equipment.stVisionRecipeSet.dPreCircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
                 Equipment.stVisionRecipeSet.dPreCircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
                 Equipment.stVisionRecipeSet.dPreCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+
                 double dspec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);    //0.5; //Spec Param 만들어야됨.
                 double dRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);    //0.5; //Size Param 만들어야됨.
                 double dScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);    //0.5; //Score Param 만들어야됨.
-                bool bIsDarkCircleSearch = radioButton_RecipeVision_Black.Checked;
-                if(radioButton_RecipeVision_Black.Checked)
+                int nIsDarkCircleSearch = 0;
+                if (radioButton_RecipeVision_Black.Checked)
                 {
-                    bIsDarkCircleSearch = true;
+                    nIsDarkCircleSearch = 0;
                 }
-                else
+                else if (radioButton_RecipeVision_White.Checked)
                 {
-                    bIsDarkCircleSearch = false;
+                    nIsDarkCircleSearch = 1;
                 }
-                
+                else if (radioButton_RecipeVision_Ignore.Checked)
+                {
+                    nIsDarkCircleSearch = 2;
+                }
+
                 PatternMatchingResult SearchResult = null;
                 XyCoordinate PointCoordinate = new XyCoordinate();
 
-                ImageViewer_RecipeVision_Lows.ResultOverlays.Clear();
-
-                Owner.FindCircleDetection(dRadius, bIsDarkCircleSearch, dspec, dScore, out SearchResult, out PointCoordinate);
-                if (SearchResult != null)
+                if(nIsDarkCircleSearch <= 1)
                 {
-                    foreach (var overlay in SearchResult.ResultOverlays)
+                    bool bSearch = false;
+                    if(nIsDarkCircleSearch == 0)
+                        bSearch = false;
+                    else if(nIsDarkCircleSearch == 1)
+                        bSearch = true;
+
+                    ImageViewer_RecipeVision_Lows.ResultOverlays.Clear();
+                    Owner.FindCircleDetection(dRadius, bSearch, dspec, dScore, out SearchResult, out PointCoordinate);
+                    if (SearchResult != null)
                     {
-                        ImageViewer_RecipeVision_Lows.ResultOverlays.Add(overlay);
-                        overlay.Visible = true;
+                        foreach (var overlay in SearchResult.ResultOverlays)
+                        {
+                            ImageViewer_RecipeVision_Lows.ResultOverlays.Add(overlay);
+                            overlay.Visible = true;
+                        }
                     }
                 }
+                else if (nIsDarkCircleSearch == 2)
+                {
+
+                }
+
 
                 if (SearchResult != null && SearchResult.Values.Count > 0)
                 {
@@ -935,7 +970,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             Equipment.stVisionRecipeSet.bSocketIlluminationRedUse = checkBox_RecipeVision_Illuminator_Red.Checked;
             Equipment.stVisionRecipeSet.bSocketIlluminationIRUse = checkBox_RecipeVision_Illuminator_IR.Checked;
-            Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime = Convert.ToDouble(textBox_RecipeVision_Camera_ExposureTime.Text);
+            Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime = Convert.ToDouble(textBox_RecipeVision_Camera_ExposureTime_High.Text);
             Equipment.stVisionRecipeSet.dSocketAxisZ_Offset = Convert.ToDouble(textBox_RecipeVision_AxisZ_Setting.Text);
 
 
@@ -966,14 +1001,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Equipment.stVisionRecipeSet.ePreMarkType = MarkTypeList.Circle;
             }
 
-            if(radioButton_RecipeVision_Black.Checked)
+            if (radioButton_RecipeVision_Black.Checked)
             {
-                Equipment.stVisionRecipeSet.bPreCircleColor = true;
+                Equipment.stVisionRecipeSet.nPreCircleColor = 0;
             }
             else if (radioButton_RecipeVision_White.Checked)
             {
-                Equipment.stVisionRecipeSet.bPreCircleColor = false;
+                Equipment.stVisionRecipeSet.nPreCircleColor = 1;
             }
+            else if (radioButton_RecipeVision_Ignore.Checked)
+            {
+                Equipment.stVisionRecipeSet.nPreCircleColor = 2;
+            }
+            else
+            {
+                Equipment.stVisionRecipeSet.nPreCircleColor = 0;
+            }
+
 
             Equipment.stVisionRecipeSet.dPreCircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
             Equipment.stVisionRecipeSet.dPreCircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
@@ -982,6 +1026,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             Equipment.stVisionRecipeSet.nSocketIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);// workStage.Config.ListIlluminationChannel[0].Value;
             Equipment.stVisionRecipeSet.nSocketIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);//workStage.Config.ListIlluminationChannel[1].Value;
             Equipment.stVisionRecipeSet.nPreIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text);//workStage.Config.ListIlluminationChannel[2].Value;
+
+            Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);
 
             //Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe);
             if (Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe))
@@ -1340,7 +1386,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             checkBox_RecipeVision_Illuminator_Red.Enabled = false;
             checkBox_RecipeVision_Illuminator_IR.Enabled = false;
-            textBox_RecipeVision_Camera_ExposureTime.Enabled = false;
+            textBox_RecipeVision_Camera_ExposureTime_High.Enabled = false;
             textBox_RecipeVision_AxisZ_Setting.Enabled = false;
             hScrollBar_RecipeVision_Illuminator_Red.Enabled = false;
             textBox_RecipeVision_IlluminationValue_Red.Enabled = false;
@@ -1348,6 +1394,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             baseLabel_RecipeVision_Max_Red.Enabled = false;
             baseLabel_RecipeVision_Min_Red.Enabled = false;
             label_RecipeVision_Light_Red.Enabled = false;
+
+
 
             SetScroll();
         }
@@ -1375,7 +1423,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             checkBox_RecipeVision_Illuminator_Red.Enabled = true;
             checkBox_RecipeVision_Illuminator_IR.Enabled = true;
-            textBox_RecipeVision_Camera_ExposureTime.Enabled = true;
+            textBox_RecipeVision_Camera_ExposureTime_High.Enabled = true;
             textBox_RecipeVision_AxisZ_Setting.Enabled = true;
 
             hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
@@ -1498,7 +1546,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_RecipeVision_Camera_ExposureTime_Click(object sender, EventArgs e)
         {
-            double dExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime.Text);//Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
+            double dExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_High.Text);//Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
             workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
         }
 
@@ -1537,6 +1585,12 @@ namespace SLD200.NewStyleForm.NewSubForm
                 hScrollBar_RecipeVision_Illuminator_IR.Enabled = false;
                 textBox_RecipeVision_IlluminationValue_IR.Enabled = false;
             }
+        }
+
+        private void button_RecipeVision_Camera_ExposureTime_Low_Click(object sender, EventArgs e)
+        {
+            double dExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);//Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
+            workStage.jigAligner_LowRes.Camera.SetExposureTime(dExposureTime);
         }
     }
 }

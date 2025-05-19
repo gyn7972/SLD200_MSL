@@ -50,12 +50,13 @@ namespace QMC.Common.Recipe
         public int nPreIlluminationIR;
         public string pointPreTrainImagePath;
 
-        public bool bPreCircleColor;  //0: White, 1: Black
+        public int nPreCircleColor;  //0: White, 1: Black, 2: Ignore
         public double dPreCircleMarkRadius; //circle size width
         public double dPreCircleMarkSpec;  //
         public double dPreCircleMarkScore; //circle score
         public VisionAlgorithmType ePreAlgorithmType;
         public MarkTypeList ePreMarkType;
+        public double dPreAlignIlluminationExposureTime;
 
         //GoldPowder
         public int dGoldPowderAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
@@ -72,6 +73,7 @@ namespace QMC.Common.Recipe
         public double dGoldPowderAxisZ_Offset;
         public int nGoldPowderCircleMarkMaxInstance;
         public int nGoldPowderCircleMarkFindCount;
+        
 
         public bool SaveToIni(string path)
         {
@@ -117,11 +119,11 @@ namespace QMC.Common.Recipe
 
                 NativeMethods.WritePrivateProfileString("PreAlign_llumination", "IR", nPreIlluminationIR.ToString(), path);
 
-                NativeMethods.WritePrivateProfileString("CircleDetection", "Color", bPreCircleColor.ToString(), path);
+                NativeMethods.WritePrivateProfileString("CircleDetection", "Color", nPreCircleColor.ToString(), path);
                 NativeMethods.WritePrivateProfileString("CircleDetection", "SizeW", dPreCircleMarkRadius.ToString(), path);
                 NativeMethods.WritePrivateProfileString("CircleDetection", "Spec", dPreCircleMarkSpec.ToString(), path);
                 NativeMethods.WritePrivateProfileString("CircleDetection", "Score", dPreCircleMarkScore.ToString(), path);
-
+                NativeMethods.WritePrivateProfileString("PreAlign_llumination", "ExposureTime", dPreAlignIlluminationExposureTime.ToString(), path);
 
                 string folderName = Path.GetFileNameWithoutExtension(path);
 
@@ -250,7 +252,7 @@ namespace QMC.Common.Recipe
                 data.nPreIlluminationIR = Equipment.ToInt(sb.ToString());
 
                 NativeMethods.GetPrivateProfileString("CircleDetection", "Color", "true", sb, sb.Capacity, path);
-                data.bPreCircleColor = Equipment.ToBoolean(sb.ToString());
+                data.nPreCircleColor = Equipment.ToInt(sb.ToString());
 
                 NativeMethods.GetPrivateProfileString("CircleDetection", "SizeW", "1.0", sb, sb.Capacity, path);
                 data.dPreCircleMarkRadius = Equipment.ToDouble(sb.ToString());
@@ -260,6 +262,10 @@ namespace QMC.Common.Recipe
 
                 NativeMethods.GetPrivateProfileString("CircleDetection", "Score", "0.7", sb, sb.Capacity, path);
                 data.dPreCircleMarkScore = Equipment.ToDouble(sb.ToString());
+
+                NativeMethods.GetPrivateProfileString("PreAlign_llumination", "ExposureTime", "20000", sb, sb.Capacity, path);
+                data.dPreAlignIlluminationExposureTime = Equipment.ToDouble(sb.ToString());
+
 
                 NativeMethods.GetPrivateProfileString("TrainImage", "Path", "", sb, sb.Capacity, path);
                 data.pointPreTrainImagePath = sb.ToString();
