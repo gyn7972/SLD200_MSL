@@ -57,7 +57,15 @@ namespace QMC.Common
             lock (_lock)
             {
                 // 1. 알람 리스트에 안전하게 추가
-                m_Alarms.Add(alarm);
+                if(m_Alarms.Where(a=>a.Code == alarm.Code).Count() ==0)
+                {
+                    m_Alarms.Add(alarm);
+
+                }
+                else
+                {
+                    return;
+                }
             }
 
             // 2. PostAlarm 이벤트 (UI 스레드에서 실행)
