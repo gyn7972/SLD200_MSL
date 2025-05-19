@@ -862,7 +862,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                         bSearch = true;
 
                     ImageViewer_RecipeVision_Lows.ResultOverlays.Clear();
-                    Owner.FindCircleDetection(dRadius, bSearch, dspec, dScore, out SearchResult, out PointCoordinate);
+                    Owner.FindCircleDetection(dRadius, nIsDarkCircleSearch, dspec, dScore, out SearchResult, out PointCoordinate);
                     if (SearchResult != null)
                     {
                         foreach (var overlay in SearchResult.ResultOverlays)
