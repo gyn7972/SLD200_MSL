@@ -23937,10 +23937,16 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align Cycle 시작.");
 
+                    // 카메라 노출 설정
+
+                    jigAligner_LowRes.Camera.SetExposureTime(Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime);
+
                     SetLightingByChannel(LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
                     Thread.Sleep(100);
                     SetLightingByChannel(LightingChannel.FineCamRed, 0, false);
                     SetLightingByChannel(LightingChannel.FineCamIR, 0, false);
+
+
                     
                     try
                     {

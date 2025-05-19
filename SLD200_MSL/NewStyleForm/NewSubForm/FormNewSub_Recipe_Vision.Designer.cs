@@ -112,7 +112,6 @@
             this.groupBox_RecipeVision_Camera = new System.Windows.Forms.GroupBox();
             this.radioButton_RecipeVision_CameraSelection_HighMag = new System.Windows.Forms.RadioButton();
             this.radioButton_RecipeVision_CameraSelection_LowMag = new System.Windows.Forms.RadioButton();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupBox_RecipeVision_CoarseCam = new System.Windows.Forms.GroupBox();
             this.textBox_RecipeVision_Circle_Score = new System.Windows.Forms.TextBox();
             this.label_RecipeVision_Circle_Score = new System.Windows.Forms.Label();
@@ -167,14 +166,19 @@
             this.textBox_Recipe_RecipeVision_Illuminator_FineCamIR = new System.Windows.Forms.TextBox();
             this.label_RecipeVision_Low_IR = new System.Windows.Forms.Label();
             this.label_RecipeVision_High_IR = new System.Windows.Forms.Label();
-            this.groupBox_RecipeVision_Camera_Setting = new System.Windows.Forms.GroupBox();
-            this.button_RecipeVision_Camera_ExposureTime = new System.Windows.Forms.Button();
-            this.label_RecipeVision_Camera_ExposureTime = new System.Windows.Forms.Label();
-            this.textBox_RecipeVision_Camera_ExposureTime = new System.Windows.Forms.TextBox();
+            this.groupBox_RecipeVision_Camera_Setting_High = new System.Windows.Forms.GroupBox();
+            this.button_RecipeVision_Camera_ExposureTime_High = new System.Windows.Forms.Button();
+            this.label_RecipeVision_Camera_ExposureTime_High = new System.Windows.Forms.Label();
+            this.textBox_RecipeVision_Camera_ExposureTime_High = new System.Windows.Forms.TextBox();
             this.groupBox_RecipeVision_AxisZ_Setting = new System.Windows.Forms.GroupBox();
             this.button_RecipeVision_AxisZ_Setting = new System.Windows.Forms.Button();
             this.label_RecipeVision_AxisZ_Setting = new System.Windows.Forms.Label();
             this.textBox_RecipeVision_AxisZ_Setting = new System.Windows.Forms.TextBox();
+            this.radioButton_RecipeVision_Ignore = new System.Windows.Forms.RadioButton();
+            this.groupBox_RecipeVision_Camera_Setting_Low = new System.Windows.Forms.GroupBox();
+            this.button_RecipeVision_Camera_ExposureTime_Low = new System.Windows.Forms.Button();
+            this.label_RecipeVision_Camera_ExposureTime_Low = new System.Windows.Forms.Label();
+            this.textBox_RecipeVision_Camera_ExposureTime_Low = new System.Windows.Forms.TextBox();
             this.groupBox_RecipeVision_Illumination.SuspendLayout();
             this.groupBox_RecipeVision_MarkMatching.SuspendLayout();
             this.groupBox_RecipeVision_MarkType.SuspendLayout();
@@ -202,8 +206,9 @@
             this.groupBox_Fiducial_Color.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_RecipeVision_highs)).BeginInit();
             this.groupBox_RecipeVision_Illuminator.SuspendLayout();
-            this.groupBox_RecipeVision_Camera_Setting.SuspendLayout();
+            this.groupBox_RecipeVision_Camera_Setting_High.SuspendLayout();
             this.groupBox_RecipeVision_AxisZ_Setting.SuspendLayout();
+            this.groupBox_RecipeVision_Camera_Setting_Low.SuspendLayout();
             this.SuspendLayout();
             // 
             // button_RecipeVision_CameraStop
@@ -1029,6 +1034,7 @@
             // 
             // groupBox_RecipeVision_Color
             // 
+            this.groupBox_RecipeVision_Color.Controls.Add(this.radioButton_RecipeVision_Ignore);
             this.groupBox_RecipeVision_Color.Controls.Add(this.radioButton_RecipeVision_Black);
             this.groupBox_RecipeVision_Color.Controls.Add(this.radioButton_RecipeVision_White);
             this.groupBox_RecipeVision_Color.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -1068,7 +1074,7 @@
             // button_RecipeVision_Circle_Size
             // 
             this.button_RecipeVision_Circle_Size.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_RecipeVision_Circle_Size.Location = new System.Drawing.Point(924, 55);
+            this.button_RecipeVision_Circle_Size.Location = new System.Drawing.Point(1014, 55);
             this.button_RecipeVision_Circle_Size.Margin = new System.Windows.Forms.Padding(2);
             this.button_RecipeVision_Circle_Size.Name = "button_RecipeVision_Circle_Size";
             this.button_RecipeVision_Circle_Size.Size = new System.Drawing.Size(28, 24);
@@ -1079,7 +1085,7 @@
             // textBox_RecipeVision_Circle_Size
             // 
             this.textBox_RecipeVision_Circle_Size.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_RecipeVision_Circle_Size.Location = new System.Drawing.Point(856, 55);
+            this.textBox_RecipeVision_Circle_Size.Location = new System.Drawing.Point(946, 55);
             this.textBox_RecipeVision_Circle_Size.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_RecipeVision_Circle_Size.Name = "textBox_RecipeVision_Circle_Size";
             this.textBox_RecipeVision_Circle_Size.Size = new System.Drawing.Size(64, 24);
@@ -1090,29 +1096,29 @@
             // label_RecipeVision_Circle_Size
             // 
             this.label_RecipeVision_Circle_Size.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_RecipeVision_Circle_Size.Location = new System.Drawing.Point(752, 55);
+            this.label_RecipeVision_Circle_Size.Location = new System.Drawing.Point(776, 55);
             this.label_RecipeVision_Circle_Size.Margin = new System.Windows.Forms.Padding(5);
             this.label_RecipeVision_Circle_Size.Name = "label_RecipeVision_Circle_Size";
-            this.label_RecipeVision_Circle_Size.Size = new System.Drawing.Size(102, 25);
+            this.label_RecipeVision_Circle_Size.Size = new System.Drawing.Size(165, 25);
             this.label_RecipeVision_Circle_Size.TabIndex = 47;
-            this.label_RecipeVision_Circle_Size.Text = "CircleSize:";
+            this.label_RecipeVision_Circle_Size.Text = "Circle Size[반지름](mm):";
             this.label_RecipeVision_Circle_Size.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_RecipeVision_Circle_Spec
             // 
             this.label_RecipeVision_Circle_Spec.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_RecipeVision_Circle_Spec.Location = new System.Drawing.Point(752, 23);
+            this.label_RecipeVision_Circle_Spec.Location = new System.Drawing.Point(776, 23);
             this.label_RecipeVision_Circle_Spec.Margin = new System.Windows.Forms.Padding(5);
             this.label_RecipeVision_Circle_Spec.Name = "label_RecipeVision_Circle_Spec";
-            this.label_RecipeVision_Circle_Spec.Size = new System.Drawing.Size(102, 25);
+            this.label_RecipeVision_Circle_Spec.Size = new System.Drawing.Size(165, 25);
             this.label_RecipeVision_Circle_Spec.TabIndex = 206;
-            this.label_RecipeVision_Circle_Spec.Text = "CircleSpec:";
+            this.label_RecipeVision_Circle_Spec.Text = "Circle Spec(%):";
             this.label_RecipeVision_Circle_Spec.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button_RecipeVision_Circle_Spec
             // 
             this.button_RecipeVision_Circle_Spec.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_RecipeVision_Circle_Spec.Location = new System.Drawing.Point(924, 23);
+            this.button_RecipeVision_Circle_Spec.Location = new System.Drawing.Point(1014, 23);
             this.button_RecipeVision_Circle_Spec.Margin = new System.Windows.Forms.Padding(2);
             this.button_RecipeVision_Circle_Spec.Name = "button_RecipeVision_Circle_Spec";
             this.button_RecipeVision_Circle_Spec.Size = new System.Drawing.Size(28, 24);
@@ -1123,7 +1129,7 @@
             // textBox_RecipeVision_Circle_Spec
             // 
             this.textBox_RecipeVision_Circle_Spec.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_RecipeVision_Circle_Spec.Location = new System.Drawing.Point(856, 23);
+            this.textBox_RecipeVision_Circle_Spec.Location = new System.Drawing.Point(946, 23);
             this.textBox_RecipeVision_Circle_Spec.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_RecipeVision_Circle_Spec.Name = "textBox_RecipeVision_Circle_Spec";
             this.textBox_RecipeVision_Circle_Spec.Size = new System.Drawing.Size(64, 24);
@@ -1134,18 +1140,18 @@
             // label_Recipe_Fiducial_CicleSpec
             // 
             this.label_Recipe_Fiducial_CicleSpec.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Recipe_Fiducial_CicleSpec.Location = new System.Drawing.Point(752, 28);
+            this.label_Recipe_Fiducial_CicleSpec.Location = new System.Drawing.Point(776, 28);
             this.label_Recipe_Fiducial_CicleSpec.Margin = new System.Windows.Forms.Padding(5);
             this.label_Recipe_Fiducial_CicleSpec.Name = "label_Recipe_Fiducial_CicleSpec";
-            this.label_Recipe_Fiducial_CicleSpec.Size = new System.Drawing.Size(102, 25);
+            this.label_Recipe_Fiducial_CicleSpec.Size = new System.Drawing.Size(165, 25);
             this.label_Recipe_Fiducial_CicleSpec.TabIndex = 212;
-            this.label_Recipe_Fiducial_CicleSpec.Text = "Circle Spec:";
+            this.label_Recipe_Fiducial_CicleSpec.Text = "Circle Spec(%):";
             this.label_Recipe_Fiducial_CicleSpec.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button_Recipe_Fiducial_CicleSpec
             // 
             this.button_Recipe_Fiducial_CicleSpec.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_Recipe_Fiducial_CicleSpec.Location = new System.Drawing.Point(929, 28);
+            this.button_Recipe_Fiducial_CicleSpec.Location = new System.Drawing.Point(1014, 28);
             this.button_Recipe_Fiducial_CicleSpec.Margin = new System.Windows.Forms.Padding(2);
             this.button_Recipe_Fiducial_CicleSpec.Name = "button_Recipe_Fiducial_CicleSpec";
             this.button_Recipe_Fiducial_CicleSpec.Size = new System.Drawing.Size(28, 24);
@@ -1156,7 +1162,7 @@
             // textBox_Recipe_Fiducial_CircleSpec
             // 
             this.textBox_Recipe_Fiducial_CircleSpec.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_Fiducial_CircleSpec.Location = new System.Drawing.Point(856, 28);
+            this.textBox_Recipe_Fiducial_CircleSpec.Location = new System.Drawing.Point(946, 28);
             this.textBox_Recipe_Fiducial_CircleSpec.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_Recipe_Fiducial_CircleSpec.Name = "textBox_Recipe_Fiducial_CircleSpec";
             this.textBox_Recipe_Fiducial_CircleSpec.Size = new System.Drawing.Size(64, 24);
@@ -1167,18 +1173,18 @@
             // label_Recipe_Fiducial_CicleSize
             // 
             this.label_Recipe_Fiducial_CicleSize.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Recipe_Fiducial_CicleSize.Location = new System.Drawing.Point(752, 56);
+            this.label_Recipe_Fiducial_CicleSize.Location = new System.Drawing.Point(776, 56);
             this.label_Recipe_Fiducial_CicleSize.Margin = new System.Windows.Forms.Padding(5);
             this.label_Recipe_Fiducial_CicleSize.Name = "label_Recipe_Fiducial_CicleSize";
-            this.label_Recipe_Fiducial_CicleSize.Size = new System.Drawing.Size(102, 25);
+            this.label_Recipe_Fiducial_CicleSize.Size = new System.Drawing.Size(165, 25);
             this.label_Recipe_Fiducial_CicleSize.TabIndex = 209;
-            this.label_Recipe_Fiducial_CicleSize.Text = "Circle Size:";
+            this.label_Recipe_Fiducial_CicleSize.Text = "Circle Size[반지름](mm):";
             this.label_Recipe_Fiducial_CicleSize.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button_Recipe_Fiducial_CicleSize
             // 
             this.button_Recipe_Fiducial_CicleSize.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_Recipe_Fiducial_CicleSize.Location = new System.Drawing.Point(929, 56);
+            this.button_Recipe_Fiducial_CicleSize.Location = new System.Drawing.Point(1014, 56);
             this.button_Recipe_Fiducial_CicleSize.Margin = new System.Windows.Forms.Padding(2);
             this.button_Recipe_Fiducial_CicleSize.Name = "button_Recipe_Fiducial_CicleSize";
             this.button_Recipe_Fiducial_CicleSize.Size = new System.Drawing.Size(28, 24);
@@ -1189,7 +1195,7 @@
             // textBox_Recipe_Fiducial_CircleSize
             // 
             this.textBox_Recipe_Fiducial_CircleSize.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_Fiducial_CircleSize.Location = new System.Drawing.Point(856, 56);
+            this.textBox_Recipe_Fiducial_CircleSize.Location = new System.Drawing.Point(946, 56);
             this.textBox_Recipe_Fiducial_CircleSize.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_Recipe_Fiducial_CircleSize.Name = "textBox_Recipe_Fiducial_CircleSize";
             this.textBox_Recipe_Fiducial_CircleSize.Size = new System.Drawing.Size(64, 24);
@@ -1239,15 +1245,6 @@
             this.radioButton_RecipeVision_CameraSelection_LowMag.UseVisualStyleBackColor = true;
             this.radioButton_RecipeVision_CameraSelection_LowMag.CheckedChanged += new System.EventHandler(this.radioButton_RecipeVision_CameraSelection_LowMag_CheckedChanged);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1664, 719);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 12);
-            this.label1.TabIndex = 219;
-            this.label1.Text = "label1";
-            // 
             // groupBox_RecipeVision_CoarseCam
             // 
             this.groupBox_RecipeVision_CoarseCam.Controls.Add(this.textBox_RecipeVision_Circle_Score);
@@ -1278,7 +1275,7 @@
             // textBox_RecipeVision_Circle_Score
             // 
             this.textBox_RecipeVision_Circle_Score.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_RecipeVision_Circle_Score.Location = new System.Drawing.Point(856, 87);
+            this.textBox_RecipeVision_Circle_Score.Location = new System.Drawing.Point(946, 87);
             this.textBox_RecipeVision_Circle_Score.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_RecipeVision_Circle_Score.Name = "textBox_RecipeVision_Circle_Score";
             this.textBox_RecipeVision_Circle_Score.Size = new System.Drawing.Size(64, 24);
@@ -1289,18 +1286,18 @@
             // label_RecipeVision_Circle_Score
             // 
             this.label_RecipeVision_Circle_Score.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_RecipeVision_Circle_Score.Location = new System.Drawing.Point(752, 87);
+            this.label_RecipeVision_Circle_Score.Location = new System.Drawing.Point(776, 87);
             this.label_RecipeVision_Circle_Score.Margin = new System.Windows.Forms.Padding(5);
             this.label_RecipeVision_Circle_Score.Name = "label_RecipeVision_Circle_Score";
-            this.label_RecipeVision_Circle_Score.Size = new System.Drawing.Size(102, 25);
+            this.label_RecipeVision_Circle_Score.Size = new System.Drawing.Size(165, 25);
             this.label_RecipeVision_Circle_Score.TabIndex = 209;
-            this.label_RecipeVision_Circle_Score.Text = "Circle Score:";
+            this.label_RecipeVision_Circle_Score.Text = "Circle Score(%):";
             this.label_RecipeVision_Circle_Score.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button_RecipeVision_Circle_Score
             // 
             this.button_RecipeVision_Circle_Score.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_RecipeVision_Circle_Score.Location = new System.Drawing.Point(924, 87);
+            this.button_RecipeVision_Circle_Score.Location = new System.Drawing.Point(1014, 87);
             this.button_RecipeVision_Circle_Score.Margin = new System.Windows.Forms.Padding(2);
             this.button_RecipeVision_Circle_Score.Name = "button_RecipeVision_Circle_Score";
             this.button_RecipeVision_Circle_Score.Size = new System.Drawing.Size(28, 24);
@@ -1823,7 +1820,7 @@
             // textBox_Recipe_Fiducial_CircleScore
             // 
             this.textBox_Recipe_Fiducial_CircleScore.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_Fiducial_CircleScore.Location = new System.Drawing.Point(856, 84);
+            this.textBox_Recipe_Fiducial_CircleScore.Location = new System.Drawing.Point(946, 84);
             this.textBox_Recipe_Fiducial_CircleScore.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_Recipe_Fiducial_CircleScore.Name = "textBox_Recipe_Fiducial_CircleScore";
             this.textBox_Recipe_Fiducial_CircleScore.Size = new System.Drawing.Size(64, 24);
@@ -1854,7 +1851,7 @@
             // button_Recipe_Fiducial_CircleScore
             // 
             this.button_Recipe_Fiducial_CircleScore.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_Recipe_Fiducial_CircleScore.Location = new System.Drawing.Point(929, 84);
+            this.button_Recipe_Fiducial_CircleScore.Location = new System.Drawing.Point(1014, 84);
             this.button_Recipe_Fiducial_CircleScore.Margin = new System.Windows.Forms.Padding(2);
             this.button_Recipe_Fiducial_CircleScore.Name = "button_Recipe_Fiducial_CircleScore";
             this.button_Recipe_Fiducial_CircleScore.Size = new System.Drawing.Size(28, 24);
@@ -1877,12 +1874,12 @@
             // label_Recipe_Fiducial_CircleScore
             // 
             this.label_Recipe_Fiducial_CircleScore.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Recipe_Fiducial_CircleScore.Location = new System.Drawing.Point(752, 84);
+            this.label_Recipe_Fiducial_CircleScore.Location = new System.Drawing.Point(776, 84);
             this.label_Recipe_Fiducial_CircleScore.Margin = new System.Windows.Forms.Padding(5);
             this.label_Recipe_Fiducial_CircleScore.Name = "label_Recipe_Fiducial_CircleScore";
-            this.label_Recipe_Fiducial_CircleScore.Size = new System.Drawing.Size(102, 25);
+            this.label_Recipe_Fiducial_CircleScore.Size = new System.Drawing.Size(165, 25);
             this.label_Recipe_Fiducial_CircleScore.TabIndex = 229;
-            this.label_Recipe_Fiducial_CircleScore.Text = "Circle Score:";
+            this.label_Recipe_Fiducial_CircleScore.Text = "Circle Score(%):";
             this.label_Recipe_Fiducial_CircleScore.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBox_RecipeVision_Illuminator
@@ -1966,52 +1963,52 @@
             this.label_RecipeVision_High_IR.Text = "Fine Cam. IR :";
             this.label_RecipeVision_High_IR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // groupBox_RecipeVision_Camera_Setting
+            // groupBox_RecipeVision_Camera_Setting_High
             // 
-            this.groupBox_RecipeVision_Camera_Setting.Controls.Add(this.button_RecipeVision_Camera_ExposureTime);
-            this.groupBox_RecipeVision_Camera_Setting.Controls.Add(this.label_RecipeVision_Camera_ExposureTime);
-            this.groupBox_RecipeVision_Camera_Setting.Controls.Add(this.textBox_RecipeVision_Camera_ExposureTime);
-            this.groupBox_RecipeVision_Camera_Setting.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox_RecipeVision_Camera_Setting.Location = new System.Drawing.Point(1059, 156);
-            this.groupBox_RecipeVision_Camera_Setting.Name = "groupBox_RecipeVision_Camera_Setting";
-            this.groupBox_RecipeVision_Camera_Setting.Size = new System.Drawing.Size(308, 61);
-            this.groupBox_RecipeVision_Camera_Setting.TabIndex = 224;
-            this.groupBox_RecipeVision_Camera_Setting.TabStop = false;
-            this.groupBox_RecipeVision_Camera_Setting.Text = " Camera ExposureTime";
+            this.groupBox_RecipeVision_Camera_Setting_High.Controls.Add(this.button_RecipeVision_Camera_ExposureTime_High);
+            this.groupBox_RecipeVision_Camera_Setting_High.Controls.Add(this.label_RecipeVision_Camera_ExposureTime_High);
+            this.groupBox_RecipeVision_Camera_Setting_High.Controls.Add(this.textBox_RecipeVision_Camera_ExposureTime_High);
+            this.groupBox_RecipeVision_Camera_Setting_High.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox_RecipeVision_Camera_Setting_High.Location = new System.Drawing.Point(1059, 156);
+            this.groupBox_RecipeVision_Camera_Setting_High.Name = "groupBox_RecipeVision_Camera_Setting_High";
+            this.groupBox_RecipeVision_Camera_Setting_High.Size = new System.Drawing.Size(308, 61);
+            this.groupBox_RecipeVision_Camera_Setting_High.TabIndex = 224;
+            this.groupBox_RecipeVision_Camera_Setting_High.TabStop = false;
+            this.groupBox_RecipeVision_Camera_Setting_High.Text = " Camera ExposureTime_High";
             // 
-            // button_RecipeVision_Camera_ExposureTime
+            // button_RecipeVision_Camera_ExposureTime_High
             // 
-            this.button_RecipeVision_Camera_ExposureTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_RecipeVision_Camera_ExposureTime.Location = new System.Drawing.Point(266, 25);
-            this.button_RecipeVision_Camera_ExposureTime.Margin = new System.Windows.Forms.Padding(2);
-            this.button_RecipeVision_Camera_ExposureTime.Name = "button_RecipeVision_Camera_ExposureTime";
-            this.button_RecipeVision_Camera_ExposureTime.Size = new System.Drawing.Size(30, 25);
-            this.button_RecipeVision_Camera_ExposureTime.TabIndex = 223;
-            this.button_RecipeVision_Camera_ExposureTime.Text = "#";
-            this.button_RecipeVision_Camera_ExposureTime.UseVisualStyleBackColor = true;
-            this.button_RecipeVision_Camera_ExposureTime.Click += new System.EventHandler(this.button_RecipeVision_Camera_ExposureTime_Click);
+            this.button_RecipeVision_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_RecipeVision_Camera_ExposureTime_High.Location = new System.Drawing.Point(266, 25);
+            this.button_RecipeVision_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(2);
+            this.button_RecipeVision_Camera_ExposureTime_High.Name = "button_RecipeVision_Camera_ExposureTime_High";
+            this.button_RecipeVision_Camera_ExposureTime_High.Size = new System.Drawing.Size(30, 25);
+            this.button_RecipeVision_Camera_ExposureTime_High.TabIndex = 223;
+            this.button_RecipeVision_Camera_ExposureTime_High.Text = "#";
+            this.button_RecipeVision_Camera_ExposureTime_High.UseVisualStyleBackColor = true;
+            this.button_RecipeVision_Camera_ExposureTime_High.Click += new System.EventHandler(this.button_RecipeVision_Camera_ExposureTime_Click);
             // 
-            // label_RecipeVision_Camera_ExposureTime
+            // label_RecipeVision_Camera_ExposureTime_High
             // 
-            this.label_RecipeVision_Camera_ExposureTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_RecipeVision_Camera_ExposureTime.Location = new System.Drawing.Point(14, 25);
-            this.label_RecipeVision_Camera_ExposureTime.Margin = new System.Windows.Forms.Padding(5);
-            this.label_RecipeVision_Camera_ExposureTime.Name = "label_RecipeVision_Camera_ExposureTime";
-            this.label_RecipeVision_Camera_ExposureTime.Size = new System.Drawing.Size(130, 25);
-            this.label_RecipeVision_Camera_ExposureTime.TabIndex = 224;
-            this.label_RecipeVision_Camera_ExposureTime.Text = "ExposureTime";
-            this.label_RecipeVision_Camera_ExposureTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label_RecipeVision_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_RecipeVision_Camera_ExposureTime_High.Location = new System.Drawing.Point(14, 25);
+            this.label_RecipeVision_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Camera_ExposureTime_High.Name = "label_RecipeVision_Camera_ExposureTime_High";
+            this.label_RecipeVision_Camera_ExposureTime_High.Size = new System.Drawing.Size(130, 25);
+            this.label_RecipeVision_Camera_ExposureTime_High.TabIndex = 224;
+            this.label_RecipeVision_Camera_ExposureTime_High.Text = "ExposureTime";
+            this.label_RecipeVision_Camera_ExposureTime_High.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // textBox_RecipeVision_Camera_ExposureTime
+            // textBox_RecipeVision_Camera_ExposureTime_High
             // 
-            this.textBox_RecipeVision_Camera_ExposureTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_RecipeVision_Camera_ExposureTime.Location = new System.Drawing.Point(150, 25);
-            this.textBox_RecipeVision_Camera_ExposureTime.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox_RecipeVision_Camera_ExposureTime.Name = "textBox_RecipeVision_Camera_ExposureTime";
-            this.textBox_RecipeVision_Camera_ExposureTime.Size = new System.Drawing.Size(112, 24);
-            this.textBox_RecipeVision_Camera_ExposureTime.TabIndex = 223;
-            this.textBox_RecipeVision_Camera_ExposureTime.Text = "000";
-            this.textBox_RecipeVision_Camera_ExposureTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_RecipeVision_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_RecipeVision_Camera_ExposureTime_High.Location = new System.Drawing.Point(150, 25);
+            this.textBox_RecipeVision_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox_RecipeVision_Camera_ExposureTime_High.Name = "textBox_RecipeVision_Camera_ExposureTime_High";
+            this.textBox_RecipeVision_Camera_ExposureTime_High.Size = new System.Drawing.Size(112, 24);
+            this.textBox_RecipeVision_Camera_ExposureTime_High.TabIndex = 223;
+            this.textBox_RecipeVision_Camera_ExposureTime_High.Text = "000";
+            this.textBox_RecipeVision_Camera_ExposureTime_High.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // groupBox_RecipeVision_AxisZ_Setting
             // 
@@ -2019,7 +2016,7 @@
             this.groupBox_RecipeVision_AxisZ_Setting.Controls.Add(this.label_RecipeVision_AxisZ_Setting);
             this.groupBox_RecipeVision_AxisZ_Setting.Controls.Add(this.textBox_RecipeVision_AxisZ_Setting);
             this.groupBox_RecipeVision_AxisZ_Setting.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox_RecipeVision_AxisZ_Setting.Location = new System.Drawing.Point(1059, 223);
+            this.groupBox_RecipeVision_AxisZ_Setting.Location = new System.Drawing.Point(1059, 308);
             this.groupBox_RecipeVision_AxisZ_Setting.Name = "groupBox_RecipeVision_AxisZ_Setting";
             this.groupBox_RecipeVision_AxisZ_Setting.Size = new System.Drawing.Size(308, 61);
             this.groupBox_RecipeVision_AxisZ_Setting.TabIndex = 225;
@@ -2060,16 +2057,74 @@
             this.textBox_RecipeVision_AxisZ_Setting.Text = "000";
             this.textBox_RecipeVision_AxisZ_Setting.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // radioButton_RecipeVision_Ignore
+            // 
+            this.radioButton_RecipeVision_Ignore.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_RecipeVision_Ignore.Location = new System.Drawing.Point(166, 24);
+            this.radioButton_RecipeVision_Ignore.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_RecipeVision_Ignore.Name = "radioButton_RecipeVision_Ignore";
+            this.radioButton_RecipeVision_Ignore.Size = new System.Drawing.Size(76, 18);
+            this.radioButton_RecipeVision_Ignore.TabIndex = 8;
+            this.radioButton_RecipeVision_Ignore.Text = "Ignore";
+            this.radioButton_RecipeVision_Ignore.UseVisualStyleBackColor = true;
+            // 
+            // groupBox_RecipeVision_Camera_Setting_Low
+            // 
+            this.groupBox_RecipeVision_Camera_Setting_Low.Controls.Add(this.button_RecipeVision_Camera_ExposureTime_Low);
+            this.groupBox_RecipeVision_Camera_Setting_Low.Controls.Add(this.label_RecipeVision_Camera_ExposureTime_Low);
+            this.groupBox_RecipeVision_Camera_Setting_Low.Controls.Add(this.textBox_RecipeVision_Camera_ExposureTime_Low);
+            this.groupBox_RecipeVision_Camera_Setting_Low.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox_RecipeVision_Camera_Setting_Low.Location = new System.Drawing.Point(1059, 223);
+            this.groupBox_RecipeVision_Camera_Setting_Low.Name = "groupBox_RecipeVision_Camera_Setting_Low";
+            this.groupBox_RecipeVision_Camera_Setting_Low.Size = new System.Drawing.Size(308, 61);
+            this.groupBox_RecipeVision_Camera_Setting_Low.TabIndex = 225;
+            this.groupBox_RecipeVision_Camera_Setting_Low.TabStop = false;
+            this.groupBox_RecipeVision_Camera_Setting_Low.Text = " Camera ExposureTime_Low";
+            // 
+            // button_RecipeVision_Camera_ExposureTime_Low
+            // 
+            this.button_RecipeVision_Camera_ExposureTime_Low.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_RecipeVision_Camera_ExposureTime_Low.Location = new System.Drawing.Point(266, 25);
+            this.button_RecipeVision_Camera_ExposureTime_Low.Margin = new System.Windows.Forms.Padding(2);
+            this.button_RecipeVision_Camera_ExposureTime_Low.Name = "button_RecipeVision_Camera_ExposureTime_Low";
+            this.button_RecipeVision_Camera_ExposureTime_Low.Size = new System.Drawing.Size(30, 25);
+            this.button_RecipeVision_Camera_ExposureTime_Low.TabIndex = 223;
+            this.button_RecipeVision_Camera_ExposureTime_Low.Text = "#";
+            this.button_RecipeVision_Camera_ExposureTime_Low.UseVisualStyleBackColor = true;
+            this.button_RecipeVision_Camera_ExposureTime_Low.Click += new System.EventHandler(this.button_RecipeVision_Camera_ExposureTime_Low_Click);
+            // 
+            // label_RecipeVision_Camera_ExposureTime_Low
+            // 
+            this.label_RecipeVision_Camera_ExposureTime_Low.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_RecipeVision_Camera_ExposureTime_Low.Location = new System.Drawing.Point(14, 25);
+            this.label_RecipeVision_Camera_ExposureTime_Low.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Camera_ExposureTime_Low.Name = "label_RecipeVision_Camera_ExposureTime_Low";
+            this.label_RecipeVision_Camera_ExposureTime_Low.Size = new System.Drawing.Size(130, 25);
+            this.label_RecipeVision_Camera_ExposureTime_Low.TabIndex = 224;
+            this.label_RecipeVision_Camera_ExposureTime_Low.Text = "ExposureTime";
+            this.label_RecipeVision_Camera_ExposureTime_Low.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_RecipeVision_Camera_ExposureTime_Low
+            // 
+            this.textBox_RecipeVision_Camera_ExposureTime_Low.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_RecipeVision_Camera_ExposureTime_Low.Location = new System.Drawing.Point(150, 25);
+            this.textBox_RecipeVision_Camera_ExposureTime_Low.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox_RecipeVision_Camera_ExposureTime_Low.Name = "textBox_RecipeVision_Camera_ExposureTime_Low";
+            this.textBox_RecipeVision_Camera_ExposureTime_Low.Size = new System.Drawing.Size(112, 24);
+            this.textBox_RecipeVision_Camera_ExposureTime_Low.TabIndex = 223;
+            this.textBox_RecipeVision_Camera_ExposureTime_Low.Text = "000";
+            this.textBox_RecipeVision_Camera_ExposureTime_Low.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // FormNewSub_Recipe_Vision
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox_RecipeVision_Camera_Setting_Low);
             this.Controls.Add(this.groupBox_RecipeVision_AxisZ_Setting);
-            this.Controls.Add(this.groupBox_RecipeVision_Camera_Setting);
+            this.Controls.Add(this.groupBox_RecipeVision_Camera_Setting_High);
             this.Controls.Add(this.groupBox_RecipeVision_Illuminator);
             this.Controls.Add(this.groupBox_RecipeVision_Fine_Camera);
             this.Controls.Add(this.groupBox_RecipeVision_CoarseCam);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox_RecipeVision_Camera);
             this.Controls.Add(this.groupBox_RecipeVision_AxisPositions_ScannerHead);
             this.Controls.Add(this.groupBox_RecipeVision_AxisPositions_WorkStage);
@@ -2118,12 +2173,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_RecipeVision_highs)).EndInit();
             this.groupBox_RecipeVision_Illuminator.ResumeLayout(false);
             this.groupBox_RecipeVision_Illuminator.PerformLayout();
-            this.groupBox_RecipeVision_Camera_Setting.ResumeLayout(false);
-            this.groupBox_RecipeVision_Camera_Setting.PerformLayout();
+            this.groupBox_RecipeVision_Camera_Setting_High.ResumeLayout(false);
+            this.groupBox_RecipeVision_Camera_Setting_High.PerformLayout();
             this.groupBox_RecipeVision_AxisZ_Setting.ResumeLayout(false);
             this.groupBox_RecipeVision_AxisZ_Setting.PerformLayout();
+            this.groupBox_RecipeVision_Camera_Setting_Low.ResumeLayout(false);
+            this.groupBox_RecipeVision_Camera_Setting_Low.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -2237,7 +2293,6 @@
         private System.Windows.Forms.RadioButton radioButton_RecipeVision_CameraSelection_LowMag;
         private System.Windows.Forms.Label label_RecipeVision_Light_Red;
         private System.Windows.Forms.Label label_RecipeVision_Light_IR;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox_RecipeVision_CoarseCam;
         private System.Windows.Forms.GroupBox groupBox_RecipeVision_Fine_Camera;
         private System.Windows.Forms.GroupBox groupBox_RecipeVision_Illuminator;
@@ -2266,14 +2321,19 @@
         private System.Windows.Forms.RadioButton radioButton_Fiducial_White;
         private System.Windows.Forms.CheckBox checkBox_RecipeVision_Illuminator_IR;
         private System.Windows.Forms.CheckBox checkBox_RecipeVision_Illuminator_Red;
-        private System.Windows.Forms.GroupBox groupBox_RecipeVision_Camera_Setting;
-        private System.Windows.Forms.Label label_RecipeVision_Camera_ExposureTime;
-        private System.Windows.Forms.TextBox textBox_RecipeVision_Camera_ExposureTime;
-        private System.Windows.Forms.Button button_RecipeVision_Camera_ExposureTime;
+        private System.Windows.Forms.GroupBox groupBox_RecipeVision_Camera_Setting_High;
+        private System.Windows.Forms.Label label_RecipeVision_Camera_ExposureTime_High;
+        private System.Windows.Forms.TextBox textBox_RecipeVision_Camera_ExposureTime_High;
+        private System.Windows.Forms.Button button_RecipeVision_Camera_ExposureTime_High;
         private System.Windows.Forms.GroupBox groupBox_RecipeVision_AxisZ_Setting;
         private System.Windows.Forms.Button button_RecipeVision_AxisZ_Setting;
         private System.Windows.Forms.Label label_RecipeVision_AxisZ_Setting;
         private System.Windows.Forms.TextBox textBox_RecipeVision_AxisZ_Setting;
         private System.Windows.Forms.RadioButton radioButton_Fiducial_Ignor;
+        private System.Windows.Forms.RadioButton radioButton_RecipeVision_Ignore;
+        private System.Windows.Forms.GroupBox groupBox_RecipeVision_Camera_Setting_Low;
+        private System.Windows.Forms.Button button_RecipeVision_Camera_ExposureTime_Low;
+        private System.Windows.Forms.Label label_RecipeVision_Camera_ExposureTime_Low;
+        private System.Windows.Forms.TextBox textBox_RecipeVision_Camera_ExposureTime_Low;
     }
 }

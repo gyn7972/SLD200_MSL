@@ -139,22 +139,29 @@ namespace QMC.Common
 			
 			while(true)
             {
-				if (bExit)
-					break;
-				
-				lock (m_queLogs.SyncRoot)
+				try
 				{
-					listLog.Clear();
-					while (m_queLogs.Count > 0)
-					{
-						LogInfo log = m_queLogs.Dequeue() as LogInfo;
-						if (log != null)
-							listLog.Add(log);
-					}
-				}
 
-				WriteLog(listLog);
-				Thread.Sleep(1);
+					if (bExit)
+						break;
+
+					lock (m_queLogs.SyncRoot)
+					{
+						listLog.Clear();
+						while (m_queLogs.Count > 0)
+						{
+							LogInfo log = m_queLogs.Dequeue() as LogInfo;
+							if (log != null)
+								listLog.Add(log);
+						}
+					}
+
+					WriteLog(listLog);
+					Thread.Sleep(1);
+				}
+				catch (Exception ex)
+				{	
+				}
 			}
 
 			m_tokenSourceCancel.Dispose();
