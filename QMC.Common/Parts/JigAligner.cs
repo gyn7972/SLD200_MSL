@@ -394,6 +394,8 @@ namespace QMC.Common.Parts
 
                 if (Owner is WorkStage workstage)
                 {
+                    if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
+
                     //무조건 2개 서치 - 소스 확인 하자.
                     m_Owner.m_nFindAlignMarkType = 0;
                     //첫번째 위치 Search
@@ -567,6 +569,8 @@ namespace QMC.Common.Parts
                     ////Thread.Sleep(Config.MoveToDelay);
                     //Thread.Sleep(500);
 
+                    if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
+
                     this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[1];
                     if (Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
                     {
@@ -654,8 +658,10 @@ namespace QMC.Common.Parts
 
                         }
 
+                        if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
+
                         //Test ::
-                        if(false) //구영남 - 1,2번 마크 위치에 따라 의심되면 TEST 해보자.
+                        if (false) //구영남 - 1,2번 마크 위치에 따라 의심되면 TEST 해보자.
                         {
                             XyCoordinate base1 = new XyCoordinate(0,0);
                             XyCoordinate base2 = new XyCoordinate(0, 0);

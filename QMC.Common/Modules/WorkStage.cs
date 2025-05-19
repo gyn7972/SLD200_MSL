@@ -1587,6 +1587,12 @@ namespace QMC.Common.Modules
             Chiller_Stop,
             Chiller_Alarm,                      //  IO Off : Chiller alarm
 
+            Main_CDA_Alarm,
+            Main_Purge_Alarm,
+            VarioScan_Flow_Alarm,
+            Scanner_Flow_Alarm,
+
+
             //Device 알람 정의
             InitFail_Motion,
             InitFail_IO,
@@ -2075,6 +2081,40 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Main_CDA_Alarm;
+            alarm.Title = "MAIN_CDA";
+            alarm.Cause = "MAIN_CDA 가 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Main_Purge_Alarm;
+            alarm.Title = "Main_Purge";
+            alarm.Cause = "Main_Purge 가 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.VarioScan_Flow_Alarm;
+            alarm.Title = "VarioScan_Flow";
+            alarm.Cause = "VarioScan_Flow 가 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Scanner_Flow_Alarm;
+            alarm.Title = "Scanner_Flow";
+            alarm.Cause = "Scanner_Flow 가 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.ScannerCalibration_Timeout;
@@ -8366,6 +8406,8 @@ namespace QMC.Common.Modules
             {
                 _isMainWorkRunning = true;
 
+                //workStageParameter
+
                 //  타워램프 상태 갱신
                 //  Alarm 상태
                 if (AlarmManager.Instance.IsAlarm)
@@ -8462,6 +8504,38 @@ namespace QMC.Common.Modules
                 // Scanner signal로 레이저 발진 유/무 확인.
                 UpdateLaserStatus();
 
+
+                ////  Chiller 상태 체크
+                if (!workStageParameter.DI_Chiller_Alarm_Check())
+                {
+                    AlarmPost(AlarmKey.Chiller_Alarm);
+                    return;
+                }
+
+                if (!workStageParameter.DI_Chiller_Run())
+                {
+                    AlarmPost(AlarmKey.Chiller_Stop);
+                    return;
+                }
+
+                if (!workStageParameter.DI_Main_CDA_Check())
+                {
+                    AlarmPost(AlarmKey.Main_CDA_Alarm);
+                    return;
+                }
+
+                if (!workStageParameter.DI_Main_Purge_Check())
+                {
+                    AlarmPost(AlarmKey.Main_Purge_Alarm);
+                    return;
+                }
+
+                if (!workStageParameter.DI_Scanner_Flow_Check())
+                {
+                    AlarmPost(AlarmKey.Scanner_Flow_Alarm);
+                    return;
+                }
+
                 if (!m_MainWork_Start)
                 {
                     return;
@@ -8480,6 +8554,30 @@ namespace QMC.Common.Modules
                     if (!workStageParameter.DI_Chiller_Run())
                     {
                         AlarmPost(AlarmKey.Chiller_Stop);
+                        return;
+                    }
+
+                    if(!workStageParameter.DI_Main_CDA_Check())
+                    {
+                        AlarmPost(AlarmKey.Main_CDA_Alarm);
+                        return;
+                    }
+
+                    if (!workStageParameter.DI_Main_Purge_Check())
+                    {
+                        AlarmPost(AlarmKey.Main_Purge_Alarm);
+                        return;
+                    }
+
+                    if (!workStageParameter.DI_VarioScan_Flow_Check())
+                    {
+                        AlarmPost(AlarmKey.VarioScan_Flow_Alarm);
+                        return;
+                    }
+
+                    if (!workStageParameter.DI_Scanner_Flow_Check())
+                    {
+                        AlarmPost(AlarmKey.Scanner_Flow_Alarm);
                         return;
                     }
                 }
@@ -14760,6 +14858,11 @@ namespace QMC.Common.Modules
                                 double offsetY = measuredHole.Y - matched.Y;
                                 double distance = Math.Sqrt(offsetX * offsetX + offsetY * offsetY);
 
+                                if(Math.Abs(offsetX) > 0.03 || Math.Abs(offsetY) > 0.03)
+                                {
+                                    continue;
+                                }
+
                                 totalOffsetX += offsetX;
                                 totalOffsetY += offsetY;
                                 matchCount++;
@@ -14773,9 +14876,9 @@ namespace QMC.Common.Modules
                             // 이거면 되것징!!!!
                             //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경.
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = 
-                                MC_Func.MC_GetEncPos((int)nAxis.X) + averageOffsetX;
+                                MC_Func.MC_GetEncPos((int)nAxis.X) - averageOffsetX;
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = 
-                                MC_Func.MC_GetEncPos((int)nAxis.Y) + averageOffsetY;
+                                MC_Func.MC_GetEncPos((int)nAxis.Y) - averageOffsetY;
 
                             Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() + 
                                 "FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
@@ -16101,6 +16204,7 @@ namespace QMC.Common.Modules
                                 Fiducial_circlesResult.Clear();
                                 foreach (var circle in result.Circles)
                                 {
+                                    Fiducial_circleFound = true;
                                     Fiducial_circlesResult.Add(circle.GetBoundery());
                                 }
                             }
@@ -29626,10 +29730,16 @@ namespace QMC.Common.Modules
                 m_dOffset = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness;
             }
 
-                //  좌표계 (기존)
-                //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
-                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
-                    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset;
+            double dZPosOffset = 0.0;
+            if (Equipment.stVisionRecipeSet.bSocketIlluminationRedUse)
+            {
+                dZPosOffset = Equipment.stVisionRecipeSet.dSocketAxisZ_Offset;
+            }
+
+            //  좌표계 (기존)
+            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
+                    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset + dZPosOffset;
 
             MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
                                   lfVelocity, lfAccDec, lfAccDec);

@@ -931,7 +931,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             
             Equipment.stVisionRecipeSet.dSocketCircleMarkRadius = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
             Equipment.stVisionRecipeSet.dSocketCircleMarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
-            Equipment.stVisionRecipeSet.dSocketCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+            Equipment.stVisionRecipeSet.dSocketCircleMarkScore = Convert.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
 
             Equipment.stVisionRecipeSet.bSocketIlluminationRedUse = checkBox_RecipeVision_Illuminator_Red.Checked;
             Equipment.stVisionRecipeSet.bSocketIlluminationIRUse = checkBox_RecipeVision_Illuminator_IR.Checked;

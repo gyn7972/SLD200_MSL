@@ -2518,8 +2518,8 @@ namespace SLD200_MSL
                                                         w,
                                                         h,
                                                         75,
-                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
-                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
+                                                        Equipment.stVisionRecipeSet.dGoldPowderCircleMarkScore,
+                                                        Equipment.stVisionRecipeSet.dGoldPowderCircleMarkSpec);
             }
 
             if (circlesResult.Count > 0)

@@ -722,22 +722,23 @@ namespace QMC.Common.VisionPart
         }
 
 
-        public QMC_ImageProcessFindAlignResult FindCircleForFR4(byte[] pixelData, int w, int h, int r, double dSpec, double dScore)
+        public QMC_ImageProcessFindAlignResult FindCircleForFR4(byte[] imageRaw, int w, int h, int r, double dSpec, double dScore)
         {
             List<RectangleF> circlesResult = new List<RectangleF>();
             QMC_ImageProcessFindAlignResult Qmcresult = new QMC_ImageProcessFindAlignResult();
+            byte[] pixelData = new byte[imageRaw.Length];
             byte[,] image = new byte[w, h];
             int nSum = 0;
             for (int y = 0; y < h; y++)
             {
                 for (int x = 0; x < w; x++)
                 {
-                    image[x, y] = pixelData[y * w + x];
+                    image[x, y] = imageRaw[y * w + x];
 
                 }
             }
 
-            Sobel(image, pixelData, w, h, w, 3);
+            Sobel(image, pixelData, w, h, w, 5);
             int[] nHisto = new int[256];
             for (int y = 0; y < h; y++)
             {
@@ -815,6 +816,7 @@ namespace QMC.Common.VisionPart
             if (polygons.Count > 2 * Math.PI * r / 5)
             {
                 result = FindCircleFitter(circlesResult, polygons, out dRadius, 3, r, 0.1);
+                result.Score = (float)Math.Sqrt(result.Score);
 
             }
 

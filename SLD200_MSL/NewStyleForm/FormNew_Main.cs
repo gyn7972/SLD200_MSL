@@ -4166,8 +4166,9 @@ namespace SLD200_MSL
 
                         view.Dp2Lp(e.Location, out float dX, out float dY);
                         XyzCoordinate ptReal = new XyzCoordinate(dX, dY, 0);
-                        ptReal.X += view.CameraX;
-                        ptReal.Y += view.CameraY;
+                        //double dScale = view.Scale;
+                        //ptReal.X += view.CameraX;
+                        //ptReal.Y += view.CameraY;
 
                         if (Equipment.AutoManualStatus == false)
                         {

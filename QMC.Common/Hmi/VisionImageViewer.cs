@@ -454,7 +454,7 @@ namespace QMC.Common.Hmi
                 this.VerticalShift = new VerticalShiftSpecification(this);
             }
             public ImageScale(double x, double y) : this(x, y, 1) { }
-            public ImageScale() : this(0, 0) { }
+            public ImageScale() : this(1, 1) { }
             #endregion
 
             #region Property
@@ -561,7 +561,7 @@ namespace QMC.Common.Hmi
 
             public PointD GetPoint(int x, int y)
             {
-                return new PointD(this.HorizontalShift.Offset + x * this.Scale.X * this.Wheel, this.VerticalShift.Offset + y * this.Scale.Y * this.Wheel);
+                return new PointD((this.HorizontalShift.Offset + x * this.Scale.X )* this.Wheel, (this.VerticalShift.Offset + y * this.Scale.Y) * this.Wheel);
             }
 
             public SizeD GetSize(Control control)
@@ -958,7 +958,7 @@ namespace QMC.Common.Hmi
                 if (this.InputImage != null)
                 {
                     this.Scale.Wheel = 1.0;
-
+                    
                     this.Scale.SetMousePoint(new Point(this.InputImage.Header.Width / 2, this.InputImage.Header.Height / 2));
                     this.Scale.MoveCenter(new Size(this.InputImage.Header.Width, this.InputImage.Header.Height));
                 }
@@ -1661,7 +1661,7 @@ namespace QMC.Common.Hmi
         {
             Bitmap resizeImage = null;
             SizeD size;
-            PointD point = this.Scale.GetCenterPoint();
+            PointD point = this.Scale.GetCenterPoint() ;
             VisionImage visionImage = this.InputImage;
             try
             {
@@ -1759,7 +1759,11 @@ namespace QMC.Common.Hmi
                                                 lock(bufferedGrphics)
                                                 {
                                                     if (resultOverlays[i].Visible == true)
+                                                    {
                                                         resultOverlays[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
+                                                        //resultOverlays[i].Draw( this.Scale.GetCenterPoint()+ this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
+
+                                                    }
 
                                                 }
 
@@ -1996,18 +2000,27 @@ namespace QMC.Common.Hmi
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            PointD currentPoint = this.Scale.GetPoint(e.X, e.Y);
-            PointD distance = new PointD();
+            try
+            {
 
-            if (this.InputImage == null) return;
+                PointD currentPoint = this.Scale.GetPoint(e.X, e.Y);
+                PointD distance = new PointD();
 
-            base.OnMouseUp(e);
+                if (this.InputImage == null) return;
 
-            distance = this.m_PreviousPoint - currentPoint;
+                base.OnMouseUp(e);
+                double dScale = this.Camera.LatestImage.Header.Width / this.Width;
+                distance = (this.m_PreviousPoint - currentPoint) * dScale;
 
-            distance += new PointD(this.Scale.HorizontalShift.Offset, this.Scale.VerticalShift.Offset);
+                distance += new PointD(this.Scale.HorizontalShift.Offset, this.Scale.VerticalShift.Offset);
 
-            this.Scale.SetOffsetAndCenterPoint(distance, new Size(this.InputImage.Header.Width, this.InputImage.Header.Height));
+                this.Scale.SetOffsetAndCenterPoint(distance, new Size(this.InputImage.Header.Width, this.InputImage.Header.Height));
+            }
+            catch (Exception ex)
+            {
+
+                Log.Write(ex);
+            }
         }
 
         protected override void OnPaint(PaintEventArgs pe)
@@ -2038,7 +2051,7 @@ namespace QMC.Common.Hmi
                 return;
             }
             m_GraphicsDisplay = this.CreateGraphics();
-
+            
             m_task = Task.Factory.StartNew(() =>
             {
                 lock (objLock)
@@ -2063,7 +2076,8 @@ namespace QMC.Common.Hmi
                                     {
                                         if (this.m_InputImage.Header.Width != Camera.LatestImage.Header.Width)
                                         {
-
+                                            
+                                            //Scale.Scale.Y = this.Height/ Camera.LatestImage.Header.Height;
                                             Scale.SetMousePoint(new Point(Camera.LatestImage.Header.Width / 2, Camera.LatestImage.Header.Height / 2));
 
 
@@ -2083,8 +2097,9 @@ namespace QMC.Common.Hmi
                                             m_VerticalLine.EndLocation = new Point(nX / 2, nY);
                                         }
                                     }
-                                   
+                                    //this.Scale = new ImageScale(this.Width / this.m_InputImage.Header.Width, this.Height / this.m_InputImage.Header.Height);
                                 }
+                                
                                 this.m_InputImage = Camera.LatestImage;
 
                                 this.m_IsChanged = true;
