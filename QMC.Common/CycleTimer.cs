@@ -321,7 +321,8 @@ namespace QMC.Common
                            ? DateTime.Now - StartTime
                            : TimeSpan.Zero;
 
-        public TimeSpan TotalElapsed { get; private set; }  // End() 내부에서 누적 갱신
+        //public TimeSpan TotalElapsed { get; private set; }  // End() 내부에서 누적 갱신
+        public TimeSpan TotalElapsed { get;  set; }  // 
 
 
         public bool SaveToIni(string section, string path)
