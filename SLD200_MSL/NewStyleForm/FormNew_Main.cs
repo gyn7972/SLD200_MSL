@@ -4057,11 +4057,9 @@ namespace SLD200_MSL
             {
                 // 평균 계산의 기반 데이터만 초기화 (누적 시간 유지)
                 Equipment.CycleTimer_LaserDrilling.Clear();
-
                 // 총 경과 시간 및 최근 사이클 시간도 명시적으로 초기화
                 Equipment.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
                 //Equipment.CycleTimer_LaserDrilling.Latest = new CycleTimer.CycleInfo(); // 또는 생성자에 맞게 초기화
-
                 // 완료 수량도 초기화
                 Equipment.CycleTimer_DoneModuleCount = 0;
 

@@ -2087,7 +2087,6 @@ namespace SLD200_MSL
                 {
                     //  Layer List 전체 삭제
                     listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Clear();
-
                     // Todo : 20250426 확인
                     if (m_formSiriusEditor.SiriusEditor.Document != null)
                     {
@@ -2099,57 +2098,59 @@ namespace SLD200_MSL
                             }
                         }
                     }
-                                        
+
+
+                    // 다른 곳 사용시!!! 아래 switch 구문 messagebox Log 등으로 수정 필요.!
+                    // 선택 가공을 위해 Drilling Data Parsing 도 해준다.
                     var mb = new MessageBoxOk();
-                    mb.ShowDialog("Information !!", "Recipe Data를 로드하였습니다.");
-
-
-                    //  선택 가공을 위해 Drilling Data Parsing 도 해준다.
                     int m_nReturn = workStage.GetDrillingData();
                     switch (m_nReturn)
                     {
                         case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
 
+                            Equipment.CycleTimer_LaserDrilling.Clear();
+                            Equipment.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
+                            Equipment.CycleTimer_DoneModuleCount = 0;
+
                             //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
                             workStage.GetDrillingData_ProcessingFlagCheck();
-                             
-                            MessageBox.Show("가공 데이터 Parsing 성공", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            mb.ShowDialog("Information !!", "가공 데이터 Parsing 성공 및 Recipe Data를 로드 성공.");
                             break;
 
                         case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
-                            MessageBox.Show("데이터가 정상적으로 로드 되지 않았습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            mb.ShowDialog("Error !!", "데이터가 정상적으로 로드 되지 않았습니다.");
                             break;
 
                         case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
-                            MessageBox.Show("데이터가 Group 이 아닙니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information); ;
+                            mb.ShowDialog("Error !!", "데이터가 Group 이 아닙니다.");
                             break;
 
                         case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
-                            MessageBox.Show("데이터를 Group 해제 해야 합니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            mb.ShowDialog("Error !!", "데이터를 Group 해제 해야 합니다.");
                             break;
 
                         case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
-                            MessageBox.Show("Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            mb.ShowDialog("Error !!", "Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.");
                             break;
 
                         case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
-                            MessageBox.Show("Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            mb.ShowDialog("Error !!", "Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.");
                             break;
 
                         case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
-                            MessageBox.Show("Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지 데이터로만 구성되어야 합니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            mb.ShowDialog("Error !!", "Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지 데이터로만 구성되어야 합니다.");
                             break;
 
                         case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
-                            MessageBox.Show("Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            mb.ShowDialog("Error !!", "Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다.");
                             break;
 
                         case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
-                            MessageBox.Show("Line 으로 이루어진 Drilling Data 가 닫힌 도형이 아닙니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            mb.ShowDialog("Error !!", "Line 으로 이루어진 Drilling Data 가 닫힌 도형이 아닙니다.");
                             break;
 
                         case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
-                            MessageBox.Show("RTC 보드가 초기화 되지 않았습니다.", "Information !");
+                            mb.ShowDialog("Error !!", "RTC 보드가 초기화 되지 않았습니다.");
                             break;
                     }
                 }

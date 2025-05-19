@@ -267,9 +267,9 @@ namespace QMC.Common.Vision
             SizeD scale = SizeD.Empty;
             Font font = null;
             Point point = Point.Empty;
-            double tempWidth = 0.0;
+            SolidBrush brushColor;
+        double tempWidth = 0.0;
             double tempHeight = 0.0;
-
             if (sourceSize == null || destinateSize == null)
                 scale = new SizeD(1, 1);
             else
@@ -278,18 +278,19 @@ namespace QMC.Common.Vision
                 tempHeight = destinateSize.Value.Height / sourceSize.Value.Height;
                 scale = new SizeD(tempWidth, tempHeight);
             }
-
             point = new PointD((this.StartLocation.X - offset.X) * scale.Width, (this.StartLocation.Y - offset.Y) * scale.Height);
             font = new Font(this.FontStyle.FontFamily, (float)(this.FontStyle.Size * scale.Width));
-
+            brushColor = new SolidBrush(this.Color);
             if (graphics != null)
             {
                 if (graphics.Graphics != null)
                 {
-                    graphics.Graphics.DrawString(this.Text, font, this.BrushColor, point);
+                    //graphics.Graphics.DrawString(this.Text, font, this.BrushColor, point);
+                    graphics.Graphics.DrawString(this.Text, font, brushColor, point);
                 }
             }
             font.Dispose();
+            brushColor.Dispose();   
         }
         #endregion
     }
