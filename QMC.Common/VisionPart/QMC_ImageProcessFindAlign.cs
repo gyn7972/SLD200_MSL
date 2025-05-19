@@ -247,7 +247,7 @@ namespace QMC.Common.VisionPart
 
             string strFileName = "d:\\Temp\\AlignOrg" + DateTime.Now.Ticks.ToString() + ".bmp";
             IsImageSave = true;
-            SaveImage(pixelData, w, h, strFileName);
+            //SaveImage(pixelData, w, h, strFileName);
             if (bIsDarkCircleSearch == false)
             {
                 //pixelData = InversImage(pixelData);

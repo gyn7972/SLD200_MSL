@@ -8542,45 +8542,45 @@ namespace QMC.Common.Modules
                 }
 
                 //  Auto Run 모드일 때 칠러가 동작하지 않으면 알람
-                if (Equipment.AutoRunStatus)
-                {
-                    //  Chiller 상태 체크
-                    if (!workStageParameter.DI_Chiller_Alarm_Check())
-                    {
-                        AlarmPost(AlarmKey.Chiller_Alarm);
-                        return;
-                    }
+                //if (Equipment.AutoRunStatus)
+                //{
+                //    //  Chiller 상태 체크
+                //    if (!workStageParameter.DI_Chiller_Alarm_Check())
+                //    {
+                //        AlarmPost(AlarmKey.Chiller_Alarm);
+                //        return;
+                //    }
 
-                    if (!workStageParameter.DI_Chiller_Run())
-                    {
-                        AlarmPost(AlarmKey.Chiller_Stop);
-                        return;
-                    }
+                //    if (!workStageParameter.DI_Chiller_Run())
+                //    {
+                //        AlarmPost(AlarmKey.Chiller_Stop);
+                //        return;
+                //    }
 
-                    if(!workStageParameter.DI_Main_CDA_Check())
-                    {
-                        AlarmPost(AlarmKey.Main_CDA_Alarm);
-                        return;
-                    }
+                //    if(!workStageParameter.DI_Main_CDA_Check())
+                //    {
+                //        AlarmPost(AlarmKey.Main_CDA_Alarm);
+                //        return;
+                //    }
 
-                    if (!workStageParameter.DI_Main_Purge_Check())
-                    {
-                        AlarmPost(AlarmKey.Main_Purge_Alarm);
-                        return;
-                    }
+                //    if (!workStageParameter.DI_Main_Purge_Check())
+                //    {
+                //        AlarmPost(AlarmKey.Main_Purge_Alarm);
+                //        return;
+                //    }
 
-                    if (!workStageParameter.DI_VarioScan_Flow_Check())
-                    {
-                        AlarmPost(AlarmKey.VarioScan_Flow_Alarm);
-                        return;
-                    }
+                //    if (!workStageParameter.DI_VarioScan_Flow_Check())
+                //    {
+                //        AlarmPost(AlarmKey.VarioScan_Flow_Alarm);
+                //        return;
+                //    }
 
-                    if (!workStageParameter.DI_Scanner_Flow_Check())
-                    {
-                        AlarmPost(AlarmKey.Scanner_Flow_Alarm);
-                        return;
-                    }
-                }
+                //    if (!workStageParameter.DI_Scanner_Flow_Check())
+                //    {
+                //        AlarmPost(AlarmKey.Scanner_Flow_Alarm);
+                //        return;
+                //    }
+                //}
 
                 //  Loader 에서 WorkStage 로 모듈을 Loading 할 때, Loading 시작과 동시에 가공 데이터 Parsing 하기 위함
                 if (Equipment.ProcessingData_Parsing_byLoader)
