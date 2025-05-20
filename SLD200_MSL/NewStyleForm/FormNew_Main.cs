@@ -1506,6 +1506,15 @@ namespace SLD200_MSL
 
         private void FormNew_Main_Shown(object sender, EventArgs e)
         {
+            // 메인 화면 완벽하게 열린 후 실행.,
+            this.BeginInvoke(new System.Action(async () =>
+            {
+                await Task.Delay(500);  // 0.5초 텀
+                // 여기가 "UI 다 그려지고 나서" 실행되는 진짜 시작점!
+                workStage.m_MainStatus_Start = true;
+            }));
+
+
             //  메인 화면 열린 후 타이머 시작
             workStage.timer_Comm.Enabled = true;                                 //  Comm
             workStage.timer_Comm.Start();
@@ -2445,19 +2454,6 @@ namespace SLD200_MSL
 
             checkBox_Main_AutoRun.Checked = false;
 
-            // X
-            //workStage.timer_MainWork.Stop();
-            //workStage.timer_MainWork.Enabled = false;
-            //workStage.m_MainWork_Start = false;
-            //loader.timer_LoaderWork.Stop();
-            //loader.timer_LoaderWork.Enabled = false;
-            //loader.m_LoaderWork_Start = false;
-            //workStage.timer_LaserDrillingWork.Stop();
-            //workStage.timer_LaserDrillingWork.Enabled = false;
-            //workStage.m_LaserDrillingWork_Start = false;
-            //unloader.timer_UnloaderWork.Stop();
-            //unloader.timer_UnloaderWork.Enabled = false;
-            //unloader.m_UnloaderWork_Start = false;
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //

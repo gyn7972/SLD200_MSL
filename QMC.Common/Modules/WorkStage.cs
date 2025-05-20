@@ -1337,6 +1337,7 @@ namespace QMC.Common.Modules
         public bool _isCalibrationRunning = false; // 중복 실행 방지 플래그
         public bool _isLaserDrillingWorkRunning = false; // 중복 실행 방지 플래그
         public bool _isMainWorkRunning = false; // 중복 실행 방지 플래그
+        public bool _isMainStatusRunning = false; // 중복 실행 방지 플래그
 
         public bool m_VerifyScannerCamOffset_Start = false;
         public bool m_MotionHome_Start = false;
@@ -1346,7 +1347,8 @@ namespace QMC.Common.Modules
         public bool m_ScannerCalibration_Start = false;
         public bool m_LaserDrillingWork_Start = false;
         public bool m_MainWork_Start = false;
-        
+        public bool m_MainStatus_Start = false;
+
         #endregion
 
         #region Property
@@ -1591,6 +1593,7 @@ namespace QMC.Common.Modules
             Main_Purge_Alarm,
             VarioScan_Flow_Alarm,
             Scanner_Flow_Alarm,
+            DustCollector_Fan_Run_Alarm,
 
 
             //Device 알람 정의
@@ -2110,6 +2113,14 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.Scanner_Flow_Alarm;
             alarm.Title = "Scanner_Flow";
             alarm.Cause = "Scanner_Flow 가 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.DustCollector_Fan_Run_Alarm;
+            alarm.Title = "DustCollector";
+            alarm.Cause = "상부 DustCollector가 정지 상태 입니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -4122,7 +4133,8 @@ namespace QMC.Common.Modules
             Aligner_FineCam = 6,
             Aligner_PreAlign_Lower = 7,
         }
-        
+
+        protected Task m_taskTimer_MainStatus_Tick = null;
         protected Task m_taskTimer_MainWork_Tick = null;
         protected Task m_taskTimer_Comm_Tick = null;
         protected Task m_taskTimer_LaserDrillingWork_Tick = null;
@@ -4942,6 +4954,23 @@ namespace QMC.Common.Modules
             });
 
             //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
+            m_taskTimer_MainStatus_Tick = Task.Factory.StartNew(() =>
+            {
+                Thread.CurrentThread.Name = "m_taskTimer_MainStatus_Tick";
+
+                while (true)
+                {
+                    Thread.Sleep(1);
+                    
+                    if (IsModuleClose)
+                    {
+                        break;
+                    }
+                    Timer_MainStatus_Tick(null, null);
+                }
+            }); ; ;
+
+            //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
             m_taskTimer_MainWork_Tick = Task.Factory.StartNew(() =>
             {
                 Thread.CurrentThread.Name = "m_taskTimer_MainWork_Tick";
@@ -4960,7 +4989,7 @@ namespace QMC.Common.Modules
                     }
                     Timer_MainWork_Tick(null, null);
                 }
-            }); ; ;
+            }); 
 
 
             m_taskTimer_LaserDrillingWork_Tick =  Task.Factory.StartNew(() =>
@@ -5070,6 +5099,7 @@ namespace QMC.Common.Modules
                 }
             });
 
+            listTask.Add(m_taskTimer_MainStatus_Tick);
             listTask.Add(m_taskTimer_MainWork_Tick);
             listTask.Add(m_taskTimer_Comm_Tick);
 
@@ -5288,13 +5318,15 @@ namespace QMC.Common.Modules
             }
             listTask.Clear();
 
-            m_taskTimer_MainWork_Tick = null;
-            m_taskTimer_Comm_Tick = null;
             m_taskTimer_LaserDrillingWork_Tick = null;
             m_taskTimer_SubWork_Tick = null;
             m_taskTimer_ProductAlign_tick = null;
             m_taskTimer_VerifyScannerCamOffset_Tick = null;
             m_taskTimer_ScannerCalibration_Tick = null;
+
+            m_taskTimer_Comm_Tick = null;
+            m_taskTimer_MainWork_Tick = null;
+            m_taskTimer_MainStatus_Tick = null;
 
             base.Close();
 
@@ -8393,20 +8425,22 @@ namespace QMC.Common.Modules
             }
         }
 
-        private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
+        private async void Timer_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
-            if (_isMainWorkRunning)
+            if (_isMainStatusRunning)
             {
-                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
                 return;
             }
 
             try
             {
-                _isMainWorkRunning = true;
+                _isMainStatusRunning = true;
 
-                //workStageParameter
+                if (!m_MainStatus_Start)
+                {
+                    return;
+                }
 
                 //  타워램프 상태 갱신
                 //  Alarm 상태
@@ -8500,87 +8534,74 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.TowerLamp_BuzzerStop = false;
                 }
 
-
                 // Scanner signal로 레이저 발진 유/무 확인.
                 UpdateLaserStatus();
-
 
                 ////  Chiller 상태 체크
                 if (!workStageParameter.DI_Chiller_Alarm_Check())
                 {
                     AlarmPost(AlarmKey.Chiller_Alarm);
-                    return;
                 }
 
                 if (!workStageParameter.DI_Chiller_Run())
                 {
                     AlarmPost(AlarmKey.Chiller_Stop);
-                    return;
                 }
 
                 if (!workStageParameter.DI_Main_CDA_Check())
                 {
                     AlarmPost(AlarmKey.Main_CDA_Alarm);
-                    return;
                 }
 
                 if (!workStageParameter.DI_Main_Purge_Check())
                 {
                     AlarmPost(AlarmKey.Main_Purge_Alarm);
-                    return;
                 }
 
                 if (!workStageParameter.DI_Scanner_Flow_Check())
                 {
                     AlarmPost(AlarmKey.Scanner_Flow_Alarm);
-                    return;
                 }
+
+                if (!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper))
+                {
+                    AlarmPost(AlarmKey.DustCollector_Fan_Run_Alarm);
+                }
+
+                if (Equipment.AutoRunStatus)
+                {
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isMainStatusRunning = false; // 플래그 해제
+            }
+        }
+
+
+        private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isMainWorkRunning)
+            {
+                return;
+            }
+
+            try
+            {
+                _isMainWorkRunning = true;
 
                 if (!m_MainWork_Start)
                 {
                     return;
                 }
-
-                //  Auto Run 모드일 때 칠러가 동작하지 않으면 알람
-                //if (Equipment.AutoRunStatus)
-                //{
-                //    //  Chiller 상태 체크
-                //    if (!workStageParameter.DI_Chiller_Alarm_Check())
-                //    {
-                //        AlarmPost(AlarmKey.Chiller_Alarm);
-                //        return;
-                //    }
-
-                //    if (!workStageParameter.DI_Chiller_Run())
-                //    {
-                //        AlarmPost(AlarmKey.Chiller_Stop);
-                //        return;
-                //    }
-
-                //    if(!workStageParameter.DI_Main_CDA_Check())
-                //    {
-                //        AlarmPost(AlarmKey.Main_CDA_Alarm);
-                //        return;
-                //    }
-
-                //    if (!workStageParameter.DI_Main_Purge_Check())
-                //    {
-                //        AlarmPost(AlarmKey.Main_Purge_Alarm);
-                //        return;
-                //    }
-
-                //    if (!workStageParameter.DI_VarioScan_Flow_Check())
-                //    {
-                //        AlarmPost(AlarmKey.VarioScan_Flow_Alarm);
-                //        return;
-                //    }
-
-                //    if (!workStageParameter.DI_Scanner_Flow_Check())
-                //    {
-                //        AlarmPost(AlarmKey.Scanner_Flow_Alarm);
-                //        return;
-                //    }
-                //}
 
                 //  Loader 에서 WorkStage 로 모듈을 Loading 할 때, Loading 시작과 동시에 가공 데이터 Parsing 하기 위함
                 if (Equipment.ProcessingData_Parsing_byLoader)
@@ -8942,8 +8963,6 @@ namespace QMC.Common.Modules
             }
         }
 
-        //
-
         private void Timer_SubWork_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -9193,7 +9212,6 @@ namespace QMC.Common.Modules
                 //Console.WriteLine($"Scanner Calibration running at {DateTime.Now}, Step: {m_nScanner_Calibration_Step}");
                 Run_Verify_ScannerCameraOffset_Func();
                 Run_LaserHeightCheck_Func();
-
             }
             catch (Exception ex)
             {
@@ -13850,11 +13868,6 @@ namespace QMC.Common.Modules
 
 
         #region Main Work Cycle Function (자동 운전)
-
-
-        
-
-
         int Run_MainWork_Cycle_Func()
         {
             int ret = 0;
@@ -17694,7 +17707,6 @@ namespace QMC.Common.Modules
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff_Check;
                     break;
 
-
                 case (int)LaserDrilling_Step.LaserOff_Check:                                         //  레이저 Off 확인
                     if (rtc.CtlGetStatus(RtcStatus.NotBusy))
                     {
@@ -17709,7 +17721,6 @@ namespace QMC.Common.Modules
 
                     }
                     break;
-
 
                 case (int)LaserDrilling_Step.DustCollector_On:                                      //  집진기 On
                     //laserDrillingParameter.DO_DustCollector_OnOff(true);                          //  집진기 동작은 On/Off 스위치로 동작
@@ -17743,7 +17754,6 @@ namespace QMC.Common.Modules
                     }
                     break;
 
-
                 case (int)LaserDrilling_Step.DustCollector_Frequency_Set:
                     if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 500)
                     {
@@ -17754,7 +17764,6 @@ namespace QMC.Common.Modules
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_On_Check;
                     }
                     break;
-
 
                 case (int)LaserDrilling_Step.DustCollector_On_Check:                                //  집진기 On 확인
                     if ((workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) &&
@@ -24292,15 +24301,11 @@ namespace QMC.Common.Modules
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 5)               //  60 sec * 5
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 시간 초과.");
-
+                        AlarmPost(AlarmKey.SocketAlignMovePositionCalcFail);
                         //timer_LaserDrillingWork.Enabled = false;
                         //m_bExit = true;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-                        timer_VisionAlign.Enabled = false;
-                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
-
-                        MessageBox.Show("Socket Align 시간 초과", "Error");
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                        //m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                     }
                     break;
 
@@ -31686,11 +31691,14 @@ namespace QMC.Common.Modules
                 Alarm alarm = GetAlarm((int)AlarmCode);
                 if (alarm.Grade.Equals("Error"))
                 {
+                    this.m_VerifyScannerCamOffset_Start = false;
+                    this.m_MotionHome_Start = false;
+                    this.m_ScannerCalibration_Start = false;
                     this.m_ProductAlign_Start = false;
                     this.m_SubWork_Start = false;
                     this.m_LaserDrillingWork_Start = false;
-                    Equipment.LaserDrillingCycStop_Reservation = false;
                     this.m_MainWork_Start = false;
+                    Equipment.LaserDrillingCycStop_Reservation = false;
 
                 }
                 //MessageBox.Show(alarm.Cause);
