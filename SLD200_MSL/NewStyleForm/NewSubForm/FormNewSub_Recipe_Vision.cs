@@ -1359,7 +1359,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
             Thread.Sleep(100);
-            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 4000, true);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
 
             hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
