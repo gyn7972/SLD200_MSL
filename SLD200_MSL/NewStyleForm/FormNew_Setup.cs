@@ -395,7 +395,7 @@ namespace SLD200_MSL
                 m_bFormVisible = true;
                 timer_Status.Enabled = true;
                 this.Box_Setup_ScannerCal_ImageViewer.ResumeDisplay();
-                this.Box_Setup_ScannerCal_ImageViewer.StartUpdateTask();
+                //this.Box_Setup_ScannerCal_ImageViewer.StartUpdateTask();
                 if (workStage.Camera_HighRes.Opened)
                 {
                     this.Box_Setup_ScannerCal_ImageViewer.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
@@ -406,7 +406,7 @@ namespace SLD200_MSL
                 m_bFormVisible = false;
                 timer_Status.Enabled = false;
                 this.Box_Setup_ScannerCal_ImageViewer.SuspendDisplay();
-                this.Box_Setup_ScannerCal_ImageViewer.StopUpdateTask();
+                //this.Box_Setup_ScannerCal_ImageViewer.StopUpdateTask();
             }
         }
 
@@ -3271,14 +3271,6 @@ namespace SLD200_MSL
             recipe.TrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
             recipe.TrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
 
-            //Box_Setup_ScannerCal_ImageViewer.Display();
-            //if (m_JogControl != null)
-            //{
-            //    m_JogControl.Show();
-            //    m_JogControl.BringToFront();
-            //    m_TrainImageControl.Show();
-            //    m_TrainImageControl.BringToFront();
-            //}
             SetTrainImage(workStage.scannerCompensator.Recipe.PatternMatchingParameter.TrainImage);
 
             Box_Setup_ScannerCal_ImageViewer.Display();
@@ -3305,13 +3297,6 @@ namespace SLD200_MSL
             recipe.InspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
             recipe.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
 
-            //Box_Setup_ScannerCal_ImageViewer.Display();
-            //if (m_JogControl != null)
-            //{
-            //    m_JogControl.Show();
-            //    m_JogControl.BringToFront();
-            //}
-            //m_TrainImageControl.Show();
             Box_Setup_ScannerCal_ImageViewer.Display();
 
             Equipment.Scanner_Calibration_InspectionRoiStartLocation_X = RoiInspect.Parameter.StartLocation.X;
@@ -3341,7 +3326,6 @@ namespace SLD200_MSL
             RecipeInfo m_recipeInfo = new RecipeInfo();
             m_recipeInfo = Equipment.GetCurrentRecipe();
 
-            //workStage.Camera_HighRes.LatestImage = Box_Setup_ScannerCal_ImageViewer.InputImage;
             workStage.scannerCompensator.Camera.LatestImage = Box_Setup_ScannerCal_ImageViewer.InputImage;
 
             if (Box_Setup_ScannerCal_ImageViewer.Simulated)
