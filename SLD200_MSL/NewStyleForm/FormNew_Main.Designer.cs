@@ -144,6 +144,11 @@
             this.baseLabel_Main_Divice_Status_Laser = new SLD200_MSL.BaseLabel();
             this.ImageViewer_Main_Lows = new QMC.Common.Hmi.VisionImageViewer();
             this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
+            this.groupBox_BET_Status = new System.Windows.Forms.GroupBox();
+            this.label_Main_BET_MradStatus = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label_Main_BET_ZoomStatus = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.baseTextBox_Socket_Index = new SLD200_MSL.BaseTextBox();
@@ -220,6 +225,7 @@
             this.baseGroupBox_Progress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).BeginInit();
             this.baseGroupBox_WorkingTime.SuspendLayout();
+            this.groupBox_BET_Status.SuspendLayout();
             this.SuspendLayout();
             // 
             // SiriusViewer_Main
@@ -1740,6 +1746,72 @@
             this.ImageViewer_Main_highs.TabStop = false;
             this.ImageViewer_Main_highs.UpdateDelayTime = 200;
             this.ImageViewer_Main_highs.VisibleCrossLine = true;
+// 
+            // groupBox_BET_Status
+            // 
+            this.groupBox_BET_Status.Controls.Add(this.label_Main_BET_MradStatus);
+            this.groupBox_BET_Status.Controls.Add(this.label2);
+            this.groupBox_BET_Status.Controls.Add(this.label_Main_BET_ZoomStatus);
+            this.groupBox_BET_Status.Controls.Add(this.label4);
+            this.groupBox_BET_Status.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox_BET_Status.Location = new System.Drawing.Point(1368, 130);
+            this.groupBox_BET_Status.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_BET_Status.Name = "groupBox_BET_Status";
+            this.groupBox_BET_Status.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_BET_Status.Size = new System.Drawing.Size(204, 93);
+            this.groupBox_BET_Status.TabIndex = 213;
+            this.groupBox_BET_Status.TabStop = false;
+            this.groupBox_BET_Status.Text = " BET Position ";
+            // 
+            // label_Main_BET_MradStatus
+            // 
+            this.label_Main_BET_MradStatus.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_BET_MradStatus.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_BET_MradStatus.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_BET_MradStatus.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_BET_MradStatus.Location = new System.Drawing.Point(64, 55);
+            this.label_Main_BET_MradStatus.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Main_BET_MradStatus.Name = "label_Main_BET_MradStatus";
+            this.label_Main_BET_MradStatus.Size = new System.Drawing.Size(130, 27);
+            this.label_Main_BET_MradStatus.TabIndex = 52;
+            this.label_Main_BET_MradStatus.Text = "0";
+            this.label_Main_BET_MradStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label2
+            // 
+            this.label2.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label2.Location = new System.Drawing.Point(5, 53);
+            this.label2.Margin = new System.Windows.Forms.Padding(6);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(57, 27);
+            this.label2.TabIndex = 51;
+            this.label2.Text = "Mrad :";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_BET_ZoomStatus
+            // 
+            this.label_Main_BET_ZoomStatus.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_BET_ZoomStatus.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_BET_ZoomStatus.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_BET_ZoomStatus.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_BET_ZoomStatus.Location = new System.Drawing.Point(64, 25);
+            this.label_Main_BET_ZoomStatus.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Main_BET_ZoomStatus.Name = "label_Main_BET_ZoomStatus";
+            this.label_Main_BET_ZoomStatus.Size = new System.Drawing.Size(130, 27);
+            this.label_Main_BET_ZoomStatus.TabIndex = 50;
+            this.label_Main_BET_ZoomStatus.Text = "0";
+            this.label_Main_BET_ZoomStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label4
+            // 
+            this.label4.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label4.Location = new System.Drawing.Point(5, 23);
+            this.label4.Margin = new System.Windows.Forms.Padding(6);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(57, 27);
+            this.label4.TabIndex = 49;
+            this.label4.Text = "Zoom :";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // baseTextBox_DryRun_ProcessingTime
             // 
@@ -2196,6 +2268,7 @@
             this.ClientSize = new System.Drawing.Size(1920, 875);
             this.ControlBox = false;
             this.Controls.Add(this.button_TEST2);
+            this.Controls.Add(this.groupBox_BET_Status);
             this.Controls.Add(this.groupBox_Processing_Test);
             this.Controls.Add(this.groupBox70);
             this.Controls.Add(this.groupBox_Main_AxisPositions);
@@ -2279,6 +2352,7 @@
             this.groupBox_Main_AxisPositions_Loader.ResumeLayout(false);
             this.groupBox70.ResumeLayout(false);
             this.groupBox_Processing_Test.ResumeLayout(false);
+            this.groupBox_BET_Status.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.baseGroupBox_Progress.ResumeLayout(false);
@@ -2441,5 +2515,10 @@
         private System.Windows.Forms.Label label_Main_EncPosition_LD_Z0;
         private System.Windows.Forms.GroupBox groupBox_Processing_Test;
         private System.Windows.Forms.Button button_TEST2;
+        private System.Windows.Forms.GroupBox groupBox_BET_Status;
+        private System.Windows.Forms.Label label_Main_BET_MradStatus;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label_Main_BET_ZoomStatus;
+        private System.Windows.Forms.Label label4;
     }
 }

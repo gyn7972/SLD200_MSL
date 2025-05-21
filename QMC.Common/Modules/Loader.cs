@@ -1992,7 +1992,8 @@ namespace QMC.Common.Modules
                 //  Pause 되었으니 Stacker0 을 아래로 내림
 
                 //  요래 했더니, M-Align 할 때 멈추는 현상이 있음. --> Transfer 와 M-Aligner 의 Step 이 None 일 때만 동작하도록 변경해봄
-                if ((m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) && (m_nMAlign_Step == (int)MAlign_Step.None))
+                if ((m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) && (m_nMAlign_Step == (int)MAlign_Step.None) &&
+                    MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_GetInposition((int)nAxis.Z0))
                 {
                     //  Stacker0 을 아래로 내림
                     StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
@@ -2006,6 +2007,11 @@ namespace QMC.Common.Modules
                 !Equipment.Loader_RPort_Pause &&
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None &&
+
+                //  무언정지 관련 (확인 필요) - 모터가 정지했을 때만 동작하도록 하자.
+                //  Pause 상태가 될 때 Stacker 가 하강하는 명령과, Stacker 의 Auto Run Cycle 이 서로 인터락이 없음
+                MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_GetInposition((int)nAxis.Z0) &&
+
                 m_bStacker0_Run_byUser &&
                 !m_bStacker0_Complete)  //  Stacker0 동작 완료되지 않은 상태 (TR 이 Module 을 집어간 후 false 로 변경됨)
             {
@@ -2907,7 +2913,8 @@ namespace QMC.Common.Modules
                 //  Pause 되었으니 Stacker1 을 아래로 내림
 
                 //  요래 했더니, M-Align 할 때 멈추는 현상이 있음. --> Transfer 와 M-Aligner 의 Step 이 None 일 때만 동작하도록 변경해봄
-                if ((m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) && (m_nMAlign_Step == (int)MAlign_Step.None))
+                if ((m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) && (m_nMAlign_Step == (int)MAlign_Step.None) &&
+                    MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_GetInposition((int)nAxis.Z1))
                 {
                     StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
                 }
@@ -2920,6 +2927,11 @@ namespace QMC.Common.Modules
                 !Equipment.Loader_LPort_Pause &&
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nStacker1_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None &&
+
+                //  무언정지 관련 (확인 필요) - 모터가 정지했을 때만 동작하도록 하자.
+                //  Pause 상태가 될 때 Stacker 가 하강하는 명령과, Stacker 의 Auto Run Cycle 이 서로 인터락이 없음
+                MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_GetInposition((int)nAxis.Z1) &&
+
                 m_bStacker1_Run_byUser &&
                 !m_bStacker1_Complete)                                                //  Stacker1 동작 완료되지 않은 상태 (TR 이 Module 을 집어간 후 false 로 변경됨)
             {
@@ -4234,11 +4246,11 @@ namespace QMC.Common.Modules
                         // 재시작 위치 저장용
                         //
 
-                        //  자재 감지 센서는 On, Full 센서는 Off 일 경우 Stacker 를 다시 PickUp 위치로 세팅 시도 (Retry 3회)
+                        //  자재 감지 센서는 On, Full 센서는 Off 일 경우 Stacker 를 다시 PickUp 위치로 세팅 시도 (Retry 4회)
                         //  Retry Count 변수(m_nStacker0_PickUpWaitingPos_RetryCount) 는 PickUp 을 완료하면 0 으로 초기화
                         if (loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0) && (m_nStacker0_PickUpWaitingPos_RetryCount++ < 3))
                         {
-                            m_strTemp = string.Format("Stacker0 의 Full 감지 센서에 Module 이 감지되지 않아 Stacker0 PickUp 대기위치 세팅 재시도. ({0}/3)", m_nStacker0_PickUpWaitingPos_RetryCount);
+                            m_strTemp = string.Format("Stacker0 의 Full 감지 센서에 Module 이 감지되지 않아 Stacker0 PickUp 대기위치 세팅 재시도. ({0}/4)", m_nStacker0_PickUpWaitingPos_RetryCount);
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", m_strTemp);
 
                             m_bStacker0_Complete = false;                                   //  Stacker0 을 다시 PickUp 대기 위치로 이동시키기 위한 Flag
@@ -4968,11 +4980,11 @@ namespace QMC.Common.Modules
                     }
                     else if (loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_1))         //  감지 시 Off
                     {
-                        //  자재 감지 센서는 On, Full 센서는 Off 일 경우 Stacker 를 다시 PickUp 위치로 세팅 시도 (Retry 3회)
+                        //  자재 감지 센서는 On, Full 센서는 Off 일 경우 Stacker 를 다시 PickUp 위치로 세팅 시도 (Retry 4회)
                         //  Retry Count 변수(m_nStacker0_PickUpWaitingPos_RetryCount) 는 PickUp 을 완료하면 0 으로 초기화
                         if (loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1) && (m_nStacker1_PickUpWaitingPos_RetryCount++ < 3))
                         {
-                            m_strTemp = string.Format("Stacker1 의 Full 감지 센서에 Module 이 감지되지 않아 Stacker1 PickUp 대기위치 세팅 재시도. ({0}/3)", m_nStacker1_PickUpWaitingPos_RetryCount);
+                            m_strTemp = string.Format("Stacker1 의 Full 감지 센서에 Module 이 감지되지 않아 Stacker1 PickUp 대기위치 세팅 재시도. ({0}/4)", m_nStacker1_PickUpWaitingPos_RetryCount);
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", m_strTemp);
 
                             m_bStacker1_Complete = false;                                   //  Stacker1 을 다시 PickUp 대기 위치로 이동시키기 위한 Flag

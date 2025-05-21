@@ -475,7 +475,7 @@ namespace QMC.Common
             public double Miscellaneous_CircleStartAngleCircle1time;  //  Rotation Start Angle Circle 1 time (degree)
             public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
             public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
-            public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.8X, 1:1.0X, 2:1.1X, 3:1.2X)
+            public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.8x, 1:0.9x, 2:1.0x, 3:1.1x, 4:1.2x)
             public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral_Polyline, 2:Spiral_Arc, 3:Spiral_Circle)
             public bool Miscellaneous_HoleSortByDistance_Use;               //  Sort By Distance Use (true: Use, false: Not Use)
             public double Miscellaneous_HoleSortingDistance;            //  Hole Sorting Distance (mm)
@@ -666,7 +666,8 @@ namespace QMC.Common
 
 
         //  BET Zoom 별 Mrad 위치값
-        public static double BET_0_8X_Mrad { set; get; } = 0.5;            //  BET 0.8X Zoom
+        public static double BET_0_8X_Mrad { set; get; } = 0.5;             //  BET 0.8X Zoom
+        public static double BET_0_9X_Mrad { set; get; } = 0.37;            //  BET 0.9X Zoom
         public static double BET_1_0X_Mrad { set; get; } = 0.24;            //  BET 1.0X Zoom
         public static double BET_1_1X_Mrad { set; get; } = 0.11;            //  BET 1.1X Zoom
         public static double BET_1_2X_Mrad { set; get; } = 0.02;            //  BET 1.2X Zoom
@@ -961,6 +962,10 @@ namespace QMC.Common
         public static bool m_bMainProcessStatus_WorkStage_Module_Process_Complete { set; get; } = false;    //  Work Stage Process 완료
         public static bool m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete { set; get; } = false;   //  Unloader Work Stage 에서 Module Pick Up 완료
         public static bool m_bMainProcessStatus_UL_Module_PortPutDown_Complete { set; get; } = false;       //  Unloader Port 에 Module Put Down 완료
+
+
+        //  Serial Number 마킹 시 증가되는 Count 확인용. (프로그램 재시작, Count Clear 시에는 초기화 됨)
+        public static int m_nSerialNumberMarkingCount = 0;            //  Serial Number 마킹 Count
 
 
         //  평탄도 특정 위치
@@ -1276,6 +1281,7 @@ namespace QMC.Common
 
             //  BET 별 Mrad
             BET_0_8X_Mrad = 0.5;                //  BET 0.8X Zoom
+            BET_0_9X_Mrad = 0.37;               //  BET 0.9X Zoom
             BET_1_0X_Mrad = 0.24;               //  BET 1.0X Zoom
             BET_1_1X_Mrad = 0.11;               //  BET 1.1X Zoom
             BET_1_2X_Mrad = 0.02;               //  BET 1.2X Zoom
@@ -3055,6 +3061,8 @@ namespace QMC.Common
             //  BET 별 Mrad
             NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_08X", "0.5", temp, 255, strFIle);
             Equipment.BET_0_8X_Mrad = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_09X", "0.37", temp, 255, strFIle);
+            Equipment.BET_0_9X_Mrad = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_10X", "0.24", temp, 255, strFIle);
             Equipment.BET_1_0X_Mrad = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_11X", "0.11", temp, 255, strFIle);

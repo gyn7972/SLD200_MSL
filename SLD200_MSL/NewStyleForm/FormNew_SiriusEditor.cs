@@ -1989,6 +1989,125 @@ namespace SLD200_MSL
         }
 
 
+/// <summary>
+        /// 테스트용 코드 : Select 한 데이터만 가져오기 (어디 어디 선택한 건지...?), 나중에 써먹을 지 몰라서 만들어 둠
+        /// </summary>
+        public bool DrillingData_Select_Check()
+        {
+            string m_strTemp;
+            bool success = true;
+
+            //  실제 가공 객체만 체크
+            int m_nHole1_ObjectCount = 0;                                       //  Hole1 데이터 개수
+            int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
+            int m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            int m_nMarking_ObjectCount = 0;                                     //  Marking Text 단어 개수
+
+
+            if (SiriusEditor == null)
+            {
+                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
+                return false;
+            }
+
+            if (SiriusEditor.Document == null)
+            {
+                MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
+                return false;
+            }
+
+
+            foreach (var layer in SiriusEditor.Document.Layers)
+            {
+                if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
+                {
+                    if (layer.Name == "Hole1")
+                    {
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (group.IsSelected)
+                                    {
+                                        m_nHole1_ObjectCount++;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Thruhole")
+                    {
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (group.IsSelected)
+                                    {
+                                        m_nThruhole_ObjectCount++;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Outline")
+                    {
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (group.IsSelected)
+                                    {
+                                        m_nOutline_ObjectCount++;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Marking")
+                    {
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Text:
+                                    var text = entity as SpiralLab.Sirius.Text;
+
+                                    if (text.IsSelected)
+                                    {
+                                        m_nMarking_ObjectCount++;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //  선택된 Entity 의 개수 확인
+            if ((m_nHole1_ObjectCount + m_nOutline_ObjectCount + m_nThruhole_ObjectCount + m_nMarking_ObjectCount) == 0)
+            {
+                MessageBox.Show("선택된 데이터가 없습니다.", "Information!!");
+                return false;
+            }
+
+            m_strTemp = string.Format("Hole1 : {0}, Thruhole : {1}, Outline : {2}, Marking : {3}",
+                m_nHole1_ObjectCount, m_nThruhole_ObjectCount, m_nOutline_ObjectCount, m_nMarking_ObjectCount);
+
+            MessageBox.Show(m_strTemp);
+
+            return success;
+        }
+
+
         private void button_Rotate_Click(object sender, EventArgs e)
         {
             //  입력한 소켓 관련 데이터 Select
