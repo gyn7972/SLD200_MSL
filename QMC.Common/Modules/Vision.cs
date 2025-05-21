@@ -320,7 +320,8 @@ namespace QMC.Common.Modules
             Laser_FocusPos,          
             Laser_Sensor_HeightCheckPos,
             Vision_SafetyPos,
-            Laser_Sensor_HeightCheck_CalPos
+            Scanner_Cal_Z_Axis_Position,
+            //Laser_Sensor_HeightCheck_CalPos
         }
 
         public struct stVisionAxesPos
