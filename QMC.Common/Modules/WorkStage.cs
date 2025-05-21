@@ -40829,8 +40829,8 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.Y = m_dCurrentCalPosY;
 
                         //좌표 맵 - 확인 후 적용.   
-                        //MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_Scanner);
-                        MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
+                        MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_Scanner);
+                        //MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
 
                         MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
                         
