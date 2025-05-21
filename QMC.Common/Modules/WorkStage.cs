@@ -24369,6 +24369,8 @@ namespace QMC.Common.Modules
                             m_nDrillingWork_Repeat_Count++;
                             if (m_nDrillingWork_Repeat_Count < /*Config.ParamConfig.Drilling_Repeat_Count*/m_nDrillingWork_Repeat_Count_Total)                            //  Drilling 반복 회수 이내이면? --> 다시 Drilling
                             {
+                                Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Hole 반복 회수 이내");
+
                                 m_nDrillingWork_RepeatBundle_Count++;
                                 //if (m_nDrillingWork_RepeatBundle_Count < Config.ParamConfig.RepetitionsBundle)
                                 if (m_nDrillingWork_RepeatBundle_Count < m_nRepetation_Bundle)
@@ -24455,6 +24457,8 @@ namespace QMC.Common.Modules
                             }
                             else                                                                                                                        //  반복 회수 초과
                             {
+                                Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Hole 반복 회수 초과");
+
                                 //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                 {
                                     m_bDivRegionList_Success &= rtc.ListEnd();
@@ -24527,6 +24531,8 @@ namespace QMC.Common.Modules
                                     //m_nDrillingWork_Repeat_Count = 0;
                                     m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
                                     m_nListBeginRetry_Count = 0;
+                                    //m_nDrillingWork_Repeat_Count = 0;
+
                                     //todo : 김영남 속도 개선중 
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
                                 }
@@ -24644,7 +24650,10 @@ namespace QMC.Common.Modules
                                 //m_nLaserDrilling_ScannerOnly_GroupCount++;
                                 m_nDividedRegion_Region_CurrentIndex++;
 
+                                m_nDrillingWork_RepeatBundle_Count = 0;
+
                                 m_nDrillingWork_Repeat_Count_Backup = 0;
+                                m_nDrillingWork_Repeat_Count = 0;
                                 m_nUnfollow_TryCount = 0;
 
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
@@ -26056,15 +26065,19 @@ namespace QMC.Common.Modules
                 {
                     Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역에 가공 위치 데이터가 있음");
 
+                    m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+
                     nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos;
                 }
                 else
                 {
                     Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역에 가공 위치 데이터가 없음. 다음 영역 체크.");
-
+                                        
                     m_nDividedRegion_Region_CurrentIndex++;
 
                     m_nDrillingWork_Repeat_Count_Backup = 0;
+                    m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+
                     m_nUnfollow_TryCount = 0;
 
                     nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
