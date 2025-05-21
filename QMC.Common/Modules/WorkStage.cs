@@ -40164,6 +40164,7 @@ namespace QMC.Common.Modules
                                 {
                                     m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Close;
                                     m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserFrequency_Change;
+                                    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserPower_Change;
                                 }
                             }
                             else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
@@ -40205,6 +40206,7 @@ namespace QMC.Common.Modules
                         if (!workStageParameter.DI_BDS_PowerMeter_BW_Check() && workStageParameter.DI_BDS_PowerMeter_FW_Check())
                         {
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserFrequency_Change;
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserPower_Change;
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
