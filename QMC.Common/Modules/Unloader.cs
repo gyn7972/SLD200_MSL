@@ -2760,6 +2760,7 @@ namespace QMC.Common.Modules
                         case (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp:
                             Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage 에서 Module Pick Up");
                             m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStage_ModulePickup_Condition_Check;
+                            TickCount_Start((int)TickType.TICK_ULTR);
                             break;
 
                         case (int)UnloaderTransferMoveType.Cycle_Stacker0_PutDown:
@@ -2855,8 +2856,7 @@ namespace QMC.Common.Modules
                 /// </summary>
                 case (int)Unloader_Transfer_Step.WorkStage_ModulePickup_Condition_Check:                            //  Work Stage 에서 Module Pick Up 조건 체크 (Work Stage Vacuum On Check, Transfer Picker Vacuum Off Check, Stacker Cycle : None, Drilling Cycle : None)
 
-                    Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "TR 축, Work Stage 에서 Module Pickup 조건 체크");
-
+                    //Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "TR 축, Work Stage 에서 Module Pickup 조건 체크");
                     if (workStage.m_nLaserDrilling_MainStep > (int)WorkStage.LaserDrilling_Step.None)
                     {
                         Unloader_CurrentStatus_Save_StopedByTimeout();
@@ -2874,8 +2874,9 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_Exist);
                     }
-                    else if (Equipment.Machine_VacuumSensor_Enable && !workStage.workStageParameter.DI_Stage_Vacuum_Check() && 
-                        !m_bUnloader_WorkStage_PickUp_Retry)                                                                        //  Work Stage 에서 Module Pick Up 실패 시 재시도 할 경우, Stage Vacuum 이 파기된 상태이므로 체크하지 않는다.
+                    else if (Equipment.Machine_VacuumSensor_Enable && 
+                            !workStage.workStageParameter.DI_Stage_Vacuum_Check() && 
+                            !m_bUnloader_WorkStage_PickUp_Retry)                                                                        //  Work Stage 에서 Module Pick Up 실패 시 재시도 할 경우, Stage Vacuum 이 파기된 상태이므로 체크하지 않는다.
                     {
                         Unloader_CurrentStatus_Save_StopedByTimeout();
 
@@ -2993,7 +2994,6 @@ namespace QMC.Common.Modules
                     else
                     {
                         Log.Write("SLD-200", "Auto Run", "하부 집진기 사용. 집진기 Off");
-
                         workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                         Thread.Sleep(200);
                     }
@@ -3006,8 +3006,8 @@ namespace QMC.Common.Modules
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_DustCol_Off_check:
 
                     if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable ||
-
-                        (!Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable && !workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)))
+                       (!Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable && 
+                       !workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)))
                     {
                         Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Off 완료");
 
@@ -3030,7 +3030,6 @@ namespace QMC.Common.Modules
                         MC_Func.MC_PosTolerance((int)nAxis.TR_X, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, Work Stage 위치로 이동 완료");
-
 
                         //  집진기가 Off 되었는지 확인한 후 다음 Step 을 진행한다.
                         if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
@@ -3059,7 +3058,7 @@ namespace QMC.Common.Modules
                                     Thread.Sleep(200);
 
                                 }
-                                else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
+                                else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 30000)
                                 {
                                     Log.Write("SLD-200", "Auto Run", "집진기 Off 실패 (Timeout)");
 
@@ -4908,7 +4907,6 @@ namespace QMC.Common.Modules
 
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_WorkStage");
 
-            //  Target Position 변경 : M-Aligner 위치
             unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_WorkTablePos].UL_Transfer_X;
 
             //  속도
