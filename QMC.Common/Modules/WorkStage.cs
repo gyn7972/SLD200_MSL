@@ -14630,6 +14630,11 @@ namespace QMC.Common.Modules
                                 + " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString()
                                 + ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
 
+                            Log.Write("SLD-200", " Socket NO : " + nSocketNum.ToString() +
+                                "AlignMode.Socket::FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
+                                " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
+                                ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
+
                             xyCoordinateAlignPositionLast = new XyCoordinate(m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
                                 m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
                             xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
@@ -14718,12 +14723,16 @@ namespace QMC.Common.Modules
                                 totalOffsetX += offsetX;
                                 totalOffsetY += offsetY;
                                 matchCount++;
+                                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::offsetXY Offset - X: {offsetX:F6}, Y: {offsetY:F6}");
                             }
+
+                            Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::totalOffsetXY Offset - X: {totalOffsetX:F6}, Y: {totalOffsetY:F6}");
+                            Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::matchCount: {matchCount:F6}");
 
                             // 평균 Offset 계산
                             double averageOffsetX = matchCount > 0 ? totalOffsetX / matchCount : 0.0;
                             double averageOffsetY = matchCount > 0 ? totalOffsetY / matchCount : 0.0;
-                            Log.Write("SLD-200", "Align", $"Average Offset - X: {averageOffsetX:F3}, Y: {averageOffsetY:F3}");
+                            Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::Average Offset - X: {averageOffsetX:F6}, Y: {averageOffsetY:F6}");
 
                             // 이거면 되것징!!!!
                             //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경.
@@ -14735,6 +14744,11 @@ namespace QMC.Common.Modules
 
                             Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() + 
                                 "FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
+                                " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
+                                ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
+
+                            Log.Write("SLD-200", " Socket NO : " + nSocketNum.ToString() +
+                                "AlignMode.GoldPowder::FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
                                 " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
                                 ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
 
@@ -14815,46 +14829,34 @@ namespace QMC.Common.Modules
                                 Log.Write("SLD-200", Equipment.User_Name, "Socket Align:GoldPowder", strTemp);
                             }
 
-                        }
-                        else if (alignMode == AlignMode.Socket)
-                        {
-                            //1차 X,Y,T 보상
-                            {
-                                // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
-                                //m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
-
-                                //strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                                //            "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                                //            "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
-                                //            "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
-                                //Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
-                            }
-
-                            //2차 X,Y 보상
-                            {
-                                // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
-                                m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
-
-                                strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                                            "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                                            "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
-                                            "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
-                                Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
-                            }
-                        }
                     }
-                    else
+                    else if (alignMode == AlignMode.Socket)
                     {
-                        m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+                        //1차, 3차 X,Y,T 보상
+                        {
+                            // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
+                            m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
 
-                        strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                                "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                                "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
-                                "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
-                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+                            strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                                        "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                                        "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                                        "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                            Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+                        }
+
+                        //2차 X,Y 보상
+                        {
+                            // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
+                            //m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+
+                            //strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                            //            "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                            //            "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                            //            "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                            //Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+                        }
                     }
-
-
+                            
                     if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) &&
                         (m_st4PointAlign_Result.dCenterOffsetY == 0.0) &&
                         (m_st4PointAlign_Result.dRotationAngle == 0.0))
