@@ -1040,21 +1040,21 @@ namespace SLD200.NewStyleForm.NewSubForm
             button_RecipeVision_Z_Pos.Tag = "Z,+1";
             button_RecipeVision_Z_Neg.Tag = "Z,-1";
 
-            // 공통 MouseDown 핸들러
-            button_RecipeVision_X_Pos.MouseDown += button_RecipeVision_Axis_MouseDown;
-            button_RecipeVision_X_Neg.MouseDown += button_RecipeVision_Axis_MouseDown;
-            button_RecipeVision_Y_Pos.MouseDown += button_RecipeVision_Axis_MouseDown;
-            button_RecipeVision_Y_Neg.MouseDown += button_RecipeVision_Axis_MouseDown;
-            button_RecipeVision_Z_Pos.MouseDown += button_RecipeVision_Axis_MouseDown;
-            button_RecipeVision_Z_Neg.MouseDown += button_RecipeVision_Axis_MouseDown;
+            //// 공통 MouseDown 핸들러
+            //button_RecipeVision_X_Pos.MouseDown += button_RecipeVision_Axis_MouseDown;
+            //button_RecipeVision_X_Neg.MouseDown += button_RecipeVision_Axis_MouseDown;
+            //button_RecipeVision_Y_Pos.MouseDown += button_RecipeVision_Axis_MouseDown;
+            //button_RecipeVision_Y_Neg.MouseDown += button_RecipeVision_Axis_MouseDown;
+            //button_RecipeVision_Z_Pos.MouseDown += button_RecipeVision_Axis_MouseDown;
+            //button_RecipeVision_Z_Neg.MouseDown += button_RecipeVision_Axis_MouseDown;
 
-            // 공통 MouseUp 핸들러
-            button_RecipeVision_X_Pos.MouseUp += button_RecipeVision_Axis_MouseUp;
-            button_RecipeVision_X_Neg.MouseUp += button_RecipeVision_Axis_MouseUp;
-            button_RecipeVision_Y_Pos.MouseUp += button_RecipeVision_Axis_MouseUp;
-            button_RecipeVision_Y_Neg.MouseUp += button_RecipeVision_Axis_MouseUp;
-            button_RecipeVision_Z_Pos.MouseUp += button_RecipeVision_Axis_MouseUp;
-            button_RecipeVision_Z_Neg.MouseUp += button_RecipeVision_Axis_MouseUp;
+            //// 공통 MouseUp 핸들러
+            //button_RecipeVision_X_Pos.MouseUp += button_RecipeVision_Axis_MouseUp;
+            //button_RecipeVision_X_Neg.MouseUp += button_RecipeVision_Axis_MouseUp;
+            //button_RecipeVision_Y_Pos.MouseUp += button_RecipeVision_Axis_MouseUp;
+            //button_RecipeVision_Y_Neg.MouseUp += button_RecipeVision_Axis_MouseUp;
+            //button_RecipeVision_Z_Pos.MouseUp += button_RecipeVision_Axis_MouseUp;
+            //button_RecipeVision_Z_Neg.MouseUp += button_RecipeVision_Axis_MouseUp;
         }
 
         private void Motion_Status()

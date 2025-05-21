@@ -14790,12 +14790,22 @@ namespace QMC.Common.Modules
                     if(alignMode == AlignMode.GoldPowder)
                     {
                         // 골드파우더 에서 앵글 보상 할거면 아래 코드 삭제.
-                        //double dOffsetX = 0;
-                        //double dOffsetY = 0;
-                        for(int iter = 0; iter < 4;iter ++)
+                        //1차 Test : X,Y만 보상.
                         {
                             //dOffsetX  += m_st4PointPosition_DwgPos[iter].ptFiducial_Center.X - m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
-                            m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+                            //m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+
+                            //strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                            //        "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                            //        "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                            //        "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                            //Log.Write("SLD-200", Equipment.User_Name, "Socket Align:GoldPowder", strTemp);
+                        }
+
+                        //2차 Test X,Y,T 보상
+                        {
+                            //dOffsetX  += m_st4PointPosition_DwgPos[iter].ptFiducial_Center.X - m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
+                            m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
 
                             strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
                                     "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
@@ -14803,17 +14813,33 @@ namespace QMC.Common.Modules
                                     "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
                             Log.Write("SLD-200", Equipment.User_Name, "Socket Align:GoldPowder", strTemp);
                         }
-                    }
-                    else
-                    {
-                        // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
-                        m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
 
-                        strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                                    "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                                    "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
-                                    "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
-                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+                    }
+                    else if (alignMode == AlignMode.Socket)
+                    {
+                        //1차 X,Y,T 보상
+                        {
+                            // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
+                            //m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+
+                            //strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                            //            "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                            //            "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                            //            "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                            //Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+                        }
+
+                        //2차 X,Y 보상
+                        {
+                            // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
+                            m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+
+                            strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                                        "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                                        "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                                        "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                            Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+                        }
                     }
                             
                     if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) &&
@@ -22514,9 +22540,15 @@ namespace QMC.Common.Modules
                         m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  전체 가공 도면 회전 중심 X
                         m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  전체 가공 도면 회전 중심 Y
                         m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  전체 가공 도면 이동 Offset X
-                        m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  전체 가공 도면 이동 Offset Y
-                        m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
-
+                        m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;
+                        if (m_st4PointAlign_Result.dRotationAngle != 0)
+                        {
+                            m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                         //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+                        }
+                        else
+                        {
+                            m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle = 0;
+                        }
                     }
                     else if (m_AlignMode == AlignMode.GoldPowder)
                     {
@@ -22525,7 +22557,14 @@ namespace QMC.Common.Modules
                         m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
                         m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
                         m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
-                        m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle; // 0이 들어가는게 맞음. X,Y만 Align 수행.
+                        if (m_st4PointAlign_Result.dRotationAngle != 0)
+                        {
+                            m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                         //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+                        }
+                        else
+                        {
+                            m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle = 0;
+                        }
                     }
 
                     switch (m_LayerType)
