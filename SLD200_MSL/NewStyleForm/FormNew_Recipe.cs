@@ -103,6 +103,9 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = false;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = false;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Enabled = false;
 
             //  Recipe Open 전에는 Hatch 모드가 Disable 이므로 Hatch Spacing 을 비활성화 한다.
             textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
@@ -1008,6 +1011,8 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Spacing", "0.2", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = Equipment.ToInt(temp.ToString());
 
                 NativeMethods.GetPrivateProfileString(strTemp, "ZCalFile_OffsetZ", "0.0", temp, 255, strFIle);
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = Equipment.ToDouble(temp.ToString());
@@ -1141,6 +1146,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData = ReadValue(data, "MarkingData_SiriusTemplate_EntityData_SuffixData", "");
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use = ReadBool(data, "MarkingData_SiriusTemplate_Hatch_Use", false);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = ReadDouble(data, "MarkingData_SiriusTemplate_Hatch_Spacing", 0.2);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType", 0);
             }
             
             return true;
@@ -1315,6 +1321,7 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_SuffixData", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Use", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Spacing", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType.ToString(), strFIle);
                 
                 //  ZCalFile Offset Z Axis (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "ZCalFile_OffsetZ", Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString(), strFIle);
@@ -1425,6 +1432,7 @@ namespace SLD200_MSL
                 layerDict["MarkingData_SiriusTemplate_EntityData_SuffixData"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData.ToString();
                 layerDict["MarkingData_SiriusTemplate_Hatch_Use"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use.ToString();
                 layerDict["MarkingData_SiriusTemplate_Hatch_Spacing"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType.ToString();
 
                 layerDict["ZCalFile_OffsetZ"] = Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString();
 
@@ -1785,6 +1793,19 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use = checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked;
             Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing = textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text) : 0.2;
 
+            if (radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked)
+            {
+                Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;
+            }
+            else if (radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked)
+            {
+                Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 1;
+            }
+            else
+            {
+                Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 2;
+            }
+
             // 
             Equipment.stLayerRecipeSet[m_nLayerIndex].CalfileOffsetZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text) : 0.0;     //  Z-Axis Offset mm
 
@@ -2019,6 +2040,24 @@ namespace SLD200_MSL
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = false;
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = false;
+
+                    switch(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+                    {
+                        case 0:
+                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                            break;
+
+                        case 1:
+                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                            break;
+
+                        case 2:
+                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                            break;
+                    }
                 }
                 else
                 {
@@ -2028,6 +2067,24 @@ namespace SLD200_MSL
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = true;
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = true;
+
+                    switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+                    {
+                        case 0:
+                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                            break;
+
+                        case 1:
+                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                            break;
+
+                        case 2:
+                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                            break;
+                    }
                 }
 
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
@@ -2063,6 +2120,22 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
 
 
+                switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+                {
+                    case 0:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                        break;
+
+                    case 1:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                        break;
+
+                    case 2:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                        break;
+                }
+                
+                
                 //  Z-Axis Offset mm
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
 
@@ -2373,6 +2446,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = false;
             }
             else
             {
@@ -2382,6 +2456,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
             }
 
             textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
@@ -2389,6 +2464,23 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits.ToString();
             textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep.ToString();
             textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
+
+
+            switch(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+            {
+                case 0:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                    break;
+
+                case 1:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                    break;
+
+                case 2:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                    break;
+            }
+
 
             if (comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex == 0)            //  True Type Font 일 때만 Hatch 활성화
             {
@@ -2597,6 +2689,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = false;
             }
             else
             {
@@ -2607,6 +2700,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = true;
             }
 
             textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
@@ -2614,6 +2708,23 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits.ToString();
             textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep.ToString();
             textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
+
+
+            switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+            {
+                case 0:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                    break;
+
+                case 1:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                    break;
+
+                case 2:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                    break;
+            }
+
 
             if (comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex == 0)            //  True Type Font 일 때만 Hatch 활성화
             {
@@ -2805,10 +2916,29 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = false;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = false;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Enabled = false;
+
+            switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+            {
+                case 0:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                    break;
+
+                case 1:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                    break;
+
+                case 2:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                    break;
+            }
         }
         private void radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber_CheckedChanged(object sender, EventArgs e)
         {
-            //  Serial Number
+            //  Serial Number;
 
             textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Enabled = true;
 
@@ -2816,6 +2946,25 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = true;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = true;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Enabled = true;
+
+            switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+            {
+                case 0:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                    break;
+
+                case 1:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                    break;
+
+                case 2:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                    break;
+            }
         }
 
         private void comboBox_Recipe_TabRecipe_CustomMarking_DataType_SelectedIndexChanged(object sender, EventArgs e)
@@ -2856,6 +3005,21 @@ namespace SLD200_MSL
             {
                 textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
             }
+        }
+
+        private void radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;
+        }
+
+        private void radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 1;
+        }
+
+        private void radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 2;
         }
     }
 }

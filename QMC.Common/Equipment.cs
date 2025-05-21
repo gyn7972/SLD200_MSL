@@ -526,6 +526,7 @@ namespace QMC.Common
             public string MarkingTemplate_EntityData_SuffixData;        //  Marking Template Entity Suffix Data
             public bool MarkingTemplate_EntityData_Hatch_Use;           //  Marking Template Entity Hatch Use (true: Use, false: Not Use)
             public double MarkingTemplate_EntityData_Hatch_Spacing;     //  Marking Template Entity Hatch Spacing
+            public int MarkingTemplate_EntityData_SerialNumberIncreaseType;            //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
             public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
         }
@@ -847,41 +848,6 @@ namespace QMC.Common
 
         //  레이저 공정 테스트를 위한 변수
         public static bool LaserDrillingCycleEnable_Manual { set; get; } = false;
-
-
-
-
-        ////  Recipe Data
-        //public struct stRecipeParameter
-        //{
-        //    public string DrawingFile;                                  //  Drawing File Path and Name
-
-        //    public int LaserParam_PulseWidth;                           //  Laser Pulse Width (us)
-        //    public int LaserParam_PulsePeriod;                          //  Laser Pulse Period (us)
-        //    public int LaserParam_Frequency;                            //  Laser Frequency (Hz)
-        //    public bool LaserParam_TriggerMode_External;                //  Laser Trigger Mode (true: External, false: Internal)
-
-        //    public bool ProcessPriority_P2P;                            //  Process Priority (true: Space of P2P, false: Pulse Period)
-
-        //    public string Miscellaneous_ReferenceLayer;                 //  Reference Layer
-        //    public double Miscellaneous_DefocusingDistance;             //  Defocusing Distance (mm)
-        //    public double Miscellaneous_Resizing;                       //  Resizing (mm)
-        //    public int Miscellaneous_HoleDrilling_StartPosDivision;     //  Hole Drilling Start Position Division (등분)
-        //    public double Miscellaneous_GroupSplitSize;                 //  Group Split Size (mm)
-        //    public double Miscellaneous_ScannerDrillingSpeed;           //  Scanner Drilling Speed (mm/s)
-        //    public double Miscellaneous_ScannerJumpSpeed;               //  Scanner Jump Speed (mm/s)
-        //    public double Miscellaneous_LaserOnDelay;                   //  Laser On Delay (us)
-        //    public double Miscellaneous_LaserOffDelay;                  //  Laser Off Delay (us)
-        //    public double Miscellaneous_MarkDelay;                      //  Mark Delay (us)
-        //    public double Miscellaneous_JumpDelay;                      //  Jump Delay (us)
-        //    public double Miscellaneous_PolygonDelay;                   //  Polygon Delay (us)
-        //    public int Miscellaneous_DrillingRepetation;                //  Drilling Repetation
-        //    public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
-        //    public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
-        //    public double Miscellaneous_BETPositionIndex;               //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
-        //}
-        //public static stRecipeParameter stRecipeSet = new stRecipeParameter();
-
 
         //  Vision Popup 창 Open 모드 (true: Scanner FineCam Offset Change)
         public static bool m_bVisionFormOpenMode_ScannerFineCamOffsetChange { set; get; }
@@ -1252,6 +1218,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData = "";                     //  Marking Template Entity Suffix Data
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use = false;                   //  Marking Template Entity Hatch Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = 0.2;                 //  Marking Template Entity Hatch Spacing
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;        //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
             }
