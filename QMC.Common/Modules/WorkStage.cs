@@ -14735,12 +14735,12 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::Average Offset - X: {averageOffsetX:F6}, Y: {averageOffsetY:F6}");
 
                             // 이거면 되것징!!!!
-                            //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경.
+                            //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경. -> +,+ 변경
                             // GoldPowder는 +,+ -> -,- 로 변경
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = 
-                                MC_Func.MC_GetEncPos((int)nAxis.X) - averageOffsetX;
+                                MC_Func.MC_GetEncPos((int)nAxis.X) + averageOffsetX;
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = 
-                                MC_Func.MC_GetEncPos((int)nAxis.Y) - averageOffsetY;
+                                MC_Func.MC_GetEncPos((int)nAxis.Y) + averageOffsetY;
 
                             Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() + 
                                 "FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
@@ -14800,7 +14800,7 @@ namespace QMC.Common.Modules
                     //자동 운전일때 여기가 마지막 시컨스.
                 case (int)SocketAlign_Step.__SocketAlign_Complete:                                                    //  비전 검사 완료
 
-                    if(Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                    if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                     {
                         if (alignMode == AlignMode.GoldPowder)
                         {
@@ -14829,10 +14829,36 @@ namespace QMC.Common.Modules
                                 Log.Write("SLD-200", Equipment.User_Name, "Socket Align:GoldPowder", strTemp);
                             }
 
+                        }
+                        else if (alignMode == AlignMode.Socket)
+                        {
+                            //1차, 3차 X,Y,T 보상
+                            {
+                                // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
+                                m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+
+                                strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                                            "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                                            "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                                            "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                                Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+                            }
+
+                            //2차 X,Y 보상
+                            {
+                                // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
+                                //m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+
+                                //strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                                //            "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                                //            "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                                //            "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                                //Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+                            }
+                        }
                     }
-                    else if (alignMode == AlignMode.Socket)
+                    else
                     {
-                        //1차, 3차 X,Y,T 보상
                         {
                             // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
                             m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
@@ -14843,20 +14869,8 @@ namespace QMC.Common.Modules
                                         "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
                             Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
                         }
-
-                        //2차 X,Y 보상
-                        {
-                            // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
-                            //m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
-
-                            //strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                            //            "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                            //            "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
-                            //            "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
-                            //Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
-                        }
                     }
-                            
+
                     if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) &&
                         (m_st4PointAlign_Result.dCenterOffsetY == 0.0) &&
                         (m_st4PointAlign_Result.dRotationAngle == 0.0))
@@ -16473,6 +16487,7 @@ namespace QMC.Common.Modules
                 /// </summary>
                 /// 
                 case (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck:                       //  가공 할 Layer 가 남아있는지 체크
+                    
                     if (m_nLaserDrilling_LayerCount < m_stLayerType.m_nLayerCount)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Layer 가 남아 있음");
@@ -21745,48 +21760,56 @@ namespace QMC.Common.Modules
                         Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck);
 
                     //  여기서 측정한 소켓 높이값을 Thruhole, Outline 등에서 사용하도록 한다.
-                    if (m_stThruHole_SocketData != null)
+                    switch (m_LayerType)
                     {
-                        if (m_stThruHole_SocketData.Length == m_stDividedRegion_GroupData.Length)
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
+                        case LayerType.LAYER_DRILLING:
+                            break;
+                        case LayerType.LAYER_OUTLINE:
+                            if (m_stOutLine_SocketData != null)
+                            {
+                                //if (m_stOutLine_SocketData.Length == m_stDividedRegion_GroupData.Length)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 일치");
 
-                            m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
-                        }
-                        else
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 불일치");
-                        }
-                    }
+                                    m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                                }
+                                //else
+                                //{
+                                //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 불일치");
+                                //}
+                            }
+                            break;
+                        case LayerType.LAYER_THRUHOLE:
+                            if (m_stThruHole_SocketData != null)
+                            {
+                                // 여기 왜함?
+                                //if (m_stThruHole_SocketData.Length == m_stDividedRegion_GroupData.Length)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
 
-                    //  성부장 작업 (Outline 가공 시 사용 할 Laser 높이값)
-                    if (m_stOutLine_SocketData != null)
-                    {
-                        if (m_stOutLine_SocketData.Length == m_stDividedRegion_GroupData.Length)
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 일치");
+                                    m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                                }
+                                //else
+                                //{
+                                //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 불일치");
+                                //}
+                            }
+                            break;
+                        case LayerType.LAYER_MARKING:
+                            if (m_stMarking_SocketData.m_stMarking_ObjectData != null)
+                            {
+                                //if (m_stMarking_SocketData.m_stMarking_ObjectData.Length == m_stDividedRegion_GroupData.Length)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 일치");
 
-                            m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
-                        }
-                        else
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 불일치");
-                        }
-                    }
-
-                    //  성부장 작업 (Marking 가공 시 사용 할 Laser 높이값)
-                    if (m_stMarking_SocketData.m_stMarking_ObjectData != null)
-                    {
-                        if (m_stMarking_SocketData.m_stMarking_ObjectData.Length == m_stDividedRegion_GroupData.Length)
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 일치");
-
-                            m_stMarking_SocketData.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
-                        }
-                        else
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 불일치");
-                        }
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                                }
+                                //else
+                                //{
+                                //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 불일치");
+                                //}
+                            }
+                            break;
                     }
 
                     //  소켓 얼라인을 하지 않을 경우, 여기서 바로 가공 높이로 보정 이동
@@ -24794,8 +24817,14 @@ namespace QMC.Common.Modules
 
                                             break;
                                         case LayerType.LAYER_OUTLINE:
+                                            //  가공 소켓이 몇개의 영역으로 나눠지는지
+                                            Main_SocketPositions_SubRowCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
+                                            Main_SocketPositions_SubColumnCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
                                             break;
                                         case LayerType.LAYER_THRUHOLE:
+                                            //  가공 소켓이 몇개의 영역으로 나눠지는지
+                                            Main_SocketPositions_SubRowCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
+                                            Main_SocketPositions_SubColumnCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
                                             break;
                                         case LayerType.LAYER_MARKING:
                                             //  가공 소켓이 몇개의 영역으로 나눠지는지
@@ -26184,7 +26213,6 @@ namespace QMC.Common.Modules
                         //    Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
                         //}
 
-
                         //  원래 코드
                         //m_nLaserDrilling_LayerCount = m_stLayerType.m_nLayerCount;
                         //nNextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
@@ -26197,6 +26225,7 @@ namespace QMC.Common.Modules
                         //  Hole Layer 는 작업 끝. Thruhole 이 있는지 확인한다.
                         for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
                         {
+                            // 이 부분 확인 필요. 
                             if (m_stLayerType.m_nLayerType[i] == (int)LayerType.LAYER_THRUHOLE)
                             {
                                 Log.Write("SLD-200", "Auto Run", "소켓 Hole 선택 가공 완료 후, Thruhole 선택 가공 시작");
@@ -27372,9 +27401,7 @@ namespace QMC.Common.Modules
 
                             m_nDrillingWork_Repeat_Count = 0;
                             m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
-
                             m_nThruHole_ObjectDataCount = 0;
-
                             m_nThruHole_SocketCount = m_nDrillingWork_Group_Count;
 
 
@@ -28917,7 +28944,6 @@ namespace QMC.Common.Modules
 
                     m_dThruholeLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance;
                     m_dThruholeLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_Resizing;
-
                     //  Layer 별로 다르게 해야 하는 파라미터
                     m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
                     m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
