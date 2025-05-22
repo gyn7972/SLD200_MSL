@@ -14736,9 +14736,10 @@ namespace QMC.Common.Modules
 
                             // 이거면 되것징!!!! // -,+ X 안됨.
                             //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경. -> +,+ 변경
-                            // GoldPowder는 +,+ -> -,- 로 변경20250522  -> +,- 로 변경20250522 1830
+                            // GoldPowder는 +,+ -> -,- 로 변경20250522  -> +,- 로 변경20250522 1830 -> -,- 로 변경20250522 1920
+                            // 최종단에서 X-Axis에 * -1 적용.
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = 
-                                MC_Func.MC_GetEncPos((int)nAxis.X) + averageOffsetX;
+                                MC_Func.MC_GetEncPos((int)nAxis.X) - averageOffsetX;
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = 
                                 MC_Func.MC_GetEncPos((int)nAxis.Y) - averageOffsetY;
 
@@ -22591,7 +22592,8 @@ namespace QMC.Common.Modules
                     else if (m_AlignMode == AlignMode.GoldPowder)
                     {
                         //  Align 후 계산된 데이터 가져오기
-                        m_dALIGN_FACTOR_RotationCenter_X =  m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
+                        //m_dALIGN_FACTOR_RotationCenter_X =  m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
+                        m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX * -1;
                         m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
                         m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
                         m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
@@ -22626,7 +22628,15 @@ namespace QMC.Common.Modules
                                                                         m_dALIGN_FACTOR_Offset_Y,
                                                                         m_dALIGN_FACTOR_Theta);
                             }
-                            
+
+                            m_strTemp = "Scanner - Align Data 전달 완료.\r\n\r\n" +
+                                        "- m_dALIGN_FACTOR_RotationCenter_X: " + m_dALIGN_FACTOR_RotationCenter_X.ToString() + "\r\n" +
+                                        "- m_dALIGN_FACTOR_RotationCenter_Y: " + m_dALIGN_FACTOR_RotationCenter_Y.ToString() + "\r\n" +
+                                        "- m_dALIGN_FACTOR_Offset_X: " + m_dALIGN_FACTOR_Offset_X.ToString() + "\r\n" +
+                                        "- m_dALIGN_FACTOR_Offset_Y: " + m_dALIGN_FACTOR_Offset_Y.ToString() + "\r\n" +
+                                        "- m_dALIGN_FACTOR_Theta: " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                            Log.Write("SLD-200", Equipment.User_Name, "Align Data 전달 완료", m_strTemp);
+
                             // Todo: goldpowder - 검출 해야 하면 다시 한 번 얼라인 시컨스 돌리고 보정 하자.
                             if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use &&
                                m_AlignMode == AlignMode.Socket)
