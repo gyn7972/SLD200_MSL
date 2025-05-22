@@ -14734,13 +14734,13 @@ namespace QMC.Common.Modules
                             double averageOffsetY = matchCount > 0 ? totalOffsetY / matchCount : 0.0;
                             Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::Average Offset - X: {averageOffsetX:F6}, Y: {averageOffsetY:F6}");
 
-                            // 이거면 되것징!!!!
+                            // 이거면 되것징!!!! // -,+ X 안됨.
                             //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경. -> +,+ 변경
-                            // GoldPowder는 +,+ -> -,- 로 변경
+                            // GoldPowder는 +,+ -> -,- 로 변경20250522  -> +,- 로 변경20250522 1830
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = 
                                 MC_Func.MC_GetEncPos((int)nAxis.X) + averageOffsetX;
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = 
-                                MC_Func.MC_GetEncPos((int)nAxis.Y) + averageOffsetY;
+                                MC_Func.MC_GetEncPos((int)nAxis.Y) - averageOffsetY;
 
                             Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() + 
                                 "FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
