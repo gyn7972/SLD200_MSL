@@ -22325,7 +22325,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_PreAlign_Correction_Complete:                      //  가공 할 Socket Align 시작
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 보정 완료.");
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling Pre Align 보정 완료.");
 
                     m_bPreAlignCompleted = true;
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
@@ -22783,22 +22783,25 @@ namespace QMC.Common.Modules
                             {
                                 case LayerType.LAYER_DRILLING:
                                     // 정상 Hole 가공.
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DividedRegion_DrillingWork_Start");
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                       //  분할 영역 Drilling 작업 시작
                                     break;
 
                                 case LayerType.LAYER_OUTLINE:
 
-                                    //  성부장 작업
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "OutLine_ScannerOnly_ObjectData_RemainedCheck");
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck;
                                     break;
 
                                 case LayerType.LAYER_THRUHOLE:
 
-                                    //  성부장 작업
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "ThruHole_LayerParameter_ZOffset_Move");
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
                                     break;
 
                                 case LayerType.LAYER_MARKING:
+
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "Marking_LayerParameter_ZOffset_Move");
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
                                     break;
                             }
@@ -22817,23 +22820,25 @@ namespace QMC.Common.Modules
                             switch (m_LayerType)
                             {
                                 case LayerType.LAYER_DRILLING:
-                                    // 정상 Hole 가공.
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DividedRegion_DrillingWork_Start");
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                       //  분할 영역 Drilling 작업 시작
                                     break;
 
                                 case LayerType.LAYER_OUTLINE:
 
-                                    //  성부장 작업
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "OutLine_ScannerOnly_ObjectData_RemainedCheck");
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck;
                                     break;
 
                                 case LayerType.LAYER_THRUHOLE:
 
-                                    //  성부장 작업
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "ThruHole_LayerParameter_ZOffset_Move");
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
                                     break;
 
                                 case LayerType.LAYER_MARKING:
+
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "Marking_LayerParameter_ZOffset_Move");
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
                                     break;
                             }
@@ -23780,7 +23785,10 @@ namespace QMC.Common.Modules
                                         //  사각형 돌릴 때 쓰던거
                                         entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
-                                        m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+                                        //m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+                                        m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 
+                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
+                                        //(float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc
 
 
                                         Log.Write("Circle Center", "Arc CenterPso X : " + entity_Position_Rot.X.ToString() + ", Y : " + entity_Position_Rot.Y);
@@ -24009,7 +24017,8 @@ namespace QMC.Common.Modules
                                         entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
                                         //m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
-                                        m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
+                                        m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 
+                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
                                     }
                                 }
                                 //  Hole : Spiral Polyline 타입으로 가공
@@ -25286,7 +25295,8 @@ namespace QMC.Common.Modules
                 entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
                 //m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
-                m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
+                m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 
+                    (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
             }
         }
 
@@ -25366,7 +25376,10 @@ namespace QMC.Common.Modules
                 //  사각형 돌릴 때 쓰던거
                 entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
-                m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+                //m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+                m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, 
+                    (float)entity_Position_Rot.Y), (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
+                //
             }
         }
 
@@ -25884,6 +25897,8 @@ namespace QMC.Common.Modules
                         {
                             m_strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Spot Distance Control 파라미터 적용 성공, ({0}/3)", m_nSDC_Count + 1);
                             Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                            // 알람도 울려야 하는거 같다. 
                         }
 
                         m_nSDC_Count++;
@@ -26112,7 +26127,6 @@ namespace QMC.Common.Modules
                 m_nLaserDrilling_OneSideOfADrillingSquare_StartCornerIndex = 0;                                     //  미세홀 시작 모서리 Rotation 모드일 경우, 시작 모서리 Index 초기화
 
                 //m_nLaserDrilling_ScannerOnly_GroupCount++;         //  가공이 끝난 후에 ++ 시켜주도록 한다.
-
                 //  지그재그 가공 사용 시 Index 변경 (짝수열에서 반대방향 가공. 첫 영역은 무조건 좌->우 가공이다)
                 if (Config.ParamConfig.bDrilling_StageMoveDirection_ZigZag && (m_nDividedRegion_Region_CurrentIndex != 0))
                 {
@@ -26149,18 +26163,14 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역에 가공 위치 데이터가 있음");
 
                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
-
                     nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos;
                 }
                 else
                 {
                     Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역에 가공 위치 데이터가 없음. 다음 영역 체크.");
-                                        
                     m_nDividedRegion_Region_CurrentIndex++;
-
                     m_nDrillingWork_Repeat_Count_Backup = 0;
                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
-
                     m_nUnfollow_TryCount = 0;
 
                     nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
@@ -26169,7 +26179,6 @@ namespace QMC.Common.Modules
             else                                                                                    //  회수 초과 (Shutter 닫으러)
             {
                 Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역이 남아 있지 않음. 다음 Hole Layer 가 있는지 확인하고, 없으면 다음 소켓 확인하러 이동.");
-
                 // Hole2 ~ Hole4 Layer 가 있을 경우, 해당 Parameter 로 Hole1 가공을 다시  진행한다.
                 m_nHoleLayer_ProcessIndex_Count++;
                 bool m_bLayerExist = false;
@@ -26181,7 +26190,6 @@ namespace QMC.Common.Modules
                         if (m_stLayerType.m_nLayerIndex[i] == m_nHoleLayer_ProcessIndex_Count)
                         {
                             m_bLayerExist = true;
-
                             i = m_stLayerType.m_nLayerIndex.Length;
                         }
                     }
@@ -26203,13 +26211,13 @@ namespace QMC.Common.Modules
                 {
                     //if (m_nSelectedSocket_Index >= 0)                                                                       //  선택 가공이면? 마지막 Layer Index 로 변경하고 종료하러 go
                     //if (m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
-                    if ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) && (m_nSocketAlign_StartIndex >= 0))
+                    if ((Equipment.SelectedSocketStartMode == 
+                        (int)SelectedSocketStartModeList.SelectedSocketOnly) && (m_nSocketAlign_StartIndex >= 0))
                     {
                         //  선택가공이니 도면을 다시 로드해야 한다. (요기 보완해야 함)
                         //if (!m_bMainWorkCycle_DryRun)
                         //{
                         //    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 선택 가공 완료하였고, Dry Run 모드가 아니므로 도면 다시 로드");
-
                         //    Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
                         //}
 
@@ -26217,11 +26225,13 @@ namespace QMC.Common.Modules
                         //m_nLaserDrilling_LayerCount = m_stLayerType.m_nLayerCount;
                         //nNextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
 
-                        //  선택가공중에 도면을 다시 로드할 필요는 없다. 
+                        // TEST 필요!!!  -> 선택 가공이든 아니든 그냥 보내도 될꺼 같은데!!!
+                        //m_nLaserDrilling_LayerCount = m_stLayerType.m_nLayerCount;
+                        //nNextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
 
+                        // 선택가공중에 도면을 다시 로드할 필요는 없다. 
                         m_bDrillingWork_Thruhole_Exist = false;
                         m_bDrillingWork_Outline_Exist = false;
-
                         //  Hole Layer 는 작업 끝. Thruhole 이 있는지 확인한다.
                         for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
                         {
@@ -26231,9 +26241,7 @@ namespace QMC.Common.Modules
                                 Log.Write("SLD-200", "Auto Run", "소켓 Hole 선택 가공 완료 후, Thruhole 선택 가공 시작");
 
                                 m_bDrillingWork_Thruhole_Exist = true;
-
                                 m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
-
                                 m_dThruholeLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance;
                                 m_dThruholeLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_Resizing;
 
@@ -26296,13 +26304,11 @@ namespace QMC.Common.Modules
                                 m_bDrillingWork_Thruhole_Exist = false;
                                 m_bDrillingWork_Outline_Exist = false;
 
-
                                 //  배출해야 함.                                
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 중 가공할 Layer 가 남아 있지 않음. 종료하러 이동");
                                 nNextStep = (int)LaserDrilling_Step.LaserOff2;
 
                                 //  선택 가공일 경우 아래 라인 주석 처리
-
                                 //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                                 //m_nHoleLayer_ProcessIndex_Count = 0;        //  소켓이 바뀌면 Hole layer 1 부터 다시 시작
                                 //m_nHoleLayer_ProcessIndex = 0; 
@@ -26320,7 +26326,6 @@ namespace QMC.Common.Modules
 
                         //nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Start;              //  Defocusing (Socket 이 바뀌면 다시 Hole1 Layer 의 Defocusing 위치로 이동해야 하기 때문에)
-
                     }
                 }
             }
@@ -28039,7 +28044,10 @@ namespace QMC.Common.Modules
             //  사각형 돌릴 때 쓰던거
             entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
-            m_bOutLineList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+            //m_bOutLineList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+            m_bOutLineList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 
+                (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
+            //
 
             ////  Object Center 로 Jump (테스트 후에 삭제 여부 결정)
             //entity_Position.X = m_stOutLine_SocketData.m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].X -
@@ -28539,7 +28547,11 @@ namespace QMC.Common.Modules
             //  사각형 돌릴 때 쓰던거
             entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
-            m_bThruHoleList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+            //m_bThruHoleList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+            m_bThruHoleList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 
+                (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
+
+            //
         }
 
         private void LaserDrillingStepListDataAddPoli()
@@ -38195,7 +38207,7 @@ namespace QMC.Common.Modules
                         //if (m_ptFiducial.Length == (m_stDividedRegion_GroupData[0].nGroup_Num * 4))
                         if ((m_ptFiducial.Length >= 4) && (m_stDividedRegion_GroupData.Length > 0))
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 4개 이상입니다.");
+                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Drilling Layer, Socket 별 Fiducial 데이터 할당, Hole1 Layer 없음, Fiducial 데이터 개수가 4개 이상입니다.");
 
                             for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
                             {
