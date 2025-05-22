@@ -406,7 +406,7 @@ namespace QMC.Common.Parts
 
                         //도면 좌표 불러옴 
                         position = new XyzCoordinate(m_AlignPositions[0].X, m_AlignPositions[0].Y, 0.0);
-                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX1{position.X}, positionY1{position.Y}"));
+                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX1: {position.X}, positionY1: {position.Y}"));
 
                         //  속도 설정
                         //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
@@ -496,6 +496,8 @@ namespace QMC.Common.Parts
                     //두번째 위치 Search
                     //this.Stage.MovePosition(m_AlignPositions[1]);
                     position = new XyzCoordinate(m_AlignPositions[1].X, m_AlignPositions[1].Y, 0.0);
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX2: {position.X}, positionY2: {position.Y}"));
+
 
                     //  속도 설정
                     //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
