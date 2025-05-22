@@ -14739,7 +14739,7 @@ namespace QMC.Common.Modules
                             // GoldPowder는 +,+ -> -,- 로 변경20250522  -> +,- 로 변경20250522 1830 -> -,- 로 변경20250522 1920
                             // 최종단에서 X-Axis에 * -1 적용.
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = 
-                                MC_Func.MC_GetEncPos((int)nAxis.X) + averageOffsetX;
+                                MC_Func.MC_GetEncPos((int)nAxis.X) - averageOffsetX;
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = 
                                 MC_Func.MC_GetEncPos((int)nAxis.Y) - averageOffsetY;
 
