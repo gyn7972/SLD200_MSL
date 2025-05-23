@@ -332,8 +332,6 @@ namespace QMC.Common.VisionPart
                     if (dRadius < nMaxCircle && dRadius > nMinCircle && cx > 0 && cx < w
                         && cy < h && cy > 0)
                     {
-
-
                         cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
                         cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
                         dErrorRatio = dSpec * 2;
@@ -342,7 +340,6 @@ namespace QMC.Common.VisionPart
                             dErrorRatio = 0.2;
                         }
                         polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
-
 
                         points = polygon;
 
@@ -359,10 +356,7 @@ namespace QMC.Common.VisionPart
                                 bFindCircle = true;
                                 break;
                             }
-
-
                         }
-
                         //return circlesResult;
                     }
                     switch (direction)
@@ -393,10 +387,6 @@ namespace QMC.Common.VisionPart
                             stepsInCurrentDirection++; // 두 번 방향 전환 후 이동 거리 증가
                         }
                     }
-
-
-
-
                 }
 
             }

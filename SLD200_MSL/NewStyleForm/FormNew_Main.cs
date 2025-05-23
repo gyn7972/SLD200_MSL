@@ -259,7 +259,7 @@ namespace SLD200_MSL
             if (workStage.m_bHomeOK)
                 Comm_Init();
 
-            SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
+            //SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
         }
 
         private void FormNew_Main_FormClosing(object sender, FormClosingEventArgs e)

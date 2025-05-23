@@ -2910,8 +2910,6 @@ namespace SLD200_MSL
                 // 결과 출력
                 textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = pulseWidthUs.ToString("F2"); // 소수점 2자리까지 표시
 
-
-
                 // PulseWidth Min Max 계산
                 double pulseWidthUs_Min = (0 * periodSeconds / 100) * 1_000_000;
                 double pulseWidthUs_Max = (100 * periodSeconds / 100) * 1_000_000;
