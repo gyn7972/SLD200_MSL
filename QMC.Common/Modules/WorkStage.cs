@@ -932,6 +932,7 @@ namespace QMC.Common.Modules
             public stArc stArcData;                     //  Arc 데이터
 
             public PointD dObjectCenter;                //  Socket Group 의 Center 좌표 (소켓 위치별 텍스트의 Center 좌표, 단어의 Center 좌표)
+            public PointD dObjectLocation;              //  Socket Group 의 위치 좌표 (Object 가 Text 일 경우 Center 가 아니다. Text 는 좌하단이 Location 좌표)
             public double dObjectRotateAngle;           //  Socket Group 의 회전 각도 (소켓 위치별 텍스트의 회전 각도, 단어의 회전 각도)
 
             //  Text (Sirius-Text, TruType-Text) 데이터
@@ -32502,6 +32503,11 @@ namespace QMC.Common.Modules
             SpiralLab.Sirius.BarcodeDataMatrix2 markingBarcodeDataMatrix2 = new SpiralLab.Sirius.BarcodeDataMatrix2();
             SpiralLab.Sirius.BarcodeQR markingBarcodeQR = new SpiralLab.Sirius.BarcodeQR();
             SpiralLab.Sirius.BarcodeQR2 markingBarcodeQR2 = new SpiralLab.Sirius.BarcodeQR2();
+            
+            var doc = new DocumentDefault();            //  객체를 올릴 Document 생성
+            var layer = new Layer("default");           //  Layer 생성
+            doc.Layers.Add(layer);                      //  Layer 를 Document 에 추가
+            doc.Layers.Active = layer;                  //  Layer 선택
 
             //  데이터를 Marker Arg. 를 이용해서 Marking 한다.
             switch (m_nEntityType)
@@ -32518,10 +32524,17 @@ namespace QMC.Common.Modules
                     markingText.Width = (float)m_nEntityWidth;
                     markingText.CapHeight = (float)m_nEntityHeight;
 
-                    width = GetTextWidthByCapHeight(m_strEntityData, trueType_fontName, (float)m_nEntityHeight);
+                    //width = GetTextWidthByCapHeight(m_strEntityData, trueType_fontName, (float)m_nEntityHeight);          //  Text 의 Center 로 보내는 게 아니니 계산할 필요 없고
+
+                    doc.Action.ActEntityAdd(markingText);
 
                     markingText.Rotate((float)(90.0 + m_dRotateAngle));
-                    markingText.Location = new Vector2(((float)m_nEntityHeight / (float)2.0), -((float)width / (float)2.0));
+
+                    //  Text 의 Location 좌표는 무조건 Object Center 보다 왼쪽 아래 (Center 의 X, Y 위치값이 Location 의 X, Y 위치값보다 무조건 큼)
+                    //  Location 으로 가면 X 방향은 +, Y 방향은 -
+                    //markingText.Location = new Vector2(((float)m_nEntityHeight / (float)2.0), -((float)width / (float)2.0));
+                    markingText.Location = new Vector2((float)(m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.Y - m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectLocation.Y), 
+                                                    -(float)(m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.X - m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectLocation.X));
                     break;
 
                 case EType.SiriusText:
@@ -32530,11 +32543,18 @@ namespace QMC.Common.Modules
                     markingSiriusText = new SpiralLab.Sirius.SiriusText(m_strEntityData);
                     markingSiriusText.FontName = siriusType_fontName;
                     markingSiriusText.Width = (float)m_nEntityWidth;
-                    markingSiriusText.CapHeight = (float)m_nEntityHeight; 
-                    width = GetTextWidthByCapHeight(m_strEntityData, siriusType_fontName, (float)m_nEntityHeight);
+                    markingSiriusText.CapHeight = (float)m_nEntityHeight;
+                    //width = GetTextWidthByCapHeight(m_strEntityData, siriusType_fontName, (float)m_nEntityHeight);            //  Text 의 Center 로 보내는 게 아니니 계산할 필요 없고
+
+                    doc.Action.ActEntityAdd(markingSiriusText);
 
                     markingSiriusText.Rotate((float)(90.0 + m_dRotateAngle));
-                    markingSiriusText.Location = new Vector2(((float)m_nEntityHeight / (float)2.0), -((float)width / (float)2.0));
+
+                    //  Text 의 Location 좌표는 무조건 Object Center 보다 왼쪽 아래 (Center 의 X, Y 위치값이 Location 의 X, Y 위치값보다 무조건 큼)
+                    //  Location 으로 가면 X 방향은 +, Y 방향은 -
+                    //markingSiriusText.Location = new Vector2(((float)m_nEntityHeight / (float)2.0), -((float)width / (float)2.0));
+                    markingSiriusText.Location = new Vector2((float)(m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.Y - m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectLocation.Y),
+                                                            -(float)(m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.X - m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectLocation.X));
                     break;
 
                 case EType.Barcode1D:
@@ -32543,6 +32563,9 @@ namespace QMC.Common.Modules
                     markingBarcode1D = new SpiralLab.Sirius.Barcode1D(m_strEntityData);
                     markingBarcode1D.Width = (float)m_nEntityWidth;
                     markingBarcode1D.Height = (float)m_nEntityHeight;
+
+                    doc.Action.ActEntityAdd(markingBarcode1D);
+
                     markingBarcode1D.Rotate((float)(90.0 + m_dRotateAngle));
                     markingBarcode1D.Location = new Vector2((markingBarcode1D.Height / (float)2.0), -(markingBarcode1D.Width / (float)2.0));
                     break;
@@ -32553,6 +32576,9 @@ namespace QMC.Common.Modules
                     markingBarcodeDataMatrix = new SpiralLab.Sirius.BarcodeDataMatrix(m_strEntityData);
                     markingBarcodeDataMatrix.Width = (float)m_nEntityWidth;
                     markingBarcodeDataMatrix.Height = (float)m_nEntityHeight;
+
+                    doc.Action.ActEntityAdd(markingBarcodeDataMatrix);
+
                     markingBarcodeDataMatrix.Rotate((float)(90.0 + m_dRotateAngle));
                     markingBarcodeDataMatrix.Location = new Vector2((markingBarcodeDataMatrix.Height / (float)2.0), -(markingBarcodeDataMatrix.Width / (float)2.0));
                     break;
@@ -32563,6 +32589,9 @@ namespace QMC.Common.Modules
                     markingBarcodeDataMatrix2 = new SpiralLab.Sirius.BarcodeDataMatrix2(m_strEntityData);
                     markingBarcodeDataMatrix2.Width = (float)m_nEntityWidth;
                     markingBarcodeDataMatrix2.Height = (float)m_nEntityHeight;
+
+                    doc.Action.ActEntityAdd(markingBarcodeDataMatrix2);
+
                     markingBarcodeDataMatrix2.Rotate((float)(90.0 + m_dRotateAngle));
                     markingBarcodeDataMatrix2.Location = new Vector2((markingBarcodeDataMatrix2.Height / (float)2.0), -(markingBarcodeDataMatrix2.Width / (float)2.0));
                     break;
@@ -32573,6 +32602,9 @@ namespace QMC.Common.Modules
                     markingBarcodeQR = new SpiralLab.Sirius.BarcodeQR(m_strEntityData);
                     markingBarcodeQR.Width = (float)m_nEntityWidth;
                     markingBarcodeQR.Height = (float)m_nEntityHeight;
+
+                    doc.Action.ActEntityAdd(markingBarcodeQR);
+
                     markingBarcodeQR.Rotate((float)(90.0 + m_dRotateAngle));
                     markingBarcodeQR.Location = new Vector2((markingBarcodeQR.Height / (float)2.0), -(markingBarcodeQR.Width / (float)2.0));
                     break;
@@ -32583,6 +32615,9 @@ namespace QMC.Common.Modules
                     markingBarcodeQR2 = new SpiralLab.Sirius.BarcodeQR2(m_strEntityData);
                     markingBarcodeQR2.Width = (float)m_nEntityWidth;
                     markingBarcodeQR2.Height = (float)m_nEntityHeight;
+
+                    doc.Action.ActEntityAdd(markingBarcodeQR2);
+
                     markingBarcodeQR2.Rotate((float)(90.0 + m_dRotateAngle));
                     markingBarcodeQR2.Location = new Vector2((markingBarcodeQR2.Height / (float)2.0), -(markingBarcodeQR2.Width / (float)2.0));
                     break;
@@ -32702,7 +32737,7 @@ namespace QMC.Common.Modules
 
             var markerArg = new MarkerArgDefault()
             {
-                Document = null,
+                Document = doc,
                 Rtc = rtc,
                 Laser = laser,
                 IsEnablePens = false,
@@ -37495,6 +37530,10 @@ namespace QMC.Common.Modules
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectCenter.X = (double)text.BoundRect.Center.X;
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectCenter.Y = (double)text.BoundRect.Center.Y;
 
+                                    //  글자의 Location 좌표
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectLocation.X = (double)text.Location.X;
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectLocation.Y = (double)text.Location.Y;
+
                                     //  글자의 Tilt 각도
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectRotateAngle = (double)text.Angle;
 
@@ -37844,6 +37883,18 @@ namespace QMC.Common.Modules
 
                                 case EType.SiriusText:                                                  //  Sirius Text (뼈다귀)
                                     var sirius_text = entity as SpiralLab.Sirius.SiriusText;
+
+                                    //  글자의 Center 좌표
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectCenter.X = (double)sirius_text.BoundRect.Center.X;
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectCenter.Y = (double)sirius_text.BoundRect.Center.Y;
+
+                                    //  글자의 Location 좌표
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectLocation.X = (double)sirius_text.Location.X;
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectLocation.Y = (double)sirius_text.Location.Y;
+
+                                    //  글자의 Tilt 각도
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectRotateAngle = (double)sirius_text.Angle;
+
 
                                     var list = sirius_text.ToOutlineGlyph();
 
