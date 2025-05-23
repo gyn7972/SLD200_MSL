@@ -30746,7 +30746,6 @@ namespace QMC.Common.Modules
                 //  현재 얼라인 한 소켓과 같이 묶어서 얼라인 해준다.
                 
                 m_nListCount++;
-
                 m_bMarkingEntity_Select = true;
             }
             else
