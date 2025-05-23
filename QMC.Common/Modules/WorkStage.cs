@@ -31107,9 +31107,6 @@ namespace QMC.Common.Modules
 
                                     if (m_bMarkingEntity_Select)
                                     {
-                                        //Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType
-                                        //if (m_bAlignCompleted)
-
                                         if (m_nMarkingEntity_TotalCount == 1)               //  마킹 Entity 가 1개이면? -> 처음 얼라인 성공한 Socket 과 함께 얼라인 해준다.
                                         {
 

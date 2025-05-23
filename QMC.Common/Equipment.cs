@@ -532,8 +532,6 @@ namespace QMC.Common
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
 
-        //Marking EachModule Flag - Align을 위한. 
-        public static bool m_MarkingEachModuleFlag = false;
 
         public enum VisionAlgorithmType
         {
