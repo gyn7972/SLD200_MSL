@@ -35,6 +35,15 @@
             this.tabControl_Recipe = new System.Windows.Forms.TabControl();
             this.tabPage_Recipe = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.button_Marking_SerialNumber_CountReset = new System.Windows.Forms.Button();
+            this.button_Marking_SerialNumber_Preview = new System.Windows.Forms.Button();
+            this.label_Recipe_Marking_SerialNumber_Current = new System.Windows.Forms.Label();
+            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous = new System.Windows.Forms.RadioButton();
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module = new System.Windows.Forms.RadioButton();
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket = new System.Windows.Forms.RadioButton();
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing = new System.Windows.Forms.TextBox();
             this.label79 = new System.Windows.Forms.Label();
             this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable = new System.Windows.Forms.CheckBox();
@@ -44,8 +53,6 @@
             this.label45 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix = new System.Windows.Forms.TextBox();
             this.label26 = new System.Windows.Forms.Label();
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase = new System.Windows.Forms.TextBox();
-            this.label25 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits = new System.Windows.Forms.TextBox();
             this.label24 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber = new System.Windows.Forms.TextBox();
@@ -298,17 +305,16 @@
             this.radioButton73 = new System.Windows.Forms.RadioButton();
             this.radioButton74 = new System.Windows.Forms.RadioButton();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition = new System.Windows.Forms.Label();
+            this.label_Recipe_TabRecipe_Miscellaneous_Mrad = new System.Windows.Forms.Label();
             this.button_Recipe_Open = new System.Windows.Forms.Button();
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket = new System.Windows.Forms.RadioButton();
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module = new System.Windows.Forms.RadioButton();
-            this.groupBox12 = new System.Windows.Forms.GroupBox();
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous = new System.Windows.Forms.RadioButton();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.groupBox12.SuspendLayout();
             this.groupBox15.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox14.SuspendLayout();
@@ -334,7 +340,6 @@
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox177.SuspendLayout();
-            this.groupBox12.SuspendLayout();
             this.SuspendLayout();
             // 
             // label_Recipe_FileName
@@ -427,6 +432,9 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.button_Marking_SerialNumber_CountReset);
+            this.groupBox6.Controls.Add(this.button_Marking_SerialNumber_Preview);
+            this.groupBox6.Controls.Add(this.label_Recipe_Marking_SerialNumber_Current);
             this.groupBox6.Controls.Add(this.groupBox12);
             this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing);
             this.groupBox6.Controls.Add(this.label79);
@@ -459,106 +467,97 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = " Marking Layer Data (If a marking layer exists) ";
             // 
-            // textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing
+            // button_Marking_SerialNumber_CountReset
             // 
-            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Location = new System.Drawing.Point(171, 220);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Name = "textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing";
-            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Size = new System.Drawing.Size(48, 24);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.TabIndex = 133;
-            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = "0.2";
+            this.button_Marking_SerialNumber_CountReset.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Marking_SerialNumber_CountReset.Location = new System.Drawing.Point(130, 131);
+            this.button_Marking_SerialNumber_CountReset.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.button_Marking_SerialNumber_CountReset.Name = "button_Marking_SerialNumber_CountReset";
+            this.button_Marking_SerialNumber_CountReset.Size = new System.Drawing.Size(94, 25);
+            this.button_Marking_SerialNumber_CountReset.TabIndex = 139;
+            this.button_Marking_SerialNumber_CountReset.Text = "Count Reset";
+            this.button_Marking_SerialNumber_CountReset.UseVisualStyleBackColor = true;
+            this.button_Marking_SerialNumber_CountReset.Click += new System.EventHandler(this.button_Marking_SerialNumber_CountReset_Click);
             // 
-            // label79
+            // button_Marking_SerialNumber_Preview
             // 
-            this.label79.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label79.Location = new System.Drawing.Point(24, 221);
-            this.label79.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label79.Name = "label79";
-            this.label79.Size = new System.Drawing.Size(144, 21);
-            this.label79.TabIndex = 132;
-            this.label79.Text = "Hatch Spacing (mm) :";
-            this.label79.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.button_Marking_SerialNumber_Preview.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Marking_SerialNumber_Preview.Location = new System.Drawing.Point(430, 225);
+            this.button_Marking_SerialNumber_Preview.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.button_Marking_SerialNumber_Preview.Name = "button_Marking_SerialNumber_Preview";
+            this.button_Marking_SerialNumber_Preview.Size = new System.Drawing.Size(65, 25);
+            this.button_Marking_SerialNumber_Preview.TabIndex = 138;
+            this.button_Marking_SerialNumber_Preview.Text = "Preview";
+            this.button_Marking_SerialNumber_Preview.UseVisualStyleBackColor = true;
+            this.button_Marking_SerialNumber_Preview.Click += new System.EventHandler(this.button_Marking_SerialNumber_Preview_Click);
             // 
-            // checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable
+            // label_Recipe_Marking_SerialNumber_Current
             // 
-            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.AutoSize = true;
-            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Location = new System.Drawing.Point(15, 200);
-            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Name = "checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable";
-            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Size = new System.Drawing.Size(107, 21);
-            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.TabIndex = 131;
-            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Text = "Hatch Enable";
-            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.UseVisualStyleBackColor = true;
-            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable_CheckedChanged);
+            this.label_Recipe_Marking_SerialNumber_Current.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Recipe_Marking_SerialNumber_Current.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Recipe_Marking_SerialNumber_Current.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Recipe_Marking_SerialNumber_Current.ForeColor = System.Drawing.Color.Lime;
+            this.label_Recipe_Marking_SerialNumber_Current.Location = new System.Drawing.Point(263, 227);
+            this.label_Recipe_Marking_SerialNumber_Current.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
+            this.label_Recipe_Marking_SerialNumber_Current.Name = "label_Recipe_Marking_SerialNumber_Current";
+            this.label_Recipe_Marking_SerialNumber_Current.Size = new System.Drawing.Size(167, 23);
+            this.label_Recipe_Marking_SerialNumber_Current.TabIndex = 137;
+            this.label_Recipe_Marking_SerialNumber_Current.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber
+            // groupBox12
             // 
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Location = new System.Drawing.Point(112, 111);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Name = "radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber";
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Size = new System.Drawing.Size(130, 20);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.TabIndex = 129;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Text = "Serial Number";
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.UseVisualStyleBackColor = true;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber_CheckedChanged);
+            this.groupBox12.Controls.Add(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous);
+            this.groupBox12.Controls.Add(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module);
+            this.groupBox12.Controls.Add(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket);
+            this.groupBox12.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase);
+            this.groupBox12.Controls.Add(this.label25);
+            this.groupBox12.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox12.Location = new System.Drawing.Point(278, 115);
+            this.groupBox12.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox12.Name = "groupBox12";
+            this.groupBox12.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox12.Size = new System.Drawing.Size(216, 100);
+            this.groupBox12.TabIndex = 136;
+            this.groupBox12.TabStop = false;
+            this.groupBox12.Text = " Increase Type ";
             // 
-            // radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText
+            // radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous
             // 
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked = true;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Location = new System.Drawing.Point(112, 89);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Name = "radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText";
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Size = new System.Drawing.Size(130, 20);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.TabIndex = 128;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.TabStop = true;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Text = "Fixed Text";
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.UseVisualStyleBackColor = true;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText_CheckedChanged);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Location = new System.Drawing.Point(15, 74);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Name = "radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Size = new System.Drawing.Size(97, 20);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.TabIndex = 136;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Text = "Continuous";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.UseVisualStyleBackColor = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous_CheckedChanged);
             // 
-            // textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix
+            // radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module
             // 
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Location = new System.Drawing.Point(376, 221);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix";
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Size = new System.Drawing.Size(119, 24);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.TabIndex = 127;
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = "TEST";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Location = new System.Drawing.Point(15, 50);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Name = "radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Size = new System.Drawing.Size(72, 20);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.TabIndex = 134;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.TabStop = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Text = "Module";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.UseVisualStyleBackColor = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module_CheckedChanged);
             // 
-            // label45
+            // radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket
             // 
-            this.label45.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label45.Location = new System.Drawing.Point(276, 220);
-            this.label45.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(97, 24);
-            this.label45.TabIndex = 126;
-            this.label45.Text = "Suffix :";
-            this.label45.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix
-            // 
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Location = new System.Drawing.Point(376, 55);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix";
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Size = new System.Drawing.Size(119, 24);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.TabIndex = 125;
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = "TEST";
-            // 
-            // label26
-            // 
-            this.label26.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label26.Location = new System.Drawing.Point(270, 54);
-            this.label26.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(103, 24);
-            this.label26.TabIndex = 124;
-            this.label26.Text = "Prefix  (Data) :";
-            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Location = new System.Drawing.Point(117, 50);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Name = "radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Size = new System.Drawing.Size(72, 20);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.TabIndex = 135;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Text = "Socket";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.UseVisualStyleBackColor = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket_CheckedChanged);
             // 
             // textBox_Recipe_TabRecipe_CustomMarking_Data_Increase
             // 
@@ -581,23 +580,124 @@
             this.label25.Text = "Increase Unit :";
             this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Location = new System.Drawing.Point(194, 220);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Name = "textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Size = new System.Drawing.Size(48, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.TabIndex = 133;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = "0.2";
+            // 
+            // label79
+            // 
+            this.label79.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label79.Location = new System.Drawing.Point(84, 221);
+            this.label79.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(107, 21);
+            this.label79.TabIndex = 132;
+            this.label79.Text = "Spacing (mm) :";
+            this.label79.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable
+            // 
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Location = new System.Drawing.Point(15, 222);
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Name = "checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable";
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Size = new System.Drawing.Size(63, 21);
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.TabIndex = 131;
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Text = "Hatch";
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.UseVisualStyleBackColor = true;
+            this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable_CheckedChanged);
+            // 
+            // radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber
+            // 
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Location = new System.Drawing.Point(112, 110);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Name = "radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Size = new System.Drawing.Size(111, 20);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.TabIndex = 129;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Text = "Serial Number";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.UseVisualStyleBackColor = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber_CheckedChanged);
+            // 
+            // radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText
+            // 
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Location = new System.Drawing.Point(112, 88);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Name = "radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Size = new System.Drawing.Size(111, 20);
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.TabIndex = 128;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.TabStop = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Text = "Fixed Text";
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.UseVisualStyleBackColor = true;
+            this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText_CheckedChanged);
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Location = new System.Drawing.Point(376, 83);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Size = new System.Drawing.Size(119, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.TabIndex = 127;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = "TEST";
+            // 
+            // label45
+            // 
+            this.label45.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label45.Location = new System.Drawing.Point(276, 82);
+            this.label45.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(97, 24);
+            this.label45.TabIndex = 126;
+            this.label45.Text = "Suffix :";
+            this.label45.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Location = new System.Drawing.Point(376, 25);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Size = new System.Drawing.Size(119, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.TabIndex = 125;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = "TEST";
+            // 
+            // label26
+            // 
+            this.label26.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label26.Location = new System.Drawing.Point(270, 24);
+            this.label26.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(103, 24);
+            this.label26.TabIndex = 124;
+            this.label26.Text = "Prefix  (Data) :";
+            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // textBox_Recipe_TabRecipe_CustomMarking_Data_Digits
             // 
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Location = new System.Drawing.Point(460, 84);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Location = new System.Drawing.Point(464, 54);
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Digits";
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Size = new System.Drawing.Size(35, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Size = new System.Drawing.Size(31, 24);
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.TabIndex = 121;
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = "4";
             // 
             // label24
             // 
             this.label24.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label24.Location = new System.Drawing.Point(404, 82);
+            this.label24.Location = new System.Drawing.Point(411, 52);
             this.label24.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(53, 24);
+            this.label24.Size = new System.Drawing.Size(51, 24);
             this.label24.TabIndex = 120;
             this.label24.Text = "Digits :";
             this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -605,7 +705,7 @@
             // textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber
             // 
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Location = new System.Drawing.Point(359, 84);
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Location = new System.Drawing.Point(371, 54);
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Size = new System.Drawing.Size(35, 24);
@@ -615,7 +715,7 @@
             // label23
             // 
             this.label23.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label23.Location = new System.Drawing.Point(270, 82);
+            this.label23.Location = new System.Drawing.Point(282, 52);
             this.label23.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(87, 24);
@@ -655,7 +755,7 @@
             // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height
             // 
             this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Location = new System.Drawing.Point(171, 164);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Location = new System.Drawing.Point(194, 189);
             this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height";
             this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Size = new System.Drawing.Size(48, 24);
@@ -665,7 +765,7 @@
             // label19
             // 
             this.label19.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label19.Location = new System.Drawing.Point(6, 162);
+            this.label19.Location = new System.Drawing.Point(29, 187);
             this.label19.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(162, 24);
@@ -676,7 +776,7 @@
             // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width
             // 
             this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Location = new System.Drawing.Point(171, 138);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Location = new System.Drawing.Point(194, 163);
             this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width";
             this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Size = new System.Drawing.Size(48, 24);
@@ -686,7 +786,7 @@
             // label18
             // 
             this.label18.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label18.Location = new System.Drawing.Point(6, 136);
+            this.label18.Location = new System.Drawing.Point(29, 161);
             this.label18.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(162, 24);
@@ -697,10 +797,10 @@
             // label16
             // 
             this.label16.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label16.Location = new System.Drawing.Point(6, 85);
+            this.label16.Location = new System.Drawing.Point(25, 84);
             this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(104, 24);
+            this.label16.Size = new System.Drawing.Size(85, 24);
             this.label16.TabIndex = 79;
             this.label16.Text = "Data Type :";
             this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -711,9 +811,9 @@
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Font = new System.Drawing.Font("Tahoma", 10F);
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Location = new System.Drawing.Point(10, 26);
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Name = "checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode";
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Size = new System.Drawing.Size(492, 21);
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Size = new System.Drawing.Size(253, 21);
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.TabIndex = 62;
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Text = "Convert \"Text\" data to another type     [1D Barcode, DataMatrix, QR Code]";
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Text = "Convert \"Text\" data to another type";
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.UseVisualStyleBackColor = true;
             // 
             // groupBox15
@@ -1909,7 +2009,7 @@
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Name = "checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance";
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Size = new System.Drawing.Size(169, 39);
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.TabIndex = 151;
-            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Text = "Drilling Hole Data Sort\r\nby Distance (mm) :";
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Text = "Drilling Hole Data Sort  \r\nby Distance (mm) :";
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.UseVisualStyleBackColor = true;
             // 
@@ -2506,16 +2606,18 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Items.AddRange(new object[] {
-            "0.8X",
-            "1.0X",
+            "0.8x",
+            "0.9x",
+            "1.0x",
             "1.1x",
-            "1.2X"});
+            "1.2x"});
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Location = new System.Drawing.Point(198, 568);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex";
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Size = new System.Drawing.Size(186, 26);
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Size = new System.Drawing.Size(73, 26);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.TabIndex = 92;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = "1.0X BET Position";
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = "1.0x";
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndexChanged += new System.EventHandler(this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex_SelectedIndexChanged);
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex
             // 
@@ -2542,7 +2644,7 @@
             this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Name = "label_Recipe_TabRecipe_Miscellaneous_BETPosition";
             this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Size = new System.Drawing.Size(174, 25);
             this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.TabIndex = 90;
-            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Text = "BET Position :";
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Text = "BET Zoom Position :";
             this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_Recipe_TabRecipe_Miscellaneous_Mask
@@ -3653,6 +3755,31 @@
             this.checkBox7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox7.UseVisualStyleBackColor = true;
             // 
+            // label_Recipe_TabRecipe_Miscellaneous_ZoomPosition
+            // 
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.ForeColor = System.Drawing.Color.Lime;
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Location = new System.Drawing.Point(349, 569);
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Name = "label_Recipe_TabRecipe_Miscellaneous_ZoomPosition";
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Size = new System.Drawing.Size(61, 25);
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.TabIndex = 162;
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = "0.0";
+            this.label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_Recipe_TabRecipe_Miscellaneous_Mrad
+            // 
+            this.label_Recipe_TabRecipe_Miscellaneous_Mrad.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mrad.Location = new System.Drawing.Point(295, 568);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mrad.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mrad.Name = "label_Recipe_TabRecipe_Miscellaneous_Mrad";
+            this.label_Recipe_TabRecipe_Miscellaneous_Mrad.Size = new System.Drawing.Size(53, 25);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mrad.TabIndex = 161;
+            this.label_Recipe_TabRecipe_Miscellaneous_Mrad.Text = "Mrad :";
+            this.label_Recipe_TabRecipe_Miscellaneous_Mrad.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // button_Recipe_Open
             // 
             this.button_Recipe_Open.FlatStyle = System.Windows.Forms.FlatStyle.System;
@@ -3704,61 +3831,6 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
-            // radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket
-            // 
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Location = new System.Drawing.Point(117, 50);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Name = "radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket";
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Size = new System.Drawing.Size(72, 20);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.TabIndex = 135;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Text = "Socket";
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.UseVisualStyleBackColor = true;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket_CheckedChanged);
-            // 
-            // radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module
-            // 
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Location = new System.Drawing.Point(15, 50);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Name = "radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module";
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Size = new System.Drawing.Size(72, 20);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.TabIndex = 134;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.TabStop = true;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Text = "Module";
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.UseVisualStyleBackColor = true;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module_CheckedChanged);
-            // 
-            // groupBox12
-            // 
-            this.groupBox12.Controls.Add(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous);
-            this.groupBox12.Controls.Add(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module);
-            this.groupBox12.Controls.Add(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket);
-            this.groupBox12.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase);
-            this.groupBox12.Controls.Add(this.label25);
-            this.groupBox12.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox12.Location = new System.Drawing.Point(278, 115);
-            this.groupBox12.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox12.Size = new System.Drawing.Size(216, 100);
-            this.groupBox12.TabIndex = 136;
-            this.groupBox12.TabStop = false;
-            this.groupBox12.Text = " Increase Type ";
-            // 
-            // radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous
-            // 
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Location = new System.Drawing.Point(15, 74);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Name = "radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous";
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Size = new System.Drawing.Size(97, 20);
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.TabIndex = 136;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Text = "Continuous";
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.UseVisualStyleBackColor = true;
-            this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous_CheckedChanged);
-            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -3781,10 +3853,13 @@
             this.MinimizeBox = false;
             this.Name = "FormNew_Recipe";
             this.Text = "FormNew_Main";
+            this.Shown += new System.EventHandler(this.FormNew_Recipe_Shown);
             this.tabControl_Recipe.ResumeLayout(false);
             this.tabPage_Recipe.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
+            this.groupBox12.ResumeLayout(false);
+            this.groupBox12.PerformLayout();
             this.groupBox15.ResumeLayout(false);
             this.groupBox15.PerformLayout();
             this.groupBox17.ResumeLayout(false);
@@ -3818,8 +3893,6 @@
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox177.ResumeLayout(false);
-            this.groupBox12.ResumeLayout(false);
-            this.groupBox12.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -4104,5 +4177,10 @@
         private System.Windows.Forms.RadioButton radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module;
         private System.Windows.Forms.GroupBox groupBox12;
         private System.Windows.Forms.RadioButton radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous;
+        private System.Windows.Forms.Label label_Recipe_TabRecipe_Miscellaneous_Mrad;
+        private System.Windows.Forms.Label label_Recipe_TabRecipe_Miscellaneous_ZoomPosition;
+        private System.Windows.Forms.Label label_Recipe_Marking_SerialNumber_Current;
+        private System.Windows.Forms.Button button_Marking_SerialNumber_CountReset;
+        private System.Windows.Forms.Button button_Marking_SerialNumber_Preview;
     }
 }

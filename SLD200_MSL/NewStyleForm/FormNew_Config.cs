@@ -55,6 +55,8 @@ namespace SLD200_MSL
             set { m_FormcalfilePopup = value; }
         }
 
+        private bool m_bBET_Status_1time = false;               //  프로그램 구동 후 BET Zoom, Mrad 위치값을 세팅 edit 에 1회만 표시하기 위한 Flag
+
         private bool m_bEmgBtn_Clicked = false;
 
         //  Motion 이동량 표시를 위한 Zero Pos. 변수
@@ -648,6 +650,16 @@ namespace SLD200_MSL
                 {
                     textBox_Config_BDS_BET_Zoom.Text = workStage.m_dBET_ZoomValue.ToString();
                     textBox_Config_BDS_BET_Mrad.Text = workStage.m_dBET_MradValue.ToString();
+
+
+                    //  프로그램 구동 후 BET Zoom, Mrad 위치값을 세팅 edit 에 1회만 표시하기 위한 Flag
+                    if (!m_bBET_Status_1time)
+                    {
+                        m_bBET_Status_1time = true;
+
+                        textBox_Config_BDS_BET_Zoom_Position.Text = workStage.m_dBET_ZoomValue.ToString();
+                        textBox_Config_BDS_BET_Mrad_Position.Text = workStage.m_dBET_MradValue.ToString();
+                    }
                 }
             }
 
@@ -5796,6 +5808,37 @@ namespace SLD200_MSL
             //  BET Mrad Init
 
             workStage.BeamExpander_Send_Motor_InitialPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor);
+        }
+        private void Button_Config_BDS_BeamShutter_Open_Click(object sender, EventArgs e)
+        {
+            //  Beam Shtter Open (BW)
+
+            bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
+            bds.bdsParameter.DO_BDS_PowerMeter_BW(true);            
+        }
+
+        private void Button_Config_BDS_BeamShutter_Close_Click(object sender, EventArgs e)
+        {
+            //  Beam Shtter Close (FW)
+
+            bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+            bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
+        }
+
+        private void Button_Config_Laser_BeamShutter_Open_Click(object sender, EventArgs e)
+        {
+            //  Beam Shtter Open (BW)
+
+            bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
+            bds.bdsParameter.DO_BDS_PowerMeter_BW(true);
+        }
+
+        private void Button_Config_Laser_BeamShutter_Close_Click(object sender, EventArgs e)
+        {
+            //  Beam Shtter Close (FW)
+
+            bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+            bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
         }
     }
 }
