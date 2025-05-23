@@ -531,7 +531,8 @@ namespace QMC.Common
             public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
-        
+
+
         public enum VisionAlgorithmType
         {
             PatternMatching = 0,

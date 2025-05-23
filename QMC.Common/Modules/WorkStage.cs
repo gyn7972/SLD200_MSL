@@ -30740,8 +30740,7 @@ namespace QMC.Common.Modules
             if (m_nHole1_ObjectCount == m_nMarking_ObjectCount)
             {
                 //  소켓 개수와 마킹 개수가 동일하므로 Marking Entity 도 얼라인 해주기 위해 Liat 개수 +1
-                m_nListCount++;                
-
+                m_nListCount++;      
                 m_bMarkingEntity_Select = true;
             }
             else if ((m_nHole1_ObjectCount != m_nMarking_ObjectCount) && (m_nMarking_ObjectCount == 1) &&
@@ -30752,7 +30751,6 @@ namespace QMC.Common.Modules
                 //  현재 얼라인 한 소켓과 같이 묶어서 얼라인 해준다.
                 
                 m_nListCount++;
-
                 m_bMarkingEntity_Select = true;
             }
             else
@@ -30760,7 +30758,6 @@ namespace QMC.Common.Modules
                 //  이 외의 경우는.... 쫌 애매헌디...
 
             }
-
 
             //  선택해야 할 List 초기화
             var list = new List<IEntity>(m_nListCount);
@@ -31739,7 +31736,6 @@ namespace QMC.Common.Modules
 
             //  도면 데이터 개수 초기화
             m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수
-
 
             //  Layer 종류별 Count
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
