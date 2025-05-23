@@ -32517,6 +32517,7 @@ namespace QMC.Common.Modules
                     width = GetTextWidthByCapHeight(m_strEntityData, trueType_fontName, (float)m_nEntityHeight);
 
                     markingText.Rotate((float)(90.0 + m_dRotateAngle));
+                    //markingText.OriginLeftLocation =  //  OriginLeftLocation 을 true 로 하면, X 좌표가 0 이고, Y 좌표가 -Width 가 된다. (X,Y) = (0, -Width)
                     markingText.Location = new Vector2(((float)m_nEntityHeight / (float)2.0), -((float)width / (float)2.0));
                     break;
 
