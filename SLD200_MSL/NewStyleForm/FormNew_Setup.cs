@@ -1263,6 +1263,7 @@ namespace SLD200_MSL
 
             //  BET 별 Mrad
             textBox_Setup_Option_BET_Mrad_08x.Text = Equipment.BET_0_8X_Mrad.ToString();
+            textBox_Setup_Option_BET_Mrad_09x.Text = Equipment.BET_0_9X_Mrad.ToString();
             textBox_Setup_Option_BET_Mrad_10x.Text = Equipment.BET_1_0X_Mrad.ToString();
             textBox_Setup_Option_BET_Mrad_11x.Text = Equipment.BET_1_1X_Mrad.ToString(); 
             textBox_Setup_Option_BET_Mrad_12x.Text = Equipment.BET_1_2X_Mrad.ToString();
@@ -1783,11 +1784,13 @@ namespace SLD200_MSL
             //  BET 별 Mrad
             Equipment.BET_0_8X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_08x.Text);
             NativeMethods.WritePrivateProfileString("BET_Mrad", "Mag_08X", textBox_Setup_Option_BET_Mrad_08x.Text, strFIle);
-            Equipment.BET_1_0X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_08x.Text);
+            Equipment.BET_0_9X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_09x.Text);
+            NativeMethods.WritePrivateProfileString("BET_Mrad", "Mag_09X", textBox_Setup_Option_BET_Mrad_09x.Text, strFIle);
+            Equipment.BET_1_0X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_10x.Text);
             NativeMethods.WritePrivateProfileString("BET_Mrad", "Mag_10X", textBox_Setup_Option_BET_Mrad_10x.Text, strFIle);
-            Equipment.BET_1_1X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_08x.Text);
+            Equipment.BET_1_1X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_11x.Text);
             NativeMethods.WritePrivateProfileString("BET_Mrad", "Mag_11X", textBox_Setup_Option_BET_Mrad_11x.Text, strFIle);
-            Equipment.BET_1_2X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_08x.Text);
+            Equipment.BET_1_2X_Mrad = Equipment.ToDouble(textBox_Setup_Option_BET_Mrad_12x.Text);
             NativeMethods.WritePrivateProfileString("BET_Mrad", "Mag_12X", textBox_Setup_Option_BET_Mrad_12x.Text, strFIle);
             
 

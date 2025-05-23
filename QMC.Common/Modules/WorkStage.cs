@@ -2520,6 +2520,8 @@ namespace QMC.Common.Modules
         public int m_nBETCommRecvData_foot_Count { set; get; }             //  chrFooter 가 1개
         public double m_dBET_ZoomValue { set; get; }
         public double m_dBET_MradValue { set; get; }
+        public double m_dBET_ZoomValue_Recipe { set; get; }
+        public double m_dBET_MradValue_Recipe { set; get; }
         public int m_nBETCommStep { set; get; }
 
         public enum BETComm_Step
@@ -16040,9 +16042,9 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.BET_Change:                                      //  BET Change (CO2 용, UV 는 Mask 없음)                    
 
                     int m_nBETIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
-                    if (m_nBETIndex < 0 || m_nBETIndex >= 4)                                    //  BET 배율은 총4개로 고정되어 있음.
+                    if (m_nBETIndex < 0 || m_nBETIndex >= 5)                                    //  BET 배율은 총4개로 고정되어 있음.
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "지정되지 않은 BET Index 입니다. (0 ~ 3)");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "지정되지 않은 BET Index 입니다. (0 ~ 4)");
                         
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
@@ -16068,143 +16070,68 @@ namespace QMC.Common.Modules
                     {
                         m_nBETIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
 
+                        double m_dBET_Zoom = 0.0;
+                        double m_dBET_Mrad = 0.0;
+
+                        //  BET Zoom, Mrad 변경
                         switch (m_nBETIndex)
                         {
                             case 0:         //  0.8x
-                                if (((m_dBET_ZoomValue > (0.8 - 0.005)) && (m_dBET_ZoomValue < (0.8 + 0.005))) &&
-                                    ((m_dBET_MradValue > (Equipment.BET_0_8X_Mrad - 0.005)) && (m_dBET_MradValue < (Equipment.BET_0_8X_Mrad + 0.005))))
-                                {
-                                    m_strTemp = string.Format("BET Zoom 0.8X, Mrad ({0} / {1}) 변경 성공", m_dBET_MradValue, Equipment.BET_0_8X_Mrad);
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
-                                }
-                                else
-                                {
-                                    if (m_nBETChange_RetryCount++ < 3)
-                                    {
-                                        m_strTemp = string.Format("BET Zoom 0.8X, Mrad ({0} / {1}) 변경 실패. 재시도 ({2}/{3})", m_dBET_MradValue, Equipment.BET_0_8X_Mrad, m_nBETChange_RetryCount, 3);
-                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change;
-
-                                        Thread.Sleep(200);
-                                    }
-                                    else
-                                    {
-                                        //  알람 정지 (LED Bar - Red Blink)
-                                        Equipment.MachineStop_byAlarm = true;
-
-                                        //timer_LaserDrillingWork.Enabled = false;
-                                        //m_btimer_Motion_Home_Stop = true;
-
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-                                        return AlarmPost(AlarmKey.eBETChangeFail);
-                                    }
-                                }
+                                m_dBET_Zoom = 0.8;
+                                m_dBET_Mrad = Equipment.BET_0_8X_Mrad;
                                 break;
 
-                            case 1:         //  1.0x
-                                if (((m_dBET_ZoomValue > (1.0 - 0.005)) && (m_dBET_ZoomValue < (1.0 + 0.005))) &&
-                                    ((m_dBET_MradValue > (Equipment.BET_1_0X_Mrad - 0.005)) && (m_dBET_MradValue < (Equipment.BET_1_0X_Mrad + 0.005))))
-                                {
-                                    m_strTemp = string.Format("BET Zoom 1.0X, Mrad ({0} / {1}) 변경 성공", m_dBET_MradValue, Equipment.BET_1_0X_Mrad);
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
-                                }
-                                else
-                                {
-                                    if (m_nBETChange_RetryCount++ < 3)
-                                    {
-                                        m_strTemp = string.Format("BET Zoom 1.0X, Mrad ({0} / {1}) 변경 실패. 재시도 ({2}/{3})", m_dBET_MradValue, Equipment.BET_1_0X_Mrad, m_nBETChange_RetryCount, 3);
-                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change;
-
-                                        Thread.Sleep(200);
-                                    }
-                                    else
-                                    {
-                                        //  알람 정지 (LED Bar - Red Blink)
-                                        Equipment.MachineStop_byAlarm = true;
-
-                                        //timer_LaserDrillingWork.Enabled = false;
-                                        //m_btimer_Motion_Home_Stop = true;
-
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-                                        return AlarmPost(AlarmKey.eBETChangeFail);
-                                    }
-                                }
+                            case 1:         //  0.9x
+                                m_dBET_Zoom = 0.9;
+                                m_dBET_Mrad = Equipment.BET_0_9X_Mrad;
                                 break;
 
-                            case 2:         //  1.1x
-                                if (((m_dBET_ZoomValue > (1.1 - 0.005)) && (m_dBET_ZoomValue < (1.1 + 0.005))) &&
-                                    ((m_dBET_MradValue > (Equipment.BET_1_1X_Mrad - 0.005)) && (m_dBET_MradValue < (Equipment.BET_1_1X_Mrad + 0.005))))
-                                {
-                                    m_strTemp = string.Format("BET Zoom 1.1X, Mrad ({0} / {1}) 변경 성공", m_dBET_MradValue, Equipment.BET_1_1X_Mrad);
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
-                                }
-                                else
-                                {
-                                    if (m_nBETChange_RetryCount++ < 3)
-                                    {
-                                        m_strTemp = string.Format("BET Zoom 1.1X, Mrad ({0} / {1}) 변경 실패. 재시도 ({2}/{3})", m_dBET_MradValue, Equipment.BET_1_1X_Mrad, m_nBETChange_RetryCount, 3);
-                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change;
-
-                                        Thread.Sleep(200);
-                                    }
-                                    else
-                                    {
-                                        //  알람 정지 (LED Bar - Red Blink)
-                                        Equipment.MachineStop_byAlarm = true;
-
-                                        //timer_LaserDrillingWork.Enabled = false;
-                                        //m_btimer_Motion_Home_Stop = true;
-
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-                                        return AlarmPost(AlarmKey.eBETChangeFail);
-                                    }
-                                }
+                            case 2:         //  1.0x
+                                m_dBET_Zoom = 1.0;
+                                m_dBET_Mrad = Equipment.BET_1_0X_Mrad;
                                 break;
 
-                            case 3:         //  1.2x
-                                if (((m_dBET_ZoomValue > (1.2 - 0.005)) && (m_dBET_ZoomValue < (1.2 + 0.005))) &&
-                                    ((m_dBET_MradValue > (Equipment.BET_1_2X_Mrad - 0.005)) && (m_dBET_MradValue < (Equipment.BET_1_2X_Mrad + 0.005))))
-                                {
-                                    m_strTemp = string.Format("BET Zoom 1.2X, Mrad ({0} / {1}) 변경 성공", m_dBET_MradValue, Equipment.BET_1_2X_Mrad);
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
-                                }
-                                else
-                                {
-                                    if (m_nBETChange_RetryCount++ < 3)
-                                    {
-                                        m_strTemp = string.Format("BET Zoom 1.2X, Mrad ({0} / {1}) 변경 실패. 재시도 ({2}/{3})", m_dBET_MradValue, Equipment.BET_1_2X_Mrad, m_nBETChange_RetryCount, 3);
-                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change;
-
-                                        Thread.Sleep(200);
-                                    }
-                                    else
-                                    {
-                                        //  알람 정지 (LED Bar - Red Blink)
-                                        Equipment.MachineStop_byAlarm = true;
-
-                                        //timer_LaserDrillingWork.Enabled = false;
-                                        //m_btimer_Motion_Home_Stop = true;
-
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-                                        return AlarmPost(AlarmKey.eBETChangeFail);
-                                    }
-                                }
+                            case 3:         //  1.1x
+                                m_dBET_Zoom = 1.1;
+                                m_dBET_Mrad = Equipment.BET_1_1X_Mrad;
                                 break;
+
+                            case 4:         //  1.2x
+                                m_dBET_Zoom = 1.2;
+                                m_dBET_Mrad = Equipment.BET_1_2X_Mrad;
+                                break;
+                        }
+
+                        if (((m_dBET_ZoomValue > (m_dBET_Zoom - 0.005)) && (m_dBET_ZoomValue < (m_dBET_Zoom + 0.005))) &&
+                            ((m_dBET_MradValue > (m_dBET_Mrad - 0.005)) && (m_dBET_MradValue < (m_dBET_Mrad + 0.005))))
+                        {
+                            m_strTemp = string.Format("BET Zoom ({0} / {1}), Mrad ({2} / {3}) 변경 성공", m_dBET_ZoomValue, m_dBET_Zoom, m_dBET_MradValue, m_dBET_Mrad);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
+                        }
+                        else
+                        {
+                            if (m_nBETChange_RetryCount++ < 3)
+                            {
+                                m_strTemp = string.Format("BET Zoom ({0} / {1}), Mrad ({2} / {3}) 변경 실패. 재시도 ({4}/{5})", m_dBET_ZoomValue, m_dBET_Zoom, m_dBET_MradValue, m_dBET_Mrad, m_nBETChange_RetryCount, 3);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change;
+
+                                Thread.Sleep(200);
+                            }
+                            else
+                            {
+                                //  알람 정지 (LED Bar - Red Blink)
+                                Equipment.MachineStop_byAlarm = true;
+
+                                //timer_LaserDrillingWork.Enabled = false;
+                                //m_btimer_Motion_Home_Stop = true;
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                                return AlarmPost(AlarmKey.eBETChangeFail);
+                            }
                         }
                     }
                     break;
@@ -29171,27 +29098,42 @@ namespace QMC.Common.Modules
                     m_dMrad = Equipment.BET_0_8X_Mrad;
                     break;
 
-                case 1:         //  1.0x
+                case 1:         //  0.9x
+                    m_dZoom = 0.9;
+                    m_dMrad = Equipment.BET_0_9X_Mrad;
+                    break;
+
+                case 2:         //  1.0x
                     m_dZoom = 1.0;
                     m_dMrad = Equipment.BET_1_0X_Mrad;
                     break;
 
-                case 2:         //  1.1x
+                case 3:         //  1.1x
                     m_dZoom = 1.1;
                     m_dMrad = Equipment.BET_1_1X_Mrad;
                     break;
 
-                case 3:         //  1.2x
+                case 4:         //  1.2x
                     m_dZoom = 1.2;
                     m_dMrad = Equipment.BET_1_2X_Mrad;
                     break;
             }
 
-            //  BET Zoom, Mrad 변경 Command 전송
-            BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.ZoomMotor, m_dZoom);
-            Thread.Sleep(300);
-            BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor, m_dMrad);
-            Thread.Sleep(300);
+            //  현재 BET Zoom 위치와 Mrad 위치가 설정하려는 Recipe 와 동일하면 Command 전송 없이 Out
+            if (((m_dBET_ZoomValue >= (m_dZoom - 0.005)) && (m_dBET_ZoomValue <= (m_dZoom + 0.005))) &&
+                ((m_dBET_MradValue >= (m_dMrad - 0.005)) && (m_dBET_MradValue <= (m_dMrad + 0.005))))
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "BET Zoom, Mrad 변경 Command 전송 안함. 현재 BET Zoom 위치와 Mrad 위치가 설정하려는 Recipe 와 동일함.");
+            }
+            else
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "BET Zoom, Mrad 변경 Command 전송.");
+
+                //  BET Zoom, Mrad 변경 Command 전송
+                BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.ZoomMotor, m_dZoom);
+                Thread.Sleep(300);
+                BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor, m_dMrad);
+            }
 
             TickCount_Start((int)TickType.TICK_MAIN);
         }

@@ -515,6 +515,9 @@
             this.button13 = new System.Windows.Forms.Button();
             this.label46 = new System.Windows.Forms.Label();
             this.textBox_ScannerOffset_X = new System.Windows.Forms.TextBox();
+            this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.textBox_Setup_Option_BET_Mrad_09x = new System.Windows.Forms.TextBox();
+            this.label84 = new System.Windows.Forms.Label();
             this.groupBox_Offset = new System.Windows.Forms.GroupBox();
             this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
@@ -601,6 +604,7 @@
             this.groupBox9.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.groupBox17.SuspendLayout();
             this.groupBox_Offset.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.SuspendLayout();
@@ -5308,6 +5312,7 @@
             this.tabPage_Setup_Option.Controls.Add(this.groupBox9);
             this.tabPage_Setup_Option.Controls.Add(this.groupBox8);
             this.tabPage_Setup_Option.Controls.Add(this.groupBox7);
+            this.tabPage_Setup_Option.Controls.Add(this.groupBox17);
             this.tabPage_Setup_Option.Controls.Add(this.groupBox_Offset);
             this.tabPage_Setup_Option.Controls.Add(this.button2);
             this.tabPage_Setup_Option.Controls.Add(this.button_Setup_Option_Save);
@@ -5372,7 +5377,7 @@
             this.groupBox14.Controls.Add(this.label64);
             this.groupBox14.Controls.Add(this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition);
             this.groupBox14.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox14.Location = new System.Drawing.Point(1391, 559);
+            this.groupBox14.Location = new System.Drawing.Point(1391, 582);
             this.groupBox14.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
@@ -5425,14 +5430,6 @@
             // 
             // groupBox13
             // 
-            this.groupBox13.Controls.Add(this.label83);
-            this.groupBox13.Controls.Add(this.textBox_Setup_Option_BET_Mrad_12x);
-            this.groupBox13.Controls.Add(this.label82);
-            this.groupBox13.Controls.Add(this.textBox_Setup_Option_BET_Mrad_11x);
-            this.groupBox13.Controls.Add(this.label81);
-            this.groupBox13.Controls.Add(this.textBox_Setup_Option_BET_Mrad_10x);
-            this.groupBox13.Controls.Add(this.label80);
-            this.groupBox13.Controls.Add(this.textBox_Setup_Option_BET_Mrad_08x);
             this.groupBox13.Controls.Add(this.label78);
             this.groupBox13.Controls.Add(this.textBox_Setup_Option_ModulePickup_1stDistance);
             this.groupBox13.Controls.Add(this.label79);
@@ -5495,26 +5492,26 @@
             this.groupBox13.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox13.Size = new System.Drawing.Size(1328, 419);
+            this.groupBox13.Size = new System.Drawing.Size(1011, 419);
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
             // 
             // label83
             // 
-            this.label83.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label83.Location = new System.Drawing.Point(1068, 110);
+            this.label83.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label83.Location = new System.Drawing.Point(254, 55);
             this.label83.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label83.Name = "label83";
-            this.label83.Size = new System.Drawing.Size(187, 20);
+            this.label83.Size = new System.Drawing.Size(148, 20);
             this.label83.TabIndex = 126;
-            this.label83.Text = "Mrad Position  (BET 1.2x) :";
+            this.label83.Text = "Mrad (for BET 1.2x) :";
             this.label83.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBox_Setup_Option_BET_Mrad_12x
             // 
             this.textBox_Setup_Option_BET_Mrad_12x.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_BET_Mrad_12x.Location = new System.Drawing.Point(1259, 109);
+            this.textBox_Setup_Option_BET_Mrad_12x.Location = new System.Drawing.Point(406, 54);
             this.textBox_Setup_Option_BET_Mrad_12x.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_BET_Mrad_12x.Name = "textBox_Setup_Option_BET_Mrad_12x";
             this.textBox_Setup_Option_BET_Mrad_12x.Size = new System.Drawing.Size(59, 24);
@@ -5523,19 +5520,19 @@
             // 
             // label82
             // 
-            this.label82.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label82.Location = new System.Drawing.Point(1068, 82);
+            this.label82.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label82.Location = new System.Drawing.Point(254, 27);
             this.label82.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label82.Name = "label82";
-            this.label82.Size = new System.Drawing.Size(187, 20);
+            this.label82.Size = new System.Drawing.Size(148, 20);
             this.label82.TabIndex = 124;
-            this.label82.Text = "Mrad Position  (BET 1.1x) :";
+            this.label82.Text = "Mrad (for BET 1.1x) :";
             this.label82.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBox_Setup_Option_BET_Mrad_11x
             // 
             this.textBox_Setup_Option_BET_Mrad_11x.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_BET_Mrad_11x.Location = new System.Drawing.Point(1259, 81);
+            this.textBox_Setup_Option_BET_Mrad_11x.Location = new System.Drawing.Point(406, 26);
             this.textBox_Setup_Option_BET_Mrad_11x.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_BET_Mrad_11x.Name = "textBox_Setup_Option_BET_Mrad_11x";
             this.textBox_Setup_Option_BET_Mrad_11x.Size = new System.Drawing.Size(59, 24);
@@ -5544,19 +5541,19 @@
             // 
             // label81
             // 
-            this.label81.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label81.Location = new System.Drawing.Point(1068, 54);
+            this.label81.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label81.Location = new System.Drawing.Point(7, 83);
             this.label81.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label81.Name = "label81";
-            this.label81.Size = new System.Drawing.Size(187, 20);
+            this.label81.Size = new System.Drawing.Size(148, 20);
             this.label81.TabIndex = 122;
-            this.label81.Text = "Mrad Position  (BET 1.0x) :";
+            this.label81.Text = "Mrad (for BET 1.0x) :";
             this.label81.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBox_Setup_Option_BET_Mrad_10x
             // 
             this.textBox_Setup_Option_BET_Mrad_10x.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_BET_Mrad_10x.Location = new System.Drawing.Point(1259, 53);
+            this.textBox_Setup_Option_BET_Mrad_10x.Location = new System.Drawing.Point(159, 82);
             this.textBox_Setup_Option_BET_Mrad_10x.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_BET_Mrad_10x.Name = "textBox_Setup_Option_BET_Mrad_10x";
             this.textBox_Setup_Option_BET_Mrad_10x.Size = new System.Drawing.Size(59, 24);
@@ -5565,19 +5562,19 @@
             // 
             // label80
             // 
-            this.label80.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label80.Location = new System.Drawing.Point(1068, 26);
+            this.label80.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label80.Location = new System.Drawing.Point(7, 27);
             this.label80.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label80.Name = "label80";
-            this.label80.Size = new System.Drawing.Size(187, 20);
+            this.label80.Size = new System.Drawing.Size(148, 20);
             this.label80.TabIndex = 120;
-            this.label80.Text = "Mrad Position  (BET 0.8x) :";
+            this.label80.Text = "Mrad (for BET 0.8x) :";
             this.label80.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBox_Setup_Option_BET_Mrad_08x
             // 
             this.textBox_Setup_Option_BET_Mrad_08x.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_BET_Mrad_08x.Location = new System.Drawing.Point(1259, 25);
+            this.textBox_Setup_Option_BET_Mrad_08x.Location = new System.Drawing.Point(159, 26);
             this.textBox_Setup_Option_BET_Mrad_08x.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_BET_Mrad_08x.Name = "textBox_Setup_Option_BET_Mrad_08x";
             this.textBox_Setup_Option_BET_Mrad_08x.Size = new System.Drawing.Size(59, 24);
@@ -5587,7 +5584,7 @@
             // label78
             // 
             this.label78.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label78.Location = new System.Drawing.Point(722, 187);
+            this.label78.Location = new System.Drawing.Point(722, 185);
             this.label78.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label78.Name = "label78";
             this.label78.Size = new System.Drawing.Size(216, 20);
@@ -5598,7 +5595,7 @@
             // textBox_Setup_Option_ModulePickup_1stDistance
             // 
             this.textBox_Setup_Option_ModulePickup_1stDistance.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_ModulePickup_1stDistance.Location = new System.Drawing.Point(942, 186);
+            this.textBox_Setup_Option_ModulePickup_1stDistance.Location = new System.Drawing.Point(942, 184);
             this.textBox_Setup_Option_ModulePickup_1stDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_ModulePickup_1stDistance.Name = "textBox_Setup_Option_ModulePickup_1stDistance";
             this.textBox_Setup_Option_ModulePickup_1stDistance.Size = new System.Drawing.Size(50, 24);
@@ -5608,7 +5605,7 @@
             // label79
             // 
             this.label79.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label79.Location = new System.Drawing.Point(725, 208);
+            this.label79.Location = new System.Drawing.Point(725, 206);
             this.label79.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label79.Name = "label79";
             this.label79.Size = new System.Drawing.Size(210, 31);
@@ -5619,7 +5616,7 @@
             // label72
             // 
             this.label72.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label72.Location = new System.Drawing.Point(722, 396);
+            this.label72.Location = new System.Drawing.Point(722, 392);
             this.label72.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label72.Name = "label72";
             this.label72.Size = new System.Drawing.Size(220, 20);
@@ -5630,7 +5627,7 @@
             // textBox_Setup_Option_VibrationMoveInterval
             // 
             this.textBox_Setup_Option_VibrationMoveInterval.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_VibrationMoveInterval.Location = new System.Drawing.Point(942, 395);
+            this.textBox_Setup_Option_VibrationMoveInterval.Location = new System.Drawing.Point(942, 391);
             this.textBox_Setup_Option_VibrationMoveInterval.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_VibrationMoveInterval.Name = "textBox_Setup_Option_VibrationMoveInterval";
             this.textBox_Setup_Option_VibrationMoveInterval.Size = new System.Drawing.Size(50, 24);
@@ -5704,7 +5701,7 @@
             // label73
             // 
             this.label73.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label73.Location = new System.Drawing.Point(755, 149);
+            this.label73.Location = new System.Drawing.Point(755, 148);
             this.label73.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label73.Name = "label73";
             this.label73.Size = new System.Drawing.Size(138, 17);
@@ -5715,7 +5712,7 @@
             // checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable
             // 
             this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Location = new System.Drawing.Point(720, 130);
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Location = new System.Drawing.Point(720, 129);
             this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Name = "checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable";
             this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Size = new System.Drawing.Size(221, 20);
             this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.TabIndex = 108;
@@ -5726,7 +5723,7 @@
             // textBox_Setup_Option_StackerDownDistance_afterLDPickUp
             // 
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Location = new System.Drawing.Point(942, 128);
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Location = new System.Drawing.Point(942, 127);
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Name = "textBox_Setup_Option_StackerDownDistance_afterLDPickUp";
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Size = new System.Drawing.Size(50, 24);
@@ -5736,7 +5733,7 @@
             // label71
             // 
             this.label71.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label71.Location = new System.Drawing.Point(720, 373);
+            this.label71.Location = new System.Drawing.Point(720, 369);
             this.label71.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label71.Name = "label71";
             this.label71.Size = new System.Drawing.Size(212, 17);
@@ -5747,7 +5744,7 @@
             // label70
             // 
             this.label70.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label70.Location = new System.Drawing.Point(722, 353);
+            this.label70.Location = new System.Drawing.Point(722, 349);
             this.label70.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label70.Name = "label70";
             this.label70.Size = new System.Drawing.Size(220, 20);
@@ -5758,7 +5755,7 @@
             // textBox_Setup_Option_VibrationMoveDistance
             // 
             this.textBox_Setup_Option_VibrationMoveDistance.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_VibrationMoveDistance.Location = new System.Drawing.Point(942, 352);
+            this.textBox_Setup_Option_VibrationMoveDistance.Location = new System.Drawing.Point(942, 348);
             this.textBox_Setup_Option_VibrationMoveDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_VibrationMoveDistance.Name = "textBox_Setup_Option_VibrationMoveDistance";
             this.textBox_Setup_Option_VibrationMoveDistance.Size = new System.Drawing.Size(50, 24);
@@ -5822,7 +5819,7 @@
             // label62
             // 
             this.label62.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label62.Location = new System.Drawing.Point(722, 328);
+            this.label62.Location = new System.Drawing.Point(722, 324);
             this.label62.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label62.Name = "label62";
             this.label62.Size = new System.Drawing.Size(220, 20);
@@ -5833,7 +5830,7 @@
             // textBox_Setup_Option_NumberOfVibrations
             // 
             this.textBox_Setup_Option_NumberOfVibrations.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_NumberOfVibrations.Location = new System.Drawing.Point(942, 327);
+            this.textBox_Setup_Option_NumberOfVibrations.Location = new System.Drawing.Point(942, 323);
             this.textBox_Setup_Option_NumberOfVibrations.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_NumberOfVibrations.Name = "textBox_Setup_Option_NumberOfVibrations";
             this.textBox_Setup_Option_NumberOfVibrations.Size = new System.Drawing.Size(50, 24);
@@ -5843,7 +5840,7 @@
             // label61
             // 
             this.label61.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label61.Location = new System.Drawing.Point(722, 303);
+            this.label61.Location = new System.Drawing.Point(722, 299);
             this.label61.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(220, 20);
@@ -5854,7 +5851,7 @@
             // textBox_Setup_Option_Vibration_AccDec_Ratio
             // 
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_Vibration_AccDec_Ratio.Location = new System.Drawing.Point(942, 302);
+            this.textBox_Setup_Option_Vibration_AccDec_Ratio.Location = new System.Drawing.Point(942, 298);
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Name = "textBox_Setup_Option_Vibration_AccDec_Ratio";
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Size = new System.Drawing.Size(50, 24);
@@ -5864,7 +5861,7 @@
             // label66
             // 
             this.label66.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label66.Location = new System.Drawing.Point(750, 282);
+            this.label66.Location = new System.Drawing.Point(750, 278);
             this.label66.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label66.Name = "label66";
             this.label66.Size = new System.Drawing.Size(204, 17);
@@ -5875,7 +5872,7 @@
             // checkBox_Setup_Option_Loader_Transfer_Vibration_Enable
             // 
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Location = new System.Drawing.Point(720, 263);
+            this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Location = new System.Drawing.Point(720, 259);
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Name = "checkBox_Setup_Option_Loader_Transfer_Vibration_Enable";
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Size = new System.Drawing.Size(243, 20);
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.TabIndex = 91;
@@ -6228,11 +6225,11 @@
             this.groupBox9.Controls.Add(this.label49);
             this.groupBox9.Controls.Add(this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X);
             this.groupBox9.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox9.Location = new System.Drawing.Point(1391, 370);
+            this.groupBox9.Location = new System.Drawing.Point(1391, 306);
             this.groupBox9.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox9.Size = new System.Drawing.Size(475, 157);
+            this.groupBox9.Size = new System.Drawing.Size(475, 136);
             this.groupBox9.TabIndex = 59;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = " # CAUTION #      Offset Distance to the Center of the Scanner (mm) ";
@@ -6240,7 +6237,7 @@
             // label50
             // 
             this.label50.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label50.Location = new System.Drawing.Point(12, 52);
+            this.label50.Location = new System.Drawing.Point(12, 45);
             this.label50.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(428, 24);
@@ -6251,7 +6248,7 @@
             // label44
             // 
             this.label44.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label44.Location = new System.Drawing.Point(12, 29);
+            this.label44.Location = new System.Drawing.Point(12, 22);
             this.label44.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(428, 24);
@@ -6262,7 +6259,7 @@
             // button9
             // 
             this.button9.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button9.Location = new System.Drawing.Point(430, 120);
+            this.button9.Location = new System.Drawing.Point(430, 100);
             this.button9.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(35, 25);
@@ -6273,7 +6270,7 @@
             // label48
             // 
             this.label48.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label48.Location = new System.Drawing.Point(10, 119);
+            this.label48.Location = new System.Drawing.Point(10, 99);
             this.label48.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label48.Name = "label48";
             this.label48.Size = new System.Drawing.Size(301, 24);
@@ -6284,7 +6281,7 @@
             // textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y
             // 
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Location = new System.Drawing.Point(314, 120);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Location = new System.Drawing.Point(314, 100);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Name = "textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y";
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Size = new System.Drawing.Size(114, 24);
@@ -6294,7 +6291,7 @@
             // button11
             // 
             this.button11.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button11.Location = new System.Drawing.Point(430, 92);
+            this.button11.Location = new System.Drawing.Point(430, 74);
             this.button11.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(35, 25);
@@ -6305,7 +6302,7 @@
             // label49
             // 
             this.label49.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label49.Location = new System.Drawing.Point(10, 91);
+            this.label49.Location = new System.Drawing.Point(10, 73);
             this.label49.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(301, 24);
@@ -6316,7 +6313,7 @@
             // textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X
             // 
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Location = new System.Drawing.Point(314, 92);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Location = new System.Drawing.Point(314, 74);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Name = "textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X";
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Size = new System.Drawing.Size(114, 24);
@@ -6334,11 +6331,11 @@
             this.groupBox8.Controls.Add(this.label47);
             this.groupBox8.Controls.Add(this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X);
             this.groupBox8.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox8.Location = new System.Drawing.Point(1391, 162);
+            this.groupBox8.Location = new System.Drawing.Point(1391, 145);
             this.groupBox8.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox8.Size = new System.Drawing.Size(475, 176);
+            this.groupBox8.Size = new System.Drawing.Size(475, 146);
             this.groupBox8.TabIndex = 58;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = " # CAUTION #      Offset Distance for Coordinate Matching (mm) ";
@@ -6346,7 +6343,7 @@
             // label42
             // 
             this.label42.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label42.Location = new System.Drawing.Point(12, 26);
+            this.label42.Location = new System.Drawing.Point(12, 22);
             this.label42.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(428, 24);
@@ -6357,7 +6354,7 @@
             // button12
             // 
             this.button12.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button12.Location = new System.Drawing.Point(430, 97);
+            this.button12.Location = new System.Drawing.Point(430, 75);
             this.button12.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(35, 25);
@@ -6368,10 +6365,10 @@
             // label65
             // 
             this.label65.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label65.Location = new System.Drawing.Point(60, 124);
+            this.label65.Location = new System.Drawing.Point(53, 102);
             this.label65.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(358, 46);
+            this.label65.Size = new System.Drawing.Size(358, 35);
             this.label65.TabIndex = 73;
             this.label65.Text = "Distance value to set the X, Y axis position values ​​to 0\r\nwhen the Stage Center" +
     " is located at the Scanner Center.";
@@ -6380,7 +6377,7 @@
             // label45
             // 
             this.label45.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label45.Location = new System.Drawing.Point(10, 91);
+            this.label45.Location = new System.Drawing.Point(10, 75);
             this.label45.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(301, 24);
@@ -6391,7 +6388,7 @@
             // textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y
             // 
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Location = new System.Drawing.Point(314, 92);
+            this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Location = new System.Drawing.Point(314, 76);
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Name = "textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y";
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Size = new System.Drawing.Size(114, 24);
@@ -6401,7 +6398,7 @@
             // button14
             // 
             this.button14.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button14.Location = new System.Drawing.Point(430, 69);
+            this.button14.Location = new System.Drawing.Point(430, 49);
             this.button14.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(35, 25);
@@ -6412,7 +6409,7 @@
             // label47
             // 
             this.label47.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label47.Location = new System.Drawing.Point(10, 63);
+            this.label47.Location = new System.Drawing.Point(10, 49);
             this.label47.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(301, 24);
@@ -6423,7 +6420,7 @@
             // textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X
             // 
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Location = new System.Drawing.Point(314, 64);
+            this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Location = new System.Drawing.Point(314, 50);
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Name = "textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X";
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Size = new System.Drawing.Size(114, 24);
@@ -6563,6 +6560,49 @@
             this.textBox_ScannerOffset_X.Size = new System.Drawing.Size(114, 24);
             this.textBox_ScannerOffset_X.TabIndex = 53;
             this.textBox_ScannerOffset_X.Text = "0.0";
+            // 
+            // groupBox17
+            // 
+            this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_09x);
+            this.groupBox17.Controls.Add(this.label84);
+            this.groupBox17.Controls.Add(this.label83);
+            this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_08x);
+            this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_12x);
+            this.groupBox17.Controls.Add(this.label80);
+            this.groupBox17.Controls.Add(this.label82);
+            this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_10x);
+            this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_11x);
+            this.groupBox17.Controls.Add(this.label81);
+            this.groupBox17.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox17.Location = new System.Drawing.Point(1391, 452);
+            this.groupBox17.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox17.Name = "groupBox17";
+            this.groupBox17.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox17.Size = new System.Drawing.Size(475, 118);
+            this.groupBox17.TabIndex = 67;
+            this.groupBox17.TabStop = false;
+            this.groupBox17.Text = " # CAUTION #      BET Mrad Position ";
+            // 
+            // textBox_Setup_Option_BET_Mrad_09x
+            // 
+            this.textBox_Setup_Option_BET_Mrad_09x.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_BET_Mrad_09x.Location = new System.Drawing.Point(159, 54);
+            this.textBox_Setup_Option_BET_Mrad_09x.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_BET_Mrad_09x.Name = "textBox_Setup_Option_BET_Mrad_09x";
+            this.textBox_Setup_Option_BET_Mrad_09x.Size = new System.Drawing.Size(59, 24);
+            this.textBox_Setup_Option_BET_Mrad_09x.TabIndex = 129;
+            this.textBox_Setup_Option_BET_Mrad_09x.Text = "0.37";
+            // 
+            // label84
+            // 
+            this.label84.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label84.Location = new System.Drawing.Point(7, 55);
+            this.label84.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label84.Name = "label84";
+            this.label84.Size = new System.Drawing.Size(148, 20);
+            this.label84.TabIndex = 128;
+            this.label84.Text = "Mrad (for BET 0.9x) :";
+            this.label84.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBox_Offset
             // 
@@ -6969,6 +7009,8 @@
             this.groupBox8.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            this.groupBox17.ResumeLayout(false);
+            this.groupBox17.PerformLayout();
             this.groupBox_Offset.ResumeLayout(false);
             this.groupBox_Offset.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -7492,5 +7534,8 @@
         private System.Windows.Forms.TextBox textBox_Setup_Option_BET_Mrad_08x;
         private System.Windows.Forms.Label label83;
         private System.Windows.Forms.TextBox textBox_Setup_Option_BET_Mrad_12x;
+        private System.Windows.Forms.GroupBox groupBox17;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_BET_Mrad_09x;
+        private System.Windows.Forms.Label label84;
     }
 }
