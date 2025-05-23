@@ -32487,7 +32487,7 @@ namespace QMC.Common.Modules
             bool success = true;
 
             double capHeight = 0.0;
-            string trueType_fontName = "malgun.ttf";            //  사용하는 폰트가 따로 있는 건 아니라고 하니 이 폰트로 한다. 혹시 폰트가 정해지면 필요하면 폰트 선택해서 할 수 있도록
+            string trueType_fontName = "ahronbd.ttf";// "malgun.ttf";            //  사용하는 폰트가 따로 있는 건 아니라고 하니 이 폰트로 한다. 혹시 폰트가 정해지면 필요하면 폰트 선택해서 할 수 있도록
             string siriusType_fontName = "courier.cxf";         //  사용하는 폰트가 따로 있는 건 아니라고 하니 이 폰트로 한다. 혹시 폰트가 정해지면 필요하면 폰트 선택해서 할 수 있도록
             double width = 0.0;
 
@@ -32507,7 +32507,7 @@ namespace QMC.Common.Modules
 
                     markingText = new SpiralLab.Sirius.Text(m_strEntityData);
                     markingText.IsMarkerable = true;
-                    markingText.FontName = trueType_fontName;
+                    markingText.FontName = trueType_fontName;// trueType_fontName;
                     markingText.IsHatchable = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use;
                     markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
 
