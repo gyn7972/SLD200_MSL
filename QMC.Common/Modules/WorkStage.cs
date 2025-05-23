@@ -934,6 +934,8 @@ namespace QMC.Common.Modules
             public PointD dObjectCenter;                //  Socket Group 의 Center 좌표 (소켓 위치별 텍스트의 Center 좌표, 단어의 Center 좌표)
             public PointD dObjectLocation;              //  Socket Group 의 위치 좌표 (Object 가 Text 일 경우 Center 가 아니다. Text 는 좌하단이 Location 좌표)
             public double dObjectRotateAngle;           //  Socket Group 의 회전 각도 (소켓 위치별 텍스트의 회전 각도, 단어의 회전 각도)
+            public double dObjectWidth;                 //  Socket Group 의 Width (소켓 위치별 텍스트의 Width, 단어의 Width)
+            public double dObjectHeight;                //  Socket Group 의 Height (소켓 위치별 텍스트의 Height, 단어의 Height)
 
             //  Text (Sirius-Text, TruType-Text) 데이터
             public stMarking_DetailedTextData[] stTextData;     //  Text 데이터 저장 배열
@@ -21181,8 +21183,8 @@ namespace QMC.Common.Modules
 
                         //  Marking 용 Entity 만들어서 가공 Start
                         CustomEntity_Marking(eType,
-                            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width,
-                            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height,
+                            m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectWidth,             //  1D 바코드의 Width 에만 사용됨. 다른 Type 들은 Height 값을 Width 값으로 사용한다.
+                            m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectHeight,            //  Text, SiriusText, Barcode - Matrix - QR 등에 사용되는 크기값.
                             m_strMarkingData,
                             m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectRotateAngle);
 
@@ -32517,7 +32519,7 @@ namespace QMC.Common.Modules
                     markingText.IsHatchable = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use;
                     markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
 
-                    markingText.Width = (float)m_nEntityWidth;
+                    markingText.Width = (float)m_nEntityWidth;                                  //  Text 는 Width 값이 있어도 Cap-Height 값에 의해 Width 가 가변된다.
                     markingText.CapHeight = (float)m_nEntityHeight;
 
                     //width = GetTextWidthByCapHeight(m_strEntityData, trueType_fontName, (float)m_nEntityHeight);          //  Text 의 Center 로 보내는 게 아니니 계산할 필요 없고
@@ -32538,7 +32540,7 @@ namespace QMC.Common.Modules
 
                     markingSiriusText = new SpiralLab.Sirius.SiriusText(m_strEntityData);
                     markingSiriusText.FontName = siriusType_fontName;
-                    markingSiriusText.Width = (float)m_nEntityWidth;
+                    markingSiriusText.Width = (float)m_nEntityWidth;                            //  Sirius-Text 는 Width 값이 있어도 Cap-Height 값에 의해 Width 가 가변된다.
                     markingSiriusText.CapHeight = (float)m_nEntityHeight;
                     //width = GetTextWidthByCapHeight(m_strEntityData, siriusType_fontName, (float)m_nEntityHeight);            //  Text 의 Center 로 보내는 게 아니니 계산할 필요 없고
 
@@ -32557,7 +32559,7 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, 1D Barcode 데이터 생성");
 
                     markingBarcode1D = new SpiralLab.Sirius.Barcode1D(m_strEntityData);
-                    markingBarcode1D.Width = (float)m_nEntityWidth;
+                    markingBarcode1D.Width = (float)m_nEntityWidth;                             //  1D 바코드는 직사각형 모양이므로, 도면에 있는 Text Entity 의 Width 값을 사용한다.
                     markingBarcode1D.Height = (float)m_nEntityHeight;
 
                     doc.Action.ActEntityAdd(markingBarcode1D);
@@ -32570,7 +32572,7 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix 데이터 생성");
 
                     markingBarcodeDataMatrix = new SpiralLab.Sirius.BarcodeDataMatrix(m_strEntityData);
-                    markingBarcodeDataMatrix.Width = (float)m_nEntityWidth;
+                    markingBarcodeDataMatrix.Width = (float)m_nEntityHeight;                    //  DataMatrix 코드는 정사각형 모양이므로, Height 값을 Width 값으로 사용한다.
                     markingBarcodeDataMatrix.Height = (float)m_nEntityHeight;
 
                     doc.Action.ActEntityAdd(markingBarcodeDataMatrix);
@@ -32583,7 +32585,7 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix2 데이터 생성");
 
                     markingBarcodeDataMatrix2 = new SpiralLab.Sirius.BarcodeDataMatrix2(m_strEntityData);
-                    markingBarcodeDataMatrix2.Width = (float)m_nEntityWidth;
+                    markingBarcodeDataMatrix2.Width = (float)m_nEntityHeight;                   //  DataMatrix2 코드는 정사각형 모양이므로, Height 값을 Width 값으로 사용한다.
                     markingBarcodeDataMatrix2.Height = (float)m_nEntityHeight;
 
                     doc.Action.ActEntityAdd(markingBarcodeDataMatrix2);
@@ -32596,7 +32598,7 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code 데이터 생성");
 
                     markingBarcodeQR = new SpiralLab.Sirius.BarcodeQR(m_strEntityData);
-                    markingBarcodeQR.Width = (float)m_nEntityWidth;
+                    markingBarcodeQR.Width = (float)m_nEntityHeight;                            //  QR 코드는 정사각형 모양이므로, Height 값을 Width 값으로 사용한다.
                     markingBarcodeQR.Height = (float)m_nEntityHeight;
 
                     doc.Action.ActEntityAdd(markingBarcodeQR);
@@ -32609,7 +32611,7 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code2 데이터 생성");
 
                     markingBarcodeQR2 = new SpiralLab.Sirius.BarcodeQR2(m_strEntityData);
-                    markingBarcodeQR2.Width = (float)m_nEntityWidth;
+                    markingBarcodeQR2.Width = (float)m_nEntityHeight;                           //  QR2 코드는 정사각형 모양이므로, Height 값을 Width 값으로 사용한다.
                     markingBarcodeQR2.Height = (float)m_nEntityHeight;
 
                     doc.Action.ActEntityAdd(markingBarcodeQR2);
@@ -37530,6 +37532,10 @@ namespace QMC.Common.Modules
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectLocation.X = (double)text.Location.X;
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectLocation.Y = (double)text.Location.Y;
 
+                                    //  글자의 크기
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectWidth = (double)text.Width;
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectHeight = (double)text.CapHeight;
+
                                     //  글자의 Tilt 각도
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectRotateAngle = (double)text.Angle;
 
@@ -37887,6 +37893,10 @@ namespace QMC.Common.Modules
                                     //  글자의 Location 좌표
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectLocation.X = (double)sirius_text.Location.X;
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectLocation.Y = (double)sirius_text.Location.Y;
+
+                                    //  글자의 크기
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectWidth = (double)sirius_text.Width;
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectHeight = (double)sirius_text.CapHeight;
 
                                     //  글자의 Tilt 각도
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectRotateAngle = (double)sirius_text.Angle;

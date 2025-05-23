@@ -59,9 +59,7 @@
             this.label23 = new System.Windows.Forms.Label();
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height = new System.Windows.Forms.TextBox();
             this.label19 = new System.Windows.Forms.Label();
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode = new System.Windows.Forms.CheckBox();
@@ -451,9 +449,7 @@
             this.groupBox6.Controls.Add(this.label23);
             this.groupBox6.Controls.Add(this.comboBox_Recipe_TabRecipe_CustomMarking_DataType);
             this.groupBox6.Controls.Add(this.label22);
-            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height);
             this.groupBox6.Controls.Add(this.label19);
-            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width);
             this.groupBox6.Controls.Add(this.label18);
             this.groupBox6.Controls.Add(this.label16);
             this.groupBox6.Controls.Add(this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode);
@@ -752,46 +748,26 @@
             this.label22.Text = "Marking Type :";
             this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height
-            // 
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Location = new System.Drawing.Point(194, 189);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height";
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Size = new System.Drawing.Size(48, 24);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.TabIndex = 84;
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = "5.0";
-            // 
             // label19
             // 
             this.label19.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label19.Location = new System.Drawing.Point(29, 187);
+            this.label19.Location = new System.Drawing.Point(15, 188);
             this.label19.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(162, 24);
+            this.label19.Size = new System.Drawing.Size(205, 18);
             this.label19.TabIndex = 83;
-            this.label19.Text = "(Height, mm) :";
+            this.label19.Text = "→ 도면의 Text 객체 크기에 맞춰짐";
             this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width
-            // 
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Location = new System.Drawing.Point(194, 163);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width";
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Size = new System.Drawing.Size(48, 24);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.TabIndex = 82;
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = "5.0";
             // 
             // label18
             // 
             this.label18.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label18.Location = new System.Drawing.Point(29, 161);
+            this.label18.Location = new System.Drawing.Point(6, 165);
             this.label18.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(162, 24);
+            this.label18.Size = new System.Drawing.Size(200, 24);
             this.label18.TabIndex = 81;
-            this.label18.Text = "Data Size (Width, mm) :";
+            this.label18.Text = "Data Size (Width & Height, mm)";
             this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label16
@@ -4149,11 +4125,9 @@
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.ComboBox comboBox_Recipe_TabRecipe_CustomMarking_DataType;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber;
         private System.Windows.Forms.Label label23;
