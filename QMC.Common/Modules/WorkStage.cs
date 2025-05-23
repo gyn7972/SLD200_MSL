@@ -29330,6 +29330,10 @@ namespace QMC.Common.Modules
             {
                 Equipment.m_nSerialNumberMarkingCount = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber;
             }
+
+
+            //  마킹데이터가 1개인 경우, 첫번째 소켓 얼라인과 함께 얼라인 시켜주기 위한 Flag 초기화
+            Equipment.m_bOneMarkingData_AlignCompleted = false;
         }
         #endregion
 
@@ -30735,12 +30739,12 @@ namespace QMC.Common.Modules
             if (m_nHole1_ObjectCount == m_nMarking_ObjectCount)
             {
                 //  소켓 개수와 마킹 개수가 동일하므로 Marking Entity 도 얼라인 해주기 위해 Liat 개수 +1
-                m_nListCount++;                
-
+                m_nListCount++;      
                 m_bMarkingEntity_Select = true;
             }
             else if ((m_nHole1_ObjectCount != m_nMarking_ObjectCount) && (m_nMarking_ObjectCount == 1) &&
-                !m_stMarking_SocketData.m_stMarking_ObjectData[0].bAlignCompleted)
+                //!m_stMarking_SocketData.m_stMarking_ObjectData[0].bAlignCompleted)                            //  요건 계속 초기화 되어서 무쓸모
+                !Equipment.m_bOneMarkingData_AlignCompleted)                                                    //  마킹 데이터 얼라인이 완료되지 않은 경우에만 얼라인 시켜준다.
             {
                 //  소켓 개수와 마킹 개수가 다르고, 마킹 개수가 1개이고, 아직 얼라인이 안된 경우
                 //  현재 얼라인 한 소켓과 같이 묶어서 얼라인 해준다.
@@ -30753,7 +30757,6 @@ namespace QMC.Common.Modules
                 //  이 외의 경우는.... 쫌 애매헌디...
 
             }
-
 
             //  선택해야 할 List 초기화
             var list = new List<IEntity>(m_nListCount);
@@ -31111,12 +31114,13 @@ namespace QMC.Common.Modules
                                     {
                                         if (m_nMarkingEntity_TotalCount == 1)               //  마킹 Entity 가 1개이면? -> 처음 얼라인 성공한 Socket 과 함께 얼라인 해준다.
                                         {
-                                            if (!m_stMarking_SocketData.m_stMarking_ObjectData[0].bAlignCompleted)
+                                            //  마킹 데이터가 1개인 경우에는, 최초에 얼라인 성공하는 소켓과 함께 얼라인 보정을 해 둔다.
+                                            if (!Equipment.m_bOneMarkingData_AlignCompleted)
                                             {
                                                 //  선택한 소켓의 가공 객체를 List 로 등록
                                                 list.Add(text);
 
-                                                m_stMarking_SocketData.m_stMarking_ObjectData[0].bAlignCompleted = true;            //  다음번엔 얼라인 하지않도록 하기 위한 Flag
+                                                Equipment.m_bOneMarkingData_AlignCompleted = true;            //  다음번엔 얼라인 하지않도록 하기 위한 Flag
                                             }
                                         }
                                         else                                                //  마킹 Entity 개수가 Socket 개수와 같을 경우
@@ -31125,8 +31129,6 @@ namespace QMC.Common.Modules
                                             {
                                                 //  선택한 소켓의 가공 객체를 List 로 등록
                                                 list.Add(text);
-
-                                                m_stMarking_SocketData.m_stMarking_ObjectData[m_nSocketNum].bAlignCompleted = true;
                                             }
                                         }
                                     }
@@ -31733,7 +31735,6 @@ namespace QMC.Common.Modules
 
             //  도면 데이터 개수 초기화
             m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수
-
 
             //  Layer 종류별 Count
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)

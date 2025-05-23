@@ -531,7 +531,8 @@ namespace QMC.Common
             public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
-        
+
+
         public enum VisionAlgorithmType
         {
             PatternMatching = 0,
@@ -966,6 +967,10 @@ namespace QMC.Common
 
         //  Serial Number 마킹 시 증가되는 Count 확인용. (프로그램 재시작, Count Clear 시에는 초기화 됨)
         public static int m_nSerialNumberMarkingCount = 0;            //  Serial Number 마킹 Count
+
+
+        //  텍스트 마킹 시, 마킹 Entity 가 1개일 경우 소켓 얼라인과 함께 한번만 얼라인 하기 위한 Flag 
+        public static bool m_bOneMarkingData_AlignCompleted { set; get; } = false;
 
 
         //  평탄도 특정 위치
