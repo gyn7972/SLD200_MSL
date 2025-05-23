@@ -17921,65 +17921,81 @@ namespace QMC.Common.Modules
                     if ((m_nSocketAlign_StartIndex >= 0) &&
                         (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly))
                     {
-                        m_bDrillingWork_Outline_Exist = false;
+                        m_strTemp = string.Format("Thruhole Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
-                        for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
-                        {
-                            if (m_stLayerType.m_nLayerType[i] == (int)LayerType.LAYER_OUTLINE)
-                            {
-                                Log.Write("SLD-200", "Auto Run", "Thruhole Layer 선택 가공 완료 후 Outline Layer 선택 가공 시작");
-
-                                m_bDrillingWork_Outline_Exist = true;
-
-                                m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
-
-                                m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
-                                m_dOutlineLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
-
-                                //  Layer 별로 다르게 해야 하는 파라미터
-                                m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-                                m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
-
-                                i = m_stLayerType.m_nLayerCount;
-                            }
-                        }
-
-                        if (m_bDrillingWork_Outline_Exist)                 //  Outline Layer 가 있으므로 Outline 가공 시작
-                        {
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_Start;
-                        }
-                        else                                               //  Outline Layer 가 없으므로 Stop 해야 함
-                        {
-                            m_strTemp = string.Format("Thruhole Layer 선택 가공 완료 후 Outline Layer 가 없으므로 완료하러 가야 함.");
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-                            Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
-                            //Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
-
-                            GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, 0, "Thruhole 가공 완료");
-
-                            Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
-                            Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
-                            Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
-                            //Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
-
-                            Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
-                            Thread.Sleep(200);
+                        m_nLaserDrilling_LayerCount++;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
 
 
-                            //  배출해야 함.                                
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 중 가공할 Layer 가 남아 있지 않음. 종료하러 이동");
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+                        //  2025. 05. 23.  SCH : 여기부터 원래 코드. (선택가공일 경우, Thruhole 이 다 끝나면, Outline 이 있는지 체크하고 없으면 끝내는 루틴)
+                        //                      여기를 태울 게 아니라, 다음 Layer 로 보내면 된다. 거기서 Outline Layer 가 있는지 체크하고, 그 Layer 가 선택 가공인지 체크해서 선택가공을 진행하게 될 거다.
+                        //                      그래서 여기부터 저기 아래까지 주석 처리하고 다음 Layer 체크하도록 한다.
+                        //
+                        //  주석 처리 --> 여기부터 (2025. 05. 23.  SCH)
+                        //
+                        //m_bDrillingWork_Outline_Exist = false;
+
+                        //for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
+                        //{
+                        //    if (m_stLayerType.m_nLayerType[i] == (int)LayerType.LAYER_OUTLINE)
+                        //    {
+                        //        Log.Write("SLD-200", "Auto Run", "Thruhole Layer 선택 가공 완료 후 Outline Layer 선택 가공 시작");
+
+                        //        m_bDrillingWork_Outline_Exist = true;
+
+                        //        m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+
+                        //        m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
+                        //        m_dOutlineLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
+
+                        //        //  Layer 별로 다르게 해야 하는 파라미터
+                        //        m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
+                        //        m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+
+                        //        i = m_stLayerType.m_nLayerCount;
+                        //    }
+                        //}
+
+                        //if (m_bDrillingWork_Outline_Exist)                 //  Outline Layer 가 있으므로 Outline 가공 시작
+                        //{
+                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_Start;
+                        //}
+                        //else                                               //  Outline Layer 가 없으므로 Stop 해야 함
+                        //{
+                        //    m_strTemp = string.Format("Thruhole Layer 선택 가공 완료 후 Outline Layer 가 없으므로 완료하러 가야 함.");
+                        //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        //    Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
+                        //    //Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
+
+                        //    GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, 0, "Thruhole 가공 완료");
+
+                        //    Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
+                        //    Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                        //    Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
+                        //    //Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+
+                        //    Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                        //    Thread.Sleep(200);
 
 
-                            //  배출할 경우 아래 라인 주석 처리
+                        //    //  배출해야 함.                                
+                        //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 중 가공할 Layer 가 남아 있지 않음. 종료하러 이동");
+                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
 
-                            ////  이건가?
-                            //m_nHoleLayer_ProcessIndex = 0;
-                            //m_nHoleLayer_ProcessIndex_Count = 0;
 
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change;
-                        }
+                        //    //  배출할 경우 아래 라인 주석 처리
+
+                        //    ////  이건가?
+                        //    //m_nHoleLayer_ProcessIndex = 0;
+                        //    //m_nHoleLayer_ProcessIndex_Count = 0;
+
+                        //    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change;
+                        //}
+                        //
+                        //  주석 처리 --> 여기까지 (2025. 05. 23.  SCH)
+                        //
                     }
                     //  정상 가공이면 다음 소켓 가공
                     else
@@ -19386,9 +19402,25 @@ namespace QMC.Common.Modules
                     if ((m_nSocketAlign_StartIndex >= 0) &&
                         (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly))
                     {
-                        //  배출해야 함.                                
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 중 가공할 Layer 가 남아 있지 않음. 종료하러 이동");
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+                        m_strTemp = string.Format("Outline Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_LayerCount++;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+
+
+                        //  2025. 05. 23.  SCH : 여기부터 원래 코드. (선택가공일 경우, Outline 이 다 끝나면 끝내는 루틴)
+                        //                      여기를 태울 게 아니라, 다음 Layer 로 보내면 된다. 거기서 Marking Layer 가 있는지 체크하고, 그 Layer 가 선택 가공인지 체크해서 선택가공을 진행하게 될 거다.
+                        //                      그래서 여기부터 저기 아래까지 주석 처리하고 다음 Layer 체크하도록 한다.
+                        //
+                        //  주석 처리 --> 여기부터 (2025. 05. 23.  SCH)
+                        //
+                        ////  배출해야 함.                                
+                        //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 중 가공할 Layer 가 남아 있지 않음. 종료하러 이동");
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+                        //
+                        //  주석 처리 --> 여기까지 (2025. 05. 23.  SCH)
+                        //
                     }
                     //  정상 가공이면 다음 소켓 가공
                     else
@@ -21760,6 +21792,9 @@ namespace QMC.Common.Modules
                             if (m_stMarking_SocketData.m_stMarking_ObjectData != null)
                             {
                                 //if (m_stMarking_SocketData.m_stMarking_ObjectData.Length == m_stDividedRegion_GroupData.Length)
+
+                                //  Marking 은 소켓 개수보다 적을 수 있기 때문에, 소켓의 Group Count 만큼 계속 채워넣으면 안된다. 넣을 수 있는 만큼만 넣도록 한다.
+                                if (m_nDrillingWork_Group_Count < m_stMarking_SocketData.m_stMarking_ObjectData.Length)
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 일치");
 
@@ -26165,6 +26200,8 @@ namespace QMC.Common.Modules
 
                     if (m_bLayerExist)                  //  Hole2 ~ Hole4 Layer 가 있으면? 해당 Layer Parameter 로 Hole1 데이터 재가공
                     {
+                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역이 남아 있지 않음. 다음 Hole Layer 가 있음. 파라미터 변경하여 가공하러 이동");
+
                         m_nHoleLayer_ProcessIndex = m_nHoleLayer_ProcessIndex_Count;
 
                         //  Group 카운트 증가 없이 그대로 재가공 (파라미터는 변경해야 함. Defocusing, Resizing 등)
@@ -26198,93 +26235,109 @@ namespace QMC.Common.Modules
                         //m_nLaserDrilling_LayerCount = m_stLayerType.m_nLayerCount;
                         //nNextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
 
-                        // 선택가공중에 도면을 다시 로드할 필요는 없다. 
-                        m_bDrillingWork_Thruhole_Exist = false;
-                        m_bDrillingWork_Outline_Exist = false;
-                        //  Hole Layer 는 작업 끝. Thruhole 이 있는지 확인한다.
-                        for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
-                        {
-                            // 이 부분 확인 필요. 
-                            if (m_stLayerType.m_nLayerType[i] == (int)LayerType.LAYER_THRUHOLE)
-                            {
-                                Log.Write("SLD-200", "Auto Run", "소켓 Hole 선택 가공 완료 후, Thruhole 선택 가공 시작");
 
-                                m_bDrillingWork_Thruhole_Exist = true;
-                                m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
-                                m_dThruholeLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance;
-                                m_dThruholeLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_Resizing;
+                        string m_strTemp = string.Format("Hole Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
-                                //  Layer 별로 다르게 해야 하는 파라미터
-                                m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-                                m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+                        m_nLaserDrilling_LayerCount++;
+                        nNextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
 
-                                i = m_stLayerType.m_nLayerCount;
-                            }
-                        }
 
-                        if (m_bDrillingWork_Thruhole_Exist)             //  Thruhole 이 있으니 Thruhole 가공 시작
-                        {
-                            nNextStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_Start;
-                        }
-                        else                                            //  Thruhole 이 없으니 Outline 있는지 체크
-                        {
-                            for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
-                            {
-                                if (m_stLayerType.m_nLayerType[i] == (int)LayerType.LAYER_OUTLINE)
-                                {
-                                    Log.Write("SLD-200", "Auto Run", "Hole 가공 완료 후, Thruhole Layer 가 없으므로 Outline 가공 시작");
+                        //  2025. 05. 23.  SCH : 여기부터 원래 코드. (선택가공일 경우, Hole 이 다 끝나면, Thruhole 있는지 체크하고, 없으면 Outline 체크하고, 없으면 끝내는 루틴)
+                        //                      여기를 태울 게 아니라, 다음 Layer 로 보내면 된다. 거기서 Thruhole Layer 가 있는지 체크하고, 그 Thruhole Layer 가 선택 가공인지 체크해서 선택가공을 진행하게 될 거다.
+                        //                      그래서 여기부터 저기 아래까지 주석 처리하고 다음 Layer 체크하도록 한다.
+                        //
+                        //  주석 처리 --> 여기부터 (2025. 05. 23.  SCH)
+                        //
+                        //// 선택가공중에 도면을 다시 로드할 필요는 없다. 
+                        //m_bDrillingWork_Thruhole_Exist = false;
+                        //m_bDrillingWork_Outline_Exist = false;
+                        ////  Hole Layer 는 작업 끝. Thruhole 이 있는지 확인한다.
+                        //for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
+                        //{
+                        //    // 이 부분 확인 필요. 
+                        //    if (m_stLayerType.m_nLayerType[i] == (int)LayerType.LAYER_THRUHOLE)
+                        //    {
+                        //        Log.Write("SLD-200", "Auto Run", "소켓 Hole 선택 가공 완료 후, Thruhole 선택 가공 시작");
 
-                                    m_bDrillingWork_Thruhole_Exist = false;
-                                    m_bDrillingWork_Outline_Exist = true;
+                        //        m_bDrillingWork_Thruhole_Exist = true;
+                        //        m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+                        //        m_dThruholeLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance;
+                        //        m_dThruholeLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_Resizing;
 
-                                    m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+                        //        //  Layer 별로 다르게 해야 하는 파라미터
+                        //        m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
+                        //        m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
-                                    m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
-                                    m_dOutlineLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
+                        //        i = m_stLayerType.m_nLayerCount;
+                        //    }
+                        //}
 
-                                    //  Layer 별로 다르게 해야 하는 파라미터
-                                    m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-                                    m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+                        //if (m_bDrillingWork_Thruhole_Exist)             //  Thruhole 이 있으니 Thruhole 가공 시작
+                        //{
+                        //    nNextStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_Start;
+                        //}
+                        //else                                            //  Thruhole 이 없으니 Outline 있는지 체크
+                        //{
+                        //    for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
+                        //    {
+                        //        if (m_stLayerType.m_nLayerType[i] == (int)LayerType.LAYER_OUTLINE)
+                        //        {
+                        //            Log.Write("SLD-200", "Auto Run", "Hole 가공 완료 후, Thruhole Layer 가 없으므로 Outline 가공 시작");
 
-                                    i = m_stLayerType.m_nLayerCount;
-                                }
-                            }
+                        //            m_bDrillingWork_Thruhole_Exist = false;
+                        //            m_bDrillingWork_Outline_Exist = true;
 
-                            if (m_bDrillingWork_Outline_Exist)
-                            {
-                                nNextStep = (int)LaserDrilling_Step.OutLine_DrillingWork_Start;
-                            }
-                            else
-                            {
-                                //  다음 소켓으로 넘어가기 전에 현재 소켓의 가공 상태를 갱신한다.
-                                Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
-                                //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                        //            m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
 
-                                GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 완료");
+                        //            m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
+                        //            m_dOutlineLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
 
-                                Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
-                                Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
-                                Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
-                                //Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+                        //            //  Layer 별로 다르게 해야 하는 파라미터
+                        //            m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
+                        //            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
-                                Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
-                                Thread.Sleep(200);
+                        //            i = m_stLayerType.m_nLayerCount;
+                        //        }
+                        //    }
 
-                                m_bDrillingWork_Thruhole_Exist = false;
-                                m_bDrillingWork_Outline_Exist = false;
+                        //    if (m_bDrillingWork_Outline_Exist)
+                        //    {
+                        //        nNextStep = (int)LaserDrilling_Step.OutLine_DrillingWork_Start;
+                        //    }
+                        //    else
+                        //    {
+                        //        //  다음 소켓으로 넘어가기 전에 현재 소켓의 가공 상태를 갱신한다.
+                        //        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
+                        //        //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
 
-                                //  배출해야 함.                                
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 중 가공할 Layer 가 남아 있지 않음. 종료하러 이동");
-                                nNextStep = (int)LaserDrilling_Step.LaserOff2;
+                        //        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 완료");
 
-                                //  선택 가공일 경우 아래 라인 주석 처리
-                                //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                                //m_nHoleLayer_ProcessIndex_Count = 0;        //  소켓이 바뀌면 Hole layer 1 부터 다시 시작
-                                //m_nHoleLayer_ProcessIndex = 0; 
-                                ////m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                                //nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Start;              //  Defocusing (Socket 이 바뀌면 다시 Hole1 Layer 의 Defocusing 위치로 이동해야 하기 때문에)
-                            }
-                        }
+                        //        Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
+                        //        Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                        //        Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
+                        //        //Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+
+                        //        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                        //        Thread.Sleep(200);
+
+                        //        m_bDrillingWork_Thruhole_Exist = false;
+                        //        m_bDrillingWork_Outline_Exist = false;
+
+                        //        //  배출해야 함.                                
+                        //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 중 가공할 Layer 가 남아 있지 않음. 종료하러 이동");
+                        //        nNextStep = (int)LaserDrilling_Step.LaserOff2;
+
+                        //        //  선택 가공일 경우 아래 라인 주석 처리
+                        //        //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                        //        //m_nHoleLayer_ProcessIndex_Count = 0;        //  소켓이 바뀌면 Hole layer 1 부터 다시 시작
+                        //        //m_nHoleLayer_ProcessIndex = 0; 
+                        //        ////m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        //        //nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Start;              //  Defocusing (Socket 이 바뀌면 다시 Hole1 Layer 의 Defocusing 위치로 이동해야 하기 때문에)
+                        //    }
+                        //}
+                        //
+                        //  주석 처리 --> 여기까지 (2025. 05. 23.  SCH)
                     }
                     else                                                                                                    //  전체 가공이면? 다음 소켓으로 이동
                     {
