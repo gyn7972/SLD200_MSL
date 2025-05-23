@@ -22591,9 +22591,8 @@ namespace QMC.Common.Modules
                     }
                     else if (m_AlignMode == AlignMode.GoldPowder)
                     {
-                        //  Align 후 계산된 데이터 가져오기
-                        //m_dALIGN_FACTOR_RotationCenter_X =  m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
-                        m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX * -1;
+                        //  Align 후 계산된 데이터 가져오기                                                                         //  얼라인 된 소켓 회전 중심 X
+                        m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;
                         m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
                         m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
                         m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
