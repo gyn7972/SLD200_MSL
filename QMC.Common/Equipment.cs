@@ -968,6 +968,10 @@ namespace QMC.Common
         public static int m_nSerialNumberMarkingCount = 0;            //  Serial Number 마킹 Count
 
 
+        //  텍스트 마킹 시, 마킹 Entity 가 1개일 경우 소켓 얼라인과 함께 한번만 얼라인 하기 위한 Flag 
+        public static bool m_bOneMarkingData_AlignCompleted { set; get; } = false;
+
+
         //  평탄도 특정 위치
         public enum FlatMeasureList : int
         {
