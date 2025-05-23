@@ -175,23 +175,6 @@
             this.label72 = new System.Windows.Forms.Label();
             this.groupBox_Processing_Test = new System.Windows.Forms.GroupBox();
             this.button_TEST2 = new System.Windows.Forms.Button();
-            this.baseLabel_Main_Divice_Status_Illuminator = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_CameraPre = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_CameraFine = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_heightsensor = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_ElectroRequlator = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_BeamExpander = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_Chiller = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_Stage = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_PowermeterBds = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_DustcollectorLower = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_DustcollectorUpper = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_Scanner = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_Motion = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_IO = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Main_Divice_Status_Laser = new SLD200_MSL.BaseLabel();
-            this.ImageViewer_Main_Lows = new QMC.Common.Hmi.VisionImageViewer();
-            this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.groupBox_BET_Status = new System.Windows.Forms.GroupBox();
             this.label_Main_BET_MradStatus = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -2200,18 +2183,6 @@
             this.button_TEST2.UseVisualStyleBackColor = false;
             this.button_TEST2.Visible = false;
             this.button_TEST2.Click += new System.EventHandler(this.button_TEST2_Click);
-            // 
-            // baseLabel_Main_Divice_Status_Illuminator
-            // 
-            this.baseLabel_Main_Divice_Status_Illuminator.AutoSize = true;
-            this.baseLabel_Main_Divice_Status_Illuminator.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Main_Divice_Status_Illuminator.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_Illuminator.Location = new System.Drawing.Point(343, 158);
-            this.baseLabel_Main_Divice_Status_Illuminator.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabel_Main_Divice_Status_Illuminator.Name = "baseLabel_Main_Divice_Status_Illuminator";
-            this.baseLabel_Main_Divice_Status_Illuminator.Size = new System.Drawing.Size(84, 17);
-            this.baseLabel_Main_Divice_Status_Illuminator.TabIndex = 239;
-            this.baseLabel_Main_Divice_Status_Illuminator.Text = "Illuminator";
             // 
             // baseLabel_Main_Divice_Status_CameraPre
             // 
