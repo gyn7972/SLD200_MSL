@@ -184,6 +184,13 @@ namespace QMC.Common.Modules
             BeamExpansionMotor = 1,
         }
 
+        public enum nSerialNumber_IncreaseType
+        {
+            forEachModule = 0,              //  모듈마다 시리얼 넘버 증가
+            forEachSocket = 1,              //  소켓마다 시리얼 넘버 증가 (모듈이 바뀌면 초기화)
+            forEachSocket_Continuous = 2,   //  소켓마다 시리얼 넘버 증가 (모듈이 바뀌어도 초기화 안함)
+        }
+
         #endregion
 
 
@@ -16559,7 +16566,13 @@ namespace QMC.Common.Modules
                         else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_MARKING)
                         {
                             //  소켓 얼라인이 하나도 안되는 경우가 있으면... --> (Layer 가공하지 않도록 다음 Layer 체크)
-                            if (m_nDrillingData_SocketAlign_NGCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                            //
+                            //  체크1 : Hole 소켓은 여러개이고, 마킹 소켓은 1개인 경우. (마킹 소켓이 1개인 경우는, 모듈 한쪽 구석에 한번만 마킹하는 경우)
+                            //  체크2 : ex) Hole 소켓이 4개, 마킹소켓이 1개인데, Hole 소켓 얼라인을 2번 실패했다고 하면 아래 조건이 충족되어 마킹 가공 없이 다음 Layer 체크하러 가버린다.
+                            //  체크3 : Hole 소켓 개수와 마킹 소켓 개수가 동일하다면, 전체 다 가공하게 될 것임.
+                            //  체크4 : 마킹 소켓이 1개인 경우는, 소켓 얼라인 실패 회수와 관계 없이 무조건 마킹 하도록 하는 것이 맞는 듯 싶다. (why? 모듈 구분을 위한 마킹이기 때문에)
+                            if ((m_nDrillingData_SocketAlign_NGCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length) &&
+                                (m_stMarking_SocketData.m_stMarking_ObjectData.Length != 1))
                             {
                                 m_nLaserDrilling_LayerCount++;
                             }
@@ -21211,8 +21224,25 @@ namespace QMC.Common.Modules
                                 m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
                             }
 
-                            //  Serial Number 계산해서 만들고
-                            m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", m_nStartNumber + (m_nDrillingWork_Group_Count * m_nIncreaseStep));
+                            //  중요!!
+                            //
+                            //  가공 조건 1 : 시리얼 넘버를 계속 Increase Step 만큼 증가시키면서 가공하면 되는 경우
+                            //                - 모듈별로 1번만 가공하는 경우
+                            //                - 모듈이 바뀌더라도 소켓별로 시리얼 넘버를 계속 증가시키면서 가공하는 경우
+                            //
+                            //  가공 조건 2 : 모듈이 바뀌면 시리얼 넘버를 초기화하고 다시 증가시키는 경우
+                            //                - 모듈이 바뀔 때마다 시리얼 넘버가 1부터 다시 시작하는 경우
+                            //
+                            //  Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType
+                            //  0 : 모듈별로 1 Increase Step 씩 증가
+                            //  1 : 소켓별로 1 Increase Step 씩 증가 (모듈이 바뀌면 초기화)
+                            //  2 : 소켓별로 1 Increase Step 씩 증가 (모듈이 바뀌어도 초기화 안함)
+                            //
+                            //  1 의 경우는 LaserDrilling Cyc. 의 LaserDrillingStepStart() 함수에서 Start Number 로 초기화 해줌
+
+                            //  Serial Number 계산해서 만들고                            
+                            m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", Equipment.m_nSerialNumberMarkingCount);
+                            Equipment.m_nSerialNumberMarkingCount += m_nIncreaseStep;
 
                             //  Suffix 있으면 붙이고
                             if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData.Length > 0)
@@ -22591,9 +22621,8 @@ namespace QMC.Common.Modules
                     }
                     else if (m_AlignMode == AlignMode.GoldPowder)
                     {
-                        //  Align 후 계산된 데이터 가져오기
-                        //m_dALIGN_FACTOR_RotationCenter_X =  m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
-                        m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX * -1;
+                        //  Align 후 계산된 데이터 가져오기                                                                         //  얼라인 된 소켓 회전 중심 X
+                        m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;
                         m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
                         m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
                         m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
@@ -29352,6 +29381,13 @@ namespace QMC.Common.Modules
 
             m_bPassedSocket_Exist = false;
 
+
+            //  시리얼 넘버 마킹 시 모듈이 바뀔 때 소켓 시리얼넘버를 초기화 하는 경우
+            if ((!Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType) &&                                                                     //  마킹이 고정 Text 가 아닌 Serial Number 마킹인 경우
+                (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType == (int)nSerialNumber_IncreaseType.forEachSocket))       //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
+            {
+                Equipment.m_nSerialNumberMarkingCount = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber;
+            }
         }
         #endregion
 
@@ -30667,6 +30703,12 @@ namespace QMC.Common.Modules
                                 case EType.Text:
                                     var text = entity as SpiralLab.Sirius.Text;
 
+                                    //  여기는 Hole Socket 번호와 동일한 위치의 마킹 데이터를 선택해서 얼라인 보정하려는 목적이 아니라,
+                                    //  마킹 데이터가 몇개가 들어있는지 확인하는 용도이다.
+                                    //  여러개의 소켓으로 이루어진 모듈이라도, 마킹은 1개만 존재하는 경우가 있다.
+                                    //
+                                    //  마킹 데이터가 1개인 경우에는, 최초에 얼라인 성공하는 소켓과 함께 얼라인 보정을 해 둔다.
+                                    //  얼라인 보정이 끝난 마킹 데이터는 다시 보정하지 않도록 한다.
                                     if (m_nMarking_ObjectCount++ == m_nSocketNum)
                                     {
                                         //m_nListCount++;
@@ -32474,6 +32516,26 @@ namespace QMC.Common.Modules
         }
 
 
+        //  Text 의 Cap Height 로 Width 크기를 구하는 함수
+        public float GetTextWidthByCapHeight(string text, string fontName, float capHeight)
+        {
+            // 1. 폰트의 Cap Height 비율 (폰트마다 다름, 예시로 Arial은 약 0.7)
+            float capHeightRatio = 1.03f; // 실제로는 폰트마다 측정 필요
+
+            // 2. 폰트 크기(point) 계산
+            float fontSize = capHeight / capHeightRatio;
+
+            // 3. Graphics로 문자열 Width 측정
+            using (var bmp = new Bitmap(1, 1))
+            using (var g = Graphics.FromImage(bmp))
+            using (var font = new Font(fontName, fontSize, GraphicsUnit.Point))
+            {
+                SizeF size = g.MeasureString(text, font);
+                return size.Width;
+            }
+        }
+
+
         /// <summary>
         /// Entity 의 Mark 함수를 이용한 가공 (Entity 를 생성하고, 각종 파라미터를 세팅하여 가공한다) 
         /// Entity Type : Text, SiriusText, Barcode1D, BarcodeDataMatrix, BarcodeDataMatrix2, BarcodeQRCode, BarcodeQRCode2
@@ -32481,7 +32543,11 @@ namespace QMC.Common.Modules
         public bool CustomEntity_Marking(EType m_nEntityType, double m_nEntityWidth, double m_nEntityHeight,  string m_strEntityData, double m_dRotateAngle)
         {
             bool success = true;
-            string m_strTemp = "";
+
+            double capHeight = 0.0;
+            string trueType_fontName = "malgun.ttf";            //  사용하는 폰트가 따로 있는 건 아니라고 하니 이 폰트로 한다. 혹시 폰트가 정해지면 필요하면 폰트 선택해서 할 수 있도록
+            string siriusType_fontName = "courier.cxf";         //  사용하는 폰트가 따로 있는 건 아니라고 하니 이 폰트로 한다. 혹시 폰트가 정해지면 필요하면 폰트 선택해서 할 수 있도록
+            double width = 0.0;
 
             SpiralLab.Sirius.Text markingText = new SpiralLab.Sirius.Text();
             SpiralLab.Sirius.SiriusText markingSiriusText = new SpiralLab.Sirius.SiriusText();
@@ -32495,101 +32561,89 @@ namespace QMC.Common.Modules
             switch (m_nEntityType)
             {
                 case EType.Text:
-                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, TrueType Text 가공 Start");
+                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, TrueType Text 데이터 생성");
 
                     markingText = new SpiralLab.Sirius.Text(m_strEntityData);
                     markingText.IsMarkerable = true;
+                    markingText.FontName = trueType_fontName;
                     markingText.IsHatchable = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use;
                     markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
 
                     markingText.Width = (float)m_nEntityWidth;
                     markingText.CapHeight = (float)m_nEntityHeight;
-                    markingText.Rotate((float)(90.0 + m_dRotateAngle));
-                    markingText.Location = new Vector2((markingText.BoundRect.Width / (float)2.0), -(markingText.BoundRect.Height / (float)2.0));
 
-                    m_strTemp = string.Format("Custom Marking 가공 Loop, Text Location (X:{0:0.000}, Y:{1:0.000})", markingText.Location.X, markingText.Location.Y);
-                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    width = GetTextWidthByCapHeight(m_strEntityData, trueType_fontName, (float)m_nEntityHeight);
+
+                    markingText.Rotate((float)(90.0 + m_dRotateAngle));
+                    markingText.Location = new Vector2(((float)m_nEntityHeight / (float)2.0), -((float)width / (float)2.0));
                     break;
 
                 case EType.SiriusText:
-                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Sirius Text 가공 Start");
+                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Sirius Text 데이터 생성");
 
                     markingSiriusText = new SpiralLab.Sirius.SiriusText(m_strEntityData);
+                    markingSiriusText.FontName = siriusType_fontName;
                     markingSiriusText.Width = (float)m_nEntityWidth;
-                    markingSiriusText.CapHeight = (float)m_nEntityHeight;
-                    markingSiriusText.Rotate((float)(90.0 + m_dRotateAngle));
-                    markingSiriusText.Location = new Vector2((markingSiriusText.BoundRect.Width / (float)2.0), -(markingSiriusText.BoundRect.Height / (float)2.0));
+                    markingSiriusText.CapHeight = (float)m_nEntityHeight; 
+                    width = GetTextWidthByCapHeight(m_strEntityData, siriusType_fontName, (float)m_nEntityHeight);
 
-                    m_strTemp = string.Format("Custom Marking 가공 Loop, Sirius Text Location (X:{0:0.000}, Y:{1:0.000})", markingText.Location.X, markingText.Location.Y);
-                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    markingSiriusText.Rotate((float)(90.0 + m_dRotateAngle));
+                    markingSiriusText.Location = new Vector2(((float)m_nEntityHeight / (float)2.0), -((float)width / (float)2.0));
                     break;
 
                 case EType.Barcode1D:
-                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, 1D Barcode 가공 Start");
+                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, 1D Barcode 데이터 생성");
 
                     markingBarcode1D = new SpiralLab.Sirius.Barcode1D(m_strEntityData);
                     markingBarcode1D.Width = (float)m_nEntityWidth;
                     markingBarcode1D.Height = (float)m_nEntityHeight;
                     markingBarcode1D.Rotate((float)(90.0 + m_dRotateAngle));
-                    markingBarcode1D.Location = new Vector2((markingBarcode1D.BoundRect.Width / (float)2.0), -(markingBarcode1D.BoundRect.Height / (float)2.0));
-
-                    m_strTemp = string.Format("Custom Marking 가공 Loop, 1D Barcode Location (X:{0:0.000}, Y:{1:0.000})", markingText.Location.X, markingText.Location.Y);
-                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    markingBarcode1D.Location = new Vector2((markingBarcode1D.Height / (float)2.0), -(markingBarcode1D.Width / (float)2.0));
                     break;
 
                 case EType.BarcodeDataMatrix:
-                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix 가공 Start");
+                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix 데이터 생성");
 
                     markingBarcodeDataMatrix = new SpiralLab.Sirius.BarcodeDataMatrix(m_strEntityData);
                     markingBarcodeDataMatrix.Width = (float)m_nEntityWidth;
                     markingBarcodeDataMatrix.Height = (float)m_nEntityHeight;
                     markingBarcodeDataMatrix.Rotate((float)(90.0 + m_dRotateAngle));
-                    markingBarcodeDataMatrix.Location = new Vector2((markingBarcodeDataMatrix.BoundRect.Width / (float)2.0), -(markingBarcodeDataMatrix.BoundRect.Height / (float)2.0));
-
-                    m_strTemp = string.Format("Custom Marking 가공 Loop, Data Matrix Location (X:{0:0.000}, Y:{1:0.000})", markingText.Location.X, markingText.Location.Y);
-                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    markingBarcodeDataMatrix.Location = new Vector2((markingBarcodeDataMatrix.Height / (float)2.0), -(markingBarcodeDataMatrix.Width / (float)2.0));
                     break;
 
                 case EType.BarcodeDataMatrix2:
-                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix2 가공 Start");
+                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix2 데이터 생성");
 
                     markingBarcodeDataMatrix2 = new SpiralLab.Sirius.BarcodeDataMatrix2(m_strEntityData);
                     markingBarcodeDataMatrix2.Width = (float)m_nEntityWidth;
                     markingBarcodeDataMatrix2.Height = (float)m_nEntityHeight;
                     markingBarcodeDataMatrix2.Rotate((float)(90.0 + m_dRotateAngle));
-                    markingBarcodeDataMatrix2.Location = new Vector2((markingBarcodeDataMatrix2.BoundRect.Width / (float)2.0), -(markingBarcodeDataMatrix2.BoundRect.Height / (float)2.0));
-
-                    m_strTemp = string.Format("Custom Marking 가공 Loop, Data Matrix2 Location (X:{0:0.000}, Y:{1:0.000})", markingText.Location.X, markingText.Location.Y);
-                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    markingBarcodeDataMatrix2.Location = new Vector2((markingBarcodeDataMatrix2.Height / (float)2.0), -(markingBarcodeDataMatrix2.Width / (float)2.0));
                     break;
 
                 case EType.BarcodeQRCode:
-                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code 가공 Start");
+                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code 데이터 생성");
 
                     markingBarcodeQR = new SpiralLab.Sirius.BarcodeQR(m_strEntityData);
                     markingBarcodeQR.Width = (float)m_nEntityWidth;
                     markingBarcodeQR.Height = (float)m_nEntityHeight;
                     markingBarcodeQR.Rotate((float)(90.0 + m_dRotateAngle));
-                    markingBarcodeQR.Location = new Vector2((markingBarcodeQR.BoundRect.Width / (float)2.0), -(markingBarcodeQR.BoundRect.Height / (float)2.0));
-
-                    m_strTemp = string.Format("Custom Marking 가공 Loop, QR Location (X:{0:0.000}, Y:{1:0.000})", markingText.Location.X, markingText.Location.Y);
-                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    markingBarcodeQR.Location = new Vector2((markingBarcodeQR.Height / (float)2.0), -(markingBarcodeQR.Width / (float)2.0));
                     break;
 
                 case EType.BarcodeQRCode2:
-                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code2 가공 Start");
+                    Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code2 데이터 생성");
 
                     markingBarcodeQR2 = new SpiralLab.Sirius.BarcodeQR2(m_strEntityData);
                     markingBarcodeQR2.Width = (float)m_nEntityWidth;
                     markingBarcodeQR2.Height = (float)m_nEntityHeight;
                     markingBarcodeQR2.Rotate((float)(90.0 + m_dRotateAngle));
-                    markingBarcodeQR2.Location = new Vector2((markingBarcodeQR2.BoundRect.Width / (float)2.0), -(markingBarcodeQR2.BoundRect.Height / (float)2.0));
-
-                    m_strTemp = string.Format("Custom Marking 가공 Loop, QR2 Location (X:{0:0.000}, Y:{1:0.000})", markingText.Location.X, markingText.Location.Y);
-                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    markingBarcodeQR2.Location = new Vector2((markingBarcodeQR2.Height / (float)2.0), -(markingBarcodeQR2.Width / (float)2.0));
                     break;
             }
 
+
+            string m_strTemp = "";
             bool m_bScannerLib_Success = true;
 
             if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].ProcessPriority_P2P) &&                   //  P2P Mode
@@ -38217,7 +38271,7 @@ namespace QMC.Common.Modules
                         //if (m_ptFiducial.Length == (m_stDividedRegion_GroupData[0].nGroup_Num * 4))
                         if ((m_ptFiducial.Length >= 4) && (m_stDividedRegion_GroupData.Length > 0))
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Drilling Layer, Socket 별 Fiducial 데이터 할당, Hole1 Layer 없음, Fiducial 데이터 개수가 4개 이상입니다.");
+                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 4개 이상입니다.");
 
                             for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
                             {

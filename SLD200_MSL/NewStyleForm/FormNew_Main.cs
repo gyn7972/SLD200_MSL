@@ -241,6 +241,8 @@ namespace SLD200_MSL
                 baseLabel_Main_Divice_Status_PowermeterBds.Enabled = false;
                 pictureBox_Main_DiviceStatus_Powermeter_bds.Visible = false;
                 pictureBox_Main_DiviceStatus_Powermeter_bds.Enabled = false;
+
+                groupBox_BET_Status.Visible = true;
             }
             else
             {
@@ -248,6 +250,8 @@ namespace SLD200_MSL
                 baseLabel_Main_Divice_Status_BeamExpander.Enabled = false;
                 pictureBox_Main_DiviceStatus_BeamExpander.Visible = false;
                 pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
+
+                groupBox_BET_Status.Visible = false;
             }
             this.FormClosing += FormNew_Main_FormClosing;
 
@@ -255,7 +259,7 @@ namespace SLD200_MSL
             if (workStage.m_bHomeOK)
                 Comm_Init();
 
-            //SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
+            SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
         }
 
         private void FormNew_Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -1299,6 +1303,16 @@ namespace SLD200_MSL
             //  EPRO 데이터 업데이트
             SetValue(label_Main_EPRO_Current_Pressure, workStage.m_dEPRO_Value.ToString("0.0000"));
             SetValue(label_Main_EPRO_Absorption_Judgment_Pressure, Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString("0.0000"));
+
+
+            //  BET 상태 업데이트
+            SetValue(label_Main_BET_ZoomStatus, string.Format("{0:0.000}  /  {1:0.000}", workStage.m_dBET_ZoomValue, workStage.m_dBET_ZoomValue_Recipe));
+            SetColor(label_Main_BET_ZoomStatus, !((workStage.m_dBET_ZoomValue > (workStage.m_dBET_ZoomValue_Recipe - 0.005)) && (workStage.m_dBET_ZoomValue < (workStage.m_dBET_ZoomValue_Recipe + 0.005))) ? Color.Red : Color.Black, 
+                                                !((workStage.m_dBET_ZoomValue > (workStage.m_dBET_ZoomValue_Recipe - 0.005)) && (workStage.m_dBET_ZoomValue < (workStage.m_dBET_ZoomValue_Recipe + 0.005))) ? Color.White : Color.Lime);
+            SetValue(label_Main_BET_MradStatus, string.Format("{0:0.000}  /  {1:0.000}", workStage.m_dBET_MradValue, workStage.m_dBET_MradValue_Recipe));
+            SetColor(label_Main_BET_MradStatus, !((workStage.m_dBET_MradValue > (workStage.m_dBET_MradValue_Recipe - 0.005)) && (workStage.m_dBET_MradValue < (workStage.m_dBET_MradValue_Recipe + 0.005))) ? Color.Red : Color.Black,
+                                                !((workStage.m_dBET_MradValue > (workStage.m_dBET_MradValue_Recipe - 0.005)) && (workStage.m_dBET_MradValue < (workStage.m_dBET_MradValue_Recipe + 0.005))) ? Color.White : Color.Lime);
+            
 
             // 장비 상태 UI에 반영
             UpdateDeviceStatusImages();
@@ -3506,6 +3520,26 @@ namespace SLD200_MSL
             workStage.AlarmPost(QMC.Common.Modules.WorkStage.AlarmKey.PreAlignFail);
         }
 
+
+        //  Text 의 Cap Height 로 Width 크기를 구하는 함수
+        public float GetTextWidthByCapHeight(string text, string fontName, float capHeight)
+        {
+            // 1. 폰트의 Cap Height 비율 (폰트마다 다름, 예시로 Arial은 약 0.7)
+            float capHeightRatio = 1.03f; // 실제로는 폰트마다 측정 필요
+
+            // 2. 폰트 크기(point) 계산
+            float fontSize = capHeight / capHeightRatio;
+
+            // 3. Graphics로 문자열 Width 측정
+            using (var bmp = new Bitmap(1, 1))
+            using (var g = Graphics.FromImage(bmp))
+            using (var font = new Font(fontName, fontSize, GraphicsUnit.Point))
+            {
+                SizeF size = g.MeasureString(text, font);
+                return size.Width;
+            }
+        }
+        
         private void button_TEST12_Click(object sender, EventArgs e)
         {
             //Test code

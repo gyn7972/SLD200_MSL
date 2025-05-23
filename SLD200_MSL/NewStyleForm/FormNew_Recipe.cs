@@ -26,6 +26,7 @@ using QMC.Common.Vision.Cameras;
 using SLD200.NewStyleForm.NewSubForm;
 using SLD200.NewStyleForm;
 using QMC.Common.Recipe;
+using System.Threading;
 
 namespace SLD200_MSL
 {
@@ -109,6 +110,9 @@ namespace SLD200_MSL
 
             //  Recipe Open 전에는 Hatch 모드가 Disable 이므로 Hatch Spacing 을 비활성화 한다.
             textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
+
+            //  Recipe Open 전에는 Marking Data 가 Text 이므로, Serial Number 를 초기화 하는 Reset 버튼은 비활성화 한다.
+            button_Marking_SerialNumber_CountReset.Enabled = false;
         }
 
         private void MachineType_Component_Enable(bool m_bLaserType)
@@ -1691,7 +1695,7 @@ namespace SLD200_MSL
             }
 
             //  Drawing File
-            Equipment.stLayerRecipeSet[m_nLayerIndex].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
+            Equipment.stLayerRecipeSet[0].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
             Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
             //  Laser Parameter
@@ -1795,15 +1799,15 @@ namespace SLD200_MSL
 
             if (radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked)
             {
-                Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;
+                Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachModule;
             }
             else if (radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked)
             {
-                Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 1;
+                Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket;
             }
             else
             {
-                Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 2;
+                Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous;
             }
 
             // 
@@ -2043,21 +2047,7 @@ namespace SLD200_MSL
 
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = false;
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = false;
-
-                    switch(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
-                    {
-                        case 0:
-                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
-                            break;
-
-                        case 1:
-                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
-                            break;
-
-                        case 2:
-                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
-                            break;
-                    }
+                    button_Marking_SerialNumber_CountReset.Enabled = false;
                 }
                 else
                 {
@@ -2070,22 +2060,24 @@ namespace SLD200_MSL
 
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = true;
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = true;
-
-                    switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
-                    {
-                        case 0:
-                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
-                            break;
-
-                        case 1:
-                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
-                            break;
-
-                        case 2:
-                            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
-                            break;
-                    }
+                    button_Marking_SerialNumber_CountReset.Enabled = true;
                 }
+
+                switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+                {
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                        break;
+
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                        break;
+
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                        break;
+                }
+
 
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber.ToString();
@@ -2122,15 +2114,15 @@ namespace SLD200_MSL
 
                 switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
                 {
-                    case 0:
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
                         radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
                         break;
 
-                    case 1:
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
                         radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
                         break;
 
-                    case 2:
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
                         radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
                         break;
                 }
@@ -2466,17 +2458,17 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
 
 
-            switch(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+            switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
             {
-                case 0:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
                     break;
 
-                case 1:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
                     break;
 
-                case 2:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
                     break;
             }
@@ -2712,15 +2704,15 @@ namespace SLD200_MSL
 
             switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
             {
-                case 0:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
                     break;
 
-                case 1:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
                     break;
 
-                case 2:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
                     break;
             }
@@ -2837,6 +2829,8 @@ namespace SLD200_MSL
                 // 결과 출력
                 textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = pulseWidthUs.ToString("F2"); // 소수점 2자리까지 표시
 
+
+
                 // PulseWidth Min Max 계산
                 double pulseWidthUs_Min = (0 * periodSeconds / 100) * 1_000_000;
                 double pulseWidthUs_Max = (100 * periodSeconds / 100) * 1_000_000;
@@ -2918,18 +2912,20 @@ namespace SLD200_MSL
             radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = false;
             radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = false;
             radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Enabled = false;
+            button_Marking_SerialNumber_CountReset.Enabled = false;
+
 
             switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
             {
-                case 0:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
                     break;
 
-                case 1:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
                     break;
 
-                case 2:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
                     break;
             }
@@ -2948,18 +2944,20 @@ namespace SLD200_MSL
             radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = true;
             radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = true;
             radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Enabled = true;
+            button_Marking_SerialNumber_CountReset.Enabled = true;
+
 
             switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType)
             {
-                case 0:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
                     break;
 
-                case 1:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
                     break;
 
-                case 2:
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
                     break;
             }
@@ -3007,12 +3005,12 @@ namespace SLD200_MSL
 
         private void radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module_CheckedChanged(object sender, EventArgs e)
         {
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachModule;
         }
 
         private void radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket_CheckedChanged(object sender, EventArgs e)
         {
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = 1;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket;
         }
 
         private void radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous_CheckedChanged(object sender, EventArgs e)
