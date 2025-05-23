@@ -6625,7 +6625,7 @@ namespace QMC.Common.Modules
                 {
                     m_dustCollector_UpperPos_Comm.Send(m_strSendData);
                     m_bRet = true;
-                }
+                } 
             }
             else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
             {
@@ -41014,7 +41014,7 @@ namespace QMC.Common.Modules
                         {
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMark_MarkingStart;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout * 4)
                         {
                             strTemp = string.Format("Stage XY 축, Stage Center 위치로 이동 실패. (Timeout)");
                             Log.Write("SLD-200", "Scanner Calibration", strTemp);
@@ -41348,7 +41348,7 @@ namespace QMC.Common.Modules
                         }
                         
                         // 1분 동안 마크를 찾지 못할 경우
-                        if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) >= LaserScannerCalTimeout * 2) //10초 
+                        if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) >= LaserScannerCalTimeout * 6) //10초 
                         {
                             MC_Func.MC_MotorStop((int)nAxis.X, 2000);
                             MC_Func.MC_MotorStop((int)nAxis.Y, 2000);
@@ -41394,7 +41394,7 @@ namespace QMC.Common.Modules
                             deltaY = dCurrentMotorPosY - m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y;
 
                             // 허용 오차 값 가져오기
-                            double allowableXY = 0.5;   //3.0; //Config.ParamConfig.ReticleAutoCal_UpperVision_Allowable_XY;
+                            double allowableXY = 1;   //3.0; //Config.ParamConfig.ReticleAutoCal_UpperVision_Allowable_XY;
 
                             // 판정: 허용 오차 범위 내인지 확인
                             if (Math.Abs(deltaX) <= allowableXY &&
@@ -41403,9 +41403,23 @@ namespace QMC.Common.Modules
                                 Log.Write("SLD-200", "Scanner Calibration",
                                           $"Cross Mark XY 위치가 카메라 센터에서 오차범위 이내에 있음 (DeltaX: {deltaX}, DeltaY: {deltaY})");
 
-                                // Fine Camera와 Scanner Offset 확인 모드일 경우 Offset 값 재설정
-                                // Scanner Calibration 모드일 경우, 15x15 가공 위치의 마크 검사를 진행
-                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_XYAlign_CorrectionMove;
+                                if (Equipment.Scanner_Vision_Offset_Setting_Use == true)
+                                {
+                                    deltaX = Equipment.Scanner_Vision_Offset_Setting_X;
+                                    deltaY = Equipment.Scanner_Vision_Offset_Setting_Y;
+
+                                    MessageBox.Show("OK: Cross Mark XY 위치.\n" +
+                                        "DeltaX: {deltaX}, DeltaY: {deltaY}", "Completed",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Complete;
+                                }
+                                //else
+                                //{
+                                //    // Fine Camera와 Scanner Offset 확인 모드일 경우 Offset 값 재설정
+                                //    // Scanner Calibration 모드일 경우, 15x15 가공 위치의 마크 검사를 진행
+                                //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_XYAlign_CorrectionMove;
+                                //}
                             }
                             else
                             {
@@ -41879,7 +41893,7 @@ namespace QMC.Common.Modules
 
             float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength; //1.0f; //(float)markLength; 
 
-            if (Equipment.Machine_LaserType_CO2)
+            if (!Equipment.Machine_LaserType_CO2)
             {
                 float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
                 float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
