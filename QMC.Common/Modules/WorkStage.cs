@@ -14919,8 +14919,8 @@ namespace QMC.Common.Modules
                             double dwgCenterY = 0.0;
                             for (int i = 0; i < 4; i++)
                             {
-                                dwgCenterX += m_st4PointPosition_DwgPos[i].ptFiducial_Center.X;
-                                dwgCenterY += m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y;
+                                dwgCenterX += Math.Abs(m_st4PointPosition_DwgPos[i].ptFiducial_Center.X);
+                                dwgCenterY += Math.Abs(m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y);
                             }
                             dwgCenterX /= 4.0;
                             dwgCenterY /= 4.0;
@@ -14930,8 +14930,8 @@ namespace QMC.Common.Modules
                             double inspectedCenterY = 0.0;
                             for (int i = 0; i < 4; i++)
                             {
-                                inspectedCenterX += m_st4PointPosition_InspectedPos[i].ptFiducial_Center.X;
-                                inspectedCenterY += m_st4PointPosition_InspectedPos[i].ptFiducial_Center.Y;
+                                inspectedCenterX += Math.Abs(m_st4PointPosition_InspectedPos[i].ptFiducial_Center.X);
+                                inspectedCenterY += Math.Abs(m_st4PointPosition_InspectedPos[i].ptFiducial_Center.Y);
                             }
                             inspectedCenterX /= 4.0;
                             inspectedCenterY /= 4.0;
@@ -33529,30 +33529,30 @@ namespace QMC.Common.Modules
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 // 중요! Data수집 - 도면 Layer 수집용.
-                string name = layer.Name;
-                if (layer.IsMarkerable &&
-                   (name.StartsWith("Hole") || name == "Marking" || name == "Outline" || name == "Thruhole"))
-                {
-                    int groupCount = 0;
-                    foreach (var entity in layer)
-                    {
-                        if (entity is Group)
-                            groupCount++;
-                    }
+                //string name = layer.Name;
+                //if (layer.IsMarkerable &&
+                //   (name.StartsWith("Hole") || name == "Marking" || name == "Outline" || name == "Thruhole"))
+                //{
+                //    int groupCount = 0;
+                //    foreach (var entity in layer)
+                //    {
+                //        if (entity is Group)
+                //            groupCount++;
+                //    }
 
-                    if (groupCount <= 0)
-                        continue;
+                //    if (groupCount <= 0)
+                //        continue;
 
-                    if (name.StartsWith("Hole") && int.TryParse(name.Substring(4), out int m_nHoleLayer_Num))
-                    {
-                        string fixedLayerName = $"Hole{m_nHoleLayer_Num}";
-                        layerSocketCounts[fixedLayerName] = groupCount;
-                    }
-                    else if (name == "Marking" || name == "Outline" || name == "Thruhole")
-                    {
-                        layerSocketCounts[name] = groupCount;
-                    }
-                }
+                //    if (name.StartsWith("Hole") && int.TryParse(name.Substring(4), out int m_nHoleLayer_Num))
+                //    {
+                //        string fixedLayerName = $"Hole{m_nHoleLayer_Num}";
+                //        layerSocketCounts[fixedLayerName] = groupCount;
+                //    }
+                //    else if (name == "Marking" || name == "Outline" || name == "Thruhole")
+                //    {
+                //        layerSocketCounts[name] = groupCount;
+                //    }
+                //}
 
                 // 기존 코드 - Layer 분류 및 소켓 분류
                 if (layer.IsMarkerable)
@@ -38785,11 +38785,12 @@ namespace QMC.Common.Modules
 
             // 중요! Data수집 - 도면 Layer 수집용.
             // 파싱 끝났으면 여기서 초기화
-            if (layerSocketCounts.Count > 0)
-            {
-                DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
-                Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
-            }
+            //if (layerSocketCounts.Count > 0)
+            //{
+            //    DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
+            //    Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
+            //}
+
             //if (m_nGroupCount > 0 && layerNames.Count > 0)
             //{
             //    DrillingManager.InitDrillingManagerFromDrawing(layerNames, m_nGroupCount);
