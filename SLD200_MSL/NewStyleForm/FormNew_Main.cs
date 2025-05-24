@@ -2847,6 +2847,8 @@ namespace SLD200_MSL
             workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
 
+            Equipment.m_AlignMode = AlignMode.Socket;
+
 
             // 
             workStage.m_bPassedSocket_Exist = false; //  Pass Socket 존재 여부
@@ -3204,7 +3206,9 @@ namespace SLD200_MSL
                 ////////////////////////////////////////////////////////////////////////////
                 ////  Socket 선택 가공인지 확인용
                 ///
-                if (workStage.m_stDividedRegion_GroupData == null)              //  Parsing 해야 확인할 수 있는 데이터
+
+                // 이거 왜 해야 하는지  20250524
+                //if (workStage.m_stDividedRegion_GroupData == null)              //  Parsing 해야 확인할 수 있는 데이터
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Start Button Click", "Data Parsing 진행. (GetDrillingData)");
 
