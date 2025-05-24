@@ -24856,7 +24856,9 @@ namespace QMC.Common.Modules
 
                     //laserDrillingParameter.DO_LaserTrigger_Change(true);
                     //  선택 가공 모드였으면, 도면 다시 로드
-                    if ((m_nSocketAlign_StartIndex >= 0) || (Equipment.SelectedSocketStartMode != (int)SelectedSocketStartModeList.All))
+                    if ((m_nSocketAlign_StartIndex >= 0) || 
+                        (Equipment.SelectedSocketStartMode != (int)SelectedSocketStartModeList.All) ||
+                        Equipment.AutoRunStatus == false)
                     {
                         Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
 
