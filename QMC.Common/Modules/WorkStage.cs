@@ -14914,43 +14914,43 @@ namespace QMC.Common.Modules
                                     " / Offset (ΔX: " + offsetX.ToString("F3") + ", ΔY: " + offsetY.ToString("F3") + ")");
                             }
 
-                            // 1. 도면 기준 Center 계산
-                            double dwgCenterX = 0.0;
-                            double dwgCenterY = 0.0;
+                            // 평균 중심 계산
+                            double dwgCenterX = 0.0, dwgCenterY = 0.0;
+                            double inspectedCenterX = 0.0, inspectedCenterY = 0.0;
+
                             for (int i = 0; i < 4; i++)
                             {
                                 dwgCenterX += m_st4PointPosition_DwgPos[i].ptFiducial_Center.X;
                                 dwgCenterY += m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y;
-                            }
-                            dwgCenterX /= 4.0;
-                            dwgCenterY /= 4.0;
-
-                            // 2. 실측 기준 Center 계산
-                            double inspectedCenterX = 0.0;
-                            double inspectedCenterY = 0.0;
-                            for (int i = 0; i < 4; i++)
-                            {
                                 inspectedCenterX += m_st4PointPosition_InspectedPos[i].ptFiducial_Center.X;
                                 inspectedCenterY += m_st4PointPosition_InspectedPos[i].ptFiducial_Center.Y;
                             }
+                            dwgCenterX /= 4.0;
+                            dwgCenterY /= 4.0;
                             inspectedCenterX /= 4.0;
                             inspectedCenterY /= 4.0;
 
-                            // 3. Center Offset 계산
                             double offsetCenterX = inspectedCenterX - dwgCenterX;
                             double offsetCenterY = inspectedCenterY - dwgCenterY;
 
+                            // 평균 중심 로그
                             Log.Write("FineVision Fiducial",
-                                    "Socket NO : " + nSocketNum.ToString() +
-                                    "  CenterPoint :: Dwg (X: " + dwgCenterX.ToString("F3") + ", Y: " + dwgCenterY.ToString("F3") + ")" +
-                                    " / Inspected (X: " + inspectedCenterX.ToString("F3") + ", Y: " + inspectedCenterY.ToString("F3") + ")" +
-                                    " / Offset (ΔX: " + offsetCenterX.ToString("F3") + ", ΔY: " + offsetCenterY.ToString("F3") + ")");
+                                "Socket NO : " + nSocketNum.ToString() +
+                                "  CenterPoint :: Dwg (X: " + dwgCenterX.ToString("F3") + ", Y: " + dwgCenterY.ToString("F3") + ")" +
+                                " / Inspected (X: " + inspectedCenterX.ToString("F3") + ", Y: " + inspectedCenterY.ToString("F3") + ")" +
+                                " / Offset (ΔX: " + offsetCenterX.ToString("F3") + ", ΔY: " + offsetCenterY.ToString("F3") + ")");
 
+                            // 크로스 센터 로그 추가
+                            XyCoordinate crossCenter = CalcDiagonalCrossCenter(m_st4PointPosition_InspectedPos);
+                            Log.Write("FineVision Fiducial",
+                                "Socket NO : " + nSocketNum.ToString() +
+                                $"  DiagonalCrossCenter :: Inspected (X: {crossCenter.X:F3}, Y: {crossCenter.Y:F3})");
 
+                            // 최종 얼라인 결과 로그
                             strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                                        "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                                        "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
-                                        "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                                      "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                                      "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                                      "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
                             Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
                             Log.Write("FineVision Fiducial", strTemp);
                         }
@@ -15298,6 +15298,22 @@ namespace QMC.Common.Modules
                // Camera_HighRes.StartLive();
             }
         }
+
+
+        /// <summary>
+        /// 4개의 마크 중 두 대각선의 교차점 중심 계산
+        /// </summary>
+        private XyCoordinate CalcDiagonalCrossCenter(st4PointPosition_Data[] points)
+        {
+            double cross1X = (points[0].ptFiducial_Center.X + points[2].ptFiducial_Center.X) / 2.0;
+            double cross1Y = (points[0].ptFiducial_Center.Y + points[2].ptFiducial_Center.Y) / 2.0;
+
+            double cross2X = (points[1].ptFiducial_Center.X + points[3].ptFiducial_Center.X) / 2.0;
+            double cross2Y = (points[1].ptFiducial_Center.Y + points[3].ptFiducial_Center.Y) / 2.0;
+
+            return new XyCoordinate((cross1X + cross2X) / 2.0, (cross1Y + cross2Y) / 2.0);
+        }
+
 
         public VisionImageViewer.OwnedOverlayCollection FineCamResultOveray { get; set; } = new VisionImageViewer.OwnedOverlayCollection();
         public VisionImageViewer.OwnedOverlayCollection CoarseCamResultOveray { get; set; } = new VisionImageViewer.OwnedOverlayCollection();
@@ -33529,30 +33545,30 @@ namespace QMC.Common.Modules
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 // 중요! Data수집 - 도면 Layer 수집용.
-                string name = layer.Name;
-                if (layer.IsMarkerable &&
-                   (name.StartsWith("Hole") || name == "Marking" || name == "Outline" || name == "Thruhole"))
-                {
-                    int groupCount = 0;
-                    foreach (var entity in layer)
-                    {
-                        if (entity is Group)
-                            groupCount++;
-                    }
+                //string name = layer.Name;
+                //if (layer.IsMarkerable &&
+                //   (name.StartsWith("Hole") || name == "Marking" || name == "Outline" || name == "Thruhole"))
+                //{
+                //    int groupCount = 0;
+                //    foreach (var entity in layer)
+                //    {
+                //        if (entity is Group)
+                //            groupCount++;
+                //    }
 
-                    if (groupCount <= 0)
-                        continue;
+                //    if (groupCount <= 0)
+                //        continue;
 
-                    if (name.StartsWith("Hole") && int.TryParse(name.Substring(4), out int m_nHoleLayer_Num))
-                    {
-                        string fixedLayerName = $"Hole{m_nHoleLayer_Num}";
-                        layerSocketCounts[fixedLayerName] = groupCount;
-                    }
-                    else if (name == "Marking" || name == "Outline" || name == "Thruhole")
-                    {
-                        layerSocketCounts[name] = groupCount;
-                    }
-                }
+                //    if (name.StartsWith("Hole") && int.TryParse(name.Substring(4), out int m_nHoleLayer_Num))
+                //    {
+                //        string fixedLayerName = $"Hole{m_nHoleLayer_Num}";
+                //        layerSocketCounts[fixedLayerName] = groupCount;
+                //    }
+                //    else if (name == "Marking" || name == "Outline" || name == "Thruhole")
+                //    {
+                //        layerSocketCounts[name] = groupCount;
+                //    }
+                //}
 
                 // 기존 코드 - Layer 분류 및 소켓 분류
                 if (layer.IsMarkerable)
@@ -33565,7 +33581,6 @@ namespace QMC.Common.Modules
 
                     //  Hole 인지?
                     string m_strLayer = layer.Name.Length > 4 ? layer.Name.Substring(0, 4) : layer.Name;
-
                     //if (layer.Name == "Hole1")
                     if (m_strLayer == "Hole")                   //  Layer 가 Hole 이면?
                     {
@@ -38785,18 +38800,11 @@ namespace QMC.Common.Modules
 
             // 중요! Data수집 - 도면 Layer 수집용.
             // 파싱 끝났으면 여기서 초기화
-            if (layerSocketCounts.Count > 0)
-            {
-                DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
-                Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
-            }
-            //if (m_nGroupCount > 0 && layerNames.Count > 0)
+            //if (layerSocketCounts.Count > 0)
             //{
-            //    DrillingManager.InitDrillingManagerFromDrawing(layerNames, m_nGroupCount);
-            //    Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerNames.Count}개, Socket {m_nGroupCount}개");
+            //    DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
+            //    Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
             //}
-
-
             
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
