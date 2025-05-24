@@ -70,6 +70,8 @@ using System.Runtime.Remoting.Channels;
 using System.Diagnostics;
 using QMC.Common.Global;
 using static QMC.Common.Global.HoleAlignHelper;
+using System.Net.Sockets;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 namespace QMC.Common.Modules
@@ -17723,8 +17725,6 @@ namespace QMC.Common.Modules
                 /// </summary>
                 /// 
 
-
-
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move:                              //  ThruHole 가공 Layer 파라미터, Z Offset 이동
 
                     LaserDrillingStepSetThruHoleLayerParameterZOffsetMove(out lfVelocity, out lfAccDec);
@@ -17783,7 +17783,7 @@ namespace QMC.Common.Modules
                             if (socket != null && !socket.IsSuccess)
                             {
                                 socket.IsSuccess = true;
-                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료 처리됨");
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
                             }
                         }
 
@@ -17897,9 +17897,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", m_strTemp);
                     }
 
-                    //  ScannerOnly Mode 일 경우
-                    //여기서만 증가??? 왜? 여기서?? 레이져 쏘고 증가 하던가???
-                    m_nThruHole_ObjectDataCount++;
                     m_bThruHoleList_Success &= rtc.ListEnd();
                     Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
 
@@ -17935,6 +17932,9 @@ namespace QMC.Common.Modules
                         socket.IsDrilled = true;
                         Log.Write("DrillStatus", $"[Start] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nThruHole_ObjectDataCount} 가공 시작됨.");
                     }
+
+                    //여기서만 증가??? 왜? 여기서?? 레이져 쏘고 증가 하던가???
+                    m_nThruHole_ObjectDataCount++;
 
                     TickCount_Start((int)TickType.TICK_MAIN);
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_LaserBusyCheck;
@@ -18114,6 +18114,14 @@ namespace QMC.Common.Modules
                     //  정상 가공이면 다음 소켓 가공
                     else
                     {
+                        layerEnum = GetCurrentLayerEnum(m_LayerType);
+                        socket = DrillingManager.GetSocket(layerEnum, m_nMarking_ObjectDataCount);
+                        if (socket != null && !socket.IsSuccess)
+                        {
+                            socket.IsSuccess = true;
+                            Log.Write("DrillStatus", $"[ThruHole] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료 마킹");
+                        }
+
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_SocketRemainedCheck;
@@ -19257,6 +19265,14 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 가 남아있지 않음");
 
+                        layerEnum = GetCurrentLayerEnum(m_LayerType);
+                        socket = DrillingManager.GetSocket(layerEnum, m_nOutLine_ObjectDataCount);
+                        if (socket != null && !socket.IsSuccess)
+                        {
+                            socket.IsSuccess = true;
+                            Log.Write("DrillStatus", $"[OutLine] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                        }
+
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatComplete;
                     }
                     break;
@@ -19367,9 +19383,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", m_strTemp);
                     }
 
-                    //  ScannerOnly Mode 일 경우
-                    m_nOutLine_ObjectDataCount++;
-
                     m_bOutLineList_Success &= rtc.ListEnd();
                     Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List End");
 
@@ -19403,9 +19416,11 @@ namespace QMC.Common.Modules
                     if (socket != null)
                     {
                         socket.IsDrilled = true;
-                        Log.Write("DrillStatus", $"[Complete] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nOutLine_ObjectDataCount} 가공 완료됨.");
+                        Log.Write("DrillStatus", $"[Complete] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nOutLine_ObjectDataCount} 가공 시작됨.");
                     }
 
+                    //  ScannerOnly Mode 일 경우
+                    m_nOutLine_ObjectDataCount++;
                     TickCount_Start((int)TickType.TICK_MAIN);
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck;
@@ -19548,6 +19563,14 @@ namespace QMC.Common.Modules
                     //  정상 가공이면 다음 소켓 가공
                     else
                     {
+                        layerEnum = GetCurrentLayerEnum(m_LayerType);
+                        socket = DrillingManager.GetSocket(layerEnum, m_nMarking_ObjectDataCount);
+                        if (socket != null && !socket.IsSuccess)
+                        {
+                            socket.IsSuccess = true;
+                            Log.Write("DrillStatus", $"[OutLine] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료 마킹");
+                        }
+
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_SocketRemainedCheck;
@@ -19911,7 +19934,7 @@ namespace QMC.Common.Modules
                         //Main_SocketPositions_CurrentSocketPosition.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.X;
                         //Main_SocketPositions_CurrentSocketPosition.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.Y;
                         //Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
-                        //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                        //Main_SocketPositions_SetStatus = true;  
 
                         m_nLaserDrilling_MainStep = nextStep;
                     }
@@ -21241,15 +21264,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
 
-                    DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nDrillingWork_Group_Count);
-                    if (socket != null)
-                    {
-                        socket.IsDrilled = true;
-                        Log.Write("DrillStatus", $"[Start] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 시작됨.");
-                    }
-
                     TickCount_Start((int)TickType.TICK_MAIN);
-
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LaserBusyCheck;
                     break;
 
@@ -21278,6 +21293,19 @@ namespace QMC.Common.Modules
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         }
+                    }
+                        //  상태 변경
+                        layerEnum = GetCurrentLayerEnum(m_LayerType);
+                        socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                        if (socket != null && !socket.IsSuccess)
+                        {
+                            socket.IsSuccess = true;
+                            Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                        }
+
+                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                     }
                     break;
                 /// 
@@ -21440,6 +21468,18 @@ namespace QMC.Common.Modules
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         }
+                    }
+                        //  상태 변경
+                        layerEnum = GetCurrentLayerEnum(m_LayerType);
+                        socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                        if (socket != null && !socket.IsSuccess)
+                        {
+                            socket.IsSuccess = true;
+                            Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                        }
+
+                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
                     }
                     break;
                 /// 
@@ -24923,8 +24963,6 @@ namespace QMC.Common.Modules
                                 //  재시도 회수 리셋
                                 m_nListBeginRetry_Count = 0;
 
-
-
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListOpen;
                             }
                             else
@@ -26345,6 +26383,7 @@ namespace QMC.Common.Modules
 
         private int LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck(ref int m_nZigZag_CurrentRow, ref int m_nZigZag_CurRow_FirstIndex, ref int m_nZigZag_CurRow_CurIndex, ref int m_nZigZag_CurRow_LastIndex)
         {
+            //m_nDividedRegion_Region_CurrentIndex <- 홀 소켓의 분할 영역 인덱스
             int nNextStep;
             if (m_nDividedRegion_Region_CurrentIndex < 
                 m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[0].nRegion_Num)
@@ -26567,7 +26606,7 @@ namespace QMC.Common.Modules
                         if (socket != null)
                         {
                             socket.IsSuccess = true;
-                            Log.Write("DrillStatus", $"[Complete] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 완료됨.");
+                            Log.Write("DrillStatus", $"[Drilling] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 완료됨");
                         }
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -27504,7 +27543,7 @@ namespace QMC.Common.Modules
                             if (socket != null)
                             {
                                 socket.IsSuccess = true;
-                                Log.Write("DrillStatus", $"[Complete] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 완료됨.");
+                                Log.Write("DrillStatus", $"[Drilling] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 완료됨");
                             }
 
                             m_nLaserDrilling_LayerCount++;
@@ -28033,6 +28072,15 @@ namespace QMC.Common.Modules
             else
             {
                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Marking Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+
+                //  상태 변경
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && !socket.IsSuccess)
+                {
+                    socket.IsSuccess = true;
+                    Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                }
 
                 m_nLaserDrilling_LayerCount++;
                 nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;

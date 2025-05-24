@@ -218,6 +218,7 @@ namespace QMC.Common.Global
                 }
 
                 LayerList.Add(layer);
+                Log.Write("DrillStatus", $"Layer 추가됨: {layer.LayerName} (Enum={layerEnum}, Type={layerType}) - 소켓 {layer.SocketList.Count}개");
             }
         }
 
