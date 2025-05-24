@@ -17645,6 +17645,9 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 완료 확인");
 
+                        //  가공할 차례의 Socket 위치에 왔으니 Object 카운트 변수를 초기화 한다. 
+                        m_nThruHole_ObjectDataCount = 0;
+
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
@@ -18000,8 +18003,8 @@ namespace QMC.Common.Modules
                     else
                     {
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_SocketRemainedCheck;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_SocketRemainedCheck;
                     }
                     break;
 
@@ -18486,6 +18489,9 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline 가공 Focus 조정 완료.");
+
+                        //  가공할 차례의 Socket 위치에 왔으니 Object 카운트 변수를 초기화 한다. 
+                        m_nOutLine_ObjectDataCount = 0;
 
                         //  소켓 얼라인을 하지 않을 경우, 바로 가공높이로 보낸다
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck;
@@ -19424,8 +19430,8 @@ namespace QMC.Common.Modules
                     else
                     {
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_SocketRemainedCheck;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_SocketRemainedCheck;
                     }
                     break;
 
@@ -21126,9 +21132,25 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Buffer List 가공 완료");
 
-                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        //  선택 가공이면? 다음 Layer 체크하러 가도록 Step 변경
+                        if ((m_nSocketAlign_StartIndex >= 0) &&
+                            (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly))
+                        {
+                            m_strTemp = string.Format("Marking Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            m_nLaserDrilling_LayerCount++;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                        //  정상 가공이면 다음 소켓 가공
+                        else
+                        {
+                            //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
+
+                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        }
                     }
                     break;
                 /// 
@@ -21272,8 +21294,25 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, Custom Marker Marking Complete");
 
-                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
+                        //  선택 가공이면? 다음 Layer 체크하러 가도록 Step 변경
+                        if ((m_nSocketAlign_StartIndex >= 0) &&
+                            (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly))
+                        {
+                            m_strTemp = string.Format("Marking Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            m_nLaserDrilling_LayerCount++;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                        //  정상 가공이면 다음 소켓 가공
+                        else
+                        {
+                            //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
+
+                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        }
                     }
                     break;
                 /// 
@@ -21843,11 +21882,19 @@ namespace QMC.Common.Modules
 
                             case LayerType.LAYER_OUTLINE:
                                 //  성부장 작업
+
+                                //  가공할 차례의 Socket 위치로 가는 것이니 Object 카운트 변수를 초기화 한다. 
+                                m_nOutLine_ObjectDataCount = 0;
+
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck;
                                 break;
 
                             case LayerType.LAYER_THRUHOLE:
                                 //  성부장 작업
+
+                                //  가공할 차례의 Socket 위치로 가는 것이니 Object 카운트 변수를 초기화 한다. 
+                                m_nThruHole_ObjectDataCount = 0;
+
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
                                 break;
 
@@ -27317,6 +27364,14 @@ namespace QMC.Common.Modules
                         if (m_nDrillingWork_Group_Count < m_stOutLine_SocketData[0].nSocket_Num)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
+
+                            m_nDrillingWork_Repeat_Count = 0;
+                            m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+
+                            m_nOutLine_ObjectDataCount = 0;
+
+                            m_nOutLine_SocketCount = m_nDrillingWork_Group_Count;
+
                             //m_bDrillingWork_Thruhole_Exist = false;
                             //m_bDrillingWork_Outline_Exist = false;
                             ////  가공중인 소켓 좌표 (메인 화면 표시용)
@@ -27447,6 +27502,12 @@ namespace QMC.Common.Modules
                         if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[0].nSocket_Num)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
+
+                            m_nDrillingWork_Repeat_Count = 0;
+                            m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+                            m_nThruHole_ObjectDataCount = 0;
+                            m_nThruHole_SocketCount = m_nDrillingWork_Group_Count;
+
                             //m_bDrillingWork_Thruhole_Exist = false;
                             //m_bDrillingWork_Outline_Exist = false;
                             ////  가공중인 소켓 좌표 (메인 화면 표시용)
@@ -27579,6 +27640,14 @@ namespace QMC.Common.Modules
                         if (m_nDrillingWork_Group_Count < m_stMarking_SocketData.nRegion_ObjectCount)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
+
+                            m_nDrillingWork_Repeat_Count = 0;
+                            m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+                            m_nDrillingWork_Text_Count = 0;                 //  마킹 글자 Count
+                            m_nDrillingWork_Element_Count = 0;              //  마킹 글자 별 Element Count
+                            m_nMarking_ObjectDataCount = 0;
+                            m_nMarking_SocketCount = m_nDrillingWork_Group_Count;
+
                             //m_bDrillingWork_Thruhole_Exist = false;
                             //m_bDrillingWork_Outline_Exist = false;
                             ////  가공중인 소켓 좌표 (메인 화면 표시용)
@@ -27609,6 +27678,8 @@ namespace QMC.Common.Modules
                                             if (m_bFiducial_Exist)
                                             {
                                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 존재하므로 Socket Align 진행.");
+
+
 
                                                 nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Start;
                                             }
@@ -29301,6 +29372,8 @@ namespace QMC.Common.Modules
             m_nLaserDrilling_ScannerOnly_GroupCount = 0;
 
             m_bDrillingWork_Hole1_Exist = false;                        //  Hole1 Layer 가 있으면, Thruhole 과 Outline 은 개별적으로 가공하지 않고, Hole 이 끝난 뒤에 이어서 진행하도록 한다.
+            m_bDrillingWork_Thruhole_Exist = false;
+            m_bDrillingWork_Outline_Exist = false;
 
             m_nThruHole_SocketNum = 0;
             m_nThruHole_SocketCount = 0;
@@ -31280,6 +31353,11 @@ namespace QMC.Common.Modules
         /// </summary>
         public bool AlignedThruholeData_Select_and_OffsetMove(int m_nSocketNum, double m_dRotCenterX, double m_dRotCenterY, double m_dOffsetX, double m_dOffsetY, double m_dAngle)
         {
+            //  Hole1 Layer 가 있는 도면일 경우, Hole1 Layer 에서 [동일 소켓], [다른 Layer] 의 데이터를 모두 Select 하여 얼라인 보정시킨다.
+            //  
+            //  이 함수에 들어올 경우는, Hole1 Layer 가 없을 때 뿐이다.
+            //  따라서, Thruhole Layer 에서 소켓 번호에 해당하는 객체를 찾아서 얼라인 보정한다. (Outline, Marking Layer 포함)
+
             string m_strTemp;
             bool success = true;
             bool LayerIsGroup = false;
@@ -31287,7 +31365,12 @@ namespace QMC.Common.Modules
 
             //  SLD-200 에서 사용할 변수
             //  도면 데이터 개수 초기화
-            int m_nThruhole_ObjectCount = 0;                                     //  Thruhole 데이터 개수
+            int m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
+            int m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수
+
+            int m_nMarkingEntity_TotalCount = 0;
+            bool m_bMarkingEntity_Select = false;                               //  마킹 Entity 도 얼라인 해줘야 하는가?
 
             int m_nLayerCount = 0;
 
@@ -31383,14 +31466,137 @@ namespace QMC.Common.Modules
                             }
                         }
                     }
+                    else if (layer.Name == "Outline")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    break;
+
+                                case EType.Line:
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (m_nOutline_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        m_nListCount++;
+                                        break;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Marking")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    break;
+
+                                case EType.Line:
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+                                    break;
+
+                                case EType.Text:
+                                    var text = entity as SpiralLab.Sirius.Text;
+
+                                    //  여기는 Thruhole Socket 번호와 동일한 위치의 마킹 데이터를 선택해서 얼라인 보정하려는 목적이 아니라,
+                                    //  마킹 데이터가 몇개가 들어있는지 확인하는 용도이다.
+                                    //  여러개의 소켓으로 이루어진 모듈이라도, 마킹은 1개만 존재하는 경우가 있다.
+                                    //
+                                    //  마킹 데이터가 1개인 경우에는, 최초에 얼라인 성공하는 소켓과 함께 얼라인 보정을 해 둔다.
+                                    //  얼라인 보정이 끝난 마킹 데이터는 다시 보정하지 않도록 한다.
+                                    if (m_nMarking_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        //m_nListCount++;
+                                        break;
+                                    }
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    break;
+                            }
+                        }
+                    }
                 }
+            }
+
+            //  마킹 Entity 의 총 개수 
+            m_nMarkingEntity_TotalCount = m_nMarking_ObjectCount;
+
+            //  마킹 Entity 개수와 Thruhole Layer 의 소켓 개수와 동일한지 체크
+            if (m_nThruhole_ObjectCount == m_nMarking_ObjectCount)
+            {
+                //  Thruhole 소켓 개수와 마킹 개수가 동일하므로 Marking Entity 도 얼라인 해주기 위해 Liat 개수 +1
+                m_nListCount++;
+                m_bMarkingEntity_Select = true;
+            }
+            else if ((m_nThruhole_ObjectCount != m_nMarking_ObjectCount) && (m_nMarking_ObjectCount == 1) &&
+                //!m_stMarking_SocketData.m_stMarking_ObjectData[0].bAlignCompleted)                            //  요건 계속 초기화 되어서 무쓸모
+                !Equipment.m_bOneMarkingData_AlignCompleted)                                                    //  마킹 데이터 얼라인이 완료되지 않은 경우에만 얼라인 시켜준다.
+            {
+                //  소켓 개수와 마킹 개수가 다르고, 마킹 개수가 1개이고, 아직 얼라인이 안된 경우
+                //  현재 얼라인 한 소켓과 같이 묶어서 얼라인 해준다.
+
+                m_nListCount++;
+                m_bMarkingEntity_Select = true;
+            }
+            else
+            {
+                //  이 외의 경우는.... 쫌 애매헌디...
+
             }
 
             //  선택해야 할 List 초기화
             var list = new List<IEntity>(m_nListCount);
 
             //  도면 데이터 개수 초기화
-            m_nThruhole_ObjectCount = 0;                                     //  Thruhole 데이터 개수
+            m_nThruhole_ObjectCount = 0;                                        //  Thruhole 데이터 개수
+            m_nOutline_ObjectCount = 0;                                         //  Outline 데이터 개수
+            m_nMarking_ObjectCount = 0;                                         //  Marking 데이터 개수
 
             //  Layer 종류별 Count
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
@@ -31442,6 +31648,113 @@ namespace QMC.Common.Modules
                                         //  선택한 소켓의 가공 객체를 List 로 등록
                                         list.Add(group);
                                     }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Outline")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    break;
+
+                                case EType.Line:
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (m_nOutline_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        //  선택한 소켓의 가공 객체를 List 로 등록
+                                        list.Add(group);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Marking")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    break;
+
+                                case EType.Line:
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+                                    break;
+
+                                case EType.Text:
+                                    var text = entity as SpiralLab.Sirius.Text;
+
+                                    if (m_bMarkingEntity_Select)
+                                    {
+                                        if (m_nMarkingEntity_TotalCount == 1)               //  마킹 Entity 가 1개이면? -> 처음 얼라인 성공한 Socket 과 함께 얼라인 해준다.
+                                        {
+                                            //  마킹 데이터가 1개인 경우에는, 최초에 얼라인 성공하는 소켓과 함께 얼라인 보정을 해 둔다.
+                                            if (!Equipment.m_bOneMarkingData_AlignCompleted)
+                                            {
+                                                //  선택한 소켓의 가공 객체를 List 로 등록
+                                                list.Add(text);
+
+                                                Equipment.m_bOneMarkingData_AlignCompleted = true;            //  다음번엔 얼라인 하지않도록 하기 위한 Flag
+                                            }
+                                        }
+                                        else                                                //  마킹 Entity 개수가 Socket 개수와 같을 경우
+                                        {
+                                            if (m_nMarking_ObjectCount++ == m_nSocketNum)
+                                            {
+                                                //  선택한 소켓의 가공 객체를 List 로 등록
+                                                list.Add(text);
+                                            }
+                                        }
+                                    }
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
                                     break;
                             }
                         }
@@ -31472,6 +31785,11 @@ namespace QMC.Common.Modules
         /// </summary>
         public bool AlignedOutlineData_Select_and_OffsetMove(int m_nSocketNum, double m_dRotCenterX, double m_dRotCenterY, double m_dOffsetX, double m_dOffsetY, double m_dAngle)
         {
+            //  Hole1 Layer 가 있는 도면일 경우, Hole1 Layer 에서 [동일 소켓], [다른 Layer] 의 데이터를 모두 Select 하여 얼라인 보정시킨다.
+            //  
+            //  이 함수에 들어올 경우는, Hole1 Layer 와 Thruhole Layer 가 없을 때 뿐이다.
+            //  따라서, Outline Layer 에서 소켓 번호에 해당하는 객체를 찾아서 얼라인 보정한다. (Marking Layer 포함)
+
             string m_strTemp;
             bool success = true;
             bool LayerIsGroup = false;
@@ -31480,6 +31798,10 @@ namespace QMC.Common.Modules
             //  SLD-200 에서 사용할 변수
             //  도면 데이터 개수 초기화
             int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
+            int m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수
+
+            int m_nMarkingEntity_TotalCount = 0;
+            bool m_bMarkingEntity_Select = false;                               //  마킹 Entity 도 얼라인 해줘야 하는가?
 
             int m_nLayerCount = 0;
 
@@ -31538,32 +31860,26 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-
                                     break;
 
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-
                                     break;
 
                                 case EType.Line:
                                     //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
 
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
                                     break;
 
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
                                     break;
 
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
                                     break;
 
                                 case EType.Group:
@@ -31578,14 +31894,94 @@ namespace QMC.Common.Modules
                             }
                         }
                     }
+                    else if (layer.Name == "Marking")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    break;
+
+                                case EType.Line:
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+                                    break;
+
+                                case EType.Text:
+                                    var text = entity as SpiralLab.Sirius.Text;
+
+                                    //  여기는 Outline Socket 번호와 동일한 위치의 마킹 데이터를 선택해서 얼라인 보정하려는 목적이 아니라,
+                                    //  마킹 데이터가 몇개가 들어있는지 확인하는 용도이다.
+                                    //  여러개의 소켓으로 이루어진 모듈이라도, 마킹은 1개만 존재하는 경우가 있다.
+                                    //
+                                    //  마킹 데이터가 1개인 경우에는, 최초에 얼라인 성공하는 소켓과 함께 얼라인 보정을 해 둔다.
+                                    //  얼라인 보정이 끝난 마킹 데이터는 다시 보정하지 않도록 한다.
+                                    if (m_nMarking_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        //m_nListCount++;
+                                        break;
+                                    }
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    break;
+                            }
+                        }
+                    }
                 }
+            }
+
+            //  마킹 Entity 의 총 개수 
+            m_nMarkingEntity_TotalCount = m_nMarking_ObjectCount;
+
+            //  마킹 Entity 개수와 Outline Layer 의 소켓 개수와 동일한지 체크
+            if (m_nOutline_ObjectCount == m_nMarking_ObjectCount)
+            {
+                //  Outline 소켓 개수와 마킹 개수가 동일하므로 Marking Entity 도 얼라인 해주기 위해 Liat 개수 +1
+                m_nListCount++;
+                m_bMarkingEntity_Select = true;
+            }
+            else if ((m_nOutline_ObjectCount != m_nMarking_ObjectCount) && (m_nMarking_ObjectCount == 1) &&
+                //!m_stMarking_SocketData.m_stMarking_ObjectData[0].bAlignCompleted)                            //  요건 계속 초기화 되어서 무쓸모
+                !Equipment.m_bOneMarkingData_AlignCompleted)                                                    //  마킹 데이터 얼라인이 완료되지 않은 경우에만 얼라인 시켜준다.
+            {
+                //  소켓 개수와 마킹 개수가 다르고, 마킹 개수가 1개이고, 아직 얼라인이 안된 경우
+                //  현재 얼라인 한 소켓과 같이 묶어서 얼라인 해준다.
+
+                m_nListCount++;
+                m_bMarkingEntity_Select = true;
+            }
+            else
+            {
+                //  이 외의 경우는.... 쫌 애매헌디...
+
             }
 
             //  선택해야 할 List 초기화
             var list = new List<IEntity>(m_nListCount);
 
             //  도면 데이터 개수 초기화
-            m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
+            m_nOutline_ObjectCount = 0;                                         //  Outline 데이터 개수
+            m_nMarking_ObjectCount = 0;                                         //  Marking 데이터 개수
 
 
             //  Layer 종류별 Count
@@ -31638,6 +32034,71 @@ namespace QMC.Common.Modules
                                         //  선택한 소켓의 가공 객체를 List 로 등록
                                         list.Add(group);
                                     }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Marking")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    break;
+
+                                case EType.Line:
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+                                    break;
+
+                                case EType.Text:
+                                    var text = entity as SpiralLab.Sirius.Text;
+
+                                    if (m_bMarkingEntity_Select)
+                                    {
+                                        if (m_nMarkingEntity_TotalCount == 1)               //  마킹 Entity 가 1개이면? -> 처음 얼라인 성공한 Socket 과 함께 얼라인 해준다.
+                                        {
+                                            //  마킹 데이터가 1개인 경우에는, 최초에 얼라인 성공하는 소켓과 함께 얼라인 보정을 해 둔다.
+                                            if (!Equipment.m_bOneMarkingData_AlignCompleted)
+                                            {
+                                                //  선택한 소켓의 가공 객체를 List 로 등록
+                                                list.Add(text);
+
+                                                Equipment.m_bOneMarkingData_AlignCompleted = true;            //  다음번엔 얼라인 하지않도록 하기 위한 Flag
+                                            }
+                                        }
+                                        else                                                //  마킹 Entity 개수가 Socket 개수와 같을 경우
+                                        {
+                                            if (m_nMarking_ObjectCount++ == m_nSocketNum)
+                                            {
+                                                //  선택한 소켓의 가공 객체를 List 로 등록
+                                                list.Add(text);
+                                            }
+                                        }
+                                    }
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
                                     break;
                             }
                         }
@@ -31898,6 +32359,7 @@ namespace QMC.Common.Modules
             int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
             int m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            int m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
 
             int m_nLayerCount = 0;
 
@@ -31907,7 +32369,10 @@ namespace QMC.Common.Modules
             //  글자를 구성하는 요소 개수 카운트
             int m_nTextItemCount = 0;
 
-            
+            int m_nMarkingEntity_TotalCount = 0;
+            bool m_bMarkingEntity_Select = false;                               //  마킹 Entity 도 얼라인 해줘야 하는가?
+
+
             if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
@@ -31982,6 +32447,7 @@ namespace QMC.Common.Modules
             m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
             m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
 
 
             //  Layer 종류별 Count
