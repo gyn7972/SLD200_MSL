@@ -182,6 +182,17 @@ namespace SLD200_MSL
             radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked = false;
             radioButton_Config_WorkStage_Move_MoveMode_Coarse.Checked = true;
 
+            if (Equipment.Machine_LaserType_CO2)
+            {
+                groupBox_MotorizedBET.Visible = true;
+                groupBox_VarioScan.Visible = true;
+            }
+            else
+            {
+                groupBox_MotorizedBET.Visible = false;
+                groupBox_VarioScan.Visible = false;
+            }
+
             InitializeJogButtons();
         }
 
@@ -643,22 +654,25 @@ namespace SLD200_MSL
             }
 
 
-            //  BET
-            if (workStage.m_beamExpander_Comm != null)
+            if (Equipment.Machine_LaserType_CO2)
             {
-                if (workStage.m_beamExpander_Comm.IsOpen)
+                //  BET
+                if (workStage.m_beamExpander_Comm != null)
                 {
-                    textBox_Config_BDS_BET_Zoom.Text = workStage.m_dBET_ZoomValue.ToString();
-                    textBox_Config_BDS_BET_Mrad.Text = workStage.m_dBET_MradValue.ToString();
-
-
-                    //  프로그램 구동 후 BET Zoom, Mrad 위치값을 세팅 edit 에 1회만 표시하기 위한 Flag
-                    if (!m_bBET_Status_1time)
+                    if (workStage.m_beamExpander_Comm.IsOpen)
                     {
-                        m_bBET_Status_1time = true;
+                        textBox_Config_BDS_BET_Zoom.Text = workStage.m_dBET_ZoomValue.ToString();
+                        textBox_Config_BDS_BET_Mrad.Text = workStage.m_dBET_MradValue.ToString();
 
-                        textBox_Config_BDS_BET_Zoom_Position.Text = workStage.m_dBET_ZoomValue.ToString();
-                        textBox_Config_BDS_BET_Mrad_Position.Text = workStage.m_dBET_MradValue.ToString();
+
+                        //  프로그램 구동 후 BET Zoom, Mrad 위치값을 세팅 edit 에 1회만 표시하기 위한 Flag
+                        if (!m_bBET_Status_1time)
+                        {
+                            m_bBET_Status_1time = true;
+
+                            textBox_Config_BDS_BET_Zoom_Position.Text = workStage.m_dBET_ZoomValue.ToString();
+                            textBox_Config_BDS_BET_Mrad_Position.Text = workStage.m_dBET_MradValue.ToString();
+                        }
                     }
                 }
             }
