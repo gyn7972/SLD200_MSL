@@ -17916,8 +17916,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck:              //  쓰루홀 Drilling 작업 완료 확인
 
-                    //  선택 가공이면? 가공해야 할 Socket 번호를 선택한 번호로 변경                    
-                    //  선택 가공이면? Outline 가공할 것이 있는지 체크
+                    //  선택 가공이면? 다음 Layer 체크하러 가도록 Step 변경
                     if ((m_nSocketAlign_StartIndex >= 0) &&
                         (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly))
                     {
@@ -19397,8 +19396,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck:              //  아웃 라인 (라우터) Drilling 작업 완료 확인
 
-
-                    //  선택 가공이면? 일단 Outline 까지만 하고 있으니 여기서 아웃
+                    //  선택 가공이면? 다음 Layer 체크하러 이동하도록 변경
                     if ((m_nSocketAlign_StartIndex >= 0) &&
                         (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly))
                     {
