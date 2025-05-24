@@ -46,5 +46,7 @@ namespace QMC.Common
             foreach (var layer in Layers)
                 layer.ResetAreas();
         }
+
+
     }
 }

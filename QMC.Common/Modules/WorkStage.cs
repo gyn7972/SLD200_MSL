@@ -1080,6 +1080,10 @@ namespace QMC.Common.Modules
 
         #region Variables
 
+        
+
+
+
         public double FirstPositionX { set; get; }
         public double FirstPositionY { set; get; }
         public double SecondPositionX { set; get; }
@@ -1397,6 +1401,9 @@ namespace QMC.Common.Modules
             }
         }
 
+
+        // Data 관리를 위한 객체 선언.
+        public DrillingProcessManager DrillingManager { get; private set; } = new DrillingProcessManager();
 
         //  다른 모듈에 접근하기 위함
         static Loader loader;
@@ -8538,6 +8545,7 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
+                            //중요! 알람 처리 필요!
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Main Tick, Loader Transfer, WorkStage 로 Loading 중 가공 데이터 Parsing 실패");
                         }
                     }
@@ -14527,6 +14535,10 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Fiducial 마크 위치로 이동 완료");
 
+                        Log.Write("FineVision InspectionPOs", " Socket NO : " + nSocketNum.ToString() + "  FineVision Fiducial Makr No : " + m_nSocketAlign_FiducialCount.ToString()
+                                + " X : " + xyCoordinateAlign.X.ToString()
+                                + ", Y : " + xyCoordinateAlign.Y.ToString());
+
                         //m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveInspPos;  // 가공 위치랑 비전 위치가 동일해서.. Skip인가..
                         //꼭 수정 TEST
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
@@ -15051,7 +15063,20 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 후 가공 데이터 다시 Parsing 시작");
 
-                    m_nReturn = GetDrillingData();
+                    //GetDrillingData(); -> 사용 변수들 전부 초기화하고 도면 데이터를 다시 읽어온다. (원본!)
+                    //
+                    // 변위센서 Data 저장( 소캣 갯수) ( 전체 / 선택 된 소켓 번호만 ( 1, 2, 3 )
+                    // 
+                    // 프리얼라인 1번 하고 소켓 얼라인 수행.
+                    //
+                    // -> 얼라인 데이터 저장( 소켓 갯수) ( 전체 / 선택 된 소켓 번호만 ( 1, 2, 3 )
+                    //
+                    // -> AlignedDrillingData_Select_and_OffsetMove <- 여기서 도면에 얼라인 정보 입력.
+                    //
+                    // -> ReGetDrillingData();에서는 도면만 업데이트 하여 각 소켓에 정보 전달. (얼라인 후 도면)
+
+
+                    m_nReturn = GetDrillingData(); 
                     switch (m_nReturn)
                     {
                         case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
@@ -33432,8 +33457,22 @@ namespace QMC.Common.Modules
             //}
 
             m_nLayerCount = 0;
+            // 도면 Layer 이름 수집 (Hole / Marking / Outline / Thruhole)
+            List<string> layerNames = new List<string>();
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
+                // 도면 Layer 이름 수집용.
+                if (layer.IsMarkerable)
+                {
+                    string name = layer.Name;
+                    if (name.StartsWith("Hole") || name == "Marking" || name == "Outline" || name == "Thruhole")
+                    {
+                        if (!layerNames.Contains(name))
+                            layerNames.Add(name);
+                    }
+                }
+
+                // 기존 코드
                 if (layer.IsMarkerable)
                 {
                     ///////////////////////////
@@ -33544,6 +33583,12 @@ namespace QMC.Common.Modules
                                 }
                                 m_stDividedRegion_GroupData = new WorkStage.stDividedRegion_GroupData[m_nGroupCount];
                                 m_stDividedRegion_GroupData[0].nGroup_Num = m_nGroupCount;
+
+                                if (m_nGroupCount > 0 && layerNames.Count > 0)
+                                {
+                                    DrillingManager.InitDrillingManagerFromDrawing(layerNames, m_nGroupCount);
+                                    Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerNames.Count}개, Socket {m_nGroupCount}개");
+                                }
 
                                 m_nGroupCount = 0;
 
@@ -38497,7 +38542,6 @@ namespace QMC.Common.Modules
                     if ((m_ptPreAlign.Length > 0) && (m_stDividedRegion_GroupData.Length > 0) && (m_nLayerHole1_Count > 0))
                     {
                         //  Fiducial 데이터의 개수가 Socket 개수의 4배수인지 확인한다.
-
                         //if (m_ptFiducial.Length == (m_stDividedRegion_GroupData[0].nGroup_Num * 4))
                         if (m_ptPreAlign.Length >= 2)
                         {
@@ -38598,7 +38642,7 @@ namespace QMC.Common.Modules
             {
                 Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Pre-Align 데이터가 없습니다.");
             }
-            
+
             ////  Outline Jump, 가공 이동 시간
             //if (m_dTotal_OutlineJumpLength > 0.0)
             //{
@@ -38659,6 +38703,15 @@ namespace QMC.Common.Modules
             //}
 
             //Equipment.WorkTotalTime = Equipment.WorkTotalTime_Outline + Equipment.WorkTotalTime_Thruhole + Equipment.WorkTotalTime_Drilling + Equipment.WorkTotalTime_Marking;
+
+
+            // 파싱 끝났으면 여기서 초기화
+            if (m_nGroupCount > 0 && layerNames.Count > 0)
+            {
+                DrillingManager.InitDrillingManagerFromDrawing(layerNames, m_nGroupCount);
+                Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerNames.Count}개, Socket {m_nGroupCount}개");
+            }
+
 
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
