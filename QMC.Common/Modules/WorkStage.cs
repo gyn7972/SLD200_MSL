@@ -401,17 +401,7 @@ namespace QMC.Common.Modules
         #endregion
 
         #region Drilling Data Variable
-        public enum LayerType : int
-        {
-            LAYER_DRILLING = 0,
-            LAYER_OUTLINE = 1,
-            LAYER_THRUHOLE = 2,
-            LAYER_MARKING = 3,
-            LAYER_FIDUCIAL = 4,
-            LAYER_RECTANGLE = 5,
-            LAYER_PREALIGN = 6,
-        }
-        public static LayerType m_LayerType = LayerType.LAYER_DRILLING;
+        
 
         public enum ObjectType : int
         {
@@ -21832,13 +21822,9 @@ namespace QMC.Common.Modules
                                 //if (m_stOutLine_SocketData.Length == m_stDividedRegion_GroupData.Length)
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 일치");
-
                                     m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
                                 }
-                                //else
-                                //{
-                                //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 불일치");
-                                //}
+                               
                             }
                             break;
                         case LayerType.LAYER_THRUHOLE:
@@ -21848,13 +21834,9 @@ namespace QMC.Common.Modules
                                 //if (m_stThruHole_SocketData.Length == m_stDividedRegion_GroupData.Length)
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
-
                                     m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
                                 }
-                                //else
-                                //{
-                                //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 불일치");
-                                //}
+                                
                             }
                             break;
                         case LayerType.LAYER_MARKING:
@@ -21863,15 +21845,22 @@ namespace QMC.Common.Modules
                                 //if (m_stMarking_SocketData.m_stMarking_ObjectData.Length == m_stDividedRegion_GroupData.Length)
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 일치");
-
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
                                 }
-                                //else
-                                //{
-                                //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 불일치");
-                                //}
                             }
                             break;
+                    }
+                    // === DrillingManager 저장 (공통 처리) ===
+                    {
+                        var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);  // LayerList.Hole12 등
+                        int socketIndex = m_nDrillingWork_Group_Count;
+
+                        var socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                        if (socket != null)
+                        {
+                            socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                            Log.Write("Displacement", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                        }
                     }
 
                     //  소켓 얼라인을 하지 않을 경우, 여기서 바로 가공 높이로 보정 이동
@@ -22322,6 +22311,23 @@ namespace QMC.Common.Modules
                             m_strTemp = string.Format("PreAlign좌표2, X : {0:0.000}, Y : {1:0.000}", positionFirst.X, positionFirst.Y);
                             Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
 
+
+                            double offsetX = xyCoordinateAlignPositionLast.X;
+                            double offsetY = xyCoordinateAlignPositionLast.Y;
+                            double theta = dft;
+                            var layer = DrillingManager.GetLayer(GetCurrentLayerEnum(m_LayerType));
+                            if (layer != null)
+                            {
+                                layer.PreAlignRotationCenterX = 0;
+                                layer.PreAlignRotationCenterY = 0;
+                                layer.PreAlignOffsetX = offsetX;
+                                layer.PreAlignOffsetY = offsetY;
+                                layer.PreAlignTheta = theta;
+                                layer.IsPreAligned = true;
+
+                                Log.Write("PreAlign", $"[Layer:{layer.LayerName}] PreAlign 완료: X={offsetX:F3}, Y={offsetY:F3}, T={theta:F3}");
+                            }
+
                             // 보정값이 기준 이상이면 NG 처리
                             double dInterlockOffsetX = 5.0;
                             double dInterlockOffsetY = 5.0;
@@ -22462,7 +22468,38 @@ namespace QMC.Common.Modules
                                 m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
                                 m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
                                 m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle;
-                               
+                                {
+                                    var socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nDrillingWork_Group_Count);
+                                    if (socket != null)
+                                    {
+                                        switch (m_AlignMode)
+                                        {
+                                            case AlignMode.Socket:
+                                                socket.SocketRotationCenterX = m_dALIGN_FACTOR_RotationCenter_X;
+                                                socket.SocketRotationCenterY = m_dALIGN_FACTOR_RotationCenter_Y;
+                                                socket.SocketOffsetX = m_dALIGN_FACTOR_Offset_X;
+                                                socket.SocketOffsetY = m_dALIGN_FACTOR_Offset_Y;
+                                                socket.SocketTheta = m_dALIGN_FACTOR_Theta;
+                                                socket.IsSocketAligned = m_bSocketAlign_OK;
+
+                                                Log.Write("Socket Align", $"[Socket] [{GetCurrentLayerEnum(m_LayerType)}][{m_nDrillingWork_Group_Count}] " +
+                                                    $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
+                                                break;
+
+                                            case AlignMode.GoldPowder:
+                                                socket.GoldRotationCenterX = m_dALIGN_FACTOR_RotationCenter_X;
+                                                socket.GoldRotationCenterY = m_dALIGN_FACTOR_RotationCenter_Y;
+                                                socket.GoldOffsetX = m_dALIGN_FACTOR_Offset_X;
+                                                socket.GoldOffsetY = m_dALIGN_FACTOR_Offset_Y;
+                                                socket.GoldTheta = m_dALIGN_FACTOR_Theta;
+                                                socket.IsGoldPowderAligned = m_bSocketAlign_OK;
+
+                                                Log.Write("Align", $"[Gold] [{GetCurrentLayerEnum(m_LayerType)}][{m_nDrillingWork_Group_Count}] " +
+                                                    $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
+                                                break;
+                                        }
+                                    }
+                                }
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketData_RotAndOffset_Move;
                             }
                             else
@@ -25059,6 +25096,23 @@ namespace QMC.Common.Modules
                 m_prevLaserDrillingStep = currentStep;
             }
             return 0;
+        }
+
+        private LayerList GetCurrentLayerEnum(LayerType type)
+        {
+            switch (type)
+            {
+                case LayerType.LAYER_DRILLING:
+                    return (LayerList)(m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]); // 예: Hole12
+                case LayerType.LAYER_OUTLINE:
+                    return LayerList.Outline;
+                case LayerType.LAYER_THRUHOLE:
+                    return LayerList.Thruhole;
+                case LayerType.LAYER_MARKING:
+                    return LayerList.Marking;
+                default:
+                    return LayerList.PreAlign;
+            }
         }
 
         private PointD[] ResizePoliLine(PointD[] Data,double dResize )
@@ -33542,35 +33596,57 @@ namespace QMC.Common.Modules
             //}
 
             m_nLayerCount = 0;
-            // 도면 Layer 이름 수집 (Hole / Marking / Outline / Thruhole)
+            // 1. 도면 레이어별 소켓 수 파악
             Dictionary<string, int> layerSocketCounts = new Dictionary<string, int>();
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 // 중요! Data수집 - 도면 Layer 수집용.
-                //string name = layer.Name;
-                //if (layer.IsMarkerable &&
-                //   (name.StartsWith("Hole") || name == "Marking" || name == "Outline" || name == "Thruhole"))
-                //{
-                //    int groupCount = 0;
-                //    foreach (var entity in layer)
-                //    {
-                //        if (entity is Group)
-                //            groupCount++;
-                //    }
+                string name = layer.Name?.Trim();
 
-                //    if (groupCount <= 0)
-                //        continue;
+                if (!layer.IsMarkerable)
+                    continue;
 
-                //    if (name.StartsWith("Hole") && int.TryParse(name.Substring(4), out int m_nHoleLayer_Num))
-                //    {
-                //        string fixedLayerName = $"Hole{m_nHoleLayer_Num}";
-                //        layerSocketCounts[fixedLayerName] = groupCount;
-                //    }
-                //    else if (name == "Marking" || name == "Outline" || name == "Thruhole")
-                //    {
-                //        layerSocketCounts[name] = groupCount;
-                //    }
-                //}
+                if (!(name.StartsWith("Hole") || name == "Marking" || name == "Outline" || name == "Thruhole" ||
+                      name == "PreAlign" || name == "Fiducial"))
+                    continue;
+
+                int socketCount = 0;
+                bool containsGroup = false;
+
+                foreach (var entity in layer)
+                {
+                    if (entity is Group)
+                    {
+                        containsGroup = true;
+                        socketCount++;
+                    }
+                }
+
+                if (!containsGroup)
+                {
+                    // Group이 아닌 경우, 전체 엔티티 수를 소켓 수로 사용
+                    socketCount = layer.Count;
+                }
+
+                //Hole2, 3, 4 등은 자료가 없이 hole1번꺼를 사용할꺼임.
+                //그래서 아래와 같은 인터락 있으면 안됨.
+                //if (socketCount <= 0)
+                //    continue;
+
+                // 이름 보정 및 Dictionary 추가
+                if (name.StartsWith("Hole"))
+                {
+                    string digitPart = new string(name.Skip(4).Where(char.IsDigit).ToArray());
+                    if (int.TryParse(digitPart, out int holeNum) && holeNum >= 1 && holeNum <= 50)
+                    {
+                        string fixedLayerName = $"Hole{holeNum}";
+                        layerSocketCounts[fixedLayerName] = socketCount;
+                    }
+                }
+                else
+                {
+                    layerSocketCounts[name] = socketCount;
+                }
 
                 // 기존 코드 - Layer 분류 및 소켓 분류
                 if (layer.IsMarkerable)
@@ -35848,8 +35924,6 @@ namespace QMC.Common.Modules
                         //  각 Group (Socket) 과 가장 가까운 거리의 Fiducial 위치를 그 Socket 의 Fiducial 위치로 사용한다.
 
                         //m_nLayerCount++;          //  마지막에 추가
-
-
                         //  Item 이 Group 인지 아닌지 확인 (Group 이면 저 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
                         int m_nCount = 0;
                         int m_nCount_inGroup = 0;
@@ -35864,13 +35938,11 @@ namespace QMC.Common.Modules
                             if (group == null)
                             {
                                 m_nCount = layer.Count;
-
                                 LayerIsGroup = false;
                             }
                             else
                             {
                                 m_nCount++;
-
                                 if (entity.EntityType == EType.Group)
                                 {
                                     m_nCount_inGroup = group.Count;
@@ -37391,17 +37463,14 @@ namespace QMC.Common.Modules
                         foreach (var entity in layer)
                         {
                             var group = entity as Group;
-
                             if (group == null)
                             {
                                 LayerIsGroup = false;
-
                                 m_nCount = layer.Count;
                             }
                             else
                             {
                                 LayerIsGroup = true;
-
                                 m_nCount = 1;
                             }
 
@@ -38813,7 +38882,14 @@ namespace QMC.Common.Modules
             //    DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
             //    Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
             //}
-            
+
+            // 도면 영역 분할 처리 이후
+            if (m_nGroupCount > 0)
+            {
+                DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
+                Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
+            }
+
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
         }

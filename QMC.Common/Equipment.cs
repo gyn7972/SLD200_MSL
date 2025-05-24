@@ -428,6 +428,18 @@ namespace QMC.Common
             PreAlign,
         }
 
+        public enum LayerType : int
+        {
+            LAYER_DRILLING = 0,
+            LAYER_OUTLINE = 1,
+            LAYER_THRUHOLE = 2,
+            LAYER_MARKING = 3,
+            LAYER_FIDUCIAL = 4,
+            LAYER_RECTANGLE = 5,
+            LAYER_PREALIGN = 6,
+        }
+        public static LayerType m_LayerType = LayerType.LAYER_DRILLING;
+
         public enum MarkTypeList : int
         {
             Circle = 0,
