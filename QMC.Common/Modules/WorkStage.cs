@@ -8419,6 +8419,16 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.TowerLamp_BuzzerStop = false;
                 }
 
+
+
+
+                // Home 잡기 전에는 Device 알람 X
+                if(!m_bHomeOK)
+                {
+                    return;
+                }
+
+
                 // Scanner signal로 레이저 발진 유/무 확인.
                 UpdateLaserStatus();
 
@@ -8455,6 +8465,8 @@ namespace QMC.Common.Modules
 
                 if (Equipment.AutoRunStatus)
                 {
+
+
 
                 }
 
@@ -8499,7 +8511,7 @@ namespace QMC.Common.Modules
                     {
                         Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
 
-                        if (GetDrillingData() == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
+                        if (GetDrillingData(true) == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Main Tick, Loader Transfer, WorkStage 로 Loading 중 가공 데이터 Parsing 성공");
 
@@ -21287,25 +21299,18 @@ namespace QMC.Common.Modules
                         //  정상 가공이면 다음 소켓 가공
                         else
                         {
-                            //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
+                            //  상태 변경
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (socket != null && !socket.IsSuccess)
+                            {
+                                socket.IsSuccess = true;
+                                Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         }
-                    }
-                        //  상태 변경
-                        layerEnum = GetCurrentLayerEnum(m_LayerType);
-                        socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
-                        if (socket != null && !socket.IsSuccess)
-                        {
-                            socket.IsSuccess = true;
-                            Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
-                        }
-
-                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                     }
                     break;
                 /// 
@@ -21462,24 +21467,18 @@ namespace QMC.Common.Modules
                         //  정상 가공이면 다음 소켓 가공
                         else
                         {
-                            //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
+                            //  상태 변경
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (socket != null && !socket.IsSuccess)
+                            {
+                                socket.IsSuccess = true;
+                                Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         }
-                    }
-                        //  상태 변경
-                        layerEnum = GetCurrentLayerEnum(m_LayerType);
-                        socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
-                        if (socket != null && !socket.IsSuccess)
-                        {
-                            socket.IsSuccess = true;
-                            Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
-                        }
-
-                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
                     }
                     break;
                 /// 
@@ -34095,7 +34094,7 @@ namespace QMC.Common.Modules
             return m_bRet;
         }
 
-        public int GetDrillingData()
+        public int GetDrillingData(bool bDataInit = false)
         {
             string m_strTemp;
             bool success = true;
@@ -39635,11 +39634,19 @@ namespace QMC.Common.Modules
             //}
 
             // 도면 영역 분할 처리 이후
-            if (m_nGroupCount > 0)
+
+            // 최초로 처음 시작할때 한 번만 초기화 후 진행한다.
+            // 중간에 정지했다가 다시 시작하고 그런건 어떻게 알지.. 흠...
+            // LaserDrilling Step으로 구분해야 하나..
+            if(bDataInit)
             {
-                DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
-                Log.Write("DrillStatus", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
+                if (m_nGroupCount > 0)
+                {
+                    DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
+                    Log.Write("DrillStatus", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
+                }
             }
+            
 
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."

@@ -3212,7 +3212,7 @@ namespace SLD200_MSL
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Start Button Click", "Data Parsing 진행. (GetDrillingData)");
 
-                    workStage.GetDrillingData();
+                    workStage.GetDrillingData(true);
                 }
 
                 double m_dSelectedGroup_Center_X = 999.0;
