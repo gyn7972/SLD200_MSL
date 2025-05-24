@@ -19236,6 +19236,14 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 가 남아있지 않음");
 
+                        layerEnum = GetCurrentLayerEnum(m_LayerType);
+                        socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                        if (socket != null && !socket.IsSuccess)
+                        {
+                            socket.IsSuccess = true;
+                            Log.Write("DrillStatus", $"[ThruHole] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료 마킹");
+                        }
+
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatComplete;
                     }
                     break;
@@ -19875,7 +19883,17 @@ namespace QMC.Common.Modules
                         //Main_SocketPositions_CurrentSocketPosition.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.X;
                         //Main_SocketPositions_CurrentSocketPosition.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.Y;
                         //Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
-                        //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                        //Main_SocketPositions_SetStatus = true;  
+
+                        //  상태 변경
+                        layerEnum = GetCurrentLayerEnum(m_LayerType);
+                        socket = DrillingManager.GetSocket(layerEnum, m_nOutLine_ObjectDataCount);
+                        if (socket != null && !socket.IsSuccess)
+                        {
+                            socket.IsSuccess = true;
+                            Log.Write("DrillStatus", $"[Outline] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료 마킹");
+                        }
+
 
                         m_nLaserDrilling_MainStep = nextStep;
                     }
