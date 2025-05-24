@@ -378,6 +378,10 @@ namespace QMC.Common.Modules
         public st4PointPosition_Data[] m_st4PointPosition_InspectedPos;         //  4-Point 의 측정된 위치 데이터
         public st4PointAlign_Result m_st4PointAlign_Result;                     //  Align 데이터
 
+        //도면 기준 
+
+
+
         public st4PointPosition_Data[] m_st4PointPosition_DwgPos_LastSuccess;     //  4-Point 의 도면상 위치 데이터 (마지막 성공한 데이터)
         public st4PointPosition_Data[] m_st4PointPosition_InspectedPos_LastSuccess; //  4-Point 의 측정된 위치 데이터 (마지막 성공한 데이터)
         public st4PointAlign_Result m_st4PointAlign_Result_LastSuccess;
@@ -14234,7 +14238,6 @@ namespace QMC.Common.Modules
                                         m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].Y;
                                         m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stDividedRegion_GroupData[nSocketNum].dFiducialWidth[i];
                                         m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stDividedRegion_GroupData[nSocketNum].dFiducialHeight[i];
-
                                     }
                                     //m_nProductAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos;
                                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.__SocketAlign_Start;
@@ -14888,11 +14891,68 @@ namespace QMC.Common.Modules
                             // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
                             m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
 
+
+                            //Todo: 구영남 - 얼라인 로그
+                            Log.Write("FineVision Fiducial", "Socket NO : " + nSocketNum.ToString() + "Socket Aling 완료");
+                            //개별 위치 
+                            for (int i = 0; i < 4; i++)
+                            {
+                                double dwgX = m_st4PointPosition_DwgPos[i].ptFiducial_Center.X;
+                                double dwgY = m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y;
+
+                                double inspectedX = m_st4PointPosition_InspectedPos[i].ptFiducial_Center.X;
+                                double inspectedY = m_st4PointPosition_InspectedPos[i].ptFiducial_Center.Y;
+
+                                double offsetX = inspectedX - dwgX;
+                                double offsetY = inspectedY - dwgY;
+
+                                Log.Write("FineVision Fiducial",
+                                    "Socket NO : " + nSocketNum.ToString() +
+                                    "  Fiducial Index: " + i.ToString() +
+                                    "  Dwg (X: " + dwgX.ToString("F3") + ", Y: " + dwgY.ToString("F3") + ")" +
+                                    " / Inspected (X: " + inspectedX.ToString("F3") + ", Y: " + inspectedY.ToString("F3") + ")" +
+                                    " / Offset (ΔX: " + offsetX.ToString("F3") + ", ΔY: " + offsetY.ToString("F3") + ")");
+                            }
+
+                            // 1. 도면 기준 Center 계산
+                            double dwgCenterX = 0.0;
+                            double dwgCenterY = 0.0;
+                            for (int i = 0; i < 4; i++)
+                            {
+                                dwgCenterX += m_st4PointPosition_DwgPos[i].ptFiducial_Center.X;
+                                dwgCenterY += m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y;
+                            }
+                            dwgCenterX /= 4.0;
+                            dwgCenterY /= 4.0;
+
+                            // 2. 실측 기준 Center 계산
+                            double inspectedCenterX = 0.0;
+                            double inspectedCenterY = 0.0;
+                            for (int i = 0; i < 4; i++)
+                            {
+                                inspectedCenterX += m_st4PointPosition_InspectedPos[i].ptFiducial_Center.X;
+                                inspectedCenterY += m_st4PointPosition_InspectedPos[i].ptFiducial_Center.Y;
+                            }
+                            inspectedCenterX /= 4.0;
+                            inspectedCenterY /= 4.0;
+
+                            // 3. Center Offset 계산
+                            double offsetCenterX = inspectedCenterX - dwgCenterX;
+                            double offsetCenterY = inspectedCenterY - dwgCenterY;
+
+                            Log.Write("FineVision Fiducial",
+                                    "Socket NO : " + nSocketNum.ToString() +
+                                    "  CenterPoint :: Dwg (X: " + dwgCenterX.ToString("F3") + ", Y: " + dwgCenterY.ToString("F3") + ")" +
+                                    " / Inspected (X: " + inspectedCenterX.ToString("F3") + ", Y: " + inspectedCenterY.ToString("F3") + ")" +
+                                    " / Offset (ΔX: " + offsetCenterX.ToString("F3") + ", ΔY: " + offsetCenterY.ToString("F3") + ")");
+
+
                             strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
                                         "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
                                         "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
                                         "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
                             Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+                            Log.Write("FineVision Fiducial", strTemp);
                         }
                     }
 
@@ -26049,6 +26109,13 @@ namespace QMC.Common.Modules
             xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
             MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
+            Log.Write("FineVision Fiducial",
+                        "Socket NO : " + m_nDrillingWork_Group_Count.ToString() +
+                        "  FieldSize NO : " + m_nDividedRegion_Region_CurrentIndex_forZigZag.ToString() +
+                        "  Interpolated Target Pos (X: " + xyInterpolatedCoordinate.X.ToString("F3") +
+                        ", Y: " + xyInterpolatedCoordinate.Y.ToString("F3") + ")");
+
+
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
@@ -33458,21 +33525,36 @@ namespace QMC.Common.Modules
 
             m_nLayerCount = 0;
             // 도면 Layer 이름 수집 (Hole / Marking / Outline / Thruhole)
-            List<string> layerNames = new List<string>();
+            Dictionary<string, int> layerSocketCounts = new Dictionary<string, int>();
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
-                // 도면 Layer 이름 수집용.
-                if (layer.IsMarkerable)
+                // 중요! Data수집 - 도면 Layer 수집용.
+                string name = layer.Name;
+                if (layer.IsMarkerable &&
+                   (name.StartsWith("Hole") || name == "Marking" || name == "Outline" || name == "Thruhole"))
                 {
-                    string name = layer.Name;
-                    if (name.StartsWith("Hole") || name == "Marking" || name == "Outline" || name == "Thruhole")
+                    int groupCount = 0;
+                    foreach (var entity in layer)
                     {
-                        if (!layerNames.Contains(name))
-                            layerNames.Add(name);
+                        if (entity is Group)
+                            groupCount++;
+                    }
+
+                    if (groupCount <= 0)
+                        continue;
+
+                    if (name.StartsWith("Hole") && int.TryParse(name.Substring(4), out int m_nHoleLayer_Num))
+                    {
+                        string fixedLayerName = $"Hole{m_nHoleLayer_Num}";
+                        layerSocketCounts[fixedLayerName] = groupCount;
+                    }
+                    else if (name == "Marking" || name == "Outline" || name == "Thruhole")
+                    {
+                        layerSocketCounts[name] = groupCount;
                     }
                 }
 
-                // 기존 코드
+                // 기존 코드 - Layer 분류 및 소켓 분류
                 if (layer.IsMarkerable)
                 {
                     ///////////////////////////
@@ -33584,11 +33666,6 @@ namespace QMC.Common.Modules
                                 m_stDividedRegion_GroupData = new WorkStage.stDividedRegion_GroupData[m_nGroupCount];
                                 m_stDividedRegion_GroupData[0].nGroup_Num = m_nGroupCount;
 
-                                if (m_nGroupCount > 0 && layerNames.Count > 0)
-                                {
-                                    DrillingManager.InitDrillingManagerFromDrawing(layerNames, m_nGroupCount);
-                                    Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerNames.Count}개, Socket {m_nGroupCount}개");
-                                }
 
                                 m_nGroupCount = 0;
 
@@ -38543,6 +38620,8 @@ namespace QMC.Common.Modules
                     {
                         //  Fiducial 데이터의 개수가 Socket 개수의 4배수인지 확인한다.
                         //if (m_ptFiducial.Length == (m_stDividedRegion_GroupData[0].nGroup_Num * 4))
+
+                        // 그룹일때랑 아닐때 확인 필요.
                         if (m_ptPreAlign.Length >= 2)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Drilling Layer, Pre-Align 데이터 할당, Pre-Align 마크 개수가 2개 이상입니다.");
@@ -38701,18 +38780,24 @@ namespace QMC.Common.Modules
             //{
             //    Equipment.WorkTotalTime_Marking += (m_dTotal_MarkingDataLength / Config.ParamConfig.Marking_Mark_Speed) * (Config.ParamConfig.Marking_Repeat_Count == 0 ? 1.0 : Config.ParamConfig.Marking_Repeat_Count);
             //}
-
             //Equipment.WorkTotalTime = Equipment.WorkTotalTime_Outline + Equipment.WorkTotalTime_Thruhole + Equipment.WorkTotalTime_Drilling + Equipment.WorkTotalTime_Marking;
 
 
+            // 중요! Data수집 - 도면 Layer 수집용.
             // 파싱 끝났으면 여기서 초기화
-            if (m_nGroupCount > 0 && layerNames.Count > 0)
+            if (layerSocketCounts.Count > 0)
             {
-                DrillingManager.InitDrillingManagerFromDrawing(layerNames, m_nGroupCount);
-                Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerNames.Count}개, Socket {m_nGroupCount}개");
+                DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
+                Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
             }
+            //if (m_nGroupCount > 0 && layerNames.Count > 0)
+            //{
+            //    DrillingManager.InitDrillingManagerFromDrawing(layerNames, m_nGroupCount);
+            //    Log.Write("Init", $"[DrillingManager] 초기화 완료 - Layer {layerNames.Count}개, Socket {m_nGroupCount}개");
+            //}
 
 
+            
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
         }

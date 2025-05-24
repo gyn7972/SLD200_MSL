@@ -47,6 +47,7 @@ namespace QMC.Common.Global
     public class LayerProcessData
     {
         public string LayerName { get; set; }
+        public int LayerNumber { get; set; }  // 추가: Hole1 -> 1, Hole2 -> 2 ...
         public List<SocketProcessData> SocketList { get; set; } = new List<SocketProcessData>();
 
         public void Reset()
@@ -83,16 +84,18 @@ namespace QMC.Common.Global
             return layer?.GetSocket(socketNumber);
         }
 
-        /// <summary>
-        /// LayerList를 초기화합니다.
-        /// </summary>
         public void InitDrillingManagerFromDrawing(List<string> layerNames, int socketCount)
         {
             LayerList.Clear();
 
             foreach (var name in layerNames)
             {
-                var layer = new LayerProcessData { LayerName = name };
+                var layer = new LayerProcessData
+                {
+                    LayerName = name,
+                    LayerNumber = ParseLayerNumber(name)
+                };
+
                 for (int i = 0; i < socketCount; i++)
                 {
                     layer.SocketList.Add(new SocketProcessData { SocketNumber = i });
@@ -100,6 +103,40 @@ namespace QMC.Common.Global
                 LayerList.Add(layer);
             }
         }
-    }
 
+        /// <summary>
+        /// LayerList를 초기화합니다.
+        /// </summary>
+        public void InitDrillingManagerFromDrawing(Dictionary<string, int> layerSocketCounts)
+        {
+            LayerList.Clear();
+
+            foreach (var kvp in layerSocketCounts)
+            {
+                string layerName = kvp.Key;
+                int socketCount = kvp.Value;
+
+                var layer = new LayerProcessData
+                {
+                    LayerName = layerName,
+                    LayerNumber = ParseLayerNumber(layerName)
+                };
+
+                for (int i = 0; i < socketCount; i++)
+                {
+                    layer.SocketList.Add(new SocketProcessData { SocketNumber = i });
+                }
+
+                LayerList.Add(layer);
+            }
+        }
+
+        private int ParseLayerNumber(string layerName)
+        {
+            if (layerName.StartsWith("Hole") && int.TryParse(layerName.Substring(4), out int num))
+                return num;
+
+            return -1;
+        }
+    }
 }
