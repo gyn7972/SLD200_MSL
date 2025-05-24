@@ -1871,6 +1871,9 @@ namespace SLD200_MSL
                 }
             }
 
+            //  도면 데이터 체크
+            workStage.DrillingData_Verification();
+
             var mb4 = new MessageBoxOk();
             mb4.ShowDialog("Recipe Data Apply !", "Recipe Data Apply");
         }

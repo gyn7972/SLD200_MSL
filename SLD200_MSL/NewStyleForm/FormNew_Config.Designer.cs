@@ -591,6 +591,14 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
+            this.groupBox_VarioScan = new System.Windows.Forms.GroupBox();
+            this.label_VarioScan_ZDefocus = new System.Windows.Forms.Label();
+            this.label_VarioScan_ZOffset = new System.Windows.Forms.Label();
+            this.textBox_Config_TabLaser_VarioScan_ZOffset = new System.Windows.Forms.TextBox();
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus = new System.Windows.Forms.TextBox();
+            this.Button_Config_VarioScan_ZOffset_Set = new System.Windows.Forms.Button();
+            this.Button_Config_VarioScan_ZDefocua_Set = new System.Windows.Forms.Button();
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset = new System.Windows.Forms.Button();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -700,6 +708,7 @@
             this.groupBox_Config_AxisPositions_LoadTransfer.SuspendLayout();
             this.groupBox_Config_AxisPositions_Loader.SuspendLayout();
             this.groupBox30.SuspendLayout();
+            this.groupBox_VarioScan.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl_Config
@@ -4980,6 +4989,7 @@
             // 
             // tabPage_Config_Laser
             // 
+            this.tabPage_Config_Laser.Controls.Add(this.groupBox_VarioScan);
             this.tabPage_Config_Laser.Controls.Add(this.button_Config__TabLaser_CalFilePopup);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox_Config_Laser_UVLaser);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox13);
@@ -8128,6 +8138,103 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // groupBox_VarioScan
+            // 
+            this.groupBox_VarioScan.Controls.Add(this.Button_Config_VarioScan_ZOffsetZDefocus_Reset);
+            this.groupBox_VarioScan.Controls.Add(this.Button_Config_VarioScan_ZDefocua_Set);
+            this.groupBox_VarioScan.Controls.Add(this.Button_Config_VarioScan_ZOffset_Set);
+            this.groupBox_VarioScan.Controls.Add(this.textBox_Config_TabLaser_VarioScan_ZDefocus);
+            this.groupBox_VarioScan.Controls.Add(this.textBox_Config_TabLaser_VarioScan_ZOffset);
+            this.groupBox_VarioScan.Controls.Add(this.label_VarioScan_ZDefocus);
+            this.groupBox_VarioScan.Controls.Add(this.label_VarioScan_ZOffset);
+            this.groupBox_VarioScan.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox_VarioScan.Location = new System.Drawing.Point(528, 237);
+            this.groupBox_VarioScan.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_VarioScan.Name = "groupBox_VarioScan";
+            this.groupBox_VarioScan.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_VarioScan.Size = new System.Drawing.Size(281, 152);
+            this.groupBox_VarioScan.TabIndex = 81;
+            this.groupBox_VarioScan.TabStop = false;
+            this.groupBox_VarioScan.Text = " Vario Scan ";
+            // 
+            // label_VarioScan_ZDefocus
+            // 
+            this.label_VarioScan_ZDefocus.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_VarioScan_ZDefocus.Location = new System.Drawing.Point(5, 60);
+            this.label_VarioScan_ZDefocus.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_VarioScan_ZDefocus.Name = "label_VarioScan_ZDefocus";
+            this.label_VarioScan_ZDefocus.Size = new System.Drawing.Size(88, 24);
+            this.label_VarioScan_ZDefocus.TabIndex = 10;
+            this.label_VarioScan_ZDefocus.Text = "Z Defocus :";
+            this.label_VarioScan_ZDefocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_VarioScan_ZOffset
+            // 
+            this.label_VarioScan_ZOffset.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_VarioScan_ZOffset.Location = new System.Drawing.Point(5, 26);
+            this.label_VarioScan_ZOffset.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_VarioScan_ZOffset.Name = "label_VarioScan_ZOffset";
+            this.label_VarioScan_ZOffset.Size = new System.Drawing.Size(88, 24);
+            this.label_VarioScan_ZOffset.TabIndex = 6;
+            this.label_VarioScan_ZOffset.Text = "Z Offset :";
+            this.label_VarioScan_ZOffset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Config_TabLaser_VarioScan_ZOffset
+            // 
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Location = new System.Drawing.Point(95, 27);
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Name = "textBox_Config_TabLaser_VarioScan_ZOffset";
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Size = new System.Drawing.Size(87, 24);
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.TabIndex = 15;
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Text = "10";
+            // 
+            // textBox_Config_TabLaser_VarioScan_ZDefocus
+            // 
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Location = new System.Drawing.Point(95, 61);
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Name = "textBox_Config_TabLaser_VarioScan_ZDefocus";
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Size = new System.Drawing.Size(87, 24);
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.TabIndex = 16;
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "10";
+            // 
+            // Button_Config_VarioScan_ZOffset_Set
+            // 
+            this.Button_Config_VarioScan_ZOffset_Set.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.Button_Config_VarioScan_ZOffset_Set.Location = new System.Drawing.Point(188, 26);
+            this.Button_Config_VarioScan_ZOffset_Set.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Button_Config_VarioScan_ZOffset_Set.Name = "Button_Config_VarioScan_ZOffset_Set";
+            this.Button_Config_VarioScan_ZOffset_Set.Size = new System.Drawing.Size(82, 31);
+            this.Button_Config_VarioScan_ZOffset_Set.TabIndex = 61;
+            this.Button_Config_VarioScan_ZOffset_Set.Text = "Set";
+            this.Button_Config_VarioScan_ZOffset_Set.UseVisualStyleBackColor = true;
+            this.Button_Config_VarioScan_ZOffset_Set.Click += new System.EventHandler(this.Button_Config_VarioScan_ZOffset_Set_Click);
+            // 
+            // Button_Config_VarioScan_ZDefocua_Set
+            // 
+            this.Button_Config_VarioScan_ZDefocua_Set.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.Button_Config_VarioScan_ZDefocua_Set.Location = new System.Drawing.Point(188, 60);
+            this.Button_Config_VarioScan_ZDefocua_Set.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Button_Config_VarioScan_ZDefocua_Set.Name = "Button_Config_VarioScan_ZDefocua_Set";
+            this.Button_Config_VarioScan_ZDefocua_Set.Size = new System.Drawing.Size(82, 31);
+            this.Button_Config_VarioScan_ZDefocua_Set.TabIndex = 62;
+            this.Button_Config_VarioScan_ZDefocua_Set.Text = "Set";
+            this.Button_Config_VarioScan_ZDefocua_Set.UseVisualStyleBackColor = true;
+            this.Button_Config_VarioScan_ZDefocua_Set.Click += new System.EventHandler(this.Button_Config_VarioScan_ZDefocua_Set_Click);
+            // 
+            // Button_Config_VarioScan_ZOffsetZDefocus_Reset
+            // 
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Location = new System.Drawing.Point(188, 95);
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Name = "Button_Config_VarioScan_ZOffsetZDefocus_Reset";
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Size = new System.Drawing.Size(82, 46);
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.TabIndex = 63;
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Text = "Reset";
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.UseVisualStyleBackColor = true;
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Click += new System.EventHandler(this.Button_Config_VarioScan_ZOffsetZDefocus_Reset_Click);
+            // 
             // FormNew_Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -8275,6 +8382,8 @@
             this.groupBox_Config_AxisPositions_LoadTransfer.ResumeLayout(false);
             this.groupBox_Config_AxisPositions_Loader.ResumeLayout(false);
             this.groupBox30.ResumeLayout(false);
+            this.groupBox_VarioScan.ResumeLayout(false);
+            this.groupBox_VarioScan.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -8844,5 +8953,13 @@
         private System.Windows.Forms.Label label61;
         private System.Windows.Forms.Button Button_Config_BDS_BET_Zoom_Position_Move;
         private System.Windows.Forms.TextBox textBox_Config_BDS_BET_Zoom_Position;
+        private System.Windows.Forms.GroupBox groupBox_VarioScan;
+        private System.Windows.Forms.Label label_VarioScan_ZDefocus;
+        private System.Windows.Forms.Label label_VarioScan_ZOffset;
+        private System.Windows.Forms.TextBox textBox_Config_TabLaser_VarioScan_ZDefocus;
+        private System.Windows.Forms.TextBox textBox_Config_TabLaser_VarioScan_ZOffset;
+        private System.Windows.Forms.Button Button_Config_VarioScan_ZOffsetZDefocus_Reset;
+        private System.Windows.Forms.Button Button_Config_VarioScan_ZDefocua_Set;
+        private System.Windows.Forms.Button Button_Config_VarioScan_ZOffset_Set;
     }
 }

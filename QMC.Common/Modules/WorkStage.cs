@@ -29763,11 +29763,15 @@ namespace QMC.Common.Modules
             int m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수
 
             //  Group 이 아닌 항목이 있는지 체크하기 위한 변수
-            int m_nHole1_NotGroupCount = 0;
-            int m_nRect_NotGroupCount = 0;
-            int m_nThruhole_NotGroupCount = 0;
-            int m_nOutline_NotGroupCount = 0;
-            int m_nMarking_NotGroupCount = 0;
+            int m_nHole1_NotGroupCount = 0;                                     //  Hole1 데이터는 그룹이 아닌게 있으면 안됨
+            int m_nRect_NotGroupCount = 0;                                      //  Rect 데이터는 그룹이 아닌게 있으면 안됨
+            int m_nThruhole_NotGroupCount = 0;                                  //  Thruhole 데이터는 그룹이 아닌게 있으면 안됨
+            int m_nOutline_NotGroupCount = 0;                                   //  Outline 데이터는 그룹이 아닌게 있으면 안됨
+
+            //  Group 인 항목이 있는지 체크하기 위한 변수
+            int m_nMarking_GroupCount = 0;                                      //  Marking 데이터는 그룹이 있으면 안됨
+            int m_nFiducial_GroupCount = 0;                                     //  Fiducial 데이터는 그룹이 있으면 안됨
+            int m_nPreAlign_GroupCount = 0;                                     //  PreAlign 데이터는 그룹이 있으면 안됨   
 
             int m_nLayerCount = 0;
 
@@ -30394,8 +30398,6 @@ namespace QMC.Common.Modules
                                     //point.Location 
                                     //point.DwellTime
                                     //success &= point.Mark(markerArg);
-
-                                    m_nMarking_NotGroupCount++;
                                     break;
 
                                 case EType.Points:
@@ -30407,38 +30409,28 @@ namespace QMC.Common.Modules
                                     //}
                                     //points.DwellTime
                                     //success &= points.Mark(markerArg);
-
-                                    m_nMarking_NotGroupCount++;
                                     break;
 
                                 case EType.Line:
                                     //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
-                                    m_nMarking_NotGroupCount++;
                                     break;
 
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    m_nMarking_NotGroupCount++;
                                     break;
 
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    m_nMarking_NotGroupCount++;
                                     break;
 
                                 case EType.Rectangle:
                                     //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
-
-                                    m_nMarking_NotGroupCount++;
                                     break;
 
                                 case EType.Group:
                                     var group = entity as Group;
 
-                                    m_nThruhole_ObjectCount++;              //  마킹 그룹 개수만 카운트
+                                    m_nMarking_GroupCount++;              //  마킹 그룹 개수만 카운트
                                     break;
                             }
                         }
@@ -30447,9 +30439,15 @@ namespace QMC.Common.Modules
             }
 
             if ((m_nHole1_NotGroupCount > 0) || (m_nRect_NotGroupCount > 0) || (m_nThruhole_NotGroupCount > 0) ||
-                (m_nOutline_NotGroupCount > 0) || (m_nMarking_NotGroupCount > 0))
+                (m_nOutline_NotGroupCount > 0))
             {
-                MessageBox.Show("\"Hole1\", \"Thruhole\", \"Outline\", \"Marking\" Layer 는 Group 만 가능합니다.", "Information!!");
+                MessageBox.Show("\"Hole1\", \"Thruhole\", \"Outline\" Layer 는 Group 만 가능합니다.", "Information!!");
+                return false;
+            }
+
+            if (m_nMarking_GroupCount > 0)
+            {
+                MessageBox.Show("\"Marking\" Layer 는 Group 을 사용할 수 없습니다.", "Information!!");
                 return false;
             }
 
@@ -30480,6 +30478,168 @@ namespace QMC.Common.Modules
                 {
                     MessageBox.Show("\"Outline\" Layer 의 Frequency 가 0 입니다.", "Information!!");
                 }
+            }
+
+            return success;
+        }
+
+
+        public bool DrillingData_Verification()
+        {
+            string m_strTemp;
+            bool success = true;
+            bool LayerIsGroup = false;
+
+            //  SLD-200 에서 사용할 변수
+            //  도면 데이터 개수 초기화
+
+            //  Group 이 아닌 항목이 있는지 체크하기 위한 변수 (Group 인 데이터만 사용 가능)
+            int m_nHole1_NotGroupCount = 0;                                     //  Hole1 데이터는 그룹이 아닌게 있으면 안됨
+            int m_nRect_NotGroupCount = 0;                                      //  Rect 데이터는 그룹이 아닌게 있으면 안됨
+            int m_nThruhole_NotGroupCount = 0;                                  //  Thruhole 데이터는 그룹이 아닌게 있으면 안됨
+            int m_nOutline_NotGroupCount = 0;                                   //  Outline 데이터는 그룹이 아닌게 있으면 안됨
+
+            //  Group 인 항목이 있는지 체크하기 위한 변수 (Group 이 아닌 데이터만 사용 가능)
+            int m_nMarking_GroupCount = 0;                                      //  Marking 데이터는 그룹이 있으면 안됨
+            int m_nFiducial_GroupCount = 0;                                     //  Fiducial 데이터는 그룹이 있으면 안됨
+            int m_nPreAlign_GroupCount = 0;                                     //  PreAlign 데이터는 그룹이 있으면 안됨   
+
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
+            {
+                MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
+                return false;
+            }
+
+            //  Layer 종류별 Count
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
+            {
+                if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
+                {
+                    if (layer.Name == "Hole1")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                case EType.Points:
+                                case EType.Line:
+                                case EType.Arc:
+                                case EType.Circle:
+                                case EType.Rectangle:
+                                    m_nHole1_NotGroupCount++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Outline")
+                    {
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                case EType.Points:
+                                case EType.Line:
+                                case EType.Arc:
+                                case EType.Circle:
+                                case EType.Rectangle:
+                                    m_nOutline_NotGroupCount++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Thruhole")
+                    {
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                case EType.Points:
+                                case EType.Line:
+                                case EType.Arc:
+                                case EType.Circle:
+                                case EType.Rectangle:
+                                    m_nThruhole_NotGroupCount++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Marking")
+                    {
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Group:
+                                    m_nMarking_GroupCount++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Fiducial")
+                    {
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Group:
+                                    m_nFiducial_GroupCount++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "PreAlign")
+                    {
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Group:
+                                    m_nPreAlign_GroupCount++;
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (m_nHole1_NotGroupCount > 0)
+            {
+                MessageBox.Show("\"Hole1\" Layer 는 Group 만 가능합니다.", "Information!!");
+                return false;
+            }
+
+            if (m_nThruhole_NotGroupCount > 0)
+            {
+                MessageBox.Show("\"Thruhole\" Layer 는 Group 만 가능합니다.", "Information!!");
+                return false;
+            }
+
+            if (m_nOutline_NotGroupCount > 0)
+            {
+                MessageBox.Show("\"Outline\" Layer 는 Group 만 가능합니다.", "Information!!");
+                return false;
+            }
+
+            if (m_nMarking_GroupCount > 0)
+            {
+                MessageBox.Show("\"Marking\" Layer 는 Group 지정하여 사용할 수 없습니다.", "Information!!");
+                return false;
+            }
+
+            if (m_nFiducial_GroupCount > 0)
+            {
+                MessageBox.Show("\"Fiducial\" Layer 는 Group 지정하여 사용할 수 없습니다.", "Information!!");
+                return false;
+            }
+
+            if (m_nPreAlign_GroupCount > 0)
+            {
+                MessageBox.Show("\"PreAlign\" Layer 는 Group 지정하여 사용할 수 없습니다.", "Information!!");
+                return false;
             }
 
             return success;

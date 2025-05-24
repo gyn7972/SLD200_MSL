@@ -5840,5 +5840,43 @@ namespace SLD200_MSL
             bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
             bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
         }
+
+        private void Button_Config_VarioScan_ZOffset_Set_Click(object sender, EventArgs e)
+        {
+            //  Vario Scan - Z Offset Setting
+
+            var rtc3D = workStage.rtc as IRtc3D;
+
+            float zOffset = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZOffset.Text);
+            rtc3D.CtlZOffset(zOffset);
+
+            MessageBox.Show($"Vario Scan - Z Offset 설정 값 : {zOffset} mm", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void Button_Config_VarioScan_ZDefocua_Set_Click(object sender, EventArgs e)
+        {
+            //  Vario Scan - Z Defocus Setting
+
+            var rtc3D = workStage.rtc as IRtc3D;
+
+            float zDefocus = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZDefocus.Text);
+            rtc3D.CtlZDefocus(zDefocus);
+
+            MessageBox.Show($"Vario Scan - Z Defocus 설정 값 : {zDefocus} mm", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void Button_Config_VarioScan_ZOffsetZDefocus_Reset_Click(object sender, EventArgs e)
+        {
+            //  Vario Scan - Z Offset & Z Defocus Reset
+
+            var rtc3D = workStage.rtc as IRtc3D;
+
+            rtc3D.CtlZOffset(0.0f);
+            rtc3D.CtlZDefocus(0.0f);
+
+            textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
+            textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";
+            MessageBox.Show("Vario Scan - Z Offset & Z Defocus 값이 초기화 되었습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
