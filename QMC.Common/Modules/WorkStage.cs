@@ -16652,7 +16652,8 @@ namespace QMC.Common.Modules
 
                     //  선택 가공이면? 가공해야 할 Socket 번호를 선택한 번호로 변경                    
                     if ((m_nSocketAlign_StartIndex >= 0) &&
-                        ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) || (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
+                        ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) || 
+                        (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
                     {
                         m_nDrillingWork_Group_Count = m_nSocketAlign_StartIndex;
                     }
@@ -18151,7 +18152,8 @@ namespace QMC.Common.Modules
 
                     //  선택 가공이면? 가공해야 할 Socket 번호를 선택한 번호로 변경                    
                     if ((m_nSocketAlign_StartIndex >= 0) &&
-                        ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) || (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
+                        ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) || 
+                        (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
                     {
                         m_nDrillingWork_Group_Count = m_nSocketAlign_StartIndex;
                     }
@@ -19608,7 +19610,8 @@ namespace QMC.Common.Modules
                         {
                             //  선택 가공이면? 가공해야 할 Socket 번호를 선택한 번호로 변경                    
                             if ((m_nSocketAlign_StartIndex >= 0) &&
-                                ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) || (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
+                                ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) || 
+                                (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
                             {
                                 m_nDrillingWork_Group_Count = m_nSocketAlign_StartIndex;
                             }
@@ -21287,25 +21290,18 @@ namespace QMC.Common.Modules
                         //  정상 가공이면 다음 소켓 가공
                         else
                         {
-                            //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
+                            //  상태 변경
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (socket != null && !socket.IsSuccess)
+                            {
+                                socket.IsSuccess = true;
+                                Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         }
-                    }
-                        //  상태 변경
-                        layerEnum = GetCurrentLayerEnum(m_LayerType);
-                        socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
-                        if (socket != null && !socket.IsSuccess)
-                        {
-                            socket.IsSuccess = true;
-                            Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
-                        }
-
-                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                     }
                     break;
                 /// 
@@ -21462,24 +21458,18 @@ namespace QMC.Common.Modules
                         //  정상 가공이면 다음 소켓 가공
                         else
                         {
-                            //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
+                            //  상태 변경
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (socket != null && !socket.IsSuccess)
+                            {
+                                socket.IsSuccess = true;
+                                Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         }
-                    }
-                        //  상태 변경
-                        layerEnum = GetCurrentLayerEnum(m_LayerType);
-                        socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
-                        if (socket != null && !socket.IsSuccess)
-                        {
-                            socket.IsSuccess = true;
-                            Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
-                        }
-
-                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
                     }
                     break;
                 /// 
