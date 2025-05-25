@@ -811,6 +811,7 @@ namespace QMC.Common.Modules
             public double[] dPreAlignHeight;            //  PreAlign 마크 세로 크기
         }
         public stOutLine_SocketData[] m_stOutLine_SocketData;
+        public stOutLine_SocketData[] m_stOutLine_SocketData_ProcessingFlag;      //  Socket Data 를 저장한다. (가공 여부 Flag)
         ///
         /// <summary>
         /// "외곽선" 처리 - 여기까지
@@ -969,6 +970,7 @@ namespace QMC.Common.Modules
             public int nRegion_ObjectCount;             //  객체 누적 카운트
         }
         public stMarking_SocketData m_stMarking_SocketData;
+        public stMarking_SocketData m_stMarking_SocketData_ProcessingFlag;      //  Socket Data 를 저장한다. (가공 여부 Flag)
         ///
         /// <summary>
         /// 
@@ -22704,6 +22706,46 @@ namespace QMC.Common.Modules
                                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Processing Skip Flag 저장 변수가 Null 입니다.");
                                             }
 
+                                            //  Outline Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                            if (m_stOutLine_SocketData_ProcessingFlag != null)
+                                            {
+                                                if (m_AlignMode == AlignMode.Socket)
+                                                {
+                                                    if (m_stOutLine_SocketData_ProcessingFlag.Length == m_stDividedRegion_GroupData.Length)
+                                                    {
+                                                        m_stOutLine_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                    }
+                                                    else
+                                                    {
+                                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 과 Hole1 의 Socket 개수가 다릅니다.");
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline Processing Skip Flag 저장 변수가 Null 입니다.");
+                                            }
+
+                                            //  Marking Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                            if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData != null)
+                                            {
+                                                if (m_AlignMode == AlignMode.Socket)
+                                                {
+                                                    if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length == m_stDividedRegion_GroupData.Length)
+                                                    {
+                                                        m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                    }
+                                                    else
+                                                    {
+                                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 과 Hole1 의 Socket 개수가 다릅니다.");
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking Processing Skip Flag 저장 변수가 Null 입니다.");
+                                            }
+
                                             m_AlignMode = AlignMode.Socket;
 
                                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -27507,6 +27549,13 @@ namespace QMC.Common.Modules
                         //  Thruhole, Outline, Marking 등의 Layer 가 있는지 체크. 
                         //  Socket Align 에 실패하여 가공하지 않고 건너 뛴 Socket 의 Thruhole 데이터도
                         //  무조건 가공해야 하기 때문에 얼라인 보정이 필요하다. (Press 합착을 위한 가이드 Pin 위치이기 때문에)
+                        //
+                        //  !!!체크 필요!!!!
+                        //  
+                        //  Thruhole 은 기구 가이드 Pin 자리이기 때문에 무조건 뚫어야 하지만, Outline 이나 Marking 의 경우는????  
+                        //  Hole1 Layer 와 Thruhole Layer 조합일 때 진행해야 하는 부분인데, Thruhole Layer 대신 Outline 이나 Marking Layer 로 이루어진 조합이라면??? 
+                        //  일단 Hole1 과 Thruhole Layer 가 포함된 경우에만 실패한 소켓들 전부 얼라인 하는 것으로 하자.
+                        //
                         m_bPassedSocket_Exist = false;
                         m_nSocketNum_forFailedSocket_Align = -1;
                         if (m_stThruHole_SocketData_ProcessingFlag != null)
@@ -32805,6 +32854,8 @@ namespace QMC.Common.Modules
 
             //  소켓 얼라인 실패한 것의 Thruhole, Outline, Marking 등의 그룹 데이터를 Select 하기 위함.
             m_nListCount = 0;
+
+            //  Thruhole 소켓 
             if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
             {
                 for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag.Length; i++)
@@ -32825,6 +32876,50 @@ namespace QMC.Common.Modules
                     }
                 }
             }
+
+            //  Outline 소켓
+            if (m_stOutLine_SocketData_ProcessingFlag.Length > 0)
+            {
+                for (int i = 0; i < m_stOutLine_SocketData_ProcessingFlag.Length; i++)
+                {
+                    if (m_stOutLine_SocketData_ProcessingFlag[i].bProcessing == false)
+                    {
+                        if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                        {
+                            if (i >= m_nSocketAlign_StartIndex)
+                            {
+                                m_nListCount++;
+                            }
+                        }
+                        else                                                                                                                                        //  전체 가공 모드일 경우
+                        {
+                            m_nListCount++;
+                        }
+                    }
+                }
+            }
+
+            ////  Marking 소켓 --> 마킹은 일단 보류. 모듈 단위 마킹일 경우는, Hole1 의 소켓 얼라인할 때 같이 얼라인 해주기 때문에, 여기서 또 얼라인 하면 문제가 될 수 있다.
+            //if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length > 0)
+            //{
+            //    for (int i = 0; i < m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length; i++)
+            //    {
+            //        if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[i].bProcessing == false)
+            //        {
+            //            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+            //            {
+            //                if (i >= m_nSocketAlign_StartIndex)
+            //                {
+            //                    m_nListCount++;
+            //                }
+            //            }
+            //            else                                                                                                                                        //  전체 가공 모드일 경우
+            //            {
+            //                m_nListCount++;
+            //            }
+            //        }
+            //    }
+            //}
 
             m_strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, Align 이 필요한 Thruhole 개수 : {0}", m_nListCount);
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
@@ -32855,77 +32950,7 @@ namespace QMC.Common.Modules
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
-/*                    if (layer.Name == "Hole1")
-                    {
-                        m_nDrawing_Hole1Count = layer.Count;
-                        m_stDrawing_Hole1 = new stDrawingHoleParam[m_nDrawing_Hole1Count];                          //  Hole1 데이터
-
-                        //  데이터 넣기
-                        foreach (var entity in layer)
-                        {
-                            switch (entity.EntityType)
-                            {
-                                case EType.Point:
-                                    var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
-                                    break;
-
-                                case EType.Points:
-                                    var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
-                                    break;
-
-                                case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
-                                    break;
-
-                                case EType.Arc:
-                                    var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
-                                    break;
-
-                                case EType.Circle:
-                                    var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
-                                    break;
-
-                                case EType.Rectangle:
-                                    //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
-
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.ModelTranslate.X;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.ModelTranslate.Y;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
-                                    break;
-
-                                case EType.Group:
-                                    var group = entity as Group;
-
-                                    if (m_nHole1_ObjectCount++ == m_nSocketNum)
-                                    {
-                                        //  선택한 소켓의 가공 객체를 List 로 등록
-                                        list.Add(group);
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                    else */if (layer.Name == "Rect")
+                    if (layer.Name == "Rect")
                     {
                         //  데이터 넣기
                         foreach (var entity in layer)
@@ -33050,11 +33075,30 @@ namespace QMC.Common.Modules
                                 case EType.Group:
                                     var group = entity as Group;
 
-                                    //if (m_nOutline_ObjectCount++ == m_nSocketNum)
-                                    //{
-                                    //    //  선택한 소켓의 가공 객체를 List 로 등록
-                                    //    list.Add(group);
-                                    //}
+                                    if (m_stOutLine_SocketData_ProcessingFlag[m_nOutline_ObjectCount].bProcessing == false)
+                                    {
+                                        if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                                        {
+                                            if (m_nOutline_ObjectCount >= m_nSocketAlign_StartIndex)
+                                            {
+                                                //  선택한 소켓의 가공 객체를 List 로 등록
+                                                list.Add(group);
+
+                                                m_strTemp = string.Format("Failed Align Socket 의 Outline 가공, 선택 소켓 이후로 연속 가공 모드일 경우, Selected Outline Socket Number : {0}", m_nOutline_ObjectCount);
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //  선택한 소켓의 가공 객체를 List 로 등록
+                                            list.Add(group);
+
+                                            m_strTemp = string.Format("Failed Align Socket 의 Outline 가공, 전체 가공 모드일 경우, Selected Outline Socket Number : {0}", m_nOutline_ObjectCount);
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                                        }
+                                    }
+
+                                    m_nOutline_ObjectCount++;
                                     break;
                             }
                         }
@@ -33125,6 +33169,81 @@ namespace QMC.Common.Modules
                                     }
 
                                     m_nThruhole_ObjectCount++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Marking")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+
+                                    break;
+
+                                case EType.Text:
+                                    var text = entity as SpiralLab.Sirius.Text;
+
+                                    //if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[m_nMarking_ObjectCount].bProcessing == false)
+                                    //{
+                                    //    if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                                    //    {
+                                    //        if (m_nMarking_ObjectCount >= m_nSocketAlign_StartIndex)
+                                    //        {
+                                    //            //  선택한 소켓의 가공 객체를 List 로 등록
+                                    //            list.Add(entity);
+
+                                    //            m_strTemp = string.Format("Failed Align Socket 의 Marking 가공, 선택 소켓 이후로 연속 가공 모드일 경우, Selected Marking Socket Number : {0}", m_nMarking_ObjectCount);
+                                    //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                                    //        }
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        //  선택한 소켓의 가공 객체를 List 로 등록
+                                    //        list.Add(entity);
+
+                                    //        m_strTemp = string.Format("Failed Align Socket 의 Marking 가공, 전체 가공 모드일 경우, Selected Marking Socket Number : {0}", m_nMarking_ObjectCount);
+                                    //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                                    //    }
+                                    //}
+
+                                    //m_nMarking_ObjectCount++;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+                                    
                                     break;
                             }
                         }
@@ -39764,6 +39883,7 @@ namespace QMC.Common.Modules
                             m_stThruHole_SocketData_ProcessingFlag = new stThruHole_SocketData[layer.Count];
                         }
 
+                        //  여기에서 가공 여부 Flag 변수 세팅
                         for (int i = 0; i < layer.Count; i++)
                         {
                             if (layer.Items[i].Description == null)
@@ -39816,12 +39936,28 @@ namespace QMC.Common.Modules
                         if (LayerIsGroup)               //  MSL 은 Outline 을 Group 으로 해야 한다. 
                         {
                             //  전체 Socket 개수만큼 공간 할당
-                            //m_stOutLine_SocketData = new stOutLine_SocketData[layer.Count];
+                            m_stOutLine_SocketData_ProcessingFlag = new stOutLine_SocketData[layer.Count];
                         }
 
-
                         //  여기에서 가공 여부 Flag 변수 세팅
-
+                        for (int i = 0; i < layer.Count; i++)
+                        {
+                            if (layer.Items[i].Description == null)
+                            {
+                                m_stOutLine_SocketData_ProcessingFlag[i].bProcessing = true;
+                            }
+                            else if ((layer.Items[i].Description.ToUpper() == "NO") ||
+                                    (layer.Items[i].Description.ToUpper() == "NOT") ||
+                                    (layer.Items[i].Description.ToUpper() == "X") ||
+                                    (layer.Items[i].Description.ToUpper() == "FALSE"))
+                            {
+                                m_stOutLine_SocketData_ProcessingFlag[i].bProcessing = false;
+                            }
+                            else
+                            {
+                                m_stOutLine_SocketData_ProcessingFlag[i].bProcessing = true;
+                            }
+                        }
                     }
                     ///////////////////////
                     ///                 ///
@@ -39853,15 +39989,36 @@ namespace QMC.Common.Modules
                         }
 
 
-                        if (LayerIsGroup)               //  MSL 은 Outline 을 Group 으로 해야 한다. 
+                        if (!LayerIsGroup || (m_nCount > 1))
                         {
-                            //  전체 Socket 개수만큼 공간 할당
-                            //m_stOutLine_SocketData = new stOutLine_SocketData[layer.Count];
+                            m_stMarking_SocketData_ProcessingFlag = new stMarking_SocketData();
+
+                            //  전체 Object 개수
+                            m_stMarking_SocketData_ProcessingFlag.nRegion_ObjectTotalNum = layer.Count;
+
+                            //  Object 별 데이터 공간 메모리 할당
+                            m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData = new stMarking_ObjectData[layer.Count];
                         }
 
-
                         //  여기에서 가공 여부 Flag 변수 세팅
-
+                        for (int i = 0; i < layer.Count; i++)
+                        {
+                            if (layer.Items[i].Description == null)
+                            {
+                                m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[i].bProcessing = true;
+                            }
+                            else if ((layer.Items[i].Description.ToUpper() == "NO") ||
+                                    (layer.Items[i].Description.ToUpper() == "NOT") ||
+                                    (layer.Items[i].Description.ToUpper() == "X") ||
+                                    (layer.Items[i].Description.ToUpper() == "FALSE"))
+                            {
+                                m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[i].bProcessing = false;
+                            }
+                            else
+                            {
+                                m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[i].bProcessing = true;
+                            }
+                        }
                     }
                     else
                     {
