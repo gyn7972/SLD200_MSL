@@ -3352,7 +3352,7 @@ namespace QMC.Common.Modules
         public int m_nDividedRegion_Region_CurrentIndex { set; get; }           //  현재 분할 위치 Index
         public int m_nDividedRegion_Region_CurrentIndex_forZigZag { set; get; } //  현재 분할 위치 Index (지그재그 모드일 경우 다시 계산되는 Index)
         public int m_nDividedRegion_Object_CurrentIndex { set; get; }           //  현재 분할 위치의 Object Index
-        public int m_nDrillingWork_Group_Count { set; get; }
+        public int m_nDrillingWork_Group_Count { set; get; }                    //  이게 소켓 번호이다.... // 모든 레이어가.. 이걸로 소켓 관리한다..
         public int m_nDrillingWork_Repeat_Count { set; get; }
         public int m_nDrillingWork_Repeat_Count_Total { set; get; }
 
@@ -14618,7 +14618,7 @@ namespace QMC.Common.Modules
                     //this.jigAligner_HighRes.Work();
                     // Todo: 구분자 추가  Fiducial 찾기 or GoldPowder 찾기
                     // 굳이 분기 안해도 되긴 하는데... SpiralSearch -> 내부에서 구분자 처리.
-                    int retryCount = 2;
+                    int retryCount = 3; //2 -> 3 으로 2025-05-25
                     if (alignMode == AlignMode.Socket)
                     {
                         ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount, alignMode);
@@ -14897,6 +14897,9 @@ namespace QMC.Common.Modules
                             // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
                             m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
 
+                            //Test :: 회전 중심을 0번 마크가 아닌 센터 중심으로 수정 Test
+                            //m_st4PointAlign_Result = Calc_4Point_AlignData_Refactoring(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+                            
 
                             //Todo: 구영남 - 얼라인 로그
                             Log.Write("FineVision Fiducial", "Socket NO : " + nSocketNum.ToString() + "Socket Aling 완료");
@@ -15394,17 +15397,20 @@ namespace QMC.Common.Modules
                         // 이동 명령 실행
                         MC_Func.MovePosition(currentPosition, lfVelocity, lfAccDec, lfAccDec); // 속도 및 가속도는 예시 값
                         int tick = 0;
-                        while (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == false)
+                        Thread.Sleep(50);
+                        while (!MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                        !MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, currentPosition.X))
                         {
                             tick++;
-                            Thread.Sleep(1);
+                            Thread.Sleep(5);
                             if (tick > 5000)
                                 break;
                         }
-                        while (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == false)
+                        while (!MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                        !MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, currentPosition.Y))
                         {
                             tick++;
-                            Thread.Sleep(1);
+                            Thread.Sleep(5);
                             if (tick > 5000)
                                 break;
                         }
@@ -17941,14 +17947,15 @@ namespace QMC.Common.Modules
                     Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
                     Thread.Sleep(200);
 
-                    socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nThruHole_ObjectDataCount);
+                    socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nDrillingWork_Group_Count);
                     if (socket != null)
                     {
                         socket.IsDrilled = true;
-                        Log.Write("DrillStatus", $"[Start] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nThruHole_ObjectDataCount} 가공 시작됨.");
+                        Log.Write("DrillStatus", $"[ThruHole] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 시작됨.");
                     }
 
-                    //여기서만 증가??? 왜? 여기서?? 레이져 쏘고 증가 하던가???
+                    // 여기서만 증가??? 왜? 여기서?? 레이져 쏘고 증가 하던가???
+                    // 이거 한 소켓에서 몇번 쏘는 건지에 대한 카운터다.
                     m_nThruHole_ObjectDataCount++;
 
                     TickCount_Start((int)TickType.TICK_MAIN);
@@ -18055,8 +18062,6 @@ namespace QMC.Common.Modules
 
                         m_nLaserDrilling_LayerCount++;
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
-
-
                         //  2025. 05. 23.  SCH : 여기부터 원래 코드. (선택가공일 경우, Thruhole 이 다 끝나면, Outline 이 있는지 체크하고 없으면 끝내는 루틴)
                         //                      여기를 태울 게 아니라, 다음 Layer 로 보내면 된다. 거기서 Outline Layer 가 있는지 체크하고, 그 Layer 가 선택 가공인지 체크해서 선택가공을 진행하게 될 거다.
                         //                      그래서 여기부터 저기 아래까지 주석 처리하고 다음 Layer 체크하도록 한다.
@@ -18130,13 +18135,12 @@ namespace QMC.Common.Modules
                     else
                     {
                         layerEnum = GetCurrentLayerEnum(m_LayerType);
-                        socket = DrillingManager.GetSocket(layerEnum, m_nMarking_ObjectDataCount);
+                        socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                         if (socket != null && !socket.IsSuccess)
                         {
                             socket.IsSuccess = true;
-                            Log.Write("DrillStatus", $"[ThruHole] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료 마킹");
+                            Log.Write("DrillStatus", $"[ThruHole] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
                         }
-
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_SocketRemainedCheck;
@@ -19281,14 +19285,6 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 가 남아있지 않음");
 
-                        layerEnum = GetCurrentLayerEnum(m_LayerType);
-                        socket = DrillingManager.GetSocket(layerEnum, m_nOutLine_ObjectDataCount);
-                        if (socket != null && !socket.IsSuccess)
-                        {
-                            socket.IsSuccess = true;
-                            Log.Write("DrillStatus", $"[OutLine] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
-                        }
-
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatComplete;
                     }
                     break;
@@ -19428,14 +19424,15 @@ namespace QMC.Common.Modules
                     Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
                     Thread.Sleep(200);
 
-                    socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nOutLine_ObjectDataCount);
+                    socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nDrillingWork_Group_Count);
                     if (socket != null)
                     {
                         socket.IsDrilled = true;
-                        Log.Write("DrillStatus", $"[Complete] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nOutLine_ObjectDataCount} 가공 시작됨.");
+                        Log.Write("DrillStatus", $"[OutLine] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 시작됨.");
                     }
 
-                    //  ScannerOnly Mode 일 경우
+                    // 여기서만 증가??? 왜? 여기서?? 레이져 쏘고 증가 하던가???
+                    // 이거 한 소켓에서 몇번 쏘는 건지에 대한 카운터다.
                     m_nOutLine_ObjectDataCount++;
                     TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -19580,11 +19577,11 @@ namespace QMC.Common.Modules
                     else
                     {
                         layerEnum = GetCurrentLayerEnum(m_LayerType);
-                        socket = DrillingManager.GetSocket(layerEnum, m_nMarking_ObjectDataCount);
+                        socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                         if (socket != null && !socket.IsSuccess)
                         {
                             socket.IsSuccess = true;
-                            Log.Write("DrillStatus", $"[OutLine] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료 마킹");
+                            Log.Write("DrillStatus", $"[OutLine] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
                         }
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -21298,6 +21295,14 @@ namespace QMC.Common.Modules
                             m_strTemp = string.Format("Marking Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                            //  상태 변경
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (socket != null && !socket.IsSuccess)
+                            {
+                                socket.IsSuccess = true;
+                                Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
                             m_nLaserDrilling_LayerCount++;
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -21446,8 +21451,8 @@ namespace QMC.Common.Modules
                     if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 1000) &&
                         ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6) && rtc.CtlGetStatus(RtcStatus.Busy)))
                     {
-                        TickCount_Start((int)TickType.TICK_MAIN);
 
+                        TickCount_Start((int)TickType.TICK_MAIN);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_LaserBusyCheck;
                     }
                     break;
@@ -21466,6 +21471,15 @@ namespace QMC.Common.Modules
                             m_strTemp = string.Format("Marking Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+
+                            //  상태 변경
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (socket != null && !socket.IsSuccess)
+                            {
+                                socket.IsSuccess = true;
+                                Log.Write("DrillStatus", $"[Marking] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
                             m_nLaserDrilling_LayerCount++;
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -26652,7 +26666,6 @@ namespace QMC.Common.Modules
                             socket.IsSuccess = true;
                             Log.Write("DrillStatus", $"[Drilling] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 완료됨");
                         }
-
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
 
                         m_nHoleLayer_ProcessIndex_Count = 0;        //  소켓이 바뀌면 Hole layer 1 부터 다시 시작
@@ -40659,6 +40672,15 @@ namespace QMC.Common.Modules
             dInspectedAngle = Math.Atan2(ptInspectedPos[0].ptFiducial_Center.Y - ptInspectedPos[3].ptFiducial_Center.Y, ptInspectedPos[0].ptFiducial_Center.X - ptInspectedPos[3].ptFiducial_Center.X);
             dAngle = dDwgAngle - dInspectedAngle;
 
+            //Test :: -> 오차값 더 커짐.
+            //double dAngle = 0.0;
+            //double dDwgAngle = 0.0;
+            //double dInspectedAngle = 0.0;
+            //dDwgAngle = Math.Atan2(ptDwgPos[1].ptFiducial_Center.Y - ptDwgPos[3].ptFiducial_Center.Y, ptDwgPos[1].ptFiducial_Center.X - ptDwgPos[3].ptFiducial_Center.X);
+            //dInspectedAngle = Math.Atan2(ptInspectedPos[1].ptFiducial_Center.Y - ptInspectedPos[3].ptFiducial_Center.Y, ptInspectedPos[1].ptFiducial_Center.X - ptInspectedPos[3].ptFiducial_Center.X);
+            //dAngle = dDwgAngle - dInspectedAngle;
+
+
             //  결과값 저장  
             //m_st4PointAlign_Result.dRotationCenterX = dDwgCrossX;
             //m_st4PointAlign_Result.dRotationCenterY = dDwgCrossY;
@@ -40691,6 +40713,79 @@ namespace QMC.Common.Modules
 
             return m_st4PointAlign_Result;
         }
+
+        public st4PointAlign_Result Calc_4Point_AlignData_Refactoring(st4PointPosition_Data[] ptDwgPos, st4PointPosition_Data[] ptInspectedPos)
+        {
+            //  4 Point 위치 (좌측 하단부터 시계방향으로)
+            //  P1 : Left Bottom
+            //  P2 : Left Top
+            //  P3 : Right Top
+            //  P4 : Right Bottom
+
+            //  직선 구성 : P2 - P4, P1 - P3
+            st4PointAlign_Result result = new st4PointAlign_Result();
+
+            // 유효성 검사 (모든 좌표가 0이면 탈출)
+            bool IsAllZero(st4PointPosition_Data[] pos) =>
+                pos.All(p => p.ptFiducial_Center.X == 0.0 && p.ptFiducial_Center.Y == 0.0);
+
+            if (IsAllZero(ptDwgPos) || IsAllZero(ptInspectedPos))
+                return result;
+
+            // 교차점 유효성 검사
+            bool IsValidIntersection(st4PointPosition_Data[] pos)
+            {
+                double cross = (pos[1].ptFiducial_Center.X - pos[3].ptFiducial_Center.X) * (pos[2].ptFiducial_Center.Y - pos[0].ptFiducial_Center.Y) -
+                               (pos[1].ptFiducial_Center.Y - pos[3].ptFiducial_Center.Y) * (pos[2].ptFiducial_Center.X - pos[0].ptFiducial_Center.X);
+                return Math.Abs(cross) > 1e-10;
+            }
+
+            if (!IsValidIntersection(ptDwgPos) || !IsValidIntersection(ptInspectedPos))
+                return result;
+
+            // 도면 및 실측 중심점 계산 (교차점)
+            PointD DwgCenter, InspectionCenter;
+            TryGetIntersection(
+                ptDwgPos[0].ptFiducial_Center, ptDwgPos[2].ptFiducial_Center,
+                ptDwgPos[1].ptFiducial_Center, ptDwgPos[3].ptFiducial_Center,
+                out DwgCenter);
+
+            TryGetIntersection(
+                ptInspectedPos[0].ptFiducial_Center, ptInspectedPos[2].ptFiducial_Center,
+                ptInspectedPos[1].ptFiducial_Center, ptInspectedPos[3].ptFiducial_Center,
+                out InspectionCenter);
+
+            // 회전 각도 계산 (P1 → P3 기준)
+            double dwgVecX = ptDwgPos[2].ptFiducial_Center.X - ptDwgPos[0].ptFiducial_Center.X;
+            double dwgVecY = ptDwgPos[2].ptFiducial_Center.Y - ptDwgPos[0].ptFiducial_Center.Y;
+            double inspVecX = ptInspectedPos[2].ptFiducial_Center.X - ptInspectedPos[0].ptFiducial_Center.X;
+            double inspVecY = ptInspectedPos[2].ptFiducial_Center.Y - ptInspectedPos[0].ptFiducial_Center.Y;
+
+            double dDwgAngle = Math.Atan2(dwgVecY, dwgVecX);
+            double dInspAngle = Math.Atan2(inspVecY, inspVecX);
+            double dAngle = dDwgAngle - dInspAngle;  // 도면 기준 - 실측 기준
+
+            // 도면 중심을 기준으로 회전 적용
+            PointD rotatedDwgCenter = CoordinateTransform(DwgCenter, DwgCenter.X, DwgCenter.Y, -dAngle);
+
+            // 중심 offset 계산
+            //double dOffsetX = InspectionCenter.X - rotatedDwgCenter.X;
+            //double dOffsetY = InspectionCenter.Y - rotatedDwgCenter.Y;
+            double dOffsetX = rotatedDwgCenter.X - InspectionCenter.X;
+            double dOffsetY = rotatedDwgCenter.Y - InspectionCenter.Y;
+
+            //m_st4PointAlign_Result.dRotationCenterX = ptDwgPos[0].ptFiducial_Center.X;
+            //m_st4PointAlign_Result.dRotationCenterY = ptDwgPos[0].ptFiducial_Center.Y;
+            // 결과 저장
+            result.dRotationCenterX = ptDwgPos[0].ptFiducial_Center.X;
+            result.dRotationCenterY = ptDwgPos[0].ptFiducial_Center.Y;
+            result.dRotationAngle = dAngle;
+            result.dCenterOffsetX = dOffsetX;
+            result.dCenterOffsetY = dOffsetY;
+
+            return result;
+        }
+
 
         public int DrillingData_RotationOffset_Move(double m_dRotCenter_X, double m_dRotCenter_Y, double m_dAngle, double m_dOffsetX, double m_dOffsetY)
         {

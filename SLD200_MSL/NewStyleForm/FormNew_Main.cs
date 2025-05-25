@@ -3337,7 +3337,7 @@ namespace SLD200_MSL
                 }
                 else
                 {
-                    if (workStage.Config.ParamConfig.bProductAlign_Enable)
+                    if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
                     {
                         m_strTemp = "전체 가공을 시작하시겠습니까?";
                     }
