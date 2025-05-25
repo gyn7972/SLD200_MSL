@@ -32847,57 +32847,63 @@ namespace QMC.Common.Modules
             //  회전을 위한 데이터 개수
             int m_nTotalCount = 0;
 
-
             //  List 를 몇개를 만들어야 할지
             int m_nListCount = 0;
-
 
             //  소켓 얼라인 실패한 것의 Thruhole, Outline, Marking 등의 그룹 데이터를 Select 하기 위함.
             m_nListCount = 0;
 
             //  Thruhole 소켓 
-            if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
+            if(m_stThruHole_SocketData_ProcessingFlag != null)
             {
-                for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag.Length; i++)
+                if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
                 {
-                    if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == false)
+                    for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag.Length; i++)
                     {
-                        if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                        if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == false)
                         {
-                            if (i >= m_nSocketAlign_StartIndex)
+                            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                            {
+                                if (i >= m_nSocketAlign_StartIndex)
+                                {
+                                    m_nListCount++;
+                                }
+                            }
+                            else                                                                                                                                        //  전체 가공 모드일 경우
                             {
                                 m_nListCount++;
                             }
                         }
-                        else                                                                                                                                        //  전체 가공 모드일 경우
-                        {
-                            m_nListCount++;
-                        }
                     }
                 }
             }
+            
 
             //  Outline 소켓
-            if (m_stOutLine_SocketData_ProcessingFlag.Length > 0)
+            if(m_stOutLine_SocketData_ProcessingFlag != null)
             {
-                for (int i = 0; i < m_stOutLine_SocketData_ProcessingFlag.Length; i++)
+                if (m_stOutLine_SocketData_ProcessingFlag.Length > 0)
                 {
-                    if (m_stOutLine_SocketData_ProcessingFlag[i].bProcessing == false)
+                    for (int i = 0; i < m_stOutLine_SocketData_ProcessingFlag.Length; i++)
                     {
-                        if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                        if (m_stOutLine_SocketData_ProcessingFlag[i].bProcessing == false)
                         {
-                            if (i >= m_nSocketAlign_StartIndex)
+                            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                            {
+                                if (i >= m_nSocketAlign_StartIndex)
+                                {
+                                    m_nListCount++;
+                                }
+                            }
+                            else                                                                                                                                        //  전체 가공 모드일 경우
                             {
                                 m_nListCount++;
                             }
                         }
-                        else                                                                                                                                        //  전체 가공 모드일 경우
-                        {
-                            m_nListCount++;
-                        }
                     }
                 }
             }
+            
 
             ////  Marking 소켓 --> 마킹은 일단 보류. 모듈 단위 마킹일 경우는, Hole1 의 소켓 얼라인할 때 같이 얼라인 해주기 때문에, 여기서 또 얼라인 하면 문제가 될 수 있다.
             //if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length > 0)
