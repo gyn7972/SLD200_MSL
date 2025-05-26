@@ -782,12 +782,13 @@ namespace QMC.Common
 
         //  Auto/Manual 상태 확인
         // 현재 장비의 준비 상태를 관리 할것.! " Auto인 경우에만 시컨스와 같은 동작 가능 하도록 "
+        // Auto : 자동 운전 모드, Manual : 수동 운전 모드
         public static bool AutoManualStatus { set; get; }
 
         // 장비 구동 유/무 변수 : 장비 시컨스 구동 유/무 변수 :: 실제로 장비 구동 확인 
-        // true: Auto Run // false : Manual Run
+        // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
         // 위와 같이 구분하여 장비 관리 할것!
-        public static bool AutoRunStatus { set; get; } // 장비 상태: Auto / Manul 상태 표시 
+        public static bool AutoRunStatus { set; get; } 
 
         // Drilling Cycle Stop 예약 변수 : 장비 Stop 시 가공중이던 부분은 완료 되고 Stop 하도록 하기 위함
         // true : Stop 예약

@@ -8457,18 +8457,23 @@ namespace QMC.Common.Modules
                     AlarmPost(AlarmKey.Scanner_Flow_Alarm);
                 }
 
+                // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
                 if (Equipment.AutoRunStatus)
                 {
                     // 장비 시작하고 Step에서 상부 집진기 ON 하는데...
                     //if (!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper))
                     //{
-                    //    //DustCollector_On((int)nDustCollector.DustCollector_Upper);
                     //    AlarmPost(AlarmKey.DustCollector_Fan_Run_Alarm);
                     //}
                 }
                 else
                 {
-                    // 장비 정지하고 있을때는.. 집진기 OFF 할까?  
+                    // 장비 정지하고 있을때는.. 집진기 OFF 할까? 
+                    // Manual로 Laser 쏠때 꺼져있으면 안되는데...
+                    //if (workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper))
+                    //{
+                    //    DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                    //}
                 }
 
             }
