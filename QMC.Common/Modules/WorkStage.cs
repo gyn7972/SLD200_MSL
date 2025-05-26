@@ -14899,8 +14899,6 @@ namespace QMC.Common.Modules
 
                             //Test :: 회전 중심을 0번 마크가 아닌 센터 중심으로 수정 Test
                             //m_st4PointAlign_Result = Calc_4Point_AlignData_Refactoring(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
-                            
-
                             //Todo: 구영남 - 얼라인 로그
                             Log.Write("FineVision Fiducial", "Socket NO : " + nSocketNum.ToString() + "Socket Aling 완료");
                             //개별 위치 
@@ -41528,6 +41526,8 @@ namespace QMC.Common.Modules
 
             double m_dHeightOffset = 0.0; //Height Offset
 
+
+            bool bCalPosition = false; // true: cal판, false 중앙
             bool bCalChagne = Equipment.Scanner_Calibration_Change;    //캘리브레이션 변경 여부
 
             switch (m_nScanner_Calibration_Step)
@@ -41855,8 +41855,20 @@ namespace QMC.Common.Modules
                 case (int)ScannerCalibration_Step.VerifyCalibrationAreaPos:
                     {
                         // cal center 기준 위치로 계산하고 이동하자.
-                        double dScannerCalTeachingPosX = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_Scanner_CalPos].Stage_X;
-                        double dScannerCalTeachingPosY = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_Scanner_CalPos].Stage_Y;
+                        double dScannerCalTeachingPosX = 0.0;
+                        double dScannerCalTeachingPosY = 0.0;
+
+                        if(bCalPosition)
+                        {
+                            dScannerCalTeachingPosX = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_Scanner_CalPos].Stage_X;
+                            dScannerCalTeachingPosY = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_Scanner_CalPos].Stage_Y;
+                        }
+                        else
+                        {
+                            dScannerCalTeachingPosX = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                            dScannerCalTeachingPosY = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                        }
+
                         double dScannerCalAreaWidth = Equipment.Scanner_Calibration_CalAreaWidth;
                         double dScannerCalAreaheight = Equipment.Scanner_Calibration_CalAreaHeight;
                         double dCalPitchOffset = Equipment.Scanner_Calibration_CalPitch;
@@ -42258,8 +42270,16 @@ namespace QMC.Common.Modules
                         // 선택 기능 넣어야 겠다. 
                         //MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
 
-                        // 캘판 위에서 캘할때!
-                        MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_Scanner);
+                        if (bCalPosition)
+                        {
+                            // 캘판 위에서 캘할때!
+                            MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_Scanner);
+                        }
+                        else
+                        {
+                            MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
+                        }
+                        
 
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos_DoneCheck;
@@ -42394,7 +42414,17 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.X = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
                         xyInterpolatedCoordinate.Y = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
-                        MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_FineCam);
+                        //MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_FineCam);
+                        if(bCalPosition)
+                        {
+                            MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_FineCam);
+                        }
+                        else
+                        {
+                            MapData_Apply((int)nMapData_Type.MapData_Stage_FineCam);
+                        }
+                            
+                       
 
                         MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
 
