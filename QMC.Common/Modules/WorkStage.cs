@@ -8421,9 +8421,6 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.TowerLamp_BuzzerStop = false;
                 }
 
-
-
-
                 // Home 잡기 전에는 Device 알람 X
                 if(!m_bHomeOK)
                 {
@@ -8460,16 +8457,18 @@ namespace QMC.Common.Modules
                     AlarmPost(AlarmKey.Scanner_Flow_Alarm);
                 }
 
-                if (!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper))
-                {
-                    AlarmPost(AlarmKey.DustCollector_Fan_Run_Alarm);
-                }
-
                 if (Equipment.AutoRunStatus)
                 {
-
-
-
+                    // 장비 시작하고 Step에서 상부 집진기 ON 하는데...
+                    //if (!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper))
+                    //{
+                    //    //DustCollector_On((int)nDustCollector.DustCollector_Upper);
+                    //    AlarmPost(AlarmKey.DustCollector_Fan_Run_Alarm);
+                    //}
+                }
+                else
+                {
+                    // 장비 정지하고 있을때는.. 집진기 OFF 할까?  
                 }
 
             }
