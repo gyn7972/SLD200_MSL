@@ -158,6 +158,15 @@ namespace SLD200_MSL
                 m_bFormVisible = true;
                 OnShowRecipeForm();
 
+                if (listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Count > 0)
+                {
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = -1;  // 선택 해제
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = 0;   // 다시 선택 → 이벤트 발생
+                    //listBox_Recipe_TabRecipe_ListOfDrawingLayer_SelectedIndexChanged // <- 자동 실행
+                    // 레시피 데이터 새로고침
+                    //Recipe_Data_Refresh("Hole1");
+                }
+
                 var selectedTab = tabControl_Recipe.SelectedTab;
                 if (selectedTab == tabPage_RecipeVision)
                 {
@@ -796,8 +805,7 @@ namespace SLD200_MSL
             // 리스트뷰를 Refresh하여 보여줌
             listView_Recipe_TabRecipe_LayerData.EndUpdate();
 
-
-            //  Layer 에 대한 Miscellaneous Data 표시
+            // Layer 에 대한 Miscellaneous Data 표시
             Recipe_Data_Refresh(m_strLayerName);
         }
 
@@ -1491,7 +1499,6 @@ namespace SLD200_MSL
         }
         #endregion
 
-
         private void button_Recipe_Save_Click(object sender, EventArgs e)
         {
             string fileName;
@@ -1543,8 +1550,6 @@ namespace SLD200_MSL
                     }
                 }
 
-                
-
                 //  Recipe Data 저장
                 //Recipe_Data_Save(fileName);
                 Recipe_Data_Save_Refactory(fileName);
@@ -1568,25 +1573,34 @@ namespace SLD200_MSL
         private void button_Recipe_Apply_Click(object sender, EventArgs e)
         {
             //  Recipe 창의 데이터를 Equipment Recipe Set에 적용
-
             //  Layer Index 확인
             int m_nLayerIndex = -1; 
             int m_nIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
             string m_strLayerName = "";
-            
+
             if (m_nIndex < 0)
             {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Layer 를 선택하지 않았습니다.\r\n\r\nLayer \"Hole1\" 의 파라미터로 설정하시겠습니까?"))
-                    return;
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "Layer 를 선택하지 않았습니다.");
+                return;
+            }
 
-                m_nLayerIndex = 0;
-                m_strLayerName = "Hole1";
-            }
-            else
-            {
-                m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
-            }
+            m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
+
+            // 아래 코드 위험하다.
+            // Layer 를 선택하지 않았을 때, Hole1 로 설정하는 것은 위험하다. // 그냥 Apply 안하는게 맞음.
+            //if (m_nIndex < 0)
+            //{
+            //    var mb = new MessageBoxYesNo();
+            //    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Layer 를 선택하지 않았습니다.\r\n\r\nLayer \"Hole1\" 의 파라미터로 설정하시겠습니까?"))
+            //        return;
+            //    m_nLayerIndex = 0;
+            //    m_strLayerName = "Hole1";
+            //}
+            //else
+            //{
+            //    m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
+            //}
 
             //  도면 확인
             if (richTextBox_Recipe_TabRecipe_DrawingFile.Text.Length <= 0)
@@ -1597,10 +1611,8 @@ namespace SLD200_MSL
             }
 
             //  Layer Index 확인
-
             //  Hole 인지?
             string m_strLayer = m_strLayerName.Length > 4 ? m_strLayerName.Substring(0, 4) : m_strLayerName;
-
             if (m_strLayer == "Hole")                   //  Layer 가 Hole 이면?
             {
                 //  Hole 로 시작하는 Layer 이면, 뒤에 숫자를 가져온다.
@@ -1684,6 +1696,12 @@ namespace SLD200_MSL
             else if (m_strLayerName == "PreAlign")
             {
                 m_nLayerIndex = (int)LayerList.PreAlign;
+            }
+            else
+            {
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "잘못된 Layer Name 입니다.");
+                return;
             }
 
             //  사용 되지 않는 Layer (Layer 이름이 잘못되었을 경우)
@@ -2587,7 +2605,6 @@ namespace SLD200_MSL
 
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[m_nIndex].CalfileOffsetZAxismm.ToString();//  하부 집진기 사용 여부
         }
-
         public void Recipe_Open(string m_strRecipeFile)
         {
             string fileName;
@@ -2872,7 +2889,6 @@ namespace SLD200_MSL
 
             return;
         }
-
         private void button_DutyCycle_Calc_Click(object sender, EventArgs e)
         {
             try
@@ -2895,7 +2911,6 @@ namespace SLD200_MSL
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
         private void button_PulseWidth_Calc_Click(object sender, EventArgs e)
         {
             try
@@ -2927,7 +2942,6 @@ namespace SLD200_MSL
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
         private void button_Recipe_SaveAs_Click(object sender, EventArgs e)
         {
             string fileName;
@@ -2982,7 +2996,6 @@ namespace SLD200_MSL
                 mb.ShowDialog("Information !!", "Recipe Data를 저장하였습니다.");
             }
         }
-
         private void radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText_CheckedChanged(object sender, EventArgs e)
         {
             //  Fixed Text
@@ -3046,7 +3059,6 @@ namespace SLD200_MSL
                     break;
             }
         }
-
         private void comboBox_Recipe_TabRecipe_CustomMarking_DataType_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  True Type Font 일 때만 Hatch 활성화
@@ -3072,7 +3084,6 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
             }
         }
-
         private void checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable_CheckedChanged(object sender, EventArgs e)
         {
             //  Hatch Enable
@@ -3086,7 +3097,6 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
             }
         }
-
         private void comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  BET Zoom 배율에 따라 Mrad 값 변경

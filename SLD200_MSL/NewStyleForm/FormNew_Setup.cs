@@ -238,6 +238,9 @@ namespace SLD200_MSL
             textBox_Setup_ScannerCal_CalAreaWidth.Text = Equipment.Scanner_Calibration_CalAreaWidth.ToString();
             textBox_Setup_ScannerCal_CalAreaHeight.Text = Equipment.Scanner_Calibration_CalAreaHeight.ToString();
             textBox_Setup_ScannerCal_CalPitch.Text = Equipment.Scanner_Calibration_CalPitch.ToString();
+            ////Scanner_Calibration_VisionZOffset
+            textBox_Setup_ScannerCal_VisionZOffset.Text = Equipment.Scanner_Calibration_VisionZOffset.ToString();
+
             //cal Last Position Display 하자.
             label_Setup_ScannerCal_LastPosX.Text = Equipment.Scanner_Calibration_PosX_Last.ToString();
             label_Setup_ScannerCal_LastPosY.Text = Equipment.Scanner_Calibration_PosY_Last.ToString();
@@ -378,8 +381,11 @@ namespace SLD200_MSL
             this.radioButton_Setup_ScannerCal_Light_Red.Checked = false;
             workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_channel_01_Value; //RED
             workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_channel_02_Value; //IR
-
             IsPixel = true;
+
+            //  Scanner Calibration Position : 처음에는 Cal Pan으로 설정.
+            checkBox_Setup_ScannerCal_Position.Checked = true;
+
             this.Refresh();
         }
 
@@ -1847,6 +1853,8 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Width", textBox_Setup_ScannerCal_CalAreaWidth.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", textBox_Setup_ScannerCal_CalAreaHeight.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", textBox_Setup_ScannerCal_CalPitch.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Vision_Z_Offset", textBox_Setup_ScannerCal_VisionZOffset.Text, strFIle);
+
 
             Equipment.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile; // m_srcFile;
             Equipment.Scanner_Calibration_targetFilePath = m_correction2DRtc.TargetCorrectionFile;  // m_targetFile;
@@ -1871,7 +1879,7 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowCount", m_row.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colCount", m_col.ToString(), strFIle);
 
-        }
+         }
 
         private void btnScannerOffset_Set_Click(object sender, EventArgs e)
         {
@@ -3140,12 +3148,12 @@ namespace SLD200_MSL
             string m_strTemp = "";
 
             //TEST
-            //if (!workStage.m_bHomeOK)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-            //    return;
-            //}
+            if (!workStage.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
 
             if (workStage.rtc == null)
             {
@@ -3970,6 +3978,25 @@ namespace SLD200_MSL
 
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !!", "ct5 파일을 저장하였습니다.");
+            }
+        }
+
+        private void checkBox_Setup_ScannerCal_Position_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.Scanner_Calibration_Position_Enable = false;
+            if (checkBox_Setup_ScannerCal_Position.Checked)
+            {
+                Equipment.Scanner_Calibration_Position_Enable = true;
+
+                checkBox_Setup_ScannerCal_Position.Text = "Cal Pan";
+                checkBox_Setup_ScannerCal_Position.ForeColor = Color.BlueViolet;
+            }
+            else
+            {
+                Equipment.Scanner_Calibration_Position_Enable = false;
+
+                checkBox_Setup_ScannerCal_Position.Text = "Stage Center";
+                checkBox_Setup_ScannerCal_Position.ForeColor = Color.BlueViolet;
             }
         }
     }

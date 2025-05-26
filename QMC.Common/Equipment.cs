@@ -731,19 +731,19 @@ namespace QMC.Common
         public static bool Scanner_Calibration_MarkType_Cross { set; get; } = false;
         public static bool Scanner_Calibration_MarkType_Circlle { set; get; } = false;
 
-
-
         //Status로 사용
+        //  Scanner Calibration Position Enable true: calPan, false: Stage Center
+        public static bool Scanner_Calibration_Position_Enable { set; get; } = false;            //  Scanner Calibration Position Enable (true: Enable, false: Disable)
         public static bool Scanner_Calibration_Change { set; get; } = false;
 
         public static int Scanner_Calibration_Convert { set; get; } = 0;            //  Scanner Calibration Use (true: Use, false: Not Use)
 
         public static bool Scanner_Vision_Offset_Setting_Use { set; get; } = false;            //  Scanner Calibration Use (true: Use, false: Not Use)
 
-        public static double Scanner_Vision_Offset_Setting_X { set; get; } = 0.0;            //  Scanner Calibration Use (true: Use, false: Not Use)
-        public static double Scanner_Vision_Offset_Setting_Y { set; get; } = 0.0;            //  Scanner Calibration Use (true: Use, false: Not Use)
-
-
+        public static double Scanner_Vision_Offset_Setting_X { set; get; } = 0.0;            //  Scanner Calibration OffsetX(mm) (X축 Offset)
+        public static double Scanner_Vision_Offset_Setting_Y { set; get; } = 0.0;            //  Scanner Calibration OffsetY(mm) (Y축 Offset)
+        public static double Scanner_Calibration_VisionZOffset { set; get; } = 0.0;
+        
         //  Scanner Calibration RTC 및 구동 변수
         public static string Scanner_Calibration_srcFilePath { set; get; } = "";            //  Scanner Calibration Source File Path
         public static string Scanner_Calibration_targetFilePath { set; get; } = "";            //  Scanner Calibration Destination File Path
@@ -2859,6 +2859,9 @@ namespace QMC.Common
             Equipment.Scanner_Calibration_PosX_Last = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_PosY_Last = Equipment.ToDouble(temp.ToString());
+            
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "VisionZOffset", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_VisionZOffset = Equipment.ToDouble(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_X", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_TrainRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
@@ -3088,119 +3091,6 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_12X", "0.02", temp, 255, strFIle);
             Equipment.BET_1_2X_Mrad = Equipment.ToDouble(temp.ToString());
             
-
-            ////  Scanner Calibration parameter
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", "5000.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(temp.ToString());
-            ////Scanner_Calibration_LaserPulseWidth
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Pulse_Width", "1.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserPulseWidth = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Energy", "1.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserEnergy = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "CrossMark_Length", "0.5", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CrossMarkLength = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Marking_Speed", "500.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserMarkSpeed = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", "500.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserJumpSpeed = Equipment.ToDouble(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "LaserOn_Delay", "10.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserOnDelay = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "LaserOff_Delay", "10.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserOffDelay = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Mark_Delay", "50.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_MarkDelay = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Jump_Delay", "200.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_JumpDelay = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Polygon_Delay", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PolygonDelay = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Width", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CalAreaWidth = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", "2.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PosX_Last = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PosY_Last = Equipment.ToDouble(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiStartLocation_Y = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiEndLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiEndLocation_X = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiEndLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiEndLocation_Y = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiStartLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiStartLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiStartLocation_Y = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiEndLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiEndLocation_X = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiEndLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiEndLocation_Y = Equipment.ToDouble(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "AngleTolerance", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PatternMatchingParameters.MaxTolerance = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MaxInstance", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PatternMatchingParameters.MaxInstance = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MinScore", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PatternMatchingParameters.MinScore = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "DuplicateCheck", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PatternMatchingParameters.DuplicateChecked = Convert.ToBoolean(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "UseMaskImage", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PatternMatchingParameters.UseMaskImage = Convert.ToBoolean(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_01", "0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_Illumination_channel_01_Value = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_02", "0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_Illumination_channel_02_Value = Equipment.ToInt(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "UsePatternMatching", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_UsePatternMatching = Convert.ToBoolean(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "UseBlobVisionTool", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_UseBlobVisionTool = Convert.ToBoolean(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MarkType_Cross", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_MarkType_Cross = Convert.ToBoolean(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MarkType_Circlle", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_MarkType_Circlle = Convert.ToBoolean(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "HardThreshold", "0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.HardThreshold = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MinPixels", "0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.MinPixels = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Polarity", "0", temp, 255, strFIle);
-            //int nVel = ToInt(temp.ToString());
-            //Polarity polarity;
-            //if (nVel == 0)
-            //    polarity = Polarity.LightBlobs;
-            //else
-            //    polarity = Polarity.DarkBlobs;
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.Polarity = polarity;
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "RepeatCount", "0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.RepeatCount = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "HasChanged", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.HasChanged = Convert.ToBoolean(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "srcFilePath", "", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_srcFilePath = temp.ToString();
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "targetFilePath", "", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_targetFilePath = temp.ToString();
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "FieldSize", "55", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_FieldSize = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "rowInterval", "2", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_rowInterval = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "colInterval", "2", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_colInterval = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "rowCount", "3", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_rowCount = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "colCount", "3", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_colCount = Equipment.ToInt(temp.ToString());
-
-
-
             //  체크 포인트
             if (((Equipment.CoordinateMatchingOffset_X != 0.0) || (Equipment.CoordinateMatchingOffset_Y != 0.0)) &&
                 ((Equipment.StageOffset_forDrilling_X != 0.0) || (Equipment.StageOffset_forDrilling_Y != 0.0)))
