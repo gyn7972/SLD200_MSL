@@ -1502,9 +1502,6 @@ namespace QMC.Common.Modules
 
         // 쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
         // 2025.04.26 - 비동기 timer로 변경하여 사용. 
-        //public System.Windows.Forms.Timer timer_MainWork;
-        //public System.Windows.Forms.Timer timer_LaserDrillingWork;
-        public System.Timers.Timer timer_MainWork;
         public System.Timers.Timer timer_LaserDrillingWork;
         public System.Timers.Timer timer_Comm;
         public System.Timers.Timer timer_ScannerCalibration;
@@ -1513,7 +1510,6 @@ namespace QMC.Common.Modules
         public System.Timers.Timer timer_VisionAlign;
         public System.Timers.Timer timer_VerifyScannerCamOffset;
 
-        public bool m_btimer_MainWork_Stop;
         public bool m_btimer_LaserDrillingWork_Stop;
         public bool m_btimer_SubWork_Stop;
         public bool m_btimer_Comm_Stop;
@@ -4404,15 +4400,7 @@ namespace QMC.Common.Modules
 
             m_nReticleGlassCheck_Cam = (int)ReticleCamType.None;
 
-
             //  타이머를 쓰레드로 변경 --> 다시 타이머 사용하기로...
-
-            //  Main Work 타이머
-            timer_MainWork = new System.Timers.Timer(10);
-            //timer_MainWork.Elapsed += Timer_MainWork_Tick;
-            timer_MainWork.AutoReset = true; // 반복 실행
-            timer_MainWork.Enabled = false; // 초기
-
             //  Laser Drilling Work 타이머
             //timer_LaserDrillingWork = new System.Windows.Forms.Timer();
             //timer_LaserDrillingWork.Interval = 10;
@@ -4474,8 +4462,6 @@ namespace QMC.Common.Modules
             timer_ScannerCalibration.AutoReset = true; // 반복 실행
             timer_ScannerCalibration.Enabled = false; // 초기
 
-
-            m_btimer_MainWork_Stop = false;
             m_btimer_LaserDrillingWork_Stop = false;
             m_btimer_SubWork_Stop = false;
             m_btimer_Motion_Home_Stop = false;
@@ -4485,8 +4471,6 @@ namespace QMC.Common.Modules
             //timer_Calibration = new System.Windows.Forms.Timer();
             //timer_Calibration.Interval = 50;
             //timer_Calibration.Tick += new System.EventHandler(Timer_LaserCalibration_Func);
-
-            //SpiralLab.Core.Initialize();
 
             m_nProductAlign_CameraType = (int)CameraType.CAMERA_HIGH;
 
@@ -8596,10 +8580,6 @@ namespace QMC.Common.Modules
         private void Timer_MainWork_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
-
-            m_btimer_MainWork_Stop = false;
-            timer_MainWork.Enabled = false;
-
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  메인 화면 갱신용 변수
             Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete = m_bMainWorkCycle_Complete;
@@ -8607,11 +8587,6 @@ namespace QMC.Common.Modules
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             Run_MainWork_Cycle_Func();
-
-            if (!m_btimer_MainWork_Stop)
-            {
-                timer_MainWork.Enabled = true;
-            }
         }
         public void SetRecoveryLaserDrilling_MainStep(int LaserDrilling_MainStep)
         {
@@ -9431,13 +9406,18 @@ namespace QMC.Common.Modules
                 case (int)FindAlignMark_Step.Start:
 
                     Log.Write("SLD-200", Equipment.User_Name, "Pre Align Mark", "마크 찾기 시작");
+                    
+                    //모든 변수 초기화 필요.!
                     Equipment.MachineStop_byAlarm = false;
                     m_bFindAlignMark_OK = false;
                     m_bFindUpperAlignMark_OK = false;
                     m_bFindLowerAlignMark_OK = false;
                     m_bFindAlignMark_Complete = false;
-                    m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
 
+
+
+
+                    m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
                     //  어느 쪽 마크를 찾을 것인지... 1번 마크인지 2번 마크인지...
                     m_nFindAlignMarkType = 0; //무조건 2개 다 찾어.
                     if ((m_nFindAlignMarkType == (int)AlignMarkType.ALIGN_2POINT) || (m_nFindAlignMarkType == (int)AlignMarkType.ALIGN_1STMARK))        //  2 Point 찾기나, 1번 마크 찾기일 경우
@@ -10798,10 +10778,6 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
-
-                        //timer_MainWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
 
                         MessageBox.Show("Stage Z 축, 대기 위치 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -10858,10 +10834,6 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
-
-                        //timer_MainWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
 
                         MessageBox.Show("Stage XY 축, Module Loading 위치로 이동 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -10965,10 +10937,6 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
-
-                        //timer_MainWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
 
                         MessageBox.Show("Stage Z 축, 대기 위치 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -11023,10 +10991,6 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
-
-                        //timer_MainWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
 
                         MessageBox.Show("Stage XY 축, Module Unloading 위치로 이동 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -11132,10 +11096,6 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
-
-                        //timer_MainWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
 
                         MessageBox.Show("Stage Z 축, 대기 위치 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -11190,10 +11150,6 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
-
-                        //timer_MainWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
 
                         MessageBox.Show("Stage XY 축, Scanner Center 위치로 이동 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -11277,10 +11233,6 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
-
-                        //timer_MainWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
 
                         MessageBox.Show("Stage Z 축, 대기 위치 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -11335,10 +11287,6 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
-
-                        //timer_MainWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
 
                         MessageBox.Show("Stage XY 축, Fine Camera Center 위치로 이동 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -15264,7 +15212,6 @@ namespace QMC.Common.Modules
                 {
                     m_bIsFirstAlign = false;
                 }
-                
             }
             for (int i = 0; i < 4; i++)
             {
@@ -41538,7 +41485,7 @@ namespace QMC.Common.Modules
             double lfVelocity = 0.0;
             double lfAccDec = 0.0;
 
-            double m_dHeightOffsetVision = 0.0; //Height Offset -> Camera
+            double m_dHeightOffsetVision = Equipment.Scanner_Calibration_VisionZOffset; //Height Offset -> Camera
             double m_dHeightOffsetScanner = 0.0; //Height Offset -> Laser
 
             bool bCalPosition = Equipment.Scanner_Calibration_Position_Enable; // true: cal판, false 중앙
@@ -44623,5 +44570,84 @@ namespace QMC.Common.Modules
                 CommonModule.Instance.Illuminator.TurnOnOff(false, (int)echannel);
             }
         }
+
+
+        // Stage 구동 시 인터락 함수
+        public bool CheckAllInterlock(out string failMessage)
+        {
+            failMessage = string.Empty;
+
+            if (!m_bHomeOK)
+            {
+                failMessage = "먼저 장비 초기화를 해야 합니다.";
+                return false;
+            }
+
+            if (rtc == null)
+            {
+                failMessage = "먼저 Scanner Board 를 초기화 해야 합니다.";
+                return false;
+            }
+
+            if (Equipment.AutoRunStatus)
+            {
+                failMessage = "자동 운전 중입니다.";
+                return false;
+            }
+
+            if (!workStageParameter.IsDO_Chiller_Run())
+            {
+                failMessage = "Chiller 가 [[ OFF ]] 상태입니다.\r\n\r\nChiller 를 [[ ON ]] 상태로 변경 후 다시 시도 바랍니다.";
+                return false;
+            }
+
+            if (!workStageParameter.DI_Chiller_Run())
+            {
+                failMessage = "Chiller 가 동작하지 않습니다.\r\n\r\nChiller 상태를 확인 후 다시 시도 바랍니다.";
+                return false;
+            }
+
+            if (!workStageParameter.DI_Chiller_Alarm_Check())
+            {
+                failMessage = "Chiller 가 Alarm 상태입니다.\r\n\r\nChiller 상태를 확인 후 다시 시도 바랍니다.";
+                return false;
+            }
+
+            if (!Equipment.Machine_LaserType_CO2 && m_nLaser_PulseMode != 1)
+            {
+                failMessage = "레이저 External 모드가 아닙니다.\r\n\r\n[[External]] 모드로 변경 후 다시 시도 바랍니다.";
+                return false;
+            }
+
+            if (!Equipment.AutoManualStatus)
+            {
+                failMessage = "장비가 [[ AUTO ]] 상태가 아닙니다.";
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(Equipment.RecipeOpen_DrawingFilePath))
+            {
+                failMessage = "도면(레시피)을 로드 하십시오.";
+                return false;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (Math.Abs(Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance) >= 3.0)
+                {
+                    failMessage = "Laser Defocusing 양이 너무 큽니다.\r\n\r\n[-3.0mm < z < 3.0mm] 범위로 조정 바랍니다.";
+                    return false;
+                }
+
+                if (Math.Abs(Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing) >= 2.0)
+                {
+                    failMessage = "가공 홀 크기 조정량이 너무 큽니다.\r\n\r\n[-1.0mm < z < 1.0mm] 범위로 조정 바랍니다.";
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
     }
 }

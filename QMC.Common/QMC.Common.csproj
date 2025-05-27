@@ -204,8 +204,9 @@
     <Compile Include="Modules\Scanner.cs" />
     <Compile Include="Modules\LaserConfig.cs" />
     <Compile Include="Modules\LaserRecipe.cs" />
-    <Compile Include="Recipe\ScannerCalManager.cs" />
-    <Compile Include="Recipe\VisionRecipeData.cs" />
+    <Compile Include="Q_Config\ScannerCalConfigData.cs" />
+    <Compile Include="Q_Recipe\ScannerCalManager.cs" />
+    <Compile Include="Q_Recipe\VisionRecipeData.cs" />
     <Compile Include="SpiralLab\Sirius\QMCSiriusEditorForm.cs">
       <SubType>UserControl</SubType>
     </Compile>

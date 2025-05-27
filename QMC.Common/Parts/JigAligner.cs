@@ -466,7 +466,7 @@ namespace QMC.Common.Parts
                         }
                     }
 
-                    if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
+                    if (m_Status == RunStatus.Stop) return 1; //  마크 찾다가 중지 하면 빠져나가자
 
                     if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_1STMARK)                                                      //  1번 Align Mark 만 찾을 경우, 여기서 Out
                     {

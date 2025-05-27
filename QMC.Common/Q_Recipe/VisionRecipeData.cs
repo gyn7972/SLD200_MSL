@@ -165,7 +165,6 @@ namespace QMC.Common.Recipe
             NativeMethods.WritePrivateProfileString("GoldPowder", "CircleMarkMaxInstance", nGoldPowderCircleMarkMaxInstance.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "CircleMarkFindCount", nGoldPowderCircleMarkFindCount.ToString(), path);
 
-
             return bRet;
         }
 
@@ -312,6 +311,7 @@ namespace QMC.Common.Recipe
                 data.nGoldPowderCircleMarkMaxInstance = Equipment.ToInt(sb.ToString());
                 NativeMethods.GetPrivateProfileString("GoldPowder", "CircleMarkFindCount", "7", sb, sb.Capacity, path);
                 data.nGoldPowderCircleMarkFindCount = Equipment.ToInt(sb.ToString());
+
 
 
             }

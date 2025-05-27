@@ -158,15 +158,6 @@ namespace SLD200_MSL
                 m_bFormVisible = true;
                 OnShowRecipeForm();
 
-                if (listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Count > 0)
-                {
-                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = -1;  // 선택 해제
-                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = 0;   // 다시 선택 → 이벤트 발생
-                    //listBox_Recipe_TabRecipe_ListOfDrawingLayer_SelectedIndexChanged // <- 자동 실행
-                    // 레시피 데이터 새로고침
-                    //Recipe_Data_Refresh("Hole1");
-                }
-
                 var selectedTab = tabControl_Recipe.SelectedTab;
                 if (selectedTab == tabPage_RecipeVision)
                 {
@@ -212,7 +203,11 @@ namespace SLD200_MSL
 
         private void tabControl_Recipe_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControl_Recipe.SelectedTab == tabPage_RecipeVision) // "RecipeVision" 탭을 선택했을 때
+            if(tabControl_Recipe.SelectedTab == tabPage_Recipe)
+            {
+                OnShowRecipeForm();
+            }
+            else if (tabControl_Recipe.SelectedTab == tabPage_RecipeVision) // "RecipeVision" 탭을 선택했을 때
             {
                 // RecipeVision 탭일 때만 표시
                 if (userform_RecipeVision != null && 
@@ -273,6 +268,15 @@ namespace SLD200_MSL
                 button_Recipe_TabRecipe_OpenEditor.Enabled = true;
                 button_Recipe_TabRecipe_OpenDwg.Enabled = true;
                 button_Recipe_TabRecipe_LayerImport.Enabled = true;
+
+                if (listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Count > 0)
+                {
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = -1;  // 선택 해제
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = 0;   // 다시 선택 → 이벤트 발생
+                    //listBox_Recipe_TabRecipe_ListOfDrawingLayer_SelectedIndexChanged // <- 자동 실행
+                    // 레시피 데이터 새로고침
+                    //Recipe_Data_Refresh("Hole1");
+                }
             }
         }
 
