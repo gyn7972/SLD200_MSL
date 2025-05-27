@@ -1293,16 +1293,12 @@ namespace SLD200_MSL
             SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
             SetColor(label_Title_Stacker_LPort, Equipment.Loader_RPort_Empty ? Color.Red : Color.Black, Equipment.Loader_LPort_Empty ? Color.White : Color.Lime);
 
-
             //  소켓 가공 건너뛰기 (얼라인만 사용)
             SetColor(checkBox_Main_SocketDrilling_Pass, Equipment.SocketDrilling_Skip ? Color.LightGreen : Color.LightGreen);
-
-
 
             //  EPRO 데이터 업데이트
             SetValue(label_Main_EPRO_Current_Pressure, workStage.m_dEPRO_Value.ToString("0.0000"));
             SetValue(label_Main_EPRO_Absorption_Judgment_Pressure, Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString("0.0000"));
-
 
             //  BET 상태 업데이트
             SetValue(label_Main_BET_ZoomStatus, string.Format("{0:0.000}  /  {1:0.000}", workStage.m_dBET_ZoomValue, workStage.m_dBET_ZoomValue_Recipe));
@@ -1311,7 +1307,17 @@ namespace SLD200_MSL
             SetValue(label_Main_BET_MradStatus, string.Format("{0:0.000}  /  {1:0.000}", workStage.m_dBET_MradValue, workStage.m_dBET_MradValue_Recipe));
             SetColor(label_Main_BET_MradStatus, !((workStage.m_dBET_MradValue > (workStage.m_dBET_MradValue_Recipe - 0.005)) && (workStage.m_dBET_MradValue < (workStage.m_dBET_MradValue_Recipe + 0.005))) ? Color.Red : Color.Black,
                                                 !((workStage.m_dBET_MradValue > (workStage.m_dBET_MradValue_Recipe - 0.005)) && (workStage.m_dBET_MradValue < (workStage.m_dBET_MradValue_Recipe + 0.005))) ? Color.White : Color.Lime);
-            
+
+
+            //workStage.m_bForceEjectRequest
+            if (workStage.m_bForceEjectRequest)
+            {
+                buttonForceMaterialOut.BackColor = Color.Red;
+            }
+            else
+            {
+                buttonForceMaterialOut.BackColor = System.Drawing.SystemColors.Control;
+            }
 
             // 장비 상태 UI에 반영
             UpdateDeviceStatusImages();
@@ -1619,8 +1625,6 @@ namespace SLD200_MSL
                 mb.ShowDialog("Information !", m_strTemp);
             }
 
-
-
             // Process Status
             var pos = ProcessManager.GetFirstUnprocessedPosition();
             if (pos.HasValue)
@@ -1646,8 +1650,6 @@ namespace SLD200_MSL
             {
                 // null 이면 가공할 것이 없음    
             }
-
-
             //  여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
             if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_PreAlign_Start)
             {
@@ -3109,6 +3111,7 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "AutoRun 중 강제배출 버튼 Click");
             }
         }
+
         private void checkBox_Test_LaserDrillingCycle_CheckedChanged(object sender, EventArgs e)
         {
             Equipment.LaserDrillingCycleEnable_Manual = checkBox_Test_LaserDrillingCycle.Checked;
@@ -3132,8 +3135,6 @@ namespace SLD200_MSL
             if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
             {
                 var mb = new MessageBoxYesNo();
-
-
 
                 //2025-05-27
                 //도면을 현재 recipe로 불러온다.
@@ -3236,13 +3237,12 @@ namespace SLD200_MSL
                 //    mb1.ShowDialog("Warning !", "스캐너와 카메라 Offset 자동 보정 진행중입니다.");
                 //    return;
                 //}
-
-
                 
+                //2025-05-27 : 위에서 도면 불러오는걸로 대체. 
                 // 도면 갱신 (Main 화면의 Sirius Document 를 가공할때 사용하는 Document 로 복사)
                 // workStage.SiriusEditor.Document = SiriusViewer_Main.Document;
                 // 정상적으로 종료 안하고 다시 시작하면 문제의 소지 발생.
-                Equipment.SetEqpSiriusViewerDocument( SiriusViewer_Main.Document); //  메인 화면에 보이는 도면을 가공하기 위함
+                //Equipment.SetEqpSiriusViewerDocument( SiriusViewer_Main.Document); //  메인 화면에 보이는 도면을 가공하기 위함
 
                 if (workStage.m_nSocketAlign_StartIndex >= 0)
                 {
@@ -3286,16 +3286,16 @@ namespace SLD200_MSL
                         return;
                 }
 
-
-                if (!workStage.workStageParameter.IsDO_BeamDump_Coolant_Supply() || 
-                    !workStage.workStageParameter.IsDO_Scanner_Coolant_Supply() ||
-                    (Equipment.Machine_LaserType_CO2 && 
-                    (!workStage.workStageParameter.IsDO_Mask_Coolant_Supply() || !workStage.workStageParameter.IsDO_VarioScan_Coolant_Supply())))
+                //  강제 배출이면 Laser Drilling Step 을 다시 None 으로 바꿔준다. (Thruhole 가공 중에 강제 배출을 했는데, Thruhole 이 계속 진행되어서...)
+                if (workStage.m_bForceEjectRequest)
                 {
-                    var mb1 = new MessageBoxOk();
-                    mb1.ShowDialog("Warning !", "냉각수를 순환 시키고 작업을 진행해야 합니다.");
-                    return;
+                    workStage.m_bLaserDrilling_Complete = true;
+                    workStage.m_nLaserDrilling_MainStep = 0;
+                    workStage.m_nLaserDrilling_MainStep_Recovery = 0;
+                    workStage.m_nFindAlignMark_Step = 0;
+                    workStage.m_nSocketAlign_MainStep = 0;
                 }
+
 
                 ////  StageZ 한계위치 설정되어 있는지 체크
                 //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
@@ -3305,7 +3305,6 @@ namespace SLD200_MSL
                 //    return;
                 //}
                 //laserDrilling.laserDrillingParameter.stLaserDrillingPosParam = laserDrilling.laserDrillingParameter.GetPositionInformation("WorkStage_WorkHeight");
-
                 ////  StageZ 한계위치를 초과하여 이동하는지 체크
                 //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
                 //{

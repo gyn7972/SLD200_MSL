@@ -35,6 +35,7 @@ namespace SLD200_MSL
             this.button_DataParsing = new System.Windows.Forms.Button();
             this.button_Rotate = new System.Windows.Forms.Button();
             this.groupBox167 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -53,7 +54,6 @@ namespace SLD200_MSL
             this.textBoxCorY = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textboxCorX = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.groupBox167.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,6 +86,7 @@ namespace SLD200_MSL
             this.SiriusEditor.RtcPin2Output = null;
             this.SiriusEditor.Size = new System.Drawing.Size(1286, 871);
             this.SiriusEditor.TabIndex = 69;
+            this.SiriusEditor.OnDocumentSave += new SpiralLab.Sirius.SiriusDocumentSave(this.SiriusEditor_OnDocumentSave);
             // 
             // button_DataParsing
             // 
@@ -125,6 +126,17 @@ namespace SLD200_MSL
             this.groupBox167.TabIndex = 84;
             this.groupBox167.TabStop = false;
             this.groupBox167.Text = " Available Layer ";
+            // 
+            // label8
+            // 
+            this.label8.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label8.Location = new System.Drawing.Point(11, 125);
+            this.label8.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(109, 24);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "- Thruhole";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label3
             // 
@@ -310,17 +322,6 @@ namespace SLD200_MSL
             this.textboxCorX.Size = new System.Drawing.Size(70, 27);
             this.textboxCorX.TabIndex = 89;
             this.textboxCorX.Text = "0";
-            // 
-            // label8
-            // 
-            this.label8.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label8.Location = new System.Drawing.Point(11, 125);
-            this.label8.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(109, 24);
-            this.label8.TabIndex = 11;
-            this.label8.Text = "- Thruhole";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_SiriusEditor
             // 

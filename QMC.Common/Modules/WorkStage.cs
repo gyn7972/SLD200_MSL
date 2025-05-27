@@ -44573,7 +44573,7 @@ namespace QMC.Common.Modules
 
 
         // Stage 구동 시 인터락 함수
-        public bool CheckAllInterlock(out string failMessage)
+        public bool CheckAllInterlock(out string failMessage, bool bSelect = true)
         {
             failMessage = string.Empty;
 
@@ -44645,6 +44645,20 @@ namespace QMC.Common.Modules
                     return false;
                 }
             }
+
+            if(bSelect)
+            {
+                //선택 가공시에만 해당? //드릴링 시컨스에서 냉각수 순환 시키도록 되어 있는데? 아닌가?
+                if (!workStageParameter.IsDO_BeamDump_Coolant_Supply() ||
+                        !workStageParameter.IsDO_Scanner_Coolant_Supply() ||
+                        (Equipment.Machine_LaserType_CO2 &&
+                        (!workStageParameter.IsDO_Mask_Coolant_Supply() || !workStageParameter.IsDO_VarioScan_Coolant_Supply())))
+                {
+                    failMessage = "냉각수를 순환 시키고 작업을 진행해야 합니다.";
+                    return false;
+                }
+            }
+            
 
             return true;
         }
