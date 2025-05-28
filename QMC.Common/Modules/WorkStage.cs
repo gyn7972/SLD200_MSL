@@ -13811,7 +13811,8 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "시작");
 
                     // 여기가 맞는지 확인 필요.
-                    m_bForceEjectRequest = false;    // 강제배출 초기화.
+                    // 2025.05.28 - 선택 가공 시 강제 배출 하기 위하여 아래 주석 처리함.
+                    //m_bForceEjectRequest = false;    // 강제배출 초기화.
                     
                     //여기서 false를 하면 안됨. -> Loaser에서 signal을 true로 변경함.
                     //m_bworkStageVacuumFail = false;  // Loader -> Work Stage 이송 시 진공이 안되면 강제 배출 요청함.
@@ -25227,9 +25228,11 @@ namespace QMC.Common.Modules
                     m_strTemp = string.Format("LaserDrillingOneCycle Time: {0:0.000} sec", CycleTimer_LaserDrilling.Latest.Interval.TotalSeconds);
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-
                     m_bLaserDrilling_Complete = true;
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+
+                    Equipment.ManualRunStatus = false;
 
                     if (!Equipment.AutoRunStatus)
                     {

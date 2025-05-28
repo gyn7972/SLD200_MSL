@@ -563,7 +563,7 @@ namespace SLD200_MSL
             //workStage.m_dSpot_Distance = 0.0;
             //SiriusEditor.Enabled = true;
 
-            workStage.InitRtc3DModule();
+             workStage.InitRtc3DModule();
 
             return m_bRet;
         }
