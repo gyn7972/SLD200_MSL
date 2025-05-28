@@ -704,8 +704,6 @@ namespace QMC.Common
         public static double Scanner_Calibration_PosX_Last { set; get; } = 0.0;
         public static double Scanner_Calibration_PosY_Last { set; get; } = 0.0;
 
-
-
         public static double Scanner_Calibration_TrainRoiStartLocation_X { set; get; } = 0.0;         //  Scanner Calibration Train Roi Start Location
         public static double Scanner_Calibration_TrainRoiStartLocation_Y { set; get; } = 0.0;
         public static double Scanner_Calibration_TrainRoiEndLocation_X { set; get; } = 0.0;           //  Scanner Calibration Train Roi End Location

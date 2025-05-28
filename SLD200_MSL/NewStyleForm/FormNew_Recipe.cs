@@ -113,6 +113,11 @@ namespace SLD200_MSL
 
             //  Recipe Open 전에는 Marking Data 가 Text 이므로, Serial Number 를 초기화 하는 Reset 버튼은 비활성화 한다.
             button_Marking_SerialNumber_CountReset.Enabled = false;
+
+            listBox_Recipe_TabRecipe_ListOfDrawingLayer.DrawMode = DrawMode.OwnerDrawFixed;
+            listBox_Recipe_TabRecipe_ListOfDrawingLayer.ItemHeight = 24;
+
+            checkBox_MasterView.Checked = false;
         }
 
         private void MachineType_Component_Enable(bool m_bLaserType)
@@ -203,7 +208,11 @@ namespace SLD200_MSL
 
         private void tabControl_Recipe_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControl_Recipe.SelectedTab == tabPage_RecipeVision) // "RecipeVision" 탭을 선택했을 때
+            if(tabControl_Recipe.SelectedTab == tabPage_Recipe)
+            {
+                OnShowRecipeForm();
+            }
+            else if (tabControl_Recipe.SelectedTab == tabPage_RecipeVision) // "RecipeVision" 탭을 선택했을 때
             {
                 // RecipeVision 탭일 때만 표시
                 if (userform_RecipeVision != null && 
@@ -599,6 +608,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole2")
             {
@@ -615,6 +625,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole3")
             {
@@ -631,6 +642,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole4")
             {
@@ -647,6 +659,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole5")
             {
@@ -663,6 +676,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole6")
             {
@@ -679,6 +693,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole7")
             {
@@ -695,6 +710,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole8")
             {
@@ -711,6 +727,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole9")
             {
@@ -727,6 +744,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole10")
             {
@@ -743,6 +761,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Thruhole")
             {
@@ -759,6 +778,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Rect")
             {
@@ -776,14 +796,15 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Outline")
             {
-
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Marking")
             {
-
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Fiducial")
             {
@@ -800,6 +821,12 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+
+                SetRecipeTabControlsVisible(m_strLayerName, false);
+            }
+            else if (m_strLayerName == "PreAlign")
+            {
+                SetRecipeTabControlsVisible(m_strLayerName, false);
             }
 
             // 리스트뷰를 Refresh하여 보여줌
@@ -2326,6 +2353,13 @@ namespace SLD200_MSL
                     var mb = new MessageBoxOk();
                     mb.ShowDialog("Error !!", "Recipe Data를 로드하지 못했습니다.");
                 }
+
+                if (listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Count > 0)
+                {
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = -1;  // 선택 해제
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = 0;   // 다시 선택 → 이벤트 발생
+
+                }
             }
         }
 
@@ -3269,5 +3303,350 @@ namespace SLD200_MSL
                 label_Recipe_Marking_SerialNumber_Current.Text = m_strMarkingData;
             }
         }
+
+        private void listBox_Recipe_TabRecipe_ListOfDrawingLayer_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0) return;
+
+            ListBox listBox = sender as ListBox;
+            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+
+            // 선택 여부에 따라 배경색 변경
+            Color backColor = isSelected ? Color.DodgerBlue : Color.White;
+            Color textColor = isSelected ? Color.White : Color.Black;
+
+            using (SolidBrush backgroundBrush = new SolidBrush(backColor))
+            using (SolidBrush textBrush = new SolidBrush(textColor))
+            {
+                // 배경
+                e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
+
+                // 텍스트
+                string itemText = listBox.Items[e.Index].ToString();
+                e.Graphics.DrawString(itemText, e.Font, textBrush, e.Bounds);
+            }
+
+            // 포커스 테두리 제거
+            e.DrawFocusRectangle();
+        }
+
+
+        private void SetRecipeTabControlsVisible(string strLayerName, bool bEnabled)
+        {
+            Control[] targetControls = new Control[]
+            {
+                // 공통 //Hole1에서 설정.
+                button_Recipe_TabRecipe_Cal_ZAxisOffset,
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
+                textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Outer,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Center,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Inner,
+                checkBox_Recipe_TabRecipe_LowerDustCollector_Disable,
+                checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode,
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper,
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower,
+                checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck,
+                checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign,
+                checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign,
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY,
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX,
+                textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_Height,
+                textBox_Recipe_TabRecipe_ModuleInformation_Width,
+                button_GoldPowderThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness,
+                
+                //공정 Param
+                textBox_Recipe_TabRecipe_LaserParam_Frequency,
+                button_PulseWidth_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
+                button_DutyCycle_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth,
+                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod,
+                radioButton_Recipe_TabRecipe_ProcessPriority_P2P,
+                textBox_Recipe_TabRecipe_SpiralParam_AngleFactor,
+                textBox_Recipe_TabRecipe_SpiralParam_Revolutions,
+                textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter,
+                textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter,
+                textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time,
+                textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance,
+                checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType,
+                textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle,
+                button_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_Resizing,
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer,
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex,
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition,
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance,
+                
+                //Marking
+                button_Marking_SerialNumber_CountReset,
+                button_Marking_SerialNumber_Preview,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase,
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing,
+                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable,
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber,
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber,
+                comboBox_Recipe_TabRecipe_CustomMarking_DataType,
+                checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode,
+
+                groupBox6
+            };
+
+            Control[] targetControlsHole1 = new Control[]
+            {
+                // 공통 //Hole1에서 설정.
+                button_Recipe_TabRecipe_Cal_ZAxisOffset,
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
+                textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Outer,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Center,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Inner,
+                checkBox_Recipe_TabRecipe_LowerDustCollector_Disable,
+                checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode,
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper,
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower,
+                checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck,
+                checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign,
+                checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign,
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY,
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX,
+                textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_Height,
+                textBox_Recipe_TabRecipe_ModuleInformation_Width,
+                button_GoldPowderThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness,
+                
+                //공정 Param
+                textBox_Recipe_TabRecipe_LaserParam_Frequency,
+                button_PulseWidth_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
+                button_DutyCycle_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth,
+                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod,
+                radioButton_Recipe_TabRecipe_ProcessPriority_P2P,
+                textBox_Recipe_TabRecipe_SpiralParam_AngleFactor,
+                textBox_Recipe_TabRecipe_SpiralParam_Revolutions,
+                textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter,
+                textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter,
+                textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time,
+                textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance,
+                checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType,
+                textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle,
+                button_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                label_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_Resizing,
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer,
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex,
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition,
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance
+            };
+
+            Control[] targetControlsMarking = new Control[]
+            {
+                //공정 Param
+                textBox_Recipe_TabRecipe_LaserParam_Frequency,
+                button_PulseWidth_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
+                button_DutyCycle_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth,
+                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod,
+                radioButton_Recipe_TabRecipe_ProcessPriority_P2P,
+                textBox_Recipe_TabRecipe_SpiralParam_AngleFactor,
+                textBox_Recipe_TabRecipe_SpiralParam_Revolutions,
+                textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter,
+                textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter,
+                textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time,
+                textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance,
+                checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType,
+                textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle,
+                button_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                label_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_Resizing,
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer,
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex,
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition,
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance,
+                
+               //Marking
+                button_Marking_SerialNumber_CountReset,
+                button_Marking_SerialNumber_Preview,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase,
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing,
+                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable,
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber,
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber,
+                comboBox_Recipe_TabRecipe_CustomMarking_DataType,
+                checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode,
+                groupBox6
+           };
+
+            Control[] targetControlsThruhole = new Control[]
+            {
+                //공정 Param
+                textBox_Recipe_TabRecipe_LaserParam_Frequency,
+                button_PulseWidth_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
+                button_DutyCycle_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth,
+                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod,
+                radioButton_Recipe_TabRecipe_ProcessPriority_P2P,
+                textBox_Recipe_TabRecipe_SpiralParam_AngleFactor,
+                textBox_Recipe_TabRecipe_SpiralParam_Revolutions,
+                textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter,
+                textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter,
+                textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time,
+                textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance,
+                checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType,
+                textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle,
+                button_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                label_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_Resizing,
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer,
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex,
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition,
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance
+           };
+
+            if (checkBox_MasterView.Checked)
+            {
+                foreach (var control in targetControls)
+                {
+                    control.Enabled = true;
+                }
+                return;
+            }
+
+
+            foreach (var control in targetControls)
+            {
+                control.Enabled = false;
+            }
+
+            //  ListView Column 설정
+            if ((strLayerName == "Hole1"))
+            {
+                foreach (var control in targetControlsHole1)
+                {
+                    control.Enabled = bEnabled;
+                }
+                MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+            }
+            else if ((strLayerName == "Hole2") ||
+                (strLayerName == "Hole3") ||
+                (strLayerName == "Hole4") ||
+                (strLayerName == "Hole5") ||
+                (strLayerName == "Hole6") ||
+                (strLayerName == "Hole7") ||
+                (strLayerName == "Hole8") ||
+                (strLayerName == "Hole9") ||
+                (strLayerName == "Hole10") ||
+                (strLayerName == "Thruhole") ||
+                (strLayerName == "Rect") ||
+                (strLayerName == "Outline"))
+            {
+                foreach (var control in targetControlsThruhole)
+                {
+                    control.Enabled = bEnabled;
+                }
+                MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+            }
+            else if (strLayerName == "Marking")
+            {
+                foreach (var control in targetControlsMarking)
+                {
+                    control.Enabled = bEnabled;
+                }
+                MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+            }
+            else if (strLayerName == "PreAlign" || strLayerName == "Fiducial")
+            {
+                MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+                foreach (var control in targetControls)
+                {
+                    control.Enabled = bEnabled;
+                }
+            }
+
+            
+        }
+
+
+
     }
 }

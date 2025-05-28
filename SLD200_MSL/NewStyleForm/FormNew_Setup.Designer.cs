@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -273,6 +273,9 @@
             this.button_Setup_ScannerCal_CalStart = new System.Windows.Forms.Button();
             this.button_Setup_ScannerCal_Save = new System.Windows.Forms.Button();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.label_Setup_ScannerCal_VisionZOffset = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_VisionZOffset = new System.Windows.Forms.TextBox();
+            this.button_Setup_ScannerCal_VisionZOffset = new System.Windows.Forms.Button();
             this.label_Setup_ScannerCal_LastPosY_Disp = new System.Windows.Forms.Label();
             this.label_Setup_ScannerCal_LastPosX_Disp = new System.Windows.Forms.Label();
             this.label_Setup_ScannerCal_CalPitch = new System.Windows.Forms.Label();
@@ -546,9 +549,6 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.label_Setup_ScannerCal_VisionZOffset = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_VisionZOffset = new System.Windows.Forms.TextBox();
-            this.button_Setup_ScannerCal_VisionZOffset = new System.Windows.Forms.Button();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -1220,14 +1220,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1280,14 +1280,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -2925,6 +2925,7 @@
             this.tabControl_Setup.Size = new System.Drawing.Size(1889, 859);
             this.tabControl_Setup.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl_Setup.TabIndex = 1;
+            this.tabControl_Setup.SelectedIndexChanged += new System.EventHandler(this.tabControl_Setup_SelectedIndexChanged);
             // 
             // tabPage_Setup_2DMapping
             // 
@@ -3711,6 +3712,38 @@
             this.groupBox15.TabIndex = 58;
             this.groupBox15.TabStop = false;
             this.groupBox15.Text = " Laser Param. for Scanner Cal. ";
+            // 
+            // label_Setup_ScannerCal_VisionZOffset
+            // 
+            this.label_Setup_ScannerCal_VisionZOffset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label_Setup_ScannerCal_VisionZOffset.Location = new System.Drawing.Point(8, 475);
+            this.label_Setup_ScannerCal_VisionZOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Setup_ScannerCal_VisionZOffset.Name = "label_Setup_ScannerCal_VisionZOffset";
+            this.label_Setup_ScannerCal_VisionZOffset.Size = new System.Drawing.Size(175, 25);
+            this.label_Setup_ScannerCal_VisionZOffset.TabIndex = 160;
+            this.label_Setup_ScannerCal_VisionZOffset.Text = "VisionZ Offset (mm) :";
+            this.label_Setup_ScannerCal_VisionZOffset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_ScannerCal_VisionZOffset
+            // 
+            this.textBox_Setup_ScannerCal_VisionZOffset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.textBox_Setup_ScannerCal_VisionZOffset.Location = new System.Drawing.Point(184, 475);
+            this.textBox_Setup_ScannerCal_VisionZOffset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_VisionZOffset.Name = "textBox_Setup_ScannerCal_VisionZOffset";
+            this.textBox_Setup_ScannerCal_VisionZOffset.Size = new System.Drawing.Size(90, 23);
+            this.textBox_Setup_ScannerCal_VisionZOffset.TabIndex = 159;
+            this.textBox_Setup_ScannerCal_VisionZOffset.Text = "0.0";
+            // 
+            // button_Setup_ScannerCal_VisionZOffset
+            // 
+            this.button_Setup_ScannerCal_VisionZOffset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_ScannerCal_VisionZOffset.Location = new System.Drawing.Point(280, 475);
+            this.button_Setup_ScannerCal_VisionZOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_ScannerCal_VisionZOffset.Name = "button_Setup_ScannerCal_VisionZOffset";
+            this.button_Setup_ScannerCal_VisionZOffset.Size = new System.Drawing.Size(35, 25);
+            this.button_Setup_ScannerCal_VisionZOffset.TabIndex = 158;
+            this.button_Setup_ScannerCal_VisionZOffset.Text = "#";
+            this.button_Setup_ScannerCal_VisionZOffset.UseVisualStyleBackColor = true;
             // 
             // label_Setup_ScannerCal_LastPosY_Disp
             // 
@@ -6953,38 +6986,6 @@
             this.label96.TabIndex = 77;
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_Setup_ScannerCal_VisionZOffset
-            // 
-            this.label_Setup_ScannerCal_VisionZOffset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label_Setup_ScannerCal_VisionZOffset.Location = new System.Drawing.Point(8, 475);
-            this.label_Setup_ScannerCal_VisionZOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label_Setup_ScannerCal_VisionZOffset.Name = "label_Setup_ScannerCal_VisionZOffset";
-            this.label_Setup_ScannerCal_VisionZOffset.Size = new System.Drawing.Size(175, 25);
-            this.label_Setup_ScannerCal_VisionZOffset.TabIndex = 160;
-            this.label_Setup_ScannerCal_VisionZOffset.Text = "VisionZ Offset (mm) :";
-            this.label_Setup_ScannerCal_VisionZOffset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Setup_ScannerCal_VisionZOffset
-            // 
-            this.textBox_Setup_ScannerCal_VisionZOffset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.textBox_Setup_ScannerCal_VisionZOffset.Location = new System.Drawing.Point(184, 475);
-            this.textBox_Setup_ScannerCal_VisionZOffset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_VisionZOffset.Name = "textBox_Setup_ScannerCal_VisionZOffset";
-            this.textBox_Setup_ScannerCal_VisionZOffset.Size = new System.Drawing.Size(90, 23);
-            this.textBox_Setup_ScannerCal_VisionZOffset.TabIndex = 159;
-            this.textBox_Setup_ScannerCal_VisionZOffset.Text = "0.0";
-            // 
-            // button_Setup_ScannerCal_VisionZOffset
-            // 
-            this.button_Setup_ScannerCal_VisionZOffset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_ScannerCal_VisionZOffset.Location = new System.Drawing.Point(280, 475);
-            this.button_Setup_ScannerCal_VisionZOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button_Setup_ScannerCal_VisionZOffset.Name = "button_Setup_ScannerCal_VisionZOffset";
-            this.button_Setup_ScannerCal_VisionZOffset.Size = new System.Drawing.Size(35, 25);
-            this.button_Setup_ScannerCal_VisionZOffset.TabIndex = 158;
-            this.button_Setup_ScannerCal_VisionZOffset.Text = "#";
-            this.button_Setup_ScannerCal_VisionZOffset.UseVisualStyleBackColor = true;
             // 
             // FormNew_Setup
             // 

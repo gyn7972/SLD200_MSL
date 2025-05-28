@@ -1276,8 +1276,6 @@ namespace SLD200_MSL
                 Equipment.AutoRunStatus = false;
                 workStage.SetRunStatus(RunStatus.Stop);
 
-                workStage.timer_MainWork.Stop();
-                workStage.m_MainWork_Start = false;
                 loader.m_LoaderWork_Start = false;
                 workStage.m_LaserDrillingWork_Start = false;
                 Equipment.LaserDrillingCycStop_Reservation = false;
@@ -1295,16 +1293,12 @@ namespace SLD200_MSL
             SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
             SetColor(label_Title_Stacker_LPort, Equipment.Loader_RPort_Empty ? Color.Red : Color.Black, Equipment.Loader_LPort_Empty ? Color.White : Color.Lime);
 
-
             //  소켓 가공 건너뛰기 (얼라인만 사용)
             SetColor(checkBox_Main_SocketDrilling_Pass, Equipment.SocketDrilling_Skip ? Color.LightGreen : Color.LightGreen);
-
-
 
             //  EPRO 데이터 업데이트
             SetValue(label_Main_EPRO_Current_Pressure, workStage.m_dEPRO_Value.ToString("0.0000"));
             SetValue(label_Main_EPRO_Absorption_Judgment_Pressure, Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString("0.0000"));
-
 
             //  BET 상태 업데이트
             SetValue(label_Main_BET_ZoomStatus, string.Format("{0:0.000}  /  {1:0.000}", workStage.m_dBET_ZoomValue, workStage.m_dBET_ZoomValue_Recipe));
@@ -1313,7 +1307,17 @@ namespace SLD200_MSL
             SetValue(label_Main_BET_MradStatus, string.Format("{0:0.000}  /  {1:0.000}", workStage.m_dBET_MradValue, workStage.m_dBET_MradValue_Recipe));
             SetColor(label_Main_BET_MradStatus, !((workStage.m_dBET_MradValue > (workStage.m_dBET_MradValue_Recipe - 0.005)) && (workStage.m_dBET_MradValue < (workStage.m_dBET_MradValue_Recipe + 0.005))) ? Color.Red : Color.Black,
                                                 !((workStage.m_dBET_MradValue > (workStage.m_dBET_MradValue_Recipe - 0.005)) && (workStage.m_dBET_MradValue < (workStage.m_dBET_MradValue_Recipe + 0.005))) ? Color.White : Color.Lime);
-            
+
+
+            //workStage.m_bForceEjectRequest
+            if (workStage.m_bForceEjectRequest)
+            {
+                buttonForceMaterialOut.BackColor = Color.Red;
+            }
+            else
+            {
+                buttonForceMaterialOut.BackColor = System.Drawing.SystemColors.Control;
+            }
 
             // 장비 상태 UI에 반영
             UpdateDeviceStatusImages();
@@ -1361,6 +1365,8 @@ namespace SLD200_MSL
                 //  이것저것 다 리셋 - 시작
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                 workStage.m_nFindAlignMark_Step = (int)WorkStage.FindAlignMark_Step.None;
+                workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
+
                 workStage.m_nReticleCheck_HighResCam_Step = (int)WorkStage.ReticleCheck_HighResCam_Step.None;
                 workStage.m_nReticleCheck_LowResCam_Step = (int)WorkStage.ReticleCheck_LowResCam_Step.None;
                 workStage.m_nSafetyPos_Move_Step = (int)WorkStage.SafetyPos_Move_Step.None;
@@ -1378,17 +1384,7 @@ namespace SLD200_MSL
                 checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
                 checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
 
-                //  Main Work 타이머
-                //workStage.m_btimer_MainWork_Stop = true;                
-                //workStage.timer_MainWork.Enabled = false;
-                ////  Sub Work 타이머
-                //workStage.m_btimer_LaserDrillingWork_Stop = true;
-                //workStage.timer_LaserDrillingWork.Enabled = false;
-                //workStage.m_btimer_SubWork_Stop = true;
-                //workStage.timer_SubWork.Enabled = false;
 
-                workStage.timer_MainWork.Stop();
-                workStage.timer_MainWork.Enabled = false;
                 workStage.m_MainWork_Start = false;
                 //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.None;
                 loader.timer_LoaderWork.Stop();
@@ -1552,7 +1548,6 @@ namespace SLD200_MSL
                 mb.ShowDialog("Information !", "Chiller 가 [[ OFF ]] 상태입니다.\r\n\r\nChiller 를 [[ ON ]] 상태로 변경 후 다시 시도 바랍니다.");
                 return;
             }
-
             //  Chiller 상태 체크 - Run 신호를 내보내고 있는데 Run, 신호가 들어오지 않는 경우
             if (workStage.workStageParameter.IsDO_Chiller_Run() && !workStage.workStageParameter.DI_Chiller_Run())
             {
@@ -1560,7 +1555,6 @@ namespace SLD200_MSL
                 mb.ShowDialog("Information !", "Chiller 가 동작하지 않습니다.\r\n\r\nChiller 상태를 확인 후 다시 시도 바랍니다.");
                 return;
             }
-
             //  Chiller 상태 체크 - Run 신호를 내보내고 있는데, 알람 신호가 들어오는 경우
             if (workStage.workStageParameter.IsDO_Chiller_Run() && !workStage.workStageParameter.DI_Chiller_Alarm_Check())
             {
@@ -1608,7 +1602,6 @@ namespace SLD200_MSL
                     return;
             }
 
-
             if (Equipment.SocketDrilling_Skip)
             {
                 m_strTemp = string.Format("소켓 가공 건너뛰기.\r\n\r\n[얼라인까지 진행하고, 소켓은 가공되지 않습니다.]\r\n\r\n[Hole1 Layer 를 제외한 나머지 가공 진행]");
@@ -1619,7 +1612,6 @@ namespace SLD200_MSL
             else
             {
                 m_strTemp = string.Format("소켓 가공 정상 진행.\r\n\r\n[소켓얼라인 -> 소켓 가공 -> 나머지 Layer 가공 진행]");
-
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", m_strTemp);
             }
@@ -1632,7 +1624,6 @@ namespace SLD200_MSL
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", m_strTemp);
             }
-
 
             // Process Status
             var pos = ProcessManager.GetFirstUnprocessedPosition();
@@ -1659,8 +1650,6 @@ namespace SLD200_MSL
             {
                 // null 이면 가공할 것이 없음    
             }
-
-
             //  여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
             if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_PreAlign_Start)
             {
@@ -1668,7 +1657,6 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Pre Align 부터 다시 시작");
 
                 workStage.m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
-
                 if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                 {
                     if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
@@ -1694,15 +1682,12 @@ namespace SLD200_MSL
                         return;
                     }
                 }
-
                 workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             }
             else if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_SocketAlign_Start)
             {
                 //  Socket Align 중이었으니 그대로 시작
-
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket Align 부터 다시 시작");
-
                 if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                 {
                     if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
@@ -1747,7 +1732,6 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행하던 부분 다시 시작");
 
                 //  현재 소켓의 모든 Layer 상태 확인. (하나라도 true 인 게 있으면 다음 소켓 인덱스로 시작)
-
                 //  Drilling 시작 파라미터 설정
                 if (!workStage.IsProcessing)
                 {
@@ -1760,7 +1744,6 @@ namespace SLD200_MSL
                         Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
 
                         //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-
                         if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "하부 집진기 사용 안함.");
@@ -1783,7 +1766,6 @@ namespace SLD200_MSL
                 {
                     //  가공할 것이 있음.
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행할 것이 있음");
-
                     if (workStage.CurrentLayerName == "Hole1")
                     {
                         for ( int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
@@ -1837,7 +1819,6 @@ namespace SLD200_MSL
                         }
 
                         workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
-
 
                         if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                         {
@@ -1982,15 +1963,12 @@ namespace SLD200_MSL
             //  강제 배출이면 Laser Drilling Step 을 다시 None 으로 바꿔준다. (Thruhole 가공 중에 강제 배출을 했는데, Thruhole 이 계속 진행되어서...)
             if (workStage.m_bForceEjectRequest)
             {
-                //workStage.m_bForceEjectRequest = false;
-
                 workStage.m_bLaserDrilling_Complete = true;
                 workStage.m_nLaserDrilling_MainStep = 0;
                 workStage.m_nLaserDrilling_MainStep_Recovery = 0;
                 workStage.m_nFindAlignMark_Step = 0;
                 workStage.m_nSocketAlign_MainStep = 0;
             }
-
 
             //  강제 배출일 경우, 집진기도 Off
             if (workStage.m_bLaserDrilling_Complete && 
@@ -2019,7 +1997,6 @@ namespace SLD200_MSL
             workStage.m_LaserDrillingWork_Start = true;
             Equipment.LaserDrillingCycStop_Reservation = false;
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
-
             workStage.m_ProductAlign_Start = true;
             workStage.m_SubWork_Start = true;
             loader.m_LoaderWork_Start = true;
@@ -2713,6 +2690,8 @@ namespace SLD200_MSL
 
             // 가공 Data 초기화
             ProcessManager.Reset();
+            //  Layer Info List 초기화
+            ProcessManager.Init();
 
             //  가공 Sequence Index 초기화 (Loading 부터 시작)
             Equipment.m_bMainProcessStatus_LD_LPort_Complete = false;                       //  Loader LPort 투입 완료
@@ -2725,9 +2704,6 @@ namespace SLD200_MSL
             Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete = false;       //  Work Stage Process 완료
             Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete = false;      //  Unloader Work Stage 에서 Module Pick Up 완료
             Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete = false;          //  Unloader Port 에 Module Put Down 완료
-
-            //  Layer Info List 초기화
-            ProcessManager.Init();
 
             checkBox_Main_SocketDrilling_Pass.Checked = false;
             Equipment.SocketDrilling_Skip = false;
@@ -2749,10 +2725,8 @@ namespace SLD200_MSL
             loader.m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
             loader.m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
             loader.m_nMAlign_Step = (int)MAlign_Step.None;
-
             loader.m_bStacker0_Complete = false;
             loader.m_bStacker1_Complete = false;
-
             loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.None;                            //  Stacker 우선권 초기화
             loader.m_bStacker0_PickUp_Failed = false;                                                       //  Stacker1 Pick Up 실패 여부 Flag 초기화
             loader.m_bStacker1_PickUp_Failed = false;                                                       //  Stacker1 Pick Up 실패 여부 Flag 초기화
@@ -2841,22 +2815,30 @@ namespace SLD200_MSL
             workStage.m_nMainWorkCycleType = (int)MainWorkCycleType.Cycle_None;                   //  자동 운전 시 사용하는 변수
             workStage.m_bMainWorkCycle_DryRun = false;
 
-
             //  Laser Drilling 파츠 사용 변수 초기화
             workStage.m_bLaserDrilling_Complete = false;
             workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
-
             Equipment.m_AlignMode = AlignMode.Socket;
 
-
-            // 
             workStage.m_bPassedSocket_Exist = false; //  Pass Socket 존재 여부
 
+            // workstage LaserOff2 case문에서 초기화 하는 변수 전부 같이 Reset
+            workStage.GlobalSocketStatus_Init();            //위에서 하고 있는거 같지만.
+            workStage.GetDrillingData_ProcessingFlagCheck();
+
+            //  가공이 완료되었으므로, Align 변수 false 로
+            workStage.m_bAlignCompleted = false;                                                      
 
             workStage.ResetRecovery();
             unloader.ResetRecovery();
             loader.ResetRecovery();
+
+            //도면을 현재 recipe로 불러온다.
+            if(Equipment.RecipeOpen_DrawingFilePath != null && Equipment.RecipeOpen_DrawingFilePath != "")
+            {
+                workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+            }
 
 
             //I/O - Off
@@ -3129,6 +3111,7 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "AutoRun 중 강제배출 버튼 Click");
             }
         }
+
         private void checkBox_Test_LaserDrillingCycle_CheckedChanged(object sender, EventArgs e)
         {
             Equipment.LaserDrillingCycleEnable_Manual = checkBox_Test_LaserDrillingCycle.Checked;
@@ -3137,81 +3120,33 @@ namespace SLD200_MSL
         private void button_Main_ManualStart_Click(object sender, EventArgs e)
         {
             //  Main Work Start
-
-            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Start 버튼");
+            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "선택 가공 버튼");
 
             string m_strTemp = "";
 
-            if (!workStage.m_bHomeOK)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-                return;
-            }
-
-           
-            if (workStage.rtc == null)
-            {
-                System.Windows.Forms.MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
-                return;
-            }
-
-            if (Equipment.AutoRunStatus)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "자동 운전 중입니다.");
-                return;
-            }
-
-            if (!Equipment.AutoManualStatus)
+            string msg = "";
+            if (workStage.CheckAllInterlock(out msg) == false)
             {
                 var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "장비가 [[ AUTO ]] 상태가 아닙니다.");
+                mb.ShowDialog("Information", msg);
                 return;
-            }
-
-            if (Equipment.RecipeOpen_DrawingFilePath.Length == 0)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "도면(레시피)을 로드 하십시오.");
-                return;
-            }
-
-
-            for (int i = 0; i < 4; i++)
-            {
-                //  Laser Defocusing 양 체크 (너무 크면 안됨)
-                if (Math.Abs(Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance) >= 3.0)
-                {
-                    var mb1 = new MessageBoxOk();
-                    mb1.ShowDialog("Information !", "Laser Defocusing 양이 너무 큽니다.\r\n\r\n[-3.0mm < z < 3.0mm] 범위로 조정");
-                    i = 4;
-                    return;
-                }
-
-                //  Resizing 크기 체크
-                if (Math.Abs(Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing) >= 2.0)
-                {
-                    var mb1 = new MessageBoxOk();
-                    mb1.ShowDialog("Information !", "가공 홀 크기 조정량이 너무 큽니다.\r\n\r\n[-1.0mm < z < 1.0mm] 범위로 조정");
-                    i = 4;
-                    return;
-                }
             }
 
             if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
             {
                 var mb = new MessageBoxYesNo();
 
+                //2025-05-27
+                //도면을 현재 recipe로 불러온다.
+                if (Equipment.RecipeOpen_DrawingFilePath != null && Equipment.RecipeOpen_DrawingFilePath != "")
+                {
+                    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                }
                 ////////////////////////////////////////////////////////////////////////////
-                ////  Socket 선택 가공인지 확인용
-                ///
-
-                // 이거 왜 해야 하는지  20250524
+                ////  Socket 선택 가공인지 확인용 // 이거 왜 해야 하는지  20250524
                 //if (workStage.m_stDividedRegion_GroupData == null)              //  Parsing 해야 확인할 수 있는 데이터
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Start Button Click", "Data Parsing 진행. (GetDrillingData)");
-
                     workStage.GetDrillingData(true);
                 }
 
@@ -3245,7 +3180,6 @@ namespace SLD200_MSL
 
                 baseTextBox_Socket_Index.Text = "All";
                 workStage.m_nSelectedSocket_Index = -1;
-                
                 if (workStage.m_stDividedRegion_GroupData != null)
                 {
                     //  선택된 Socket 이 몇번 Socket 인지 확인
@@ -3262,7 +3196,8 @@ namespace SLD200_MSL
                 }
 
                 //  선택 가공 시 소켓 번호가 정상적으로 선택되지 않았을 경우.
-                if ((workStage.m_nSelectedSocket_Index == -1) && (checkBox_Main_AlignStartSocket_SelectMode.Checked || checkBox_Main_AlignStartSocket_ContinueMode.Checked))
+                if ((workStage.m_nSelectedSocket_Index == -1) && 
+                    (checkBox_Main_AlignStartSocket_SelectMode.Checked || checkBox_Main_AlignStartSocket_ContinueMode.Checked))
                 {
                     var mb1 = new MessageBoxOk();
                     mb1.ShowDialog("Warning !", "선택 가공 소켓 번호를 확인하세요. \r\n\r\n[소켓 다시 선택]");
@@ -3294,21 +3229,20 @@ namespace SLD200_MSL
                     workStage.m_nSocketAlign_StartIndex = -1;
                 }
 
-                    //  Socket 선택 가공인지 확인용
-                    ////////////////////////////////////////////////////////////////////////////
-
-
-                    //if (laserDrilling.m_nAutoCal_ScannerCamCenter_Step > (int)LaserDrilling.AutoCalScannerCameraCenter_Step.None)
-                    //{
-                    //    var mb1 = new MessageBoxOk();
-                    //    mb1.ShowDialog("Warning !", "스캐너와 카메라 Offset 자동 보정 진행중입니다.");
-                    //    return;
-                    //}
-
-                    //  도면 갱신 (Main 화면의 Sirius Document 를 가공할때 사용하는 Document 로 복사)
-                    //workStage.SiriusEditor.Document = SiriusViewer_Main.Document;
-                    Equipment.SetEqpSiriusViewerDocument( SiriusViewer_Main.Document);                            //  메인 화면에 보이는 도면을 가공하기 위함
-
+                //  Socket 선택 가공인지 확인용
+                ////////////////////////////////////////////////////////////////////////////
+                //if (laserDrilling.m_nAutoCal_ScannerCamCenter_Step > (int)LaserDrilling.AutoCalScannerCameraCenter_Step.None)
+                //{
+                //    var mb1 = new MessageBoxOk();
+                //    mb1.ShowDialog("Warning !", "스캐너와 카메라 Offset 자동 보정 진행중입니다.");
+                //    return;
+                //}
+                
+                //2025-05-27 : 위에서 도면 불러오는걸로 대체. 
+                // 도면 갱신 (Main 화면의 Sirius Document 를 가공할때 사용하는 Document 로 복사)
+                // workStage.SiriusEditor.Document = SiriusViewer_Main.Document;
+                // 정상적으로 종료 안하고 다시 시작하면 문제의 소지 발생.
+                //Equipment.SetEqpSiriusViewerDocument( SiriusViewer_Main.Document); //  메인 화면에 보이는 도면을 가공하기 위함
 
                 if (workStage.m_nSocketAlign_StartIndex >= 0)
                 {
@@ -3321,9 +3255,6 @@ namespace SLD200_MSL
                         m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\n[선택 소켓 부터 끝까지 가공 시작 -> 배출 -> 완료]\r\n\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex + 1);
                     }
 
-                    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
-                    checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
-
                     var mb1 = new MessageBoxYesNo();
                     if (DialogResult.Yes == mb1.ShowDialog("Question ?", m_strTemp))
                     {
@@ -3334,6 +3265,10 @@ namespace SLD200_MSL
                         Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 취소");
                         return;
                     }
+
+                    // 취소 시키는 이유가 있나?
+                    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                    checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
                 }
                 else
                 {
@@ -3351,14 +3286,16 @@ namespace SLD200_MSL
                         return;
                 }
 
-
-                if (!workStage.workStageParameter.IsDO_BeamDump_Coolant_Supply() || !workStage.workStageParameter.IsDO_Scanner_Coolant_Supply() ||
-                    (Equipment.Machine_LaserType_CO2 && (!workStage.workStageParameter.IsDO_Mask_Coolant_Supply() || !workStage.workStageParameter.IsDO_VarioScan_Coolant_Supply())))
+                //  강제 배출이면 Laser Drilling Step 을 다시 None 으로 바꿔준다. (Thruhole 가공 중에 강제 배출을 했는데, Thruhole 이 계속 진행되어서...)
+                if (workStage.m_bForceEjectRequest)
                 {
-                    var mb1 = new MessageBoxOk();
-                    mb1.ShowDialog("Warning !", "냉각수를 순환 시키고 작업을 진행해야 합니다.");
-                    return;
+                    workStage.m_bLaserDrilling_Complete = true;
+                    workStage.m_nLaserDrilling_MainStep = 0;
+                    workStage.m_nLaserDrilling_MainStep_Recovery = 0;
+                    workStage.m_nFindAlignMark_Step = 0;
+                    workStage.m_nSocketAlign_MainStep = 0;
                 }
+
 
                 ////  StageZ 한계위치 설정되어 있는지 체크
                 //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
@@ -3367,9 +3304,7 @@ namespace SLD200_MSL
                 //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
                 //    return;
                 //}
-
                 //laserDrilling.laserDrillingParameter.stLaserDrillingPosParam = laserDrilling.laserDrillingParameter.GetPositionInformation("WorkStage_WorkHeight");
-
                 ////  StageZ 한계위치를 초과하여 이동하는지 체크
                 //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
                 //{
@@ -3377,14 +3312,12 @@ namespace SLD200_MSL
                 //    mb1.ShowDialog("Warning !", "Laser 가공 높이가 Stage Z축 한계 높이를 초과합니다.\r\n\r\n[ Work Cancel ]");
                 //    return;
                 //}
-
                 ////  가공 시간 초기화
                 //Equipment.WorkElapsedTick = 0;
                 //Equipment.WorkElapsedTick_Outline = 0;
                 //Equipment.WorkElapsedTick_Thruhole = 0;
                 //Equipment.WorkElapsedTick_Drilling = 0;
                 //Equipment.WorkElapsedTick_Marking = 0;
-
 
                 Equipment.LaserDrillingCycStop_Reservation = false;
                 workStage.m_bLaserDrilling_SocketStopped = false;
@@ -3403,18 +3336,15 @@ namespace SLD200_MSL
                     return;
                 
                 Equipment.MachineStop_byUser = true;
-
                 WorkStartTick = 0;
                 WorkStartTick_Outline = 0;
                 WorkStartTick_Thruhole = 0;
                 WorkStartTick_Drilling = 0;
 
-                //workStage.timer_LaserDrillingWork.Enabled = false;
-                //laserDrilling.StopThread();
                 Equipment.LaserDrillingCycStop_Reservation = false;
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
-                workStage.m_nFindAlignMark_Step = 0;
-                workStage.m_nSocketAlign_MainStep = 0;
+                workStage.m_nFindAlignMark_Step = (int)WorkStage.FindAlignMark_Step.None;
+                workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
 
                 workStage.laser.Rtc.CtlAbort();             //  실행중인 리스트 명령(busy 상태를)을 강제 종료
                 Thread.Sleep(2000);
