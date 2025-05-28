@@ -403,6 +403,7 @@ namespace SLD200_MSL
                 m_bFormVisible = true;
                 timer_Status.Enabled = true;
                 this.Box_Setup_ScannerCal_ImageViewer.ResumeDisplay();
+                this.Box_Setup_ScannerCal_ImageViewer.StartUpdateTask();
 
             }
             else if (!this.Visible && m_bFormVisible)
@@ -410,6 +411,7 @@ namespace SLD200_MSL
                 m_bFormVisible = false;
                 timer_Status.Enabled = false;
                 this.Box_Setup_ScannerCal_ImageViewer.SuspendDisplay();
+
             }
         }
 

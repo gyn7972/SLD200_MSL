@@ -2266,76 +2266,76 @@ namespace SLD200_MSL
 
         private void SiriusEditor_OnDocumentSave(object sender)
         {
-            bool bRtn = false;
-            //Data Parsing 후에 저장된 도면 데이터가 변경되었을 때, 다시 Parsing 하도록 한다.
-            var mb = new MessageBoxOk();
-            int m_nReturn = workStage.GetDrillingData();
-            switch (m_nReturn)
-            {
-                case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
+            //bool bRtn = false;
+            ////Data Parsing 후에 저장된 도면 데이터가 변경되었을 때, 다시 Parsing 하도록 한다.
+            //var mb = new MessageBoxOk();
+            //int m_nReturn = workStage.GetDrillingData();
+            //switch (m_nReturn)
+            //{
+            //    case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
 
-                    Equipment.CycleTimer_LaserDrilling.Clear();
-                    Equipment.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
-                    Equipment.CycleTimer_DoneModuleCount = 0;
+            //        Equipment.CycleTimer_LaserDrilling.Clear();
+            //        Equipment.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
+            //        Equipment.CycleTimer_DoneModuleCount = 0;
 
-                    //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
-                    workStage.GetDrillingData_ProcessingFlagCheck();
-                    mb.ShowDialog("Information !!", "가공 데이터 Parsing 성공 및 Recipe Data를 로드 성공.");
-                    bRtn = true;
-                    break;
+            //        //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
+            //        workStage.GetDrillingData_ProcessingFlagCheck();
+            //        mb.ShowDialog("Information !!", "가공 데이터 Parsing 성공 및 Recipe Data를 로드 성공.");
+            //        bRtn = true;
+            //        break;
 
-                case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
-                    mb.ShowDialog("Error !!", "데이터가 정상적으로 로드 되지 않았습니다.");
-                    bRtn = false;
-                    break;
+            //    case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
+            //        mb.ShowDialog("Error !!", "데이터가 정상적으로 로드 되지 않았습니다.");
+            //        bRtn = false;
+            //        break;
 
-                case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
-                    mb.ShowDialog("Error !!", "데이터가 Group 이 아닙니다.");
-                    bRtn = false;
-                    break;
+            //    case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
+            //        mb.ShowDialog("Error !!", "데이터가 Group 이 아닙니다.");
+            //        bRtn = false;
+            //        break;
 
-                case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
-                    mb.ShowDialog("Error !!", "데이터를 Group 해제 해야 합니다.");
-                    bRtn = false;
-                    break;
+            //    case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
+            //        mb.ShowDialog("Error !!", "데이터를 Group 해제 해야 합니다.");
+            //        bRtn = false;
+            //        break;
 
-                case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
-                    mb.ShowDialog("Error !!", "Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.");
-                    bRtn = false;
-                    break;
+            //    case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
+            //        mb.ShowDialog("Error !!", "Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.");
+            //        bRtn = false;
+            //        break;
 
-                case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
-                    mb.ShowDialog("Error !!", "Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.");
-                    bRtn = false;
-                    break;
+            //    case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
+            //        mb.ShowDialog("Error !!", "Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.");
+            //        bRtn = false;
+            //        break;
 
-                case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
-                    mb.ShowDialog("Error !!", "Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지 데이터로만 구성되어야 합니다.");
-                    bRtn = false;
-                    break;
+            //    case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
+            //        mb.ShowDialog("Error !!", "Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지 데이터로만 구성되어야 합니다.");
+            //        bRtn = false;
+            //        break;
 
-                case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
-                    mb.ShowDialog("Error !!", "Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다.");
-                    bRtn = false;
-                    break;
+            //    case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
+            //        mb.ShowDialog("Error !!", "Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다.");
+            //        bRtn = false;
+            //        break;
 
-                case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
-                    mb.ShowDialog("Error !!", "Line 으로 이루어진 Drilling Data 가 닫힌 도형이 아닙니다.");
-                    bRtn = false;
-                    break;
-                case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_GROUP:
-                    mb.ShowDialog("Error !!", "Layer Group이 잘못되었습니다.");
-                    bRtn = false;
-                    break;
+            //    case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
+            //        mb.ShowDialog("Error !!", "Line 으로 이루어진 Drilling Data 가 닫힌 도형이 아닙니다.");
+            //        bRtn = false;
+            //        break;
+            //    case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_GROUP:
+            //        mb.ShowDialog("Error !!", "Layer Group이 잘못되었습니다.");
+            //        bRtn = false;
+            //        break;
 
-                case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
-                    mb.ShowDialog("Error !!", "RTC 보드가 초기화 되지 않았습니다.");
-                    bRtn = false;
-                    break;
-            }
+            //    case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
+            //        mb.ShowDialog("Error !!", "RTC 보드가 초기화 되지 않았습니다.");
+            //        bRtn = false;
+            //        break;
+            //}
 
 
-            if(bRtn)
+            //if(bRtn)
             {
                 SiriusEditor.OnSave(SiriusEditor.Document.FileName);
 

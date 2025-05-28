@@ -41885,7 +41885,8 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.VerifyCalibrationAreaPos;
+                                //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.VerifyCalibrationAreaPos;
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_CenterPos;
                             }
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
@@ -42244,7 +42245,22 @@ namespace QMC.Common.Modules
                 case (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos:
                     {
                         //맵 변환을.. FineCam으로 해야 하나?
-                        xyInterpolatedCoordinate = ConvertFineCamToLaserHeightSensor(new XyCoordinate(m_dCurrentCalPosX, m_dCurrentCalPosY));
+                        //xyInterpolatedCoordinate = ConvertFineCamToLaserHeightSensor(new XyCoordinate(m_dCurrentCalPosX, m_dCurrentCalPosY));
+
+                        XyCoordinate result = new XyCoordinate(0, 0);
+                        result.X += m_dCurrentCalPosX;
+                        result.Y += m_dCurrentCalPosY;
+                        //  좌표계 변환 (Scanner 위치 --> Fine Camera 위치)
+                        result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                        result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                        //  좌표계 변환 (Fine Camera 위치 --> Laser Height Sensor 위치)
+                        result.X += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
+                        result.Y += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
+                        //  좌표계 변환 (Laser Height Sensor 위치 --> 높이 측정 위치에 XY Offset 반영)
+                        result.X += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX;
+                        result.Y += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY;
+
+                        xyInterpolatedCoordinate = result;
                         MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos_DoneCheck;
@@ -42363,6 +42379,7 @@ namespace QMC.Common.Modules
                         if(IsWorkStage_Positions(nAxis.X, xyInterpolatedCoordinate.X) && 
                            IsWorkStage_Positions(nAxis.Y, xyInterpolatedCoordinate.Y))
                         {
+                            Thread.Sleep(500); // 안정화 시간으로 500msec 줘보자. (비교)
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMark_MarkingStart;
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout * 10)
@@ -42508,6 +42525,7 @@ namespace QMC.Common.Modules
                            IsWorkStage_Positions(nAxis.Y, xyInterpolatedCoordinate.Y))
                         {
                             Log.Write("SLD-200", "Scanner Calibration", "Stage XY축, 가공 Center 위치로 이동 완료.");
+                            Thread.Sleep(500); // 안정화 시간으로 500msec 줘보자. (비교)
 
                             TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.VisionCalHeight_ZOffset_Move;
@@ -42548,7 +42566,8 @@ namespace QMC.Common.Modules
                             vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
                             m_dZOffset_SocketHeightCheck + m_dHeightOffsetVision))
                         {
-                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
+                            //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout * 5)
                         {
@@ -42799,7 +42818,7 @@ namespace QMC.Common.Modules
                                     Equipment.Scanner_Vision_Offset_Setting_Y = deltaY;
 
                                     MessageBox.Show("OK: Cross Mark XY 위치.\n" +
-                                        "DeltaX: {deltaX}, DeltaY: {deltaY}", "Completed",
+                                        $"DeltaX: {deltaX}, DeltaY: {deltaY}", "Completed",
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                                     m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Complete;

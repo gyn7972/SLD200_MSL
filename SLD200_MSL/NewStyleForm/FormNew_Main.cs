@@ -3136,12 +3136,16 @@ namespace SLD200_MSL
             {
                 var mb = new MessageBoxYesNo();
 
-                //2025-05-27
-                //도면을 현재 recipe로 불러온다.
-                if (Equipment.RecipeOpen_DrawingFilePath != null && Equipment.RecipeOpen_DrawingFilePath != "")
-                {
-                    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-                }
+                // 2025-05-27
+                // 도면을 현재 recipe로 불러온다.
+                // 여기서 불러와서 MainView에 다시 뿌리면 select가 취소된다. 
+                // 그래서 여기서 불어오면 현재는 안된다. 구조 변경 필요하다.
+                // 선택가공 정상 종료가 아닐시에.. 처리가 되어야 하는데..
+                // 그냥 정지 한 경우. // 가공중에.
+                //if (Equipment.RecipeOpen_DrawingFilePath != null && Equipment.RecipeOpen_DrawingFilePath != "")
+                //{
+                //    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                //}
                 ////////////////////////////////////////////////////////////////////////////
                 ////  Socket 선택 가공인지 확인용 // 이거 왜 해야 하는지  20250524
                 //if (workStage.m_stDividedRegion_GroupData == null)              //  Parsing 해야 확인할 수 있는 데이터
