@@ -26676,6 +26676,9 @@ namespace QMC.Common.Modules
                 case LayerType.LAYER_MARKING:
                     m_dOffset = m_dMarkingLayer_Defocusing;
                     break;
+                default:
+                    m_dOffset = 0.0;
+                    break;
             }
 
             //  좌표계 (기존)
@@ -34450,7 +34453,7 @@ namespace QMC.Common.Modules
             Dictionary<string, int> layerSocketCounts = new Dictionary<string, int>();
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
-                // 중요! Data수집 - 도면 Layer 수집용.
+                // 중요! Data수집 - 도면 Layer 수집용. ////////
                 string name = layer.Name?.Trim();
 
                 if (!layer.IsMarkerable)
@@ -34497,6 +34500,7 @@ namespace QMC.Common.Modules
                 {
                     layerSocketCounts[name] = socketCount;
                 }
+                ///////////////////////////////////////////////////////////////////////////////////////////
 
                 // 기존 코드 - Layer 분류 및 소켓 분류
                 if (layer.IsMarkerable)
@@ -37253,7 +37257,6 @@ namespace QMC.Common.Modules
                             if (group == null)
                             {
                                 LayerIsGroup = false;
-
                                 m_nCount = layer.Count;
                             }
                             else
@@ -37262,7 +37265,6 @@ namespace QMC.Common.Modules
 
                                 m_nCount = 1;
                             }
-
                             //break;
                         }
 

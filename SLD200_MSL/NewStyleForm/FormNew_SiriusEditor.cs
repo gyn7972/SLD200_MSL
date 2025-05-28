@@ -2335,7 +2335,7 @@ namespace SLD200_MSL
             //}
 
 
-            //if(bRtn)
+            //if (bRtn)
             {
                 SiriusEditor.OnSave(SiriusEditor.Document.FileName);
 
