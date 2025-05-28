@@ -561,8 +561,9 @@ namespace SLD200_MSL
 
             ////  Spot Distance Value
             //workStage.m_dSpot_Distance = 0.0;
-
             //SiriusEditor.Enabled = true;
+
+            workStage.InitRtc3DModule();
 
             return m_bRet;
         }

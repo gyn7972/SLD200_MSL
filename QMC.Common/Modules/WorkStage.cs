@@ -42217,9 +42217,9 @@ namespace QMC.Common.Modules
                     // 가공 높이 측정 후 Mark 그려야 함.
                 case (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos:
                     {
-                        // Z-Axis Offset Init.
+                        // Z-Axis :: CO2 -> 아크릴 높이 감안하여 cal 확인시에는 높이를 따로 둔다. ( stage쪽에서는 높이 다름 )
                         m_dZOffset_SocketHeightCheck = 0.0;
-                        MovetoWorkStage_TeachingPositionsZ((int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos, Type_Motor_Speed.Fine);
+                        MovetoWorkStage_TeachingPositionsZ((int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos, Type_Motor_Speed.Fine);
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos_DoneCheck;
                     }
@@ -42227,7 +42227,7 @@ namespace QMC.Common.Modules
 
                 case (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos_DoneCheck:
                     {
-                        if(IsWorkStage_TeachingPositionsZ((int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos))
+                        if(IsWorkStage_TeachingPositionsZ((int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos))
                         {
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos;
                         }
@@ -43862,7 +43862,7 @@ namespace QMC.Common.Modules
         {
             XyCoordinate result = new XyCoordinate(0,0);
 
-            //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
+            // 좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
             result.X += Equipment.StageOffset_forDrilling_X;
             result.Y += Equipment.StageOffset_forDrilling_Y;
 
@@ -44661,6 +44661,11 @@ namespace QMC.Common.Modules
             
 
             return true;
+        }
+
+        public void InitRtc3DModule()
+        {
+            bds.InitRtc3DModule();
         }
 
     }

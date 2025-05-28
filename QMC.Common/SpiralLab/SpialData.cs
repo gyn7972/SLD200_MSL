@@ -13,8 +13,6 @@ namespace QMC.Common.Parts
 
         LwPolyline lwPolyLineVertices;
 
-       
-
         public SpialData(double outerDiameter, double innerDiameter, double revolutions, double angleFactor)
         {
             m_dOuterDiameter = outerDiameter;
