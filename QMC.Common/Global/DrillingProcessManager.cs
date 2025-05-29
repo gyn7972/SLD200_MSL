@@ -93,6 +93,13 @@ namespace QMC.Common.Global
     {
         public List<LayerProcessData> LayerList { get; set; } = new List<LayerProcessData>();
 
+        // --- 추가된 변수들 ---
+        public int CycleTimer_TargetModuleCount { get; set; } = 0;
+        public int CycleTimer_DoneModuleCount { get; set; } = 0;
+        public int CycleTimer_NGSocketCount { get; set; } = 0;
+        //  workStage 가공시간 계산을 위해 사용되는 변수
+        public CycleTimer CycleTimer_LaserDrilling { get; set; } = new CycleTimer();
+    
         public void ResetAll()
         {
             foreach (var layer in LayerList)

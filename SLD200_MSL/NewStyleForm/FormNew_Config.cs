@@ -391,9 +391,6 @@ namespace SLD200_MSL
             //  비상 정지 시
             if (CommonModule.Instance.OperationButtons.IsEMG())
             {
-                //  Main Work 타이머
-                workStage.timer_MainWork.Enabled = false;
-
                 //  Sub Work 타이머
                 workStage.timer_SubWork.Enabled = false;
 
@@ -404,8 +401,21 @@ namespace SLD200_MSL
                 workStage.timer_Motion_Home.Enabled = false;
 
                 workStage.m_nHomeStep = (int)WorkStage.Home_Step.None;
+
+                loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.None;
+                loader.m_nMAlign_Step = (int)Loader.MAlign_Step.None;
+                loader.m_nStacker0_ModulePickupWaitingPos_Step = (int)Loader.StackerModulePickupWaitingPos_Step.None;
+                loader.m_nStacker1_ModulePickupWaitingPos_Step = (int)Loader.StackerModulePickupWaitingPos_Step.None;
+                unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
+                unloader.m_nStacker0_ModulePutdownWaitingPos_Step = (int)Unloader.StackerModulePutdownWaitingPos_Step.None;
+                unloader.m_nStacker1_ModulePutdownWaitingPos_Step = (int)Unloader.StackerModulePutdownWaitingPos_Step.None;
+
+
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                 workStage.m_nFindAlignMark_Step = (int)WorkStage.FindAlignMark_Step.None;
+                workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
+
+
                 workStage.m_nReticleCheck_HighResCam_Step = (int)WorkStage.ReticleCheck_HighResCam_Step.None;
                 workStage.m_nReticleCheck_LowResCam_Step = (int)WorkStage.ReticleCheck_LowResCam_Step.None;
                 workStage.m_nSafetyPos_Move_Step = (int)WorkStage.SafetyPos_Move_Step.None;
