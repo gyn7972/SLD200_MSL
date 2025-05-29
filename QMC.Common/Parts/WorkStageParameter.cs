@@ -1659,7 +1659,7 @@ namespace QMC.Common.Parts
             return nRet;
         }
 
-        public int DO_DustCollector_AirPulse_Run(int m_nPos, bool m_bOnOff)
+        public int DO_DustCollector_Fan_Run(int m_nPos, bool m_bOnOff)
         {
             int nRet = 0;
 

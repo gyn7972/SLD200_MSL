@@ -1766,9 +1766,11 @@ namespace SLD200_MSL
                         else
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "하부 집진기 사용. 집진기 Off");
-
-                            workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
-                            Thread.Sleep(200);
+                            if(!Equipment.ManualRunStatus)
+                            {
+                                workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                                Thread.Sleep(200);
+                            }
                         }
                     }
 
@@ -2001,8 +2003,11 @@ namespace SLD200_MSL
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 하부 집진기 사용. 집진기 Off");
 
-                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
-                        Thread.Sleep(200);
+                        if (!Equipment.ManualRunStatus)
+                        {
+                            workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                            Thread.Sleep(200);
+                        }
                     }
                 }
             }
@@ -3473,12 +3478,13 @@ namespace SLD200_MSL
         
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            return;
             workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
 
             workStage.m_bForceEjectRequest = true;  // 강제 배출 요청. NG로 빼기 위한 변수.
             Equipment.ManualRunStatus = true;
 
-            return;
+            
             //Test code
             //baseTextBox_SocketCountPerModule.Text = "12";
             //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
@@ -4292,6 +4298,8 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            return;
+
             //Test
             workStage.UpdateLastDrillTime();
 

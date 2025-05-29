@@ -8533,6 +8533,50 @@ namespace QMC.Common.Modules
                     {
                         AlarmPost(AlarmKey.Laser_System_Fault_Alarm);
                     }
+
+                    if(workStageParameter.IsDO_Laser_Enable()) //A접점
+                    {
+                        if(workStageParameter.IsDO_BeamDump_Coolant_Supply())
+                        {
+                            workStageParameter.DO_BeamDump_Coolant_Supply(true);
+                        }
+
+                        if (workStageParameter.IsDO_Mask_Coolant_Supply())
+                        {
+                            workStageParameter.DO_Mask_Coolant_Supply(true);
+                        }
+
+                        if (workStageParameter.IsDO_Scanner_Coolant_Supply())
+                        {
+                            workStageParameter.DO_Scanner_Coolant_Supply(true);
+                        }
+
+                        if (workStageParameter.IsDO_VarioScan_Coolant_Supply())
+                        {
+                            workStageParameter.DO_VarioScan_Coolant_Supply(true);
+                        }
+
+                        if (workStageParameter.IsDO_BDS_Purge())
+                        {
+                            workStageParameter.DO_BDS_Purge(true);
+                        }
+
+                        if (workStageParameter.IsDO_Laser_Purge())
+                        {
+                            workStageParameter.DO_Laser_Purge(true);
+                        }
+
+                        if (workStageParameter.IsDO_Scanner_Purge())
+                        {
+                            workStageParameter.DO_Scanner_Purge(true);
+                        }
+
+                        if (workStageParameter.IsDO_VarioScan_Purge())
+                        {
+                            workStageParameter.DO_VarioScan_Purge(true);
+                        }
+                        //AlarmPost(AlarmKey.Laser_Fault_Alarm);
+                    }
                 }
 
                 // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
@@ -16087,7 +16131,8 @@ namespace QMC.Common.Modules
                     if ((workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) &&
 
                         (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable ||
-                        (!Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable && workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))) ) ||
+                        (!Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable && 
+                        workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))) ) ||
 
                         (TickCount_Elapsed((int)TickType.TICK_MAIN) > DustCollector_TurnOn_AfterStableTime))
                     {
@@ -16095,7 +16140,8 @@ namespace QMC.Common.Modules
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserShutter_Open;
                     }
-                    else if (workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) || workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
+                    else if (workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) || 
+                        workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
                     {
                         //timer_Motion_Home.Enabled = false;
 
@@ -25505,8 +25551,13 @@ namespace QMC.Common.Modules
                 {
                     Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Stage Unloading 위치로 이동 시작 시 하부 집진기 Off");
 
-                    DustCollector_Off((int)nDustCollector.DustCollector_Lower);
-                    Thread.Sleep(200);
+                    //선택가공할때는 끄지 마까? 그냥 아에 끄지 마까?
+                    if(!Equipment.ManualRunStatus)
+                    {
+                        DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                        Thread.Sleep(200);
+                    }
+                    
                 }
             }
 
@@ -40969,505 +41020,6 @@ namespace QMC.Common.Modules
 
         void Run_Verify_ScannerCameraOffset_Func()
         {
-            //int m_nStableTime = 500;
-            //double m_dMarkSpeed = 10.0;
-            //double m_dMarkLength = 0.1;
-
-            //double m_dCurPos_Y = 0.0;
-            //double m_dCurPos_X = 0.0;
-
-            //double lfVelocity = 0.0;
-            //double lfAccDec = 0.0;
-
-            //switch (m_nVerify_ScannerCenter_CamCenter_Step)
-            //{
-            //    case (int)VerifyScannerCameraCenter_Step.Start:
-            //        //On_LogFile_Add(LOG_OPERATION, "Lens Focus Check 루틴, 시작.");
-            //        //Display_Event("Lens Focus Check 루틴 : 시작.");
-
-            //        m_bScannerCamVerify_Complete = false;
-            //        m_pStageXY_Pos_BeforeVerify.X = 0.0;
-            //        m_pStageXY_Pos_BeforeVerify.Y = 0.0;
-            //        m_pStageXY_Pos_AfterVerify.X = 0.0;
-            //        m_pStageXY_Pos_AfterVerify.Y = 0.0;
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserShutter_Close;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.LaserShutter_Close:                                                //  Shutter Close
-            //        bdsParameter.DO_BDS_PowerMeter_BW(false);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserShutter_Close_Check;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.LaserShutter_Close_Check:                                          //  Shutter Close 확인
-            //        if (bdsParameter.DI_BDS_PowerMeter_BW() && !bdsParameter.DI_BDS_PowerMeter_FW())
-            //        {
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserPower_Change;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            m_bScannerCamVerify_Complete = false;
-
-            //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //            MessageBox.Show("Power Meter (Shutter) Close 실패", "Error");
-
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //        }
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.LaserPower_Change:                                                 //  레이저 출력 변경
-
-
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserPower_ChangeCheck;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.LaserPower_ChangeCheck:                                            //  레이저 출력 변경 확인
-            //        //if (MC_Func.MC_GetDone(1) &&
-            //        //    MC_Func.MC_PosTolerance(1, m_dCorrectedAttenuatorPos))
-            //        //{
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.DustCollector_On;
-            //        //}
-            //        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) >= 10000)
-            //        //{
-            //        //    timer_VerifyScannerCamOffset.Enabled = false;
-            //        //    MessageBox.Show("Attenuator 축, 십자마크 가공 출력 위치로 이동 실패.", "Error");
-
-            //        //    m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //        //}
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.DustCollector_On:                                      //  집진기 On
-            //        //workStageParameter.DO_DustCollector_OnOff(true);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.DustCollector_On_Check;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.DustCollector_On_Check:                                //  집진기 On 확인
-            //        //if (laserDrillingParameter.DI_DustCollector_On() && !laserDrillingParameter.DI_DustCollector_Off())
-            //        if (true)
-            //        {
-            //            m_dCurPos_X = MC_Func.MC_GetEncPos((int)nAxis.X);
-            //            m_dCurPos_Y = MC_Func.MC_GetEncPos((int)nAxis.Y);
-
-            //            //  검증 전 위치 저장
-            //            m_pStageXY_Pos_BeforeVerify.X = MC_Func.MC_GetEncPos((int)nAxis.X);
-            //            m_pStageXY_Pos_BeforeVerify.Y = MC_Func.MC_GetEncPos((int)nAxis.Y);
-
-            //            //if (Config.ParamConfig.ScannerCamera_MapData_Div)
-            //            //{
-            //                m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear;
-            //            //}
-            //            //else
-            //            //{
-            //            //    m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveScannerPos;
-            //            //}
-            //        }
-            //        //else if (laserDrillingParameter.DI_DustCollector_Alarm())
-            //        //{
-            //        //    timer_Motion_Home.Enabled = false;
-
-            //        //    MessageBox.Show("Alarm", "Dust Collector 점검 요망");
-
-            //        //    m_nHomeStep = (int)Home_Step.None;
-            //        //}
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            m_bScannerCamVerify_Complete = false;
-
-            //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //            MessageBox.Show("Dust Collector On 실패", "Error");
-
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //        }
-            //        break;
-
-
-            //    ///////////////////////////////////
-            //    //  Map Data 이원화 - 시작
-            //    case (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear:                                      //  Map Data Flag 초기화 (0)
-
-            //        //MapDataFlag_Clear();
-
-            //        //TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlag_ClearCheck;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.MapDataFlag_ClearCheck:                                //  Map Data Flag 초기화 확인
-
-            //        //if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_INIT)
-            //        //{
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataChange_ScannerMap;
-            //        //}
-            //        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        //{
-            //        //    m_bScannerCamVerify_Complete = false;
-
-            //        //    timer_VerifyScannerCamOffset.Enabled = false;
-
-            //        //    MessageBox.Show("Map Data Flag 초기화 실패", "Error");
-
-            //        //    m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //        //}
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.MapDataChange_ScannerMap:                                      //  Scanner 위치 Map Data 로 변경
-
-            //        //MapData_Change((int)MapDataType.MAPDATASTATUS_SCANNER);
-
-            //        //TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlagCheck_ScannerMap;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.MapDataFlagCheck_ScannerMap:                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
-
-            //        //if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_SCANNER)
-            //        //{
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveScannerPos;
-            //        //}
-            //        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        //{
-            //        //    m_bScannerCamVerify_Complete = false;
-
-            //        //    timer_VerifyScannerCamOffset.Enabled = false;
-
-            //        //    MessageBox.Show("Map Data 변경 실패 [Scanner]", "Error");
-
-            //        //    m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //        //}
-            //        break;
-            //    //  Map Data 이원화 - 끝
-            //    ///////////////////////////////////
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.StageXY_MoveScannerPos:                                            //  Stage XY 축, Scanner Center 위치로 이동 (현재 카메라가 보고 있는 위치에서 Scanner Center Offset 만큼 이동)
-            //        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_pStageXY_Pos_BeforeVerify.Y - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_pStageXY_Pos_BeforeVerify.X - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
-
-            //        //  속도 설정
-            //        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-            //        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-            //        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X], lfVelocity, lfAccDec, lfAccDec);
-            //        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y], lfVelocity, lfAccDec, lfAccDec);
-
-            //        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
-            //        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
-            //        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveScannerPos_DoneCheck;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.StageXY_MoveScannerPos_DoneCheck:                                  //  Stage XY 축, Scanner Center 위치로 이동 완료 확인
-            //        m_nMotorState0 = ACSSPiiPlusMotionBoard.Api.GetMotorState((Axis)0);
-            //        m_nMotorState1 = ACSSPiiPlusMotionBoard.Api.GetMotorState((Axis)1);
-
-            //        if (((m_nMotorState0 & MotorStates.ACSC_MST_MOVE) == 0) && ((m_nMotorState0 & MotorStates.ACSC_MST_INPOS) != 0) &&
-            //            ((m_nMotorState1 & MotorStates.ACSC_MST_MOVE) == 0) && ((m_nMotorState1 & MotorStates.ACSC_MST_INPOS) != 0))
-            //        {
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_StableTime;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) >= 10000)
-            //        {
-            //            m_bScannerCamVerify_Complete = false;
-
-            //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //            MessageBox.Show("Stage XY 축, 가공 위치 이동 실패.", "Error");
-
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-
-            //        }
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.StageXY_StableTime:                                     //  Stage 이동 후 안정화 시간
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_StableTimeCheck;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.StageXY_StableTimeCheck:                               //  Stage 이동 후 안정화 시간 완료 확인
-
-            //        if (Config.ParamConfig.ScannerCameraOffsetVerify_StableTime <= 0)
-            //        {
-            //            m_nStableTime = 500;
-            //        }
-            //        else
-            //        {
-            //            m_nStableTime = Config.ParamConfig.ScannerCameraOffsetVerify_StableTime;
-            //        }
-
-            //        if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > m_nStableTime)
-            //        {
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserShutter_Open;
-            //        }
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.LaserShutter_Open:                                               //  Shutter Open
-            //        laserDrillingParameter.DO_PowerMeter_OpenClose(true);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserShutter_Open_Check;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.LaserShutter_Open_Check:                                         //  Shutter Open 확인
-            //        if (!laserDrillingParameter.DI_PowerMeter_Close() && laserDrillingParameter.DI_PowerMeter_Open())
-            //        {
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.Pattern_MarkingStart;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            m_bScannerCamVerify_Complete = false;
-
-            //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //            MessageBox.Show("Power Meter (Shutter) Open 실패", "Error");
-
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //        }
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.Pattern_MarkingStart:                                           //  마킹 시작
-
-            //        if (Config.ParamConfig.ScannerCameraOffsetVerify_MarkSpeed <= 0)
-            //        {
-            //            m_dMarkSpeed = 10;
-            //        }
-            //        else
-            //        {
-            //            m_dMarkSpeed = Config.ParamConfig.ScannerCameraOffsetVerify_MarkSpeed;
-            //        }
-
-            //        if (Config.ParamConfig.ScannerCameraOffsetVerify_MarkLength <= 0)
-            //        {
-            //            m_dMarkLength = 0.1;
-            //        }
-            //        else
-            //        {
-            //            m_dMarkLength = Config.ParamConfig.ScannerCameraOffsetVerify_MarkLength;
-            //        }
-
-            //        if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
-            //        {
-            //            DrawCross(rtcSyncAxis, laser, MotionType.ScannerOnly, (float)m_dMarkSpeed, m_dMarkLength, m_dMarkLength);
-            //        }
-            //        else
-            //        {
-            //            DrawCross(rtc6, laser, MotionType.ScannerOnly, (float)m_dMarkSpeed, m_dMarkLength, m_dMarkLength);
-            //        }
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.Pattern_MarkingComplete;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.Pattern_MarkingComplete:                                           //  마킹 완료 확인 (--> LaserFocusStep_RemainedCheck)
-            //        if ((TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 500) &&
-            //            (((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS) && !rtcSyncAxis.CtlGetStatus(RtcStatus.Busy)) ||
-            //            ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6) && !rtc6.CtlGetStatus(RtcStatus.Busy))))                             //  Marker 가 Busy 가 아니면 Marking 작업이 끝났다고 본다.
-            //        {
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserShutter_Close2;
-            //        }
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.LaserShutter_Close2:                                                //  Shutter Close
-            //        laserDrillingParameter.DO_PowerMeter_OpenClose(false);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserShutter_Close2_Check;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.LaserShutter_Close2_Check:                                          //  Shutter Close 확인
-            //        if (laserDrillingParameter.DI_PowerMeter_Close() && !laserDrillingParameter.DI_PowerMeter_Open())
-            //        {
-            //            if (Config.ParamConfig.ScannerCamera_MapData_Div)
-            //            {
-            //                m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear2;
-            //            }
-            //            else
-            //            {
-            //                m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveCameraPos;
-            //            }
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            m_bScannerCamVerify_Complete = false;
-
-            //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //            MessageBox.Show("Power Meter (Shutter) Close 실패", "Error");
-
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //        }
-            //        break;
-
-
-            //    ///////////////////////////////////
-            //    //  Map Data 이원화 - 시작
-            //    case (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear2:                                     //  Map Data Flag 초기화 (0)
-
-            //        MapDataFlag_Clear();
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear2Check;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear2Check:                                //  Map Data Flag 초기화 확인
-
-            //        if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_INIT)
-            //        {
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataChange_CameraMap;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            m_bScannerCamVerify_Complete = false;
-
-            //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //            MessageBox.Show("Map Data Flag 초기화 실패", "Error");
-
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //        }
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.MapDataChange_CameraMap:                                      //  Camera 위치 Map Data 로 변경
-
-            //        MapData_Change((int)MapDataType.MAPDATASTATUS_CAMERA);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlagCheck_CameraMap;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.MapDataFlagCheck_CameraMap:                                   //  Camera 위치 Map Data 로 변경되었는지 확인
-
-            //        if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_CAMERA)
-            //        {
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveCameraPos;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            m_bScannerCamVerify_Complete = false;
-
-            //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //            MessageBox.Show("Map Data 변경 실패 [Camera]", "Error");
-
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //        }
-            //        break;
-            //    //  Map Data 이원화 - 끝
-            //    ///////////////////////////////////
-            //    ///
-
-            //    case (int)VerifyScannerCameraCenter_Step.StageXY_MoveCameraPos:                                             //  Stage XY 축, 카메라 Center 위치로 이동
-            //        laserDrillingParameter.stLaserDrillingPosParam = laserDrillingParameter.GetPositionInformation("WorkStage_WorkHeight");
-
-            //        jigAligner.Camera.StartLive();
-
-            //        if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
-            //        {
-            //            //  Un-Follow
-            //            if (rtcSyncAxis.MotionMode != MotionMode.Unfollow)
-            //            {
-            //                rtcSyncAxis.CtlMotionMode(MotionMode.Unfollow);
-            //            }
-            //        }
-
-            //        //m_dCurPos_Y = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.Y.ToString()].No);
-            //        //m_dCurPos_X = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.X.ToString()].No);
-
-            //        //laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_dCurPos_Y + Config.ParamConfig.OffsetY_fromCamera_toLaser;
-            //        //laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_dCurPos_X + Config.ParamConfig.OffsetX_fromCamera_toLaser;
-            //        laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_pStageXY_Pos_BeforeVerify.Y;   // + Config.ParamConfig.OffsetY_fromCamera_toLaser;
-            //        laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_pStageXY_Pos_BeforeVerify.X;   // + Config.ParamConfig.OffsetX_fromCamera_toLaser;
-
-            //        ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
-            //                            (Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.Y.ToString()].No,          //  Axis number
-            //                            laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey]);        //  Target position
-
-            //        ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
-            //                            (Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.X.ToString()].No,          //  Axis number
-            //                            laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.X]);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveCameraPos_DoneCheck;
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.StageXY_MoveCameraPos_DoneCheck:                                   //  Stage XY 축, 카메라 Center 위치로 이동 완료 확인
-            //        m_nMotorState0 = ACSSPiiPlusMotionBoard.Api.GetMotorState((Axis)0);
-            //        m_nMotorState1 = ACSSPiiPlusMotionBoard.Api.GetMotorState((Axis)1);
-
-            //        if (((m_nMotorState0 & MotorStates.ACSC_MST_MOVE) == 0) && ((m_nMotorState0 & MotorStates.ACSC_MST_INPOS) != 0) &&
-            //            ((m_nMotorState1 & MotorStates.ACSC_MST_MOVE) == 0) && ((m_nMotorState1 & MotorStates.ACSC_MST_INPOS) != 0))
-            //        {
-            //            jigAligner.Camera.StartLive();
-
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.Complete;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) >= 10000)
-            //        {
-            //            m_bScannerCamVerify_Complete = false;
-
-            //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //            MessageBox.Show("Stage XY 축, 가공 위치 이동 실패.", "Error");
-
-            //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-
-            //        }
-            //        break;
-
-
-            //    case (int)VerifyScannerCameraCenter_Step.Complete:
-            //        m_bScannerCamVerify_Complete = true;
-
-            //        timer_VerifyScannerCamOffset.Enabled = false;
-            //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-
-            //        break;
-            //}
         }
 
 
