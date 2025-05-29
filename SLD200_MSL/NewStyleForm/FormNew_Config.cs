@@ -2793,7 +2793,7 @@ namespace SLD200_MSL
             //  맵 데이터 변경 (기준위치 : Scanner)
             //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
             //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+            //workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -2812,6 +2812,13 @@ namespace SLD200_MSL
                 lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
                 lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
             }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //  맵 데이터 변경 (기준위치 : Scanner)
+            //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+            //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, lfTargetX, lfVelocity, lfAccDec, lfAccDec);
             //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, lfTargetY, lfVelocity, lfAccDec, lfAccDec);
