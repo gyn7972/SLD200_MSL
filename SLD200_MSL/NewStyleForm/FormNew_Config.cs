@@ -182,17 +182,6 @@ namespace SLD200_MSL
             radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked = false;
             radioButton_Config_WorkStage_Move_MoveMode_Coarse.Checked = true;
 
-            if (Equipment.Machine_LaserType_CO2)
-            {
-                groupBox_MotorizedBET.Visible = true;
-                groupBox_VarioScan.Visible = true;
-            }
-            else
-            {
-                groupBox_MotorizedBET.Visible = false;
-                groupBox_VarioScan.Visible = false;
-            }
-
             textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
             textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";
 
@@ -2965,14 +2954,17 @@ namespace SLD200_MSL
         {
             Temp_Position_Load();
 
-            //  UV Laser 일 때만 보이는 Laser
             if (Equipment.Machine_LaserType_CO2)
             {
                 groupBox_Config_Laser_UVLaser.Visible = false;
+                groupBox_MotorizedBET.Visible = true;
+                groupBox_VarioScan.Visible = true;
             }
             else
             {
                 groupBox_Config_Laser_UVLaser.Visible = true;
+                groupBox_MotorizedBET.Visible = false;
+                groupBox_VarioScan.Visible = false;
             }
         }
 
