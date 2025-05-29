@@ -17915,7 +17915,7 @@ namespace QMC.Common.Modules
                             m_strTemp = "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nThruHole_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 실패";
                         }
 
-                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                        //Log.Write("SLD-200", "Auto Run", m_strTemp);
                     }
 
                     m_bThruHoleList_Success &= rtc.ListEnd();
@@ -19330,7 +19330,7 @@ namespace QMC.Common.Modules
                             m_strTemp = "Outline 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nOutLine_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 실패";
                         }
 
-                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                        //Log.Write("SLD-200", "Auto Run", m_strTemp);
                     }
 
                     m_bOutLineList_Success &= rtc.ListEnd();
@@ -21111,7 +21111,7 @@ namespace QMC.Common.Modules
                                         m_strTemp = "Marking 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nMarking_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 실패";
                                     }
 
-                                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                                    //Log.Write("SLD-200", "Auto Run", m_strTemp);
                                 }
                             }
                         }
@@ -21175,7 +21175,7 @@ namespace QMC.Common.Modules
                                         m_strTemp = "Marking 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nMarking_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 실패";
                                     }
 
-                                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                                    //Log.Write("SLD-200", "Auto Run", m_strTemp);
                                 }
                             }
                         }
@@ -23399,7 +23399,7 @@ namespace QMC.Common.Modules
                         //todo : 김영남 속도 개선중 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 2) // 도착 Error 발생.
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 실패. (Timeout)");
 
@@ -24053,7 +24053,7 @@ namespace QMC.Common.Modules
                                         entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
                                         m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
-                                        Log.Write("Circle Center", "Arc StatPos X : " + entity_Position_Rot.X.ToString() + ", Y : " + entity_Position_Rot.Y);
+                                        //Log.Write("Circle Center", "Arc StatPos X : " + entity_Position_Rot.X.ToString() + ", Y : " + entity_Position_Rot.Y);
                                     }
 
                                     //  Arc 구동 
@@ -24080,12 +24080,11 @@ namespace QMC.Common.Modules
                                         //(float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc
 
 
-                                        Log.Write("Circle Center", "Arc CenterPso X : " + entity_Position_Rot.X.ToString() + ", Y : " + entity_Position_Rot.Y);
+                                        //Log.Write("Circle Center", "Arc CenterPso X : " + entity_Position_Rot.X.ToString() + ", Y : " + entity_Position_Rot.Y);
 
                                         //  Test
-                                        m_strTemp = string.Format("Circle 원 Center 좌표, X : {0:0.000}, Y : {1:0.000}", entity_Position_Rot.X, entity_Position_Rot.Y);
-
-                                        Log.Write("SLD_200_CIRCLE", "Auto Run", m_strTemp);
+                                        //m_strTemp = string.Format("Circle 원 Center 좌표, X : {0:0.000}, Y : {1:0.000}", entity_Position_Rot.X, entity_Position_Rot.Y);
+                                        //Log.Write("SLD_200_CIRCLE", "Auto Run", m_strTemp);
                                     }
                                 }
                                 //  Hole : Spiral Polyline 타입으로 가공
