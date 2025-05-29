@@ -8536,42 +8536,42 @@ namespace QMC.Common.Modules
 
                     if(workStageParameter.IsDO_Laser_Enable()) //A접점
                     {
-                        if(workStageParameter.IsDO_BeamDump_Coolant_Supply())
+                        if(!workStageParameter.IsDO_BeamDump_Coolant_Supply())
                         {
                             workStageParameter.DO_BeamDump_Coolant_Supply(true);
                         }
 
-                        if (workStageParameter.IsDO_Mask_Coolant_Supply())
+                        if (!workStageParameter.IsDO_Mask_Coolant_Supply())
                         {
                             workStageParameter.DO_Mask_Coolant_Supply(true);
                         }
 
-                        if (workStageParameter.IsDO_Scanner_Coolant_Supply())
+                        if (!workStageParameter.IsDO_Scanner_Coolant_Supply())
                         {
                             workStageParameter.DO_Scanner_Coolant_Supply(true);
                         }
 
-                        if (workStageParameter.IsDO_VarioScan_Coolant_Supply())
+                        if (!workStageParameter.IsDO_VarioScan_Coolant_Supply())
                         {
                             workStageParameter.DO_VarioScan_Coolant_Supply(true);
                         }
 
-                        if (workStageParameter.IsDO_BDS_Purge())
+                        if (!workStageParameter.IsDO_BDS_Purge())
                         {
                             workStageParameter.DO_BDS_Purge(true);
                         }
 
-                        if (workStageParameter.IsDO_Laser_Purge())
+                        if (!workStageParameter.IsDO_Laser_Purge())
                         {
                             workStageParameter.DO_Laser_Purge(true);
                         }
 
-                        if (workStageParameter.IsDO_Scanner_Purge())
+                        if (!workStageParameter.IsDO_Scanner_Purge())
                         {
                             workStageParameter.DO_Scanner_Purge(true);
                         }
 
-                        if (workStageParameter.IsDO_VarioScan_Purge())
+                        if (!workStageParameter.IsDO_VarioScan_Purge())
                         {
                             workStageParameter.DO_VarioScan_Purge(true);
                         }
