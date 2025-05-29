@@ -6631,8 +6631,6 @@ namespace QMC.Common.Modules
             string m_strSendData = "";
             byte[] m_cSendCmd = null;
 
-
-
             m_DataNum = 12 + (4 * m_nAddrCount);                    //  데이터 개수에 따라 길이 가변
             m_cSendCmd = new byte[m_DataNum];
 
@@ -6665,8 +6663,6 @@ namespace QMC.Common.Modules
             m_cSendCmd[m_nIndex + 1] = (byte)m_strCheckSum[0];           //  CheckSum 2자리 중 앞자리
             m_cSendCmd[m_nIndex + 2] = (byte)m_strCheckSum[1];           //  CheckSum 2자리 중 뒷자리
             m_cSendCmd[m_nIndex + 3] = chrEOT;
-
-
 
             m_strSendData = Encoding.Default.GetString(m_cSendCmd);
 
@@ -6765,8 +6761,6 @@ namespace QMC.Common.Modules
             string m_strSendData = "";
             byte[] m_cSendCmd = null;
 
-
-
             m_DataNum = 7;                                          //  데이터 길이 고정
             m_cSendCmd = new byte[m_DataNum];
 
@@ -6820,8 +6814,6 @@ namespace QMC.Common.Modules
             string m_strSendData = "";
             byte[] m_cSendCmd = null;
 
-
-
             m_DataNum = 12;                                         //  길이 고정
             m_cSendCmd = new byte[m_DataNum];
 
@@ -6847,8 +6839,6 @@ namespace QMC.Common.Modules
             m_cSendCmd[9] = (byte)m_strCheckSum[0];                 //  CheckSum 2자리 중 앞자리
             m_cSendCmd[10] = (byte)m_strCheckSum[1];                //  CheckSum 2자리 중 뒷자리
             m_cSendCmd[11] = chrEOT;
-
-
 
             m_strSendData = Encoding.Default.GetString(m_cSendCmd);
 

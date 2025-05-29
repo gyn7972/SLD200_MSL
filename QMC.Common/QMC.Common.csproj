@@ -186,6 +186,7 @@
     <Compile Include="CircularButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DustCollectorController\DustCollectorController.cs" />
     <Compile Include="Global\AreaInfo.cs" />
     <Compile Include="Global\DrillingProcessManager.cs" />
     <Compile Include="Global\GlobalHotkeyMessageFilter.cs" />
