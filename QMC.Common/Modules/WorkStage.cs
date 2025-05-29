@@ -8507,14 +8507,14 @@ namespace QMC.Common.Modules
                 }
 
                 //DI_DustCollector_Fan_Fault
-                if (!workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper))
+                if (workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper)) //A접점
                 {
-                    AlarmPost(AlarmKey.Water_In_Leak_Alarm);
+                    AlarmPost(AlarmKey.DustCollector_Fan_Fault_Upper_Alarm);
                 }
 
-                if (!workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
+                if (workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower)) //A접점
                 {
-                    AlarmPost(AlarmKey.Water_In_Leak_Alarm);
+                    AlarmPost(AlarmKey.DustCollector_Fan_Fault_Low_Alarm);
                 }
 
                 if ( Equipment.Machine_LaserType_CO2)
@@ -8529,7 +8529,7 @@ namespace QMC.Common.Modules
                         AlarmPost(AlarmKey.Mask_Leak_Alarm);
                     }
 
-                    if (!workStageParameter.DI_Laser_System_Fault())
+                    if (workStageParameter.DI_Laser_System_Fault()) //A접점
                     {
                         AlarmPost(AlarmKey.Laser_System_Fault_Alarm);
                     }
