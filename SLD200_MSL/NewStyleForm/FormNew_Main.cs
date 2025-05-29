@@ -234,7 +234,7 @@ namespace SLD200_MSL
             });
 
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
-            Equipment.CycleTimer_LaserDrilling.LoadFromIni("LaserDrilling", strPath);
+            workStage.DrillingManager.CycleTimer_LaserDrilling.LoadFromIni("LaserDrilling", strPath);
 
             if (Machine_LaserType_CO2)
             {
@@ -261,6 +261,9 @@ namespace SLD200_MSL
                 Comm_Init();
 
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
+
+
+            numericUpDown_Module_WaitTime_sec.Value = 0;
         }
 
         private void FormNew_Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -1116,15 +1119,15 @@ namespace SLD200_MSL
                 }
             }
 
-
-            if (Equipment.AutoRunStatus &&
-                Equipment.CycleStop &&
-                Equipment.CycleStopped_LoaderTransfer &&
-                Equipment.CycleStopped_UnloaderTransfer &&
-                Equipment.CycleStopped_MainWork)
-            {
-                m_bNeedAutoRunStop = true;
-            }
+            //이거 뭐냐??
+            //if (Equipment.AutoRunStatus &&
+            //    Equipment.CycleModuleStop &&
+            //    Equipment.CycleStopped_LoaderTransfer &&
+            //    Equipment.CycleStopped_UnloaderTransfer &&
+            //    Equipment.CycleStopped_MainWork)
+            //{
+            //    m_bNeedAutoRunStop = true;
+            //}
 
             if (workStage.m_bHomeOK)
                 UpdateInitStatusFromComm();
@@ -1136,16 +1139,23 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
-            // 이거 안해도 될거 같은데.
-            //if (workStage.Camera_HighRes.Opened)
-            //{
-            //    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
-            //}
+            //TEST
+            if (workStage.ShouldDelayNextModule())
+            {
+                return;
+            }
 
-            //if (workStage.jigAligner_LowRes.Camera.Opened)
-            //{
-            //    ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
-            //}
+
+                // 이거 안해도 될거 같은데.
+                //if (workStage.Camera_HighRes.Opened)
+                //{
+                //    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+                //}
+
+                //if (workStage.jigAligner_LowRes.Camera.Opened)
+                //{
+                //    ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
+                //}
 
             UpdateCycleTimerUI();
             Motor_Position2();
@@ -1255,21 +1265,21 @@ namespace SLD200_MSL
                     m_ProcRegionStatus);
             }
 
-            if (m_bNeedAutoRunStop)
-            {
-                m_bNeedAutoRunStop = false;
+            //if (m_bNeedAutoRunStop)
+            //{
+            //    m_bNeedAutoRunStop = false;
 
-                Equipment.AutoRunStatus = false;
-                workStage.SetRunStatus(RunStatus.Stop);
+            //    Equipment.AutoRunStatus = false;
+            //    workStage.SetRunStatus(RunStatus.Stop);
 
-                loader.m_LoaderWork_Start = false;
-                workStage.m_LaserDrillingWork_Start = false;
-                Equipment.LaserDrillingCycStop_Reservation = false;
-                unloader.timer_UnloaderWork.Stop();
-                unloader.m_UnloaderWork_Start = false;
+            //    loader.m_LoaderWork_Start = false;
+            //    workStage.m_LaserDrillingWork_Start = false;
+            //    Equipment.LaserDrillingCycStop_Reservation = false;
+            //    unloader.timer_UnloaderWork.Stop();
+            //    unloader.m_UnloaderWork_Start = false;
 
-                System.Windows.Forms.MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            //    //System.Windows.Forms.MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //}
 
             // label_Title_MESMessage
             // 여기에 자재 유/무에 대한 메세지 표시
@@ -2280,9 +2290,9 @@ namespace SLD200_MSL
             Equipment.MachineStop_byTimeout_Unloader = false;
             Equipment.MachineStop_byTimeout_WorkStage = false;
 
-            Equipment.SocketStop = false;
+            Equipment.CycleSocketStop = false;
             Equipment.SocketStopped = false;
-            Equipment.CycleStop = false;
+            Equipment.CycleModuleStop = false;
             Equipment.CycleStopped_LoaderTransfer = false;
             Equipment.CycleStopped_UnloaderTransfer = false;
             Equipment.CycleStopped_MainWork = false;
@@ -2372,9 +2382,9 @@ namespace SLD200_MSL
             Equipment.MachineStop_byTimeout_Unloader = false;
             Equipment.MachineStop_byTimeout_WorkStage = false;
             
-            Equipment.SocketStop = false;
+            Equipment.CycleSocketStop = false;
             Equipment.SocketStopped = false;
-            Equipment.CycleStop = false;
+            Equipment.CycleModuleStop = false;
             Equipment.CycleStopped_LoaderTransfer = false;
             Equipment.CycleStopped_UnloaderTransfer = false;
             Equipment.CycleStopped_MainWork = false;
@@ -2492,9 +2502,9 @@ namespace SLD200_MSL
             unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = workStage.m_bMainWorkCycle_ResultOK_toRPort;
 
 
-            Equipment.CycleTimer_LaserDrilling.End();   // 현재 사이클 정지 : 정지 버튼 눌렀을때도 정지하고 다시 해야지.
+            workStage.DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 정지 : 정지 버튼 눌렀을때도 정지하고 다시 해야지.
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
-            Equipment.CycleTimer_LaserDrilling.SaveToIni("LaserDrilling", strPath);
+            workStage.DrillingManager.CycleTimer_LaserDrilling.SaveToIni("LaserDrilling", strPath);
         }
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
@@ -2621,66 +2631,39 @@ namespace SLD200_MSL
         private void checkBox_Main_SocketStop_CheckedChanged(object sender, EventArgs e)
         {
             //  Socket Stop 일 경우, 현재 가공중인 Socket 완료 후 정지
-
             //  대상
-            //  Loader : Transfer, L-Port, R-Port
-            //  Unloader : Transfer
             //  Work Stage : Main Work
-
-            Equipment.SocketStop = checkBox_Main_SocketStop.Checked;
+            Equipment.CycleSocketStop = checkBox_Main_SocketStop.Checked;
             Equipment.SocketStopped = false;
 
-            if (SocketStop)
+            if (CycleSocketStop)
             {
                 //  Socket Stop 을 설정했으므로 Cycle Stop 은 Cancel
-                Equipment.CycleStop = false;
+                Equipment.CycleModuleStop = false;
                 checkBox_Main_CycleStop.Checked = false;
             }
+
+            Log.Write("SLD-200", Equipment.User_Name, "CheckBox Click", "Socket Stop 체크박스 : " + Equipment.CycleSocketStop.ToString());
         }
 
         private void checkBox_Main_CycleStop_CheckedChanged(object sender, EventArgs e)
         {
-            ////  Layer Name : "Marking"
-            ////  Eitity Name : "QR2"
-            ////  변경 Data : "TESTTEST"
-            ////workStage.MarkingEntity_DataChange("QR2", "TESTTEST");
-
-            //var text = new BarcodeQR2("SIRIUS1234");
-            
-            //Vector2 RotCenter = new Vector2(text.Width / 2, text.Height / 2);
-            //text.Rotate(90, RotCenter);
-            //text.Location = new Vector2(text.Location.X - (float)(text.Width / 2.0), text.Location.Y - (float)(text.Height / 2.0));
-            //SiriusViewer_Main.Document.Action.ActEntityAdd(text);
-
-            //var text2 = new Barcode1D("TESTTTTT");
-            //RotCenter = new Vector2(text2.Width / 2, text2.Height / 2);
-            //text2.Rotate(90, RotCenter);
-            //text2.Location = new Vector2(text2.Location.X - (float)(text2.Width / 2.0), text2.Location.Y - (float)(text2.Height / 2.0));
-            //SiriusViewer_Main.Document.Action.ActEntityAdd(text2);
-
-            //return;
-
-
-
             //  Cycle Stop 일 경우, 현재 동작중인 Cycle 완료 후 정지
-
             //  대상
             //  Loader : Transfer, L-Port, R-Port
             //  Unloader : Transfer
             //  Work Stage : Main Work
 
-            Equipment.CycleStop = checkBox_Main_CycleStop.Checked;
-
-            //Equipment.Loader_LPort_Pause = checkBox_Main_Loader_LPort_Pause.Checked;
-            //Equipment.Loader_RPort_Pause = checkBox_Main_Loader_RPort_Pause.Checked;
-
-            if (Equipment.CycleStop)
+            Equipment.CycleModuleStop = checkBox_Main_CycleStop.Checked;
+            if (Equipment.CycleModuleStop)
             {
                 //  Cycle Stop 을 설정했으므로 Socket Stop 은 Cancel
-                Equipment.SocketStop = false;
+                Equipment.CycleSocketStop = false;
                 Equipment.SocketStopped = false;
                 checkBox_Main_SocketStop.Checked = false;
             }
+
+            Log.Write("SLD-200", Equipment.User_Name, "CheckBox Click", "Cycle Stop 체크박스 : " + Equipment.CycleModuleStop.ToString());
         }
 
         private void button_Main_Reset_Click(object sender, EventArgs e)
@@ -3489,11 +3472,15 @@ namespace SLD200_MSL
         
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
+
             workStage.m_bForceEjectRequest = true;  // 강제 배출 요청. NG로 빼기 위한 변수.
             Equipment.ManualRunStatus = true;
+
+            return;
             //Test code
             //baseTextBox_SocketCountPerModule.Text = "12";
-            //Equipment.CycleTimer_LaserDrilling.Start();
+            //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
             //return;
 
             ////double number = 0.238;
@@ -3921,7 +3908,7 @@ namespace SLD200_MSL
             //return;
 
             //Test code
-            Equipment.CycleTimer_LaserDrilling.Start();
+            //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
             //workStage.AlarmTest();
             //workStage.LaserHeightSensorValue_Save(Equipment.Current_Recipe, 1, Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, workStage.m_dLaserHeightSensorSocket_Value, 2);
 
@@ -4047,12 +4034,12 @@ namespace SLD200_MSL
             try
             {
                 // 평균 계산의 기반 데이터만 초기화 (누적 시간 유지)
-                Equipment.CycleTimer_LaserDrilling.Clear();
+                workStage.DrillingManager.CycleTimer_LaserDrilling.Clear();
                 // 총 경과 시간 및 최근 사이클 시간도 명시적으로 초기화
-                Equipment.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
+                workStage.DrillingManager.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
                 //Equipment.CycleTimer_LaserDrilling.Latest = new CycleTimer.CycleInfo(); // 또는 생성자에 맞게 초기화
                 // 완료 수량도 초기화
-                Equipment.CycleTimer_DoneModuleCount = 0;
+                workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
 
 
                 // UI 갱신
@@ -4211,18 +4198,18 @@ namespace SLD200_MSL
             {
                 string strModuleTargetCnt = GetValue(numericUpDown_Module_TargetCount);
                 int nModuleTargetCnt = Equipment.ToInt(strModuleTargetCnt);
-                Equipment.CycleTimer_TargetModuleCount = nModuleTargetCnt;
+                workStage.DrillingManager.CycleTimer_TargetModuleCount = nModuleTargetCnt;
 
-                int totalCount = Equipment.CycleTimer_TargetModuleCount;
-                int doneCount = Equipment.CycleTimer_DoneModuleCount;
-                int NGCount = Equipment.CycleTimer_NGSocketCount;
+                int totalCount = workStage.DrillingManager.CycleTimer_TargetModuleCount;
+                int doneCount = workStage.DrillingManager.CycleTimer_DoneModuleCount;
+                int NGCount = workStage.DrillingManager.CycleTimer_NGSocketCount;
 
-                TimeSpan oneCycle = Equipment.CycleTimer_LaserDrilling.IsRunning
-                                    ? Equipment.CycleTimer_LaserDrilling.Elapsed
-                                    : Equipment.CycleTimer_LaserDrilling.Latest.Interval;
+                TimeSpan oneCycle = workStage.DrillingManager.CycleTimer_LaserDrilling.IsRunning
+                                    ? workStage.DrillingManager.CycleTimer_LaserDrilling.Elapsed
+                                    : workStage.DrillingManager.CycleTimer_LaserDrilling.Latest.Interval;
 
-                TimeSpan totalElapsed = Equipment.CycleTimer_LaserDrilling.TotalElapsed;
-                TimeSpan avgCycle = Equipment.CycleTimer_LaserDrilling.Average;
+                TimeSpan totalElapsed = workStage.DrillingManager.CycleTimer_LaserDrilling.TotalElapsed;
+                TimeSpan avgCycle = workStage.DrillingManager.CycleTimer_LaserDrilling.Average;
 
                 // ---- 1 Cycle Time 표시 ----
                 SetValue(baseLabel_CurrentOneCycle_ElapsedTime, oneCycle.ToString(@"hh\:mm\:ss"));
@@ -4258,7 +4245,7 @@ namespace SLD200_MSL
 
                 //SetValue(baseTextBox_Module_TotalCount, 
 
-                SetValue(baseTextBox_Module_TotalCount, Equipment.CycleTimer_DoneModuleCount.ToString());
+                SetValue(baseTextBox_Module_TotalCount, workStage.DrillingManager.CycleTimer_DoneModuleCount.ToString());
 
                 int nSocketCnt = inputText == "" ? 0 : ToInt(inputText);
                 int nSocketTotalCnt = totalCount * nSocketCnt;
@@ -4270,40 +4257,6 @@ namespace SLD200_MSL
             {
                 Log.Write(ex);
             }
-
-            //try
-            //{
-            //    int goalOneCycleSec = 70;      // 목표 1사이클 시간 (초)
-            //    int goalTotalSec = 86400;      // 총 목표 시간 (초) - 24시간 <- 수량 및 1사이클에 따른 남은 시간 계산 필요.
-
-            //    // 실시간 경과 시간
-            //    TimeSpan oneCycle = Equipment.CycleTimer_LaserDrilling.IsRunning
-            //                        ? Equipment.CycleTimer_LaserDrilling.Elapsed
-            //                        : Equipment.CycleTimer_LaserDrilling.Latest.Interval;
-
-            //    TimeSpan totalElapsed = Equipment.CycleTimer_LaserDrilling.TotalElapsed;
-            //    TimeSpan avgCycle = Equipment.CycleTimer_LaserDrilling.Average;
-
-            //    // ---- 1 Cycle Time 표시 ----
-            //    SetValue(baseLabel_CurrentOneCycle_ElapsedTime, oneCycle.ToString(@"hh\:mm\:ss"));
-
-            //    int oneCycleProgress = (int)(oneCycle.TotalSeconds / goalOneCycleSec * 100);
-            //    SetValue(progressBar_OneCycle_Time, Math.Min(progressBar_OneCycle_Time.Maximum, Math.Max(0, oneCycleProgress)));
-
-            //    // ---- Total 누적 시간 표시 ---- -> 남은 시간 계산 필요.
-            //    SetValue(baseLabel_Total_RemainedTime, totalElapsed.ToString(@"hh\:mm\:ss"));
-            //    int totalProgress = (int)(totalElapsed.TotalSeconds / goalTotalSec * 100);
-
-            //    SetValue(progressBar_TotalRemained_Time, Math.Min(progressBar_TotalRemained_Time.Maximum, Math.Max(0, totalProgress)));
-
-            //    // ---- Average 표시 ----
-            //    SetValue(baseLabel_Average_OneCycleTime, avgCycle.ToString(@"hh\:mm\:ss"));
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Write(ex);  // UI 다운 방지
-            //}
         }
 
         
@@ -4338,8 +4291,11 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            Equipment.CycleTimer_DoneModuleCount++;
-            Equipment.CycleTimer_LaserDrilling.End();
+            //Test
+            workStage.UpdateLastDrillTime();
+
+            workStage.DrillingManager.CycleTimer_DoneModuleCount++;
+            workStage.DrillingManager.CycleTimer_LaserDrilling.End();
         }
 
         private void SetColor(System.Windows.Forms.Control control, Color Backcolor,Color foreColor)
@@ -4409,6 +4365,12 @@ namespace SLD200_MSL
                 control.Checked = value;
             }
         }
+
+        private void button_Module_WaitTime_sec_Click(object sender, EventArgs e)
+        {
+            Equipment.DrillModuleDelaySeconds = (double)numericUpDown_Module_WaitTime_sec.Value;
+        }
+
         private void SetValue(System.Windows.Forms.ProgressBar control, int v)
         {
             if (control.InvokeRequired)

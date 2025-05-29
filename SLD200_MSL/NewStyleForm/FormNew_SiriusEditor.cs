@@ -2274,9 +2274,9 @@ namespace SLD200_MSL
             //{
             //    case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
 
-            //        Equipment.CycleTimer_LaserDrilling.Clear();
-            //        Equipment.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
-            //        Equipment.CycleTimer_DoneModuleCount = 0;
+            //        workStage.DrillingManager.CycleTimer_LaserDrilling.Clear();
+            //        workStage.DrillingManager.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
+            //        workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
 
             //        //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
             //        workStage.GetDrillingData_ProcessingFlagCheck();

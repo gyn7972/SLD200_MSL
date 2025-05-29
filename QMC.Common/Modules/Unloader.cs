@@ -4683,7 +4683,7 @@ namespace QMC.Common.Modules
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = false;
 
                             //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
-                            if (Equipment.CycleStop)
+                            if (Equipment.CycleModuleStop)
                             {
                                 //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
                                 if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)

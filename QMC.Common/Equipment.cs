@@ -244,11 +244,12 @@ namespace QMC.Common
         public static double MainCycle_Interval { set; get; }                           //  Main Cycle 타이머의 Interval. 
 
 
-        public static int CycleTimer_TargetModuleCount = 0;
-        public static int CycleTimer_DoneModuleCount = 0;
-        public static int CycleTimer_NGSocketCount = 0;
+        // DrillingProcessManager class로 옮긴 후 제어.
+        //public static int CycleTimer_TargetModuleCount = 0;
+        //public static int CycleTimer_DoneModuleCount = 0;
+        //public static int CycleTimer_NGSocketCount = 0;
         //  workStage 가공시간 계산을 위해 사용되는 변수
-        public static CycleTimer CycleTimer_LaserDrilling = new CycleTimer();
+        //public static CycleTimer CycleTimer_LaserDrilling = new CycleTimer();
 
 
 
@@ -786,18 +787,30 @@ namespace QMC.Common
         // 장비 구동 유/무 변수 : 장비 시컨스 구동 유/무 변수 :: 실제로 장비 구동 확인 
         // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
         // 위와 같이 구분하여 장비 관리 할것!
-        public static bool AutoRunStatus { set; get; }
-        public static bool ManualRunStatus { set; get; }
+        public static bool AutoRunStatus { set; get; } = false;
+        public static bool ManualRunStatus { set; get; } = false;
+        //  Cycle Stop
+        public static bool CycleModuleStop { set; get; } = false;
+        public static bool CycleSocketStop { set; get; } = false;
 
         // Drilling Cycle Stop 예약 변수 : 장비 Stop 시 가공중이던 부분은 완료 되고 Stop 하도록 하기 위함
         // true : Stop 예약
         // _isLaserDrillingWorkRunning 을 false 로 만드는 경우(Stop 하는 경우), 곧바로 false 로 변경하지 않고 Laser 가공이 완료된 후에 false 로 변경
         public static bool LaserDrillingCycStop_Reservation { set; get; } // 장비 Stop 예약
 
+        public static double DrillModuleDelaySeconds = 0.0; // 예: 60초 (1분)
+
+
+
+
+
+
+
+
+
         //  Loading 에 사용하던 Port 를 기억하기 위한 변수
         //  Pick Up 하던 Port 에서만 계속 진행하기 위한 Port Index
         public static int Loader_ActivatePort { set; get; } = 0;            //  Loader Port Activate (0: RPort, 1: LPort)
-
 
         public static int DryRun_ProcessingTime { set; get; } = 5;
 
@@ -841,10 +854,9 @@ namespace QMC.Common
         public static bool Loader_LPort_Empty { set; get; } = false;
         public static bool Loader_RPort_Empty { set; get; } = false;
 
-        //  Cycle Stop
-        public static bool SocketStop { set; get; } = false;
+
+
         public static bool SocketStopped { set; get; } = false;
-        public static bool CycleStop { set; get; } = false;
         public static bool CycleStopped_LoaderTransfer { set; get; } = false;
         public static bool CycleStopped_UnloaderTransfer { set; get; } = false;
         public static bool CycleStopped_MainWork { set; get; } = false;
