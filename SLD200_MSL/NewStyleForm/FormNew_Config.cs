@@ -193,6 +193,9 @@ namespace SLD200_MSL
                 groupBox_VarioScan.Visible = false;
             }
 
+            textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
+            textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";
+
             InitializeJogButtons();
         }
 
@@ -472,6 +475,17 @@ namespace SLD200_MSL
             label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
             label_Config_WorkStage_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
 
+
+            /////////////////////////////////////////////////////////////////////////////////////
+            /// VarioScan
+            /// 
+
+            float? zOffset = bds.CurrentRtcZOffset;
+            float? zDefocus = bds.CurrentRtcZDefocus;
+            label_VarioScan_Z_Offset_Pos.Text = string.Format("{0:0.00000}", zOffset.HasValue ? zOffset.Value : 0.0f);
+            label_VarioScan_Z_Defocus_Pos.Text = string.Format("{0:0.00000}", zDefocus.HasValue ? zDefocus.Value : 0.0f);
+
+
             //  Laser Height Sensor
             label_Config_WorkStage_LaserHeightSensorValue.Text = string.Format("{0:0.00000}", workStage.m_dLaserHeightSensorSocket_Value);
 
@@ -685,8 +699,12 @@ namespace SLD200_MSL
                         }
                     }
                 }
-            }
 
+                if (workStage.workStageParameter.DI_Laser_System_Fault())
+                {
+                    label_Config_Laser_Laser_warning.Text = "Laser System Fault";
+                }
+            }
 
             timer_Status.Enabled = true;
         }
@@ -5868,11 +5886,13 @@ namespace SLD200_MSL
         private void Button_Config_VarioScan_ZOffset_Set_Click(object sender, EventArgs e)
         {
             //  Vario Scan - Z Offset Setting
-
-            var rtc3D = workStage.rtc as IRtc3D;
+            
 
             float zOffset = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZOffset.Text);
-            rtc3D.CtlZOffset(zOffset);
+            bds.spiralLabRtc3D.SetZOffset(zOffset);
+
+            //var rtc3D = workStage.rtc as IRtc3D;
+            //rtc3D.CtlZOffset(zOffset);
 
             MessageBox.Show($"Vario Scan - Z Offset 설정 값 : {zOffset} mm", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -5880,11 +5900,11 @@ namespace SLD200_MSL
         private void Button_Config_VarioScan_ZDefocua_Set_Click(object sender, EventArgs e)
         {
             //  Vario Scan - Z Defocus Setting
-
-            var rtc3D = workStage.rtc as IRtc3D;
-
             float zDefocus = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZDefocus.Text);
-            rtc3D.CtlZDefocus(zDefocus);
+            bds.spiralLabRtc3D.SetZDefocus(zDefocus);
+
+            //var rtc3D = workStage.rtc as IRtc3D;
+            //rtc3D.CtlZDefocus(zDefocus);
 
             MessageBox.Show($"Vario Scan - Z Defocus 설정 값 : {zDefocus} mm", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -5892,11 +5912,12 @@ namespace SLD200_MSL
         private void Button_Config_VarioScan_ZOffsetZDefocus_Reset_Click(object sender, EventArgs e)
         {
             //  Vario Scan - Z Offset & Z Defocus Reset
+            //var rtc3D = workStage.rtc as IRtc3D;
+            //rtc3D.CtlZOffset(0.0f);
+            //rtc3D.CtlZDefocus(0.0f);
 
-            var rtc3D = workStage.rtc as IRtc3D;
-
-            rtc3D.CtlZOffset(0.0f);
-            rtc3D.CtlZDefocus(0.0f);
+            bds.spiralLabRtc3D.SetZDefocus(0.0f);
+            bds.spiralLabRtc3D.SetZOffset(0.0f);
 
             textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
             textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";

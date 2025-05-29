@@ -1537,6 +1537,7 @@ namespace SLD200_MSL
                 await Task.Delay(500);  // 0.5초 텀
                 // 여기가 "UI 다 그려지고 나서" 실행되는 진짜 시작점!
                 workStage.m_MainStatus_Start = true;
+                bds.m_MainStatus_Start = true;
             }));
 
 

@@ -24,6 +24,8 @@ using System.IO.Ports;
 using MessageBox = System.Windows.Forms.MessageBox;
 using static QMC.Common.Modules.Vision;
 using static QMC.Common.Modules.WorkStage;
+using System.Threading.Tasks;
+using System.Timers;
 
 
 namespace QMC.Common.Modules
@@ -58,14 +60,14 @@ namespace QMC.Common.Modules
 
 
         #region Variables
-       
+
 
         #endregion
 
         #region Field
         SettingParameterCollection PosParam_Bds;          //  2022. 04. 25.  SCH : 모터 위치 파라미터를 갖다쓰기 위해 선언해봄.
-        //static Conveyor conveyor = new Conveyor("");            //  요거 다시해야 함. Conveyor.cs 에 정의된 변수에 접근할 수 있게... 어케 함? -_-
-                                                                //  static 으로 선언하면 되긴 헌디.... 맞는건가 -_-
+                                                          //static Conveyor conveyor = new Conveyor("");            //  요거 다시해야 함. Conveyor.cs 에 정의된 변수에 접근할 수 있게... 어케 함? -_-
+                                                          //  static 으로 선언하면 되긴 헌디.... 맞는건가 -_-
         public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
         //public ACSSPiiPlusAxis ACS_Func = new ACSSPiiPlusAxis();
         #endregion
@@ -73,12 +75,15 @@ namespace QMC.Common.Modules
         #region Property
         public BdsConfig Config { set; get; }
         public BdsParameterConfig ParamConfig { set; get; }
-        public BdsRecipe Recipe { set; get; }                
+        public BdsRecipe Recipe { set; get; }
 
         public YStage Stage { set; get; }                         //  MSL SLD-200C, SLD-200U 의 Mask Y 축
 
         //20250527
         public SpiralLabRtc3D spiralLabRtc3D { get; private set; } = null; //  SpiralLab Rtc3D 객체
+        public float? CurrentRtcZOffset { get; private set; }
+        public float? CurrentRtcZDefocus { get; private set; }
+
         static WorkStage workStage;
 
         //  레시피 변경 시 위치값을 갱신하기 위해
@@ -90,6 +95,12 @@ namespace QMC.Common.Modules
         //public bool ACS_Motion_isSimulationMode { set; get; }
 
         //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
+        protected Task m_taskTimer_BDS_MainStatus_Tick = null;
+        private bool isModuleClose = false;
+        protected List<Task> listTask = new List<Task>();
+        public bool _isMainStatusRunning = false; // 중복 실행 방지 플래그
+        public bool m_MainStatus_Start = false;
+
         public System.Windows.Forms.Timer timer_MainWork;
         public bool m_btimer_MainWork_Stop;
 
@@ -144,14 +155,6 @@ namespace QMC.Common.Modules
 
         #endregion
 
-
-        public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)
-        {
-            //  요거 주석처리하면 안되는데... 이유가 뭘까
-
-            throw new NotImplementedException();
-        }
-
         #region Tick Count Check
 
         public int TickCount_MainCycle_Start { set; get; }
@@ -168,7 +171,7 @@ namespace QMC.Common.Modules
             TICK_SUB = 2,               //  2 : Sub Cycle
             TICK_PAUSE = 3,             //  3 : Pause
             TICK_CHECK = 4,             //  4 : 체크용
-            
+
             //TICK_LASER_INTERFACE = 3,   //  3 : Laser Interface Set
             //TICK_LASER_FOCUS = 4,       //  4 : Laser Focus Check Cycle
             //TICK_LASER_COMM = 5,        //  5 : Laser Comm. Cycle
@@ -310,7 +313,7 @@ namespace QMC.Common.Modules
             }
 
             Teaching_Position_Load();
-        }                                                   
+        }
         #endregion
 
         #region IExecuter
@@ -368,12 +371,79 @@ namespace QMC.Common.Modules
             //PosParam_Dispenser = GetConfigData();     //  요건 나중에
             Recipe = new BdsRecipe(this);
 
+            //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
+            m_taskTimer_BDS_MainStatus_Tick = Task.Factory.StartNew(() =>
+            {
+                Thread.CurrentThread.Name = "m_taskTimer_BDS_MainStatus_Tick";
+
+                while (true)
+                {
+                    Thread.Sleep(1);
+
+                    if (isModuleClose)
+                    {
+                        break;
+                    }
+                    Timer_BDS_MainStatus_Tick(null, null);
+                }
+            }); ;
+            listTask.Add(m_taskTimer_BDS_MainStatus_Tick);
+
             return ret;
+        }
+
+        private async void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isMainStatusRunning)
+            {
+                return;
+            }
+
+            try
+            {
+                _isMainStatusRunning = true;
+
+                if (!m_MainStatus_Start)
+                {
+                    return;
+                }
+
+                // Home 잡기 전에는 Device 알람 X
+                if (!workStage.m_bHomeOK)
+                {
+                    return;
+                }
+
+                // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
+                if (Equipment.AutoRunStatus)
+                {
+                }
+                else
+                {
+                }
+
+                if (spiralLabRtc3D != null)
+                {
+                    CurrentRtcZOffset = spiralLabRtc3D.GetCurrentZOffset();
+                    CurrentRtcZDefocus = spiralLabRtc3D.GetCurrentZDefocus();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isMainStatusRunning = false; // 플래그 해제
+            }
         }
 
         public void InitRtc3DModule()
         {
-            if(workStage.rtc != null)
+            if (workStage.rtc != null)
             {
                 spiralLabRtc3D = new SpiralLabRtc3D("Scanner3D", workStage.rtc);
                 spiralLabRtc3D.Create();
@@ -383,6 +453,24 @@ namespace QMC.Common.Modules
                 Log.Write("SLD-200", "InitRtc3DModule", "Scanner3D 모듈 초기화 완료");
             }
         }
+
+        public float? GetRtcZOffset()
+        {
+            return spiralLabRtc3D?.GetCurrentZOffset();
+        }
+
+        public float? GetRtcZDefocus()
+        {
+            return spiralLabRtc3D?.GetCurrentZDefocus();
+        }
+
+
+
+
+
+
+
+
 
         public override void SetConfigData(object configData)
         {
@@ -445,6 +533,18 @@ namespace QMC.Common.Modules
 
         public override void Close()
         {
+            isModuleClose = true;
+            foreach (var task in listTask)
+            {
+                task.Wait();
+
+                task.Dispose();
+
+            }
+            listTask.Clear();
+
+            m_taskTimer_BDS_MainStatus_Tick = null;
+
             base.Close();
 
             if (Stage != null)
@@ -452,11 +552,16 @@ namespace QMC.Common.Modules
                 Stage.Close();
             }
 
-            //if (ACS_Motion != null)
-            //{
-            //    ACS_Motion.CloseComm();
-            //}
+
         }
+
+        public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)
+        {
+            //  요거 주석처리하면 안되는데... 이유가 뭘까
+
+            throw new NotImplementedException();
+        }
+
         #endregion
 
 
@@ -604,7 +709,7 @@ namespace QMC.Common.Modules
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
 
             m_btimer_MainWork_Stop = false;
-            timer_MainWork.Enabled = false; 
+            timer_MainWork.Enabled = false;
 
             if (!m_btimer_MainWork_Stop)
             {
@@ -616,7 +721,7 @@ namespace QMC.Common.Modules
         {
             if (!m_bAlignVisionThread_Use)
             {
-                
+
             }
         }
 
@@ -687,5 +792,6 @@ namespace QMC.Common.Modules
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\Common Setting (Do not delete or modify).ini";
         }
+
     }
 }

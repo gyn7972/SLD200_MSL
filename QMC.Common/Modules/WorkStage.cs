@@ -1612,9 +1612,14 @@ namespace QMC.Common.Modules
 
             Main_CDA_Alarm,
             Main_Purge_Alarm,
-            VarioScan_Flow_Alarm,
             Scanner_Flow_Alarm,
             DustCollector_Fan_Run_Alarm,
+            VarioScan_Flow_Alarm,
+            Mask_Leak_Alarm,
+            Laser_System_Fault_Alarm,
+            Water_In_Leak_Alarm,
+            DustCollector_Fan_Fault_Upper_Alarm,
+            DustCollector_Fan_Fault_Low_Alarm,
 
 
             //Device 알람 정의
@@ -2123,14 +2128,6 @@ namespace QMC.Common.Modules
             m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.VarioScan_Flow_Alarm;
-            alarm.Title = "VarioScan_Flow";
-            alarm.Cause = "VarioScan_Flow 가 알람 상태 입니다.";
-            alarm.Source = Name;
-            alarm.Grade = "Error";
-            m_dicAlarms.Add(alarm.Code, alarm);
-
-            alarm = new Alarm();
             alarm.Code = (int)AlarmKey.Scanner_Flow_Alarm;
             alarm.Title = "Scanner_Flow";
             alarm.Cause = "Scanner_Flow 가 알람 상태 입니다.";
@@ -2146,6 +2143,55 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.VarioScan_Flow_Alarm;
+            alarm.Title = "VarioScan_Flow";
+            alarm.Cause = "VarioScan_Flow 가 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Mask_Leak_Alarm;
+            alarm.Title = "Mask_Leak";
+            alarm.Cause = "Mask_Leak 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Laser_System_Fault_Alarm;
+            alarm.Title = "Laser_System_Fault";
+            alarm.Cause = "Laser_System_Fault 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Water_In_Leak_Alarm;
+            alarm.Title = "Water_In_Leak";
+            alarm.Cause = "Water_In_Leak 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.DustCollector_Fan_Fault_Upper_Alarm;
+            alarm.Title = "DustCollector_Fan_Fault_Upper";
+            alarm.Cause = "DustCollector_Fan_Fault_Upper 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.DustCollector_Fan_Fault_Low_Alarm;
+            alarm.Title = "DustCollector_Fan_Fault_Low";
+            alarm.Cause = "DustCollector_Fan_Fault_Low 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            
 
 
             alarm = new Alarm();
@@ -8453,6 +8499,40 @@ namespace QMC.Common.Modules
                 if (!workStageParameter.DI_Scanner_Flow_Check())
                 {
                     AlarmPost(AlarmKey.Scanner_Flow_Alarm);
+                }
+
+                if (!workStageParameter.DI_Water_In_Leak_Check())
+                {
+                    AlarmPost(AlarmKey.Water_In_Leak_Alarm);
+                }
+
+                //DI_DustCollector_Fan_Fault
+                if (!workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper))
+                {
+                    AlarmPost(AlarmKey.Water_In_Leak_Alarm);
+                }
+
+                if (!workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
+                {
+                    AlarmPost(AlarmKey.Water_In_Leak_Alarm);
+                }
+
+                if ( Equipment.Machine_LaserType_CO2)
+                {
+                    if (!workStageParameter.DI_VarioScan_Flow_Check())
+                    {
+                        AlarmPost(AlarmKey.VarioScan_Flow_Alarm);
+                    }
+
+                    if (!workStageParameter.DI_Mask_Leak_Check())
+                    {
+                        AlarmPost(AlarmKey.Mask_Leak_Alarm);
+                    }
+
+                    if (!workStageParameter.DI_Laser_System_Fault())
+                    {
+                        AlarmPost(AlarmKey.Laser_System_Fault_Alarm);
+                    }
                 }
 
                 // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중

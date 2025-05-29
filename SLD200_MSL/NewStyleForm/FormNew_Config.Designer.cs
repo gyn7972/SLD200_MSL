@@ -414,18 +414,7 @@
             this.groupBox64 = new System.Windows.Forms.GroupBox();
             this.checkedListBox_Config_Laser_DIO_Input = new System.Windows.Forms.CheckedListBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
-            this.label31 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.groupBox12 = new System.Windows.Forms.GroupBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.button15 = new System.Windows.Forms.Button();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.button14 = new System.Windows.Forms.Button();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
+            this.label_Config_Laser_Laser_warning = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.label26 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
@@ -599,6 +588,8 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
+            this.label_VarioScan_Z_Offset_Pos = new System.Windows.Forms.Label();
+            this.label_VarioScan_Z_Defocus_Pos = new System.Windows.Forms.Label();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -675,8 +666,6 @@
             this.groupBox63.SuspendLayout();
             this.groupBox64.SuspendLayout();
             this.groupBox14.SuspendLayout();
-            this.groupBox12.SuspendLayout();
-            this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.tabPage_Config_BDS.SuspendLayout();
             this.groupBox_MotorizedBET.SuspendLayout();
@@ -4996,9 +4985,6 @@
             this.tabPage_Config_Laser.Controls.Add(this.groupBox2);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox62);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox14);
-            this.tabPage_Config_Laser.Controls.Add(this.checkBox1);
-            this.tabPage_Config_Laser.Controls.Add(this.groupBox12);
-            this.tabPage_Config_Laser.Controls.Add(this.groupBox7);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox6);
             this.tabPage_Config_Laser.Location = new System.Drawing.Point(4, 54);
             this.tabPage_Config_Laser.Name = "tabPage_Config_Laser";
@@ -5009,6 +4995,8 @@
             // 
             // groupBox_VarioScan
             // 
+            this.groupBox_VarioScan.Controls.Add(this.label_VarioScan_Z_Defocus_Pos);
+            this.groupBox_VarioScan.Controls.Add(this.label_VarioScan_Z_Offset_Pos);
             this.groupBox_VarioScan.Controls.Add(this.Button_Config_VarioScan_ZOffsetZDefocus_Reset);
             this.groupBox_VarioScan.Controls.Add(this.Button_Config_VarioScan_ZDefocua_Set);
             this.groupBox_VarioScan.Controls.Add(this.Button_Config_VarioScan_ZOffset_Set);
@@ -5017,11 +5005,11 @@
             this.groupBox_VarioScan.Controls.Add(this.label_VarioScan_ZDefocus);
             this.groupBox_VarioScan.Controls.Add(this.label_VarioScan_ZOffset);
             this.groupBox_VarioScan.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox_VarioScan.Location = new System.Drawing.Point(528, 237);
+            this.groupBox_VarioScan.Location = new System.Drawing.Point(648, 129);
             this.groupBox_VarioScan.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_VarioScan.Name = "groupBox_VarioScan";
             this.groupBox_VarioScan.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_VarioScan.Size = new System.Drawing.Size(281, 152);
+            this.groupBox_VarioScan.Size = new System.Drawing.Size(358, 155);
             this.groupBox_VarioScan.TabIndex = 81;
             this.groupBox_VarioScan.TabStop = false;
             this.groupBox_VarioScan.Text = " Vario Scan ";
@@ -5029,10 +5017,10 @@
             // Button_Config_VarioScan_ZOffsetZDefocus_Reset
             // 
             this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Location = new System.Drawing.Point(188, 95);
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Location = new System.Drawing.Point(265, 93);
             this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Name = "Button_Config_VarioScan_ZOffsetZDefocus_Reset";
-            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Size = new System.Drawing.Size(82, 46);
+            this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Size = new System.Drawing.Size(84, 50);
             this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.TabIndex = 63;
             this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.Text = "Reset";
             this.Button_Config_VarioScan_ZOffsetZDefocus_Reset.UseVisualStyleBackColor = true;
@@ -5041,10 +5029,10 @@
             // Button_Config_VarioScan_ZDefocua_Set
             // 
             this.Button_Config_VarioScan_ZDefocua_Set.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.Button_Config_VarioScan_ZDefocua_Set.Location = new System.Drawing.Point(188, 60);
+            this.Button_Config_VarioScan_ZDefocua_Set.Location = new System.Drawing.Point(265, 59);
             this.Button_Config_VarioScan_ZDefocua_Set.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Button_Config_VarioScan_ZDefocua_Set.Name = "Button_Config_VarioScan_ZDefocua_Set";
-            this.Button_Config_VarioScan_ZDefocua_Set.Size = new System.Drawing.Size(82, 31);
+            this.Button_Config_VarioScan_ZDefocua_Set.Size = new System.Drawing.Size(85, 30);
             this.Button_Config_VarioScan_ZDefocua_Set.TabIndex = 62;
             this.Button_Config_VarioScan_ZDefocua_Set.Text = "Set";
             this.Button_Config_VarioScan_ZDefocua_Set.UseVisualStyleBackColor = true;
@@ -5053,10 +5041,10 @@
             // Button_Config_VarioScan_ZOffset_Set
             // 
             this.Button_Config_VarioScan_ZOffset_Set.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.Button_Config_VarioScan_ZOffset_Set.Location = new System.Drawing.Point(188, 26);
+            this.Button_Config_VarioScan_ZOffset_Set.Location = new System.Drawing.Point(265, 23);
             this.Button_Config_VarioScan_ZOffset_Set.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Button_Config_VarioScan_ZOffset_Set.Name = "Button_Config_VarioScan_ZOffset_Set";
-            this.Button_Config_VarioScan_ZOffset_Set.Size = new System.Drawing.Size(82, 31);
+            this.Button_Config_VarioScan_ZOffset_Set.Size = new System.Drawing.Size(85, 30);
             this.Button_Config_VarioScan_ZOffset_Set.TabIndex = 61;
             this.Button_Config_VarioScan_ZOffset_Set.Text = "Set";
             this.Button_Config_VarioScan_ZOffset_Set.UseVisualStyleBackColor = true;
@@ -5064,42 +5052,42 @@
             // 
             // textBox_Config_TabLaser_VarioScan_ZDefocus
             // 
-            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Location = new System.Drawing.Point(95, 61);
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Location = new System.Drawing.Point(199, 63);
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Name = "textBox_Config_TabLaser_VarioScan_ZDefocus";
-            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Size = new System.Drawing.Size(87, 24);
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Size = new System.Drawing.Size(57, 23);
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.TabIndex = 16;
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "10";
             // 
             // textBox_Config_TabLaser_VarioScan_ZOffset
             // 
-            this.textBox_Config_TabLaser_VarioScan_ZOffset.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_TabLaser_VarioScan_ZOffset.Location = new System.Drawing.Point(95, 27);
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Location = new System.Drawing.Point(199, 27);
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Name = "textBox_Config_TabLaser_VarioScan_ZOffset";
-            this.textBox_Config_TabLaser_VarioScan_ZOffset.Size = new System.Drawing.Size(87, 24);
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Size = new System.Drawing.Size(57, 23);
             this.textBox_Config_TabLaser_VarioScan_ZOffset.TabIndex = 15;
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Text = "10";
             // 
             // label_VarioScan_ZDefocus
             // 
-            this.label_VarioScan_ZDefocus.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_VarioScan_ZDefocus.Location = new System.Drawing.Point(5, 60);
+            this.label_VarioScan_ZDefocus.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_VarioScan_ZDefocus.Location = new System.Drawing.Point(6, 59);
             this.label_VarioScan_ZDefocus.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_VarioScan_ZDefocus.Name = "label_VarioScan_ZDefocus";
-            this.label_VarioScan_ZDefocus.Size = new System.Drawing.Size(88, 24);
+            this.label_VarioScan_ZDefocus.Size = new System.Drawing.Size(95, 30);
             this.label_VarioScan_ZDefocus.TabIndex = 10;
             this.label_VarioScan_ZDefocus.Text = "Z Defocus :";
             this.label_VarioScan_ZDefocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_VarioScan_ZOffset
             // 
-            this.label_VarioScan_ZOffset.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_VarioScan_ZOffset.Location = new System.Drawing.Point(5, 26);
+            this.label_VarioScan_ZOffset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_VarioScan_ZOffset.Location = new System.Drawing.Point(6, 23);
             this.label_VarioScan_ZOffset.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_VarioScan_ZOffset.Name = "label_VarioScan_ZOffset";
-            this.label_VarioScan_ZOffset.Size = new System.Drawing.Size(88, 24);
+            this.label_VarioScan_ZOffset.Size = new System.Drawing.Size(95, 30);
             this.label_VarioScan_ZOffset.TabIndex = 6;
             this.label_VarioScan_ZOffset.Text = "Z Offset :";
             this.label_VarioScan_ZOffset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -5107,10 +5095,10 @@
             // button_Config__TabLaser_CalFilePopup
             // 
             this.button_Config__TabLaser_CalFilePopup.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config__TabLaser_CalFilePopup.Location = new System.Drawing.Point(528, 125);
+            this.button_Config__TabLaser_CalFilePopup.Location = new System.Drawing.Point(474, 23);
             this.button_Config__TabLaser_CalFilePopup.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config__TabLaser_CalFilePopup.Name = "button_Config__TabLaser_CalFilePopup";
-            this.button_Config__TabLaser_CalFilePopup.Size = new System.Drawing.Size(105, 46);
+            this.button_Config__TabLaser_CalFilePopup.Size = new System.Drawing.Size(172, 46);
             this.button_Config__TabLaser_CalFilePopup.TabIndex = 80;
             this.button_Config__TabLaser_CalFilePopup.Text = "Cal File";
             this.button_Config__TabLaser_CalFilePopup.UseVisualStyleBackColor = true;
@@ -5125,11 +5113,11 @@
             this.groupBox_Config_Laser_UVLaser.Controls.Add(this.groupBox39);
             this.groupBox_Config_Laser_UVLaser.Controls.Add(this.groupBox38);
             this.groupBox_Config_Laser_UVLaser.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox_Config_Laser_UVLaser.Location = new System.Drawing.Point(874, 10);
+            this.groupBox_Config_Laser_UVLaser.Location = new System.Drawing.Point(1016, 10);
             this.groupBox_Config_Laser_UVLaser.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_Laser_UVLaser.Name = "groupBox_Config_Laser_UVLaser";
             this.groupBox_Config_Laser_UVLaser.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_Laser_UVLaser.Size = new System.Drawing.Size(475, 739);
+            this.groupBox_Config_Laser_UVLaser.Size = new System.Drawing.Size(532, 713);
             this.groupBox_Config_Laser_UVLaser.TabIndex = 79;
             this.groupBox_Config_Laser_UVLaser.TabStop = false;
             this.groupBox_Config_Laser_UVLaser.Text = " Laser ";
@@ -5144,12 +5132,12 @@
             this.groupBox37.Controls.Add(this.label55);
             this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_LaserHeadOperatingHours);
             this.groupBox37.Controls.Add(this.label54);
-            this.groupBox37.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox37.Location = new System.Drawing.Point(10, 333);
+            this.groupBox37.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox37.Location = new System.Drawing.Point(7, 333);
             this.groupBox37.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox37.Name = "groupBox37";
             this.groupBox37.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox37.Size = new System.Drawing.Size(454, 149);
+            this.groupBox37.Size = new System.Drawing.Size(515, 149);
             this.groupBox37.TabIndex = 223;
             this.groupBox37.TabStop = false;
             this.groupBox37.Text = " Monitoring ";
@@ -5158,9 +5146,9 @@
             // 
             this.baseLabel_Config_TabLaser_THGTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.baseLabel_Config_TabLaser_THGTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_THGTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_THGTemperature.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
             this.baseLabel_Config_TabLaser_THGTemperature.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_THGTemperature.Location = new System.Drawing.Point(320, 113);
+            this.baseLabel_Config_TabLaser_THGTemperature.Location = new System.Drawing.Point(384, 112);
             this.baseLabel_Config_TabLaser_THGTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_THGTemperature.Name = "baseLabel_Config_TabLaser_THGTemperature";
             this.baseLabel_Config_TabLaser_THGTemperature.Size = new System.Drawing.Size(126, 25);
@@ -5169,11 +5157,11 @@
             // 
             // label59
             // 
-            this.label59.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label59.Location = new System.Drawing.Point(7, 112);
+            this.label59.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label59.Location = new System.Drawing.Point(75, 112);
             this.label59.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(307, 24);
+            this.label59.Size = new System.Drawing.Size(300, 24);
             this.label59.TabIndex = 126;
             this.label59.Text = "THG Crystal Temperature (℃) :";
             this.label59.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -5182,9 +5170,9 @@
             // 
             this.baseLabel_Config_TabLaser_SHGTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.baseLabel_Config_TabLaser_SHGTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_SHGTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_SHGTemperature.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
             this.baseLabel_Config_TabLaser_SHGTemperature.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_SHGTemperature.Location = new System.Drawing.Point(320, 84);
+            this.baseLabel_Config_TabLaser_SHGTemperature.Location = new System.Drawing.Point(384, 83);
             this.baseLabel_Config_TabLaser_SHGTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_SHGTemperature.Name = "baseLabel_Config_TabLaser_SHGTemperature";
             this.baseLabel_Config_TabLaser_SHGTemperature.Size = new System.Drawing.Size(126, 25);
@@ -5193,11 +5181,11 @@
             // 
             // label57
             // 
-            this.label57.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label57.Location = new System.Drawing.Point(7, 83);
+            this.label57.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label57.Location = new System.Drawing.Point(75, 83);
             this.label57.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(307, 24);
+            this.label57.Size = new System.Drawing.Size(300, 24);
             this.label57.TabIndex = 124;
             this.label57.Text = "SHG Crystal Temperature (℃) :";
             this.label57.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -5206,9 +5194,9 @@
             // 
             this.baseLabel_Config_TabLaser_WaterTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.baseLabel_Config_TabLaser_WaterTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_WaterTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_WaterTemperature.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
             this.baseLabel_Config_TabLaser_WaterTemperature.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_WaterTemperature.Location = new System.Drawing.Point(320, 55);
+            this.baseLabel_Config_TabLaser_WaterTemperature.Location = new System.Drawing.Point(384, 54);
             this.baseLabel_Config_TabLaser_WaterTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_WaterTemperature.Name = "baseLabel_Config_TabLaser_WaterTemperature";
             this.baseLabel_Config_TabLaser_WaterTemperature.Size = new System.Drawing.Size(126, 25);
@@ -5217,11 +5205,11 @@
             // 
             // label55
             // 
-            this.label55.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label55.Location = new System.Drawing.Point(6, 54);
+            this.label55.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label55.Location = new System.Drawing.Point(75, 54);
             this.label55.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(307, 24);
+            this.label55.Size = new System.Drawing.Size(300, 24);
             this.label55.TabIndex = 122;
             this.label55.Text = "Water Temperature (℃) :";
             this.label55.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -5230,9 +5218,9 @@
             // 
             this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
             this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Location = new System.Drawing.Point(320, 26);
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Location = new System.Drawing.Point(384, 25);
             this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Name = "baseLabel_Config_TabLaser_LaserHeadOperatingHours";
             this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Size = new System.Drawing.Size(126, 25);
@@ -5241,11 +5229,11 @@
             // 
             // label54
             // 
-            this.label54.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label54.Location = new System.Drawing.Point(7, 25);
+            this.label54.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label54.Location = new System.Drawing.Point(75, 25);
             this.label54.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(307, 24);
+            this.label54.Size = new System.Drawing.Size(300, 24);
             this.label54.TabIndex = 120;
             this.label54.Text = "Laser Head Operating Hours :";
             this.label54.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -5256,12 +5244,12 @@
             this.groupBox69.Controls.Add(this.textBox_Config_TabLaser_PercentOfEnergy);
             this.groupBox69.Controls.Add(this.baseLabel_Config_TabLaser_PercentOfEnergy);
             this.groupBox69.Controls.Add(this.label99);
-            this.groupBox69.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox69.Location = new System.Drawing.Point(10, 637);
+            this.groupBox69.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox69.Location = new System.Drawing.Point(7, 637);
             this.groupBox69.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox69.Name = "groupBox69";
             this.groupBox69.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox69.Size = new System.Drawing.Size(454, 62);
+            this.groupBox69.Size = new System.Drawing.Size(515, 65);
             this.groupBox69.TabIndex = 222;
             this.groupBox69.TabStop = false;
             this.groupBox69.Text = " Power and Energy ";
@@ -5269,7 +5257,7 @@
             // button_Config_TabLaser_PercentOfEnergySet
             // 
             this.button_Config_TabLaser_PercentOfEnergySet.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_TabLaser_PercentOfEnergySet.Location = new System.Drawing.Point(381, 26);
+            this.button_Config_TabLaser_PercentOfEnergySet.Location = new System.Drawing.Point(445, 29);
             this.button_Config_TabLaser_PercentOfEnergySet.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Config_TabLaser_PercentOfEnergySet.Name = "button_Config_TabLaser_PercentOfEnergySet";
             this.button_Config_TabLaser_PercentOfEnergySet.Size = new System.Drawing.Size(65, 25);
@@ -5281,10 +5269,10 @@
             // textBox_Config_TabLaser_PercentOfEnergy
             // 
             this.textBox_Config_TabLaser_PercentOfEnergy.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_TabLaser_PercentOfEnergy.Location = new System.Drawing.Point(287, 26);
+            this.textBox_Config_TabLaser_PercentOfEnergy.Location = new System.Drawing.Point(291, 29);
             this.textBox_Config_TabLaser_PercentOfEnergy.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Config_TabLaser_PercentOfEnergy.Name = "textBox_Config_TabLaser_PercentOfEnergy";
-            this.textBox_Config_TabLaser_PercentOfEnergy.Size = new System.Drawing.Size(91, 24);
+            this.textBox_Config_TabLaser_PercentOfEnergy.Size = new System.Drawing.Size(150, 24);
             this.textBox_Config_TabLaser_PercentOfEnergy.TabIndex = 120;
             this.textBox_Config_TabLaser_PercentOfEnergy.Text = "0";
             // 
@@ -5294,7 +5282,7 @@
             this.baseLabel_Config_TabLaser_PercentOfEnergy.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel_Config_TabLaser_PercentOfEnergy.Font = new System.Drawing.Font("Tahoma", 10F);
             this.baseLabel_Config_TabLaser_PercentOfEnergy.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_PercentOfEnergy.Location = new System.Drawing.Point(193, 26);
+            this.baseLabel_Config_TabLaser_PercentOfEnergy.Location = new System.Drawing.Point(196, 29);
             this.baseLabel_Config_TabLaser_PercentOfEnergy.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_PercentOfEnergy.Name = "baseLabel_Config_TabLaser_PercentOfEnergy";
             this.baseLabel_Config_TabLaser_PercentOfEnergy.Size = new System.Drawing.Size(91, 25);
@@ -5303,8 +5291,8 @@
             // 
             // label99
             // 
-            this.label99.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label99.Location = new System.Drawing.Point(7, 24);
+            this.label99.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label99.Location = new System.Drawing.Point(5, 27);
             this.label99.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label99.Name = "label99";
             this.label99.Size = new System.Drawing.Size(184, 25);
@@ -5324,20 +5312,20 @@
             this.groupBox68.Controls.Add(this.comboBox_Config_TabLaser_PulseMode);
             this.groupBox68.Controls.Add(this.baseLabel_Config_TabLaser_PulseMode);
             this.groupBox68.Controls.Add(this.label105);
-            this.groupBox68.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox68.Location = new System.Drawing.Point(10, 500);
+            this.groupBox68.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox68.Location = new System.Drawing.Point(7, 500);
             this.groupBox68.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox68.Name = "groupBox68";
             this.groupBox68.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox68.Size = new System.Drawing.Size(454, 119);
+            this.groupBox68.Size = new System.Drawing.Size(515, 120);
             this.groupBox68.TabIndex = 221;
             this.groupBox68.TabStop = false;
             this.groupBox68.Text = " Timing and Frequency ";
             // 
             // button_Config_TabLaser_AmplifierSet
             // 
-            this.button_Config_TabLaser_AmplifierSet.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_TabLaser_AmplifierSet.Location = new System.Drawing.Point(381, 57);
+            this.button_Config_TabLaser_AmplifierSet.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.button_Config_TabLaser_AmplifierSet.Location = new System.Drawing.Point(445, 55);
             this.button_Config_TabLaser_AmplifierSet.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Config_TabLaser_AmplifierSet.Name = "button_Config_TabLaser_AmplifierSet";
             this.button_Config_TabLaser_AmplifierSet.Size = new System.Drawing.Size(65, 25);
@@ -5348,8 +5336,8 @@
             // 
             // button_Config_TabLaser_PulseModeSet
             // 
-            this.button_Config_TabLaser_PulseModeSet.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_TabLaser_PulseModeSet.Location = new System.Drawing.Point(381, 25);
+            this.button_Config_TabLaser_PulseModeSet.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.button_Config_TabLaser_PulseModeSet.Location = new System.Drawing.Point(445, 25);
             this.button_Config_TabLaser_PulseModeSet.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Config_TabLaser_PulseModeSet.Name = "button_Config_TabLaser_PulseModeSet";
             this.button_Config_TabLaser_PulseModeSet.Size = new System.Drawing.Size(65, 25);
@@ -5362,33 +5350,33 @@
             // 
             this.baseLabel_Config_TabLaser_OutputRR.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.baseLabel_Config_TabLaser_OutputRR.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_OutputRR.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_OutputRR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
             this.baseLabel_Config_TabLaser_OutputRR.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_OutputRR.Location = new System.Drawing.Point(114, 83);
+            this.baseLabel_Config_TabLaser_OutputRR.Location = new System.Drawing.Point(119, 85);
             this.baseLabel_Config_TabLaser_OutputRR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_OutputRR.Name = "baseLabel_Config_TabLaser_OutputRR";
-            this.baseLabel_Config_TabLaser_OutputRR.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_OutputRR.Size = new System.Drawing.Size(168, 25);
             this.baseLabel_Config_TabLaser_OutputRR.TabIndex = 122;
             this.baseLabel_Config_TabLaser_OutputRR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label111
             // 
-            this.label111.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label111.Location = new System.Drawing.Point(7, 81);
+            this.label111.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label111.Location = new System.Drawing.Point(5, 85);
             this.label111.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label111.Name = "label111";
-            this.label111.Size = new System.Drawing.Size(106, 24);
+            this.label111.Size = new System.Drawing.Size(115, 24);
             this.label111.TabIndex = 121;
             this.label111.Text = "Output (kHz) :";
             this.label111.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBox_Config_TabLaser_Amplifier
             // 
-            this.textBox_Config_TabLaser_Amplifier.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_TabLaser_Amplifier.Location = new System.Drawing.Point(243, 57);
+            this.textBox_Config_TabLaser_Amplifier.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.textBox_Config_TabLaser_Amplifier.Location = new System.Drawing.Point(291, 55);
             this.textBox_Config_TabLaser_Amplifier.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Config_TabLaser_Amplifier.Name = "textBox_Config_TabLaser_Amplifier";
-            this.textBox_Config_TabLaser_Amplifier.Size = new System.Drawing.Size(135, 24);
+            this.textBox_Config_TabLaser_Amplifier.Size = new System.Drawing.Size(150, 23);
             this.textBox_Config_TabLaser_Amplifier.TabIndex = 120;
             this.textBox_Config_TabLaser_Amplifier.Text = "0";
             // 
@@ -5396,39 +5384,39 @@
             // 
             this.baseLabel_Config_TabLaser_AmplifierRR.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.baseLabel_Config_TabLaser_AmplifierRR.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_AmplifierRR.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_AmplifierRR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
             this.baseLabel_Config_TabLaser_AmplifierRR.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_AmplifierRR.Location = new System.Drawing.Point(114, 57);
+            this.baseLabel_Config_TabLaser_AmplifierRR.Location = new System.Drawing.Point(119, 55);
             this.baseLabel_Config_TabLaser_AmplifierRR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_AmplifierRR.Name = "baseLabel_Config_TabLaser_AmplifierRR";
-            this.baseLabel_Config_TabLaser_AmplifierRR.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_AmplifierRR.Size = new System.Drawing.Size(168, 25);
             this.baseLabel_Config_TabLaser_AmplifierRR.TabIndex = 119;
             this.baseLabel_Config_TabLaser_AmplifierRR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label108
             // 
-            this.label108.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label108.Location = new System.Drawing.Point(7, 55);
+            this.label108.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label108.Location = new System.Drawing.Point(5, 55);
             this.label108.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label108.Name = "label108";
-            this.label108.Size = new System.Drawing.Size(106, 24);
+            this.label108.Size = new System.Drawing.Size(115, 24);
             this.label108.TabIndex = 118;
             this.label108.Text = "Amplifier (kHz) :";
             this.label108.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // comboBox_Config_TabLaser_PulseMode
             // 
-            this.comboBox_Config_TabLaser_PulseMode.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.comboBox_Config_TabLaser_PulseMode.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
             this.comboBox_Config_TabLaser_PulseMode.FormattingEnabled = true;
             this.comboBox_Config_TabLaser_PulseMode.Items.AddRange(new object[] {
             "Internal+",
             "External",
             "Internal+ & gated",
             "External & gated"});
-            this.comboBox_Config_TabLaser_PulseMode.Location = new System.Drawing.Point(243, 26);
+            this.comboBox_Config_TabLaser_PulseMode.Location = new System.Drawing.Point(291, 25);
             this.comboBox_Config_TabLaser_PulseMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Config_TabLaser_PulseMode.Name = "comboBox_Config_TabLaser_PulseMode";
-            this.comboBox_Config_TabLaser_PulseMode.Size = new System.Drawing.Size(135, 24);
+            this.comboBox_Config_TabLaser_PulseMode.Size = new System.Drawing.Size(150, 24);
             this.comboBox_Config_TabLaser_PulseMode.TabIndex = 117;
             this.comboBox_Config_TabLaser_PulseMode.Text = "Internal+ & gated";
             // 
@@ -5436,23 +5424,23 @@
             // 
             this.baseLabel_Config_TabLaser_PulseMode.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.baseLabel_Config_TabLaser_PulseMode.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_PulseMode.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_PulseMode.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
             this.baseLabel_Config_TabLaser_PulseMode.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_PulseMode.Location = new System.Drawing.Point(114, 26);
+            this.baseLabel_Config_TabLaser_PulseMode.Location = new System.Drawing.Point(119, 25);
             this.baseLabel_Config_TabLaser_PulseMode.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_PulseMode.Name = "baseLabel_Config_TabLaser_PulseMode";
-            this.baseLabel_Config_TabLaser_PulseMode.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_PulseMode.Size = new System.Drawing.Size(168, 25);
             this.baseLabel_Config_TabLaser_PulseMode.TabIndex = 14;
             this.baseLabel_Config_TabLaser_PulseMode.Text = "Internal+ && gated";
             this.baseLabel_Config_TabLaser_PulseMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label105
             // 
-            this.label105.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label105.Location = new System.Drawing.Point(7, 25);
+            this.label105.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label105.Location = new System.Drawing.Point(5, 25);
             this.label105.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label105.Name = "label105";
-            this.label105.Size = new System.Drawing.Size(106, 24);
+            this.label105.Size = new System.Drawing.Size(115, 24);
             this.label105.TabIndex = 13;
             this.label105.Text = "Pulse Mode :";
             this.label105.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -5463,12 +5451,12 @@
             this.groupBox67.Controls.Add(this.button_Config_TabLaser_LaserStop);
             this.groupBox67.Controls.Add(this.baseLabel_Config_TabLaser_SystemStatus);
             this.groupBox67.Controls.Add(this.pictureBox_Config_TabLaser_SystemStatus);
-            this.groupBox67.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox67.Location = new System.Drawing.Point(10, 254);
+            this.groupBox67.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox67.Location = new System.Drawing.Point(7, 254);
             this.groupBox67.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox67.Name = "groupBox67";
             this.groupBox67.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox67.Size = new System.Drawing.Size(454, 61);
+            this.groupBox67.Size = new System.Drawing.Size(515, 61);
             this.groupBox67.TabIndex = 220;
             this.groupBox67.TabStop = false;
             this.groupBox67.Text = " System Status ";
@@ -5476,7 +5464,7 @@
             // button_Config_TabLaser_LaserStart
             // 
             this.button_Config_TabLaser_LaserStart.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_TabLaser_LaserStart.Location = new System.Drawing.Point(364, 25);
+            this.button_Config_TabLaser_LaserStart.Location = new System.Drawing.Point(428, 25);
             this.button_Config_TabLaser_LaserStart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Config_TabLaser_LaserStart.Name = "button_Config_TabLaser_LaserStart";
             this.button_Config_TabLaser_LaserStart.Size = new System.Drawing.Size(82, 25);
@@ -5488,7 +5476,7 @@
             // button_Config_TabLaser_LaserStop
             // 
             this.button_Config_TabLaser_LaserStop.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_TabLaser_LaserStop.Location = new System.Drawing.Point(281, 25);
+            this.button_Config_TabLaser_LaserStop.Location = new System.Drawing.Point(340, 25);
             this.button_Config_TabLaser_LaserStop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Config_TabLaser_LaserStop.Name = "button_Config_TabLaser_LaserStop";
             this.button_Config_TabLaser_LaserStop.Size = new System.Drawing.Size(82, 25);
@@ -5501,12 +5489,12 @@
             // 
             this.baseLabel_Config_TabLaser_SystemStatus.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.baseLabel_Config_TabLaser_SystemStatus.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_SystemStatus.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_SystemStatus.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
             this.baseLabel_Config_TabLaser_SystemStatus.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_SystemStatus.Location = new System.Drawing.Point(37, 26);
+            this.baseLabel_Config_TabLaser_SystemStatus.Location = new System.Drawing.Point(37, 25);
             this.baseLabel_Config_TabLaser_SystemStatus.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_SystemStatus.Name = "baseLabel_Config_TabLaser_SystemStatus";
-            this.baseLabel_Config_TabLaser_SystemStatus.Size = new System.Drawing.Size(179, 25);
+            this.baseLabel_Config_TabLaser_SystemStatus.Size = new System.Drawing.Size(297, 25);
             this.baseLabel_Config_TabLaser_SystemStatus.TabIndex = 218;
             this.baseLabel_Config_TabLaser_SystemStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -5525,12 +5513,12 @@
             this.groupBox39.Controls.Add(this.button_Config_TabLaser_SystemFaultsClear);
             this.groupBox39.Controls.Add(this.baseLabel_Config_TabLaser_SystemFaults);
             this.groupBox39.Controls.Add(this.pictureBox_Config_TabLaser_SystemFaults);
-            this.groupBox39.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox39.Location = new System.Drawing.Point(10, 104);
+            this.groupBox39.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox39.Location = new System.Drawing.Point(7, 104);
             this.groupBox39.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox39.Name = "groupBox39";
             this.groupBox39.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox39.Size = new System.Drawing.Size(454, 132);
+            this.groupBox39.Size = new System.Drawing.Size(515, 132);
             this.groupBox39.TabIndex = 219;
             this.groupBox39.TabStop = false;
             this.groupBox39.Text = " System Faults ";
@@ -5538,10 +5526,10 @@
             // button_Config_TabLaser_SystemFaultsClear
             // 
             this.button_Config_TabLaser_SystemFaultsClear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_TabLaser_SystemFaultsClear.Location = new System.Drawing.Point(364, 25);
+            this.button_Config_TabLaser_SystemFaultsClear.Location = new System.Drawing.Point(406, 25);
             this.button_Config_TabLaser_SystemFaultsClear.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Config_TabLaser_SystemFaultsClear.Name = "button_Config_TabLaser_SystemFaultsClear";
-            this.button_Config_TabLaser_SystemFaultsClear.Size = new System.Drawing.Size(82, 25);
+            this.button_Config_TabLaser_SystemFaultsClear.Size = new System.Drawing.Size(100, 25);
             this.button_Config_TabLaser_SystemFaultsClear.TabIndex = 217;
             this.button_Config_TabLaser_SystemFaultsClear.Text = "Clear";
             this.button_Config_TabLaser_SystemFaultsClear.UseVisualStyleBackColor = true;
@@ -5551,12 +5539,12 @@
             // 
             this.baseLabel_Config_TabLaser_SystemFaults.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.baseLabel_Config_TabLaser_SystemFaults.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_SystemFaults.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_SystemFaults.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Config_TabLaser_SystemFaults.ForeColor = System.Drawing.Color.Lime;
             this.baseLabel_Config_TabLaser_SystemFaults.Location = new System.Drawing.Point(37, 26);
             this.baseLabel_Config_TabLaser_SystemFaults.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_SystemFaults.Name = "baseLabel_Config_TabLaser_SystemFaults";
-            this.baseLabel_Config_TabLaser_SystemFaults.Size = new System.Drawing.Size(321, 95);
+            this.baseLabel_Config_TabLaser_SystemFaults.Size = new System.Drawing.Size(363, 95);
             this.baseLabel_Config_TabLaser_SystemFaults.TabIndex = 216;
             this.baseLabel_Config_TabLaser_SystemFaults.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -5575,12 +5563,12 @@
             this.groupBox38.Controls.Add(this.button_Config_TabLaser_LaserConnect);
             this.groupBox38.Controls.Add(this.baseLabel_Config_TabLaser_ConnectedLaserModel);
             this.groupBox38.Controls.Add(this.pictureBox_Config_TabLaser_Connection_to_Laser);
-            this.groupBox38.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox38.Location = new System.Drawing.Point(10, 24);
+            this.groupBox38.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox38.Location = new System.Drawing.Point(7, 22);
             this.groupBox38.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox38.Name = "groupBox38";
             this.groupBox38.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox38.Size = new System.Drawing.Size(454, 62);
+            this.groupBox38.Size = new System.Drawing.Size(515, 65);
             this.groupBox38.TabIndex = 218;
             this.groupBox38.TabStop = false;
             this.groupBox38.Text = " Connection to Laser ";
@@ -5588,10 +5576,10 @@
             // button_Config_TabLaser_LaserConnect
             // 
             this.button_Config_TabLaser_LaserConnect.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_TabLaser_LaserConnect.Location = new System.Drawing.Point(353, 25);
+            this.button_Config_TabLaser_LaserConnect.Location = new System.Drawing.Point(406, 25);
             this.button_Config_TabLaser_LaserConnect.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Config_TabLaser_LaserConnect.Name = "button_Config_TabLaser_LaserConnect";
-            this.button_Config_TabLaser_LaserConnect.Size = new System.Drawing.Size(93, 25);
+            this.button_Config_TabLaser_LaserConnect.Size = new System.Drawing.Size(100, 25);
             this.button_Config_TabLaser_LaserConnect.TabIndex = 215;
             this.button_Config_TabLaser_LaserConnect.Text = "Connect";
             this.button_Config_TabLaser_LaserConnect.UseVisualStyleBackColor = true;
@@ -5601,12 +5589,12 @@
             // 
             this.baseLabel_Config_TabLaser_ConnectedLaserModel.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.baseLabel_Config_TabLaser_ConnectedLaserModel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_ConnectedLaserModel.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_ConnectedLaserModel.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Config_TabLaser_ConnectedLaserModel.ForeColor = System.Drawing.Color.Lime;
             this.baseLabel_Config_TabLaser_ConnectedLaserModel.Location = new System.Drawing.Point(37, 26);
             this.baseLabel_Config_TabLaser_ConnectedLaserModel.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.baseLabel_Config_TabLaser_ConnectedLaserModel.Name = "baseLabel_Config_TabLaser_ConnectedLaserModel";
-            this.baseLabel_Config_TabLaser_ConnectedLaserModel.Size = new System.Drawing.Size(310, 25);
+            this.baseLabel_Config_TabLaser_ConnectedLaserModel.Size = new System.Drawing.Size(363, 25);
             this.baseLabel_Config_TabLaser_ConnectedLaserModel.TabIndex = 212;
             this.baseLabel_Config_TabLaser_ConnectedLaserModel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -5627,11 +5615,11 @@
             this.groupBox13.Controls.Add(this.label106);
             this.groupBox13.Controls.Add(this.label110);
             this.groupBox13.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox13.Location = new System.Drawing.Point(528, 10);
+            this.groupBox13.Location = new System.Drawing.Point(648, 13);
             this.groupBox13.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox13.Size = new System.Drawing.Size(305, 94);
+            this.groupBox13.Size = new System.Drawing.Size(358, 109);
             this.groupBox13.TabIndex = 78;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " PowerMeter ";
@@ -5640,12 +5628,12 @@
             // 
             this.label_Config_Laser_PowerMeterValue_Stage.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label_Config_Laser_PowerMeterValue_Stage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Config_Laser_PowerMeterValue_Stage.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_Laser_PowerMeterValue_Stage.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Config_Laser_PowerMeterValue_Stage.ForeColor = System.Drawing.Color.Lime;
-            this.label_Config_Laser_PowerMeterValue_Stage.Location = new System.Drawing.Point(172, 57);
+            this.label_Config_Laser_PowerMeterValue_Stage.Location = new System.Drawing.Point(227, 65);
             this.label_Config_Laser_PowerMeterValue_Stage.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_Config_Laser_PowerMeterValue_Stage.Name = "label_Config_Laser_PowerMeterValue_Stage";
-            this.label_Config_Laser_PowerMeterValue_Stage.Size = new System.Drawing.Size(122, 25);
+            this.label_Config_Laser_PowerMeterValue_Stage.Size = new System.Drawing.Size(122, 35);
             this.label_Config_Laser_PowerMeterValue_Stage.TabIndex = 15;
             this.label_Config_Laser_PowerMeterValue_Stage.Text = "0.000";
             this.label_Config_Laser_PowerMeterValue_Stage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -5654,34 +5642,34 @@
             // 
             this.label_Config_Laser_PowerMeterValue_BDS.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label_Config_Laser_PowerMeterValue_BDS.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Config_Laser_PowerMeterValue_BDS.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_Laser_PowerMeterValue_BDS.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Config_Laser_PowerMeterValue_BDS.ForeColor = System.Drawing.Color.Lime;
-            this.label_Config_Laser_PowerMeterValue_BDS.Location = new System.Drawing.Point(172, 27);
+            this.label_Config_Laser_PowerMeterValue_BDS.Location = new System.Drawing.Point(227, 21);
             this.label_Config_Laser_PowerMeterValue_BDS.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_Config_Laser_PowerMeterValue_BDS.Name = "label_Config_Laser_PowerMeterValue_BDS";
-            this.label_Config_Laser_PowerMeterValue_BDS.Size = new System.Drawing.Size(122, 25);
+            this.label_Config_Laser_PowerMeterValue_BDS.Size = new System.Drawing.Size(122, 35);
             this.label_Config_Laser_PowerMeterValue_BDS.TabIndex = 12;
             this.label_Config_Laser_PowerMeterValue_BDS.Text = "0.000";
             this.label_Config_Laser_PowerMeterValue_BDS.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label106
             // 
-            this.label106.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label106.Location = new System.Drawing.Point(2, 55);
+            this.label106.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label106.Location = new System.Drawing.Point(6, 65);
             this.label106.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label106.Name = "label106";
-            this.label106.Size = new System.Drawing.Size(168, 24);
+            this.label106.Size = new System.Drawing.Size(215, 35);
             this.label106.TabIndex = 10;
             this.label106.Text = "Target Position (Stage) :";
             this.label106.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label110
             // 
-            this.label110.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label110.Location = new System.Drawing.Point(2, 25);
+            this.label110.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label110.Location = new System.Drawing.Point(6, 21);
             this.label110.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label110.Name = "label110";
-            this.label110.Size = new System.Drawing.Size(168, 24);
+            this.label110.Size = new System.Drawing.Size(215, 35);
             this.label110.TabIndex = 6;
             this.label110.Text = "Exit Position (BDS) :";
             this.label110.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -5691,11 +5679,11 @@
             this.groupBox2.Controls.Add(this.Button_Config_Laser_BeamShutter_Close);
             this.groupBox2.Controls.Add(this.Button_Config_Laser_BeamShutter_Open);
             this.groupBox2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox2.Location = new System.Drawing.Point(292, 10);
+            this.groupBox2.Location = new System.Drawing.Point(10, 204);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox2.Size = new System.Drawing.Size(190, 91);
+            this.groupBox2.Size = new System.Drawing.Size(260, 91);
             this.groupBox2.TabIndex = 77;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = " Beam Shutter ";
@@ -5703,10 +5691,10 @@
             // Button_Config_Laser_BeamShutter_Close
             // 
             this.Button_Config_Laser_BeamShutter_Close.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.Button_Config_Laser_BeamShutter_Close.Location = new System.Drawing.Point(98, 25);
+            this.Button_Config_Laser_BeamShutter_Close.Location = new System.Drawing.Point(138, 25);
             this.Button_Config_Laser_BeamShutter_Close.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Button_Config_Laser_BeamShutter_Close.Name = "Button_Config_Laser_BeamShutter_Close";
-            this.Button_Config_Laser_BeamShutter_Close.Size = new System.Drawing.Size(82, 55);
+            this.Button_Config_Laser_BeamShutter_Close.Size = new System.Drawing.Size(112, 55);
             this.Button_Config_Laser_BeamShutter_Close.TabIndex = 61;
             this.Button_Config_Laser_BeamShutter_Close.Text = "Close";
             this.Button_Config_Laser_BeamShutter_Close.UseVisualStyleBackColor = true;
@@ -5715,10 +5703,10 @@
             // Button_Config_Laser_BeamShutter_Open
             // 
             this.Button_Config_Laser_BeamShutter_Open.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.Button_Config_Laser_BeamShutter_Open.Location = new System.Drawing.Point(10, 25);
+            this.Button_Config_Laser_BeamShutter_Open.Location = new System.Drawing.Point(6, 25);
             this.Button_Config_Laser_BeamShutter_Open.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Button_Config_Laser_BeamShutter_Open.Name = "Button_Config_Laser_BeamShutter_Open";
-            this.Button_Config_Laser_BeamShutter_Open.Size = new System.Drawing.Size(82, 55);
+            this.Button_Config_Laser_BeamShutter_Open.Size = new System.Drawing.Size(112, 55);
             this.Button_Config_Laser_BeamShutter_Open.TabIndex = 60;
             this.Button_Config_Laser_BeamShutter_Open.Text = "Open";
             this.Button_Config_Laser_BeamShutter_Open.UseVisualStyleBackColor = true;
@@ -5729,11 +5717,11 @@
             this.groupBox62.Controls.Add(this.groupBox63);
             this.groupBox62.Controls.Add(this.groupBox64);
             this.groupBox62.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox62.Location = new System.Drawing.Point(10, 414);
+            this.groupBox62.Location = new System.Drawing.Point(10, 416);
             this.groupBox62.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox62.Name = "groupBox62";
             this.groupBox62.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox62.Size = new System.Drawing.Size(631, 241);
+            this.groupBox62.Size = new System.Drawing.Size(995, 307);
             this.groupBox62.TabIndex = 75;
             this.groupBox62.TabStop = false;
             this.groupBox62.Text = "DI/O";
@@ -5741,19 +5729,19 @@
             // groupBox63
             // 
             this.groupBox63.Controls.Add(this.checkedListBox_Config_Laser_DIO_Output);
-            this.groupBox63.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox63.Location = new System.Drawing.Point(322, 21);
+            this.groupBox63.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox63.Location = new System.Drawing.Point(512, 21);
             this.groupBox63.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox63.Name = "groupBox63";
             this.groupBox63.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox63.Size = new System.Drawing.Size(299, 210);
+            this.groupBox63.Size = new System.Drawing.Size(475, 275);
             this.groupBox63.TabIndex = 71;
             this.groupBox63.TabStop = false;
             this.groupBox63.Text = "Output";
             // 
             // checkedListBox_Config_Laser_DIO_Output
             // 
-            this.checkedListBox_Config_Laser_DIO_Output.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkedListBox_Config_Laser_DIO_Output.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkedListBox_Config_Laser_DIO_Output.FormattingEnabled = true;
             this.checkedListBox_Config_Laser_DIO_Output.HorizontalScrollbar = true;
             this.checkedListBox_Config_Laser_DIO_Output.Items.AddRange(new object[] {
@@ -5771,7 +5759,7 @@
             this.checkedListBox_Config_Laser_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_Laser_DIO_Output.Name = "checkedListBox_Config_Laser_DIO_Output";
             this.checkedListBox_Config_Laser_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_Laser_DIO_Output.Size = new System.Drawing.Size(279, 156);
+            this.checkedListBox_Config_Laser_DIO_Output.Size = new System.Drawing.Size(455, 246);
             this.checkedListBox_Config_Laser_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_Laser_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_Laser_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_Laser_DIO_Output_MouseClick);
@@ -5779,19 +5767,19 @@
             // groupBox64
             // 
             this.groupBox64.Controls.Add(this.checkedListBox_Config_Laser_DIO_Input);
-            this.groupBox64.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox64.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox64.Location = new System.Drawing.Point(10, 21);
             this.groupBox64.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox64.Name = "groupBox64";
             this.groupBox64.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox64.Size = new System.Drawing.Size(299, 210);
+            this.groupBox64.Size = new System.Drawing.Size(475, 275);
             this.groupBox64.TabIndex = 70;
             this.groupBox64.TabStop = false;
             this.groupBox64.Text = "Input";
             // 
             // checkedListBox_Config_Laser_DIO_Input
             // 
-            this.checkedListBox_Config_Laser_DIO_Input.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkedListBox_Config_Laser_DIO_Input.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkedListBox_Config_Laser_DIO_Input.FormattingEnabled = true;
             this.checkedListBox_Config_Laser_DIO_Input.HorizontalScrollbar = true;
             this.checkedListBox_Config_Laser_DIO_Input.Items.AddRange(new object[] {
@@ -5803,169 +5791,36 @@
             this.checkedListBox_Config_Laser_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_Laser_DIO_Input.Name = "checkedListBox_Config_Laser_DIO_Input";
             this.checkedListBox_Config_Laser_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_Laser_DIO_Input.Size = new System.Drawing.Size(279, 156);
+            this.checkedListBox_Config_Laser_DIO_Input.Size = new System.Drawing.Size(455, 246);
             this.checkedListBox_Config_Laser_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_Laser_DIO_Input.ThreeDCheckBoxes = true;
             // 
             // groupBox14
             // 
-            this.groupBox14.Controls.Add(this.label31);
+            this.groupBox14.Controls.Add(this.label_Config_Laser_Laser_warning);
             this.groupBox14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox14.Location = new System.Drawing.Point(10, 326);
+            this.groupBox14.Location = new System.Drawing.Point(10, 349);
             this.groupBox14.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox14.Size = new System.Drawing.Size(409, 63);
+            this.groupBox14.Size = new System.Drawing.Size(485, 63);
             this.groupBox14.TabIndex = 35;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "Laser Warning";
             // 
-            // label31
+            // label_Config_Laser_Laser_warning
             // 
-            this.label31.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label31.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label31.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label31.ForeColor = System.Drawing.Color.Lime;
-            this.label31.Location = new System.Drawing.Point(8, 27);
-            this.label31.Margin = new System.Windows.Forms.Padding(5);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(393, 25);
-            this.label31.TabIndex = 12;
-            this.label31.Text = "No Errors";
-            this.label31.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox1.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.checkBox1.Location = new System.Drawing.Point(292, 219);
-            this.checkBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(127, 87);
-            this.checkBox1.TabIndex = 34;
-            this.checkBox1.Text = "Start";
-            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // groupBox12
-            // 
-            this.groupBox12.Controls.Add(this.radioButton1);
-            this.groupBox12.Controls.Add(this.radioButton2);
-            this.groupBox12.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox12.Location = new System.Drawing.Point(292, 125);
-            this.groupBox12.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox12.Size = new System.Drawing.Size(190, 62);
-            this.groupBox12.TabIndex = 32;
-            this.groupBox12.TabStop = false;
-            this.groupBox12.Text = " Laser Trigger ";
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.Checked = true;
-            this.radioButton1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton1.Location = new System.Drawing.Point(103, 28);
-            this.radioButton1.Margin = new System.Windows.Forms.Padding(5);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(78, 20);
-            this.radioButton1.TabIndex = 6;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "External";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton2.Location = new System.Drawing.Point(13, 28);
-            this.radioButton2.Margin = new System.Windows.Forms.Padding(5);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(88, 20);
-            this.radioButton2.TabIndex = 5;
-            this.radioButton2.Text = "Internal";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            // 
-            // groupBox7
-            // 
-            this.groupBox7.Controls.Add(this.button15);
-            this.groupBox7.Controls.Add(this.textBox6);
-            this.groupBox7.Controls.Add(this.button14);
-            this.groupBox7.Controls.Add(this.textBox5);
-            this.groupBox7.Controls.Add(this.label20);
-            this.groupBox7.Controls.Add(this.label21);
-            this.groupBox7.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox7.Location = new System.Drawing.Point(10, 212);
-            this.groupBox7.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox7.Size = new System.Drawing.Size(258, 94);
-            this.groupBox7.TabIndex = 31;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = " Laser Set Points ";
-            // 
-            // button15
-            // 
-            this.button15.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button15.Location = new System.Drawing.Point(215, 57);
-            this.button15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(35, 25);
-            this.button15.TabIndex = 17;
-            this.button15.Text = "#";
-            this.button15.UseVisualStyleBackColor = true;
-            // 
-            // textBox6
-            // 
-            this.textBox6.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox6.Location = new System.Drawing.Point(124, 57);
-            this.textBox6.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(87, 24);
-            this.textBox6.TabIndex = 16;
-            this.textBox6.Text = "1000";
-            // 
-            // button14
-            // 
-            this.button14.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button14.Location = new System.Drawing.Point(215, 27);
-            this.button14.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(35, 25);
-            this.button14.TabIndex = 15;
-            this.button14.Text = "#";
-            this.button14.UseVisualStyleBackColor = true;
-            // 
-            // textBox5
-            // 
-            this.textBox5.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox5.Location = new System.Drawing.Point(124, 27);
-            this.textBox5.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(87, 24);
-            this.textBox5.TabIndex = 14;
-            this.textBox5.Text = "10";
-            // 
-            // label20
-            // 
-            this.label20.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label20.Location = new System.Drawing.Point(5, 55);
-            this.label20.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(119, 24);
-            this.label20.TabIndex = 7;
-            this.label20.Text = "Pulse Period (㎲) :";
-            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label21
-            // 
-            this.label21.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label21.Location = new System.Drawing.Point(5, 25);
-            this.label21.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(119, 24);
-            this.label21.TabIndex = 6;
-            this.label21.Text = "Pulse Width (㎲) :";
-            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label_Config_Laser_Laser_warning.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Config_Laser_Laser_warning.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Config_Laser_Laser_warning.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_Laser_Laser_warning.ForeColor = System.Drawing.Color.Lime;
+            this.label_Config_Laser_Laser_warning.Location = new System.Drawing.Point(10, 27);
+            this.label_Config_Laser_Laser_warning.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Config_Laser_Laser_warning.Name = "label_Config_Laser_Laser_warning";
+            this.label_Config_Laser_Laser_warning.Size = new System.Drawing.Size(465, 25);
+            this.label_Config_Laser_Laser_warning.TabIndex = 12;
+            this.label_Config_Laser_Laser_warning.Text = "No Errors";
+            this.label_Config_Laser_Laser_warning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // groupBox6
             // 
@@ -5984,7 +5839,7 @@
             this.groupBox6.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox6.Size = new System.Drawing.Size(258, 184);
+            this.groupBox6.Size = new System.Drawing.Size(260, 180);
             this.groupBox6.TabIndex = 30;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = " Laser Status ";
@@ -5993,9 +5848,9 @@
             // 
             this.label26.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label26.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label26.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label26.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label26.ForeColor = System.Drawing.Color.Lime;
-            this.label26.Location = new System.Drawing.Point(124, 87);
+            this.label26.Location = new System.Drawing.Point(128, 85);
             this.label26.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(122, 25);
@@ -6007,9 +5862,9 @@
             // 
             this.label25.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label25.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label25.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label25.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label25.ForeColor = System.Drawing.Color.Lime;
-            this.label25.Location = new System.Drawing.Point(124, 57);
+            this.label25.Location = new System.Drawing.Point(128, 55);
             this.label25.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(122, 25);
@@ -6021,9 +5876,9 @@
             // 
             this.label24.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label24.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label24.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label24.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label24.ForeColor = System.Drawing.Color.Lime;
-            this.label24.Location = new System.Drawing.Point(124, 147);
+            this.label24.Location = new System.Drawing.Point(128, 145);
             this.label24.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(122, 25);
@@ -6035,9 +5890,9 @@
             // 
             this.label23.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label23.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label23.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label23.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label23.ForeColor = System.Drawing.Color.Lime;
-            this.label23.Location = new System.Drawing.Point(124, 117);
+            this.label23.Location = new System.Drawing.Point(128, 115);
             this.label23.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(122, 25);
@@ -6049,9 +5904,9 @@
             // 
             this.label19.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label19.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label19.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label19.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label19.ForeColor = System.Drawing.Color.Lime;
-            this.label19.Location = new System.Drawing.Point(124, 27);
+            this.label19.Location = new System.Drawing.Point(128, 25);
             this.label19.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(122, 25);
@@ -6061,55 +5916,55 @@
             // 
             // label18
             // 
-            this.label18.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label18.Location = new System.Drawing.Point(2, 85);
+            this.label18.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Location = new System.Drawing.Point(6, 85);
             this.label18.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(117, 24);
+            this.label18.Size = new System.Drawing.Size(120, 24);
             this.label18.TabIndex = 11;
             this.label18.Text = "Rep. Rate (Hz) :";
             this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label22
             // 
-            this.label22.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label22.Location = new System.Drawing.Point(2, 55);
+            this.label22.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.Location = new System.Drawing.Point(6, 55);
             this.label22.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(117, 24);
+            this.label22.Size = new System.Drawing.Size(120, 24);
             this.label22.TabIndex = 10;
             this.label22.Text = "Duty Cycle (%) :";
             this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label16
             // 
-            this.label16.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label16.Location = new System.Drawing.Point(2, 145);
+            this.label16.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(6, 145);
             this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(117, 24);
+            this.label16.Size = new System.Drawing.Size(120, 24);
             this.label16.TabIndex = 8;
             this.label16.Text = "Energy (mJ) :";
             this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label15
             // 
-            this.label15.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label15.Location = new System.Drawing.Point(2, 115);
+            this.label15.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(6, 115);
             this.label15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(117, 24);
+            this.label15.Size = new System.Drawing.Size(120, 24);
             this.label15.TabIndex = 7;
             this.label15.Text = "Power (Watts) :";
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label14
             // 
-            this.label14.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label14.Location = new System.Drawing.Point(2, 25);
+            this.label14.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(6, 25);
             this.label14.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(117, 24);
+            this.label14.Size = new System.Drawing.Size(120, 24);
             this.label14.TabIndex = 6;
             this.label14.Text = "State :";
             this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -8235,6 +8090,34 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // label_VarioScan_Z_Offset_Pos
+            // 
+            this.label_VarioScan_Z_Offset_Pos.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_VarioScan_Z_Offset_Pos.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_VarioScan_Z_Offset_Pos.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_VarioScan_Z_Offset_Pos.ForeColor = System.Drawing.Color.Lime;
+            this.label_VarioScan_Z_Offset_Pos.Location = new System.Drawing.Point(107, 23);
+            this.label_VarioScan_Z_Offset_Pos.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_VarioScan_Z_Offset_Pos.Name = "label_VarioScan_Z_Offset_Pos";
+            this.label_VarioScan_Z_Offset_Pos.Size = new System.Drawing.Size(86, 30);
+            this.label_VarioScan_Z_Offset_Pos.TabIndex = 16;
+            this.label_VarioScan_Z_Offset_Pos.Text = "0.000";
+            this.label_VarioScan_Z_Offset_Pos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_VarioScan_Z_Defocus_Pos
+            // 
+            this.label_VarioScan_Z_Defocus_Pos.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_VarioScan_Z_Defocus_Pos.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_VarioScan_Z_Defocus_Pos.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_VarioScan_Z_Defocus_Pos.ForeColor = System.Drawing.Color.Lime;
+            this.label_VarioScan_Z_Defocus_Pos.Location = new System.Drawing.Point(107, 59);
+            this.label_VarioScan_Z_Defocus_Pos.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_VarioScan_Z_Defocus_Pos.Name = "label_VarioScan_Z_Defocus_Pos";
+            this.label_VarioScan_Z_Defocus_Pos.Size = new System.Drawing.Size(86, 30);
+            this.label_VarioScan_Z_Defocus_Pos.TabIndex = 64;
+            this.label_VarioScan_Z_Defocus_Pos.Text = "0.000";
+            this.label_VarioScan_Z_Defocus_Pos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // FormNew_Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -8344,9 +8227,6 @@
             this.groupBox63.ResumeLayout(false);
             this.groupBox64.ResumeLayout(false);
             this.groupBox14.ResumeLayout(false);
-            this.groupBox12.ResumeLayout(false);
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.tabPage_Config_BDS.ResumeLayout(false);
             this.groupBox_MotorizedBET.ResumeLayout(false);
@@ -8459,18 +8339,7 @@
         private System.Windows.Forms.Label label236;
         private System.Windows.Forms.ListBox listBox_Config_WorkStage_TeachingPositions;
         private System.Windows.Forms.GroupBox groupBox14;
-        private System.Windows.Forms.Label label31;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.GroupBox groupBox12;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.Button button15;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.Button button14;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label_Config_Laser_Laser_warning;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label25;
@@ -8961,5 +8830,7 @@
         private System.Windows.Forms.Button Button_Config_VarioScan_ZOffsetZDefocus_Reset;
         private System.Windows.Forms.Button Button_Config_VarioScan_ZDefocua_Set;
         private System.Windows.Forms.Button Button_Config_VarioScan_ZOffset_Set;
+        private System.Windows.Forms.Label label_VarioScan_Z_Offset_Pos;
+        private System.Windows.Forms.Label label_VarioScan_Z_Defocus_Pos;
     }
 }
