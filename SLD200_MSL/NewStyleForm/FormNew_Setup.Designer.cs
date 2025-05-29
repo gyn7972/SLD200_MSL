@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -524,6 +524,8 @@
             this.textBox_Setup_Option_BET_Mrad_11x = new System.Windows.Forms.TextBox();
             this.label81 = new System.Windows.Forms.Label();
             this.groupBox_Offset = new System.Windows.Forms.GroupBox();
+            this.label87 = new System.Windows.Forms.Label();
+            this.label86 = new System.Windows.Forms.Label();
             this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.label40 = new System.Windows.Forms.Label();
@@ -549,8 +551,6 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.label86 = new System.Windows.Forms.Label();
-            this.label87 = new System.Windows.Forms.Label();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -1222,14 +1222,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1282,14 +1282,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -3554,7 +3554,7 @@
             // label_Setup_S_V_OffsetY
             // 
             this.label_Setup_S_V_OffsetY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label_Setup_S_V_OffsetY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_S_V_OffsetY.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Setup_S_V_OffsetY.Location = new System.Drawing.Point(194, 58);
             this.label_Setup_S_V_OffsetY.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Setup_S_V_OffsetY.Name = "label_Setup_S_V_OffsetY";
@@ -3566,7 +3566,7 @@
             // label_Setup_S_V_OffsetX
             // 
             this.label_Setup_S_V_OffsetX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label_Setup_S_V_OffsetX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_S_V_OffsetX.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Setup_S_V_OffsetX.Location = new System.Drawing.Point(194, 26);
             this.label_Setup_S_V_OffsetX.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Setup_S_V_OffsetX.Name = "label_Setup_S_V_OffsetX";
@@ -3578,7 +3578,7 @@
             // label_Setup_ScannerCal_OffsetY
             // 
             this.label_Setup_ScannerCal_OffsetY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label_Setup_ScannerCal_OffsetY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_ScannerCal_OffsetY.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Setup_ScannerCal_OffsetY.Location = new System.Drawing.Point(194, 186);
             this.label_Setup_ScannerCal_OffsetY.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Setup_ScannerCal_OffsetY.Name = "label_Setup_ScannerCal_OffsetY";
@@ -3600,7 +3600,7 @@
             // label_Setup_ScannerCal_OffsetX
             // 
             this.label_Setup_ScannerCal_OffsetX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label_Setup_ScannerCal_OffsetX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_ScannerCal_OffsetX.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Setup_ScannerCal_OffsetX.Location = new System.Drawing.Point(194, 154);
             this.label_Setup_ScannerCal_OffsetX.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Setup_ScannerCal_OffsetX.Name = "label_Setup_ScannerCal_OffsetX";
@@ -6713,6 +6713,28 @@
             this.groupBox_Offset.TabStop = false;
             this.groupBox_Offset.Text = " Offset Distance (mm) ";
             // 
+            // label87
+            // 
+            this.label87.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label87.Location = new System.Drawing.Point(53, 94);
+            this.label87.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label87.Name = "label87";
+            this.label87.Size = new System.Drawing.Size(410, 24);
+            this.label87.TabIndex = 72;
+            this.label87.Text = "[Y] 도면기준: 아래쪽으로 이동 [ + ] Offset | 위로 이동 [ - ] Offset";
+            this.label87.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label86
+            // 
+            this.label86.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label86.Location = new System.Drawing.Point(53, 74);
+            this.label86.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label86.Name = "label86";
+            this.label86.Size = new System.Drawing.Size(410, 24);
+            this.label86.TabIndex = 71;
+            this.label86.Text = "[X] 도면기준: 왼쪽으로 이동 [ + ] Offset | 오른쪽으로 이동 [ - ] Offset";
+            this.label86.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show
             // 
             this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -6990,28 +7012,6 @@
             this.label96.TabIndex = 77;
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label86
-            // 
-            this.label86.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label86.Location = new System.Drawing.Point(53, 74);
-            this.label86.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label86.Name = "label86";
-            this.label86.Size = new System.Drawing.Size(410, 24);
-            this.label86.TabIndex = 71;
-            this.label86.Text = "[X] 도면기준: 왼쪽으로 이동 [ + ] Offset | 오른쪽으로 이동 [ - ] Offset";
-            this.label86.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label87
-            // 
-            this.label87.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label87.Location = new System.Drawing.Point(53, 94);
-            this.label87.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label87.Name = "label87";
-            this.label87.Size = new System.Drawing.Size(410, 24);
-            this.label87.TabIndex = 72;
-            this.label87.Text = "[Y] 도면기준: 아래쪽으로 이동 [ + ] Offset | 위로 이동 [ - ] Offset";
-            this.label87.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNew_Setup
             // 

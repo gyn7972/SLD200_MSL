@@ -786,7 +786,8 @@ namespace QMC.Common
         // 장비 구동 유/무 변수 : 장비 시컨스 구동 유/무 변수 :: 실제로 장비 구동 확인 
         // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
         // 위와 같이 구분하여 장비 관리 할것!
-        public static bool AutoRunStatus { set; get; } 
+        public static bool AutoRunStatus { set; get; }
+        public static bool ManualRunStatus { set; get; }
 
         // Drilling Cycle Stop 예약 변수 : 장비 Stop 시 가공중이던 부분은 완료 되고 Stop 하도록 하기 위함
         // true : Stop 예약
@@ -1325,7 +1326,7 @@ namespace QMC.Common
 
             //  자동운전 상태 확인
             AutoRunStatus = false;
-
+            ManualRunStatus = false;
 
             m_bVisionFormOpenMode_ScannerFineCamOffsetChange = false;
 
