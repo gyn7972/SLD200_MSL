@@ -164,27 +164,29 @@ namespace QMC.Common.Parts
             if (rtc == null)
                 return false;
 
-            try
-            {
-                int x_raw, y_raw;
-                        // Rtc6 클래스 내부 cardId는 protected이거나 private일 수 있으므로 추가적으로 확인 필요
-                var cardIdField = rtc.GetType().GetField("cardId", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (cardIdField == null)
-                    return false;
+            //try
+            //{
+            //    int x_raw, y_raw;
+            //            // Rtc6 클래스 내부 cardId는 protected이거나 private일 수 있으므로 추가적으로 확인 필요
+            //    var cardIdField = rtc.GetType().GetField("cardId", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            //    if (cardIdField == null)
+            //        return false;
 
-                int cardId = (int)cardIdField.GetValue(rtc);
+            //    int cardId = (int)cardIdField.GetValue(rtc);
 
-                Rtc6Native.n_get_actual_position(cardId, out x_raw, out y_raw);
+            //    Rtc6Native.n_get_actual_position(cardId, out x_raw, out y_raw);
 
-                x_mm = x_raw / 65536.0;
-                y_mm = y_raw / 65536.0;
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log.Write("Rtc6", $"⚠️ Failed to get scanner position: {ex.Message}");
-                return false;
-            }
+            //    x_mm = x_raw / 65536.0;
+            //    y_mm = y_raw / 65536.0;
+            //    return true;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Write("Rtc6", $"⚠️ Failed to get scanner position: {ex.Message}");
+            //    return false;
+            //}
+
+            return true;
         }
 
         // DrawCalibrationCrosses, DrawCross, DrawCalibrationArc, DrawArc 등 기존 메서드들은 그대로 유지됨
@@ -194,8 +196,8 @@ namespace QMC.Common.Parts
 }
 
 
-internal static class Rtc6Native
-{
-    [DllImport("rtc6.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern void n_get_actual_position(int cardNo, out int x, out int y);
-}
+//internal static class Rtc6Native
+//{
+//    [DllImport("rtc6.dll", CallingConvention = CallingConvention.Cdecl)]
+//    public static extern void n_get_actual_position(int cardNo, out int x, out int y);
+//}

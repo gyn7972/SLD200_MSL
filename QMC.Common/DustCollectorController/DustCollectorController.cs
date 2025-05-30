@@ -164,6 +164,29 @@ namespace QMC.Common.Parts
             return ((char)0x05).ToString() + coreCommand + checksumHex + ((char)0x04).ToString();
         }
 
+        /// <summary>
+        /// 수신된 전체 응답 문자열에서 데이터 필드만 추출합니다.
+        /// 예: "01R00070002B5" → "0002"
+        /// </summary>
+        //private string ExtractResponseData(string fullResponse)
+        //{
+        //    // 예외 처리
+        //    if (string.IsNullOrEmpty(fullResponse) || fullResponse.Length < 13)
+        //        return "";
+
+        //    // 포맷: 01R + 4자리 주소 + 4자리 데이터 + 2자리 체크섬 → 총 13자리
+        //    return fullResponse.Substring(9, 4); // 10번째~13번째 문자 (Data 영역)
+        //}
+
+        private string ExtractResponseData(string fullResponse)
+        {
+            // 예: "01R009682" → "9682" 추출
+            if (string.IsNullOrEmpty(fullResponse) || fullResponse.Length < 9)
+                return "";
+
+            return fullResponse.Substring(fullResponse.Length - 4, 4);
+        }
+
         public bool Connect(Equipment.CommList comm)
         {
             string strPortName;
@@ -186,9 +209,21 @@ namespace QMC.Common.Parts
             return SendWrite("0005", asciiData, 1);
         }
 
-        public bool ReadFrequency(out string frequencyResponse)
+        public bool GetFrequency(out double frequencyHz)
         {
-            return SendRead("000A", 1, out frequencyResponse);
+            frequencyHz = 0.0;
+            if (!SendRead("000A", 1, out string freqRaw))
+                return false;
+
+            string data = ExtractResponseData(freqRaw);
+
+            if (int.TryParse(data, System.Globalization.NumberStyles.HexNumber, null, out int freqVal))
+            {
+                frequencyHz = freqVal / 10.0;
+                return true;
+            }
+
+            return false;
         }
 
         public bool GetCurrentStatus(out string status)
@@ -198,15 +233,16 @@ namespace QMC.Common.Parts
 
         public CollectorRunState GetRunState()
         {
-            if (GetCurrentStatus(out string status))
+            if (!SendRead("0007", 1, out string statusRaw))
+                return CollectorRunState.Unknown;
+
+            string data = ExtractResponseData(statusRaw);
+            switch (data)
             {
-                switch (status.Trim())
-                {
-                    case "0001": return CollectorRunState.Stopped;
-                    case "0002": return CollectorRunState.Running;
-                }
+                case "0001": return CollectorRunState.Stopped;
+                case "0002": return CollectorRunState.Running;
+                default: return CollectorRunState.Unknown;
             }
-            return CollectorRunState.Unknown;
         }
 
         public bool GetStatus(out CollectorRunState runState, out double frequencyHz)
@@ -214,21 +250,26 @@ namespace QMC.Common.Parts
             runState = CollectorRunState.Unknown;
             frequencyHz = 0.0;
 
-            if (!SendRead("0007", 1, out string statusRaw)) return false;
-            switch (statusRaw.Trim())
+            if (!SendRead("0007", 1, out string statusRaw))
+                return false;
+
+            string statusData = ExtractResponseData(statusRaw);
+            switch (statusData)
             {
                 case "0001": runState = CollectorRunState.Stopped; break;
                 case "0002": runState = CollectorRunState.Running; break;
             }
 
-            if (!SendRead("000A", 1, out string freqRaw)) return false;
+            if (!SendRead("000A", 1, out string freqRaw))
+                return false;
 
-            if (int.TryParse(freqRaw, System.Globalization.NumberStyles.HexNumber, null, out int freqValue) ||
-                int.TryParse(freqRaw, out freqValue))
+            string freqData = ExtractResponseData(freqRaw);
+            if (int.TryParse(freqData, System.Globalization.NumberStyles.HexNumber, null, out int freqValue))
                 frequencyHz = freqValue / 10.0;
 
             return true;
         }
+
 
         public bool GetDetailedStatus(out CollectorRunState runState, out double frequencyHz, out double currentA, out CollectorAlarmState alarmState)
         {
@@ -240,22 +281,26 @@ namespace QMC.Common.Parts
             bool ok = true;
 
             ok &= SendRead("0007", 1, out string statusRaw);
-            switch (statusRaw.Trim())
+            string statusData = ExtractResponseData(statusRaw);
+            switch (statusData)
             {
                 case "0001": runState = CollectorRunState.Stopped; break;
                 case "0002": runState = CollectorRunState.Running; break;
             }
 
             ok &= SendRead("000A", 1, out string freqRaw);
-            if (int.TryParse(freqRaw, System.Globalization.NumberStyles.HexNumber, null, out int freqVal))
+            string freqData = ExtractResponseData(freqRaw);
+            if (int.TryParse(freqData, System.Globalization.NumberStyles.HexNumber, null, out int freqVal))
                 frequencyHz = freqVal / 10.0;
 
             ok &= SendRead("000B", 1, out string currentRaw);
-            if (int.TryParse(currentRaw, System.Globalization.NumberStyles.HexNumber, null, out int currentVal))
+            string currentData = ExtractResponseData(currentRaw);
+            if (int.TryParse(currentData, System.Globalization.NumberStyles.HexNumber, null, out int currentVal))
                 currentA = currentVal / 10.0;
 
             ok &= SendRead("000C", 1, out string warnRaw);
-            switch (warnRaw.Trim())
+            string warnData = ExtractResponseData(warnRaw);
+            switch (warnData)
             {
                 case "0000": alarmState = CollectorAlarmState.None; break;
                 case "0001": alarmState = CollectorAlarmState.Warning; break;
@@ -264,6 +309,7 @@ namespace QMC.Common.Parts
 
             return ok;
         }
+
     }
 }
 

@@ -733,9 +733,9 @@ namespace SLD200_MSL
 
         private void button_TEST1_Click(object sender, EventArgs e)
         {
-            bds.DustCollector_Lower.DustCollector_On();
+            bool bOn = bds.DustCollector_Upper.DustCollector_On();
 
-            DustCollectorController.CollectorRunState runState = bds.DustCollector_Lower.GetRunState();
+            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
             if (runState == CollectorRunState.Running)
                 Log.Write("DustCollector", "집진기 상태: 운전 중");
             else if (runState == CollectorRunState.Stopped)
@@ -747,9 +747,9 @@ namespace SLD200_MSL
 
         private void button_Test2_Click(object sender, EventArgs e)
         {
-            bds.DustCollector_Lower.DustCollector_Off();
+            bds.DustCollector_Upper.DustCollector_Off();
 
-            DustCollectorController.CollectorRunState runState = bds.DustCollector_Lower.GetRunState();
+            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
             if (runState == CollectorRunState.Running)
                 Log.Write("DustCollector", "집진기 상태: 운전 중");
             else if (runState == CollectorRunState.Stopped)
@@ -760,13 +760,13 @@ namespace SLD200_MSL
 
         private void button_Test3_Click(object sender, EventArgs e)
         {
-            string strFrequency = "";
+            //string strFrequency = "";
             double dFrequency = 0.0;
-            bds.DustCollector_Lower.ReadFrequency(out strFrequency);
-            dFrequency = string.IsNullOrEmpty(strFrequency) ? 0.0 : Equipment.ToDouble(strFrequency);
+            bds.DustCollector_Upper.GetFrequency(out dFrequency);
+            //dFrequency = string.IsNullOrEmpty(strFrequency) ? 0.0 : Equipment.ToDouble(strFrequency);
 
             DustCollectorController.CollectorRunState runState;
-            bds.DustCollector_Lower.GetStatus(out runState, out dFrequency);
+            bds.DustCollector_Upper.GetStatus(out runState, out dFrequency);
         }
     }
 }

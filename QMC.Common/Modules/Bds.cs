@@ -428,10 +428,10 @@ namespace QMC.Common.Modules
                 }
 
                 // Home 잡기 전에는 Device 알람 X
-                if (!workStage.m_bHomeOK)
-                {
-                    return;
-                }
+                //if (!workStage.m_bHomeOK)
+                //{
+                //    return;
+                //}
 
                 // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
                 if (Equipment.AutoRunStatus)
