@@ -82,9 +82,10 @@ namespace QMC.Common.Modules
         //20250527
         static WorkStage workStage;
 
-        public SpiralLabRtc3D spiralLabRtc3D { get; private set; } = null; //  SpiralLab Rtc3D 객체
+        public SpiralLabVario spiralLabVario { get; set; } = null; //  SpiralLab Rtc3D 객체
         public float? CurrentRtcZOffset { get; private set; }
         public float? CurrentRtcZDefocus { get; private set; }
+        public SpiralLabScanner spiralLabScanner { get; set; } = null; //  SpiralLab Rtc2D 객체
 
 
         public DustCollectorController DustCollector_Upper { get; private set; } = null;
@@ -440,10 +441,18 @@ namespace QMC.Common.Modules
                 {
                 }
 
-                if (spiralLabRtc3D != null)
+                if (spiralLabVario != null && spiralLabVario.IsInitialized)
                 {
-                    CurrentRtcZOffset = spiralLabRtc3D.GetCurrentZOffset();
-                    CurrentRtcZDefocus = spiralLabRtc3D.GetCurrentZDefocus();
+                    CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();
+                    CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
+                }
+
+                if (spiralLabScanner != null && spiralLabScanner.IsInitialized)
+                {
+                    spiralLabScanner.CheckAndLogAllStatuses();
+
+                    double dPosX=0.0, dPosY = 0.0;
+                    spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
                 }
 
             }
@@ -458,28 +467,45 @@ namespace QMC.Common.Modules
             }
         }
 
-        public void InitRtc3DModule()
+        public void InitspiralLabScannerVarioModule()
         {
             if (workStage.rtc != null)
             {
-                spiralLabRtc3D = new SpiralLabRtc3D("Scanner3D", workStage.rtc);
-                spiralLabRtc3D.Create();
-                spiralLabRtc3D.Owner = this;
-                Parts.Add(spiralLabRtc3D);
+                spiralLabVario = new SpiralLabVario("ScannerVario", workStage.rtc);
+                spiralLabVario.Create();
+                spiralLabVario.Owner = this;
+                Parts.Add(spiralLabVario);
 
-                Log.Write("SLD-200", "InitRtc3DModule", "Scanner3D 모듈 초기화 완료");
+                Log.Write("SLD-200", "InitspiralLabScannerVarioModule", "ScannerVario 모듈 초기화 완료");
             }
         }
 
         public float? GetRtcZOffset()
         {
-            return spiralLabRtc3D?.GetCurrentZOffset();
+            return spiralLabVario?.GetCurrentZOffset();
         }
 
         public float? GetRtcZDefocus()
         {
-            return spiralLabRtc3D?.GetCurrentZDefocus();
+            return spiralLabVario?.GetCurrentZDefocus();
         }
+
+
+
+
+        public void InitspiralLabScannerModule()
+        {
+            if (workStage.rtc != null)
+            {
+                spiralLabScanner = new SpiralLabScanner("Scanner", workStage.rtc);
+                spiralLabScanner.Create();
+                spiralLabScanner.Owner = this;
+                Parts.Add(spiralLabScanner);
+
+                Log.Write("SLD-200", "InitspiralLabScannerModule", "Scanner 모듈 초기화 완료");
+            }
+        }
+
 
 
         public bool InitDustCollector(DustCollectorController.CollectorPosition position)

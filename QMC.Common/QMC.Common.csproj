@@ -213,7 +213,7 @@
     </Compile>
     <Compile Include="SpiralLab\SpialData.cs" />
     <Compile Include="SpiralLab\SpiralDataCollector.cs" />
-    <Compile Include="SpiralLab\SpiralLabRtc3D.cs" />
+    <Compile Include="SpiralLab\SpiralLabVario.cs" />
     <Compile Include="SpiralLab\SpiralLabScanner.cs" />
     <Compile Include="Modules\Unloader.cs" />
     <Compile Include="Modules\Loader.cs" />

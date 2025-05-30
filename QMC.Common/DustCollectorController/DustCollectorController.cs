@@ -108,9 +108,19 @@ namespace QMC.Common.Parts
                 string received = _serialPort.ReadExisting();
                 _lastReceivedData += received;
 
-                if (_lastReceivedData.EndsWith(((char)0x04).ToString()))
+                if (_lastReceivedData.Contains(((char)0x04).ToString())) // EOT 도달
                 {
-                    _dataReceived = _lastReceivedData.StartsWith(((char)0x06).ToString());
+                    if (_lastReceivedData.StartsWith(((char)0x06).ToString())) // ACK
+                    {
+                                    // 데이터는 1바이트 ACK + 실제 응답 본문
+                        _lastReceivedData = _lastReceivedData.Trim((char)0x06, (char)0x04); // ACK, EOT 제거
+                        _dataReceived = true;
+                    }
+                    else
+                    {
+                        _dataReceived = false;
+                    }
+
                     _receiveEvent.Set();
                 }
             }
@@ -145,13 +155,13 @@ namespace QMC.Common.Parts
         {
             int checksum = 0;
             foreach (char ch in coreCommand)
-                checksum += ch;
+                checksum += (byte)ch;
 
             byte sumByte = (byte)(checksum & 0xFF);
-            string checksumHex = sumByte.ToString("x2");
+            string checksumHex = sumByte.ToString("X2"); // 대문자 HEX, 항상 2자리
 
-            string fullCommand = ((char)0x05).ToString() + coreCommand + checksumHex + ((char)0x04).ToString();
-            return fullCommand;
+            // 완성된 전체 명령: ENQ + 본문 + 체크섬 + EOT
+            return ((char)0x05).ToString() + coreCommand + checksumHex + ((char)0x04).ToString();
         }
 
         public bool Connect(Equipment.CommList comm)

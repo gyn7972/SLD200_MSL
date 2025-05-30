@@ -5888,7 +5888,7 @@ namespace SLD200_MSL
             
 
             float zOffset = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZOffset.Text);
-            bds.spiralLabRtc3D.SetZOffset(zOffset);
+            bds.spiralLabVario.SetZOffset(zOffset);
 
             //var rtc3D = workStage.rtc as IRtc3D;
             //rtc3D.CtlZOffset(zOffset);
@@ -5900,7 +5900,7 @@ namespace SLD200_MSL
         {
             //  Vario Scan - Z Defocus Setting
             float zDefocus = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZDefocus.Text);
-            bds.spiralLabRtc3D.SetZDefocus(zDefocus);
+            bds.spiralLabVario.SetZDefocus(zDefocus);
 
             //var rtc3D = workStage.rtc as IRtc3D;
             //rtc3D.CtlZDefocus(zDefocus);
@@ -5915,8 +5915,8 @@ namespace SLD200_MSL
             //rtc3D.CtlZOffset(0.0f);
             //rtc3D.CtlZDefocus(0.0f);
 
-            bds.spiralLabRtc3D.SetZDefocus(0.0f);
-            bds.spiralLabRtc3D.SetZOffset(0.0f);
+            bds.spiralLabVario.SetZDefocus(0.0f);
+            bds.spiralLabVario.SetZOffset(0.0f);
 
             textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
             textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";

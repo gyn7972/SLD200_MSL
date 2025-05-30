@@ -4847,21 +4847,6 @@ namespace QMC.Common.Modules
             //ACS_Motion_isSimulationMode = false;
             //ACS_Motion = new Api();
 
-            //SpiralLabScanner
-            spiralLabScanner = new SpiralLabScanner("Scanner");
-            spiralLabScanner.Create();
-            spiralLabScanner.Owner = this;
-            spiralLabScanner.rtc = rtc;
-            spiralLabScanner.laser = laser;
-            //spiralLabScanner._owner.SpiralLabrtc = rtc;
-            //spiralLabScanner._owner.SpiralLablaser = laser;
-            //spiral.SpiralLabrtc = rtc;
-            //spiral.SpiralLablaser = laser;
-            //spiralLabScanner._owner = spiral;
-            //spiralLabScanner._owner.SpiralLabrtc = SpiralLabrtc;
-            //spiralLabScanner._owner.SpiralLab = this;
-            Parts.Add(spiralLabScanner);
-
             Recipe = new WorkStageRecipe(this);
 
             //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
@@ -44228,9 +44213,10 @@ namespace QMC.Common.Modules
             return true;
         }
 
-        public void InitRtc3DModule()
+        public void InitspiralLabScannerModule()
         {
-            bds.InitRtc3DModule();
+            bds.InitspiralLabScannerVarioModule();
+            bds.InitspiralLabScannerModule();
         }
 
 
