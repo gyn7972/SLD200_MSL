@@ -5935,14 +5935,14 @@
             this.checkedListBox_Config_Laser_DIO_Output.HorizontalScrollbar = true;
             this.checkedListBox_Config_Laser_DIO_Output.Items.AddRange(new object[] {
             "Beam Dump Coolant Supply",
-            "Beam Dump Coolant Return",
+            "Air Curtain Purge",
             "Scanner Coolant Supply",
             "Scanner Coolant Return",
             "Varioscan Coolant Supply",
             "Varioscan Coolant Return",
             "Laser Purge",
             "Scanner Purge",
-            "Air Curtain Purge",
+            "Scanner Box Purge (Vario)",
             "Laser Enable"});
             this.checkedListBox_Config_Laser_DIO_Output.Location = new System.Drawing.Point(10, 25);
             this.checkedListBox_Config_Laser_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);

@@ -49,10 +49,13 @@ namespace QMC.Common.Parts
 
         public void Disconnect()
         {
-            if (_serialPort != null && _serialPort.IsOpen)
+            if (_serialPort != null)
             {
-                _serialPort.Close();
+                if (_serialPort.IsOpen)
+                    _serialPort.Close();
+
                 _serialPort.Dispose();
+                _serialPort = null;  // <- 이거 추가로 후속 접근 방지
             }
         }
 
@@ -180,11 +183,18 @@ namespace QMC.Common.Parts
 
         private string ExtractResponseData(string fullResponse)
         {
-            // 예: "01R009682" → "9682" 추출
-            if (string.IsNullOrEmpty(fullResponse) || fullResponse.Length < 9)
-                return "";
+                 // 예: "01R009682" → "9682" 추출
+            try
+            {
+                if (string.IsNullOrWhiteSpace(fullResponse) || fullResponse.Length < 4)
+                    return "";
 
-            return fullResponse.Substring(fullResponse.Length - 4, 4);
+                return fullResponse.Substring(fullResponse.Length - 4, 4);
+            }
+            catch
+            {
+                return "";
+            }
         }
 
         public bool Connect(Equipment.CommList comm)
