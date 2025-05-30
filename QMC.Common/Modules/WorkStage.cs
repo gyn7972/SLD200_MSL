@@ -16022,6 +16022,8 @@ namespace QMC.Common.Modules
 
                     // 다음 모듈 가공 시작 //Cycle Time
                     DrillingManager.CycleTimer_LaserDrilling.Start();
+                    workStageParameter.DO_AirCurtain_Purge(true);
+
                     LaserDrillingStepStart();
 
                     //Loaser에서 Stage로 제품 이송시 vacuum 안잡히면 Ng로 그냥 뺀다.
@@ -25344,6 +25346,8 @@ namespace QMC.Common.Modules
                     DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
                     m_strTemp = string.Format("LaserDrillingOneCycle Time: {0:0.000} sec", DrillingManager.CycleTimer_LaserDrilling.Latest.Interval.TotalSeconds);
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                    workStageParameter.DO_AirCurtain_Purge(false);
 
                     m_bLaserDrilling_Complete = true;
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
