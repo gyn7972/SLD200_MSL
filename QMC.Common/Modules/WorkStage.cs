@@ -5339,7 +5339,6 @@ namespace QMC.Common.Modules
 
             //  Comm. Port 설정
             m_strPortName = string.Format("COM{0}", Equipment.stCommunicationSet[(int)Equipment.CommList.Illuminator].Serial_CommPort + 1);
-
             //  Baud Rate 설정
             switch (Equipment.stCommunicationSet[(int)Equipment.CommList.Illuminator].Serial_CommBaudRate)
             {
@@ -44281,5 +44280,11 @@ namespace QMC.Common.Modules
         {
             lastDrillEndTime = DateTime.Now;
         }
+
+        
+
+
+
+
     }
 }

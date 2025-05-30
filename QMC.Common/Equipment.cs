@@ -41,6 +41,7 @@ using QMC.Common.Vision;
 using Cognex.VisionPro;
 using System.ServiceModel.Syndication;
 using QMC.Common.Recipe;
+using System.IO.Ports;
 
 
 
@@ -340,6 +341,8 @@ namespace QMC.Common
             ElectroPneumaticRegulator,
             Laser,
             LaserHeightSensor,
+            D_U,
+            D_L
         }
 
         public struct stCommParameter
@@ -3212,6 +3215,68 @@ namespace QMC.Common
             return m_bRet;
         }
         public static bool m_bworkStageVacuumFail = false;
+
+        public static void GetSerialPortConfig(Equipment.CommList comm,
+                                                out string portName, out int baudRate, out int dataBits,
+                                                out StopBits stopBits, out Parity parity, out Handshake handshake)
+        {
+            var setting = Equipment.stCommunicationSet[(int)comm];
+
+            // 포트 이름
+            portName = $"COM{setting.Serial_CommPort + 1}";
+
+            // BaudRate 설정
+            switch (setting.Serial_CommBaudRate)
+            {
+                case 0: baudRate = 1200; break;
+                case 1: baudRate = 2400; break;
+                case 2: baudRate = 4800; break;
+                case 3: baudRate = 9600; break;
+                case 4: baudRate = 19200; break;
+                case 5: baudRate = 38400; break;
+                case 6: baudRate = 57600; break;
+                case 7: baudRate = 115200; break;
+                default: baudRate = 9600; break;
+            }
+
+            // DataBits 설정
+            switch (setting.Serial_CommDataBits)
+            {
+                case 0: dataBits = 5; break;
+                case 1: dataBits = 6; break;
+                case 2: dataBits = 7; break;
+                case 3: dataBits = 8; break;
+                default: dataBits = 8; break;
+            }
+
+            // StopBits 설정
+            switch (setting.Serial_CommStopBits)
+            {
+                case 0: stopBits = StopBits.One; break;
+                case 1: stopBits = StopBits.OnePointFive; break;
+                case 2: stopBits = StopBits.Two; break;
+                default: stopBits = StopBits.One; break;
+            }
+
+            // Parity 설정
+            switch (setting.Serial_CommParity)
+            {
+                case 0: parity = Parity.None; break;
+                case 1: parity = Parity.Odd; break;
+                case 2: parity = Parity.Even; break;
+                default: parity = Parity.None; break;
+            }
+
+            // Handshake 설정
+            switch (setting.Serial_CommFlowControl)
+            {
+                case 0: handshake = Handshake.None; break;
+                case 1: handshake = Handshake.XOnXOff; break;
+                case 2: handshake = Handshake.RequestToSend; break;
+                case 3: handshake = Handshake.RequestToSendXOnXOff; break;
+                default: handshake = Handshake.None; break;
+            }
+        }
 
     }
 }

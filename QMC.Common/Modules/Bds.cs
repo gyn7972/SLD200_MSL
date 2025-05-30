@@ -80,11 +80,16 @@ namespace QMC.Common.Modules
         public YStage Stage { set; get; }                         //  MSL SLD-200C, SLD-200U 의 Mask Y 축
 
         //20250527
+        static WorkStage workStage;
+
         public SpiralLabRtc3D spiralLabRtc3D { get; private set; } = null; //  SpiralLab Rtc3D 객체
         public float? CurrentRtcZOffset { get; private set; }
         public float? CurrentRtcZDefocus { get; private set; }
 
-        static WorkStage workStage;
+
+        public DustCollectorController DustCollector_Upper { get; private set; } = null;
+        public DustCollectorController DustCollector_Lower { get; private set; } = null;
+
 
         //  레시피 변경 시 위치값을 갱신하기 위해
         public bool m_bParameterSetting_PosData_Reload { set; get; }            //  위치 데이터 다시 로드
@@ -371,6 +376,18 @@ namespace QMC.Common.Modules
             //PosParam_Dispenser = GetConfigData();     //  요건 나중에
             Recipe = new BdsRecipe(this);
 
+            // Upper
+            DustCollector_Upper = new DustCollectorController("UpperDust", DustCollectorController.CollectorPosition.Upper);
+            DustCollector_Upper.Create();
+            DustCollector_Upper.Owner = this;
+            Parts.Add(DustCollector_Upper);
+
+            // Lower
+            DustCollector_Lower = new DustCollectorController("LowerDust", DustCollectorController.CollectorPosition.Lower);
+            DustCollector_Lower.Create();
+            DustCollector_Lower.Owner = this;
+            Parts.Add(DustCollector_Lower);
+
             //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
             m_taskTimer_BDS_MainStatus_Tick = Task.Factory.StartNew(() =>
             {
@@ -465,7 +482,39 @@ namespace QMC.Common.Modules
         }
 
 
+        public bool InitDustCollector(DustCollectorController.CollectorPosition position)
+        {
+            DustCollectorController dustCollector = null;
+            if (position == DustCollectorController.CollectorPosition.Upper)
+            {
+                dustCollector = DustCollector_Upper;
+            }
+            else if (position == DustCollectorController.CollectorPosition.Lower)
+            {
+                dustCollector = DustCollector_Lower;
+            }
 
+            if (dustCollector == null)
+            {
+                dustCollector.Create();
+                dustCollector.Owner = this;
+                Parts.Add(dustCollector);
+                return true;
+            }
+
+            if (position == DustCollectorController.CollectorPosition.Upper)
+            {
+                if (!DustCollector_Upper.Connect(Equipment.CommList.D_U))
+                    Log.Write("DustCollector", "[Upper] 연결 실패");
+            }
+            else if (position == DustCollectorController.CollectorPosition.Lower)
+            {
+                if (!DustCollector_Lower.Connect(Equipment.CommList.D_L))
+                    Log.Write("DustCollector", "[Lower] 연결 실패");
+            }
+
+            return false;
+        }
 
 
 

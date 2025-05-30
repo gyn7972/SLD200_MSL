@@ -1177,7 +1177,9 @@
             "Dust Collector (Lower)",
             "Electro Pneumatic Regulator",
             "Laser",
-            "Laser Height Sensor (Keyence)"});
+            "Laser Height Sensor (Keyence)",
+            "D(U)",
+            "D(L)"});
             this.listBox_Setup_Communication_SelectUnit.Location = new System.Drawing.Point(10, 25);
             this.listBox_Setup_Communication_SelectUnit.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.listBox_Setup_Communication_SelectUnit.Name = "listBox_Setup_Communication_SelectUnit";

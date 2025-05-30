@@ -7,6 +7,21 @@ namespace QMC.Common.Parts
 {
     public class DustCollectorController : Part
     {
+        public enum CollectorRunState
+        {
+            Unknown,
+            Stopped,
+            Running
+        }
+
+        public enum CollectorAlarmState
+        {
+            None,
+            Warning,
+            Alarm,
+            Unknown
+        }
+
         public enum CollectorPosition { Upper, Lower }
 
         private SerialPort _serialPort;
@@ -167,10 +182,20 @@ namespace QMC.Common.Parts
         }
 
 
-        public bool Connect(string portName)
+        public bool Connect(Equipment.CommList comm)
         {
+            string strPortName;
+            int baudRate, dataBits;
+            StopBits stopBits;
+            Parity parity;
+            Handshake handshake;
+
+            Equipment.GetSerialPortConfig(comm,
+                out strPortName, out baudRate, out dataBits, out stopBits, out parity, out handshake);
+
+            return Connect(strPortName, baudRate, dataBits, stopBits, parity, handshake);
             // 내부 기본 설정: 115200, 8N1, No Handshake
-            return Connect(portName, 115200, 8, StopBits.One, Parity.None, Handshake.None);
+            //return Connect(portName, 115200, 8, StopBits.One, Parity.None, Handshake.None);
         }
 
         public bool DustCollector_On()
@@ -183,10 +208,132 @@ namespace QMC.Common.Parts
             return SendWrite("0006", "0001", 1); // Address: 운전명령, Data: 정지
         }
 
+
+        /// <summary>
+        /// 집진기 출력 주파수를 설정합니다 (단위: 0.01Hz → 내부는 100배 값).
+        /// 예: 60.0Hz → "6000" 전송, 주소는 0005
+        /// </summary>
+        public bool SetFrequency(double frequencyHz)
+        {
+            int freqValue = (int)(frequencyHz * 100.0); // 60.0Hz → 6000
+            string asciiData = freqValue.ToString("D4"); // "6000"
+
+            return SendWrite("0005", asciiData, 1); // 주소는 반드시 0005
+        }
+
+
         public bool ReadFrequency(out string frequencyResponse)
         {
             return SendRead("000A", 1, out frequencyResponse); // Address: 출력 주파수 번지
         }
+
+
+
+        /// <summary>
+        /// 현재 집진기 상태를 조회합니다.
+        /// 반환값: 0001 = 정지, 0002 = 운전 중
+        /// </summary>
+        public bool GetCurrentStatus(out string status)
+        {
+            return SendRead("0007", 1, out status); // 예: 상태 주소 0007
+        }
+
+        public CollectorRunState GetRunState()
+        {
+            if (GetCurrentStatus(out string status))
+            {
+                switch (status.Trim())
+                {
+                    case "0001": return CollectorRunState.Stopped;
+                    case "0002": return CollectorRunState.Running;
+                }
+            }
+
+            return CollectorRunState.Unknown;
+        }
+
+        /// <summary>
+        /// 집진기의 전원 상태와 출력 주파수를 함께 조회합니다.
+        /// </summary>
+        /// <param name="runState">CollectorRunState.Running / Stopped / Unknown</param>
+        /// <param name="frequencyHz">출력 주파수 (단위: Hz)</param>
+        /// <returns>조회 성공 여부</returns>
+        public bool GetStatus(out CollectorRunState runState, out double frequencyHz)
+        {
+            runState = CollectorRunState.Unknown;
+            frequencyHz = 0.0;
+
+            string statusRaw;
+            if (!SendRead("0007", 1, out statusRaw))
+                return false;
+
+            switch (statusRaw.Trim())
+            {
+                case "0001": runState = CollectorRunState.Stopped; break;
+                case "0002": runState = CollectorRunState.Running; break;
+                default: runState = CollectorRunState.Unknown; break;
+            }
+
+            string freqRaw;
+            if (!SendRead("000A", 1, out freqRaw))
+                return false;
+
+            // 예: freqRaw = "0064" (== 100.0Hz)
+            int freqValue = 0;
+            if (int.TryParse(freqRaw, System.Globalization.NumberStyles.HexNumber, null, out freqValue))
+                frequencyHz = freqValue / 10.0;
+            else if (int.TryParse(freqRaw, out freqValue))
+                frequencyHz = freqValue / 10.0;
+
+            return true;
+        }
+
+        /// <summary>
+        /// 집진기의 상태(운전 여부, 주파수, 전류, 경고/알람 상태)를 모두 조회합니다.
+        /// </summary>
+        public bool GetDetailedStatus(out CollectorRunState runState, out double frequencyHz, out double currentA,
+                                      out CollectorAlarmState alarmState)
+        {
+            runState = CollectorRunState.Unknown;
+            frequencyHz = 0.0;
+            currentA = 0.0;
+            alarmState = CollectorAlarmState.Unknown;
+
+            string statusRaw, freqRaw, currentRaw, warnRaw;
+            bool ok = true;
+
+            // 운전 상태
+            ok &= SendRead("0007", 1, out statusRaw);
+            switch (statusRaw.Trim())
+            {
+                case "0001": runState = CollectorRunState.Stopped; break;
+                case "0002": runState = CollectorRunState.Running; break;
+                default: runState = CollectorRunState.Unknown; break;
+            }
+
+            // 출력 주파수
+            ok &= SendRead("000A", 1, out freqRaw);
+            if (int.TryParse(freqRaw, System.Globalization.NumberStyles.HexNumber, null, out int freqVal))
+                frequencyHz = freqVal / 10.0;
+
+            // 출력 전류
+            ok &= SendRead("000B", 1, out currentRaw); // 예: 000B가 전류 번지
+            if (int.TryParse(currentRaw, System.Globalization.NumberStyles.HexNumber, null, out int currentVal))
+                currentA = currentVal / 10.0;
+
+            // 경고/알람 상태
+            ok &= SendRead("000C", 1, out warnRaw); // 예: 000C가 경고/알람 상태 번지
+            switch (warnRaw.Trim())
+            {
+                case "0000": alarmState = CollectorAlarmState.None; break;
+                case "0001": alarmState = CollectorAlarmState.Warning; break;
+                case "0002": alarmState = CollectorAlarmState.Alarm; break;
+                default: alarmState = CollectorAlarmState.Unknown; break;
+            }
+
+            return ok;
+        }
+
 
     }
 }
