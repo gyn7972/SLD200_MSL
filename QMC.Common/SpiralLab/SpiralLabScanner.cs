@@ -105,6 +105,8 @@ namespace QMC.Common.Parts
             }
         }
 
+
+        private Dictionary<RtcStatus, bool> previousStatus = new Dictionary<RtcStatus, bool>();
         public void CheckAndLogAllStatuses()
         {
             if (rtc == null)
@@ -112,50 +114,57 @@ namespace QMC.Common.Parts
 
             foreach (RtcStatus status in Enum.GetValues(typeof(RtcStatus)))
             {
-                bool result = rtc.CtlGetStatus(status);
+                bool current = rtc.CtlGetStatus(status);
+                bool hasChanged = !previousStatus.ContainsKey(status) || previousStatus[status] != current;
+
+                if (!hasChanged)
+                    continue;
+
+                // 상태 업데이트
+                previousStatus[status] = current;
+
                 string logMsg = "";
 
                 switch (status)
                 {
                     case RtcStatus.Busy:
-                        logMsg = $"Busy (Status bits: 0x1, 0x80, 0x8000, 0x800000): {(result ? "✅ OK" : "❌ Not Busy")}";
+                        logMsg = $"Busy (0x1, 0x80, 0x8000, 0x800000): {(current ? "✅ OK" : "❌ Not Busy")}";
                         break;
                     case RtcStatus.NotBusy:
-                        logMsg = $"NotBusy (Inverse of Busy): {(result ? "✅ OK" : "❌ Busy")}";
+                        logMsg = $"NotBusy (Inverse of Busy): {(current ? "✅ OK" : "❌ Busy")}";
                         break;
                     case RtcStatus.List1Busy:
-                        logMsg = $"List1Busy (Status & 0x0F): {(result ? "✅ OK" : "❌ Idle")}";
+                        logMsg = $"List1Busy (Status & 0x0F): {(current ? "✅ OK" : "❌ Idle")}";
                         break;
                     case RtcStatus.List2Busy:
-                        logMsg = $"List2Busy (Status & 0x10): {(result ? "✅ OK" : "❌ Idle")}";
+                        logMsg = $"List2Busy (Status & 0x10): {(current ? "✅ OK" : "❌ Idle")}";
                         break;
                     case RtcStatus.NoError:
-                        logMsg = $"NoError (No Abort + LastError == 0): {(result ? "✅ OK" : "❌ Error Detected")}";
+                        logMsg = $"NoError (No Abort + LastError == 0): {(current ? "✅ OK" : "❌ Error Detected")}";
                         break;
                     case RtcStatus.Aborted:
-                        logMsg = $"Aborted (Manual Abort Flag): {(result ? "❌ Aborted" : "✅ Not Aborted")}";
+                        logMsg = $"Aborted (Manual Abort Flag): {(current ? "❌ Aborted" : "✅ Not Aborted")}";
                         break;
                     case RtcStatus.PositionAckOK:
-                        logMsg = $"PositionAckOK (HeadStatus & 0x08, 0x10): {(result ? "✅ OK" : "❌ Not Acknowledged")}";
+                        logMsg = $"PositionAckOK (HeadStatus & 0x08, 0x10): {(current ? "✅ OK" : "❌ Not Acknowledged")}";
                         break;
                     case RtcStatus.PowerOK:
-                        logMsg = $"PowerOK (HeadStatus & 0x80): {(result ? "✅ OK" : "❌ Power Fault")}";
+                        logMsg = $"PowerOK (HeadStatus & 0x80): {(current ? "✅ OK" : "❌ Power Fault")}";
                         break;
                     case RtcStatus.TempOK:
-                        logMsg = $"TempOK (HeadStatus & 0x40): {(result ? "✅ OK" : "❌ Over Temp / Sensor Fault")}";
+                        logMsg = $"TempOK (HeadStatus & 0x40): {(current ? "✅ OK" : "❌ Over Temp / Sensor Fault")}";
                         break;
                     case RtcStatus.MotfOutOfRange:
-                        logMsg = $"MotfOutOfRange (MOF Overflow/Underflow flags): {(result ? "❌ Out of Range" : "✅ OK")}";
+                        logMsg = $"MotfOutOfRange (MOF Overflow/Underflow): {(current ? "❌ Out of Range" : "✅ OK")}";
                         break;
                     default:
-                        logMsg = $"{status}: {(result ? "✅ OK" : "❌ FAIL")}";
+                        logMsg = $"{status}: {(current ? "✅ OK" : "❌ FAIL")}";
                         break;
                 }
 
                 Log.Write("Rtc6", logMsg);
             }
         }
-
         public bool GetScannerPosition(out double x_mm, out double y_mm)
         {
             x_mm = 0;

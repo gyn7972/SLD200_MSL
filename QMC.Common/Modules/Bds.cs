@@ -396,7 +396,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(20);
 
                     if (isModuleClose)
                     {
