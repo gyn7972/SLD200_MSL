@@ -210,6 +210,10 @@ namespace SLD200_MSL
 
                     renderer.Color(200.0f, 200.0f, 0.0f); // 라임색 (노란 녹색 계열)
 
+                    double gap = 0.05;  // 셀 사이 띄움 간격
+                    double offsetW = gap / 2.0;
+                    double offsetH = gap / 2.0;
+
                     foreach (var entity in layer.Items)
                     {
                         if (entity == null || entity.BoundRect == null)
@@ -225,12 +229,13 @@ namespace SLD200_MSL
                         int colCount = Math.Max(1, (int)Math.Ceiling(width / dSplitW));
                         int rowCount = Math.Max(1, (int)Math.Ceiling(height / dSplitH));
 
-                        double dStartX = centerX - (colCount * dSplitW) / 2;
-                        double dStartY = centerY - (rowCount * dSplitH) / 2;
-                        double dEndX = centerX + (colCount * dSplitW) / 2;
-                        double dEndY = centerY + (rowCount * dSplitH) / 2;
+                        // 띄워서 그리기 위해 epsilon 적용
+                        double dStartX = centerX - (colCount * dSplitW) / 2 + offsetW;
+                        double dStartY = centerY - (rowCount * dSplitH) / 2 + offsetH;
+                        double dEndX = centerX + (colCount * dSplitW) / 2 - offsetW;
+                        double dEndY = centerY + (rowCount * dSplitH) / 2 - offsetH;
 
-                        // 세로선 (X 방향)
+                        // 세로선
                         for (int col = 0; col <= colCount; col++)
                         {
                             double x = dStartX + col * dSplitW;
@@ -240,7 +245,7 @@ namespace SLD200_MSL
                             renderer.End();
                         }
 
-                        // 가로선 (Y 방향)
+                        // 가로선
                         for (int row = 0; row <= rowCount; row++)
                         {
                             double y = dStartY + row * dSplitH;
