@@ -853,11 +853,12 @@ namespace SLD200_MSL
             }
             else
             {
-                //여기서 io를 계속 읽는 거는 아닌거 같다.
-                //if (workStage.workStageParameter.IsDO_Laser_Enable())
-                //    _InitDeviceStatus.Laser = true;
-                //else
-                //    _InitDeviceStatus.Laser = false;
+                // 여기서 io를 계속 읽는 거는 아닌거 같다.
+                // 근데 뭐 방법이 없잖아? 해보고 안되면 막자.
+                if (workStage.workStageParameter.IsDO_Laser_Enable())
+                    _InitDeviceStatus.Laser = true;
+                else
+                    _InitDeviceStatus.Laser = false;
             }
             //if (!_InitDeviceStatus.Laser)
             //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);

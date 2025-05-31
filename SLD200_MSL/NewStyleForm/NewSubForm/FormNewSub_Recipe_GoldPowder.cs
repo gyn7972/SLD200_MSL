@@ -464,7 +464,11 @@ namespace SLD200.NewStyleForm.NewSubForm
                 nTargetColor = 0;          //  Fiducial 마크 색깔 //  0: Black, 1: White
             }
 
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             QMC_ImageProcessFindAlign aligner = new QMC_ImageProcessFindAlign();
+
+            bool bCO2_RepairMode = true;
+
             List<RectangleF> circlesResult = new List<RectangleF>();
             {
                 int w = workStage.Camera_HighRes.Resolution.Width;
@@ -474,13 +478,22 @@ namespace SLD200.NewStyleForm.NewSubForm
                 double m_dradius = 0.0;
                 m_dradius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
 
-                QMC_ImageProcessFindAlignResult result = aligner.FindGoldPowderForAutoTreshold(circlesResult,
-                                                    workStage.Camera_HighRes.LatestImage.RawData,
-                                                    w, h, (int)m_dradius, dScore, dSpec);
-                
-                if (circlesResult.Count > 3 )
+                if(bCO2_RepairMode)
                 {
-                    bFindCircle = true;
+                    result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
+                                                    workStage.Camera_HighRes.LatestImage.RawData,
+                                                    w, h, (int)m_dradius, dSpec,
+                                                    ref bFindCircle, 0, 0, nTargetColor == 0);
+                }
+                else
+                {
+                    result = aligner.FindGoldPowderForAutoTreshold(circlesResult,
+                                                        workStage.Camera_HighRes.LatestImage.RawData,
+                                                        w, h, (int)m_dradius, dScore, dSpec);
+                    if (circlesResult.Count > 3)
+                    {
+                        bFindCircle = true;
+                    }
                 }
                 workStage.UpdateOverlay(result);
             }

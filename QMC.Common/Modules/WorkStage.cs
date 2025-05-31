@@ -14325,12 +14325,31 @@ namespace QMC.Common.Modules
                                 {
                                     for (int i = 0; i < 4; i++)
                                     {
-
                                         //  4-Point 의 도면상 위치 데이터
-                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].X;
-                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].Y;
-                                        m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stDividedRegion_GroupData[nSocketNum].dFiducialWidth[i];
-                                        m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stDividedRegion_GroupData[nSocketNum].dFiducialHeight[i];
+                                        //m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].X;
+                                        //m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].Y;
+                                        //m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stDividedRegion_GroupData[nSocketNum].dFiducialWidth[i];
+                                        //m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stDividedRegion_GroupData[nSocketNum].dFiducialHeight[i];
+
+                                        m_st4PointPosition_DwgPos[0].ptFiducial_Center.X = -16.125;
+                                        m_st4PointPosition_DwgPos[0].ptFiducial_Center.Y = 16.375;
+                                        m_st4PointPosition_DwgPos[0].dFiducial_Width = 0.225;
+                                        m_st4PointPosition_DwgPos[0].dFiducial_Height = 0.225;
+
+                                        m_st4PointPosition_DwgPos[1].ptFiducial_Center.X = -16.125;
+                                        m_st4PointPosition_DwgPos[1].ptFiducial_Center.Y = 48.625;
+                                        m_st4PointPosition_DwgPos[1].dFiducial_Width = 0.225;
+                                        m_st4PointPosition_DwgPos[1].dFiducial_Height = 0.225;
+
+                                        m_st4PointPosition_DwgPos[2].ptFiducial_Center.X = 16.125;
+                                        m_st4PointPosition_DwgPos[2].ptFiducial_Center.Y = 48.625;
+                                        m_st4PointPosition_DwgPos[2].dFiducial_Width = 0.225;
+                                        m_st4PointPosition_DwgPos[2].dFiducial_Height = 0.225;
+
+                                        m_st4PointPosition_DwgPos[3].ptFiducial_Center.X = 16.125;
+                                        m_st4PointPosition_DwgPos[3].ptFiducial_Center.Y = 16.375;
+                                        m_st4PointPosition_DwgPos[3].dFiducial_Width = 0.225;
+                                        m_st4PointPosition_DwgPos[3].dFiducial_Height = 0.225;
                                     }
                                     //m_nProductAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos;
                                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.__SocketAlign_Start;
@@ -14434,7 +14453,8 @@ namespace QMC.Common.Modules
                                         m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stMarking_SocketData.m_stMarking_ObjectData[nSocketNum].dFiducialWidth[i];
                                         m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stMarking_SocketData.m_stMarking_ObjectData[nSocketNum].dFiducialHeight[i];
                                     }
-                                    //m_nProductAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos;
+
+
                                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.__SocketAlign_Start;
                                 }
                                 else
@@ -14635,9 +14655,38 @@ namespace QMC.Common.Modules
                     }
                     else if(alignMode == AlignMode.GoldPowder)
                     {
-                        double dTargetX = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
-                        double dTargetY = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
-                        xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
+
+                        if(m_bCO2_repairMode)
+                        {
+                            double dTargetX = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                            double dTargetY = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                            xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
+                            xyInterpolatedCoordinate = xyCoordinateAlign;
+                            //Pre Align Data -> Sorket Postion 적용
+                            if (m_bIsFirstAlign == false)
+                            {
+                                XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+                                Log.Write("Alaign Test", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                                Log.Write("Alaign Test", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                                Log.Write("Alaign Test", "Offset  : " + offset.ToString());
+                                Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
+
+                                xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionOrgLast.X,
+                                    xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+
+                                xyCoordinateAlign = xyCoordinateAlign + offset;
+                                Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
+                                Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+                            }
+                            xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+                        }
+                        else
+                        {
+                            double dTargetX = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                            double dTargetY = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                            xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
+
+                        }
                     }
 
                     MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Coarse);
@@ -14819,155 +14868,225 @@ namespace QMC.Common.Modules
                     }
                     else if (alignMode == AlignMode.GoldPowder)
                     {
-                        double totalOffsetX = 0.0;
-                        double totalOffsetY = 0.0;
-                        int matchCount = 0;
-                        if (Fiducial_circleFound && (Fiducial_circlesResult.Count > 0))
+                        if (m_bCO2_repairMode)
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "GoldPowder Align 마크 찾기 성공");
-
-                            if (m_bCO2_repairMode)
+                            if (Fiducial_circleFound && (Fiducial_circlesResult.Count > 0))
                             {
-                                double dMotionPosX = MC_Func.MC_GetEncPos((int)nAxis.X);
-                                double dMotionPosY = MC_Func.MC_GetEncPos((int)nAxis.Y);
-                                double dOffsetX = 0.0;
-                                double dOffsetY = 0.0;
-                                dOffsetX = ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) -
-                                             (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
-                                dOffsetY = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y +
+                                Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 성공");
+
+                                //  Stage Center 가 0, 0 인 좌표계로 변환
+                                double xOffset = ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) -
+                                                    (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
+
+                                double yOffset = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y +
                                                     ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
 
-                                double dGoldPowderPosX = dMotionPosX - dOffsetX;
-                                double dGoldPowderPosY = dMotionPosY - dOffsetY;
-                                XyCoordinate xyFineVisionPos = new XyCoordinate(dGoldPowderPosX, dGoldPowderPosY);
-                                XyCoordinate xyDrawingPos = ConvertFineCamToDrawing(xyFineVisionPos);
+                                //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경.
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) - xOffset;
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) - yOffset;
 
-                                double offsetX = xyDrawingPos.X - m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
-                                double offsetY = xyDrawingPos.Y - m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
-                                double distance = Math.Sqrt(offsetX * offsetX + offsetY * offsetY);
-                                if (Math.Abs(offsetX) > 0.05 || Math.Abs(offsetY) > 0.05)
-                                {
-                                    //알람인디. 
-                                    Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::offsetXY Offset +-0.05 넘음.  - X: {offsetX:F6}, Y: {offsetY:F6}");
-                                }
+                                Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() + "  FineVision Fiducial Makr No : " + m_nSocketAlign_FiducialCount.ToString()
+                                    + " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString()
+                                    + ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
 
-                                totalOffsetX = offsetX;
-                                totalOffsetY = offsetY;
-                                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::offsetXY Offset - X: {offsetX:F6}, Y: {offsetY:F6}");
+                                Log.Write("SLD-200", " Socket NO : " + nSocketNum.ToString() +
+                                    "AlignMode.Socket::FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
+                                    " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
+                                    ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
+
+                                xyCoordinateAlignPositionLast = new XyCoordinate(m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
+                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
+                                xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
+
+                                //  데이터 위치를 Scanner 위치로 변경
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X += Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y += Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+                                //  여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
+                                    Equipment.StageOffset_forDrilling_X - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
+                                    Equipment.StageOffset_forDrilling_Y - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width = Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = Fiducial_circlesResult[0].Height * Config.ParamConfig.UpperVision_Scale_X;
+
+                                m_nSocketAlign_FiducialCount++;
+
+                                m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RemainedCheck;
                             }
                             else
                             {
-                                var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stDividedRegion_GroupData);
-                                // 전체 홀 리스트 사용
-                                List<AlignPoint> allHoles = alignPositions.AllPoints;
-                                double dMotionPosX = MC_Func.MC_GetEncPos((int)nAxis.X);
-                                double dMotionPosY = MC_Func.MC_GetEncPos((int)nAxis.Y);
-
-                                for (int i = 0; i < Fiducial_circlesResult.Count; i++)
+                                Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry");
+                                m_nSocketAlign_Retry_Max = 0;
+                                if (m_nSocketAlign_Retry_Count < m_nSocketAlign_Retry_Max)
                                 {
-                                    double dOffsetX = ((((double)Fiducial_circlesResult[i].X + ((double)Fiducial_circlesResult[i].Width / 2.0)) -
-                                                    (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
-                                    double dOffsetY = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[i].Y +
-                                                        ((double)Fiducial_circlesResult[i].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
+                                    m_nSocketAlign_Retry_Count++;
+
+                                    //  테스트 하면서 조명값을 변경하여 재시도 하도록 한다.
+                                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
+                                    m_bAlignCompleted = true;
+                                    m_bSocketAlign_OK = false;
+                                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            double totalOffsetX = 0.0;
+                            double totalOffsetY = 0.0;
+                            int matchCount = 0;
+                            if (Fiducial_circleFound && (Fiducial_circlesResult.Count > 0))
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "GoldPowder Align 마크 찾기 성공");
+
+                                if (m_bCO2_repairMode)
+                                {
+                                    //  Stage Center 가 0, 0 인 좌표계로 변환
+                                    double dMotionPosX = MC_Func.MC_GetEncPos((int)nAxis.X);
+                                    double dMotionPosY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+                                    double dOffsetX = 0.0;
+                                    double dOffsetY = 0.0;
+                                    dOffsetX = ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) -
+                                                 (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
+                                    dOffsetY = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y +
+                                                        ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
 
                                     double dGoldPowderPosX = dMotionPosX - dOffsetX;
                                     double dGoldPowderPosY = dMotionPosY - dOffsetY;
 
                                     XyCoordinate xyFineVisionPos = new XyCoordinate(dGoldPowderPosX, dGoldPowderPosY);
                                     XyCoordinate xyDrawingPos = ConvertFineCamToDrawing(xyFineVisionPos);
-
-                                    // 실제 측정된 홀의 World 좌표
-                                    AlignPoint measuredHole = new AlignPoint((float)xyDrawingPos.X, (float)xyDrawingPos.Y, 0);
-
-                                    AlignPoint matched = allHoles
-                                                        .OrderBy(p => GetDistance(p, measuredHole))
-                                                        .First();
-
-                                    double offsetX = measuredHole.X - matched.X;
-                                    double offsetY = measuredHole.Y - matched.Y;
+                                    double offsetX = xyDrawingPos.X - m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                                    double offsetY = xyDrawingPos.Y - m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
                                     double distance = Math.Sqrt(offsetX * offsetX + offsetY * offsetY);
-
-                                    if (Math.Abs(offsetX) > 0.03 || Math.Abs(offsetY) > 0.03)
+                                    if (Math.Abs(offsetX) > 0.05 || Math.Abs(offsetY) > 0.05)
                                     {
-                                        continue;
+                                        //알람인디. 
+                                        Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::offsetXY Offset +-0.05 넘음.  - X: {offsetX:F6}, Y: {offsetY:F6}");
                                     }
 
-                                    totalOffsetX += offsetX;
-                                    totalOffsetY += offsetY;
-                                    matchCount++;
+                                    totalOffsetX = offsetX;
+                                    totalOffsetY = offsetY;
                                     Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::offsetXY Offset - X: {offsetX:F6}, Y: {offsetY:F6}");
                                 }
-                            }
+                                else
+                                {
+                                    var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stDividedRegion_GroupData);
+                                    // 전체 홀 리스트 사용
+                                    List<AlignPoint> allHoles = alignPositions.AllPoints;
+                                    double dMotionPosX = MC_Func.MC_GetEncPos((int)nAxis.X);
+                                    double dMotionPosY = MC_Func.MC_GetEncPos((int)nAxis.Y);
 
+                                    for (int i = 0; i < Fiducial_circlesResult.Count; i++)
+                                    {
+                                        double dOffsetX = ((((double)Fiducial_circlesResult[i].X + ((double)Fiducial_circlesResult[i].Width / 2.0)) -
+                                                        (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
+                                        double dOffsetY = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[i].Y +
+                                                            ((double)Fiducial_circlesResult[i].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
 
-                            Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::totalOffsetXY Offset - X: {totalOffsetX:F6}, Y: {totalOffsetY:F6}");
-                            Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::matchCount: {matchCount:F6}");
+                                        double dGoldPowderPosX = dMotionPosX - dOffsetX;
+                                        double dGoldPowderPosY = dMotionPosY - dOffsetY;
 
-                            // 평균 Offset 계산
-                            double averageOffsetX = totalOffsetX;
-                            double averageOffsetY = totalOffsetY;
-                            Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::Average Offset - X: {averageOffsetX:F6}, Y: {averageOffsetY:F6}");
+                                        XyCoordinate xyFineVisionPos = new XyCoordinate(dGoldPowderPosX, dGoldPowderPosY);
+                                        XyCoordinate xyDrawingPos = ConvertFineCamToDrawing(xyFineVisionPos);
 
-                            // 이거면 되것징!!!! // -,+ X 안됨.
-                            //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경. -> +,+ 변경
-                            // GoldPowder는 +,+ -> -,- 로 변경20250522  -> +,- 로 변경20250522 1830 -> -,- 로 변경20250522 1920
-                            // 최종단에서 X-Axis에 * -1 적용.
-                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = 
-                                MC_Func.MC_GetEncPos((int)nAxis.X) - averageOffsetX;
-                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = 
-                                MC_Func.MC_GetEncPos((int)nAxis.Y) - averageOffsetY;
+                                        // 실제 측정된 홀의 World 좌표
+                                        AlignPoint measuredHole = new AlignPoint((float)xyDrawingPos.X, (float)xyDrawingPos.Y, 0);
 
-                            Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() + 
-                                "FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
-                                " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
-                                ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
+                                        AlignPoint matched = allHoles
+                                                            .OrderBy(p => GetDistance(p, measuredHole))
+                                                            .First();
 
-                            Log.Write("SLD-200", " Socket NO : " + nSocketNum.ToString() +
-                                "AlignMode.GoldPowder::FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
-                                " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
-                                ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
+                                        double offsetX = measuredHole.X - matched.X;
+                                        double offsetY = measuredHole.Y - matched.Y;
+                                        double distance = Math.Sqrt(offsetX * offsetX + offsetY * offsetY);
 
-                            //  데이터 위치를 Scanner 위치로 변경
-                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X += 
-                                Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y += 
-                                Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                                        if (Math.Abs(offsetX) > 0.03 || Math.Abs(offsetY) > 0.03)
+                                        {
+                                            continue;
+                                        }
 
-                            //  여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
-                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
-                                Equipment.StageOffset_forDrilling_X - 
-                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
-                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
-                                Equipment.StageOffset_forDrilling_Y - 
-                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                                        totalOffsetX += offsetX;
+                                        totalOffsetY += offsetY;
+                                        matchCount++;
+                                        Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::offsetXY Offset - X: {offsetX:F6}, Y: {offsetY:F6}");
+                                    }
+                                }
 
-                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width = 
-                                Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
-                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = 
-                                Fiducial_circlesResult[0].Height * Config.ParamConfig.UpperVision_Scale_X;
+                                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::totalOffsetXY Offset - X: {totalOffsetX:F6}, Y: {totalOffsetY:F6}");
+                                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::matchCount: {matchCount:F6}");
 
-                            m_nSocketAlign_FiducialCount++;
+                                // 평균 Offset 계산
+                                double averageOffsetX = totalOffsetX;
+                                double averageOffsetY = totalOffsetY;
+                                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::Average Offset - X: {averageOffsetX:F6}, Y: {averageOffsetY:F6}");
 
-                            m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RemainedCheck;
-                        }
-                        else
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry");
-                            m_nSocketAlign_Retry_Max = 0;
-                            if (m_nSocketAlign_Retry_Count < m_nSocketAlign_Retry_Max)
-                            {
-                                m_nSocketAlign_Retry_Count++;
+                                // 이거면 되것징!!!! // -,+ X 안됨.
+                                //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경. -> +,+ 변경
+                                // GoldPowder는 +,+ -> -,- 로 변경20250522  -> +,- 로 변경20250522 1830 -> -,- 로 변경20250522 1920
+                                // 최종단에서 X-Axis에 * -1 적용.
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
+                                    MC_Func.MC_GetEncPos((int)nAxis.X) - averageOffsetX;
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
+                                    MC_Func.MC_GetEncPos((int)nAxis.Y) - averageOffsetY;
 
-                                //  테스트 하면서 조명값을 변경하여 재시도 하도록 한다.
-                                m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
+                                Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() +
+                                    "FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
+                                    " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
+                                    ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
+
+                                Log.Write("SLD-200", " Socket NO : " + nSocketNum.ToString() +
+                                    "AlignMode.GoldPowder::FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
+                                    " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
+                                    ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
+
+                                //  데이터 위치를 Scanner 위치로 변경
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
+                                    Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
+                                    Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+                                //  여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
+                                    Equipment.StageOffset_forDrilling_X -
+                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
+                                    Equipment.StageOffset_forDrilling_Y -
+                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width =
+                                    Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height =
+                                    Fiducial_circlesResult[0].Height * Config.ParamConfig.UpperVision_Scale_X;
+
+                                m_nSocketAlign_FiducialCount++;
+
+                                m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RemainedCheck;
                             }
                             else
                             {
-                                Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
+                                Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry");
+                                m_nSocketAlign_Retry_Max = 0;
+                                if (m_nSocketAlign_Retry_Count < m_nSocketAlign_Retry_Max)
+                                {
+                                    m_nSocketAlign_Retry_Count++;
 
-                                m_bAlignCompleted = true;
-                                m_bSocketAlign_OK = false;
-                                m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+                                    //  테스트 하면서 조명값을 변경하여 재시도 하도록 한다.
+                                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
+
+                                    m_bAlignCompleted = true;
+                                    m_bSocketAlign_OK = false;
+                                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+                                }
                             }
                         }
                     }
@@ -14981,13 +15100,18 @@ namespace QMC.Common.Modules
                         {
                             if (m_bCO2_repairMode)
                             {
-                                m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+                                //1차, 3차 X,Y,T 보상
+                                {
+                                    // Angle, Offset 계산(이 값만큼 Dwg 데이터를 보정해서 가공한다.)
+                                    m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
 
-                                strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                                        "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                                        "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
-                                        "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
-                                Log.Write("SLD-200", Equipment.User_Name, "Socket Align:GoldPowder", strTemp);
+                                    strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                                                "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                                                "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                                                "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                                    Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+                                }
+
                             }
                             else
                             {
@@ -15589,7 +15713,6 @@ namespace QMC.Common.Modules
                         Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                     {
                         int nMaxInstance = 0;
-
                         if (m_bCO2_repairMode)
                         {
                             result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
@@ -15700,23 +15823,58 @@ namespace QMC.Common.Modules
 
                                 bFound = true;
                                 continue;
-
                             }
                         }
                         else if(alignMode == AlignMode.GoldPowder)
                         {
-                            nCenterX = (int)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
-                            nOffsetX = nCenterX - Camera_HighRes.Resolution.Width / 2;
+                            if (m_bCO2_repairMode)
+                            {
+                                //nCenterX = (int)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
+                                //nOffsetX = nCenterX - Camera_HighRes.Resolution.Width / 2;
 
-                            nCenterY = (int)(Fiducial_circlesResult[0].Y + Fiducial_circlesResult[0].Height / 2);
-                            nOffsetY = nCenterY - Camera_HighRes.Resolution.Height / 2;
+                                //nCenterY = (int)(Fiducial_circlesResult[0].Y + Fiducial_circlesResult[0].Height / 2);
+                                //nOffsetY = nCenterY - Camera_HighRes.Resolution.Height / 2;
 
-                            dXoffset = nOffsetX * this.Config.ParamConfig.UpperVision_Scale_X;
-                            dYoffset = nOffsetY * this.Config.ParamConfig.UpperVision_Scale_Y;
+                                //dXoffset = nOffsetX * this.Config.ParamConfig.UpperVision_Scale_X;
+                                //dYoffset = nOffsetY * this.Config.ParamConfig.UpperVision_Scale_Y;
 
-                            currentPosition.X -= dXoffset;
-                            currentPosition.Y += dYoffset;
-                            bFound = true;
+                                //currentPosition.X -= dXoffset;
+                                //currentPosition.Y += dYoffset;
+                                //bFound = true;
+
+                                if (bFound == false)
+                                {
+                                    nCenterX = (int)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
+                                    nOffsetX = nCenterX - Camera_HighRes.Resolution.Width / 2;
+
+                                    nCenterY = (int)(Fiducial_circlesResult[0].Y + Fiducial_circlesResult[0].Height / 2);
+                                    nOffsetY = nCenterY - Camera_HighRes.Resolution.Height / 2;
+
+                                    dXoffset = nOffsetX * this.Config.ParamConfig.UpperVision_Scale_X;
+                                    dYoffset = nOffsetY * this.Config.ParamConfig.UpperVision_Scale_Y;
+
+                                    currentPosition.X -= dXoffset;
+                                    currentPosition.Y += dYoffset;
+
+                                    bFound = true;
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                nCenterX = (int)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
+                                nOffsetX = nCenterX - Camera_HighRes.Resolution.Width / 2;
+
+                                nCenterY = (int)(Fiducial_circlesResult[0].Y + Fiducial_circlesResult[0].Height / 2);
+                                nOffsetY = nCenterY - Camera_HighRes.Resolution.Height / 2;
+
+                                dXoffset = nOffsetX * this.Config.ParamConfig.UpperVision_Scale_X;
+                                dYoffset = nOffsetY * this.Config.ParamConfig.UpperVision_Scale_Y;
+
+                                currentPosition.X -= dXoffset;
+                                currentPosition.Y += dYoffset;
+                                bFound = true;
+                            }
                         }
 
                         return 0;
@@ -23035,7 +23193,7 @@ namespace QMC.Common.Modules
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "XXX - 들어오면 안되는 구간인데..");
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 5)               //  60 sec * 5
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 9999999)               //  60 sec * 5
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 시간 초과.");
                         AlarmPost(AlarmKey.SocketAlignMovePositionCalcFail);
@@ -29834,6 +29992,7 @@ namespace QMC.Common.Modules
 
             m_bPassedSocket_Exist = false;
 
+            m_AlignMode = AlignMode.Socket;
 
             //  시리얼 넘버 마킹 시 모듈이 바뀔 때 소켓 시리얼넘버를 초기화 하는 경우
             if ((!Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType) &&                                                                     //  마킹이 고정 Text 가 아닌 Serial Number 마킹인 경우
