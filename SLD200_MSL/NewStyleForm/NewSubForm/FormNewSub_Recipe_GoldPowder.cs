@@ -480,6 +480,12 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 if(bCO2_RepairMode)
                 {
+                    //result = aligner.FindCircleForFR4(workStage.Camera_HighRes.LatestImage.RawData,
+                    //                                                        w, h,
+                    //                                                        (int)m_dradius,
+                    //                                                        dSpec,
+                    //                                                        dScore);
+
                     result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData,
                                                     w, h, (int)m_dradius, dSpec,
