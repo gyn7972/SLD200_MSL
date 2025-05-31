@@ -155,16 +155,15 @@ namespace SLD200_MSL
                     double dEndY = centerY + (rowCount * dSplitH) / 2;
 
                     OpenGL renderer = view.Renderer;
-                    // 바둑판의 크기와 간격 설정
+                               // 바둑판의 크기와 간격 설정
                     float squareSize = 10.0f; // 각 셀의 크기
                     int gridCount = 10;       // 가로, 세로로 그릴 셀의 개수
                     float gridSize = squareSize * gridCount; // 전체 그리드 크기
 
-                    // 라임색 설정
+                              // 라임색 설정
                     renderer.Color(0.0f, 1.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
                     for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
                     {
-
                         renderer.Begin(OpenGL.GL_LINES);
                         renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
                         renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝

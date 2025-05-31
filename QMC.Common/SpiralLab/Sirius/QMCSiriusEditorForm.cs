@@ -147,6 +147,11 @@ namespace SpiralLab.Sirius
                         MoveToMarking();
                     }
                     break;
+                case Keys.Alt | Keys.D:
+                    {
+                        AutoDivide();
+                    }
+                    break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -252,6 +257,146 @@ namespace SpiralLab.Sirius
                     v.IsSelected = false;
                 }
                 Lay.IsSelected = true;
+            }
+        }
+
+        private void AutoDivide()
+        {
+            //AutoDivideBySize(10, 22); // 원하는 mm 단위 셀 크기 설정
+
+            //AutoDivideByLayer("Outline", 10f, 22f); // 원하는 mm 단위 셀 크기 설정
+            // 현재 선택된 레이어 하나 가져오기
+            var selectedLayer = doc.Layers.FirstOrDefault(l => l.IsSelected);
+            if (selectedLayer == null)
+            {
+                MessageBox.Show("선택된 레이어가 없습니다. 레이어를 먼저 선택하세요.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            AutoDivideByLayer(selectedLayer.Name, 5, 5); // 원하는 mm 단위 셀 크기 설정
+        }
+
+        //레이어를 따로 선택해서 영역 분할.
+        private void AutoDivideByLayer(string layerName, float cellWidth, float cellHeight)
+        {
+            var doc = this.Document;
+            if (doc == null || doc.Layers == null)
+            {
+                MessageBox.Show("문서 또는 레이어 정보가 없습니다.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 이름이 포함된 레이어 찾기 (예: "Frame_Cut(Top)" 등)
+            var layer = doc.Layers.Where(l => l.Name.Contains(layerName)).FirstOrDefault();
+            if (layer == null)
+            {
+                MessageBox.Show($"Layer '{layerName}' 를 찾을 수 없습니다.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Layer의 엔티티 목록을 안전하게 복사
+            // Group은 제외하고 개별 엔티티만 선택
+            var entities = layer
+                .Where(e => !(e is Group))
+                .ToList();
+
+            foreach (var entity in entities)
+            {
+                if (entity == null || entity.BoundRect == null)
+                    continue;
+
+                var bounds = entity.BoundRect;
+                float minX = Math.Min(bounds.Left, bounds.Right);
+                float maxX = Math.Max(bounds.Left, bounds.Right);
+                float minY = Math.Min(bounds.Bottom, bounds.Top);
+                float maxY = Math.Max(bounds.Bottom, bounds.Top);
+
+                int cols = Math.Max(1, (int)Math.Ceiling((maxX - minX) / cellWidth));
+                int rows = Math.Max(1, (int)Math.Ceiling((maxY - minY) / cellHeight));
+
+                List<BoundRect> rectList = new List<BoundRect>();
+
+                for (int row = 0; row < rows; row++)
+                {
+                    for (int col = 0; col < cols; col++)
+                    {
+                        float left = minX + col * cellWidth;
+                        float right = left + cellWidth;
+                        float bottom = minY + row * cellHeight;
+                        float top = bottom + cellHeight;
+
+                        rectList.Add(new BoundRect(left, top, right, bottom));  // 주의: top > bottom
+                    }
+                }
+
+                try
+                {
+                    if (rectList.Count > 0)
+                        doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Divide Error: {ex.Message}", "Divide", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        //객체를 따로 선택해서 영역 분할.
+        private void AutoDivideBySize(float cellWidth, float cellHeight)
+        {
+            var doc = this.Document;
+            var selectedEntities = doc.Action.SelectedEntity;
+
+            if (selectedEntities == null || selectedEntities.Count == 0)
+            {
+                MessageBox.Show("Please select target entity first", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            foreach (var entity in selectedEntities)
+            {
+                if (entity == null || entity.BoundRect == null)
+                    continue;
+
+                var bounds = entity.BoundRect;
+                float minX = Math.Min(bounds.Left, bounds.Right);
+                float maxX = Math.Max(bounds.Left, bounds.Right);
+                float minY = Math.Min(bounds.Bottom, bounds.Top);
+                float maxY = Math.Max(bounds.Bottom, bounds.Top);
+
+                int cols = Math.Max(1, (int)Math.Ceiling((maxX - minX) / cellWidth));
+                int rows = Math.Max(1, (int)Math.Ceiling((maxY - minY) / cellHeight));
+
+                List<BoundRect> rectList = new List<BoundRect>();
+
+                for (int row = 0; row < rows; row++)
+                {
+                    for (int col = 0; col < cols; col++)
+                    {
+                        float left = minX + col * cellWidth;
+                        float right = left + cellWidth;
+                        float bottom = minY + row * cellHeight;
+                        float top = bottom + cellHeight;
+
+                        BoundRect rect = new BoundRect(left, top, right, bottom);
+
+                        // 셀 영역이 대상 엔티티와 교차되는 경우만 추가
+                        if (entity.BoundRect.HitTest(rect, 0))
+                        {
+                            rectList.Add(rect);
+                        }
+                    }
+                }
+
+                try
+                {
+                    if (rectList.Count > 0)
+                        doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Divide Error: {ex.Message}", "Divide", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
