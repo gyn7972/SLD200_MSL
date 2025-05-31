@@ -124,6 +124,10 @@ namespace SLD200_MSL
                     {
                         DrawGrid(view);
                     }
+                    else if (layer.Name.Contains("Outline"))
+                    {
+                        DrawGrid(view, layer);
+                    }
                 }
             }
         }
@@ -139,45 +143,115 @@ namespace SLD200_MSL
         {
             if (layer != null)
             {
-                foreach (var v in layer.Items)
+                if (layer.Name.Contains("Hole1"))
                 {
-                    double width = v.BoundRect.Width;
-                    double height = v.BoundRect.Height;
-                    double centerX = v.BoundRect.Center.X;
-                    double centerY = v.BoundRect.Center.Y;
-                    double dSplitW = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize;
-                    double dSplitH = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height;
-                    int colCount = (int)Math.Ceiling(width / dSplitW);
-                    int rowCount = (int)Math.Ceiling(height / dSplitH);
-                    double dStartX = centerX - (colCount * dSplitW) / 2;
-                    double dStartY = centerY - (rowCount * dSplitH) / 2;
-                    double dEndX = centerX + (colCount * dSplitW) / 2;
-                    double dEndY = centerY + (rowCount * dSplitH) / 2;
-
-                    OpenGL renderer = view.Renderer;
-                               // 바둑판의 크기와 간격 설정
-                    float squareSize = 10.0f; // 각 셀의 크기
-                    int gridCount = 10;       // 가로, 세로로 그릴 셀의 개수
-                    float gridSize = squareSize * gridCount; // 전체 그리드 크기
-
-                              // 라임색 설정
-                    renderer.Color(0.0f, 1.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
-                    for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
+                    foreach (var v in layer.Items)
                     {
-                        renderer.Begin(OpenGL.GL_LINES);
-                        renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
-                        renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
-                        renderer.End();
-                    }
-                    for (double dY = dStartY; dY <= dEndY; dY += dSplitH)
-                    {
-                        renderer.Begin(OpenGL.GL_LINES);
-                        renderer.Vertex(dStartX, dY, 0.0f);          // 아래쪽 끝
-                        renderer.Vertex(dEndX, dY, 0.0f);   // 위쪽 끝
-                        renderer.End();
-                    }
+                        double width = v.BoundRect.Width;
+                        double height = v.BoundRect.Height;
+                        double centerX = v.BoundRect.Center.X;
+                        double centerY = v.BoundRect.Center.Y;
+                        double dSplitW = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize;
+                        double dSplitH = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize_Height;
+                        int colCount = (int)Math.Ceiling(width / dSplitW);
+                        int rowCount = (int)Math.Ceiling(height / dSplitH);
+                        double dStartX = centerX - (colCount * dSplitW) / 2;
+                        double dStartY = centerY - (rowCount * dSplitH) / 2;
+                        double dEndX = centerX + (colCount * dSplitW) / 2;
+                        double dEndY = centerY + (rowCount * dSplitH) / 2;
 
+                        OpenGL renderer = view.Renderer;
+                        // 바둑판의 크기와 간격 설정
+                        float squareSize = 10.0f;   // 각 셀의 크기
+                        int gridCount = 10;         // 가로, 세로로 그릴 셀의 개수
+                        float gridSize = squareSize * gridCount; // 전체 그리드 크기
+
+                        // 라임색 설정
+                        renderer.Color(200.0f, 200.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
+                        for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
+                        {
+                            renderer.Begin(OpenGL.GL_LINES);
+                            renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
+                            renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
+                            renderer.End();
+                        }
+                        for (double dY = dStartY; dY <= dEndY; dY += dSplitH)
+                        {
+                            renderer.Begin(OpenGL.GL_LINES);
+                            renderer.Vertex(dStartX, dY, 0.0f);          // 아래쪽 끝
+                            renderer.Vertex(dEndX, dY, 0.0f);   // 위쪽 끝
+                            renderer.End();
+                        }
+                    }
                 }
+                else if (layer.Name.Contains("Outline"))
+                {
+                    OpenGL renderer = view.Renderer;
+
+                    if (Equipment.stLayerRecipeSet == null || 
+                        (int)LayerList.Outline >= Equipment.stLayerRecipeSet.Length)
+                    {
+                        //MessageBox.Show("Outline 레이어의 레시피 정보가 존재하지 않습니다.", "Interlock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        Log.Write("SiriusEditor", "Outline 레이어의 레시피 정보가 존재하지 않습니다.");
+                        return;
+                    }
+
+                    var outlineRecipe = Equipment.stLayerRecipeSet[(int)LayerList.Outline];
+                    if (outlineRecipe.Miscellaneous_GroupSplitSize <= 0 || 
+                        outlineRecipe.Miscellaneous_GroupSplitSize_Height <= 0)
+                    {
+                        //MessageBox.Show("Outline 레이어의 그룹 분할 크기가 유효하지 않습니다.", "Interlock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        Log.Write("SiriusEditor", "Outline 레이어의 그룹 분할 크기가 유효하지 않습니다.");
+                        return;
+                    }
+
+                    double dSplitW = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_GroupSplitSize;
+                    double dSplitH = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_GroupSplitSize_Height;
+
+                    renderer.Color(200.0f, 200.0f, 0.0f); // 라임색 (노란 녹색 계열)
+
+                    foreach (var entity in layer.Items)
+                    {
+                        if (entity == null || entity.BoundRect == null)
+                            continue;
+
+                        var bounds = entity.BoundRect;
+
+                        double width = bounds.Width;
+                        double height = bounds.Height;
+                        double centerX = bounds.Center.X;
+                        double centerY = bounds.Center.Y;
+
+                        int colCount = Math.Max(1, (int)Math.Ceiling(width / dSplitW));
+                        int rowCount = Math.Max(1, (int)Math.Ceiling(height / dSplitH));
+
+                        double dStartX = centerX - (colCount * dSplitW) / 2;
+                        double dStartY = centerY - (rowCount * dSplitH) / 2;
+                        double dEndX = centerX + (colCount * dSplitW) / 2;
+                        double dEndY = centerY + (rowCount * dSplitH) / 2;
+
+                        // 세로선 (X 방향)
+                        for (int col = 0; col <= colCount; col++)
+                        {
+                            double x = dStartX + col * dSplitW;
+                            renderer.Begin(OpenGL.GL_LINES);
+                            renderer.Vertex(x, dStartY, 0.0f);
+                            renderer.Vertex(x, dEndY, 0.0f);
+                            renderer.End();
+                        }
+
+                        // 가로선 (Y 방향)
+                        for (int row = 0; row <= rowCount; row++)
+                        {
+                            double y = dStartY + row * dSplitH;
+                            renderer.Begin(OpenGL.GL_LINES);
+                            renderer.Vertex(dStartX, y, 0.0f);
+                            renderer.Vertex(dEndX, y, 0.0f);
+                            renderer.End();
+                        }
+                    }
+                }
+                
             }
         }
 
@@ -1989,7 +2063,7 @@ namespace SLD200_MSL
         }
 
 
-/// <summary>
+        /// <summary>
         /// 테스트용 코드 : Select 한 데이터만 가져오기 (어디 어디 선택한 건지...?), 나중에 써먹을 지 몰라서 만들어 둠
         /// </summary>
         public bool DrillingData_Select_Check()
