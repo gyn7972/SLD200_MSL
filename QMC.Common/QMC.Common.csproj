@@ -705,7 +705,11 @@
     <None Include="syncAXIS\bin64\lib\syncAXIS.lib" />
     <None Include="syncAXIS\bin\lib\syncAXIS.lib" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="SpiralLab\Sirius\QMCSiriusEditorForm.resx">
+      <DependentUpon>QMCSiriusEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "C:\Program Files\QMC\SLD200_MSL\"

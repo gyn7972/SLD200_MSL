@@ -34478,13 +34478,12 @@ namespace QMC.Common.Modules
             //}
 
             m_nLayerCount = 0;
-            // 1. 도면 레이어별 소켓 수 파악
+                     // 1. 도면 레이어별 소켓 수 파악
             Dictionary<string, int> layerSocketCounts = new Dictionary<string, int>();
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
-                // 중요! Data수집 - 도면 Layer 수집용. ////////
+                     // 중요! Data수집 - 도면 Layer 수집용. ////////
                 string name = layer.Name?.Trim();
-
                 if (!layer.IsMarkerable)
                     continue;
 
@@ -34506,16 +34505,16 @@ namespace QMC.Common.Modules
 
                 if (!containsGroup)
                 {
-                    // Group이 아닌 경우, 전체 엔티티 수를 소켓 수로 사용
+                             // Group이 아닌 경우, 전체 엔티티 수를 소켓 수로 사용
                     socketCount = layer.Count;
                 }
 
-                //Hole2, 3, 4 등은 자료가 없이 hole1번꺼를 사용할꺼임.
-                //그래서 아래와 같은 인터락 있으면 안됨.
+                        //Hole2, 3, 4 등은 자료가 없이 hole1번꺼를 사용할꺼임.
+                        //그래서 아래와 같은 인터락 있으면 안됨.
                 //if (socketCount <= 0)
                 //    continue;
 
-                // 이름 보정 및 Dictionary 추가
+                        // 이름 보정 및 Dictionary 추가
                 if (name.StartsWith("Hole"))
                 {
                     string digitPart = new string(name.Skip(4).Where(char.IsDigit).ToArray());
@@ -34582,7 +34581,6 @@ namespace QMC.Common.Modules
                                 if (group == null)
                                 {
                                     m_nCount = layer.Count;
-
                                     LayerIsGroup = false;
                                 }
                                 else
@@ -34625,16 +34623,15 @@ namespace QMC.Common.Modules
                                 }
                             }
 
-
                             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             //
-                            //  [드릴링] [syncAxis] [ScannerOnly]
+                                         //  [드릴링] [syncAxis] [ScannerOnly]
                             //
                             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             ///
                             //if (layer.MotionType == MotionType.ScannerOnly)             //  MotionType.ScannerOnly
                             {
-                                //  Group 개수
+                                                //  Group 개수
                                 foreach (var entity in layer)
                                 {
                                     m_nGroupCount++;
@@ -34642,10 +34639,9 @@ namespace QMC.Common.Modules
                                 m_stDividedRegion_GroupData = new WorkStage.stDividedRegion_GroupData[m_nGroupCount];
                                 m_stDividedRegion_GroupData[0].nGroup_Num = m_nGroupCount;
 
-
                                 m_nGroupCount = 0;
 
-                                //  2023. 05. 23.  SCH : Group 객체들 중에 분할 영역을 넘어가는 부분이 하나라도 있으면 전체를 DividedRegion 으로 처리한다.
+                                                //  2023. 05. 23.  SCH : Group 객체들 중에 분할 영역을 넘어가는 부분이 하나라도 있으면 전체를 DividedRegion 으로 처리한다.
                                 m_bGroupExist_LargerThanDivideSize = false;
                                 foreach (var entity in layer)
                                 {
@@ -34668,7 +34664,7 @@ namespace QMC.Common.Modules
                                             if (((double)group.Width > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize) ||
                                                 ((double)group.Height > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize_Height))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
                                             {
-                                                //  요건 조건 보고 살리자
+                                                                        //  요건 조건 보고 살리자
                                                 m_bGroupExist_LargerThanDivideSize = true;
                                             }
 
@@ -37882,7 +37878,7 @@ namespace QMC.Common.Modules
                         }
 
 
-                        //  세부 데이터 저장
+                                    //  세부 데이터 저장
                         m_nGroupData_Count = 0;
                         foreach (var entity in layer)
                         {
@@ -37978,7 +37974,7 @@ namespace QMC.Common.Modules
 
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-                                    
+
                                     m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                     //  객체 Type
@@ -38328,6 +38324,525 @@ namespace QMC.Common.Modules
                                 break;
                         }
                     }
+                    //else if (layer.Name == "Outline")
+                    //{
+                    //    m_ptLast.X = 0.0;
+                    //    m_ptLast.Y = 0.0;
+
+                    //    m_nOutlineSocket_Count = 0;
+
+                    //    m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_OUTLINE;
+                    //    m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Outline;                //  Layer Parameter 변경을 위한 Index
+
+                    //    //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
+                    //    int m_nCount = 0;
+                    //    foreach (var entity in layer)
+                    //    {
+                    //        var group = entity as Group;
+
+                    //        if (group == null)
+                    //        {
+                    //            LayerIsGroup = false;
+
+                    //            m_nCount = layer.Count;
+                    //        }
+                    //        else
+                    //        {
+                    //            LayerIsGroup = true;
+
+                    //            m_nCount = 1;
+                    //        }
+
+                    //        break;
+                    //    }
+
+                    //    //  위에서 공간 할당
+
+                    //    //if (!LayerIsGroup || (m_nCount > 1))
+                    //    //{
+                    //    //    //m_stOutline_LayerData = new LaserDrilling.stOutLine_SocketData();
+
+                    //    //    //  전체 Object 개수
+                    //    //    m_stOutLine_SocketData[m_nLayerOutline_Count].nRegion_ObjectTotalNum = layer.Count;
+
+                    //    //    //  Object 별 데이터 공간 메모리 할당
+                    //    //    m_stOutLine_SocketData[m_nLayerOutline_Count].m_stOutLine_ObjectData = new stOutLine_ObjectData[layer.Count];
+
+                    //    //    //  Thruhole 데이터 개수
+                    //    //    m_nLayerOutline_Count = m_stOutLine_SocketData[m_nLayerOutline_Count].nRegion_ObjectTotalNum;
+                    //    //}
+
+                    //    // Block 으로 들어옴. :: Block으로 들어오는거는.. 내부 Line으로 추출하는데 
+                    //    // Line 성분의 길이가 깨짐.
+
+                    //    if (LayerIsGroup)               //  MSL 은 Outline 을 Group 으로 해야 한다. 
+                    //    {
+                    //        //  전체 Socket 개수만큼 공간 할당
+                    //        m_stOutLine_SocketData = new stOutLine_SocketData[layer.Count];
+                    //        m_stOutLine_SocketData[0].nSocket_Num = layer.Count;
+
+                    //        //  Outline Fiducial 마크 공간 할당
+                    //        for (int i = 0; i < layer.Count; i++)
+                    //        {
+                    //            m_stOutLine_SocketData[i].dFiducialPos = new PointD[4];
+                    //            m_stOutLine_SocketData[i].dFiducialWidth = new double[4];
+                    //            m_stOutLine_SocketData[i].dFiducialHeight = new double[4];
+                    //        }
+
+                    //        ////  Hole1 Layer 가 없다면, Align Mark 를 위한 구조체의 영역 할당을 여기에서 한다.
+                    //        //if (m_nLayerHole1_Count <= 0)
+                    //        //{
+                    //        //    m_stAlignMarkData = new stAlignMarkData[layer.Count];
+                    //        //}
+                    //    }
+
+
+                    //    //  세부 데이터 저장
+                    //    m_nGroupData_Count = 0;
+                    //    foreach (var entity in layer)
+                    //    {
+                    //        switch (entity.EntityType)
+                    //        {
+                    //            case EType.Point:
+                    //                var point = entity as SpiralLab.Sirius.Point;
+                    //                //point.Location 
+                    //                //point.DwellTime
+                    //                //success &= point.Mark(markerArg);
+                    //                break;
+
+                    //            case EType.Points:
+                    //                var points = entity as Points;
+                    //                foreach (var vertex in points)
+                    //                {
+                    //                    //vertex.X
+                    //                    //vertex.Y
+                    //                }
+                    //                //points.DwellTime
+                    //                //success &= points.Mark(markerArg);
+                    //                break;
+
+                    //            case EType.Line:
+                    //                var line = entity as SpiralLab.Sirius.Line;
+
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : End
+
+                    //                //  객체 Type
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
+
+                    //                //  객체 Edge 좌표 개수
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
+
+                    //                //  객체 Center 좌표 데이터 저장
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)line.Start.X + (double)line.End.X != 0.0 ? ((double)line.Start.X + (double)line.End.X) / 2.0 : 0.0;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)line.Start.Y + (double)line.End.Y != 0.0 ? ((double)line.Start.Y + (double)line.End.Y) / 2.0 : 0.0;
+
+                    //                //  객체 Edge 좌표 데이터 저장
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)line.Start.X;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)line.Start.Y;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)line.End.X;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)line.End.Y;
+
+                    //                //  마지막 좌표 위치 저장
+                    //                m_ptLast.X = (double)line.End.X;
+                    //                m_ptLast.Y = (double)line.End.Y;
+
+                    //                //  영역 객체 개수 +1
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount++;
+
+                    //                //line.Start
+                    //                //line.End
+                    //                //success &= line.Mark(markerArg);
+                    //                break;
+
+                    //            case EType.Arc:
+                    //                var arc = entity as SpiralLab.Sirius.Arc;
+
+                    //                //  객체 Type
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
+
+                    //                //  객체 Radius
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].stArcData.dRadius = (double)arc.Radius;
+
+                    //                //  객체 Center 좌표
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)arc.Center.X;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)arc.Center.Y;
+
+                    //                //  객체 Center 좌표 데이터 저장
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)arc.Center.X;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)arc.Center.Y;
+
+                    //                //  객체 Start Angle
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)arc.StartAngle;
+
+                    //                //  객체 Sweep Angle
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)arc.SweepAngle;
+
+                    //                //  마지막 좌표 위치 저장
+                    //                m_ptLast.X = (double)arc.Center.X;
+                    //                m_ptLast.Y = (double)arc.Center.Y;
+
+                    //                //  영역 객체 개수 +1
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount++;
+
+                    //                //arc.Radius
+                    //                //arc.Center
+                    //                //arc.StartAngle
+                    //                //arc.SweepAngle
+                    //                //success &= arc.Mark(markerArg);
+                    //                break;
+
+                    //            case EType.Circle:
+                    //                var circle = entity as SpiralLab.Sirius.Circle;
+
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+
+                    //                //  객체 Type
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
+
+                    //                //  객체 Edge 좌표 개수
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nEdgePointNum = 1;
+
+                    //                //  객체 Center 좌표 데이터 저장
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)circle.Center.X;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)circle.Center.Y;
+
+                    //                //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)circle.Center.X;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)circle.Center.Y;
+
+                    //                //  Circle 의 경우, 두 번째 데이터는 Radius 값
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)circle.Radius;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)circle.Radius;
+
+                    //                //  마지막 좌표 위치 저장
+                    //                m_ptLast.X = (double)circle.Center.X;
+                    //                m_ptLast.Y = (double)circle.Center.Y;
+
+                    //                //  영역 객체 개수 +1
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount++;
+                    //                break;
+
+                    //            case EType.Rectangle:
+                    //                var rectangle = entity as SpiralLab.Sirius.Rectangle;
+
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+
+                    //                //  객체 Type
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
+
+                    //                //  객체 Edge 좌표 개수
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nEdgePointNum = 5;
+
+                    //                //  객체 Center 좌표 데이터 저장
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)rectangle.Center.X;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)rectangle.Center.Y;
+
+                    //                //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
+
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
+
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+
+                    //                //  마지막 좌표 위치 저장
+                    //                m_ptLast.X = m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                    //                m_ptLast.Y = m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+
+                    //                //  영역 객체 개수 +1
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount++;
+
+                    //                //rectangle.Width
+                    //                //rectangle.Height
+                    //                //rectangle.Align
+                    //                //rectangle.Location
+                    //                //success &= rectangle.Mark(markerArg);
+                    //                break;
+
+                    //            case EType.LWPolyline:
+                    //                var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
+                    //                //lwPolyline.IsClosed
+
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+
+                    //                //  객체 Type
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
+
+                    //                //  객체 Edge 좌표 개수
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nEdgePointNum = lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count;
+
+                    //                //  객체 Center 좌표 데이터 저장
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)lwPolyline.BoundRect.Center.X;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)lwPolyline.BoundRect.Center.Y;
+
+                    //                //  객체 Edge 좌표 데이터 저장
+                    //                for (int n_pl = 0; n_pl < lwPolyline.Count; n_pl++)
+                    //                {
+                    //                    m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)lwPolyline.Items[n_pl].X;
+                    //                    m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)lwPolyline.Items[n_pl].Y;
+                    //                }
+
+                    //                //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
+                    //                if (lwPolyline.IsClosed)
+                    //                {
+                    //                    m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].X = (double)lwPolyline.Items[0].X;
+                    //                    m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].Y = (double)lwPolyline.Items[0].Y;
+                    //                }
+
+                    //                //  마지막 좌표 위치 저장
+                    //                m_ptLast.X = m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                    //                m_ptLast.Y = m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+
+                    //                //  영역 객체 개수 +1
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount++;
+
+                    //                //foreach (var vertex in lwPolyline)
+                    //                //{
+                    //                //    //vertex.X
+                    //                //    //vertex.Y
+                    //                //    //vertex.Bulge
+                    //                //}
+                    //                //success &= lwPolyline.Mark(markerArg);
+                    //                break;
+
+                    //            case EType.Spiral:
+                    //                var spiral = entity as Spiral;
+                    //                //spiral.OutterDiameter 
+                    //                //spiral.InnerDiameter
+                    //                //spiral.RadialPitch
+                    //                //spiral.Revolutions
+                    //                //spiral.Center
+                    //                //success &= spiral.Mark(markerArg);
+                    //                break;
+
+                    //            case EType.Group:
+                    //            default:
+                    //                var group = entity as Group;
+
+                    //                //  전체 Object 개수
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectTotalNum = group.Count;
+
+                    //                //  Socket Center 좌표 저장
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].dSocketCenter.X = group.Location.X;
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].dSocketCenter.Y = group.Location.Y;
+
+                    //                //  Object 별 데이터 공간 메모리 할당
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData = new stOutLine_ObjectData[group.Count];
+
+                    //                //  세부 데이터 저장
+                    //                m_nGroupData_Count = 0;
+                    //                foreach (var subEntity in group)
+                    //                {
+                    //                    m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_nGroupData_Count].bAssigned = false;
+
+                    //                    Type t = subEntity.GetType();
+                    //                    if (t.Name == "LwPolyline")
+                    //                    {
+                    //                        var pl = subEntity as SpiralLab.Sirius.LwPolyline;
+
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+
+                    //                        //  객체 Type
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
+
+                    //                        //  객체 Edge 좌표 개수
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
+
+                    //                        //  객체 Center 좌표 데이터 저장
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
+
+                    //                        //  객체 Edge 좌표 데이터 저장
+                    //                        for (int n_pl = 0; n_pl < pl.Count; n_pl++)
+                    //                        {
+                    //                            m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
+                    //                            m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
+                    //                        }
+
+                    //                        //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
+                    //                        if (pl.IsClosed)
+                    //                        {
+                    //                            m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
+                    //                            m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
+                    //                        }
+
+                    //                        //  마지막 좌표 위치 저장
+                    //                        m_ptLast.X = m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                    //                        m_ptLast.Y = m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+
+                    //                        //  영역 객체 개수 +1
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount++;
+                    //                    }
+                    //                    else if (t.Name == "Circle")
+                    //                    {
+                    //                        var pl = subEntity as SpiralLab.Sirius.Circle;
+
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+
+                    //                        //  객체 Type
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
+
+                    //                        //  객체 Edge 좌표 개수
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nEdgePointNum = 1;
+
+                    //                        //  객체 Center 좌표 데이터 저장
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
+
+                    //                        //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
+
+                    //                        //  Circle 의 경우, 두 번째 데이터는 Radius 값
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
+
+                    //                        //  마지막 좌표 위치 저장
+                    //                        m_ptLast.X = (double)pl.Center.X;
+                    //                        m_ptLast.Y = (double)pl.Center.Y;
+
+                    //                        //  영역 객체 개수 +1
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount++;
+                    //                    }
+                    //                    else if (t.Name == "Rectangle")
+                    //                    {
+                    //                        var pl = subEntity as SpiralLab.Sirius.Rectangle;
+
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+
+                    //                        //  객체 Type
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
+
+                    //                        //  객체 Edge 좌표 개수
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nEdgePointNum = 5;
+
+                    //                        //  객체 Center 좌표 데이터 저장
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
+
+                    //                        //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
+
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
+
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+
+                    //                        //  마지막 좌표 위치 저장
+                    //                        m_ptLast.X = m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                    //                        m_ptLast.Y = m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+
+                    //                        //  영역 객체 개수 +1
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount++;
+                    //                    }
+                    //                    else if (t.Name == "Line")
+                    //                    {
+                    //                        var pl = subEntity as SpiralLab.Sirius.Line;
+
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
+                    //                        //  객체 Type
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
+
+                    //                        //  객체 Edge 좌표 개수
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
+
+                    //                        //  객체 Center 좌표 데이터 저장
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
+
+                    //                        //  객체 Edge 좌표 데이터 저장
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Start.X;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Start.Y;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.End.X;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.End.Y;
+
+                    //                        //  마지막 좌표 위치 저장
+                    //                        m_ptLast.X = (double)pl.End.X;
+                    //                        m_ptLast.Y = (double)pl.End.Y;
+
+                    //                        //  영역 객체 개수 +1
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount++;
+                    //                    }
+                    //                    else if (t.Name == "Arc")
+                    //                    {
+                    //                        var pl = subEntity as SpiralLab.Sirius.Arc;
+
+                    //                        //  객체 Type
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
+
+                    //                        //  객체 Radius
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].stArcData.dRadius = (double)pl.Radius;
+
+                    //                        //  객체 Center 좌표 데이터 저장
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
+
+                    //                        //  객체 Center 좌표
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)pl.Center.X;
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)pl.Center.Y;
+
+                    //                        //  객체 Start Angle
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)pl.StartAngle;
+
+                    //                        //  객체 Sweep Angle
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)pl.SweepAngle;
+
+                    //                        //  마지막 좌표 위치 저장
+                    //                        m_ptLast.X = (double)pl.Center.X;
+                    //                        m_ptLast.Y = (double)pl.Center.Y;
+
+                    //                        //  영역 객체 개수 +1
+                    //                        m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount++;
+                    //                    }
+                    //                    else        //  또 뭐가 있나...
+                    //                    {
+
+                    //                    }
+                    //                }
+
+
+                    //                //  순서대로 이어지도록 정렬 (도면을 분할하면 Y 좌표를 기준으로 정렬이 되어서 X 좌표가 왔다 갔다 한다. 그래서 가까운 순서로 다시 정렬해 줘야 한다.)
+                    //                var objectDataArray = m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData;
+                    //                var sorted = NearestNeighborSort(objectDataArray);
+                    //                m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData = sorted;
+
+
+                    //                m_nOutlineSocket_Count++;
+
+                    //                //success &= group.Mark(markerArg);
+                    //                break;
+                    //                // case EType....
+                    //                // ...
+
+                    //                //default:
+                    //                //    if (entity is IMarkerable markerable)
+                    //                //    {
+                    //                //        // mark entity
+                    //                //        // 해당 개체(Entity) 가공 
+                    //                //        //success &= markerable.Mark(markerArg);
+                    //                //    }
+                    //                //    break;
+                    //        }
+                    //        if (!success)
+                    //            break;
+                    //    }
+                    //}
                     ///////////////////////
                     ///                 ///
                     ///      마킹       ///
