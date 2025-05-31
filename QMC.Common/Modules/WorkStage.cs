@@ -14256,6 +14256,8 @@ namespace QMC.Common.Modules
         }
 
         bool m_bCO2_repairMode = true;
+        st4PointPosition_Data[] m_st4Dwg_RepairPos = new st4PointPosition_Data[4];
+
 
         #region Socket Align
         int ExecuteAlignmentSequence(int nSocketNum, 
@@ -14326,30 +14328,10 @@ namespace QMC.Common.Modules
                                     for (int i = 0; i < 4; i++)
                                     {
                                         //  4-Point 의 도면상 위치 데이터
-                                        //m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].X;
-                                        //m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].Y;
-                                        //m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stDividedRegion_GroupData[nSocketNum].dFiducialWidth[i];
-                                        //m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stDividedRegion_GroupData[nSocketNum].dFiducialHeight[i];
-
-                                        m_st4PointPosition_DwgPos[0].ptFiducial_Center.X = -16.125;
-                                        m_st4PointPosition_DwgPos[0].ptFiducial_Center.Y = 16.375;
-                                        m_st4PointPosition_DwgPos[0].dFiducial_Width = 0.225;
-                                        m_st4PointPosition_DwgPos[0].dFiducial_Height = 0.225;
-
-                                        m_st4PointPosition_DwgPos[1].ptFiducial_Center.X = -16.125;
-                                        m_st4PointPosition_DwgPos[1].ptFiducial_Center.Y = 48.625;
-                                        m_st4PointPosition_DwgPos[1].dFiducial_Width = 0.225;
-                                        m_st4PointPosition_DwgPos[1].dFiducial_Height = 0.225;
-
-                                        m_st4PointPosition_DwgPos[2].ptFiducial_Center.X = 16.125;
-                                        m_st4PointPosition_DwgPos[2].ptFiducial_Center.Y = 48.625;
-                                        m_st4PointPosition_DwgPos[2].dFiducial_Width = 0.225;
-                                        m_st4PointPosition_DwgPos[2].dFiducial_Height = 0.225;
-
-                                        m_st4PointPosition_DwgPos[3].ptFiducial_Center.X = 16.125;
-                                        m_st4PointPosition_DwgPos[3].ptFiducial_Center.Y = 16.375;
-                                        m_st4PointPosition_DwgPos[3].dFiducial_Width = 0.225;
-                                        m_st4PointPosition_DwgPos[3].dFiducial_Height = 0.225;
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].X;
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].Y;
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stDividedRegion_GroupData[nSocketNum].dFiducialWidth[i];
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stDividedRegion_GroupData[nSocketNum].dFiducialHeight[i];
                                     }
                                     //m_nProductAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos;
                                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.__SocketAlign_Start;
@@ -14484,25 +14466,43 @@ namespace QMC.Common.Modules
                             {
                                 if(m_bCO2_repairMode)
                                 {
-                                    m_st4PointPosition_DwgPos[0].ptFiducial_Center.X = -16.125;
-                                    m_st4PointPosition_DwgPos[0].ptFiducial_Center.Y = 16.375;
-                                    m_st4PointPosition_DwgPos[0].dFiducial_Width = 0.225;
-                                    m_st4PointPosition_DwgPos[0].dFiducial_Height = 0.225;
+                                    var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stDividedRegion_GroupData);
+                                    // 전체 홀 리스트 사용
+                                    List<AlignPoint> allHoles = alignPositions.AllPoints;
 
-                                    m_st4PointPosition_DwgPos[1].ptFiducial_Center.X = -16.125;
-                                    m_st4PointPosition_DwgPos[1].ptFiducial_Center.Y = 48.625;
-                                    m_st4PointPosition_DwgPos[1].dFiducial_Width = 0.225;
-                                    m_st4PointPosition_DwgPos[1].dFiducial_Height = 0.225;
+                                    m_st4Dwg_RepairPos[0].ptFiducial_Center.X = -16.125;
+                                    m_st4Dwg_RepairPos[0].ptFiducial_Center.Y = 16.375;
+                                    m_st4Dwg_RepairPos[0].dFiducial_Width = 0.225;
+                                    m_st4Dwg_RepairPos[0].dFiducial_Height = 0.225;
+                                    m_st4Dwg_RepairPos[1].ptFiducial_Center.X = -16.125;
+                                    m_st4Dwg_RepairPos[1].ptFiducial_Center.Y = 48.625;
+                                    m_st4Dwg_RepairPos[1].dFiducial_Width = 0.225;
+                                    m_st4Dwg_RepairPos[1].dFiducial_Height = 0.225;
+                                    m_st4Dwg_RepairPos[2].ptFiducial_Center.X = 16.125;
+                                    m_st4Dwg_RepairPos[2].ptFiducial_Center.Y = 48.625;
+                                    m_st4Dwg_RepairPos[2].dFiducial_Width = 0.225;
+                                    m_st4Dwg_RepairPos[2].dFiducial_Height = 0.225;
+                                    m_st4Dwg_RepairPos[3].ptFiducial_Center.X = 16.125;
+                                    m_st4Dwg_RepairPos[3].ptFiducial_Center.Y = 16.375;
+                                    m_st4Dwg_RepairPos[3].dFiducial_Width = 0.225;
+                                    m_st4Dwg_RepairPos[3].dFiducial_Height = 0.225;
 
-                                    m_st4PointPosition_DwgPos[2].ptFiducial_Center.X = 16.125;
-                                    m_st4PointPosition_DwgPos[2].ptFiducial_Center.Y = 48.625;
-                                    m_st4PointPosition_DwgPos[2].dFiducial_Width = 0.225;
-                                    m_st4PointPosition_DwgPos[2].dFiducial_Height = 0.225;
+                                    // 실제 측정된 홀의 World 좌표
+                                    for(int i = 0; i < 4; i++)
+                                    {
+                                        AlignPoint measuredHole = new AlignPoint((float)m_st4Dwg_RepairPos[i].ptFiducial_Center.X,
+                                                                             (float)m_st4Dwg_RepairPos[i].ptFiducial_Center.Y, 0);
 
-                                    m_st4PointPosition_DwgPos[3].ptFiducial_Center.X = 16.125;
-                                    m_st4PointPosition_DwgPos[3].ptFiducial_Center.Y = 16.375;
-                                    m_st4PointPosition_DwgPos[3].dFiducial_Width = 0.225;
-                                    m_st4PointPosition_DwgPos[3].dFiducial_Height = 0.225;
+                                        // 가장 가까운 홀을 찾아서 위치를 맞춘다.
+                                        AlignPoint matched = allHoles
+                                                            .OrderBy(p => GetDistance(p, measuredHole))
+                                                            .First();
+
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = matched.X;
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = matched.Y;
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Width = m_st4Dwg_RepairPos[i].dFiducial_Width;
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Height = m_st4Dwg_RepairPos[i].dFiducial_Height;
+                                    }
                                 }
                                 else
                                 {
