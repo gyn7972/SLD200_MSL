@@ -14171,6 +14171,8 @@ namespace QMC.Common.Modules
                                 !m_bPreAlignCompleted ||
                                 anySocketNG;
 
+                            Log.Write("DrillStatus", $"최종 결과: {forceNG}");
+
                             //if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) || 
                             //    m_bworkStageVacuumFail ||
                             //    m_bForceEjectRequest ||
@@ -15759,7 +15761,8 @@ namespace QMC.Common.Modules
 
                 case (int)DryRun_Step.StageZ_MoveReadyPos_DoneCheck:                            //  Z 축, 대기 위치로 이동 완료 체크
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z))
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 대기 위치로 이동 완료 확인");
 
@@ -15802,8 +15805,10 @@ namespace QMC.Common.Modules
 
                 case (int)DryRun_Step.StageXY_MoveCenterPos_DoneCheck:                 //  XY 축, Stage Center 위치로 이동 완료 체크           
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 완료 확인");
 
@@ -16235,7 +16240,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Mask_Change_Check:                            //  Mask Change 확인
 
-                    if (MC_Func.MC_GetDone((int)Bds.nAxis.MASK_Y) && MC_Func.MC_PosTolerance((int)Bds.nAxis.MASK_Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y]))
+                    if (MC_Func.MC_GetDone((int)Bds.nAxis.MASK_Y) && 
+                        MC_Func.MC_PosTolerance((int)Bds.nAxis.MASK_Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Mask Y 축, Hole1 Layer 의 Mask 로 이동 완료.");
 
@@ -16939,7 +16945,7 @@ namespace QMC.Common.Modules
 
                         Thread.Sleep(200);
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)         //  Laser Power 변경 확인하는데 5초면 충분... 이것도 많다.
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)         //  Laser Power 변경 확인하는데 5초면 충분... 이것도 많다.
                     {
                         m_strTemp = string.Format("Thruhole Layer 가공 Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
@@ -17925,8 +17931,10 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck:                    //  다음 가공 영역 Group Center 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인");
 
@@ -17934,7 +17942,7 @@ namespace QMC.Common.Modules
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 5)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 실패. (Timeout)");
 
@@ -23503,7 +23511,8 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 2) // 도착 Error 발생.
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 실패. (Timeout)");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, " +
+                            "가공할 Region 의 Center 위치로 Stage 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
@@ -37878,7 +37887,7 @@ namespace QMC.Common.Modules
                         }
 
 
-                                    //  세부 데이터 저장
+                        //  세부 데이터 저장
                         m_nGroupData_Count = 0;
                         foreach (var entity in layer)
                         {
@@ -37904,7 +37913,6 @@ namespace QMC.Common.Modules
 
                                 case EType.Line:
                                     var line = entity as SpiralLab.Sirius.Line;
-
                                     m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : End
 
                                     //  객체 Type
