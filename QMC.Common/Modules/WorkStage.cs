@@ -14173,13 +14173,13 @@ namespace QMC.Common.Modules
 
                             Log.Write("DrillStatus", $"최종 결과: {forceNG}");
 
-                            //if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) || 
-                            //    m_bworkStageVacuumFail ||
-                            //    m_bForceEjectRequest ||
-                            //    !m_bSocketAlign_OK ||
-                            //    !m_bFindLowerAlignMark_OK ||
-                            //    !m_bPreAlignCompleted )
-                            if (forceNG)
+                            if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
+                                m_bworkStageVacuumFail ||
+                                m_bForceEjectRequest ||
+                                !m_bSocketAlign_OK ||
+                                !m_bFindLowerAlignMark_OK ||
+                                !m_bPreAlignCompleted)
+                            //if (forceNG)
                             {
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
                                 m_bworkStageVacuumFail = false;
