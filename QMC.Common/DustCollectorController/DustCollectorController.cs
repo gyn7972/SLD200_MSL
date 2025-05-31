@@ -167,6 +167,41 @@ namespace QMC.Common.Parts
             return ((char)0x05).ToString() + coreCommand + checksumHex + ((char)0x04).ToString();
         }
 
+        public bool ReadFullStatus(out string rawData)
+        {
+            return SendRead("1000", 20, out rawData); // "0014" == 20 byte (word 기준 10 word)
+        }
+
+        public bool GetStatusFromBlock(out CollectorRunState runState, out double diffPressure, out CollectorAlarmState alarmState)
+        {
+            runState = CollectorRunState.Unknown;
+            diffPressure = 0.0;
+            alarmState = CollectorAlarmState.Unknown;
+
+            if (!ReadFullStatus(out string raw)) return false;
+
+            string data = ExtractResponseData(raw); // 예: "01R1000...." → 순수 데이터만 추출
+
+            if (data.Length < 28) return false;
+
+            // 예: 차압 (앞 4글자), 운전 상태 (n번째), 알람 코드 (마지막 4글자)
+            string diffPressHex = data.Substring(0, 4); // 1000h
+            string runStateHex = data.Substring(20, 4); // 1014h
+            string alarmHex = data.Substring(24, 4); // 1016h
+
+            if (int.TryParse(diffPressHex, System.Globalization.NumberStyles.HexNumber, null, out int diff))
+                diffPressure = diff / 10.0;
+
+            if (runStateHex == "0001")
+                runState = CollectorRunState.Running;
+            else
+                runState = CollectorRunState.Stopped;
+
+            alarmState = alarmHex == "0000" ? CollectorAlarmState.None : CollectorAlarmState.Alarm;
+
+            return true;
+        }
+
         /// <summary>
         /// 수신된 전체 응답 문자열에서 데이터 필드만 추출합니다.
         /// 예: "01R00070002B5" → "0002"

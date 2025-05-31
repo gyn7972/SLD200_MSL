@@ -1326,12 +1326,12 @@ namespace QMC.Common.Parts
 
             DioPoint dioString = null;
 
-                   //  해당 채널 출력 성공 여부 리턴
+            //  해당 채널 출력 성공 여부 리턴
             dioString = m_dicDioPoints[DioPointKey.Output_AirCurtainPurge.ToString()];
 
             if (dioString == null) return -1;
 
-                 //m_bOnOff 바뀌어 있음. :: 여기서 바꿔서 넣자. Is도 해줘야 하네.
+            //m_bOnOff 바뀌어 있음. :: 여기서 바꿔서 넣자. Is도 해줘야 하네.
             //2025.05.30
             if (m_bOnOff)
                 m_bOnOff = false;

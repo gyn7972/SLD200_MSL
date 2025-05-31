@@ -532,11 +532,15 @@ namespace QMC.Common.Modules
             {
                 if (!DustCollector_Upper.Connect(Equipment.CommList.D_U))
                     Log.Write("DustCollector", "[Upper] 연결 실패");
+
+                return true;
             }
             else if (position == DustCollectorController.CollectorPosition.Lower)
             {
                 if (!DustCollector_Lower.Connect(Equipment.CommList.D_L))
                     Log.Write("DustCollector", "[Lower] 연결 실패");
+
+                return true;
             }
 
             return false;
