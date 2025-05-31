@@ -277,6 +277,7 @@ namespace SpiralLab.Sirius
             AutoDivideByLayer(selectedLayer.Name, 10, 22); // 원하는 mm 단위 셀 크기 설정
         }
 
+
         private void AutoDivideByLayer(string layerName, float cellWidth, float cellHeight)
         {
             var doc = this.Document;

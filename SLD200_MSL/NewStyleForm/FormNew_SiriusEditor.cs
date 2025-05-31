@@ -188,31 +188,26 @@ namespace SLD200_MSL
                 {
                     OpenGL renderer = view.Renderer;
 
-                    if (Equipment.stLayerRecipeSet == null || 
+                    if (Equipment.stLayerRecipeSet == null ||
                         (int)LayerList.Outline >= Equipment.stLayerRecipeSet.Length)
                     {
-                        //MessageBox.Show("Outline 레이어의 레시피 정보가 존재하지 않습니다.", "Interlock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         Log.Write("SiriusEditor", "Outline 레이어의 레시피 정보가 존재하지 않습니다.");
                         return;
                     }
 
                     var outlineRecipe = Equipment.stLayerRecipeSet[(int)LayerList.Outline];
-                    if (outlineRecipe.Miscellaneous_GroupSplitSize <= 0 || 
+                    if (outlineRecipe.Miscellaneous_GroupSplitSize <= 0 ||
                         outlineRecipe.Miscellaneous_GroupSplitSize_Height <= 0)
                     {
-                        //MessageBox.Show("Outline 레이어의 그룹 분할 크기가 유효하지 않습니다.", "Interlock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         Log.Write("SiriusEditor", "Outline 레이어의 그룹 분할 크기가 유효하지 않습니다.");
                         return;
                     }
 
-                    double dSplitW = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_GroupSplitSize;
-                    double dSplitH = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_GroupSplitSize_Height;
+                    double dSplitW = outlineRecipe.Miscellaneous_GroupSplitSize;
+                    double dSplitH = outlineRecipe.Miscellaneous_GroupSplitSize_Height;
+                    double epsilon = 0.01; // 미세하게 띄워서 시각적으로 겹쳐 보이지 않게 함
 
-                    renderer.Color(200.0f, 200.0f, 0.0f); // 라임색 (노란 녹색 계열)
-
-                    double gap = 0.05;  // 셀 사이 띄움 간격
-                    double offsetW = gap / 2.0;
-                    double offsetH = gap / 2.0;
+                    renderer.Color(200.0f, 200.0f, 0.0f); // 라임색
 
                     foreach (var entity in layer.Items)
                     {
@@ -229,34 +224,32 @@ namespace SLD200_MSL
                         int colCount = Math.Max(1, (int)Math.Ceiling(width / dSplitW));
                         int rowCount = Math.Max(1, (int)Math.Ceiling(height / dSplitH));
 
-                        // 띄워서 그리기 위해 epsilon 적용
-                        double dStartX = centerX - (colCount * dSplitW) / 2 + offsetW;
-                        double dStartY = centerY - (rowCount * dSplitH) / 2 + offsetH;
-                        double dEndX = centerX + (colCount * dSplitW) / 2 - offsetW;
-                        double dEndY = centerY + (rowCount * dSplitH) / 2 - offsetH;
+                        double offsetX = centerX - (colCount * dSplitW) / 2.0 + dSplitW / 2.0;
+                        double offsetY = centerY + (rowCount * dSplitH) / 2.0 - dSplitH / 2.0;
 
-                        // 세로선
-                        for (int col = 0; col <= colCount; col++)
+                        for (int row = 0; row < rowCount; row++)
                         {
-                            double x = dStartX + col * dSplitW;
-                            renderer.Begin(OpenGL.GL_LINES);
-                            renderer.Vertex(x, dStartY, 0.0f);
-                            renderer.Vertex(x, dEndY, 0.0f);
-                            renderer.End();
-                        }
+                            for (int col = 0; col < colCount; col++)
+                            {
+                                double cellCenterX = offsetX + col * dSplitW;
+                                double cellCenterY = offsetY - row * dSplitH;
 
-                        // 가로선
-                        for (int row = 0; row <= rowCount; row++)
-                        {
-                            double y = dStartY + row * dSplitH;
-                            renderer.Begin(OpenGL.GL_LINES);
-                            renderer.Vertex(dStartX, y, 0.0f);
-                            renderer.Vertex(dEndX, y, 0.0f);
-                            renderer.End();
+                                double left = cellCenterX - dSplitW / 2.0 + epsilon;
+                                double right = cellCenterX + dSplitW / 2.0 - epsilon;
+                                double bottom = cellCenterY - dSplitH / 2.0 + epsilon;
+                                double top = cellCenterY + dSplitH / 2.0 - epsilon;
+
+                                renderer.Begin(OpenGL.GL_LINE_LOOP);
+                                renderer.Vertex(left, bottom, 0.0f);
+                                renderer.Vertex(right, bottom, 0.0f);
+                                renderer.Vertex(right, top, 0.0f);
+                                renderer.Vertex(left, top, 0.0f);
+                                renderer.End();
+                            }
                         }
                     }
                 }
-                
+
             }
         }
 
