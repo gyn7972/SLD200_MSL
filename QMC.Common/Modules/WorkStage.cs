@@ -38827,6 +38827,7 @@ namespace QMC.Common.Modules
                                 break;
                         }
                     }
+
                     //else if (layer.Name == "Outline")
                     //{
                     //    m_ptLast.X = 0.0;
@@ -39802,6 +39803,7 @@ namespace QMC.Common.Modules
                                             }
                                         }
                                     }
+
                                     if (m_bHatchDataExist == false)
                                     {
                                         //  영역 객체 개수 +1 (영역 객체 개수 증가 코드가 마지막에 있지만, Hatch 를 하지 않을 경우 여기에서 빠져나가기 때문에...)
@@ -39836,10 +39838,8 @@ namespace QMC.Common.Modules
 
                                             //  Hatch 글자 구성요소 개수
                                             m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].stHatchData[m_nTextCount].nTextElementNum = m_nTextItemCount;
-
                                             //  Hatch 글자 구성요소 개수만큼 메모리 할당
                                             m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].stHatchData[m_nTextCount].stTextElement = new stMarking_TextElement[m_nTextItemCount];
-
                                             //  데이터 넣기
                                             m_nTextItemCount = 0;                       //  글자 구성요소 카운트
                                             foreach (var subTextEntity in TextGroup)
