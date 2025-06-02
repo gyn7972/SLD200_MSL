@@ -39381,17 +39381,23 @@ namespace QMC.Common.Modules
                         //}
                         if (!LayerIsGroup || (m_nCount > 1))
                         {
+                            int totalObjectCount = 0;
+
+                            foreach (var entity in layer)
+                            {
+                                if (entity is Group group)
+                                    totalObjectCount += group.Count;   // Group 안 개수 모두 더함
+                                else
+                                    totalObjectCount++;                // 단일 entity 1개
+                            }
                             m_stMarking_SocketData = new stMarking_SocketData();
-
-                            //  전체 Object 개수
-                            m_stMarking_SocketData.nRegion_ObjectTotalNum = layer.Count;
-
-                            //  Object 별 데이터 공간 메모리 할당
-                            m_stMarking_SocketData.m_stMarking_ObjectData = new stMarking_ObjectData[layer.Count];
-
-                            //  Marking 데이터 개수
-                            m_nMarkingData_Count = m_stMarking_SocketData.nRegion_ObjectTotalNum;
-
+                            m_stMarking_SocketData.nRegion_ObjectTotalNum = totalObjectCount;
+                            m_stMarking_SocketData.m_stMarking_ObjectData = new stMarking_ObjectData[totalObjectCount];
+                            //m_stMarking_SocketData = new stMarking_SocketData();    //  전체 Object 개수
+                            //m_stMarking_SocketData.nRegion_ObjectTotalNum = layer.Count;    //  Object 별 데이터 공간 메모리 할당
+                            //m_stMarking_SocketData.m_stMarking_ObjectData = new stMarking_ObjectData[layer.Count];
+                            
+                            m_nMarkingData_Count = m_stMarking_SocketData.nRegion_ObjectTotalNum;   //  Marking 데이터 개수
                             //  Marking Fiducial 마크 공간 할당
                             for (int i = 0; i < layer.Count; i++)
                             {
@@ -39430,7 +39436,11 @@ namespace QMC.Common.Modules
 
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : End
 
-                                    //  객체 Type
+                                    if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                    {
+                                        Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                        break; // 또는 return;
+                                    }
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
 
                                     //  객체 Edge 좌표 개수
@@ -39458,6 +39468,11 @@ namespace QMC.Common.Modules
                                     var arc = entity as SpiralLab.Sirius.Arc;
 
                                     //  객체 Type
+                                    if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                    {
+                                        Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                        break; // 또는 return;
+                                    }
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
 
                                     //  객체 Radius
@@ -39498,6 +39513,11 @@ namespace QMC.Common.Modules
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                     //  객체 Type
+                                    if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                    {
+                                        Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                        break; // 또는 return;
+                                    }
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
 
                                     //  객체 Edge 좌표 개수
@@ -39525,6 +39545,11 @@ namespace QMC.Common.Modules
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
 
                                     //  객체 Type
+                                    if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                    {
+                                        Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                        break; // 또는 return;
+                                    }
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
 
                                     //  객체 Edge 좌표 개수
@@ -39567,6 +39592,11 @@ namespace QMC.Common.Modules
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
 
                                     //  객체 Type
+                                    if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                    {
+                                        Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                        break; // 또는 return;
+                                    }
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
 
                                     //  객체 Edge 좌표 개수
@@ -39660,11 +39690,20 @@ namespace QMC.Common.Modules
 
                                     //  글자 개수만큼 메모리 할당
                                     //  객체 Type
+                                    if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                    {
+                                        Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                        break; // 또는 return;
+                                    }
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_TEXT;
                                     //  글자 개수
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nTextNum = m_nTextCount;
+
                                     //  글자 데이터 메모리 할당
-                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].stTextData = new stMarking_DetailedTextData[m_nTextCount];
+                                    int textGroupCount = listText.Count(e => e is Group);   // 정확히 세기
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nTextNum = textGroupCount;
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].stTextData = new stMarking_DetailedTextData[textGroupCount];
+                                    //m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].stTextData = new stMarking_DetailedTextData[m_nTextCount];
                                     m_nTextCount = 0;
                                     //  글자별 구성 데이터 넣기
                                     foreach (var subEntity in listText)
@@ -39979,11 +40018,19 @@ namespace QMC.Common.Modules
 
                                     //  글자 개수만큼 메모리 할당
                                     //  객체 Type
+                                    if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                    {
+                                        Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                        break; // 또는 return;
+                                    }
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_SIRIUS_TEXT;
                                     //  글자 개수
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nTextNum = m_nTextCount;
                                     //  글자 데이터 메모리 할당
-                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].stTextData = new stMarking_DetailedTextData[m_nTextCount];
+                                    textGroupCount = list.Count(e => e is Group);   // 정확히 세기
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nTextNum = textGroupCount;
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].stTextData = new stMarking_DetailedTextData[textGroupCount];
+                                    //m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].stTextData = new stMarking_DetailedTextData[m_nTextCount];
 
                                     //  글자별 구성 데이터 종류 초기화
                                     for (int i = 0; i < m_nTextCount; i++)
@@ -40111,6 +40158,11 @@ namespace QMC.Common.Modules
                                             //m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
 
                                             //  객체 Type
+                                            if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                            {
+                                                Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                                break; // 또는 return;
+                                            }
                                             m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
 
                                             //  객체 Edge 좌표 개수
@@ -40145,6 +40197,11 @@ namespace QMC.Common.Modules
                                             //m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                             //  객체 Type
+                                            if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                            {
+                                                Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                                break; // 또는 return;
+                                            }
                                             m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
 
                                             //  객체 Edge 좌표 개수
@@ -40173,6 +40230,11 @@ namespace QMC.Common.Modules
                                             //m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
 
                                             //  객체 Type
+                                            if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                            {
+                                                Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                                break; // 또는 return;
+                                            }
                                             m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
 
                                             //  객체 Edge 좌표 개수
@@ -40209,6 +40271,11 @@ namespace QMC.Common.Modules
                                             //m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : End
 
                                             //  객체 Type
+                                            if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                            {
+                                                Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                                break; // 또는 return;
+                                            }
                                             m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
 
                                             //  객체 Edge 좌표 개수
@@ -40232,6 +40299,11 @@ namespace QMC.Common.Modules
                                             var pl = subEntity as SpiralLab.Sirius.Arc;
 
                                             //  객체 Type
+                                            if (m_stMarking_SocketData.nRegion_ObjectCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                            {
+                                                Log.Write("Marking", $"[Error] ObjectData Index 초과: Index={m_stMarking_SocketData.nRegion_ObjectCount}, Max={m_stMarking_SocketData.m_stMarking_ObjectData.Length}");
+                                                break; // 또는 return;
+                                            }
                                             m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
 
                                             //  객체 Radius
