@@ -17,6 +17,9 @@ using System.Runtime.InteropServices;
 using static QMC.Common.Equipment;
 using SpiralLab.Sirius;
 using static QMC.Common.Modules.WorkStage;
+using static QMC.Common.Parts.DustCollectorController;
+using static System.Windows.Forms.AxHost;
+using static SpiralLab.Sirius.JPTTypeE;
 
 namespace SLD200_MSL
 {
@@ -25,6 +28,7 @@ namespace SLD200_MSL
         private static FormNew_CommunicationTerminal m_formCommTerminal = null;
 
         static WorkStage workStage;
+        static Bds bds;
 
         public System.Windows.Forms.Timer timer_Status;
 
@@ -55,6 +59,11 @@ namespace SLD200_MSL
                 if (module.Name == "WorkStage")
                 {
                     workStage = module as WorkStage;
+                }
+
+                if (module.Name == "BDS")
+                {
+                    bds = module as Bds;
                 }
             }
 
@@ -455,6 +464,8 @@ namespace SLD200_MSL
                 //case 7: workStage.Laser_Socket_Connect();               break;
                 case 7: workStage.RapidLxLaser_Comm_Init();             break;
                 case 8: workStage.LaserSensor_Socket_Connect();         break;
+                case 9: bds.InitDustCollector(DustCollectorController.CollectorPosition.Upper); break;
+                case 10: bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower); break;
                 default: label_Activated_Unit.Text = "No units selected"; break;
             }
 
@@ -718,6 +729,44 @@ namespace SLD200_MSL
             //  Mrad Init
 
             workStage.BeamExpander_Send_Motor_InitialPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor);
+        }
+
+        private void button_TEST1_Click(object sender, EventArgs e)
+        {
+            bool bOn = bds.DustCollector_Upper.DustCollector_On();
+
+            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
+            if (runState == CollectorRunState.Running)
+                Log.Write("DustCollector", "집진기 상태: 운전 중");
+            else if (runState == CollectorRunState.Stopped)
+                Log.Write("DustCollector", "집진기 상태: 정지");
+            else
+                Log.Write("DustCollector", "집진기 상태: 알 수 없음");
+
+        }
+
+        private void button_Test2_Click(object sender, EventArgs e)
+        {
+            bds.DustCollector_Upper.DustCollector_Off();
+
+            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
+            if (runState == CollectorRunState.Running)
+                Log.Write("DustCollector", "집진기 상태: 운전 중");
+            else if (runState == CollectorRunState.Stopped)
+                Log.Write("DustCollector", "집진기 상태: 정지");
+            else
+                Log.Write("DustCollector", "집진기 상태: 알 수 없음");
+        }
+
+        private void button_Test3_Click(object sender, EventArgs e)
+        {
+            //string strFrequency = "";
+            double dFrequency = 0.0;
+            bds.DustCollector_Upper.GetFrequency(out dFrequency);
+            //dFrequency = string.IsNullOrEmpty(strFrequency) ? 0.0 : Equipment.ToDouble(strFrequency);
+
+            DustCollectorController.CollectorRunState runState;
+            bds.DustCollector_Upper.GetStatus(out runState, out dFrequency);
         }
     }
 }

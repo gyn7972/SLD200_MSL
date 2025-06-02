@@ -182,16 +182,8 @@ namespace SLD200_MSL
             radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked = false;
             radioButton_Config_WorkStage_Move_MoveMode_Coarse.Checked = true;
 
-            if (Equipment.Machine_LaserType_CO2)
-            {
-                groupBox_MotorizedBET.Visible = true;
-                groupBox_VarioScan.Visible = true;
-            }
-            else
-            {
-                groupBox_MotorizedBET.Visible = false;
-                groupBox_VarioScan.Visible = false;
-            }
+            textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
+            textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";
 
             InitializeJogButtons();
         }
@@ -472,6 +464,17 @@ namespace SLD200_MSL
             label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
             label_Config_WorkStage_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
 
+
+            /////////////////////////////////////////////////////////////////////////////////////
+            /// VarioScan
+            /// 
+
+            float? zOffset = bds.CurrentRtcZOffset;
+            float? zDefocus = bds.CurrentRtcZDefocus;
+            label_VarioScan_Z_Offset_Pos.Text = string.Format("{0:0.00000}", zOffset.HasValue ? zOffset.Value : 0.0f);
+            label_VarioScan_Z_Defocus_Pos.Text = string.Format("{0:0.00000}", zDefocus.HasValue ? zDefocus.Value : 0.0f);
+
+
             //  Laser Height Sensor
             label_Config_WorkStage_LaserHeightSensorValue.Text = string.Format("{0:0.00000}", workStage.m_dLaserHeightSensorSocket_Value);
 
@@ -685,8 +688,12 @@ namespace SLD200_MSL
                         }
                     }
                 }
-            }
 
+                if (workStage.workStageParameter.DI_Laser_System_Fault())
+                {
+                    label_Config_Laser_Laser_warning.Text = "Laser System Fault";
+                }
+            }
 
             timer_Status.Enabled = true;
         }
@@ -2803,7 +2810,7 @@ namespace SLD200_MSL
             //  맵 데이터 변경 (기준위치 : Scanner)
             //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
             //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+            //workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -2822,6 +2829,13 @@ namespace SLD200_MSL
                 lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
                 lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
             }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //  맵 데이터 변경 (기준위치 : Scanner)
+            //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+            //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, lfTargetX, lfVelocity, lfAccDec, lfAccDec);
             //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, lfTargetY, lfVelocity, lfAccDec, lfAccDec);
@@ -2940,14 +2954,17 @@ namespace SLD200_MSL
         {
             Temp_Position_Load();
 
-            //  UV Laser 일 때만 보이는 Laser
             if (Equipment.Machine_LaserType_CO2)
             {
                 groupBox_Config_Laser_UVLaser.Visible = false;
+                groupBox_MotorizedBET.Visible = true;
+                groupBox_VarioScan.Visible = true;
             }
             else
             {
                 groupBox_Config_Laser_UVLaser.Visible = true;
+                groupBox_MotorizedBET.Visible = false;
+                groupBox_VarioScan.Visible = false;
             }
         }
 
@@ -5868,11 +5885,13 @@ namespace SLD200_MSL
         private void Button_Config_VarioScan_ZOffset_Set_Click(object sender, EventArgs e)
         {
             //  Vario Scan - Z Offset Setting
-
-            var rtc3D = workStage.rtc as IRtc3D;
+            
 
             float zOffset = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZOffset.Text);
-            rtc3D.CtlZOffset(zOffset);
+            bds.spiralLabVario.SetZOffset(zOffset);
+
+            //var rtc3D = workStage.rtc as IRtc3D;
+            //rtc3D.CtlZOffset(zOffset);
 
             MessageBox.Show($"Vario Scan - Z Offset 설정 값 : {zOffset} mm", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -5880,11 +5899,11 @@ namespace SLD200_MSL
         private void Button_Config_VarioScan_ZDefocua_Set_Click(object sender, EventArgs e)
         {
             //  Vario Scan - Z Defocus Setting
-
-            var rtc3D = workStage.rtc as IRtc3D;
-
             float zDefocus = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZDefocus.Text);
-            rtc3D.CtlZDefocus(zDefocus);
+            bds.spiralLabVario.SetZDefocus(zDefocus);
+
+            //var rtc3D = workStage.rtc as IRtc3D;
+            //rtc3D.CtlZDefocus(zDefocus);
 
             MessageBox.Show($"Vario Scan - Z Defocus 설정 값 : {zDefocus} mm", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -5892,11 +5911,12 @@ namespace SLD200_MSL
         private void Button_Config_VarioScan_ZOffsetZDefocus_Reset_Click(object sender, EventArgs e)
         {
             //  Vario Scan - Z Offset & Z Defocus Reset
+            //var rtc3D = workStage.rtc as IRtc3D;
+            //rtc3D.CtlZOffset(0.0f);
+            //rtc3D.CtlZDefocus(0.0f);
 
-            var rtc3D = workStage.rtc as IRtc3D;
-
-            rtc3D.CtlZOffset(0.0f);
-            rtc3D.CtlZDefocus(0.0f);
+            bds.spiralLabVario.SetZDefocus(0.0f);
+            bds.spiralLabVario.SetZOffset(0.0f);
 
             textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
             textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";

@@ -614,7 +614,7 @@ namespace QMC.Common.Parts
                     xyInterpolatedCoordinate.X = position.X;
                     xyInterpolatedCoordinate.Y = position.Y;
 
-                    m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                    m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse, 1);
                     
                     Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
                     Task<bool> resultY1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);

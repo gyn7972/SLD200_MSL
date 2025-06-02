@@ -551,6 +551,10 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_OffsetY = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_Option_OffsetX = new System.Windows.Forms.TextBox();
+            this.label_Setup_Option_OffsetX = new System.Windows.Forms.Label();
+            this.label_Setup_Option_OffsetY = new System.Windows.Forms.Label();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -1177,7 +1181,9 @@
             "Dust Collector (Lower)",
             "Electro Pneumatic Regulator",
             "Laser",
-            "Laser Height Sensor (Keyence)"});
+            "Laser Height Sensor (Keyence)",
+            "D(U)",
+            "D(L)"});
             this.listBox_Setup_Communication_SelectUnit.Location = new System.Drawing.Point(10, 25);
             this.listBox_Setup_Communication_SelectUnit.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.listBox_Setup_Communication_SelectUnit.Name = "listBox_Setup_Communication_SelectUnit";
@@ -6682,6 +6688,10 @@
             // 
             // groupBox_Offset
             // 
+            this.groupBox_Offset.Controls.Add(this.label_Setup_Option_OffsetY);
+            this.groupBox_Offset.Controls.Add(this.label_Setup_Option_OffsetX);
+            this.groupBox_Offset.Controls.Add(this.textBox_Setup_Option_OffsetY);
+            this.groupBox_Offset.Controls.Add(this.textBox_Setup_Option_OffsetX);
             this.groupBox_Offset.Controls.Add(this.label87);
             this.groupBox_Offset.Controls.Add(this.label86);
             this.groupBox_Offset.Controls.Add(this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show);
@@ -6738,10 +6748,10 @@
             // button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show
             // 
             this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.Location = new System.Drawing.Point(287, 259);
+            this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.Location = new System.Drawing.Point(287, 296);
             this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.Margin = new System.Windows.Forms.Padding(5);
             this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.Name = "button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show";
-            this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.Size = new System.Drawing.Size(176, 75);
+            this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.Size = new System.Drawing.Size(176, 60);
             this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.TabIndex = 70;
             this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.Text = "Image Display\r\n(Scanner & Fine Cam.\r\nOffset Change)";
             this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show.UseVisualStyleBackColor = true;
@@ -6750,7 +6760,7 @@
             // button7
             // 
             this.button7.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(428, 230);
+            this.button7.Location = new System.Drawing.Point(428, 270);
             this.button7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(35, 25);
@@ -6761,7 +6771,7 @@
             // label40
             // 
             this.label40.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label40.Location = new System.Drawing.Point(8, 229);
+            this.label40.Location = new System.Drawing.Point(8, 269);
             this.label40.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(301, 24);
@@ -6772,7 +6782,7 @@
             // textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y
             // 
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Location = new System.Drawing.Point(312, 230);
+            this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Location = new System.Drawing.Point(312, 270);
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Name = "textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y";
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Size = new System.Drawing.Size(114, 23);
@@ -6782,7 +6792,7 @@
             // button6
             // 
             this.button6.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button6.Location = new System.Drawing.Point(428, 173);
+            this.button6.Location = new System.Drawing.Point(428, 213);
             this.button6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(35, 25);
@@ -6793,7 +6803,7 @@
             // label39
             // 
             this.label39.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label39.Location = new System.Drawing.Point(8, 172);
+            this.label39.Location = new System.Drawing.Point(8, 212);
             this.label39.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(301, 24);
@@ -6804,7 +6814,7 @@
             // textBox_Setup_Option_Offset_FineCamCoarseCam_Y
             // 
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Location = new System.Drawing.Point(312, 173);
+            this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Location = new System.Drawing.Point(312, 213);
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Name = "textBox_Setup_Option_Offset_FineCamCoarseCam_Y";
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Size = new System.Drawing.Size(114, 23);
@@ -6846,7 +6856,7 @@
             // button4
             // 
             this.button4.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(428, 202);
+            this.button4.Location = new System.Drawing.Point(428, 242);
             this.button4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(35, 25);
@@ -6857,7 +6867,7 @@
             // label37
             // 
             this.label37.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label37.Location = new System.Drawing.Point(8, 201);
+            this.label37.Location = new System.Drawing.Point(8, 241);
             this.label37.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(301, 24);
@@ -6868,7 +6878,7 @@
             // textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X
             // 
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Location = new System.Drawing.Point(312, 202);
+            this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Location = new System.Drawing.Point(312, 242);
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Name = "textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X";
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Size = new System.Drawing.Size(114, 23);
@@ -6878,7 +6888,7 @@
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(428, 144);
+            this.button3.Location = new System.Drawing.Point(428, 184);
             this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(35, 25);
@@ -6889,7 +6899,7 @@
             // label36
             // 
             this.label36.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label36.Location = new System.Drawing.Point(8, 144);
+            this.label36.Location = new System.Drawing.Point(8, 184);
             this.label36.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(301, 24);
@@ -6900,7 +6910,7 @@
             // textBox_Setup_Option_Offset_FineCamCoarseCam_X
             // 
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.Location = new System.Drawing.Point(312, 145);
+            this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.Location = new System.Drawing.Point(312, 185);
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.Name = "textBox_Setup_Option_Offset_FineCamCoarseCam_X";
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.Size = new System.Drawing.Size(114, 23);
@@ -7012,6 +7022,48 @@
             this.label96.TabIndex = 77;
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Option_OffsetY
+            // 
+            this.textBox_Setup_Option_OffsetY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Setup_Option_OffsetY.Location = new System.Drawing.Point(312, 150);
+            this.textBox_Setup_Option_OffsetY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_OffsetY.Name = "textBox_Setup_Option_OffsetY";
+            this.textBox_Setup_Option_OffsetY.Size = new System.Drawing.Size(114, 23);
+            this.textBox_Setup_Option_OffsetY.TabIndex = 74;
+            this.textBox_Setup_Option_OffsetY.Text = "0.0";
+            // 
+            // textBox_Setup_Option_OffsetX
+            // 
+            this.textBox_Setup_Option_OffsetX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Setup_Option_OffsetX.Location = new System.Drawing.Point(312, 122);
+            this.textBox_Setup_Option_OffsetX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_OffsetX.Name = "textBox_Setup_Option_OffsetX";
+            this.textBox_Setup_Option_OffsetX.Size = new System.Drawing.Size(114, 23);
+            this.textBox_Setup_Option_OffsetX.TabIndex = 73;
+            this.textBox_Setup_Option_OffsetX.Text = "0.0";
+            // 
+            // label_Setup_Option_OffsetX
+            // 
+            this.label_Setup_Option_OffsetX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Setup_Option_OffsetX.Location = new System.Drawing.Point(8, 122);
+            this.label_Setup_Option_OffsetX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label_Setup_Option_OffsetX.Name = "label_Setup_Option_OffsetX";
+            this.label_Setup_Option_OffsetX.Size = new System.Drawing.Size(301, 24);
+            this.label_Setup_Option_OffsetX.TabIndex = 75;
+            this.label_Setup_Option_OffsetX.Text = "Offset [X] :";
+            this.label_Setup_Option_OffsetX.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Setup_Option_OffsetY
+            // 
+            this.label_Setup_Option_OffsetY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Setup_Option_OffsetY.Location = new System.Drawing.Point(8, 149);
+            this.label_Setup_Option_OffsetY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label_Setup_Option_OffsetY.Name = "label_Setup_Option_OffsetY";
+            this.label_Setup_Option_OffsetY.Size = new System.Drawing.Size(301, 24);
+            this.label_Setup_Option_OffsetY.TabIndex = 76;
+            this.label_Setup_Option_OffsetY.Text = "Offset [Y] :";
+            this.label_Setup_Option_OffsetY.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNew_Setup
             // 
@@ -7644,5 +7696,9 @@
         private System.Windows.Forms.Button button_Setup_ScannerCal_VisionZOffset;
         private System.Windows.Forms.Label label87;
         private System.Windows.Forms.Label label86;
+        private System.Windows.Forms.Label label_Setup_Option_OffsetY;
+        private System.Windows.Forms.Label label_Setup_Option_OffsetX;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetY;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetX;
     }
 }

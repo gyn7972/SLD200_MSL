@@ -4,19 +4,23 @@ using SpiralLab.Sirius;
 
 namespace QMC.Common.Parts
 {
-    public class SpiralLabRtc3D : Part
+    public class SpiralLabVario : Part
     {
+        public bool IsInitialized { get; private set; } = false;
+
         #region Properties
         public IRtc Rtc { get; private set; }
         public IRtc3D Rtc3D { get; private set; }
         public string ScannerName { get; private set; }
         #endregion
 
-        public SpiralLabRtc3D(string name, IRtc rtcInstance) : base(name)
+        public SpiralLabVario(string name, IRtc rtcInstance) : base(name)
         {
             this.ScannerName = name;
             this.Rtc = rtcInstance ?? throw new ArgumentNullException(nameof(rtcInstance));
             this.Rtc3D = rtcInstance as IRtc3D ?? throw new InvalidCastException("IRtc 인스턴스는 IRtc3D를 구현해야 합니다.");
+
+            IsInitialized = true;
         }
 
         public override int Create()

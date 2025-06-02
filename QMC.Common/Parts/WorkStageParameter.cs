@@ -156,7 +156,10 @@ namespace QMC.Common.Parts
 
             //  Water Sol. Box
             Output_BeamDump_Coolant_Supply,     //  Y007
-            Output_BeamDump_Coolant_Return,     //  Y008
+
+            //Output_BeamDump_Coolant_Return,     //  Y008
+            Output_AirCurtainPurge,     //  Y008
+
             Output_Mask_Coolant_Supply,         //  Y009
             Output_Mask_Coolant_Return,         //  Y010
             Output_Scanner_Coolant_Supply,      //  Y011
@@ -1317,16 +1320,23 @@ namespace QMC.Common.Parts
             return nRet;
         }
 
-        public int DO_BeamDump_Coolant_Return(bool m_bOnOff)
+        public int DO_AirCurtain_Purge(bool m_bOnOff)
         {
             int nRet = 0;
 
             DioPoint dioString = null;
 
             //  해당 채널 출력 성공 여부 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_BeamDump_Coolant_Return.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Output_AirCurtainPurge.ToString()];
 
             if (dioString == null) return -1;
+
+            //m_bOnOff 바뀌어 있음. :: 여기서 바꿔서 넣자. Is도 해줘야 하네.
+            //2025.05.30
+            if (m_bOnOff)
+                m_bOnOff = false;
+            else
+                m_bOnOff = true;
 
             if (m_bOnOff) nRet = dioString.Write(DioValue.On);
             else nRet = dioString.Write(DioValue.Off);
@@ -1659,7 +1669,7 @@ namespace QMC.Common.Parts
             return nRet;
         }
 
-        public int DO_DustCollector_AirPulse_Run(int m_nPos, bool m_bOnOff)
+        public int DO_DustCollector_Fan_Run(int m_nPos, bool m_bOnOff)
         {
             int nRet = 0;
 
@@ -1791,21 +1801,22 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool IsDO_BeamDump_Coolant_Return()
+        public bool IsDO_AirCurtain_Purge()
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 출력 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_BeamDump_Coolant_Return.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Output_AirCurtainPurge.ToString()];
 
             if (dioString == null)
                 return bRet;
 
             DioValue ioValue = dioString.GetValue();
 
-            if (ioValue == DioValue.On)
+            // On/Off 신호가 바뀌어 있음. 여기서 뒤집어서 확인하자. 2025.05.30
+            if (ioValue != DioValue.On)
                 bRet = true;
 
             return bRet;

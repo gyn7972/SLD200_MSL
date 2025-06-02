@@ -24,6 +24,8 @@ using System.IO.Ports;
 using MessageBox = System.Windows.Forms.MessageBox;
 using static QMC.Common.Modules.Vision;
 using static QMC.Common.Modules.WorkStage;
+using System.Threading.Tasks;
+using System.Timers;
 
 
 namespace QMC.Common.Modules
@@ -58,14 +60,14 @@ namespace QMC.Common.Modules
 
 
         #region Variables
-       
+
 
         #endregion
 
         #region Field
         SettingParameterCollection PosParam_Bds;          //  2022. 04. 25.  SCH : 모터 위치 파라미터를 갖다쓰기 위해 선언해봄.
-        //static Conveyor conveyor = new Conveyor("");            //  요거 다시해야 함. Conveyor.cs 에 정의된 변수에 접근할 수 있게... 어케 함? -_-
-                                                                //  static 으로 선언하면 되긴 헌디.... 맞는건가 -_-
+                                                          //static Conveyor conveyor = new Conveyor("");            //  요거 다시해야 함. Conveyor.cs 에 정의된 변수에 접근할 수 있게... 어케 함? -_-
+                                                          //  static 으로 선언하면 되긴 헌디.... 맞는건가 -_-
         public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
         //public ACSSPiiPlusAxis ACS_Func = new ACSSPiiPlusAxis();
         #endregion
@@ -73,13 +75,22 @@ namespace QMC.Common.Modules
         #region Property
         public BdsConfig Config { set; get; }
         public BdsParameterConfig ParamConfig { set; get; }
-        public BdsRecipe Recipe { set; get; }                
+        public BdsRecipe Recipe { set; get; }
 
         public YStage Stage { set; get; }                         //  MSL SLD-200C, SLD-200U 의 Mask Y 축
 
         //20250527
-        public SpiralLabRtc3D spiralLabRtc3D { get; private set; } = null; //  SpiralLab Rtc3D 객체
         static WorkStage workStage;
+
+        public SpiralLabVario spiralLabVario { get; set; } = null; //  SpiralLab Rtc3D 객체
+        public float? CurrentRtcZOffset { get; private set; }
+        public float? CurrentRtcZDefocus { get; private set; }
+        public SpiralLabScanner spiralLabScanner { get; set; } = null; //  SpiralLab Rtc2D 객체
+
+
+        public DustCollectorController DustCollector_Upper { get; private set; } = null;
+        public DustCollectorController DustCollector_Lower { get; private set; } = null;
+
 
         //  레시피 변경 시 위치값을 갱신하기 위해
         public bool m_bParameterSetting_PosData_Reload { set; get; }            //  위치 데이터 다시 로드
@@ -90,6 +101,12 @@ namespace QMC.Common.Modules
         //public bool ACS_Motion_isSimulationMode { set; get; }
 
         //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
+        protected Task m_taskTimer_BDS_MainStatus_Tick = null;
+        private bool isModuleClose = false;
+        protected List<Task> listTask = new List<Task>();
+        public bool _isMainStatusRunning = false; // 중복 실행 방지 플래그
+        public bool m_MainStatus_Start = false;
+
         public System.Windows.Forms.Timer timer_MainWork;
         public bool m_btimer_MainWork_Stop;
 
@@ -144,14 +161,6 @@ namespace QMC.Common.Modules
 
         #endregion
 
-
-        public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)
-        {
-            //  요거 주석처리하면 안되는데... 이유가 뭘까
-
-            throw new NotImplementedException();
-        }
-
         #region Tick Count Check
 
         public int TickCount_MainCycle_Start { set; get; }
@@ -168,7 +177,7 @@ namespace QMC.Common.Modules
             TICK_SUB = 2,               //  2 : Sub Cycle
             TICK_PAUSE = 3,             //  3 : Pause
             TICK_CHECK = 4,             //  4 : 체크용
-            
+
             //TICK_LASER_INTERFACE = 3,   //  3 : Laser Interface Set
             //TICK_LASER_FOCUS = 4,       //  4 : Laser Focus Check Cycle
             //TICK_LASER_COMM = 5,        //  5 : Laser Comm. Cycle
@@ -310,7 +319,7 @@ namespace QMC.Common.Modules
             }
 
             Teaching_Position_Load();
-        }                                                   
+        }
         #endregion
 
         #region IExecuter
@@ -368,21 +377,179 @@ namespace QMC.Common.Modules
             //PosParam_Dispenser = GetConfigData();     //  요건 나중에
             Recipe = new BdsRecipe(this);
 
+            // Upper
+            DustCollector_Upper = new DustCollectorController("UpperDust", DustCollectorController.CollectorPosition.Upper);
+            DustCollector_Upper.Create();
+            DustCollector_Upper.Owner = this;
+            Parts.Add(DustCollector_Upper);
+
+            // Lower
+            DustCollector_Lower = new DustCollectorController("LowerDust", DustCollectorController.CollectorPosition.Lower);
+            DustCollector_Lower.Create();
+            DustCollector_Lower.Owner = this;
+            Parts.Add(DustCollector_Lower);
+
+            //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
+            m_taskTimer_BDS_MainStatus_Tick = Task.Factory.StartNew(() =>
+            {
+                Thread.CurrentThread.Name = "m_taskTimer_BDS_MainStatus_Tick";
+
+                while (true)
+                {
+                    Thread.Sleep(20);
+
+                    if (isModuleClose)
+                    {
+                        break;
+                    }
+                    Timer_BDS_MainStatus_Tick(null, null);
+                }
+            }); ;
+            listTask.Add(m_taskTimer_BDS_MainStatus_Tick);
+
             return ret;
         }
 
-        public void InitRtc3DModule()
+        private async void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
-            if(workStage.rtc != null)
+            // 중복 실행 방지
+            if (_isMainStatusRunning)
             {
-                spiralLabRtc3D = new SpiralLabRtc3D("Scanner3D", workStage.rtc);
-                spiralLabRtc3D.Create();
-                spiralLabRtc3D.Owner = this;
-                Parts.Add(spiralLabRtc3D);
+                return;
+            }
 
-                Log.Write("SLD-200", "InitRtc3DModule", "Scanner3D 모듈 초기화 완료");
+            try
+            {
+                _isMainStatusRunning = true;
+
+                if (!m_MainStatus_Start)
+                {
+                    return;
+                }
+
+                // Home 잡기 전에는 Device 알람 X
+                //if (!workStage.m_bHomeOK)
+                //{
+                //    return;
+                //}
+
+                // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
+                if (Equipment.AutoRunStatus)
+                {
+                }
+                else
+                {
+                }
+
+                if (spiralLabVario != null && spiralLabVario.IsInitialized)
+                {
+                    CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();
+                    CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
+                }
+
+                if (spiralLabScanner != null && spiralLabScanner.IsInitialized)
+                {
+                    spiralLabScanner.CheckAndLogAllStatuses();
+
+                    double dPosX=0.0, dPosY = 0.0;
+                    spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isMainStatusRunning = false; // 플래그 해제
             }
         }
+
+        public void InitspiralLabScannerVarioModule()
+        {
+            if (workStage.rtc != null)
+            {
+                spiralLabVario = new SpiralLabVario("ScannerVario", workStage.rtc);
+                spiralLabVario.Create();
+                spiralLabVario.Owner = this;
+                Parts.Add(spiralLabVario);
+
+                Log.Write("SLD-200", "InitspiralLabScannerVarioModule", "ScannerVario 모듈 초기화 완료");
+            }
+        }
+
+        public float? GetRtcZOffset()
+        {
+            return spiralLabVario?.GetCurrentZOffset();
+        }
+
+        public float? GetRtcZDefocus()
+        {
+            return spiralLabVario?.GetCurrentZDefocus();
+        }
+
+
+
+
+        public void InitspiralLabScannerModule()
+        {
+            if (workStage.rtc != null)
+            {
+                spiralLabScanner = new SpiralLabScanner("Scanner", workStage.rtc);
+                spiralLabScanner.Create();
+                spiralLabScanner.Owner = this;
+                Parts.Add(spiralLabScanner);
+
+                Log.Write("SLD-200", "InitspiralLabScannerModule", "Scanner 모듈 초기화 완료");
+            }
+        }
+
+
+
+        public bool InitDustCollector(DustCollectorController.CollectorPosition position)
+        {
+            DustCollectorController dustCollector = null;
+            if (position == DustCollectorController.CollectorPosition.Upper)
+            {
+                dustCollector = DustCollector_Upper;
+            }
+            else if (position == DustCollectorController.CollectorPosition.Lower)
+            {
+                dustCollector = DustCollector_Lower;
+            }
+
+            if (dustCollector == null)
+            {
+                dustCollector.Create();
+                dustCollector.Owner = this;
+                Parts.Add(dustCollector);
+                return true;
+            }
+
+            if (position == DustCollectorController.CollectorPosition.Upper)
+            {
+                if (!DustCollector_Upper.Connect(Equipment.CommList.D_U))
+                    Log.Write("DustCollector", "[Upper] 연결 실패");
+
+                return true;
+            }
+            else if (position == DustCollectorController.CollectorPosition.Lower)
+            {
+                if (!DustCollector_Lower.Connect(Equipment.CommList.D_L))
+                    Log.Write("DustCollector", "[Lower] 연결 실패");
+
+                return true;
+            }
+
+            return false;
+        }
+
+
+
+
+
 
         public override void SetConfigData(object configData)
         {
@@ -445,6 +612,18 @@ namespace QMC.Common.Modules
 
         public override void Close()
         {
+            isModuleClose = true;
+            foreach (var task in listTask)
+            {
+                task.Wait();
+
+                task.Dispose();
+
+            }
+            listTask.Clear();
+
+            m_taskTimer_BDS_MainStatus_Tick = null;
+
             base.Close();
 
             if (Stage != null)
@@ -452,11 +631,16 @@ namespace QMC.Common.Modules
                 Stage.Close();
             }
 
-            //if (ACS_Motion != null)
-            //{
-            //    ACS_Motion.CloseComm();
-            //}
+
         }
+
+        public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)
+        {
+            //  요거 주석처리하면 안되는데... 이유가 뭘까
+
+            throw new NotImplementedException();
+        }
+
         #endregion
 
 
@@ -604,7 +788,7 @@ namespace QMC.Common.Modules
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
 
             m_btimer_MainWork_Stop = false;
-            timer_MainWork.Enabled = false; 
+            timer_MainWork.Enabled = false;
 
             if (!m_btimer_MainWork_Stop)
             {
@@ -616,7 +800,7 @@ namespace QMC.Common.Modules
         {
             if (!m_bAlignVisionThread_Use)
             {
-                
+
             }
         }
 
@@ -687,5 +871,6 @@ namespace QMC.Common.Modules
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\Common Setting (Do not delete or modify).ini";
         }
+
     }
 }

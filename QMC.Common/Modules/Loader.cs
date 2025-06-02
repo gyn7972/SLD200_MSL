@@ -7934,7 +7934,6 @@ namespace QMC.Common.Modules
                             //{
                             //    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
                             //}
-
                             ////  WorkStage 의 MainWork 에서 Parsing 진행        --> 여기가 아니라 Work Stage 에 Module 을 Put Down 하러 출발하면서 해야지 ㅡㅡ
                             //Equipment.ProcessingData_Parsing_byLoader = true;
 
@@ -7949,9 +7948,9 @@ namespace QMC.Common.Modules
                             workStage.m_bLaserDrilling_Complete = false;
 
                             //  Cycle Stop 이면?   --> Loader 에게 Cycle Stop 은, Stage 에 Module 을 갖다 놓으면 Cycle 완료
-                            if (Equipment.CycleStop)
+                            if (Equipment.CycleModuleStop)
                             {
-                                //  Loader Transfer 돌아가지 않게
+                                // Loader Transfer 돌아가지 않게
                                 Equipment.CycleStopped_LoaderTransfer = true;
                             }
                             break;

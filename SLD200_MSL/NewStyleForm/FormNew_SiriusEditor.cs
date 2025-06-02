@@ -84,6 +84,10 @@ namespace SLD200_MSL
 
             SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged;
 
+            textBox_SiriusEditor_Divided_W.Text = Equipment.m_fDividedX.ToString();
+            textBox_SiriusEditor_Divided_H.Text = Equipment.m_fDividedY.ToString();
+            checkBox_SiriusEditor_Divided.Checked = false;
+
         }
 
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
@@ -124,6 +128,10 @@ namespace SLD200_MSL
                     {
                         DrawGrid(view);
                     }
+                    else if (layer.Name.Contains("Outline"))
+                    {
+                        DrawGrid(view, layer);
+                    }
                 }
             }
         }
@@ -139,46 +147,113 @@ namespace SLD200_MSL
         {
             if (layer != null)
             {
-                foreach (var v in layer.Items)
+                if (layer.Name.Contains("Hole1"))
                 {
-                    double width = v.BoundRect.Width;
-                    double height = v.BoundRect.Height;
-                    double centerX = v.BoundRect.Center.X;
-                    double centerY = v.BoundRect.Center.Y;
-                    double dSplitW = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize;
-                    double dSplitH = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height;
-                    int colCount = (int)Math.Ceiling(width / dSplitW);
-                    int rowCount = (int)Math.Ceiling(height / dSplitH);
-                    double dStartX = centerX - (colCount * dSplitW) / 2;
-                    double dStartY = centerY - (rowCount * dSplitH) / 2;
-                    double dEndX = centerX + (colCount * dSplitW) / 2;
-                    double dEndY = centerY + (rowCount * dSplitH) / 2;
-
-                    OpenGL renderer = view.Renderer;
-                    // 바둑판의 크기와 간격 설정
-                    float squareSize = 10.0f; // 각 셀의 크기
-                    int gridCount = 10;       // 가로, 세로로 그릴 셀의 개수
-                    float gridSize = squareSize * gridCount; // 전체 그리드 크기
-
-                    // 라임색 설정
-                    renderer.Color(0.0f, 1.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
-                    for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
+                    foreach (var v in layer.Items)
                     {
+                        double width = v.BoundRect.Width;
+                        double height = v.BoundRect.Height;
+                        double centerX = v.BoundRect.Center.X;
+                        double centerY = v.BoundRect.Center.Y;
+                        double dSplitW = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize;
+                        double dSplitH = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize_Height;
+                        int colCount = (int)Math.Ceiling(width / dSplitW);
+                        int rowCount = (int)Math.Ceiling(height / dSplitH);
+                        double dStartX = centerX - (colCount * dSplitW) / 2;
+                        double dStartY = centerY - (rowCount * dSplitH) / 2;
+                        double dEndX = centerX + (colCount * dSplitW) / 2;
+                        double dEndY = centerY + (rowCount * dSplitH) / 2;
 
-                        renderer.Begin(OpenGL.GL_LINES);
-                        renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
-                        renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
-                        renderer.End();
-                    }
-                    for (double dY = dStartY; dY <= dEndY; dY += dSplitH)
-                    {
-                        renderer.Begin(OpenGL.GL_LINES);
-                        renderer.Vertex(dStartX, dY, 0.0f);          // 아래쪽 끝
-                        renderer.Vertex(dEndX, dY, 0.0f);   // 위쪽 끝
-                        renderer.End();
-                    }
+                        OpenGL renderer = view.Renderer;
+                        // 바둑판의 크기와 간격 설정
+                        float squareSize = 10.0f;   // 각 셀의 크기
+                        int gridCount = 10;         // 가로, 세로로 그릴 셀의 개수
+                        float gridSize = squareSize * gridCount; // 전체 그리드 크기
 
+                        // 라임색 설정
+                        renderer.Color(200.0f, 200.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
+                        for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
+                        {
+                            renderer.Begin(OpenGL.GL_LINES);
+                            renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
+                            renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
+                            renderer.End();
+                        }
+                        for (double dY = dStartY; dY <= dEndY; dY += dSplitH)
+                        {
+                            renderer.Begin(OpenGL.GL_LINES);
+                            renderer.Vertex(dStartX, dY, 0.0f);          // 아래쪽 끝
+                            renderer.Vertex(dEndX, dY, 0.0f);   // 위쪽 끝
+                            renderer.End();
+                        }
+                    }
                 }
+                else if (layer.Name.Contains("Outline"))
+                {
+                    OpenGL renderer = view.Renderer;
+
+                    if (Equipment.stLayerRecipeSet == null ||
+                        (int)LayerList.Outline >= Equipment.stLayerRecipeSet.Length)
+                    {
+                        Log.Write("SiriusEditor", "Outline 레이어의 레시피 정보가 존재하지 않습니다.");
+                        return;
+                    }
+
+                    var outlineRecipe = Equipment.stLayerRecipeSet[(int)LayerList.Outline];
+                    if (outlineRecipe.Miscellaneous_GroupSplitSize <= 0 ||
+                        outlineRecipe.Miscellaneous_GroupSplitSize_Height <= 0)
+                    {
+                        Log.Write("SiriusEditor", "Outline 레이어의 그룹 분할 크기가 유효하지 않습니다.");
+                        return;
+                    }
+
+                    double dSplitW = outlineRecipe.Miscellaneous_GroupSplitSize;
+                    double dSplitH = outlineRecipe.Miscellaneous_GroupSplitSize_Height;
+                    double epsilon = 0.01; // 미세하게 띄워서 시각적으로 겹쳐 보이지 않게 함
+
+                    renderer.Color(200.0f, 200.0f, 0.0f); // 라임색
+
+                    foreach (var entity in layer.Items)
+                    {
+                        if (entity == null || entity.BoundRect == null)
+                            continue;
+
+                        var bounds = entity.BoundRect;
+
+                        double width = bounds.Width;
+                        double height = bounds.Height;
+                        double centerX = bounds.Center.X;
+                        double centerY = bounds.Center.Y;
+
+                        int colCount = Math.Max(1, (int)Math.Ceiling(width / dSplitW));
+                        int rowCount = Math.Max(1, (int)Math.Ceiling(height / dSplitH));
+
+                        double offsetX = centerX - (colCount * dSplitW) / 2.0 + dSplitW / 2.0;
+                        double offsetY = centerY + (rowCount * dSplitH) / 2.0 - dSplitH / 2.0;
+
+                        for (int row = 0; row < rowCount; row++)
+                        {
+                            for (int col = 0; col < colCount; col++)
+                            {
+                                double cellCenterX = offsetX + col * dSplitW;
+                                double cellCenterY = offsetY - row * dSplitH;
+
+                                double left = cellCenterX - dSplitW / 2.0 + epsilon;
+                                double right = cellCenterX + dSplitW / 2.0 - epsilon;
+                                double bottom = cellCenterY - dSplitH / 2.0 + epsilon;
+                                double top = cellCenterY + dSplitH / 2.0 - epsilon;
+
+                                renderer.Begin(OpenGL.GL_LINE_LOOP);
+                                renderer.Vertex(left, bottom, 0.0f);
+                                renderer.Vertex(right, bottom, 0.0f);
+                                renderer.Vertex(right, top, 0.0f);
+                                renderer.Vertex(left, top, 0.0f);
+                                renderer.End();
+                            }
+                        }
+                    }
+                }
+
             }
         }
 
@@ -563,7 +638,7 @@ namespace SLD200_MSL
             //workStage.m_dSpot_Distance = 0.0;
             //SiriusEditor.Enabled = true;
 
-             workStage.InitRtc3DModule();
+             workStage.InitspiralLabScannerModule();
 
             return m_bRet;
         }
@@ -1990,7 +2065,7 @@ namespace SLD200_MSL
         }
 
 
-/// <summary>
+        /// <summary>
         /// 테스트용 코드 : Select 한 데이터만 가져오기 (어디 어디 선택한 건지...?), 나중에 써먹을 지 몰라서 만들어 둠
         /// </summary>
         public bool DrillingData_Select_Check()
@@ -2274,9 +2349,9 @@ namespace SLD200_MSL
             //{
             //    case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
 
-            //        Equipment.CycleTimer_LaserDrilling.Clear();
-            //        Equipment.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
-            //        Equipment.CycleTimer_DoneModuleCount = 0;
+            //        workStage.DrillingManager.CycleTimer_LaserDrilling.Clear();
+            //        workStage.DrillingManager.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
+            //        workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
 
             //        //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
             //        workStage.GetDrillingData_ProcessingFlagCheck();
@@ -2358,5 +2433,41 @@ namespace SLD200_MSL
             //    }
             //}
         }
+
+        private void button_SiriusEditor_Divided_Click(object sender, EventArgs e)
+        {
+            float fDividedX = 0.0f;
+            float fDividedY = 0.0f;
+
+            Equipment.m_bDivided = false;
+            if (checkBox_SiriusEditor_Divided.Checked)
+            {
+                Equipment.m_bDivided = true;    //  분할 여부
+                fDividedX = textBox_SiriusEditor_Divided_W.Text == "" ? 0.0f : float.Parse(textBox_SiriusEditor_Divided_W.Text);
+                fDividedY = textBox_SiriusEditor_Divided_H.Text == "" ? 0.0f : float.Parse(textBox_SiriusEditor_Divided_H.Text);
+                Equipment.m_fDividedX = fDividedX;
+                Equipment.m_fDividedY = fDividedY;
+
+                var outlineRecipe = Equipment.stLayerRecipeSet[(int)LayerList.Outline];
+                if (outlineRecipe.Miscellaneous_GroupSplitSize <= 0 ||
+                    outlineRecipe.Miscellaneous_GroupSplitSize_Height <= 0)
+                {
+                    Log.Write("SiriusEditor", "Outline 레이어의 그룹 분할 크기가 유효하지 않습니다.");
+                    return;
+                }
+                outlineRecipe.Miscellaneous_GroupSplitSize = Equipment.m_fDividedX;
+                outlineRecipe.Miscellaneous_GroupSplitSize_Height = Equipment.m_fDividedY;
+                Equipment.stLayerRecipeSet[(int)LayerList.Outline] = outlineRecipe;
+            }
+            else
+            {
+                m_bDivided = false;
+                m_fDividedX = 0;
+                m_fDividedY = 0;
+            }
+
+            
+        }
+        
     }
 }

@@ -59,9 +59,9 @@ namespace QMC.Common.Global
 
             var group = stDividedRegion_GroupData[nSocketNum];
             //int regionCount = group.nGroup_Num;
-            int regionCount = group.nGroup_RegionCount;
+            int regionCount = group.nGroup_Num;
 
-            if (regionCount == 0)
+            if (group.m_stDividedRegion_RegionData.Length == 0)
             {
                 if (group.m_stDividedRegion_RegionData.Length > 0)
                 {
@@ -83,7 +83,7 @@ namespace QMC.Common.Global
             }
             else
             {
-                for (int i = 0; i < regionCount; i++)
+                for (int i = 0; i < group.m_stDividedRegion_RegionData.Length; i++)
                 {
                     var region = group.m_stDividedRegion_RegionData[i];
                     var objects = region.m_stDividedRegion_ObjectData;

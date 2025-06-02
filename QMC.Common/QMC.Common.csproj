@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -186,6 +186,7 @@
     <Compile Include="CircularButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DustCollectorController\DustCollectorController.cs" />
     <Compile Include="Global\AreaInfo.cs" />
     <Compile Include="Global\DrillingProcessManager.cs" />
     <Compile Include="Global\GlobalHotkeyMessageFilter.cs" />
@@ -212,7 +213,7 @@
     </Compile>
     <Compile Include="SpiralLab\SpialData.cs" />
     <Compile Include="SpiralLab\SpiralDataCollector.cs" />
-    <Compile Include="SpiralLab\SpiralLabRtc3D.cs" />
+    <Compile Include="SpiralLab\SpiralLabVario.cs" />
     <Compile Include="SpiralLab\SpiralLabScanner.cs" />
     <Compile Include="Modules\Unloader.cs" />
     <Compile Include="Modules\Loader.cs" />
@@ -704,7 +705,11 @@
     <None Include="syncAXIS\bin64\lib\syncAXIS.lib" />
     <None Include="syncAXIS\bin\lib\syncAXIS.lib" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="SpiralLab\Sirius\QMCSiriusEditorForm.resx">
+      <DependentUpon>QMCSiriusEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "C:\Program Files\QMC\SLD200_MSL\"

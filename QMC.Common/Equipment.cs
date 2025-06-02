@@ -41,6 +41,7 @@ using QMC.Common.Vision;
 using Cognex.VisionPro;
 using System.ServiceModel.Syndication;
 using QMC.Common.Recipe;
+using System.IO.Ports;
 
 
 
@@ -244,11 +245,12 @@ namespace QMC.Common
         public static double MainCycle_Interval { set; get; }                           //  Main Cycle 타이머의 Interval. 
 
 
-        public static int CycleTimer_TargetModuleCount = 0;
-        public static int CycleTimer_DoneModuleCount = 0;
-        public static int CycleTimer_NGSocketCount = 0;
+        // DrillingProcessManager class로 옮긴 후 제어.
+        //public static int CycleTimer_TargetModuleCount = 0;
+        //public static int CycleTimer_DoneModuleCount = 0;
+        //public static int CycleTimer_NGSocketCount = 0;
         //  workStage 가공시간 계산을 위해 사용되는 변수
-        public static CycleTimer CycleTimer_LaserDrilling = new CycleTimer();
+        //public static CycleTimer CycleTimer_LaserDrilling = new CycleTimer();
 
 
 
@@ -339,6 +341,8 @@ namespace QMC.Common
             ElectroPneumaticRegulator,
             Laser,
             LaserHeightSensor,
+            D_U,
+            D_L
         }
 
         public struct stCommParameter
@@ -634,6 +638,8 @@ namespace QMC.Common
             public PointD FromScannerToFineCam;             //  Scanner to Fine Camera
             public PointD FromFineCamToCoarseCam;           //  Fine Camera to Coarse Camera
             public PointD FromFineCamToLaserHeightSensor;   //  Fine Camera to Laser Height Sensor (Keyence)
+
+            public PointD FromAlignOffset;              //  ....
         }
         public static stOffsetDistanceParameter stOffsetDistance = new stOffsetDistanceParameter();
 
@@ -786,18 +792,30 @@ namespace QMC.Common
         // 장비 구동 유/무 변수 : 장비 시컨스 구동 유/무 변수 :: 실제로 장비 구동 확인 
         // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
         // 위와 같이 구분하여 장비 관리 할것!
-        public static bool AutoRunStatus { set; get; }
-        public static bool ManualRunStatus { set; get; }
+        public static bool AutoRunStatus { set; get; } = false;
+        public static bool ManualRunStatus { set; get; } = false;
+        //  Cycle Stop
+        public static bool CycleModuleStop { set; get; } = false;
+        public static bool CycleSocketStop { set; get; } = false;
 
         // Drilling Cycle Stop 예약 변수 : 장비 Stop 시 가공중이던 부분은 완료 되고 Stop 하도록 하기 위함
         // true : Stop 예약
         // _isLaserDrillingWorkRunning 을 false 로 만드는 경우(Stop 하는 경우), 곧바로 false 로 변경하지 않고 Laser 가공이 완료된 후에 false 로 변경
         public static bool LaserDrillingCycStop_Reservation { set; get; } // 장비 Stop 예약
 
+        public static double DrillModuleDelaySeconds = 0.0; // 예: 60초 (1분)
+
+
+
+
+
+
+
+
+
         //  Loading 에 사용하던 Port 를 기억하기 위한 변수
         //  Pick Up 하던 Port 에서만 계속 진행하기 위한 Port Index
         public static int Loader_ActivatePort { set; get; } = 0;            //  Loader Port Activate (0: RPort, 1: LPort)
-
 
         public static int DryRun_ProcessingTime { set; get; } = 5;
 
@@ -841,10 +859,9 @@ namespace QMC.Common
         public static bool Loader_LPort_Empty { set; get; } = false;
         public static bool Loader_RPort_Empty { set; get; } = false;
 
-        //  Cycle Stop
-        public static bool SocketStop { set; get; } = false;
+
+
         public static bool SocketStopped { set; get; } = false;
-        public static bool CycleStop { set; get; } = false;
         public static bool CycleStopped_LoaderTransfer { set; get; } = false;
         public static bool CycleStopped_UnloaderTransfer { set; get; } = false;
         public static bool CycleStopped_MainWork { set; get; } = false;
@@ -1145,6 +1162,8 @@ namespace QMC.Common
             stOffsetDistance.FromFineCamToCoarseCam.Y = 0;
             stOffsetDistance.FromFineCamToLaserHeightSensor.X = 0;
             stOffsetDistance.FromFineCamToLaserHeightSensor.Y = 0;
+            stOffsetDistance.FromAlignOffset.X = 0;                     //  Align Offset X
+            stOffsetDistance.FromAlignOffset.Y = 0;                     //  Align Offset Y
 
 
             //  Layer Recipe 파라미터 초기화
@@ -3038,6 +3057,12 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_Y", "0.0", temp, 255, strFIle);
             Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y = Equipment.ToDouble(temp.ToString());
 
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_AlignOffset_X", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromAlignOffset.X = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_AlignOffset_Y", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromAlignOffset.Y = Equipment.ToDouble(temp.ToString());
+
+
             //  Scanner Head Offset
             NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_X", "0.0", temp, 255, strFIle);
             Equipment.Scanner_HeadOffset_X = Equipment.ToDouble(temp.ToString());
@@ -3200,6 +3225,72 @@ namespace QMC.Common
             return m_bRet;
         }
         public static bool m_bworkStageVacuumFail = false;
+
+        public static void GetSerialPortConfig(Equipment.CommList comm,
+                                                out string portName, out int baudRate, out int dataBits,
+                                                out StopBits stopBits, out Parity parity, out Handshake handshake)
+        {
+            var setting = Equipment.stCommunicationSet[(int)comm];
+
+            // 포트 이름
+            portName = $"COM{setting.Serial_CommPort + 1}";
+
+            // BaudRate 설정
+            switch (setting.Serial_CommBaudRate)
+            {
+                case 0: baudRate = 1200; break;
+                case 1: baudRate = 2400; break;
+                case 2: baudRate = 4800; break;
+                case 3: baudRate = 9600; break;
+                case 4: baudRate = 19200; break;
+                case 5: baudRate = 38400; break;
+                case 6: baudRate = 57600; break;
+                case 7: baudRate = 115200; break;
+                default: baudRate = 9600; break;
+            }
+
+            // DataBits 설정
+            switch (setting.Serial_CommDataBits)
+            {
+                case 0: dataBits = 5; break;
+                case 1: dataBits = 6; break;
+                case 2: dataBits = 7; break;
+                case 3: dataBits = 8; break;
+                default: dataBits = 8; break;
+            }
+
+            // StopBits 설정
+            switch (setting.Serial_CommStopBits)
+            {
+                case 0: stopBits = StopBits.One; break;
+                case 1: stopBits = StopBits.OnePointFive; break;
+                case 2: stopBits = StopBits.Two; break;
+                default: stopBits = StopBits.One; break;
+            }
+
+            // Parity 설정
+            switch (setting.Serial_CommParity)
+            {
+                case 0: parity = Parity.None; break;
+                case 1: parity = Parity.Odd; break;
+                case 2: parity = Parity.Even; break;
+                default: parity = Parity.None; break;
+            }
+
+            // Handshake 설정
+            switch (setting.Serial_CommFlowControl)
+            {
+                case 0: handshake = Handshake.None; break;
+                case 1: handshake = Handshake.XOnXOff; break;
+                case 2: handshake = Handshake.RequestToSend; break;
+                case 3: handshake = Handshake.RequestToSendXOnXOff; break;
+                default: handshake = Handshake.None; break;
+            }
+        }
+
+        public static float m_fDividedX { set; get; } = 0.0f;
+        public static float m_fDividedY { set; get; } = 0.0f;
+        public static bool m_bDivided { set; get; } = false;
 
     }
 }
