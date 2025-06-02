@@ -7934,7 +7934,6 @@ namespace QMC.Common.Modules
                             //{
                             //    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
                             //}
-
                             ////  WorkStage 의 MainWork 에서 Parsing 진행        --> 여기가 아니라 Work Stage 에 Module 을 Put Down 하러 출발하면서 해야지 ㅡㅡ
                             //Equipment.ProcessingData_Parsing_byLoader = true;
 

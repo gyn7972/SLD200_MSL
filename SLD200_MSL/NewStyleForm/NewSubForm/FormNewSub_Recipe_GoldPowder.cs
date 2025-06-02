@@ -489,7 +489,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                     result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData,
                                                     w, h, (int)m_dradius, dSpec,
-                                                    ref bFindCircle, 0, 0, nTargetColor == 0);
+                                                    ref bFindCircle, 0, 0, nTargetColor == 0, 
+                                                    Equipment.stVisionRecipeSet.dGoldPowderCircleMarkScore,
+                                                                            false);
                 }
                 else
                 {

@@ -84,6 +84,10 @@ namespace SLD200_MSL
 
             SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged;
 
+            textBox_SiriusEditor_Divided_W.Text = Equipment.m_fDividedX.ToString();
+            textBox_SiriusEditor_Divided_H.Text = Equipment.m_fDividedY.ToString();
+            checkBox_SiriusEditor_Divided.Checked = false;
+
         }
 
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
@@ -2429,5 +2433,41 @@ namespace SLD200_MSL
             //    }
             //}
         }
+
+        private void button_SiriusEditor_Divided_Click(object sender, EventArgs e)
+        {
+            float fDividedX = 0.0f;
+            float fDividedY = 0.0f;
+
+            Equipment.m_bDivided = false;
+            if (checkBox_SiriusEditor_Divided.Checked)
+            {
+                Equipment.m_bDivided = true;    //  분할 여부
+                fDividedX = textBox_SiriusEditor_Divided_W.Text == "" ? 0.0f : float.Parse(textBox_SiriusEditor_Divided_W.Text);
+                fDividedY = textBox_SiriusEditor_Divided_H.Text == "" ? 0.0f : float.Parse(textBox_SiriusEditor_Divided_H.Text);
+                Equipment.m_fDividedX = fDividedX;
+                Equipment.m_fDividedY = fDividedY;
+
+                var outlineRecipe = Equipment.stLayerRecipeSet[(int)LayerList.Outline];
+                if (outlineRecipe.Miscellaneous_GroupSplitSize <= 0 ||
+                    outlineRecipe.Miscellaneous_GroupSplitSize_Height <= 0)
+                {
+                    Log.Write("SiriusEditor", "Outline 레이어의 그룹 분할 크기가 유효하지 않습니다.");
+                    return;
+                }
+                outlineRecipe.Miscellaneous_GroupSplitSize = Equipment.m_fDividedX;
+                outlineRecipe.Miscellaneous_GroupSplitSize_Height = Equipment.m_fDividedY;
+                Equipment.stLayerRecipeSet[(int)LayerList.Outline] = outlineRecipe;
+            }
+            else
+            {
+                m_bDivided = false;
+                m_fDividedX = 0;
+                m_fDividedY = 0;
+            }
+
+            
+        }
+        
     }
 }
