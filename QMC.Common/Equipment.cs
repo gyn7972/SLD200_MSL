@@ -638,6 +638,8 @@ namespace QMC.Common
             public PointD FromScannerToFineCam;             //  Scanner to Fine Camera
             public PointD FromFineCamToCoarseCam;           //  Fine Camera to Coarse Camera
             public PointD FromFineCamToLaserHeightSensor;   //  Fine Camera to Laser Height Sensor (Keyence)
+
+            public PointD FromAlignOffset;              //  ....
         }
         public static stOffsetDistanceParameter stOffsetDistance = new stOffsetDistanceParameter();
 
@@ -1160,6 +1162,8 @@ namespace QMC.Common
             stOffsetDistance.FromFineCamToCoarseCam.Y = 0;
             stOffsetDistance.FromFineCamToLaserHeightSensor.X = 0;
             stOffsetDistance.FromFineCamToLaserHeightSensor.Y = 0;
+            stOffsetDistance.FromAlignOffset.X = 0;                     //  Align Offset X
+            stOffsetDistance.FromAlignOffset.Y = 0;                     //  Align Offset Y
 
 
             //  Layer Recipe 파라미터 초기화
@@ -3053,6 +3057,12 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_Y", "0.0", temp, 255, strFIle);
             Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y = Equipment.ToDouble(temp.ToString());
 
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_AlignOffset_X", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromAlignOffset.X = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_AlignOffset_Y", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromAlignOffset.Y = Equipment.ToDouble(temp.ToString());
+
+
             //  Scanner Head Offset
             NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_X", "0.0", temp, 255, strFIle);
             Equipment.Scanner_HeadOffset_X = Equipment.ToDouble(temp.ToString());
@@ -3277,6 +3287,10 @@ namespace QMC.Common
                 default: handshake = Handshake.None; break;
             }
         }
+
+        public static float m_fDividedX { set; get; } = 0.0f;
+        public static float m_fDividedY { set; get; } = 0.0f;
+        public static bool m_bDivided { set; get; } = false;
 
     }
 }

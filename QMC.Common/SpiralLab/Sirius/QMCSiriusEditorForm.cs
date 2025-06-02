@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using static QMC.Common.Equipment;
 
 namespace SpiralLab.Sirius
 {
@@ -148,6 +149,11 @@ namespace SpiralLab.Sirius
                         MoveToMarking();
                     }
                     break;
+                case Keys.Alt | Keys.O:
+                    {
+                        MoveToOutline();
+                    }
+                    break;
                 case Keys.Alt | Keys.D:
                     {
                         AutoDivide();
@@ -174,10 +180,13 @@ namespace SpiralLab.Sirius
         {
             MoveToGroup("PreAlign");
         }
+        private void MoveToOutline()
+        {
+            MoveToGroup("Outline");
+        }
 
         private void MoveToGroup(string Name)
         {
-
             try
             {
                 var Document = this.Document;
@@ -264,17 +273,32 @@ namespace SpiralLab.Sirius
         private void AutoDivide()
         {
             //AutoDivideBySize(10, 22); // 원하는 mm 단위 셀 크기 설정
-
             //AutoDivideByLayer("Outline", 10f, 22f); // 원하는 mm 단위 셀 크기 설정
-            // 현재 선택된 레이어 하나 가져오기
-            var selectedLayer = doc.Layers.FirstOrDefault(l => l.IsSelected);
-            if (selectedLayer == null)
-            {
-                MessageBox.Show("선택된 레이어가 없습니다. 레이어를 먼저 선택하세요.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
 
-            AutoDivideByLayer(selectedLayer.Name, 10, 22); // 원하는 mm 단위 셀 크기 설정
+            if(Equipment.m_bDivided)
+            {
+                // 현재 선택된 레이어 하나 가져오기
+                var selectedLayer = doc.Layers.FirstOrDefault(l => l.IsSelected);
+                if (selectedLayer == null)
+                {
+                    MessageBox.Show("선택된 레이어가 없습니다. 레이어를 먼저 선택하세요.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                //var outlineRecipe = Equipment.stLayerRecipeSet[(int)LayerList.Outline];
+                //if (outlineRecipe.Miscellaneous_GroupSplitSize <= 0 ||
+                //    outlineRecipe.Miscellaneous_GroupSplitSize_Height <= 0)
+                //{
+                //    Log.Write("SiriusEditor", "Outline 레이어의 그룹 분할 크기가 유효하지 않습니다.");
+                //    return;
+                //}
+
+                //float dSplitW = (float)outlineRecipe.Miscellaneous_GroupSplitSize;
+                //float dSplitH = (float)outlineRecipe.Miscellaneous_GroupSplitSize_Height;
+                float dSplitW = Equipment.m_fDividedX;
+                float dSplitH = Equipment.m_fDividedY;
+                AutoDivideByLayer(selectedLayer.Name, dSplitW, dSplitH); // 원하는 mm 단위 셀 크기 설정
+                UnGroupAllDividedGroupsInSelectedLayer();
+            }
         }
 
 
@@ -348,6 +372,60 @@ namespace SpiralLab.Sirius
         {
             return !(a.Right < b.Left || a.Left > b.Right || a.Top < b.Bottom || a.Bottom > b.Top);
         }
+
+        public void UnGroupAllDividedGroupsInSelectedLayer()
+        {
+            var doc = this.Document;
+            var action = doc.Action;
+
+            // 선택된 레이어 가져오기
+            var selectedLayer = doc.Layers.FirstOrDefault(l => l.IsSelected);
+            if (selectedLayer == null)
+            {
+                MessageBox.Show("선택된 레이어가 없습니다. 레이어를 먼저 선택하세요.", "UnGroup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            List<IEntity> toUngroup = new List<IEntity>();
+
+            // 초기 그룹 수집
+            foreach (var entity in selectedLayer)
+            {
+                if (entity is Group)
+                    toUngroup.Add(entity);
+            }
+
+            // 반복적으로 그룹 해체
+            while (toUngroup.Count > 0)
+            {
+                action.ActEntitySelect(toUngroup);
+                action.ActEntityUngroup(toUngroup, selectedLayer);
+
+                // 다시 그룹 찾기
+                toUngroup.Clear();
+                foreach (var entity in selectedLayer)
+                {
+                    if (entity is Group)
+                        toUngroup.Add(entity);
+                }
+            }
+
+            //Console.WriteLine($"[완료] 선택된 레이어 '{selectedLayer.Name}' 의 모든 그룹 해체");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

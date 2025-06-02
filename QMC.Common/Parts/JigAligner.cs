@@ -416,7 +416,7 @@ namespace QMC.Common.Parts
 
                         xyInterpolatedCoordinate.X = position.X;
                         xyInterpolatedCoordinate.Y = position.Y;
-                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX1{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY1{xyInterpolatedCoordinate.Y}"));
+                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX1:{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY1:{xyInterpolatedCoordinate.Y}"));
 
                         m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
                         //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);

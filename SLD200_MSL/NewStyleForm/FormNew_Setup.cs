@@ -1276,7 +1276,6 @@ namespace SLD200_MSL
                 radioButton_Setup_Option_LaserType_UV.Checked = true;
             }
 
-
             //  Offset Distance
             textBox_Setup_Option_Offset_ScannerFineCam_X.Text = Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString();
             textBox_Setup_Option_Offset_ScannerFineCam_Y.Text = Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString();
@@ -1284,6 +1283,9 @@ namespace SLD200_MSL
             textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Text = Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y.ToString();
             textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Text = Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X.ToString();
             textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Text = Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y.ToString();
+
+            textBox_Setup_Option_OffsetX.Text = Equipment.stOffsetDistance.FromAlignOffset.X.ToString();
+            textBox_Setup_Option_OffsetY.Text = Equipment.stOffsetDistance.FromAlignOffset.Y.ToString();
 
 
             //  Scanner Head Offset
@@ -1798,6 +1800,11 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_FineCam_To_CoarseCam_Y", textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_X", textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_Y", textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Text, strFIle);
+
+            Equipment.stOffsetDistance.FromAlignOffset.X = Equipment.ToDouble(textBox_Setup_Option_OffsetX.Text);
+            Equipment.stOffsetDistance.FromAlignOffset.Y = Equipment.ToDouble(textBox_Setup_Option_OffsetY.Text);
+            NativeMethods.WritePrivateProfileString("Offset_Distance", "From_AlignOffset_X", textBox_Setup_Option_OffsetX.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance", "From_AlignOffset_Y", textBox_Setup_Option_OffsetY.Text, strFIle);
 
             //  Scanner Head Offset
             Equipment.Scanner_HeadOffset_X = Equipment.ToDouble(textBox_ScannerOffset_X.Text);
