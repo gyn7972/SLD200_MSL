@@ -481,15 +481,22 @@ namespace SLD200.NewStyleForm.NewSubForm
                 if(bCO2_RepairMode)
                 {
                     //result = aligner.FindCircleForFR4(workStage.Camera_HighRes.LatestImage.RawData,
-                    //                                                        w, h,
-                    //                                                        (int)m_dradius,
-                    //                                                        dSpec,
-                    //                                                        dScore);
+                    //                                  w,
+                    //                                  h,
+                    //                                  (int)m_dradius,
+                    //                                  dSpec,
+                    //                                  dScore);
+                    //circlesResult.Clear();
+                    //foreach (var circle in result.Circles)
+                    //{
+                    //    circlesResult.Add(circle.GetBoundery());
+                    //    bFindCircle = true;
+                    //}
 
                     result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData,
                                                     w, h, (int)m_dradius, dSpec,
-                                                    ref bFindCircle, 0, 0, nTargetColor == 0, 
+                                                    ref bFindCircle, 0, 0, nTargetColor == 0,
                                                     Equipment.stVisionRecipeSet.dGoldPowderCircleMarkScore,
                                                                             false);
                 }

@@ -14828,7 +14828,7 @@ namespace QMC.Common.Modules
                     }
                     else if (alignMode == AlignMode.GoldPowder)
                     {
-                        retryCount = 5; //겁나 잘찾아야한다.
+                        retryCount = 3; //겁나 잘찾아야한다.
                         ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount, alignMode);
                     }
 
@@ -25845,19 +25845,37 @@ namespace QMC.Common.Modules
 
         private LayerList GetCurrentLayerEnum(LayerType type)
         {
-            switch (type)
+            LayerList layerList = LayerList.Hole1;
+            try
             {
-                case LayerType.LAYER_DRILLING:
-                    return (LayerList)(m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]); // 예: Hole12
-                case LayerType.LAYER_OUTLINE:
-                    return LayerList.Outline;
-                case LayerType.LAYER_THRUHOLE:
-                    return LayerList.Thruhole;
-                case LayerType.LAYER_MARKING:
-                    return LayerList.Marking;
-                default:
-                    return LayerList.PreAlign;
+                switch (type)
+                {
+                    case LayerType.LAYER_DRILLING:
+                        layerList = (LayerList)(m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]); // 예: Hole12
+                        return (LayerList)(m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]); // 예: Hole12
+                    case LayerType.LAYER_OUTLINE:
+                        layerList = LayerList.Outline;
+                        return LayerList.Outline;
+                    case LayerType.LAYER_THRUHOLE:
+                        layerList = LayerList.Thruhole;
+                        return LayerList.Thruhole;
+                    case LayerType.LAYER_MARKING:
+                        layerList = LayerList.Marking;
+                        return LayerList.Marking;
+                    default:
+                        layerList = LayerList.PreAlign;
+                        return LayerList.PreAlign;
+                }
+
+                return layerList;
             }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return layerList;
+
         }
 
         private PointD[] ResizePoliLine(PointD[] Data,double dResize )
@@ -27661,7 +27679,7 @@ namespace QMC.Common.Modules
             }
 
             xyInterpolatedCoordinate = ConvertFineCamToLaserHeightSensor(new XyCoordinate(dTargetX, dTargetY));
-            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse, 1);
 
             TickCount_Start((int)TickType.TICK_MAIN);
         }
@@ -44754,7 +44772,7 @@ namespace QMC.Common.Modules
             return bRtn;
         }
         
-        public bool MovetoWorkStage_ABS_PositionsXY(XyCoordinate xyCoordinate, Type_Motor_Speed typeSpeed)
+        public bool MovetoWorkStage_ABS_PositionsXY(XyCoordinate xyCoordinate, Type_Motor_Speed typeSpeed, double dv = 1)
         {
             // WorkStage Teaching Position 이동
             // string strTemp = "";
@@ -44777,11 +44795,11 @@ namespace QMC.Common.Modules
                         {
                             case Type_Motor_Speed.Fine:
                                 dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine * dv;
                                 break;
                             case Type_Motor_Speed.Coarse:
                                 dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse * dv;
                                 break;
                             default:
                                 dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
