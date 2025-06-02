@@ -25846,6 +25846,17 @@ namespace QMC.Common.Modules
         private LayerList GetCurrentLayerEnum(LayerType type)
         {
             LayerList layerList = LayerList.Hole1;
+            if (type == LayerType.LAYER_DRILLING)
+            {
+                if (m_stLayerType.m_nLayerIndex == null ||
+                    m_nLaserDrilling_LayerCount < 0 ||
+                    m_nLaserDrilling_LayerCount >= m_stLayerType.m_nLayerIndex.Length)
+                {
+                    Log.Write("GetCurrentLayerEnum", "DRILLING 레이어 인덱스가 잘못되었거나 초기화되지 않음");
+                    return LayerList.Hole1;
+                }
+            }
+
             try
             {
                 switch (type)
@@ -25866,8 +25877,6 @@ namespace QMC.Common.Modules
                         layerList = LayerList.PreAlign;
                         return LayerList.PreAlign;
                 }
-
-                return layerList;
             }
             catch (Exception ex)
             {
@@ -38373,7 +38382,6 @@ namespace QMC.Common.Modules
                             //}
                         }
 
-
                         //  세부 데이터 저장
                         m_nGroupData_Count = 0;
                         foreach (var entity in layer)
@@ -39624,6 +39632,11 @@ namespace QMC.Common.Modules
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectRotateAngle = (double)text.Angle;
                                     var listText = text.ToOutlineGlyph();
 
+
+                                    string fontName = text.FontName;
+                                    string fontText = text.FontText;
+
+
                                     // Sirius-Text 와는 다르게, 모든 Text 가 LWPolyline 으로 구성되어 있다.
                                     //////////////////////
                                     ///
@@ -40571,6 +40584,13 @@ namespace QMC.Common.Modules
 
                         for (int i = 0; i < m_ptPreAlign.Length; i++)
                         {
+                            if(m_stThruHole_SocketData[0].dPreAlignPos[i] == null)
+                            {
+                                m_stThruHole_SocketData[0].dPreAlignPos = new PointD[m_ptPreAlign.Length];
+                                m_stThruHole_SocketData[0].dPreAlignWidth = new double[m_ptPreAlign.Length];
+                                m_stThruHole_SocketData[0].dPreAlignHeight = new double[m_ptPreAlign.Length];
+                            }
+
                             m_stThruHole_SocketData[0].dPreAlignPos[i].X = preAlignCircles[i].Center.X;
                             m_stThruHole_SocketData[0].dPreAlignPos[i].Y = preAlignCircles[i].Center.Y;
                             m_stThruHole_SocketData[0].dPreAlignWidth[i] = preAlignCircles[i].Radius;
@@ -40595,10 +40615,19 @@ namespace QMC.Common.Modules
 
                         for (int i = 0; i < m_ptPreAlign.Length; i++)
                         {
+                            if(m_stOutLine_SocketData[0].dPreAlignPos== null)
+                            {
+                                m_stOutLine_SocketData[0].dPreAlignPos = new PointD[m_ptPreAlign.Length];
+                                m_stOutLine_SocketData[0].dPreAlignWidth = new double[m_ptPreAlign.Length];
+                                m_stOutLine_SocketData[0].dPreAlignHeight = new double[m_ptPreAlign.Length];
+                                Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Outline Layer, Pre-Align 신규 선언.");
+                            }
+                            
                             m_stOutLine_SocketData[0].dPreAlignPos[i].X = preAlignCircles[i].Center.X;
                             m_stOutLine_SocketData[0].dPreAlignPos[i].Y = preAlignCircles[i].Center.Y;
                             m_stOutLine_SocketData[0].dPreAlignWidth[i] = preAlignCircles[i].Radius;
                             m_stOutLine_SocketData[0].dPreAlignHeight[i] = preAlignCircles[i].Radius;
+                     
                         }
                     }
                     else

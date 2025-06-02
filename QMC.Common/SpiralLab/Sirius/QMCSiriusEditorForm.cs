@@ -9,8 +9,10 @@ using static QMC.Common.Equipment;
 
 namespace SpiralLab.Sirius
 {
+    //public class QMCSiriusEditorForm : SiriusEditorForm
     public class QMCSiriusEditorForm : SiriusEditorForm
     {
+        //CustomEditorForm
         public QMCSiriusEditorForm() : base()
         {
             // 생성자에서 필요한 초기화 작업 수행
