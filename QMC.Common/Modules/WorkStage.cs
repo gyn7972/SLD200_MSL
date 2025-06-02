@@ -15217,7 +15217,7 @@ namespace QMC.Common.Modules
                                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align:GoldPowder", strTemp);
 
 
-                                    //m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+                                    ////m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
                                     ////m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4Dwg_RepairPos, m_st4PointPosition_InspectedPos);
 
                                     //strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
@@ -23366,6 +23366,7 @@ namespace QMC.Common.Modules
                         {
                             m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle = 0;
                         }
+
                     }
 
                     switch (m_LayerType)
@@ -41478,7 +41479,8 @@ namespace QMC.Common.Modules
                 dOffsetX1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X - m_st4PointPosition_DwgPos[iter].ptFiducial_Center.X;
                 dOffsetY1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.Y - m_st4PointPosition_DwgPos[iter].ptFiducial_Center.Y;
 
-                if( Math.Abs(dOffsetX1) < 0.03 && Math.Abs(dOffsetY1) < 0.03)
+                //0.03 -> 0.07
+                if( Math.Abs(dOffsetX1) < 0.05 && Math.Abs(dOffsetY1) < 0.05)
                 {
                     dSumOffsetX += dOffsetX1;
                     dSumOffsetY += dOffsetY1;
