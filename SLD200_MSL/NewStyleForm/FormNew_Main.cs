@@ -1735,10 +1735,10 @@ namespace SLD200_MSL
             else if (((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move) &&
                     (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck)) ||
 
-                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.OutLine_DrillingWork_Start) &&
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck) &&
                     (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck)) ||
 
-                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.Marking_DrillingWork_Start) &&
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move) &&
                     (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.Marking_DrillingWork_CompleteCheck)) ||
 
                     ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start) &&
