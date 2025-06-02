@@ -1268,7 +1268,7 @@ namespace SLD200_MSL
                 unloader.timer_UnloaderWork.Stop();
                 unloader.m_UnloaderWork_Start = false;
 
-                System.Windows.Forms.MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //System.Windows.Forms.MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             // label_Title_MESMessage
