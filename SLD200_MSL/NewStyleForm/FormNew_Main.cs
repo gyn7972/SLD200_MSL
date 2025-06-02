@@ -1732,13 +1732,13 @@ namespace SLD200_MSL
 
                 workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
             }
-            else if (((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.ThruHole_DrillingWork_Start) &&
+            else if (((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move) &&
                     (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck)) ||
 
-                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.OutLine_DrillingWork_Start) &&
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck) &&
                     (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck)) ||
 
-                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.Marking_DrillingWork_Start) &&
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move) &&
                     (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.Marking_DrillingWork_CompleteCheck)) ||
 
                     ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start) &&

@@ -35,6 +35,7 @@ namespace SLD200_MSL
             this.button_DataParsing = new System.Windows.Forms.Button();
             this.button_Rotate = new System.Windows.Forms.Button();
             this.groupBox167 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -54,7 +55,6 @@ namespace SLD200_MSL
             this.textBoxCorY = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textboxCorX = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.textBox_SiriusEditor_Divided_W = new System.Windows.Forms.TextBox();
             this.label_SiriusEditor_Divided_W = new System.Windows.Forms.Label();
             this.textBox_SiriusEditor_Divided_H = new System.Windows.Forms.TextBox();
@@ -94,6 +94,7 @@ namespace SLD200_MSL
             this.SiriusEditor.Size = new System.Drawing.Size(1286, 871);
             this.SiriusEditor.TabIndex = 69;
             this.SiriusEditor.OnDocumentSave += new SpiralLab.Sirius.SiriusDocumentSave(this.SiriusEditor_OnDocumentSave);
+            this.SiriusEditor.CausesValidationChanged += new System.EventHandler(this.SiriusEditor_CausesValidationChanged);
             // 
             // button_DataParsing
             // 
@@ -134,6 +135,17 @@ namespace SLD200_MSL
             this.groupBox167.TabIndex = 84;
             this.groupBox167.TabStop = false;
             this.groupBox167.Text = " Available Layer ";
+            // 
+            // label9
+            // 
+            this.label9.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(11, 185);
+            this.label9.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(109, 24);
+            this.label9.TabIndex = 12;
+            this.label9.Text = "- PreAlign";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label8
             // 
@@ -330,17 +342,6 @@ namespace SLD200_MSL
             this.textboxCorX.Size = new System.Drawing.Size(70, 27);
             this.textboxCorX.TabIndex = 89;
             this.textboxCorX.Text = "0";
-            // 
-            // label9
-            // 
-            this.label9.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(11, 185);
-            this.label9.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(109, 24);
-            this.label9.TabIndex = 12;
-            this.label9.Text = "- PreAlign";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBox_SiriusEditor_Divided_W
             // 

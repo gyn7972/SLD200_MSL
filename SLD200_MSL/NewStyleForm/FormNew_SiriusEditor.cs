@@ -780,6 +780,10 @@ namespace SLD200_MSL
                         MessageBox.Show("Line 으로 이루어진 Drilling Data 가 닫힌 도형이 아닙니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         break;
 
+                    case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_GROUP:
+                        MessageBox.Show("Drilling Data 가 Group 이 아닙니다.");
+                        break;
+
                     case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
                         MessageBox.Show("RTC 보드가 초기화 되지 않았습니다.", "Information !");
                         break;
@@ -2092,7 +2096,6 @@ namespace SLD200_MSL
                 return false;
             }
 
-
             foreach (var layer in SiriusEditor.Document.Layers)
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
@@ -2182,7 +2185,6 @@ namespace SLD200_MSL
 
             return success;
         }
-
 
         private void button_Rotate_Click(object sender, EventArgs e)
         {
@@ -2413,7 +2415,6 @@ namespace SLD200_MSL
             //if (bRtn)
             {
                 SiriusEditor.OnSave(SiriusEditor.Document.FileName);
-
             }
 
             //if (SiriusEditor.Document != null)
@@ -2468,6 +2469,10 @@ namespace SLD200_MSL
 
             
         }
-        
+
+        private void SiriusEditor_CausesValidationChanged(object sender, EventArgs e)
+        {
+            int ntest = 0;
+        }
     }
 }
