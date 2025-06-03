@@ -44,9 +44,6 @@ namespace SLD200_MSL
             this.button_CommTerminal_Disconnect = new System.Windows.Forms.Button();
             this.tabControl_CommTestFunction = new System.Windows.Forms.TabControl();
             this.tabPage_Illuminator = new System.Windows.Forms.TabPage();
-            this.baseLabel1Value = new SLD200_MSL.BaseLabel();
-            this.baseLabelMax = new SLD200_MSL.BaseLabel();
-            this.baseLabelMin = new SLD200_MSL.BaseLabel();
             this.hScrollBarIlluminator = new System.Windows.Forms.HScrollBar();
             this.radioButton_IlluminatorChannel_1 = new System.Windows.Forms.RadioButton();
             this.radioButton_IlluminatorChannel_0 = new System.Windows.Forms.RadioButton();
@@ -67,6 +64,9 @@ namespace SLD200_MSL
             this.textBox_BeamExpander_Zoom_Position = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.tabPage_DustCollector_Upper = new System.Windows.Forms.TabPage();
+            this.button_Test3 = new System.Windows.Forms.Button();
+            this.button_Test2 = new System.Windows.Forms.Button();
+            this.button_TEST1 = new System.Windows.Forms.Button();
             this.button_DustCollector_Upper_WriteCommand = new System.Windows.Forms.Button();
             this.textBox_DustCollector_Upper_Data = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -91,9 +91,10 @@ namespace SLD200_MSL
             this.button_LaserHeightSensor_ReadValue = new System.Windows.Forms.Button();
             this.button_LaserHeightSensor_MeasurementMode = new System.Windows.Forms.Button();
             this.button_LaserHeightSensor_SettingMode = new System.Windows.Forms.Button();
-            this.button_TEST1 = new System.Windows.Forms.Button();
-            this.button_Test2 = new System.Windows.Forms.Button();
-            this.button_Test3 = new System.Windows.Forms.Button();
+            this.baseLabel1Value = new SLD200_MSL.BaseLabel();
+            this.baseLabelMax = new SLD200_MSL.BaseLabel();
+            this.baseLabelMin = new SLD200_MSL.BaseLabel();
+            this.button3 = new System.Windows.Forms.Button();
             this.tabControl_CommTestFunction.SuspendLayout();
             this.tabPage_Illuminator.SuspendLayout();
             this.tabPage_PowerMeter_BDS.SuspendLayout();
@@ -270,38 +271,6 @@ namespace SLD200_MSL
             this.tabPage_Illuminator.TabIndex = 0;
             this.tabPage_Illuminator.Text = "Illuminator";
             this.tabPage_Illuminator.UseVisualStyleBackColor = true;
-            // 
-            // baseLabel1Value
-            // 
-            this.baseLabel1Value.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.baseLabel1Value.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel1Value.Location = new System.Drawing.Point(28, 80);
-            this.baseLabel1Value.Name = "baseLabel1Value";
-            this.baseLabel1Value.Size = new System.Drawing.Size(223, 23);
-            this.baseLabel1Value.TabIndex = 9;
-            this.baseLabel1Value.Text = "0";
-            this.baseLabel1Value.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // baseLabelMax
-            // 
-            this.baseLabelMax.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabelMax.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMax.Location = new System.Drawing.Point(212, 134);
-            this.baseLabelMax.Name = "baseLabelMax";
-            this.baseLabelMax.Size = new System.Drawing.Size(55, 23);
-            this.baseLabelMax.TabIndex = 12;
-            this.baseLabelMax.Text = "255";
-            this.baseLabelMax.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // baseLabelMin
-            // 
-            this.baseLabelMin.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabelMin.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMin.Location = new System.Drawing.Point(18, 136);
-            this.baseLabelMin.Name = "baseLabelMin";
-            this.baseLabelMin.Size = new System.Drawing.Size(22, 23);
-            this.baseLabelMin.TabIndex = 11;
-            this.baseLabelMin.Text = "0";
             // 
             // hScrollBarIlluminator
             // 
@@ -525,6 +494,7 @@ namespace SLD200_MSL
             // 
             // tabPage_DustCollector_Upper
             // 
+            this.tabPage_DustCollector_Upper.Controls.Add(this.button3);
             this.tabPage_DustCollector_Upper.Controls.Add(this.button_Test3);
             this.tabPage_DustCollector_Upper.Controls.Add(this.button_Test2);
             this.tabPage_DustCollector_Upper.Controls.Add(this.button_TEST1);
@@ -539,6 +509,42 @@ namespace SLD200_MSL
             this.tabPage_DustCollector_Upper.TabIndex = 2;
             this.tabPage_DustCollector_Upper.Text = "DustCollector (Upper)";
             this.tabPage_DustCollector_Upper.UseVisualStyleBackColor = true;
+            // 
+            // button_Test3
+            // 
+            this.button_Test3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Test3.Location = new System.Drawing.Point(449, 29);
+            this.button_Test3.Margin = new System.Windows.Forms.Padding(6);
+            this.button_Test3.Name = "button_Test3";
+            this.button_Test3.Size = new System.Drawing.Size(58, 47);
+            this.button_Test3.TabIndex = 32;
+            this.button_Test3.Text = "Test3";
+            this.button_Test3.UseVisualStyleBackColor = true;
+            this.button_Test3.Click += new System.EventHandler(this.button_Test3_Click);
+            // 
+            // button_Test2
+            // 
+            this.button_Test2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Test2.Location = new System.Drawing.Point(380, 29);
+            this.button_Test2.Margin = new System.Windows.Forms.Padding(6);
+            this.button_Test2.Name = "button_Test2";
+            this.button_Test2.Size = new System.Drawing.Size(58, 47);
+            this.button_Test2.TabIndex = 31;
+            this.button_Test2.Text = "Test2";
+            this.button_Test2.UseVisualStyleBackColor = true;
+            this.button_Test2.Click += new System.EventHandler(this.button_Test2_Click);
+            // 
+            // button_TEST1
+            // 
+            this.button_TEST1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_TEST1.Location = new System.Drawing.Point(310, 29);
+            this.button_TEST1.Margin = new System.Windows.Forms.Padding(6);
+            this.button_TEST1.Name = "button_TEST1";
+            this.button_TEST1.Size = new System.Drawing.Size(58, 47);
+            this.button_TEST1.TabIndex = 30;
+            this.button_TEST1.Text = "Test1";
+            this.button_TEST1.UseVisualStyleBackColor = true;
+            this.button_TEST1.Click += new System.EventHandler(this.button_TEST1_Click);
             // 
             // button_DustCollector_Upper_WriteCommand
             // 
@@ -811,41 +817,49 @@ namespace SLD200_MSL
             this.button_LaserHeightSensor_SettingMode.UseVisualStyleBackColor = true;
             this.button_LaserHeightSensor_SettingMode.Click += new System.EventHandler(this.button_LaserHeightSensor_SettingMode_Click);
             // 
-            // button_TEST1
+            // baseLabel1Value
             // 
-            this.button_TEST1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_TEST1.Location = new System.Drawing.Point(311, 82);
-            this.button_TEST1.Margin = new System.Windows.Forms.Padding(6);
-            this.button_TEST1.Name = "button_TEST1";
-            this.button_TEST1.Size = new System.Drawing.Size(58, 47);
-            this.button_TEST1.TabIndex = 30;
-            this.button_TEST1.Text = "Test1";
-            this.button_TEST1.UseVisualStyleBackColor = true;
-            this.button_TEST1.Click += new System.EventHandler(this.button_TEST1_Click);
+            this.baseLabel1Value.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.baseLabel1Value.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel1Value.Location = new System.Drawing.Point(28, 80);
+            this.baseLabel1Value.Name = "baseLabel1Value";
+            this.baseLabel1Value.Size = new System.Drawing.Size(223, 23);
+            this.baseLabel1Value.TabIndex = 9;
+            this.baseLabel1Value.Text = "0";
+            this.baseLabel1Value.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // button_Test2
+            // baseLabelMax
             // 
-            this.button_Test2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test2.Location = new System.Drawing.Point(381, 82);
-            this.button_Test2.Margin = new System.Windows.Forms.Padding(6);
-            this.button_Test2.Name = "button_Test2";
-            this.button_Test2.Size = new System.Drawing.Size(58, 47);
-            this.button_Test2.TabIndex = 31;
-            this.button_Test2.Text = "Test2";
-            this.button_Test2.UseVisualStyleBackColor = true;
-            this.button_Test2.Click += new System.EventHandler(this.button_Test2_Click);
+            this.baseLabelMax.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMax.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMax.Location = new System.Drawing.Point(212, 134);
+            this.baseLabelMax.Name = "baseLabelMax";
+            this.baseLabelMax.Size = new System.Drawing.Size(55, 23);
+            this.baseLabelMax.TabIndex = 12;
+            this.baseLabelMax.Text = "255";
+            this.baseLabelMax.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button_Test3
+            // baseLabelMin
             // 
-            this.button_Test3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test3.Location = new System.Drawing.Point(450, 82);
-            this.button_Test3.Margin = new System.Windows.Forms.Padding(6);
-            this.button_Test3.Name = "button_Test3";
-            this.button_Test3.Size = new System.Drawing.Size(58, 47);
-            this.button_Test3.TabIndex = 32;
-            this.button_Test3.Text = "Test3";
-            this.button_Test3.UseVisualStyleBackColor = true;
-            this.button_Test3.Click += new System.EventHandler(this.button_Test3_Click);
+            this.baseLabelMin.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMin.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMin.Location = new System.Drawing.Point(18, 136);
+            this.baseLabelMin.Name = "baseLabelMin";
+            this.baseLabelMin.Size = new System.Drawing.Size(22, 23);
+            this.baseLabelMin.TabIndex = 11;
+            this.baseLabelMin.Text = "0";
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button3.Location = new System.Drawing.Point(380, 88);
+            this.button3.Margin = new System.Windows.Forms.Padding(6);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(58, 47);
+            this.button3.TabIndex = 33;
+            this.button3.Text = "Test3";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // FormNew_CommunicationTerminal
             // 
@@ -955,5 +969,6 @@ namespace SLD200_MSL
         private Button button_Test2;
         private Button button_TEST1;
         private Button button_Test3;
+        private Button button3;
     }
 }

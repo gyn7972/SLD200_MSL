@@ -736,33 +736,27 @@ namespace SLD200_MSL
         {
             bool bOn = bds.DustCollector_Upper.Start();
 
-            Thread.Sleep(300);  // 상태 반영 대기 (인버터 응답 지연 고려)
-
-            if (bds.DustCollector_Upper.GetFullStatus(out var runState, out var freq, out var current, out var alarm))
-            {
-                Log.Write("DustCollector", $"[TEST1] 집진기 상태: {(runState == CollectorRunState.Running ? "운전 중" : "정지")}, 주파수: {freq}Hz, 전류: {current}A, 알람: {alarm}");
-            }
+            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
+            if (runState == CollectorRunState.Running)
+                Log.Write("DustCollector", "집진기 상태: 운전 중");
+            else if (runState == CollectorRunState.Stopped)
+                Log.Write("DustCollector", "집진기 상태: 정지");
             else
-            {
-                Log.Write("DustCollector", "[TEST1] 상태 읽기 실패");
-            }
+                Log.Write("DustCollector", "집진기 상태: 알 수 없음");
 
         }
 
         private void button_Test2_Click(object sender, EventArgs e)
         {
-            bds.DustCollector_Upper.Stop();
+            bool bOn = bds.DustCollector_Upper.Stop();
 
-            Thread.Sleep(300);  // 상태 반영 대기 (인버터 응답 지연 고려)
-
-            if (bds.DustCollector_Upper.GetFullStatus(out var runState, out var freq, out var current, out var alarm))
-            {
-                Log.Write("DustCollector", $"[TEST2] 집진기 상태: {(runState == CollectorRunState.Running ? "운전 중" : "정지")}, 주파수: {freq}Hz, 전류: {current}A, 알람: {alarm}");
-            }
+            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
+            if (runState == CollectorRunState.Running)
+                Log.Write("DustCollector", "집진기 상태: 운전 중");
+            else if (runState == CollectorRunState.Stopped)
+                Log.Write("DustCollector", "집진기 상태: 정지");
             else
-            {
-                Log.Write("DustCollector", "[TEST2] 상태 읽기 실패");
-            }
+                Log.Write("DustCollector", "집진기 상태: 알 수 없음");
         }
 
         private void button_Test3_Click(object sender, EventArgs e)
@@ -770,6 +764,12 @@ namespace SLD200_MSL
             //string strFrequency = "";
             double dFrequency = 0.0;
             bds.DustCollector_Upper.GetFrequency(out dFrequency);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //Thread.Sleep(100);
+            bds.DustCollector_Upper.SetFrequency(10);
         }
     }
 }
