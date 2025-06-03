@@ -7,12 +7,11 @@ namespace QMC.Common.Parts
 {
     public class DustCollectorController : Part
     {
-        public enum CollectorRunState { Unknown, Stopped, Running }
-        public enum CollectorAlarmState { None, Warning, Alarm, Unknown }
         public enum CollectorPosition { Upper, Lower }
 
+        public enum CollectorRunState { Unknown, Stopped, Running }
+
         private SerialPort _serialPort;
-        private readonly CollectorPosition _position;
         private readonly object _lock = new object();
         private string _lastReceivedData = "";
         private bool _dataReceived = false;
@@ -20,9 +19,18 @@ namespace QMC.Common.Parts
 
         public bool IsConnected => _serialPort?.IsOpen ?? false;
 
-        public DustCollectorController(string name, CollectorPosition position) : base(name)
+        public DustCollectorController(string name, DustCollectorController.CollectorPosition lower) : base(name) { }
+
+        public bool Connect(Equipment.CommList comm)
         {
-            _position = position;
+            string strPortName;
+            int baudRate, dataBits;
+            StopBits stopBits;
+            Parity parity;
+            Handshake handshake;
+
+            Equipment.GetSerialPortConfig(comm, out strPortName, out baudRate, out dataBits, out stopBits, out parity, out handshake);
+            return Connect(strPortName, baudRate, dataBits, stopBits, parity, handshake);
         }
 
         public bool Connect(Equipment.CommList commList)
@@ -43,8 +51,7 @@ namespace QMC.Common.Parts
             {
                 _serialPort = new SerialPort(portName, baudRate, parity, dataBits, stopBits)
                 {
-                    Handshake = handshake,
-                    Encoding = Encoding.Default,
+                    Encoding = Encoding.ASCII,
                     ReadTimeout = 1000,
                     WriteTimeout = 1000
                 };
@@ -54,59 +61,104 @@ namespace QMC.Common.Parts
             }
             catch (Exception ex)
             {
-                Log.Write("DustCollector", $"[{_position}] Port Open Fail: {ex.Message}");
+                Log.Write("DustCollector", $"[G100] Port Open Fail: {ex.Message}");
                 return false;
             }
         }
 
         public void Disconnect()
         {
-            if (_serialPort != null)
-            {
-                if (_serialPort.IsOpen)
-                    _serialPort.Close();
+            if (_serialPort?.IsOpen == true)
+                _serialPort.Close();
+            _serialPort?.Dispose();
+            _serialPort = null;
+        }
 
-                _serialPort.Dispose();
-                _serialPort = null;
+        
+
+
+        public bool Start() => SendWrite("0006", "0002"); // 운전 시작
+        public bool Stop() => SendWrite("0006", "0001");  // 운전 정지
+
+        public bool SetFrequency(double freqHz)
+        {
+            int val = (int)(freqHz * 10.0);
+            return SendWrite("0005", val.ToString("D4")); // 주파수 설정
+        }
+
+        public bool GetFrequency(out double freqHz)
+        {
+            freqHz = 0.0;
+            if (!SendRead("000A", out string raw))
+                return false;
+
+            if (int.TryParse(ExtractData(raw), System.Globalization.NumberStyles.HexNumber, null, out int hex))
+            {
+                freqHz = hex / 10.0;
+                return true;
+            }
+            return false;
+        }
+
+        public CollectorRunState GetRunState()
+        {
+            if (!SendRead("0007", out string raw))
+                return CollectorRunState.Unknown;
+
+            string data = ExtractData(raw);
+            switch (data)
+            {
+                case "0001": return CollectorRunState.Stopped;
+                case "0002": return CollectorRunState.Running;
+                default: return CollectorRunState.Unknown;
             }
         }
 
-        public bool SendWrite(string address, string data, int addressCount = 1)
+        private bool SendWrite(string address, string data)
         {
-            string command = BuildWriteCommand(address, data, addressCount);
-            return SendAndWaitForAck(command);
+            string cmd = BuildCommand('W', address, data);
+            return SendAndWaitForAck(cmd);
         }
 
-        public bool SendRead(string address, int addressCount, out string response)
+        private bool SendRead(string address, out string response)
         {
-            response = "";
-            string command = BuildReadCommand(address, addressCount);
-            bool success = SendAndWaitForAck(command);
-            if (success)
-                response = _lastReceivedData;
-            return success;
+            string cmd = BuildCommand('R', address, "1");
+            bool result = SendAndWaitForAck(cmd);
+            response = result ? _lastReceivedData : "";
+            return result;
         }
 
-        public bool SendRead(string address, out string response) => SendRead(address, 1, out response);
-
-        private bool SendAndWaitForAck(string command)
+        private string BuildCommand(char cmd, string addr, string data)
         {
-            if (!IsConnected)
-                return false;
+            string body = "01" + cmd + addr + data;
+            int sum = 0;
+            foreach (char c in body)
+                sum += c;
+            string checksum = (sum & 0xFF).ToString("X2");
+            return ((char)0x05) + body + checksum + ((char)0x04);
+        }
+
+        private bool SendAndWaitForAck(string cmd)
+        {
+            if (!IsConnected) return false;
 
             lock (_lock)
             {
                 _receiveEvent.Reset();
-                _lastReceivedData = "";
                 _dataReceived = false;
+                _lastReceivedData = "";
 
-                _serialPort.DiscardInBuffer();
-                _serialPort.Write(command);
-
-                if (_receiveEvent.WaitOne(1000))
-                    return _dataReceived;
-
-                Log.Write("DustCollector", $"[{_position}] Timeout waiting for ACK.");
+                try
+                {
+                    _serialPort.DiscardInBuffer();
+                    _serialPort.Write(cmd);
+                    if (_receiveEvent.WaitOne(1000))
+                        return _dataReceived;
+                }
+                catch (Exception ex)
+                {
+                    Log.Write("DustCollector", $"[G100] Comm Error: {ex.Message}");
+                }
                 return false;
             }
         }
@@ -115,174 +167,25 @@ namespace QMC.Common.Parts
         {
             try
             {
-                string received = _serialPort.ReadExisting();
-                _lastReceivedData += received;
-                Log.Write("DustCollector", $"[{_position}] [RX] {_lastReceivedData}");
-
-                // EOT까지 수신된 경우
+                _lastReceivedData += _serialPort.ReadExisting();
                 if (_lastReceivedData.Contains(((char)0x04).ToString()))
                 {
-                    // Write 응답: ACK + EOT
-                    if (_lastReceivedData.StartsWith(((char)0x06).ToString()))
-                    {
-                        _lastReceivedData = _lastReceivedData.Trim((char)0x06, (char)0x04);
-                        _dataReceived = true;
-                    }
-                    // Read 응답: ENQ + 01Rxxxx + CHKSUM + EOT
-                    else if (_lastReceivedData.StartsWith(((char)0x05).ToString() + "01R"))
-                    {
-                        // → "␅01RFE3E␄"
-                        string raw = _lastReceivedData.Trim((char)0x05, (char)0x04); // ENQ, EOT 제거
-                        _lastReceivedData = raw.Substring(3, raw.Length - 5);        // "01RFE3E" → "FE"
-                        _dataReceived = true;
-                    }
-                    else
-                    {
-                        _dataReceived = false;
-                    }
-
+                    _dataReceived = _lastReceivedData.StartsWith(((char)0x06).ToString());
+                    _lastReceivedData = _lastReceivedData.Trim((char)0x06, (char)0x04);
                     _receiveEvent.Set();
                 }
             }
             catch (Exception ex)
             {
-                Log.Write("DustCollector", $"[{_position}] Data Receive Error: {ex.Message}");
+                Log.Write("DustCollector", $"[G100] RX Error: {ex.Message}");
             }
         }
 
-
-        private string BuildWriteCommand(string addr, string data, int addrCount)
+        private string ExtractData(string response)
         {
-            var sb = new StringBuilder();
-            sb.Append("01W").Append(addr).Append((char)('0' + addrCount)).Append(data);
-            return AppendChecksumAndEOT(sb.ToString());
-        }
-
-        private string BuildReadCommand(string addr, int addrCount)
-        {
-            var sb = new StringBuilder();
-            sb.Append("01R").Append(addr).Append((char)('0' + addrCount));
-            return AppendChecksumAndEOT(sb.ToString());
-        }
-
-        private string AppendChecksumAndEOT(string coreCommand)
-        {
-            int checksum = 0;
-            foreach (char ch in coreCommand)
-                checksum += (byte)ch;
-
-            // 하위 8비트만 사용
-            byte checksumByte = (byte)(checksum & 0xFF);
-            string checksumHex = checksumByte.ToString("X2"); // 항상 2자리
-
-            // STX (0x05) + 본문 + 체크섬 + EOT (0x04)
-            return ((char)0x05) + coreCommand + checksumHex + ((char)0x04);
-        }
-
-        //private string ExtractResponseData(string fullResponse)
-        //{
-        //    // 예: fullResponse = "FE" ← 이미 전처리된 상태로 들어옴
-        //    return fullResponse.Trim();
-        //}
-        private string ExtractResponseData(string fullResponse)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(fullResponse) || fullResponse.Length < 13)
-                    return "";
-
-                // 포맷: 01R + Addr(4) + Data(4) + Checksum(2)
-                // Index:        3     ~     7     = Data
-                return fullResponse.Substring(7, 4);  // 4자리 데이터만 정확히 추출
-            }
-            catch
-            {
+            if (string.IsNullOrWhiteSpace(response) || response.Length < 4)
                 return "";
-            }
-        }
-
-        private double ConvertHexToDouble(string hex, double divider)
-        {
-            return int.TryParse(hex, System.Globalization.NumberStyles.HexNumber, null, out int val) ? val / divider : 0.0;
-        }
-
-        public bool GetFullStatus(out CollectorRunState runState, out double frequencyHz, out double currentA, out CollectorAlarmState alarmState)
-        {
-            runState = CollectorRunState.Unknown;
-            frequencyHz = 0.0;
-            currentA = 0.0;
-            alarmState = CollectorAlarmState.Unknown;
-
-            if (!SendRead("1000", 20, out string raw))
-                return false;
-
-            string data = ExtractResponseData(raw);
-            if (data.Length < 40)
-                return false;
-
-            try
-            {
-                runState = data.Substring(20, 4) == "0001" ? CollectorRunState.Running : CollectorRunState.Stopped;
-                frequencyHz = ConvertHexToDouble(data.Substring(16, 4), 10.0);
-                currentA = ConvertHexToDouble(data.Substring(4, 4), 10.0);
-                //alarmState = data.Substring(24, 4) switch
-                //{
-                //    "0000" => CollectorAlarmState.None,
-                //    "0001" => CollectorAlarmState.Warning,
-                //    "0002" => CollectorAlarmState.Alarm,
-                //    _ => CollectorAlarmState.Unknown
-                //};
-                string alarmCode = data.Substring(24, 4);
-                if (alarmCode == "0000")
-                    alarmState = CollectorAlarmState.None;
-                else if (alarmCode == "0001")
-                    alarmState = CollectorAlarmState.Warning;
-                else if (alarmCode == "0002")
-                    alarmState = CollectorAlarmState.Alarm;
-                else
-                    alarmState = CollectorAlarmState.Unknown;
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log.Write("DustCollector", $"[Parser Error] FullStatus: {ex.Message}");
-                return false;
-            }
-        }
-
-        public bool DustCollector_On() => SendWrite("0006", "0002", 1);
-        public bool DustCollector_Off() => SendWrite("0006", "0001", 1);
-
-        public bool SetFrequency(double frequencyHz)
-        {
-            int freqValue = (int)(frequencyHz * 100.0);
-            return SendWrite("0005", freqValue.ToString("D4"), 1);
-        }
-
-        public bool GetFrequency(out double frequencyHz)
-        {
-            frequencyHz = 0.0;
-            if (!SendRead("000A", 1, out string freqRaw))
-                return false;
-
-            string data = ExtractResponseData(freqRaw);
-            return int.TryParse(data, System.Globalization.NumberStyles.HexNumber, null, out int freqVal)
-                   && (frequencyHz = freqVal / 10.0) >= 0;
-        }
-
-        public bool GetOutputFrequency(out double frequencyHz)
-        {
-            frequencyHz = 0.0;
-            if (!SendRead("1002", 1, out string raw))  // 주소는 예시입니다
-                return false;
-
-            string data = ExtractResponseData(raw);
-            if (int.TryParse(data, System.Globalization.NumberStyles.HexNumber, null, out int val))
-            {
-                frequencyHz = val / 10.0;
-                return true;
-            }
-            return false;
+            return response.Substring(response.Length - 4);
         }
     }
 }

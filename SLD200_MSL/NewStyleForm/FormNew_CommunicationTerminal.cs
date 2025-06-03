@@ -734,7 +734,7 @@ namespace SLD200_MSL
 
         private void button_TEST1_Click(object sender, EventArgs e)
         {
-            bool bOn = bds.DustCollector_Upper.DustCollector_On();
+            bool bOn = bds.DustCollector_Upper.Start();
 
             Thread.Sleep(300);  // 상태 반영 대기 (인버터 응답 지연 고려)
 
@@ -751,7 +751,7 @@ namespace SLD200_MSL
 
         private void button_Test2_Click(object sender, EventArgs e)
         {
-            bds.DustCollector_Upper.DustCollector_Off();
+            bds.DustCollector_Upper.Stop();
 
             Thread.Sleep(300);  // 상태 반영 대기 (인버터 응답 지연 고려)
 
@@ -767,17 +767,9 @@ namespace SLD200_MSL
 
         private void button_Test3_Click(object sender, EventArgs e)
         {
-            bool btn = bds.DustCollector_Upper.SetFrequency(10);
-
-            //GetOutputFrequency //GetFrequency
-            if (bds.DustCollector_Upper.GetOutputFrequency(out double freq))
-            {
-                Log.Write("DustCollector", $"[TEST3] 현재 주파수: {freq} Hz");
-            }
-            else
-            {
-                Log.Write("DustCollector", "[TEST3] 주파수 읽기 실패");
-            }
+            //string strFrequency = "";
+            double dFrequency = 0.0;
+            bds.DustCollector_Upper.GetFrequency(out dFrequency);
         }
     }
 }
