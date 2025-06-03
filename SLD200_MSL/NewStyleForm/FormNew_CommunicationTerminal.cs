@@ -610,11 +610,15 @@ namespace SLD200_MSL
         private void button_DustCollector_Upper_Write_Click(object sender, EventArgs e)
         {
             //byte m_bData = getHex(textBox_DustCollector_Upper_Address.Text);
-
             if ((workStage.m_dustCollector_UpperPos_Comm != null) &&
                 (textBox_DustCollector_Upper_Address.Text != "") && (textBox_DustCollector_Upper_Address.Text.Length == 4))
             {
-                workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, textBox_DustCollector_Upper_Address.Text, 1, textBox_DustCollector_Upper_Data.Text);
+                // write command 함수 만들어서 적용.
+                //double dFreq = Equipment.ToDouble(textBox_DustCollector_Upper_Frequency.Text);
+                //workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, dFreq);
+
+                //workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, 
+                //    textBox_DustCollector_Upper_Address.Text, 1, textBox_DustCollector_Upper_Data.Text);
             }
         }
 
@@ -623,7 +627,8 @@ namespace SLD200_MSL
             if ((workStage.m_dustCollector_LowerPos_Comm != null) &&
                 (textBox_DustCollector_Lower_Address.Text != "") && (textBox_DustCollector_Lower_Address.Text.Length == 4))
             {
-                workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, textBox_DustCollector_Lower_Address.Text, 1, textBox_DustCollector_Lower_Data.Text);
+                //workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower,
+                //                                      textBox_DustCollector_Lower_Address.Text, 1, textBox_DustCollector_Lower_Data.Text);
             }
         }
 

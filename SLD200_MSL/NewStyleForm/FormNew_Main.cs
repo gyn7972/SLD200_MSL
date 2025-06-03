@@ -761,26 +761,55 @@ namespace SLD200_MSL
             }
 
             //  Dust Collector (Upper Position)
-            if (workStage.m_dustCollector_UpperPos_Comm == null)
+            if(!bds.DustCollector_Upper.IsConnected)
             {
-                workStage.DustCollector_UpperPos_Comm_Init();
+                bds.InitDustCollector(DustCollectorController.CollectorPosition.Upper);
             }
             else
             {
-                if (!workStage.m_dustCollector_UpperPos_Comm.IsOpen)
-                    workStage.DustCollector_UpperPos_Comm_Init();
+                if (!bds.DustCollector_Upper.IsConnected)
+                {
+                    bds.InitDustCollector(DustCollectorController.CollectorPosition.Upper);
+                }
             }
 
             //  Dust Collector (Lower Position)
-            if (workStage.m_dustCollector_LowerPos_Comm == null)
+            if (bds.DustCollector_Lower.IsConnected)
             {
-                workStage.DustCollector_LowerPos_Comm_Init();
+                bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower);
             }
             else
             {
-                if (!workStage.m_dustCollector_LowerPos_Comm.IsOpen)
-                    workStage.DustCollector_LowerPos_Comm_Init();
+                if (!bds.DustCollector_Lower.IsConnected)
+                {
+                    bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower);
+                }
             }
+
+            //if (workStage.m_dustCollector_UpperPos_Comm == null)
+            //{
+            //    workStage.DustCollector_UpperPos_Comm_Init();
+            //}
+            //else
+            //{
+            //    if (!workStage.m_dustCollector_UpperPos_Comm.IsOpen)
+            //        workStage.DustCollector_UpperPos_Comm_Init();
+            //}
+            ////  Dust Collector (Lower Position)
+            //if (workStage.m_dustCollector_LowerPos_Comm == null)
+            //{
+            //    workStage.DustCollector_LowerPos_Comm_Init();
+
+            //    bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower);
+            //}
+            //else
+            //{
+            //    if (!workStage.m_dustCollector_LowerPos_Comm.IsOpen)
+            //        workStage.DustCollector_LowerPos_Comm_Init();
+
+            //    bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower);
+            //}
+
 
             //  Electro Pneumatic Regulator
             if (workStage.m_electroRegulator_Comm == null)
@@ -886,15 +915,24 @@ namespace SLD200_MSL
             //if (!_InitDeviceStatus.BeamExpander)
             //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_BeamExpander);
 
-            bOn = workStage.m_dustCollector_UpperPos_Comm != null && workStage.m_dustCollector_UpperPos_Comm.IsOpen;
+            bOn = bds.DustCollector_Upper.IsConnected;
             _InitDeviceStatus.DustCollector_Upper = bOn;
             if (!_InitDeviceStatus.DustCollector_Upper)
                 workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Upper);
 
-            bOn = workStage.m_dustCollector_LowerPos_Comm != null && workStage.m_dustCollector_LowerPos_Comm.IsOpen;
+            bOn = bds.DustCollector_Lower.IsConnected;
             _InitDeviceStatus.DustCollector_Lower = bOn;
             if (!_InitDeviceStatus.DustCollector_Lower)
                 workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Lower);
+
+            //bOn = workStage.m_dustCollector_UpperPos_Comm != null && workStage.m_dustCollector_UpperPos_Comm.IsOpen;
+            //_InitDeviceStatus.DustCollector_Upper = bOn;
+            //if (!_InitDeviceStatus.DustCollector_Upper)
+            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Upper);
+            //bOn = workStage.m_dustCollector_LowerPos_Comm != null && workStage.m_dustCollector_LowerPos_Comm.IsOpen;
+            //_InitDeviceStatus.DustCollector_Lower = bOn;
+            //if (!_InitDeviceStatus.DustCollector_Lower)
+            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Lower);
 
             bOn = workStage.workStageParameter.DI_Chiller_Run();
             _InitDeviceStatus.Chiller = bOn;

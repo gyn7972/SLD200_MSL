@@ -378,13 +378,13 @@ namespace QMC.Common.Modules
             Recipe = new BdsRecipe(this);
 
             // Upper
-            DustCollector_Upper = new DustCollectorController("UpperDust", DustCollectorController.CollectorPosition.Upper);
+            DustCollector_Upper = new DustCollectorController("UpperDust", DustCollectorController.CollectorPosition.Upper, "01");
             DustCollector_Upper.Create();
             DustCollector_Upper.Owner = this;
             Parts.Add(DustCollector_Upper);
 
             // Lower
-            DustCollector_Lower = new DustCollectorController("LowerDust", DustCollectorController.CollectorPosition.Lower);
+            DustCollector_Lower = new DustCollectorController("LowerDust", DustCollectorController.CollectorPosition.Lower, "02");
             DustCollector_Lower.Create();
             DustCollector_Lower.Owner = this;
             Parts.Add(DustCollector_Lower);
@@ -629,6 +629,9 @@ namespace QMC.Common.Modules
             {
                 Stage.Close();
             }
+
+            DustCollector_Upper?.Close();
+            DustCollector_Lower?.Close();
 
 
         }

@@ -4865,17 +4865,17 @@ namespace QMC.Common.Modules
                 m_beamExpander_Comm.Close();
             }
 
-            if (m_dustCollector_UpperPos_Comm != null)
-            {
-                m_dustCollector_UpperPos_Comm.CloseComm();
-                m_dustCollector_UpperPos_Comm.Close();
-            }
+            //if (m_dustCollector_UpperPos_Comm != null)
+            //{
+            //    m_dustCollector_UpperPos_Comm.CloseComm();
+            //    m_dustCollector_UpperPos_Comm.Close();
+            //}
 
-            if (m_dustCollector_LowerPos_Comm != null)
-            {
-                m_dustCollector_LowerPos_Comm.CloseComm();
-                m_dustCollector_LowerPos_Comm.Close();
-            }
+            //if (m_dustCollector_LowerPos_Comm != null)
+            //{
+            //    m_dustCollector_LowerPos_Comm.CloseComm();
+            //    m_dustCollector_LowerPos_Comm.Close();
+            //}
 
             if (m_electroRegulator_Comm != null)
             {
@@ -5044,17 +5044,17 @@ namespace QMC.Common.Modules
                 m_beamExpander_Comm.Close();
             }
 
-            if (m_dustCollector_UpperPos_Comm != null)
-            {
-                m_dustCollector_UpperPos_Comm.CloseComm();
-                m_dustCollector_UpperPos_Comm.Close();
-            }
+            //if (m_dustCollector_UpperPos_Comm != null)
+            //{
+            //    m_dustCollector_UpperPos_Comm.CloseComm();
+            //    m_dustCollector_UpperPos_Comm.Close();
+            //}
 
-            if (m_dustCollector_LowerPos_Comm != null)
-            {
-                m_dustCollector_LowerPos_Comm.CloseComm();
-                m_dustCollector_LowerPos_Comm.Close();
-            }
+            //if (m_dustCollector_LowerPos_Comm != null)
+            //{
+            //    m_dustCollector_LowerPos_Comm.CloseComm();
+            //    m_dustCollector_LowerPos_Comm.Close();
+            //}
 
             if (m_electroRegulator_Comm != null)
             {
@@ -6041,8 +6041,8 @@ namespace QMC.Common.Modules
         #endregion
 
 
+        //Bds로 이동 후 삭제.
         #region Serial Comm. - Dust Collector (Upper, Lower Position)
-
         public void DustCollector_UpperPos_Comm_Init()
         {
             string m_strPortName = "COM5";
@@ -6119,7 +6119,6 @@ namespace QMC.Common.Modules
                 MessageBox.Show(text);
             }
         }
-
         public void DustCollector_LowerPos_Comm_Init()
         {
             string m_strPortName = "COM6";
@@ -6196,7 +6195,6 @@ namespace QMC.Common.Modules
                 MessageBox.Show(text);
             }
         }
-
         private void DustCollector_UpperPos_DataReceivedHandler(byte[] receiveData)
         {
             string @string = Encoding.Default.GetString(receiveData);
@@ -6210,7 +6208,6 @@ namespace QMC.Common.Modules
                 }
             }
         }
-
         private void DustCollector_LowerPos_DataReceivedHandler(byte[] receiveData)
         {
             string @string = Encoding.Default.GetString(receiveData);
@@ -6241,12 +6238,10 @@ namespace QMC.Common.Modules
             //    }
             //}
         }
-
         private void DustCollector_UpperPos_DisconnectedHandler()
         {
             Console.WriteLine("Dust Collector serial COM5 disconnected");
         }
-
         private void DustCollector_LowerPos_DisconnectedHandler()
         {
             Console.WriteLine("Dust Collector serial COM6 disconnected");
@@ -6368,72 +6363,8 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
+        
 
-        public bool DustCollectorComm_Send_Write(int m_nDustCollector, string m_strAddr, int m_nAddrCount, string m_strData)
-        {
-            bool m_bRet = false;
-
-            int m_nIndex = 0;
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            byte m_btTemp;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
-
-            m_DataNum = 12 + (4 * m_nAddrCount);                    //  데이터 개수에 따라 길이 가변
-            m_cSendCmd = new byte[m_DataNum];
-
-            m_cSendCmd[0] = chrENQ;                                 //  ENQ 1자리
-            m_cSendCmd[1] = (byte)'0';                              //  국번 2자리 (앞)
-            m_cSendCmd[2] = (byte)'1';                              //  국번 2자리 (뒤)
-            m_cSendCmd[3] = chrW;                                   //  CMD 1자리
-            m_nCheckSum = m_cSendCmd[1] + m_cSendCmd[2] + m_cSendCmd[3];    //  CheckSum
-
-            for (int i = 0; i < m_strAddr.Length; i++)
-            {
-                m_cSendCmd[4 + i] = (byte)m_strAddr[i];             //  번지 4자리
-                m_nCheckSum += m_cSendCmd[4 + i];                           //  CheckSum
-            }
-
-            m_cSendCmd[8] = (byte)(char)(m_nAddrCount + '0');       //  번지 개수 1자리
-            m_nCheckSum += m_cSendCmd[8];                                   //  CheckSum
-
-            for (int i = 0; i < m_strData.Length; i++)
-            {
-                m_nIndex = 9 + i;
-                m_cSendCmd[m_nIndex] = (byte)m_strData[i];       //  데이터 (번지 개수 * 4자리)
-                m_nCheckSum += m_cSendCmd[m_nIndex];                     //  CheckSum
-            }
-
-            int m_nTemp = m_nCheckSum & 0xFF;                       //  CheckSum 계산 (하위 1바이트)
-            m_btTemp = (byte)m_nTemp;
-            string m_strCheckSum = m_btTemp.ToString("x2");
-
-            m_cSendCmd[m_nIndex + 1] = (byte)m_strCheckSum[0];           //  CheckSum 2자리 중 앞자리
-            m_cSendCmd[m_nIndex + 2] = (byte)m_strCheckSum[1];           //  CheckSum 2자리 중 뒷자리
-            m_cSendCmd[m_nIndex + 3] = chrEOT;
-
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
-
-            if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
-            {
-                if (m_dustCollector_UpperPos_Comm.IsOpen)
-                {
-                    m_dustCollector_UpperPos_Comm.Send(m_strSendData);
-                    m_bRet = true;
-                } 
-            }
-            else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
-            {
-                if (m_dustCollector_LowerPos_Comm.IsOpen)
-                {
-                    m_dustCollector_LowerPos_Comm.Send(m_strSendData);
-                    m_bRet = true;
-                }
-            }
-
-            return m_bRet;
-        }
 
         public bool DustCollectorComm_Send_MonitorReg(int m_nDustCollector, int m_nAddrCount, string m_strAddr)
         {
@@ -6498,7 +6429,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool DustCollectorComm_Send_MonitorRead(int m_nDustCollector)
         {
             bool m_bRet = false;
@@ -6550,7 +6480,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool DustCollector_Read_Frequency(int m_nDustCollector)
         {
             bool m_bRet = false;
@@ -6610,109 +6539,233 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool DustCollector_On(int m_nDustCollector)
         {
-            bool m_bRet = false;
-
-            string m_strAddress = "";
-            string m_strData = "";
-
-            m_strAddress = "0006";                              //  운전 Address
-            m_strData = "0002";                                 //  정방향 운전
-
-            if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
+            bool bRtn = false;
+            switch(m_nDustCollector)
             {
-                if (m_dustCollector_UpperPos_Comm != null)
-                {
-                    if (m_dustCollector_UpperPos_Comm.IsOpen)
-                    {
-                        m_bDustCollector_UpperPos_CommData_Received = false;
-                        m_strDustCollector_UpperPos_Comm_ReceivedData = "";
-
-                        DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, m_strAddress, 1, m_strData);
-
-                        m_bRet = true;
-                    }
-                }
-                else
-                {
-                    m_bRet = false;
-                }
-            }
-            else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
-            {
-                if (m_dustCollector_LowerPos_Comm != null)
-                {
-                    if (m_dustCollector_LowerPos_Comm.IsOpen)
-                    {
-                        m_bDustCollector_LowerPos_CommData_Received = false;
-                        m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-
-                        DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, m_strAddress, 1, m_strData);
-
-                        m_bRet = true;
-                    }
-                }
-                else
-                {
-                    m_bRet = false;
-                }
+                case 0:
+                    bRtn = bds.DustCollector_Upper.Start();
+                    break;
+                case 1:
+                    bRtn = bds.DustCollector_Lower.Start();
+                    break;
+                default:
+                    break;
             }
 
-            return m_bRet;
+            return bRtn;
+
+            //bool m_bRet = false;
+            //string m_strAddress = "";
+            //string m_strData = "";
+            //m_strAddress = "0006";                              //  운전 Address
+            //m_strData = "0002";                                 //  정방향 운전
+            //if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
+            //{
+            //    if (m_dustCollector_UpperPos_Comm != null)
+            //    {
+            //        if (m_dustCollector_UpperPos_Comm.IsOpen)
+            //        {
+            //            m_bDustCollector_UpperPos_CommData_Received = false;
+            //            m_strDustCollector_UpperPos_Comm_ReceivedData = "";
+
+            //            DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, m_strAddress, 1, m_strData);
+
+            //            m_bRet = true;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        m_bRet = false;
+            //    }
+            //}
+            //else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
+            //{
+            //    if (m_dustCollector_LowerPos_Comm != null)
+            //    {
+            //        if (m_dustCollector_LowerPos_Comm.IsOpen)
+            //        {
+            //            m_bDustCollector_LowerPos_CommData_Received = false;
+            //            m_strDustCollector_LowerPos_Comm_ReceivedData = "";
+
+            //            DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, m_strAddress, 1, m_strData);
+
+            //            m_bRet = true;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        m_bRet = false;
+            //    }
+            //}
+            //return m_bRet;
         }
-
         public bool DustCollector_Off(int m_nDustCollector)
+        {
+            bool bRtn = false;
+            switch (m_nDustCollector)
+            {
+                case 0:
+                    bRtn = bds.DustCollector_Upper.Stop();
+                    break;
+                case 1:
+                    bRtn = bds.DustCollector_Lower.Stop();
+                    break;
+                default:
+                    break;
+            }
+            return bRtn;
+
+            //bool m_bRet = false;
+            //string m_strAddress = "";
+            //string m_strData = "";
+            //m_strAddress = "0006";                              //  운전 Address
+            //m_strData = "0001";                                 //  운전 정지
+            //if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
+            //{
+            //    if (m_dustCollector_UpperPos_Comm != null)
+            //    {
+            //        if (m_dustCollector_UpperPos_Comm.IsOpen)
+            //        {
+            //            m_bDustCollector_UpperPos_CommData_Received = false;
+            //            m_strDustCollector_UpperPos_Comm_ReceivedData = "";
+
+            //            DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, m_strAddress, 1, m_strData);
+
+            //            m_bRet = true;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        m_bRet = false;
+            //    }
+            //}
+            //else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
+            //{
+            //    if (m_dustCollector_LowerPos_Comm != null)
+            //    {
+            //        if (m_dustCollector_LowerPos_Comm.IsOpen)
+            //        {
+            //            m_bDustCollector_LowerPos_CommData_Received = false;
+            //            m_strDustCollector_LowerPos_Comm_ReceivedData = "";
+
+            //            DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, m_strAddress, 1, m_strData);
+
+            //            m_bRet = true;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        m_bRet = false;
+            //    }
+            //}
+            //return m_bRet;
+        }
+        public double DustCollector_SetFrequence(int m_nDustCollector, double dRet_Freq)
         {
             bool m_bRet = false;
 
-            string m_strAddress = "";
-            string m_strData = "";
-
-            m_strAddress = "0006";                              //  운전 Address
-            m_strData = "0001";                                 //  운전 정지
-
-            if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
+            switch (m_nDustCollector)
             {
-                if (m_dustCollector_UpperPos_Comm != null)
-                {
-                    if (m_dustCollector_UpperPos_Comm.IsOpen)
-                    {
-                        m_bDustCollector_UpperPos_CommData_Received = false;
-                        m_strDustCollector_UpperPos_Comm_ReceivedData = "";
-
-                        DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, m_strAddress, 1, m_strData);
-
-                        m_bRet = true;
-                    }
-                }
-                else
-                {
-                    m_bRet = false;
-                }
+                case 0:
+                    m_bRet = bds.DustCollector_Upper.SetFrequency(dRet_Freq);
+                    break;
+                case 1:
+                    m_bRet = bds.DustCollector_Lower.SetFrequency(dRet_Freq);
+                    break;
+                default:
+                    break;
             }
-            else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
+            return dRet_Freq;
+
+            //this.DustCollectorComm_Send_SetFrequency((int)WorkStage.nDustCollector.DustCollector_Lower, dRet_Freq);
+            //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
+            //dRet_Freq *= 100.0;
+            ////  숫자를 4자리 숫자로 고정
+            //string strFreq = dRet_Freq.ToString("0000");
+            //string strRet = this.ConvertDecimalToHex(strFreq);
+            //if (strRet != "NG")
+            //{
+            //    this.m_bDustCollector_LowerPos_CommData_Received = false;
+            //    this.m_strDustCollector_LowerPos_Comm_ReceivedData = "";
+            //}
+
+            return dRet_Freq;
+        }
+        public bool DustCollectorComm_Send_SetFrequency(int m_nDustCollector, double dFreq)
+        {
+            bool m_bRet = false;
+
+            switch (m_nDustCollector)
             {
-                if (m_dustCollector_LowerPos_Comm != null)
-                {
-                    if (m_dustCollector_LowerPos_Comm.IsOpen)
-                    {
-                        m_bDustCollector_LowerPos_CommData_Received = false;
-                        m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-
-                        DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, m_strAddress, 1, m_strData);
-
-                        m_bRet = true;
-                    }
-                }
-                else
-                {
-                    m_bRet = false;
-                }
+                case 0:
+                    m_bRet = bds.DustCollector_Upper.SetFrequency(dFreq);
+                    break;
+                case 1:
+                    m_bRet = bds.DustCollector_Lower.SetFrequency(dFreq);
+                    break;
+                default:
+                    break;
             }
 
             return m_bRet;
+
+            //bool m_bRet = false;
+
+            //int m_nIndex = 0;
+            //int m_DataNum = 0;
+            //int m_nCheckSum = 0;
+            //byte m_btTemp;
+            //string m_strSendData = "";
+            //byte[] m_cSendCmd = null;
+
+            //m_DataNum = 12 + (4 * m_nAddrCount);                    //  데이터 개수에 따라 길이 가변
+            //m_cSendCmd = new byte[m_DataNum];
+
+            //m_cSendCmd[0] = chrENQ;                                 //  ENQ 1자리
+            //m_cSendCmd[1] = (byte)'0';                              //  국번 2자리 (앞)
+            //m_cSendCmd[2] = (byte)'1';                              //  국번 2자리 (뒤)
+            //m_cSendCmd[3] = chrW;                                   //  CMD 1자리
+            //m_nCheckSum = m_cSendCmd[1] + m_cSendCmd[2] + m_cSendCmd[3];    //  CheckSum
+            //for (int i = 0; i < m_strAddr.Length; i++)
+            //{
+            //    m_cSendCmd[4 + i] = (byte)m_strAddr[i];             //  번지 4자리
+            //    m_nCheckSum += m_cSendCmd[4 + i];                           //  CheckSum
+            //}
+            //m_cSendCmd[8] = (byte)(char)(m_nAddrCount + '0');       //  번지 개수 1자리
+            //m_nCheckSum += m_cSendCmd[8];                                   //  CheckSum
+            //for (int i = 0; i < m_strData.Length; i++)
+            //{
+            //    m_nIndex = 9 + i;
+            //    m_cSendCmd[m_nIndex] = (byte)m_strData[i];       //  데이터 (번지 개수 * 4자리)
+            //    m_nCheckSum += m_cSendCmd[m_nIndex];                     //  CheckSum
+            //}
+            //int m_nTemp = m_nCheckSum & 0xFF;                       //  CheckSum 계산 (하위 1바이트)
+            //m_btTemp = (byte)m_nTemp;
+            //string m_strCheckSum = m_btTemp.ToString("x2");
+            //m_cSendCmd[m_nIndex + 1] = (byte)m_strCheckSum[0];           //  CheckSum 2자리 중 앞자리
+            //m_cSendCmd[m_nIndex + 2] = (byte)m_strCheckSum[1];           //  CheckSum 2자리 중 뒷자리
+            //m_cSendCmd[m_nIndex + 3] = chrEOT;
+            //m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+            //if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
+            //{
+            //    if (m_dustCollector_UpperPos_Comm.IsOpen)
+            //    {
+            //        m_dustCollector_UpperPos_Comm.Send(m_strSendData);
+            //        m_bRet = true;
+            //    } 
+            //}
+            //else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
+            //{
+            //    if (m_dustCollector_LowerPos_Comm.IsOpen)
+            //    {
+            //        m_dustCollector_LowerPos_Comm.Send(m_strSendData);
+            //        m_bRet = true;
+            //    }
+            //}
+
+            //return m_bRet;
         }
 
         public string ConvertDecimalToHex(string m_strDecimalNumber)
@@ -6728,7 +6781,6 @@ namespace QMC.Common.Modules
 
             return decimalNumber.ToString("X4");
         }
-
         #endregion
 
 
@@ -16181,10 +16233,9 @@ namespace QMC.Common.Modules
                         //{
                         //    Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
                         //}
-
                         workStageParameter.DO_Stage_Vacuum(true);
                         workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
-                        DustCollector_SetFrequence(Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
+                        DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
                         Thread.Sleep(1000);
 
                         if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
@@ -26516,89 +26567,94 @@ namespace QMC.Common.Modules
 
         private string LaserDrillingStepDustCollectorFrequenceSet()
         {
-            string m_strTemp;
+            string strTemp = "";
 
             //  입력한 주파수 
             double m_dFreq_Upper = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper;
             double m_dFreq_Lower = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower;
 
-            //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
-            double m_dRet_Freq_Upper = GetClosestValue_DustCollector(m_dFreq_Upper);
-            double m_dRet_Freq_Lower = GetClosestValue_DustCollector(m_dFreq_Lower);
+            DustCollectorComm_Send_SetFrequency((int)WorkStage.nDustCollector.DustCollector_Upper, m_dFreq_Upper);
+            DustCollectorComm_Send_SetFrequency((int)WorkStage.nDustCollector.DustCollector_Lower, m_dFreq_Lower);
 
-            //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            m_dRet_Freq_Upper = m_dRet_Freq_Upper * 100.0;
-            m_dRet_Freq_Lower = m_dRet_Freq_Lower * 100.0;
+            return strTemp;
 
-            //  숫자를 4자리 숫자로 고정
-            string m_strFreq_Upper = m_dRet_Freq_Upper.ToString("0000");
-            string m_strFreq_Lower = m_dRet_Freq_Lower.ToString("0000");
-            string m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
-            string m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
+            //string m_strTemp;
+            ////  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
+            //double m_dRet_Freq_Upper = GetClosestValue_DustCollector(m_dFreq_Upper);
+            //double m_dRet_Freq_Lower = GetClosestValue_DustCollector(m_dFreq_Lower);
 
-            //  상부 집진 데이터 OK 이면?
-            if (m_strRet_Upper != "NG")
-            {
-                m_strTemp = string.Format("상부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper);
-                Log.Write("SLD-200", "Auto Run", m_strTemp);
+            ////  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
+            //m_dRet_Freq_Upper = m_dRet_Freq_Upper * 100.0;
+            //m_dRet_Freq_Lower = m_dRet_Freq_Lower * 100.0;
 
-                m_bDustCollector_UpperPos_CommData_Received = false;
-                m_strDustCollector_UpperPos_Comm_ReceivedData = "";
+            ////  숫자를 4자리 숫자로 고정
+            //string m_strFreq_Upper = m_dRet_Freq_Upper.ToString("0000");
+            //string m_strFreq_Lower = m_dRet_Freq_Lower.ToString("0000");
+            //string m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
+            //string m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
 
-                DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
-            }
-            else
-            {
-                m_strTemp = string.Format("상부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
-                Log.Write("SLD-200", "Auto Run", m_strTemp);
+            ////  상부 집진 데이터 OK 이면?
+            //if (m_strRet_Upper != "NG")
+            //{
+            //    m_strTemp = string.Format("상부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper);
+            //    Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-                //  29.0 Hz 로 설정
-                //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-                m_dFreq_Upper = 29.0 * 100.0;
+            //    m_bDustCollector_UpperPos_CommData_Received = false;
+            //    m_strDustCollector_UpperPos_Comm_ReceivedData = "";
 
-                //  숫자를 4자리 숫자로 고정
-                m_strFreq_Upper = m_dFreq_Upper.ToString("0000");
+            //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
+            //}
+            //else
+            //{
+            //    m_strTemp = string.Format("상부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
+            //    Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-                m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
+            //    //  29.0 Hz 로 설정
+            //    //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
+            //    m_dFreq_Upper = 29.0 * 100.0;
 
-                m_bDustCollector_UpperPos_CommData_Received = false;
-                m_strDustCollector_UpperPos_Comm_ReceivedData = "";
+            //    //  숫자를 4자리 숫자로 고정
+            //    m_strFreq_Upper = m_dFreq_Upper.ToString("0000");
 
-                DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
-            }
+            //    m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
 
-            //  하부 집진 데이터 OK 이면?
-            if (m_strRet_Lower != "NG")
-            {
-                m_strTemp = string.Format("하부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
-                Log.Write("SLD-200", "Auto Run", m_strTemp);
+            //    m_bDustCollector_UpperPos_CommData_Received = false;
+            //    m_strDustCollector_UpperPos_Comm_ReceivedData = "";
 
-                m_bDustCollector_LowerPos_CommData_Received = false;
-                m_strDustCollector_LowerPos_Comm_ReceivedData = "";
+            //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
+            //}
 
-                DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
-            }
-            else
-            {
-                m_strTemp = string.Format("하부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
-                Log.Write("SLD-200", "Auto Run", m_strTemp);
+            ////  하부 집진 데이터 OK 이면?
+            //if (m_strRet_Lower != "NG")
+            //{
+            //    m_strTemp = string.Format("하부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
+            //    Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-                //  29.0 Hz 로 설정
-                //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-                m_dFreq_Lower = 29.0 * 100.0;
+            //    m_bDustCollector_LowerPos_CommData_Received = false;
+            //    m_strDustCollector_LowerPos_Comm_ReceivedData = "";
 
-                //  숫자를 4자리 숫자로 고정
-                m_strFreq_Lower = m_dFreq_Lower.ToString("0000");
+            //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
+            //}
+            //else
+            //{
+            //    m_strTemp = string.Format("하부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
+            //    Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-                m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
+            //    //  29.0 Hz 로 설정
+            //    //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
+            //    m_dFreq_Lower = 29.0 * 100.0;
 
-                m_bDustCollector_LowerPos_CommData_Received = false;
-                m_strDustCollector_LowerPos_Comm_ReceivedData = "";
+            //    //  숫자를 4자리 숫자로 고정
+            //    m_strFreq_Lower = m_dFreq_Lower.ToString("0000");
 
-                DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
-            }
+            //    m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
 
-            return m_strTemp;
+            //    m_bDustCollector_LowerPos_CommData_Received = false;
+            //    m_strDustCollector_LowerPos_Comm_ReceivedData = "";
+
+            //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
+            //}
+            //return m_strTemp;
         }
 
         private void LaserDrilling_StepLaserOff()
@@ -38779,82 +38835,83 @@ namespace QMC.Common.Modules
 
                 case (int)ScannerCalibration_Step.DustCollector_Frequency_Set:
 
-                    //기존 Main 함수 똑같이 사용하면.. 문제 되나.. 
-                    //Data를 recipe꺼를 불러오네..
-                    //strTemp = LaserDrillingStepDustCollectorFrequenceSet();
-                    //  입력한 주파수 
-                    double m_dFreq_Upper = 20;  // Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper;
-                    double m_dFreq_Lower = 30;  // Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower;
+                    //
+                    ////기존 Main 함수 똑같이 사용하면.. 문제 되나.. 
+                    ////Data를 recipe꺼를 불러오네..
+                    ////strTemp = LaserDrillingStepDustCollectorFrequenceSet();
+                    ////  입력한 주파수 
+                    //double m_dFreq_Upper = 20;  // Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper;
+                    //double m_dFreq_Lower = 30;  // Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower;
 
-                    //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
-                    double m_dRet_Freq_Upper = GetClosestValue_DustCollector(m_dFreq_Upper);
-                    double m_dRet_Freq_Lower = GetClosestValue_DustCollector(m_dFreq_Lower);
+                    ////  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
+                    //double m_dRet_Freq_Upper = GetClosestValue_DustCollector(m_dFreq_Upper);
+                    //double m_dRet_Freq_Lower = GetClosestValue_DustCollector(m_dFreq_Lower);
 
-                    //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-                    m_dRet_Freq_Upper = m_dRet_Freq_Upper * 100.0;
-                    m_dRet_Freq_Lower = m_dRet_Freq_Lower * 100.0;
+                    ////  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
+                    //m_dRet_Freq_Upper = m_dRet_Freq_Upper * 100.0;
+                    //m_dRet_Freq_Lower = m_dRet_Freq_Lower * 100.0;
 
-                    //  숫자를 4자리 숫자로 고정
-                    string m_strFreq_Upper = m_dRet_Freq_Upper.ToString("0000");
-                    string m_strFreq_Lower = m_dRet_Freq_Lower.ToString("0000");
-                    string m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
-                    string m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
+                    ////  숫자를 4자리 숫자로 고정
+                    //string m_strFreq_Upper = m_dRet_Freq_Upper.ToString("0000");
+                    //string m_strFreq_Lower = m_dRet_Freq_Lower.ToString("0000");
+                    //string m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
+                    //string m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
 
-                    //  상부 집진 데이터 OK 이면?
-                    if (m_strRet_Upper != "NG")
-                    {
-                        strTemp = string.Format("상부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper);
-                        Log.Write("SLD-200", "ScannerCalibration", strTemp);
+                    ////  상부 집진 데이터 OK 이면?
+                    //if (m_strRet_Upper != "NG")
+                    //{
+                    //    strTemp = string.Format("상부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper);
+                    //    Log.Write("SLD-200", "ScannerCalibration", strTemp);
 
-                        m_bDustCollector_UpperPos_CommData_Received = false;
-                        m_strDustCollector_UpperPos_Comm_ReceivedData = "";
+                    //    m_bDustCollector_UpperPos_CommData_Received = false;
+                    //    m_strDustCollector_UpperPos_Comm_ReceivedData = "";
 
-                        DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
-                    }
-                    else
-                    {
-                        strTemp = string.Format("상부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
-                        Log.Write("SLD-200", "ScannerCalibration", strTemp);
+                    //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
+                    //}
+                    //else
+                    //{
+                    //    strTemp = string.Format("상부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
+                    //    Log.Write("SLD-200", "ScannerCalibration", strTemp);
 
-                        //  29.0 Hz 로 설정
-                        //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-                        m_dFreq_Upper = 29.0 * 100.0;   //? upper는 고정인가?
-                        //  숫자를 4자리 숫자로 고정
-                        m_strFreq_Upper = m_dFreq_Upper.ToString("0000");
-                        m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
+                    //    //  29.0 Hz 로 설정
+                    //    //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
+                    //    m_dFreq_Upper = 29.0 * 100.0;   //? upper는 고정인가?
+                    //    //  숫자를 4자리 숫자로 고정
+                    //    m_strFreq_Upper = m_dFreq_Upper.ToString("0000");
+                    //    m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
 
-                        m_bDustCollector_UpperPos_CommData_Received = false;
-                        m_strDustCollector_UpperPos_Comm_ReceivedData = "";
+                    //    m_bDustCollector_UpperPos_CommData_Received = false;
+                    //    m_strDustCollector_UpperPos_Comm_ReceivedData = "";
 
-                        DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
-                    }
+                    //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
+                    //}
 
-                    //  하부 집진 데이터 OK 이면?
-                    if (m_strRet_Lower != "NG")
-                    {
-                        strTemp = string.Format("하부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
-                        Log.Write("SLD-200", "ScannerCalibration", strTemp);
+                    ////  하부 집진 데이터 OK 이면?
+                    //if (m_strRet_Lower != "NG")
+                    //{
+                    //    strTemp = string.Format("하부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
+                    //    Log.Write("SLD-200", "ScannerCalibration", strTemp);
 
-                        m_bDustCollector_LowerPos_CommData_Received = false;
-                        m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-                        DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
-                    }
-                    else
-                    {
-                        strTemp = string.Format("하부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
-                        Log.Write("SLD-200", "ScannerCalibration", strTemp);
+                    //    m_bDustCollector_LowerPos_CommData_Received = false;
+                    //    m_strDustCollector_LowerPos_Comm_ReceivedData = "";
+                    //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
+                    //}
+                    //else
+                    //{
+                    //    strTemp = string.Format("하부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
+                    //    Log.Write("SLD-200", "ScannerCalibration", strTemp);
 
-                        //  29.0 Hz 로 설정
-                        //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-                        m_dFreq_Lower = 29.0 * 100.0;
-                        //  숫자를 4자리 숫자로 고정
-                        m_strFreq_Lower = m_dFreq_Lower.ToString("0000");
+                    //    //  29.0 Hz 로 설정
+                    //    //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
+                    //    m_dFreq_Lower = 29.0 * 100.0;
+                    //    //  숫자를 4자리 숫자로 고정
+                    //    m_strFreq_Lower = m_dFreq_Lower.ToString("0000");
 
-                        m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
-                        m_bDustCollector_LowerPos_CommData_Received = false;
-                        m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-                        DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
-                    }
+                    //    m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
+                    //    m_bDustCollector_LowerPos_CommData_Received = false;
+                    //    m_strDustCollector_LowerPos_Comm_ReceivedData = "";
+                    //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
+                    //}
 
                     TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                     m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.DustCollector_On_Check;
@@ -40789,27 +40846,7 @@ namespace QMC.Common.Modules
 
 
 
-        public double DustCollector_SetFrequence(double dRet_Freq)
-        {
-
-            //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            dRet_Freq *= 100.0;
-
-            //  숫자를 4자리 숫자로 고정
-            string strFreq = dRet_Freq.ToString("0000");
-
-            string strRet = this.ConvertDecimalToHex(strFreq);
-
-            if (strRet != "NG")
-            {
-                this.m_bDustCollector_LowerPos_CommData_Received = false;
-                this.m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-
-                this.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, strRet);
-            }
-
-            return dRet_Freq;
-        }
+        
 
 
         /// <summary>

@@ -3619,41 +3619,34 @@ namespace SLD200_MSL
         private void button_Config_TabWorkStage_DustCollector0_Run_Click(object sender, EventArgs e)
         {
             //  집진기0 켜기
-
             workStage.DustCollector_On((int)nDustCollector.DustCollector_Upper);
         }
 
         private void button_Config_TabWorkStage_DustCollector0_Stop_Click(object sender, EventArgs e)
         {
             //  집진기0 끄기
-
             workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
         }
 
         private void button_Config_TabWorkStage_DustCollector0_Freq_Set_Click(object sender, EventArgs e)
         {
             //  집진기0 주파수 세팅
-
             double m_dFreq = Equipment.ToDouble(textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
+            workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Upper, m_dFreq);
 
-            //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
-            double m_dRet_Freq = GetClosestValue_DustCollector(m_dFreq);
-
-            //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            m_dRet_Freq *= 100.0;
-
-            //  숫자를 4자리 숫자로 고정
-            string m_strFreq = m_dRet_Freq.ToString("0000");
-
-            string m_strRet = workStage.ConvertDecimalToHex(m_strFreq);
-
-            if (m_strRet != "NG")
-            {
-                workStage.m_bDustCollector_UpperPos_CommData_Received = false;
-                workStage.m_strDustCollector_UpperPos_Comm_ReceivedData = "";
-
-                workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet);
-            }
+            ////  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
+            //double m_dRet_Freq = GetClosestValue_DustCollector(m_dFreq);
+            ////  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
+            //m_dRet_Freq *= 100.0;
+            ////  숫자를 4자리 숫자로 고정
+            //string m_strFreq = m_dRet_Freq.ToString("0000");
+            //string m_strRet = workStage.ConvertDecimalToHex(m_strFreq);
+            //if (m_strRet != "NG")
+            //{
+            //    workStage.m_bDustCollector_UpperPos_CommData_Received = false;
+            //    workStage.m_strDustCollector_UpperPos_Comm_ReceivedData = "";
+            //    workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet);
+            //}
         }
 
         private void button_Config_TabWorkStage_DustCollector1_Run_Click(object sender, EventArgs e)
@@ -3677,8 +3670,10 @@ namespace SLD200_MSL
             double dFreq = Equipment.ToDouble(textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
 
             //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
-            double dRet_Freq = GetClosestValue_DustCollector(dFreq);
-            dRet_Freq = workStage.DustCollector_SetFrequence(dRet_Freq);
+            //double dRet_Freq = GetClosestValue_DustCollector(dFreq);
+            //dRet_Freq = workStage.DustCollector_SetFrequence(dRet_Freq);
+            workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, dFreq);
+
         }
 
         
