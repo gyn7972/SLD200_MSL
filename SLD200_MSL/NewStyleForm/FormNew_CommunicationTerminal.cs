@@ -20,6 +20,7 @@ using static QMC.Common.Modules.WorkStage;
 using static QMC.Common.Parts.DustCollectorController;
 using static System.Windows.Forms.AxHost;
 using static SpiralLab.Sirius.JPTTypeE;
+using System.Threading;
 
 namespace SLD200_MSL
 {
@@ -735,13 +736,16 @@ namespace SLD200_MSL
         {
             bool bOn = bds.DustCollector_Upper.DustCollector_On();
 
-            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
-            if (runState == CollectorRunState.Running)
-                Log.Write("DustCollector", "집진기 상태: 운전 중");
-            else if (runState == CollectorRunState.Stopped)
-                Log.Write("DustCollector", "집진기 상태: 정지");
+            Thread.Sleep(300);  // 상태 반영 대기 (인버터 응답 지연 고려)
+
+            if (bds.DustCollector_Upper.GetFullStatus(out var runState, out var freq, out var current, out var alarm))
+            {
+                Log.Write("DustCollector", $"[TEST1] 집진기 상태: {(runState == CollectorRunState.Running ? "운전 중" : "정지")}, 주파수: {freq}Hz, 전류: {current}A, 알람: {alarm}");
+            }
             else
-                Log.Write("DustCollector", "집진기 상태: 알 수 없음");
+            {
+                Log.Write("DustCollector", "[TEST1] 상태 읽기 실패");
+            }
 
         }
 
@@ -749,24 +753,31 @@ namespace SLD200_MSL
         {
             bds.DustCollector_Upper.DustCollector_Off();
 
-            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
-            if (runState == CollectorRunState.Running)
-                Log.Write("DustCollector", "집진기 상태: 운전 중");
-            else if (runState == CollectorRunState.Stopped)
-                Log.Write("DustCollector", "집진기 상태: 정지");
+            Thread.Sleep(300);  // 상태 반영 대기 (인버터 응답 지연 고려)
+
+            if (bds.DustCollector_Upper.GetFullStatus(out var runState, out var freq, out var current, out var alarm))
+            {
+                Log.Write("DustCollector", $"[TEST2] 집진기 상태: {(runState == CollectorRunState.Running ? "운전 중" : "정지")}, 주파수: {freq}Hz, 전류: {current}A, 알람: {alarm}");
+            }
             else
-                Log.Write("DustCollector", "집진기 상태: 알 수 없음");
+            {
+                Log.Write("DustCollector", "[TEST2] 상태 읽기 실패");
+            }
         }
 
         private void button_Test3_Click(object sender, EventArgs e)
         {
-            //string strFrequency = "";
-            double dFrequency = 0.0;
-            bds.DustCollector_Upper.GetFrequency(out dFrequency);
-            //dFrequency = string.IsNullOrEmpty(strFrequency) ? 0.0 : Equipment.ToDouble(strFrequency);
+            bool btn = bds.DustCollector_Upper.SetFrequency(10);
 
-            DustCollectorController.CollectorRunState runState;
-            bds.DustCollector_Upper.GetStatus(out runState, out dFrequency);
+            //GetOutputFrequency //GetFrequency
+            if (bds.DustCollector_Upper.GetOutputFrequency(out double freq))
+            {
+                Log.Write("DustCollector", $"[TEST3] 현재 주파수: {freq} Hz");
+            }
+            else
+            {
+                Log.Write("DustCollector", "[TEST3] 주파수 읽기 실패");
+            }
         }
     }
 }

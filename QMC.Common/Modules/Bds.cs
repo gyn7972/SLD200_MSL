@@ -511,39 +511,38 @@ namespace QMC.Common.Modules
         public bool InitDustCollector(DustCollectorController.CollectorPosition position)
         {
             DustCollectorController dustCollector = null;
+            Equipment.CommList comm = Equipment.CommList.D_U;
+
             if (position == DustCollectorController.CollectorPosition.Upper)
             {
+                if (DustCollector_Upper == null)
+                {
+                    DustCollector_Upper = new DustCollectorController("Upper", position);
+                    DustCollector_Upper.Owner = this;
+                    Parts.Add(DustCollector_Upper);
+                }
                 dustCollector = DustCollector_Upper;
+                comm = Equipment.CommList.D_U;
             }
             else if (position == DustCollectorController.CollectorPosition.Lower)
             {
+                if (DustCollector_Lower == null)
+                {
+                    DustCollector_Lower = new DustCollectorController("Lower", position);
+                    DustCollector_Lower.Owner = this;
+                    Parts.Add(DustCollector_Lower);
+                }
                 dustCollector = DustCollector_Lower;
+                comm = Equipment.CommList.D_L;
             }
 
-            if (dustCollector == null)
+            if (!dustCollector.Connect(comm))
             {
-                dustCollector.Create();
-                dustCollector.Owner = this;
-                Parts.Add(dustCollector);
-                return true;
+                Log.Write("DustCollector", $"[{position}] 연결 실패");
+                return false;
             }
 
-            if (position == DustCollectorController.CollectorPosition.Upper)
-            {
-                if (!DustCollector_Upper.Connect(Equipment.CommList.D_U))
-                    Log.Write("DustCollector", "[Upper] 연결 실패");
-
-                return true;
-            }
-            else if (position == DustCollectorController.CollectorPosition.Lower)
-            {
-                if (!DustCollector_Lower.Connect(Equipment.CommList.D_L))
-                    Log.Write("DustCollector", "[Lower] 연결 실패");
-
-                return true;
-            }
-
-            return false;
+            return true;
         }
 
 

@@ -25,6 +25,18 @@ namespace QMC.Common.Parts
             _position = position;
         }
 
+        public bool Connect(Equipment.CommList commList)
+        {
+            if (_serialPort != null)
+            {
+                if (_serialPort.IsOpen)
+                    return true;
+            }
+
+            Equipment.GetSerialPortConfig(commList, out string portName, out int baudRate, out int dataBits, out StopBits stopBits, out Parity parity, out Handshake handshake);
+            return Connect(portName, baudRate, dataBits, stopBits, parity, handshake);
+        }
+
         public bool Connect(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity, Handshake handshake)
         {
             try
@@ -55,7 +67,7 @@ namespace QMC.Common.Parts
                     _serialPort.Close();
 
                 _serialPort.Dispose();
-                _serialPort = null;  // <- 이거 추가로 후속 접근 방지
+                _serialPort = null;
             }
         }
 
@@ -75,10 +87,7 @@ namespace QMC.Common.Parts
             return success;
         }
 
-        public bool SendRead(string address, out string response)
-        {
-            return SendRead(address, 1, out response);
-        }
+        public bool SendRead(string address, out string response) => SendRead(address, 1, out response);
 
         private bool SendAndWaitForAck(string command)
         {
@@ -96,11 +105,9 @@ namespace QMC.Common.Parts
 
                 if (_receiveEvent.WaitOne(1000))
                     return _dataReceived;
-                else
-                {
-                    Log.Write("DustCollector", $"[{_position}] Timeout waiting for ACK.");
-                    return false;
-                }
+
+                Log.Write("DustCollector", $"[{_position}] Timeout waiting for ACK.");
+                return false;
             }
         }
 
@@ -110,13 +117,23 @@ namespace QMC.Common.Parts
             {
                 string received = _serialPort.ReadExisting();
                 _lastReceivedData += received;
+                Log.Write("DustCollector", $"[{_position}] [RX] {_lastReceivedData}");
 
-                if (_lastReceivedData.Contains(((char)0x04).ToString())) // EOT 도달
+                // EOT까지 수신된 경우
+                if (_lastReceivedData.Contains(((char)0x04).ToString()))
                 {
-                    if (_lastReceivedData.StartsWith(((char)0x06).ToString())) // ACK
+                    // Write 응답: ACK + EOT
+                    if (_lastReceivedData.StartsWith(((char)0x06).ToString()))
                     {
-                                    // 데이터는 1바이트 ACK + 실제 응답 본문
-                        _lastReceivedData = _lastReceivedData.Trim((char)0x06, (char)0x04); // ACK, EOT 제거
+                        _lastReceivedData = _lastReceivedData.Trim((char)0x06, (char)0x04);
+                        _dataReceived = true;
+                    }
+                    // Read 응답: ENQ + 01Rxxxx + CHKSUM + EOT
+                    else if (_lastReceivedData.StartsWith(((char)0x05).ToString() + "01R"))
+                    {
+                        // → "␅01RFE3E␄"
+                        string raw = _lastReceivedData.Trim((char)0x05, (char)0x04); // ENQ, EOT 제거
+                        _lastReceivedData = raw.Substring(3, raw.Length - 5);        // "01RFE3E" → "FE"
                         _dataReceived = true;
                     }
                     else
@@ -133,24 +150,18 @@ namespace QMC.Common.Parts
             }
         }
 
+
         private string BuildWriteCommand(string addr, string data, int addrCount)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("01");
-            sb.Append("W");
-            sb.Append(addr);
-            sb.Append((char)('0' + addrCount));
-            sb.Append(data);
+            var sb = new StringBuilder();
+            sb.Append("01W").Append(addr).Append((char)('0' + addrCount)).Append(data);
             return AppendChecksumAndEOT(sb.ToString());
         }
 
         private string BuildReadCommand(string addr, int addrCount)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("01");
-            sb.Append("R");
-            sb.Append(addr);
-            sb.Append((char)('0' + addrCount));
+            var sb = new StringBuilder();
+            sb.Append("01R").Append(addr).Append((char)('0' + addrCount));
             return AppendChecksumAndEOT(sb.ToString());
         }
 
@@ -160,71 +171,29 @@ namespace QMC.Common.Parts
             foreach (char ch in coreCommand)
                 checksum += (byte)ch;
 
-            byte sumByte = (byte)(checksum & 0xFF);
-            string checksumHex = sumByte.ToString("X2"); // 대문자 HEX, 항상 2자리
+            // 하위 8비트만 사용
+            byte checksumByte = (byte)(checksum & 0xFF);
+            string checksumHex = checksumByte.ToString("X2"); // 항상 2자리
 
-            // 완성된 전체 명령: ENQ + 본문 + 체크섬 + EOT
-            return ((char)0x05).ToString() + coreCommand + checksumHex + ((char)0x04).ToString();
+            // STX (0x05) + 본문 + 체크섬 + EOT (0x04)
+            return ((char)0x05) + coreCommand + checksumHex + ((char)0x04);
         }
 
-        public bool ReadFullStatus(out string rawData)
-        {
-            return SendRead("1000", 20, out rawData); // "0014" == 20 byte (word 기준 10 word)
-        }
-
-        public bool GetStatusFromBlock(out CollectorRunState runState, out double diffPressure, out CollectorAlarmState alarmState)
-        {
-            runState = CollectorRunState.Unknown;
-            diffPressure = 0.0;
-            alarmState = CollectorAlarmState.Unknown;
-
-            if (!ReadFullStatus(out string raw)) return false;
-
-            string data = ExtractResponseData(raw); // 예: "01R1000...." → 순수 데이터만 추출
-
-            if (data.Length < 28) return false;
-
-            // 예: 차압 (앞 4글자), 운전 상태 (n번째), 알람 코드 (마지막 4글자)
-            string diffPressHex = data.Substring(0, 4); // 1000h
-            string runStateHex = data.Substring(20, 4); // 1014h
-            string alarmHex = data.Substring(24, 4); // 1016h
-
-            if (int.TryParse(diffPressHex, System.Globalization.NumberStyles.HexNumber, null, out int diff))
-                diffPressure = diff / 10.0;
-
-            if (runStateHex == "0001")
-                runState = CollectorRunState.Running;
-            else
-                runState = CollectorRunState.Stopped;
-
-            alarmState = alarmHex == "0000" ? CollectorAlarmState.None : CollectorAlarmState.Alarm;
-
-            return true;
-        }
-
-        /// <summary>
-        /// 수신된 전체 응답 문자열에서 데이터 필드만 추출합니다.
-        /// 예: "01R00070002B5" → "0002"
-        /// </summary>
         //private string ExtractResponseData(string fullResponse)
         //{
-        //    // 예외 처리
-        //    if (string.IsNullOrEmpty(fullResponse) || fullResponse.Length < 13)
-        //        return "";
-
-        //    // 포맷: 01R + 4자리 주소 + 4자리 데이터 + 2자리 체크섬 → 총 13자리
-        //    return fullResponse.Substring(9, 4); // 10번째~13번째 문자 (Data 영역)
+        //    // 예: fullResponse = "FE" ← 이미 전처리된 상태로 들어옴
+        //    return fullResponse.Trim();
         //}
-
         private string ExtractResponseData(string fullResponse)
         {
-                 // 예: "01R009682" → "9682" 추출
             try
             {
-                if (string.IsNullOrWhiteSpace(fullResponse) || fullResponse.Length < 4)
+                if (string.IsNullOrWhiteSpace(fullResponse) || fullResponse.Length < 13)
                     return "";
 
-                return fullResponse.Substring(fullResponse.Length - 4, 4);
+                // 포맷: 01R + Addr(4) + Data(4) + Checksum(2)
+                // Index:        3     ~     7     = Data
+                return fullResponse.Substring(7, 4);  // 4자리 데이터만 정확히 추출
             }
             catch
             {
@@ -232,16 +201,53 @@ namespace QMC.Common.Parts
             }
         }
 
-        public bool Connect(Equipment.CommList comm)
+        private double ConvertHexToDouble(string hex, double divider)
         {
-            string strPortName;
-            int baudRate, dataBits;
-            StopBits stopBits;
-            Parity parity;
-            Handshake handshake;
+            return int.TryParse(hex, System.Globalization.NumberStyles.HexNumber, null, out int val) ? val / divider : 0.0;
+        }
 
-            Equipment.GetSerialPortConfig(comm, out strPortName, out baudRate, out dataBits, out stopBits, out parity, out handshake);
-            return Connect(strPortName, baudRate, dataBits, stopBits, parity, handshake);
+        public bool GetFullStatus(out CollectorRunState runState, out double frequencyHz, out double currentA, out CollectorAlarmState alarmState)
+        {
+            runState = CollectorRunState.Unknown;
+            frequencyHz = 0.0;
+            currentA = 0.0;
+            alarmState = CollectorAlarmState.Unknown;
+
+            if (!SendRead("1000", 20, out string raw))
+                return false;
+
+            string data = ExtractResponseData(raw);
+            if (data.Length < 40)
+                return false;
+
+            try
+            {
+                runState = data.Substring(20, 4) == "0001" ? CollectorRunState.Running : CollectorRunState.Stopped;
+                frequencyHz = ConvertHexToDouble(data.Substring(16, 4), 10.0);
+                currentA = ConvertHexToDouble(data.Substring(4, 4), 10.0);
+                //alarmState = data.Substring(24, 4) switch
+                //{
+                //    "0000" => CollectorAlarmState.None,
+                //    "0001" => CollectorAlarmState.Warning,
+                //    "0002" => CollectorAlarmState.Alarm,
+                //    _ => CollectorAlarmState.Unknown
+                //};
+                string alarmCode = data.Substring(24, 4);
+                if (alarmCode == "0000")
+                    alarmState = CollectorAlarmState.None;
+                else if (alarmCode == "0001")
+                    alarmState = CollectorAlarmState.Warning;
+                else if (alarmCode == "0002")
+                    alarmState = CollectorAlarmState.Alarm;
+                else
+                    alarmState = CollectorAlarmState.Unknown;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Write("DustCollector", $"[Parser Error] FullStatus: {ex.Message}");
+                return false;
+            }
         }
 
         public bool DustCollector_On() => SendWrite("0006", "0002", 1);
@@ -250,8 +256,7 @@ namespace QMC.Common.Parts
         public bool SetFrequency(double frequencyHz)
         {
             int freqValue = (int)(frequencyHz * 100.0);
-            string asciiData = freqValue.ToString("D4");
-            return SendWrite("0005", asciiData, 1);
+            return SendWrite("0005", freqValue.ToString("D4"), 1);
         }
 
         public bool GetFrequency(out double frequencyHz)
@@ -261,437 +266,23 @@ namespace QMC.Common.Parts
                 return false;
 
             string data = ExtractResponseData(freqRaw);
+            return int.TryParse(data, System.Globalization.NumberStyles.HexNumber, null, out int freqVal)
+                   && (frequencyHz = freqVal / 10.0) >= 0;
+        }
 
-            if (int.TryParse(data, System.Globalization.NumberStyles.HexNumber, null, out int freqVal))
+        public bool GetOutputFrequency(out double frequencyHz)
+        {
+            frequencyHz = 0.0;
+            if (!SendRead("1002", 1, out string raw))  // 주소는 예시입니다
+                return false;
+
+            string data = ExtractResponseData(raw);
+            if (int.TryParse(data, System.Globalization.NumberStyles.HexNumber, null, out int val))
             {
-                frequencyHz = freqVal / 10.0;
+                frequencyHz = val / 10.0;
                 return true;
             }
-
             return false;
         }
-
-        public bool GetCurrentStatus(out string status)
-        {
-            return SendRead("0007", 1, out status);
-        }
-
-        public CollectorRunState GetRunState()
-        {
-            if (!SendRead("0007", 1, out string statusRaw))
-                return CollectorRunState.Unknown;
-
-            string data = ExtractResponseData(statusRaw);
-            switch (data)
-            {
-                case "0001": return CollectorRunState.Stopped;
-                case "0002": return CollectorRunState.Running;
-                default: return CollectorRunState.Unknown;
-            }
-        }
-
-        public bool GetStatus(out CollectorRunState runState, out double frequencyHz)
-        {
-            runState = CollectorRunState.Unknown;
-            frequencyHz = 0.0;
-
-            if (!SendRead("0007", 1, out string statusRaw))
-                return false;
-
-            string statusData = ExtractResponseData(statusRaw);
-            switch (statusData)
-            {
-                case "0001": runState = CollectorRunState.Stopped; break;
-                case "0002": runState = CollectorRunState.Running; break;
-            }
-
-            if (!SendRead("000A", 1, out string freqRaw))
-                return false;
-
-            string freqData = ExtractResponseData(freqRaw);
-            if (int.TryParse(freqData, System.Globalization.NumberStyles.HexNumber, null, out int freqValue))
-                frequencyHz = freqValue / 10.0;
-
-            return true;
-        }
-
-
-        public bool GetDetailedStatus(out CollectorRunState runState, out double frequencyHz, out double currentA, out CollectorAlarmState alarmState)
-        {
-            runState = CollectorRunState.Unknown;
-            frequencyHz = 0.0;
-            currentA = 0.0;
-            alarmState = CollectorAlarmState.Unknown;
-
-            bool ok = true;
-
-            ok &= SendRead("0007", 1, out string statusRaw);
-            string statusData = ExtractResponseData(statusRaw);
-            switch (statusData)
-            {
-                case "0001": runState = CollectorRunState.Stopped; break;
-                case "0002": runState = CollectorRunState.Running; break;
-            }
-
-            ok &= SendRead("000A", 1, out string freqRaw);
-            string freqData = ExtractResponseData(freqRaw);
-            if (int.TryParse(freqData, System.Globalization.NumberStyles.HexNumber, null, out int freqVal))
-                frequencyHz = freqVal / 10.0;
-
-            ok &= SendRead("000B", 1, out string currentRaw);
-            string currentData = ExtractResponseData(currentRaw);
-            if (int.TryParse(currentData, System.Globalization.NumberStyles.HexNumber, null, out int currentVal))
-                currentA = currentVal / 10.0;
-
-            ok &= SendRead("000C", 1, out string warnRaw);
-            string warnData = ExtractResponseData(warnRaw);
-            switch (warnData)
-            {
-                case "0000": alarmState = CollectorAlarmState.None; break;
-                case "0001": alarmState = CollectorAlarmState.Warning; break;
-                case "0002": alarmState = CollectorAlarmState.Alarm; break;
-            }
-
-            return ok;
-        }
-
     }
 }
-
-
-
-//using System;
-//using System.Text;
-//using System.Threading;
-//using System.IO.Ports;
-
-//namespace QMC.Common.Parts
-//{
-//    public class DustCollectorController : Part
-//    {
-//        public enum CollectorRunState
-//        {
-//            Unknown,
-//            Stopped,
-//            Running
-//        }
-
-//        public enum CollectorAlarmState
-//        {
-//            None,
-//            Warning,
-//            Alarm,
-//            Unknown
-//        }
-
-//        public enum CollectorPosition { Upper, Lower }
-
-//        private SerialPort _serialPort;
-//        private readonly CollectorPosition _position;
-//        private readonly object _lock = new object();
-
-//        private string _lastReceivedData = "";
-//        private bool _dataReceived = false;
-//        private readonly ManualResetEvent _receiveEvent = new ManualResetEvent(false);
-
-//        public bool IsConnected => _serialPort?.IsOpen ?? false;
-
-//        public DustCollectorController(string name, CollectorPosition position) : base(name)
-//        {
-//            _position = position;
-//        }
-
-//        public bool Connect(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity, Handshake handshake)
-//        {
-//            try
-//            {
-//                _serialPort = new SerialPort(portName, baudRate, parity, dataBits, stopBits)
-//                {
-//                    Handshake = handshake,
-//                    Encoding = Encoding.Default,
-//                    ReadTimeout = 1000,
-//                    WriteTimeout = 1000
-//                };
-//                _serialPort.DataReceived += SerialPort_DataReceived;
-//                _serialPort.Open();
-//                return true;
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Write("DustCollector", $"[{_position}] Port Open Fail: {ex.Message}");
-//                return false;
-//            }
-//        }
-
-//        public void Disconnect()
-//        {
-//            if (_serialPort != null && _serialPort.IsOpen)
-//            {
-//                _serialPort.Close();
-//                _serialPort.Dispose();
-//            }
-//        }
-
-//        public bool SendWrite(string address, string data, int addressCount = 1)
-//        {
-//            string command = BuildWriteCommand(address, data, addressCount);
-//            return SendAndWaitForAck(command);
-//        }
-
-//        public bool SendRead(string address, int addressCount, out string response)
-//        {
-//            response = "";
-//            string command = BuildReadCommand(address, addressCount);
-//            bool success = SendAndWaitForAck(command);
-//            if (success)
-//                response = _lastReceivedData;
-//            return success;
-//        }
-
-//        // 오버로드: addressCount 기본값 1
-//        public bool SendRead(string address, out string response)
-//        {
-//            return SendRead(address, 1, out response);
-//        }
-
-//        private bool SendAndWaitForAck(string command)
-//        {
-//            if (!IsConnected)
-//                return false;
-
-//            lock (_lock)
-//            {
-//                _receiveEvent.Reset();
-//                _lastReceivedData = "";
-//                _dataReceived = false;
-
-//                _serialPort.DiscardInBuffer();
-//                _serialPort.Write(command);
-
-//                if (_receiveEvent.WaitOne(5000)) // wait 1 second
-//                {
-//                    return _dataReceived;
-//                }
-//                else
-//                {
-//                    Log.Write("DustCollector", $"[{_position}] Timeout waiting for ACK.");
-//                    return false;
-//                }
-//            }
-//        }
-
-//        private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
-//        {
-//            try
-//            {
-//                string received = _serialPort.ReadExisting();
-//                _lastReceivedData += received;
-
-//                if (_lastReceivedData.EndsWith(((char)0x04).ToString())) // EOT
-//                {
-//                    _dataReceived = _lastReceivedData.StartsWith(((char)0x06).ToString()); // ACK
-//                    _receiveEvent.Set();
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Write("DustCollector", $"[{_position}] Data Receive Error: {ex.Message}");
-//            }
-//        }
-
-//        private string BuildWriteCommand(string addr, string data, int addrCount)
-//        {
-//            // 핵심 명령어: "01W0006" + "1" + "0002" (예시)
-//            StringBuilder sb = new StringBuilder();
-//            sb.Append("01");          // Station No
-//            sb.Append("W");           // Write
-//            sb.Append(addr);          // Address (4자리)
-//            sb.Append((char)('0' + addrCount)); // Address Count
-//            sb.Append(data);          // Data
-
-//            return AppendChecksumAndEOT(sb.ToString());
-//        }
-
-//        private string BuildReadCommand(string addr, int addrCount)
-//        {
-//            StringBuilder sb = new StringBuilder();
-//            sb.Append("01");         // Station No
-//            sb.Append("R");          // Read
-//            sb.Append(addr);         // Address (4자리)
-//            sb.Append((char)('0' + addrCount)); // Address Count
-
-//            return AppendChecksumAndEOT(sb.ToString());
-//        }
-
-//        /// <summary>
-//        /// coreCommand (ENQ 제외, EOT 제외)에 대해 Checksum과 EOT를 붙인 전체 명령 문자열을 반환
-//        /// </summary>
-//        private string AppendChecksumAndEOT(string coreCommand)
-//        {
-//            int checksum = 0;
-//            foreach (char ch in coreCommand)
-//                checksum += ch;
-
-//            byte sumByte = (byte)(checksum & 0xFF);
-//            string checksumHex = sumByte.ToString("x2");  // always 2 characters
-
-//            string fullCommand = ((char)0x05).ToString() + coreCommand + checksumHex + ((char)0x04).ToString();
-//            return fullCommand;
-//        }
-
-
-//        public bool Connect(Equipment.CommList comm)
-//        {
-//            string strPortName;
-//            int baudRate, dataBits;
-//            StopBits stopBits;
-//            Parity parity;
-//            Handshake handshake;
-
-//            Equipment.GetSerialPortConfig(comm,
-//                out strPortName, out baudRate, out dataBits, out stopBits, out parity, out handshake);
-
-//            return Connect(strPortName, baudRate, dataBits, stopBits, parity, handshake);
-//            // 내부 기본 설정: 115200, 8N1, No Handshake
-//            //return Connect(portName, 115200, 8, StopBits.One, Parity.None, Handshake.None);
-//        }
-
-//        public bool DustCollector_On()
-//        {
-//            return SendWrite("0006", "0002", 1); // Address: 운전명령, Data: 정방향
-//        }
-
-//        public bool DustCollector_Off()
-//        {
-//            return SendWrite("0006", "0001", 1); // Address: 운전명령, Data: 정지
-//        }
-
-
-//        /// <summary>
-//        /// 집진기 출력 주파수를 설정합니다 (단위: 0.01Hz → 내부는 100배 값).
-//        /// 예: 60.0Hz → "6000" 전송, 주소는 0005
-//        /// </summary>
-//        public bool SetFrequency(double frequencyHz)
-//        {
-//            int freqValue = (int)(frequencyHz * 100.0); // 60.0Hz → 6000
-//            string asciiData = freqValue.ToString("D4"); // "6000"
-
-//            return SendWrite("0005", asciiData, 1); // 주소는 반드시 0005
-//        }
-
-
-//        public bool ReadFrequency(out string frequencyResponse)
-//        {
-//            return SendRead("000A", 1, out frequencyResponse); // Address: 출력 주파수 번지
-//        }
-
-
-
-//        /// <summary>
-//        /// 현재 집진기 상태를 조회합니다.
-//        /// 반환값: 0001 = 정지, 0002 = 운전 중
-//        /// </summary>
-//        public bool GetCurrentStatus(out string status)
-//        {
-//            return SendRead("0007", 1, out status); // 예: 상태 주소 0007
-//        }
-
-//        public CollectorRunState GetRunState()
-//        {
-//            if (GetCurrentStatus(out string status))
-//            {
-//                switch (status.Trim())
-//                {
-//                    case "0001": return CollectorRunState.Stopped;
-//                    case "0002": return CollectorRunState.Running;
-//                }
-//            }
-
-//            return CollectorRunState.Unknown;
-//        }
-
-//        /// <summary>
-//        /// 집진기의 전원 상태와 출력 주파수를 함께 조회합니다.
-//        /// </summary>
-//        /// <param name="runState">CollectorRunState.Running / Stopped / Unknown</param>
-//        /// <param name="frequencyHz">출력 주파수 (단위: Hz)</param>
-//        /// <returns>조회 성공 여부</returns>
-//        public bool GetStatus(out CollectorRunState runState, out double frequencyHz)
-//        {
-//            runState = CollectorRunState.Unknown;
-//            frequencyHz = 0.0;
-
-//            string statusRaw;
-//            if (!SendRead("0007", 1, out statusRaw))
-//                return false;
-
-//            switch (statusRaw.Trim())
-//            {
-//                case "0001": runState = CollectorRunState.Stopped; break;
-//                case "0002": runState = CollectorRunState.Running; break;
-//                default: runState = CollectorRunState.Unknown; break;
-//            }
-
-//            string freqRaw;
-//            if (!SendRead("000A", 1, out freqRaw))
-//                return false;
-
-//            // 예: freqRaw = "0064" (== 100.0Hz)
-//            int freqValue = 0;
-//            if (int.TryParse(freqRaw, System.Globalization.NumberStyles.HexNumber, null, out freqValue))
-//                frequencyHz = freqValue / 10.0;
-//            else if (int.TryParse(freqRaw, out freqValue))
-//                frequencyHz = freqValue / 10.0;
-
-//            return true;
-//        }
-
-//        /// <summary>
-//        /// 집진기의 상태(운전 여부, 주파수, 전류, 경고/알람 상태)를 모두 조회합니다.
-//        /// </summary>
-//        public bool GetDetailedStatus(out CollectorRunState runState, out double frequencyHz, out double currentA,
-//                                      out CollectorAlarmState alarmState)
-//        {
-//            runState = CollectorRunState.Unknown;
-//            frequencyHz = 0.0;
-//            currentA = 0.0;
-//            alarmState = CollectorAlarmState.Unknown;
-
-//            string statusRaw, freqRaw, currentRaw, warnRaw;
-//            bool ok = true;
-
-//            // 운전 상태
-//            ok &= SendRead("0007", 1, out statusRaw);
-//            switch (statusRaw.Trim())
-//            {
-//                case "0001": runState = CollectorRunState.Stopped; break;
-//                case "0002": runState = CollectorRunState.Running; break;
-//                default: runState = CollectorRunState.Unknown; break;
-//            }
-
-//            // 출력 주파수
-//            ok &= SendRead("000A", 1, out freqRaw);
-//            if (int.TryParse(freqRaw, System.Globalization.NumberStyles.HexNumber, null, out int freqVal))
-//                frequencyHz = freqVal / 10.0;
-
-//            // 출력 전류
-//            ok &= SendRead("000B", 1, out currentRaw); // 예: 000B가 전류 번지
-//            if (int.TryParse(currentRaw, System.Globalization.NumberStyles.HexNumber, null, out int currentVal))
-//                currentA = currentVal / 10.0;
-
-//            // 경고/알람 상태
-//            ok &= SendRead("000C", 1, out warnRaw); // 예: 000C가 경고/알람 상태 번지
-//            switch (warnRaw.Trim())
-//            {
-//                case "0000": alarmState = CollectorAlarmState.None; break;
-//                case "0001": alarmState = CollectorAlarmState.Warning; break;
-//                case "0002": alarmState = CollectorAlarmState.Alarm; break;
-//                default: alarmState = CollectorAlarmState.Unknown; break;
-//            }
-
-//            return ok;
-//        }
-
-
-//    }
-//}
