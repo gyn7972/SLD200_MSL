@@ -464,7 +464,26 @@ namespace SLD200_MSL
             label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
             label_Config_WorkStage_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
 
-            
+            /////////////////
+            /// 집진기
+            if(m_bDustCollectorSetFreqOK_Upper)
+            {
+                label_Config_TabWorkStage_DustCollector0_Freq_Value.Text = string.Format("{0:0.0}", textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
+            }
+            else
+            {
+                label_Config_TabWorkStage_DustCollector0_Freq_Value.Text = "0.0";
+            }
+
+            if (m_bDustCollectorSetFreqOK_Lower)
+            {
+                label_Config_TabWorkStage_DustCollector1_Freq_Value.Text = string.Format("{0:0.0}", textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
+            }
+            else
+            {
+                label_Config_TabWorkStage_DustCollector1_Freq_Value.Text = "0.0";
+            }
+
             /////////////////////////////////////////////////////////////////////////////////////
             /// VarioScan
             /// 
@@ -3627,11 +3646,17 @@ namespace SLD200_MSL
             workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
         }
 
+        private bool m_bDustCollectorSetFreqOK_Upper = false;
+        private bool m_bDustCollectorSetFreqOK_Lower = false;
+
         private void button_Config_TabWorkStage_DustCollector0_Freq_Set_Click(object sender, EventArgs e)
         {
             //  집진기0 주파수 세팅
             double m_dFreq = Equipment.ToDouble(textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
-            workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Upper, m_dFreq);
+            
+            bool bRtn = workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Upper, m_dFreq);
+
+            m_bDustCollectorSetFreqOK_Upper = bRtn;
 
             ////  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
             //double m_dRet_Freq = GetClosestValue_DustCollector(m_dFreq);
@@ -3665,13 +3690,16 @@ namespace SLD200_MSL
         private void button_Config_TabWorkStage_DustCollector1_Freq_Set_Click(object sender, EventArgs e)
         {
             //  집진기1 주파수 세팅
+            bool bRtn = false;
 
             double dFreq = Equipment.ToDouble(textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
 
             //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
             //double dRet_Freq = GetClosestValue_DustCollector(dFreq);
             //dRet_Freq = workStage.DustCollector_SetFrequence(dRet_Freq);
-            workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, dFreq);
+            bRtn = workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, dFreq);
+
+            m_bDustCollectorSetFreqOK_Lower = bRtn;
 
         }
 
