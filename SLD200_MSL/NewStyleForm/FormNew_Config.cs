@@ -464,11 +464,10 @@ namespace SLD200_MSL
             label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
             label_Config_WorkStage_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
 
-
+            
             /////////////////////////////////////////////////////////////////////////////////////
             /// VarioScan
             /// 
-
             float? zOffset = bds.CurrentRtcZOffset;
             float? zDefocus = bds.CurrentRtcZDefocus;
             label_VarioScan_Z_Offset_Pos.Text = string.Format("{0:0.00000}", zOffset.HasValue ? zOffset.Value : 0.0f);
