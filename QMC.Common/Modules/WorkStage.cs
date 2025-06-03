@@ -14101,6 +14101,15 @@ namespace QMC.Common.Modules
             int irVolume = 0;
             double exposureTime = 0.0;
 
+            if(Equipment.Machine_LaserType_CO2)
+            {
+                m_bCO2_repairMode = true;
+            }
+            else
+            {
+                m_bCO2_repairMode = false;
+            }
+
             SocketAlign_Step currentStep = (SocketAlign_Step)m_nSocketAlign_MainStep;
             switch (m_nSocketAlign_MainStep)
             {
