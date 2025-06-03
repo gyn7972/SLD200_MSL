@@ -733,7 +733,7 @@ namespace SLD200_MSL
 
         private void button_TEST1_Click(object sender, EventArgs e)
         {
-            bool bOn = bds.DustCollector_Upper.DustCollector_On();
+            bool bOn = bds.DustCollector_Upper.Start();
 
             DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
             if (runState == CollectorRunState.Running)
@@ -747,7 +747,7 @@ namespace SLD200_MSL
 
         private void button_Test2_Click(object sender, EventArgs e)
         {
-            bds.DustCollector_Upper.DustCollector_Off();
+            bds.DustCollector_Upper.Stop();
 
             DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
             if (runState == CollectorRunState.Running)
@@ -763,10 +763,6 @@ namespace SLD200_MSL
             //string strFrequency = "";
             double dFrequency = 0.0;
             bds.DustCollector_Upper.GetFrequency(out dFrequency);
-            //dFrequency = string.IsNullOrEmpty(strFrequency) ? 0.0 : Equipment.ToDouble(strFrequency);
-
-            DustCollectorController.CollectorRunState runState;
-            bds.DustCollector_Upper.GetStatus(out runState, out dFrequency);
         }
     }
 }
