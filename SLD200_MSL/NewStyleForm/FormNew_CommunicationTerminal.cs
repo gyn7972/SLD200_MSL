@@ -20,6 +20,7 @@ using static QMC.Common.Modules.WorkStage;
 using static QMC.Common.Parts.DustCollectorController;
 using static System.Windows.Forms.AxHost;
 using static SpiralLab.Sirius.JPTTypeE;
+using System.Threading;
 
 namespace SLD200_MSL
 {
@@ -747,7 +748,7 @@ namespace SLD200_MSL
 
         private void button_Test2_Click(object sender, EventArgs e)
         {
-            bds.DustCollector_Upper.Stop();
+            bool bOn = bds.DustCollector_Upper.Stop();
 
             DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
             if (runState == CollectorRunState.Running)
@@ -763,6 +764,12 @@ namespace SLD200_MSL
             //string strFrequency = "";
             double dFrequency = 0.0;
             bds.DustCollector_Upper.GetFrequency(out dFrequency);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //Thread.Sleep(100);
+            bds.DustCollector_Upper.SetFrequency(10);
         }
     }
 }
