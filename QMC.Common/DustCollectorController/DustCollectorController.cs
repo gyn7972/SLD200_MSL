@@ -79,11 +79,11 @@ namespace QMC.Common.Parts
         public bool Start()
         {
             bool ok = true;
-            Thread.Sleep(100);
+            Thread.Sleep(10);
             ok &= SendWrite("0006", "0002");
-            Thread.Sleep(100);
+            Thread.Sleep(10);
             ok &= SendWrite("0007", "0001");
-            Thread.Sleep(100);
+            Thread.Sleep(10);
             ok &= SetFrequency(60);
             return ok;
         }

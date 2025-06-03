@@ -384,7 +384,7 @@ namespace QMC.Common.Modules
             Parts.Add(DustCollector_Upper);
 
             // Lower
-            DustCollector_Lower = new DustCollectorController("LowerDust", DustCollectorController.CollectorPosition.Lower, "02");
+            DustCollector_Lower = new DustCollectorController("LowerDust", DustCollectorController.CollectorPosition.Lower, "01");
             DustCollector_Lower.Create();
             DustCollector_Lower.Owner = this;
             Parts.Add(DustCollector_Lower);

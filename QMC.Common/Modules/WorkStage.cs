@@ -6545,10 +6545,10 @@ namespace QMC.Common.Modules
             switch(m_nDustCollector)
             {
                 case 0:
-                    bRtn = bds.DustCollector_Upper.Start();
+                    bRtn = bds.DustCollector_Lower.Start();
                     break;
                 case 1:
-                    bRtn = bds.DustCollector_Lower.Start();
+                    bRtn = bds.DustCollector_Upper.Start();
                     break;
                 default:
                     break;
@@ -6607,10 +6607,10 @@ namespace QMC.Common.Modules
             switch (m_nDustCollector)
             {
                 case 0:
-                    bRtn = bds.DustCollector_Upper.Stop();
+                    bRtn = bds.DustCollector_Lower.Stop();
                     break;
                 case 1:
-                    bRtn = bds.DustCollector_Lower.Stop();
+                    bRtn = bds.DustCollector_Upper.Stop();
                     break;
                 default:
                     break;
@@ -6662,22 +6662,21 @@ namespace QMC.Common.Modules
             //}
             //return m_bRet;
         }
-        public double DustCollector_SetFrequence(int m_nDustCollector, double dRet_Freq)
+        public bool DustCollector_SetFrequence(int m_nDustCollector, double dRet_Freq)
         {
             bool m_bRet = false;
-
             switch (m_nDustCollector)
             {
                 case 0:
-                    m_bRet = bds.DustCollector_Upper.SetFrequency(dRet_Freq);
+                    m_bRet = bds.DustCollector_Lower.SetFrequency(dRet_Freq);
                     break;
                 case 1:
-                    m_bRet = bds.DustCollector_Lower.SetFrequency(dRet_Freq);
+                    m_bRet = bds.DustCollector_Upper.SetFrequency(dRet_Freq);
                     break;
                 default:
                     break;
             }
-            return dRet_Freq;
+            return m_bRet;
 
             //this.DustCollectorComm_Send_SetFrequency((int)WorkStage.nDustCollector.DustCollector_Lower, dRet_Freq);
             //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
@@ -6691,7 +6690,7 @@ namespace QMC.Common.Modules
             //    this.m_strDustCollector_LowerPos_Comm_ReceivedData = "";
             //}
 
-            return dRet_Freq;
+            //return dRet_Freq;
         }
         public bool DustCollectorComm_Send_SetFrequency(int m_nDustCollector, double dFreq)
         {
@@ -6700,10 +6699,10 @@ namespace QMC.Common.Modules
             switch (m_nDustCollector)
             {
                 case 0:
-                    m_bRet = bds.DustCollector_Upper.SetFrequency(dFreq);
+                    m_bRet = bds.DustCollector_Lower.SetFrequency(dFreq);
                     break;
                 case 1:
-                    m_bRet = bds.DustCollector_Lower.SetFrequency(dFreq);
+                    m_bRet = bds.DustCollector_Upper.SetFrequency(dFreq);
                     break;
                 default:
                     break;
