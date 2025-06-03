@@ -65,19 +65,19 @@ namespace QMC.Common.Parts
         
 
 
-        public bool Start() => SendWrite("0006", "0002"); // 운전 시작
-        public bool Stop() => SendWrite("0006", "0001");  // 운전 정지
+        public bool Start() => SendWrite("03A1", "0002"); // 운전 시작
+        public bool Stop() => SendWrite("03A1", "0001");  // 운전 정지
 
         public bool SetFrequency(double freqHz)
         {
             int val = (int)(freqHz * 10.0);
-            return SendWrite("0005", val.ToString("D4")); // 주파수 설정
+            return SendWrite("03A2", val.ToString("D4")); // 주파수 설정
         }
 
         public bool GetFrequency(out double freqHz)
         {
             freqHz = 0.0;
-            if (!SendRead("000A", out string raw))
+            if (!SendRead("0300", out string raw))
                 return false;
 
             if (int.TryParse(ExtractData(raw), System.Globalization.NumberStyles.HexNumber, null, out int hex))
@@ -90,7 +90,7 @@ namespace QMC.Common.Parts
 
         public CollectorRunState GetRunState()
         {
-            if (!SendRead("0007", out string raw))
+            if (!SendRead("0303", out string raw))
                 return CollectorRunState.Unknown;
 
             string data = ExtractData(raw);
