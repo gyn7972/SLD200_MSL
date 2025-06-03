@@ -38089,7 +38089,7 @@ namespace QMC.Common.Modules
                 dOffsetY1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.Y - m_st4PointPosition_DwgPos[iter].ptFiducial_Center.Y;
 
                 //0.03 -> 0.07
-                if( Math.Abs(dOffsetX1) < 0.05 && Math.Abs(dOffsetY1) < 0.05)
+                if( Math.Abs(dOffsetX1) < 0.1 && Math.Abs(dOffsetY1) < 0.1)
                 {
                     dSumOffsetX += dOffsetX1;
                     dSumOffsetY += dOffsetY1;
@@ -38097,7 +38097,10 @@ namespace QMC.Common.Modules
                 }
             }
 
-            if(nSumCount != 0)
+            Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::dSumOffsetXY Offset - X: {dSumOffsetX:F6}, Y: {dSumOffsetY:F6}");
+            Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::nSumCount: {nSumCount:F6}");
+
+            if (nSumCount != 0)
             {
                 double dOffsetX = dSumOffsetX / nSumCount;
                 double dOffsetY = dSumOffsetY / nSumCount;
