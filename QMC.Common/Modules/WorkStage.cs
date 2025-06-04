@@ -10640,7 +10640,7 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
                         xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
                         null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                         ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
                         3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
                         m_nWorkStage_Move_Step,
@@ -10795,7 +10795,7 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
                         xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
                         null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                         ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
                         3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
                         m_nWorkStage_Move_Step,
@@ -10952,7 +10952,7 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
                         xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
                         null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                         ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
                         3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
                         m_nWorkStage_Move_Step,
@@ -11085,7 +11085,7 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
                         xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
                         null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                         ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
                         3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
                         m_nWorkStage_Move_Step,
@@ -12309,12 +12309,13 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
                         xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
                         null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                         ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
                         3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
                         m_nFlatnessMeasure_Step,
                         (int)FlatnessMeasure_Step.FlatnessMeasure_StageXY_MovetoFlatnessMeasurePos))                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
+                        TickCount_Start((int)TickType.TICK_FLATNESS_MEASURE);
                         m_strTemp = "Stage XY 축, Laser Height Check 위치로 이동 완료";
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_StableTime;
@@ -15200,7 +15201,7 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
                         xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
                         null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                         ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
                         3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
                         m_nSocketAlign_MainStep,
@@ -16546,14 +16547,14 @@ namespace QMC.Common.Modules
 
                     // 2025.06.01 // <- Check 구문 전부 이렇게 변경 필요.
                     if (CheckAxesMotionDoneWithRetry(
-                            stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,     /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
-                            stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,     /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
-                            null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                            60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
-                            ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
-                            3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
-                            m_nLaserDrilling_MainStep,
-                            (int)LaserDrilling_Step.StageXY_MoveCenterPos))                                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
+                        stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,     /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,     /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nLaserDrilling_MainStep,
+                        (int)LaserDrilling_Step.StageXY_MoveCenterPos))                                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
                         m_strTemp = "Stage XY 축, Stage Center 위치로 이동 완료 확인";
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
@@ -16968,7 +16969,7 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
                         xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
                         null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                         ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
                         3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
                         m_nLaserDrilling_MainStep,
@@ -18654,6 +18655,7 @@ namespace QMC.Common.Modules
                         m_nLaserDrilling_MainStep,
                         (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos))  /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
+                        TickCount_Start((int)TickType.TICK_MAIN);
                         m_strTemp = "Stage XY축, Laser Height Check 위치로 이동 완료.";
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
@@ -21956,7 +21958,7 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
                         xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
                         null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                         ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
                         3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
                         m_nLaserDrilling_MainStep,
