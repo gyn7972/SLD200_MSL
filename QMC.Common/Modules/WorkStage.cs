@@ -18089,7 +18089,6 @@ namespace QMC.Common.Modules
                         int m_nStartNumber = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber < 0 ? 0 : Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber;
                         int m_nDigits = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits < 0 ? 1 : Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits;
                         int m_nIncreaseStep = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep;
-
                         if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
                         {
                             m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
@@ -18120,7 +18119,7 @@ namespace QMC.Common.Modules
 
                             //  Serial Number 계산해서 만들고                            
                             m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", Equipment.m_nSerialNumberMarkingCount);
-                            Equipment.m_nSerialNumberMarkingCount += m_nIncreaseStep;
+                            //Equipment.m_nSerialNumberMarkingCount += m_nIncreaseStep;
 
                             //  Suffix 있으면 붙이고
                             if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData.Length > 0)
@@ -19975,9 +19974,20 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            // Hole은 가공 안하니깐.
-                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                            //선택 가공시 조건
+                            if (m_nSelectedSocket_Index >= 0)
+                            {
+                                // Hole은 가공 안하는데...
+                                // Group_Count 를 증가 시키면 Hole은 넘기고 Drilling 하지 않을까?
+                                m_nDrillingWork_Group_Count++;// = m_nSelectedSocket_Index;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                            }
+                            else
+                            {
+                                // Hole은 가공 안하니깐.
+                                m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                            }
                         }
                     }
                     else
@@ -21994,6 +22004,8 @@ namespace QMC.Common.Modules
 
                     m_strTemp = string.Format("전체 가공 완료");
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                    Equipment.m_nSerialNumberMarkingCount++;
 
                     //Cycle Time
                     DrillingManager.CycleTimer_DoneModuleCount++;
@@ -30356,7 +30368,7 @@ namespace QMC.Common.Modules
                     markingText.CapHeight = (float)m_nEntityHeight;
 
                     markingText.FontName = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].strFontName; // siriusType_fontName;
-                    markingText.FontText = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].strMarkingText;
+                    markingText.FontText = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].strMarkingText + m_strEntityData;
                     //width = GetTextWidthByCapHeight(m_strEntityData, trueType_fontName, (float)m_nEntityHeight);          //  Text 의 Center 로 보내는 게 아니니 계산할 필요 없고
 
                     doc.Action.ActEntityAdd(markingText);
