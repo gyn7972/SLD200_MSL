@@ -2994,11 +2994,11 @@ namespace QMC.Common.Modules
                     else
                     {
                         //집진기 Off 안하고 진행. 20250522 수정.
-                        if(true)
+                        //집기기 Off는 하고 확인만 하지 말자. 20250604 수정.
+                        //CO2: 제품 두꺼운거는 Unloader에서 못들고 감.
+                        if(false)
                         {
                             Log.Write("SLD-200", "Auto Run", "하부 집진기 Off 안함 1");
-                            //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
-                            //Thread.Sleep(200);
                         }
                         else
                         {

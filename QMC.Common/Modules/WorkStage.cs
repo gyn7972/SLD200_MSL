@@ -16349,7 +16349,6 @@ namespace QMC.Common.Modules
                         }
 
                         TickCount_Start((int)TickType.TICK_MAIN);
-
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_Frequency_Set;
                     }
                     else
@@ -16672,33 +16671,33 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.StageXY_MoveCenterPos_DoneCheck:                 //  XY 축, Stage Center 위치로 이동 완료 체크           
 
                     // 2025.06.01 // <- Check 구문 전부 이렇게 변경 필요.
-                    //if (CheckAxesMotionDoneWithRetry(
-                    //        stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,     /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
-                    //        stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,     /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
-                    //        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                    //        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
-                    //        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
-                    //        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
-                    //        (int)LaserDrilling_Step.StageXY_MoveCenterPos))                                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
-                    //{
-                    //    m_strTemp = "Stage XY 축, Stage Center 위치로 이동 완료 확인";
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageZ_MoveProcessingPos;
-                    //}
-
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
+                    if (CheckAxesMotionDoneWithRetry(
+                            stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,     /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                            stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,     /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                            null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                            60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                            ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                            3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                            (int)LaserDrilling_Step.StageXY_MoveCenterPos))                                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 완료 확인");
+                        m_strTemp = "Stage XY 축, Stage Center 위치로 이동 완료 확인";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageZ_MoveProcessingPos;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 실패. (Timeout)");
-                        return AlarmPost(AlarmKey.eStageMoveFail);
-                    }
+
+                    //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
+                    //    MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
+                    //{
+                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 완료 확인");
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageZ_MoveProcessingPos;
+                    //}
+                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    //{
+                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 실패. (Timeout)");
+                    //    return AlarmPost(AlarmKey.eStageMoveFail);
+                    //}
                     break;
 
 
@@ -18816,41 +18815,40 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck:                            //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
 
-                    //if (CheckAxesMotionDoneWithRetry(
-                    //    xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
-                    //    xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
-                    //    null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                    //    60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
-                    //    ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
-                    //    3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
-                    //    (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos))  /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
-                    //{
-                    //    m_strTemp = "Stage XY축, Laser Height Check 위치로 이동 완료.";
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
-                    //}
-
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos))  /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY축, Laser Height Check 위치로 이동 완료.");
-
-                        TickCount_Start((int)TickType.TICK_MAIN);
-
+                        m_strTemp = "Stage XY축, Laser Height Check 위치로 이동 완료.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY축, Laser Height Check 위치로 이동 실패. (Timeout)");
 
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
+                    //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X) &&
+                    //    MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
+                    //{
+                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY축, Laser Height Check 위치로 이동 완료.");
 
-                        return AlarmPost(AlarmKey.eStageMoveFail);
+                    //    TickCount_Start((int)TickType.TICK_MAIN);
 
-                    }
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
+                    //}
+                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    //{
+                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY축, Laser Height Check 위치로 이동 실패. (Timeout)");
+
+                    //    //  알람 정지 (LED Bar - Red Blink)
+                    //    Equipment.MachineStop_byAlarm = true;
+
+                    //    return AlarmPost(AlarmKey.eStageMoveFail);
+                    //}
                     break;
 
 
@@ -20370,35 +20368,36 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck:                 //  가공 할 Region Center 위치로 이동 완료 확인
 
                     // 2025.06.01 // <- Check 구문 전부 이렇게 변경 필요.
-                    //if (CheckAxesMotionDoneWithRetry(
-                    //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X],
-                    //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y],
-                    //        null,               // Z 없음
-                    //        60000,
-                    //        ref m_nStage_RetryCount,
-                    //        3,
-                    //        (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos))
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 완료 확인");
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
-                    //}
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (CheckAxesMotionDoneWithRetry(
+                            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X],
+                            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y],
+                            null,               // Z 없음
+                            60000,
+                            ref m_nStage_RetryCount,
+                            3,
+                            (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 완료 확인");
-
-                        //Thread.Sleep(100);
-                        //todo : 김영남 속도 개선중 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 2) // 도착 Error 발생.
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, " +
-                            "가공할 Region 의 Center 위치로 Stage 이동 실패. (Timeout)");
-                        return AlarmPost(AlarmKey.eStageMoveFail);
-                    }
+
+                    //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                    //    MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    //{
+                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 완료 확인");
+
+                    //    //Thread.Sleep(100);
+                    //    //todo : 김영남 속도 개선중 
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+                    //}
+                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 2) // 도착 Error 발생.
+                    //{
+                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, " +
+                    //        "가공할 Region 의 Center 위치로 Stage 이동 실패. (Timeout)");
+                    //    return AlarmPost(AlarmKey.eStageMoveFail);
+                    //}
                     break;
 
                 //  각 Hole 별로 Drilling 완성
@@ -22194,30 +22193,6 @@ namespace QMC.Common.Modules
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Complete;
 
-                    //if (!Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
-                    //{
-                    //    Log.Write("SLD-200", "Auto Run", "집진기 Local Mode, Off 완료");
-
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Complete;
-                    //}
-                    //else if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use &&
-                    //        !workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) &&
-                    //        !workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
-                    //{
-                    //    Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Off 완료");
-
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Complete;
-                    //}
-                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 2.0)
-                    //{
-                    //    Log.Write("SLD-200", "Auto Run", "집진기 Off 실패 (Timeout)");
-
-                    //    timer_LaserDrillingWork.Enabled = false;
-
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-                    //    MessageBox.Show("Dust Collector Off 실패", "Error");
-                    //}
                     break;
 
                 case (int)LaserDrilling_Step.Complete:
@@ -22429,9 +22404,7 @@ namespace QMC.Common.Modules
                 Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Stage Unloading 위치로 이동 시작 후 집진기 Off");
 
                 //  Unloading 위치로 이동하면서 집진기 Off
-
                 //DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-
                 if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
                 {
                     Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Stage Unloading 위치로 이동 시, 하부 집진기 사용 안함.");
@@ -30587,6 +30560,8 @@ namespace QMC.Common.Modules
                     markingText.Width = (float)m_nEntityWidth;                                  //  Text 는 Width 값이 있어도 Cap-Height 값에 의해 Width 가 가변된다.
                     markingText.CapHeight = (float)m_nEntityHeight;
 
+                    markingText.FontName = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].strFontName; // siriusType_fontName;
+                    markingText.FontText = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].strMarkingText;
                     //width = GetTextWidthByCapHeight(m_strEntityData, trueType_fontName, (float)m_nEntityHeight);          //  Text 의 Center 로 보내는 게 아니니 계산할 필요 없고
 
                     doc.Action.ActEntityAdd(markingText);

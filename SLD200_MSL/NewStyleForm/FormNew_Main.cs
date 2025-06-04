@@ -1343,10 +1343,12 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus)
             {
                 SetColor(button_Main_Start, Color.Lime, Color.Black);
+                
             }
             else
             {
                 SetColor(button_Main_Start, System.Drawing.SystemColors.Control, Color.Black);
+                
             }
 
             if (workStage.m_bForceEjectRequest)
@@ -1362,16 +1364,23 @@ namespace SLD200_MSL
             if (Equipment.ManualRunStatus)
             {
                 SetColor(button_Main_ManualStart, Color.Lime, Color.Black);
-                SetEnable(button_Main_Reset, false);
             }
             else
             {
                 SetColor(button_Main_ManualStart, System.Drawing.SystemColors.Control, Color.Black);
+            }
+
+            if (Equipment.AutoRunStatus || Equipment.ManualRunStatus)
+            {
+                SetEnable(button_Main_Reset, false);
+            }
+            else
+            {
                 SetEnable(button_Main_Reset, true);
             }
 
-            // 장비 상태 UI에 반영
-            UpdateDeviceStatusImages();
+                // 장비 상태 UI에 반영
+                UpdateDeviceStatusImages();
         }
 
         
@@ -3381,6 +3390,10 @@ namespace SLD200_MSL
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                 workStage.m_nFindAlignMark_Step = (int)WorkStage.FindAlignMark_Step.None;
                 workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
+
+                workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.X, 2000);
+                workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Y, 2000);
+                workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Z, 2000);
 
                 workStage.laser.Rtc.CtlAbort();             //  실행중인 리스트 명령(busy 상태를)을 강제 종료
                 Thread.Sleep(2000);
