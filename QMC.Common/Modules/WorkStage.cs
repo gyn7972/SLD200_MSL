@@ -3655,98 +3655,6 @@ namespace QMC.Common.Modules
             /// Thruhole Layer 가공 - 시작
             ///
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            ///// <summary>
-            ///// 쓰루홀 작업 시작
-            ///// </summary>
-            //ThruHole_DrillingWork_Start,                                    //  쓰루홀 가공 작업 시작
-
-            //ThruHole_StageZ_MoveStartPos,                                   //  쓰루홀 가공 작업 시작 위치로 이동
-            //ThruHole_StageZ_MoveStartPos_DoneCheck,                         //  쓰루홀 가공 작업 시작 위치로 이동 완료 확인
-
-            ///// <summary>
-            ///// 쓰루홀 Layer 가공 파라미터 변경 시작
-            ///// </summary>
-            ///// 
-            //ThruHole_LayerParameter_Change_Start,                           //  Thruhole 가공 Layer 파라미터로 변경 시작
-            //ThruHole_LayerParameter_forCO2_Set,                             //  Thruhole 가공 Layer 파라미터, CO2 용 세팅값 설정
-            //ThruHole_LayerParameter_forCO2_Check,                           //  Thruhole 가공 Layer 파라미터, CO2 용 세팅값 확인
-            //ThruHole_LayerParameter_forUV_Set,                              //  Thruhole 가공 Layer 파라미터, UV 용 세팅값 설정
-            //ThruHole_LayerParameter_LaserPower_Change,                      //  Thruhole 가공 Laser Power 변경
-            //ThruHole_LayerParameter_LaserPower_Change_DoneCheck,            //  Thruhole 가공 Laser Power 변경 완료 확인
-            //ThruHole_LayerParameter_forUV_Check,                            //  Thruhole 가공 Layer 파라미터, UV 용 세팅값 확인
-            //ThruHole_LayerParameter_Change_Complete,                        //  Thruhole 가공 Layer 파라미터로 변경 완료
-            ///// 
-            ///// <summary>
-            ///// 쓰루홀 Layer 가공 파라미터 변경 완료
-            ///// </summary>
-            ///// 
-
-            //MapDataChange_ScannerMap3,                                      //  Scanner 위치 Map Data 로 변경
-            //MapDataFlagCheck_ScannerMap3,                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
-
-            ////--    MotionType : ScannerOnly
-            //ThruHole_ScannerOnly_RepeatStart,                               //  가공 반복 시작
-
-            ////  가공 할 Socket 이 남아있는지 체크
-            //ThruHole_SocketRemainedCheck,                                   //  가공 할 Socket 이 남아있는지 체크
-
-            ///// <summary>
-            ///// 
-            ///// Thruhole 얼라인 시작  - Thruhole 이 1개의 Group 으로 되어 있을 경우에만 수행하는 얼라인 
-            ///// 
-            ///// Thruhole 의 Group 개수가 Hole Socket 개수보다 적을 경우에만 얼라인을 수행한다.
-            ///// 
-            ///// Hole Socket 개수만큼 있을 경우에는 Hole 에서 Socket Align 을 수행하므로, 여기는 하지 않는다.
-            ///// 
-            ///// </summary>
-            ///// 
-            //Thruhole_AlignProcess_Start,                                                    //  Thruhole Align 프로세스 시작
-
-            //MapDataChange_FineCamMap1,                                                      //  Fine Camera 위치 Map Data 로 변경
-            //MapDataFlagCheck_FineCamMap1,                                                   //  Fine Camera 위치 Map Data 로 변경되었는지 확인
-
-            ///// <summary>
-            ///// Thruhole 높이 측정 시작
-            //Thruhole_HeightCheckProcess_Start,                                              //  Thruhole 높이 측정 프로세스 시작
-            //Thruhole_StageZ_SocketCenter_MovetoLaserHeightSensorPos,                        //  가공 할 Thruhole Socket Center 위치를 Laser Height Sensor 위치로 이동
-            //Thruhole_StageZ_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck,              //  가공 할 Thruhole Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
-            //Thruhole_StageXY_SocketCenter_MovetoLaserHeightSensorPos,                       //  가공 할 Thruhole Socket Center 위치를 Laser Height Sensor 위치로 이동
-            //Thruhole_StageXY_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck,             //  가공 할 Thruhole Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
-            //Thruhole_MovetoLaserHeightSensorPos_StableTime,                                 //  가공 할 Thruhole Socket Center 위치를 Laser Height Sensor 위치로 이동 후 안정화 시간 대기
-            //Thruhole_HeightValue_Get,                                                       //  Thruhole 높이 측정   
-            //Thruhole_Height_ZOffset_Move,                                                   //  Thruhole 가공 높이 보정 이동 (소켓 얼라인을 하지 않을 경우, 바로 가공높이로 보낸다)
-            //Thruhole_Height_ZOffset_Move_DoneCheck,                                         //  Thruhole 가공 높이 보정 이동 완료 확인
-            //Thruhole_HeightCheckProcess_Complete,                                           //  Thruhole 높이 측정 프로세스 종료
-            ///// Thruhole 높이 측정 완료
-            ///// </summary>
-
-            //Thruhole_AlignHeight_ZOffset_Move,                                              //  가공 모듈의 실리콘 층 두께를 반영하여 높이 보정 이동 (실리콘층 아래에 Fiducial 마크가 있음)
-            //Thruhole_AlignHeight_ZOffset_Move_DoneCheck,                                    //  가공 모듈의 실리콘 층 두께를 반영하여 높이 보정 이동 완료 확인
-
-            ///// <summary>
-            ///// 2점 PreAlign Start
-            //Thruhole_PreAlign_Start,                                                        //  가공 할 Thruhole Socket Align 시작
-            //Thruhole_PreAlign_Retry,                                                        //  가공 할 Thruhole Socket Align 재시도
-            //Thruhole_PreAlign_CompleteCheck,                                                //  가공 할 Thruhole Socket Align 완료 확인
-            //Thruhole_PreAlign_Correction,
-            //Thruhole_PreAlign_Correction_Complete,
-            ///// 2점 PreAlign end
-            ///// </summary>
-
-            //Thruhole_SocketAlign_Start,                                                     //  가공 할 Socket Align 시작
-            //Thruhole_SocketAlign_CompleteCheck,                                             //  가공 할 Socket Align 완료 확인
-
-            //Thruhole_Data_RotAndOffset_Move,                                                //  가공 데이터 회전 및 Offset 이동
-            //Thruhole_Height_ZOffset_Move2,                                                  //  Thruhole 가공 높이로 보정 이동
-            //Thruhole_Height_ZOffset_Move2_DoneCheck,                                        //  Thruhole 가공 높이로 보정 이동 완료 확인
-            //Thruhole_SocketAlignProcess_Complete,                                           //  Socket Align 프로세스 종료
-            //Thruhole_SocketData_Reload,                                                     //  가공 데이터를 회전했으면 데이터를 다시 불러온다.
-            ///// 
-            ///// <summary>
-            ///// Thruhole 얼라인 완료
-            ///// </summary>
-            ///// 
             ThruHole_LayerParameter_ZOffset_Move,                           //  Thruhole 가공 Layer 파라미터, Z Offset 이동
             ThruHole_LayerParameter_ZOffset_Move_DoneCheck,                 //  Thruhole 가공 Layer 파라미터, Z Offset 이동 완료 확인
             ThruHole_ScannerOnly_ObjectData_RemainedCheck,                  //  가공 할 Object 가 남아있는지 체크
@@ -3967,7 +3875,6 @@ namespace QMC.Common.Modules
 
             Complete                                    //  완료
         }
-
 
         public int m_nScanner_Calibration_Step { set; get; }         //  Scanner Center 와 Camera Center 간 오차 검증 Step
         public bool m_bScannerCalibration_Complete { set; get; }
@@ -10700,16 +10607,14 @@ namespace QMC.Common.Modules
                 case (int)WorkStage_Move_Step.ToLoadingPos_StageXY_Move_LoadingPos:                            //  Stage XY 축, Module Loading 위치로 이동
 
                     Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Module Loading 위치로 이동 시작");
-
                     workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Module_Loading");
-
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     //  맵 데이터 변경 (기준위치 : Scanner)
                     //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
                     //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
                     MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                    ///
                     //  Target Position 변경 : Module Loading 위치
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X;
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y;
@@ -10731,24 +10636,19 @@ namespace QMC.Common.Modules
 
                 case (int)WorkStage_Move_Step.ToLoadingPos_StageXY_Move_LoadingPos_DoneCheck:                       //  Stage XY 축, Module Loading 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nWorkStage_Move_Step,
+                        (int)WorkStage_Move_Step.ToLoadingPos_StageXY_Move_LoadingPos))                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Module Loading 위치로 이동 완료");
-
+                        m_strTemp = "Stage XY 축, Module Loading 위치로 이동 완료";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.Complete;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_STAGE_MOVE) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Module Loading 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-                        m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
-
-                        MessageBox.Show("Stage XY 축, Module Loading 위치로 이동 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
                 /// <summary>
@@ -10891,22 +10791,19 @@ namespace QMC.Common.Modules
 
                 case (int)WorkStage_Move_Step.ToUnloadingPos_StageXY_Move_UnloadingPos_DoneCheck:                       //  Stage XY 축, Module Unloading 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nWorkStage_Move_Step,
+                        (int)WorkStage_Move_Step.ToUnloadingPos_StageXY_Move_UnloadingPos))                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Module Unloading 위치로 이동 완료");
-
+                        m_strTemp = "Stage XY 축, Module Unloading 위치로 이동 완료";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.Complete;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_STAGE_MOVE) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Module Unloading 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-                        m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
-
-                        MessageBox.Show("Stage XY 축, Module Unloading 위치로 이동 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
                 /// <summary>
@@ -11051,29 +10948,24 @@ namespace QMC.Common.Modules
 
                 case (int)WorkStage_Move_Step.ToScannerCenterPos_StageXY_Move_StageScannerCenterPos_DoneCheck:                       //  Stage XY 축, Scanner Center 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nWorkStage_Move_Step,
+                        (int)WorkStage_Move_Step.ToScannerCenterPos_StageXY_Move_StageScannerCenterPos))                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Scanner Center 위치로 이동 완료");
-
+                        m_strTemp = "Stage XY 축, Scanner Center 위치로 이동 완료";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.Complete;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_STAGE_MOVE) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Scanner Center 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-                        m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
-
-                        MessageBox.Show("Stage XY 축, Scanner Center 위치로 이동 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
                 /// <summary>
                 /// Stage and Scanner Center Pos Move - 완료
                 /// </summary>
-
-
 
                 /// <summary>
                 /// Stage and Camera Center Pos Move - 시작
@@ -11189,22 +11081,19 @@ namespace QMC.Common.Modules
 
                 case (int)WorkStage_Move_Step.ToCameraCenterPos_StageXY_Move_StageCameraCenterPos_DoneCheck:                       //  Stage XY 축, Camera Center 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nWorkStage_Move_Step,
+                        (int)WorkStage_Move_Step.ToCameraCenterPos_StageXY_Move_StageCameraCenterPos))                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Fine Camera Center 위치로 이동 완료");
-
+                        m_strTemp = "Stage XY 축,  Fine Camera Center 위치로 이동 완료";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.Complete;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_STAGE_MOVE) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Fine Camera Center 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-                        m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.None;
-
-                        MessageBox.Show("Stage XY 축, Fine Camera Center 위치로 이동 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
                 /// <summary>
@@ -12404,11 +12293,6 @@ namespace QMC.Common.Modules
                     lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
                     lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
-                    //MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X],
-                    //                      lfVelocity, lfAccDec, lfAccDec);
-                    //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y],
-                    //                      lfVelocity, lfAccDec, lfAccDec);
-
                     xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
                     xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
                     MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
@@ -12421,29 +12305,21 @@ namespace QMC.Common.Modules
 
                 case (int)FlatnessMeasure_Step.FlatnessMeasure_StageXY_MovetoFlatnessMeasurePos_DoneCheck:                            //  Stage XY, Laser Height Sensor 를 측정 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nFlatnessMeasure_Step,
+                        (int)FlatnessMeasure_Step.FlatnessMeasure_StageXY_MovetoFlatnessMeasurePos))                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", "Stage XY축, Laser Height Check 위치로 이동 완료.");
-
-                        TickCount_Start((int)TickType.TICK_FLATNESS_MEASURE);
-
+                        m_strTemp = "Stage XY 축, Laser Height Check 위치로 이동 완료";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_StableTime;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_FLATNESS_MEASURE) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", "Stage XY축, Laser Height Check 위치로 이동 실패. (Timeout)");
 
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_LaserDrillingWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.None;
-
-                        MessageBox.Show("Stage XY 축, Laser Height Check 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
                     break;
 
 
@@ -15320,21 +15196,19 @@ namespace QMC.Common.Modules
 
                 case (int)SocketAlign_Step.SocketAlignXY_MoveReadyPosDoneCheck:                                      //  Stage XY 축, 대기위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_SafetyPos].Stage_X) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_SafetyPos].Stage_Y))
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nSocketAlign_MainStep,
+                        (int)SocketAlign_Step.SocketAlignXY_MoveReadyPos))                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "XY 축, 대기위치로 이동 완료");
-
+                        strTemp = string.Format("XY 축, SocketAlign 대기위치로 이동 완료 [AlignMode: {0}]", alignMode);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RotAndOffsetMove;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) > 60000)
-                    {
-                        strTemp = string.Format("XY 축, 대기위치로 이동 실패. (Timeout) [AlignMode: {0}]", alignMode);
-                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
-
-                        return AlarmPost(AlarmKey.SocketAlignXYMoveFail);
                     }
                     break;
 
@@ -15630,7 +15504,7 @@ namespace QMC.Common.Modules
                         !MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, currentPosition.X))
                         {
                             tick++;
-                            Thread.Sleep(5);
+                            Thread.Sleep(10);
                             if (tick > 5000)
                                 break;
                         }
@@ -15638,7 +15512,7 @@ namespace QMC.Common.Modules
                         !MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, currentPosition.Y))
                         {
                             tick++;
-                            Thread.Sleep(5);
+                            Thread.Sleep(10);
                             if (tick > 5000)
                                 break;
                         }
@@ -16678,26 +16552,13 @@ namespace QMC.Common.Modules
                             60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                             ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
                             3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                            m_nLaserDrilling_MainStep,
                             (int)LaserDrilling_Step.StageXY_MoveCenterPos))                                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
                         m_strTemp = "Stage XY 축, Stage Center 위치로 이동 완료 확인";
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageZ_MoveProcessingPos;
                     }
-
-                    //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
-                    //    MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 완료 확인");
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageZ_MoveProcessingPos;
-                    //}
-                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 실패. (Timeout)");
-                    //    return AlarmPost(AlarmKey.eStageMoveFail);
-                    //}
                     break;
 
 
@@ -17103,29 +16964,19 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck:                    //  다음 가공 영역 Group Center 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nLaserDrilling_MainStep,
+                        (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos))              /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인");
-
-                        TickCount_Start((int)TickType.TICK_MAIN);
-
+                        m_strTemp = "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 5)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        return AlarmPost(AlarmKey.eStageMoveFail);
-
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-                        MessageBox.Show("Stage XY 축, 가공할 Object 의 Center 위치로 Stage 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -17134,8 +16985,7 @@ namespace QMC.Common.Modules
 
                     if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
                     {
-                        Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
-
+                        //Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ListOpen;
                     }
                     break;
@@ -17423,30 +17273,20 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck:                    //  다음 가공 영역 Group Center 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nLaserDrilling_MainStep,
+                        (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos))               /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인");
-
                         TickCount_Start((int)TickType.TICK_MAIN);
-
+                        m_strTemp = "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        return AlarmPost(AlarmKey.eStageMoveFail);
-
-                        //timer_LaserDrillingWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-                        MessageBox.Show("Stage XY 축, 가공할 Object 의 Center 위치로 Stage 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -17455,7 +17295,7 @@ namespace QMC.Common.Modules
 
                     if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
                     {
-                        Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
+                        //Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ListOpen;
                     }
@@ -17774,31 +17614,21 @@ namespace QMC.Common.Modules
 
 
                 case (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos_DoneCheck:                    //  다음 가공 영역 Group Center 위치로 이동 완료 확인
-
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nLaserDrilling_MainStep,
+                        (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos))                           /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인");
-
                         TickCount_Start((int)TickType.TICK_MAIN);
-
+                        m_strTemp = "Marking 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos_StableTime;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_LaserDrillingWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-                        MessageBox.Show("Stage XY 축, 가공할 Object 의 Center 위치로 Stage 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -17807,10 +17637,9 @@ namespace QMC.Common.Modules
 
                     if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
                     {
-                        Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
+                        //Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
 
                         //  Custom Marker 창으로 가공하려면 여기에서 분기해야 한다.
-
                         if (Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use)
                         {
                             //  도면에 올라가 있는 Entity 위치에 Barcode, QR code 등을 가공할 경우
@@ -18822,33 +18651,13 @@ namespace QMC.Common.Modules
                         60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                         ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
                         3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nLaserDrilling_MainStep,
                         (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos))  /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
                         m_strTemp = "Stage XY축, Laser Height Check 위치로 이동 완료.";
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
                     }
-
-                    //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X) &&
-                    //    MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY축, Laser Height Check 위치로 이동 완료.");
-
-                    //    TickCount_Start((int)TickType.TICK_MAIN);
-
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
-                    //}
-                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY축, Laser Height Check 위치로 이동 실패. (Timeout)");
-
-                    //    //  알람 정지 (LED Bar - Red Blink)
-                    //    Equipment.MachineStop_byAlarm = true;
-
-                    //    return AlarmPost(AlarmKey.eStageMoveFail);
-                    //}
                     break;
 
 
@@ -20369,35 +20178,18 @@ namespace QMC.Common.Modules
 
                     // 2025.06.01 // <- Check 구문 전부 이렇게 변경 필요.
                     if (CheckAxesMotionDoneWithRetry(
-                            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X],
-                            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y],
+                            xyInterpolatedCoordinate.X,
+                            xyInterpolatedCoordinate.Y,
                             null,               // Z 없음
                             60000,
                             ref m_nStage_RetryCount,
                             3,
+                            m_nLaserDrilling_MainStep,
                             (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 완료 확인");
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                     }
-
-                    //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                    //    MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 완료 확인");
-
-                    //    //Thread.Sleep(100);
-                    //    //todo : 김영남 속도 개선중 
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
-                    //}
-                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 2) // 도착 Error 발생.
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, " +
-                    //        "가공할 Region 의 Center 위치로 Stage 이동 실패. (Timeout)");
-                    //    return AlarmPost(AlarmKey.eStageMoveFail);
-                    //}
                     break;
 
                 //  각 Hole 별로 Drilling 완성
@@ -22150,8 +21942,6 @@ namespace QMC.Common.Modules
                     //}
                     break;
 
-                
-
                 case (int)LaserDrilling_Step.StageXY_MoveUnloadingPos:                              //  XY 축 Unloading 위치로 이동
 
                     LaserDrilling_StepStageXY_MoveUnloadingPos(out lfVelocity, out lfAccDec);
@@ -22162,15 +21952,18 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck:                 //  XY 축 Unloading 위치로 이동 완료 체크
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y))// &&
-
-                        //  Unloader 가 Module 을 Unloading 할 때 집진기의 Off 상태를 체크하도록 변경한다.
-                        //((!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && !workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)) ||
-                        //(TickCount_Elapsed((int)TickType.TICK_MAIN) > DustCollector_TurnOn_AfterStableTime)))
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        6000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        m_nLaserDrilling_MainStep,
+                        (int)LaserDrilling_Step.StageXY_MoveUnloadingPos))                                      /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
                     {
-                        Log.Write("SLD-200", "Auto Run", "Stage Unloading 위치로 이동 완료");
-
+                        m_strTemp = "Stage XY축, Unloading 위치로 이동 완료";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_Off;
                     }
                     break;
@@ -41277,6 +41070,7 @@ namespace QMC.Common.Modules
             int timeoutMs,
             ref int retryCount,
             int maxRetry,
+            int SeqStep,
             int jumpBackStep)
         {
             bool xOk = !targetX.HasValue ||
@@ -41312,7 +41106,7 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
                             $"축 위치 이동 실패 [축: {failedAxisString}]. 재시도 {retryCount}/{maxRetry}");
 
-                    m_nLaserDrilling_MainStep = jumpBackStep;
+                    SeqStep = jumpBackStep;
                     TickCount_Start((int)TickType.TICK_MAIN);
                 }
                 else
