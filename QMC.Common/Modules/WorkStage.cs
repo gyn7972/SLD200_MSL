@@ -940,6 +940,9 @@ namespace QMC.Common.Modules
             public double dObjectWidth;                 //  Socket Group 의 Width (소켓 위치별 텍스트의 Width, 단어의 Width)
             public double dObjectHeight;                //  Socket Group 의 Height (소켓 위치별 텍스트의 Height, 단어의 Height)
 
+            public string strMarkingText;
+            public string strFontName;
+
             //  Text (Sirius-Text, TruType-Text) 데이터
             public stMarking_DetailedTextData[] stTextData;     //  Text 데이터 저장 배열
             public int nTextNum;                                //  Text 데이터 개수
@@ -16668,29 +16671,33 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.StageXY_MoveCenterPos_DoneCheck:                 //  XY 축, Stage Center 위치로 이동 완료 체크           
 
+                    // 2025.06.01 // <- Check 구문 전부 이렇게 변경 필요.
+                    //if (CheckAxesMotionDoneWithRetry(
+                    //        stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,     /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                    //        stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,     /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                    //        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                    //        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                    //        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                    //        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                    //        (int)LaserDrilling_Step.StageXY_MoveCenterPos))                                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
+                    //{
+                    //    m_strTemp = "Stage XY 축, Stage Center 위치로 이동 완료 확인";
+                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageZ_MoveProcessingPos;
+                    //}
+
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
                         MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
                         MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
                         MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 완료 확인");
-
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Load;
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageZ_MoveProcessingPos;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_LaserDrillingWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-                        return AlarmPost(AlarmKey.eBeamShutterOpenFail);
-                        MessageBox.Show("Stage XY 축, Stage Center 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return AlarmPost(AlarmKey.eStageMoveFail);
                     }
                     break;
 
@@ -18090,12 +18097,10 @@ namespace QMC.Common.Modules
                                     //  Element 단위 (TrueType Font 의 Text 데이터는 모두 PolyLine 으로만 구성)
                                     for (m_nDrillingWork_Element_Count = 0; m_nDrillingWork_Element_Count < m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData[m_nDrillingWork_Text_Count].nTextElementNum; m_nDrillingWork_Element_Count++)
                                     {
-                                        //  무조건 PolyLine 이니 Switch 조건 무시 --> 나중에 혹시 다른 Object Type 이 추가되면...   
-
+                                        //  무조건 PolyLine 이니 Switch 조건 무시 --> 나중에 혹시 다른 Object Type 이 추가되면...  
                                         //switch (m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stHatchData[m_nDrillingWork_Text_Count].nObjectType)
                                         {
                                             //case (int)ObjectType.OBJECT_POLYLINE:
-
                                             //  첫 번째 Edge Point 로 Jump 이동
                                             entity_Position.X = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData[m_nDrillingWork_Text_Count].stTextElement[0].elPolyline[0].X -
                                                                 m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.X;
@@ -18304,7 +18309,6 @@ namespace QMC.Common.Modules
 
 
                         TickCount_Start((int)TickType.TICK_MAIN);
-
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_LaserBusyCheck;            //  CustomEntity_Marking 함수에서 Marking Start 되므로 완료 체크하러 이동
 
                     }
@@ -18812,6 +18816,20 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck:                            //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
 
+                    //if (CheckAxesMotionDoneWithRetry(
+                    //    xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                    //    xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                    //    null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                    //    60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                    //    ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                    //    3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                    //    (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos))  /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
+                    //{
+                    //    m_strTemp = "Stage XY축, Laser Height Check 위치로 이동 완료.";
+                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
+                    //}
+
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
                         MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X) &&
                         MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
@@ -19143,9 +19161,6 @@ namespace QMC.Common.Modules
 
                                     m_bFindLowerAlignMark_OK = false;
                                     m_bPreAlignCompleted = false;
-
-
-
 
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                                     return AlarmPost(AlarmKey.DataNotValidation);
@@ -20333,8 +20348,6 @@ namespace QMC.Common.Modules
                 ///     
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
                 ////////////////////////////////////////////////////////////////////////////////////////
                 ///                                                                                  ///
                 ///     DividedRegion Drilling Loop (하나의 Group 을 영역 분할해서, ScannerOnly)     ///
@@ -20345,7 +20358,6 @@ namespace QMC.Common.Modules
                 ///                                                                                  ///
                 ////////////////////////////////////////////////////////////////////////////////////////
                 /// 
-
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos:                 //  가공 할 Region Center 위치로 이동
 
                     LaserDrilling_StepDividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos(out lfVelocity, out lfAccDec);
@@ -20370,7 +20382,6 @@ namespace QMC.Common.Modules
                     //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 완료 확인");
                     //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                     //}
-
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
                         MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
                         MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
@@ -26471,11 +26482,6 @@ namespace QMC.Common.Modules
             lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
             lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
-            //MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,
-            //                      lfVelocity, lfAccDec, lfAccDec);
-            //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,
-            //                      lfVelocity, lfAccDec, lfAccDec);
-
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  맵 데이터 변경 (기준위치 : Scanner)
             //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
@@ -30598,13 +30604,14 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Sirius Text 데이터 생성");
 
                     markingSiriusText = new SpiralLab.Sirius.SiriusText(m_strEntityData);
-                    markingSiriusText.FontName = siriusType_fontName;
+                    markingSiriusText.IsMarkerable = true;
+                    markingSiriusText.FontName = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].strFontName; // siriusType_fontName;
                     markingSiriusText.Width = (float)m_nEntityWidth;                            //  Sirius-Text 는 Width 값이 있어도 Cap-Height 값에 의해 Width 가 가변된다.
                     markingSiriusText.CapHeight = (float)m_nEntityHeight;
+                    markingSiriusText.FontText = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].strMarkingText;
                     //width = GetTextWidthByCapHeight(m_strEntityData, siriusType_fontName, (float)m_nEntityHeight);            //  Text 의 Center 로 보내는 게 아니니 계산할 필요 없고
 
                     doc.Action.ActEntityAdd(markingSiriusText);
-
                     markingSiriusText.Rotate((float)(90.0 + m_dRotateAngle));
 
                     //  Text 의 Location 좌표는 무조건 Object Center 보다 왼쪽 아래 (Center 의 X, Y 위치값이 Location 의 X, Y 위치값보다 무조건 큼)
@@ -30680,15 +30687,12 @@ namespace QMC.Common.Modules
                     break;
             }
 
-
             string m_strTemp = "";
             bool m_bScannerLib_Success = true;
-
             if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].ProcessPriority_P2P) &&                   //  P2P Mode
                                             (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance > 0.0))
             {
                 int m_nSDC_Count = 0;
-
                 do
                 {
                     //  Spot Distance Control
@@ -30846,14 +30850,11 @@ namespace QMC.Common.Modules
                     break;
             }
 
-
             if (m_bScannerLib_Success)
             {
                 m_bScannerLib_Success &= rtc.ListEnd();
                 m_bScannerLib_Success &= rtc.ListExecute(false);
             }
-
-
 
             // 주석.
             {
@@ -35594,6 +35595,9 @@ namespace QMC.Common.Modules
                                     var text = entity as SpiralLab.Sirius.Text;                         //  외곽선은 Polyline, Hatch 는 Line 으로 구성.
 
                                     //text.TextData = "T";
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].strMarkingText = text.FontText;
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].strFontName = text.FontName;
+
                                     //  글자의 Center 좌표
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectCenter.X = (double)text.BoundRect.Center.X;
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectCenter.Y = (double)text.BoundRect.Center.Y;
@@ -35606,11 +35610,6 @@ namespace QMC.Common.Modules
                                     //  글자의 Tilt 각도
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectRotateAngle = (double)text.Angle;
                                     var listText = text.ToOutlineGlyph();
-
-
-                                    string fontName = text.FontName;
-                                    string fontText = text.FontText;
-
 
                                     // Sirius-Text 와는 다르게, 모든 Text 가 LWPolyline 으로 구성되어 있다.
                                     //////////////////////
@@ -35944,6 +35943,9 @@ namespace QMC.Common.Modules
 
                                 case EType.SiriusText:                                                  //  Sirius Text (뼈다귀)
                                     var sirius_text = entity as SpiralLab.Sirius.SiriusText;
+
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].strMarkingText = sirius_text.FontText;
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].strFontName = sirius_text.FontName;
                                     //  글자의 Center 좌표
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectCenter.X = (double)sirius_text.BoundRect.Center.X;
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].dObjectCenter.Y = (double)sirius_text.BoundRect.Center.Y;
@@ -36060,18 +36062,25 @@ namespace QMC.Common.Modules
                                                 else if (t2.Name == "Arc")
                                                 {
                                                     //  나중에 추가하자. (Text 를 구성하는 요소 중에 Arc 가 있으면...)
+                                                    var pl = subTextEntity as SpiralLab.Sirius.Arc;
                                                 }
                                                 else if (t2.Name == "Circle")
                                                 {
                                                     //  나중에 추가하자. (Text 를 구성하는 요소 중에 Circle 이있으면...)
+                                                    var pl = subTextEntity as SpiralLab.Sirius.Circle;
                                                 }
                                                 else if (t2.Name == "Rectangle")
                                                 {
                                                     //  나중에 추가하자. (Text 를 구성하는 요소 중에 Rectangle 이 있으면...)
+                                                    var pl = subTextEntity as SpiralLab.Sirius.Rectangle;
+                                                }
+                                                else
+                                                {
+                                                    var pl = subTextEntity as SpiralLab.Sirius.LwPolyline;
                                                 }
 
-                                                //  글자 구성요소 개수 +1
-                                                m_nTextItemCount++;
+                                                    //  글자 구성요소 개수 +1
+                                                    m_nTextItemCount++;
                                             }
 
                                             //  글자 객체 개수 +1
@@ -36676,6 +36685,12 @@ namespace QMC.Common.Modules
                         for (int i = 0; i < m_ptPreAlign.Length; i++)
                         {
                             //  Pre-Align 마크의 개수는 2개 이상이어야 한다.
+                            if(m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignPos == null)
+                            {
+                                m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignPos = new PointD[m_ptPreAlign.Length];
+                                m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignWidth = new double[m_ptPreAlign.Length];
+                                m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignHeight = new double[m_ptPreAlign.Length];
+                            }
                             m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignPos[i].X = preAlignCircles[i].Center.X;
                             m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignPos[i].Y = preAlignCircles[i].Center.Y;
                             m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignWidth[i] = preAlignCircles[i].Radius;
@@ -41307,14 +41322,20 @@ namespace QMC.Common.Modules
                 return true;
             }
 
+            // 실패 축 분석용 메시지 구성
+            List<string> failedAxes = new List<string>();
+            if (!xOk) failedAxes.Add("X");
+            if (!yOk) failedAxes.Add("Y");
+            if (!zOk) failedAxes.Add("Z");
+            string failedAxisString = string.Join(", ", failedAxes);
+
             if (TickCount_Elapsed((int)TickType.TICK_MAIN) > timeoutMs)
             {
                 retryCount++;
-
                 if (retryCount < maxRetry)
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
-                        $"축 위치 이동 실패. 재시도 {retryCount}/{maxRetry}");
+                            $"축 위치 이동 실패 [축: {failedAxisString}]. 재시도 {retryCount}/{maxRetry}");
 
                     m_nLaserDrilling_MainStep = jumpBackStep;
                     TickCount_Start((int)TickType.TICK_MAIN);
@@ -41322,13 +41343,11 @@ namespace QMC.Common.Modules
                 else
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
-                        $"축 위치 이동 실패. 재시도 초과 ({maxRetry})");
+                            $"축 위치 이동 실패 [축: {failedAxisString}]. 재시도 초과 ({maxRetry})");
 
                     retryCount = 0;
                     Equipment.MachineStop_byAlarm = true;
-                    MessageBox.Show("축 위치 이동 실패 (재시도 초과)", "Error");
-
-                    return false;
+                    AlarmPost(AlarmKey.eStageMoveFail);
                 }
             }
 
