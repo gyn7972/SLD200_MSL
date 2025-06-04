@@ -728,7 +728,7 @@ namespace SLD200_MSL
         {
             //  여기 도면 데이터를 WorkStage 의 Doc 로 넘겨준다.
             //  Sirius2
-            //workStage.siriusEditorUserControl_WorkStage = siriusEditor;
+            //  workStage.siriusEditorUserControl_WorkStage = siriusEditor;
 
             if (workStage.DrillingData_Parsing())
             {
