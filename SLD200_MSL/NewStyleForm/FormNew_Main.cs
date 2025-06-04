@@ -47,6 +47,7 @@ using netDxf;
 using netDxf.Tables;
 using Vector2 = System.Numerics.Vector2;
 using Layer = SpiralLab.Sirius.Layer;
+using static QMC.Common.Vision.EureSys.GenICam;
 
 namespace SLD200_MSL
 {
@@ -1184,17 +1185,16 @@ namespace SLD200_MSL
                 return;
             }
 
+            // 이거 안해도 될거 같은데.
+            //if (workStage.Camera_HighRes.Opened)
+            //{
+            //    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+            //}
 
-                // 이거 안해도 될거 같은데.
-                //if (workStage.Camera_HighRes.Opened)
-                //{
-                //    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
-                //}
-
-                //if (workStage.jigAligner_LowRes.Camera.Opened)
-                //{
-                //    ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
-                //}
+            //if (workStage.jigAligner_LowRes.Camera.Opened)
+            //{
+            //    ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
+            //}
 
             UpdateCycleTimerUI();
             Motor_Position2();
@@ -1215,12 +1215,9 @@ namespace SLD200_MSL
                     }
                     else
                     {
-
                         m_FormProgress.Hide();
                     }
-                   
-                }    
-                
+                }
             }
 
             if (m_NeedDocumentSync)
@@ -1273,7 +1270,6 @@ namespace SLD200_MSL
             SetValue(label_Main_LaserStatus, strText);
             Color backcolor = workStage.GetLaserBusyStatus() ? Color.Red : Color.Black;
             Color foreColor = workStage.GetLaserBusyStatus() ? Color.White : Color.Lime;
-
             SetColor(label_Main_LaserStatus, backcolor, foreColor);
 
             strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
@@ -1366,10 +1362,12 @@ namespace SLD200_MSL
             if (Equipment.ManualRunStatus)
             {
                 SetColor(button_Main_ManualStart, Color.Lime, Color.Black);
+                SetEnable(button_Main_Reset, false);
             }
             else
             {
                 SetColor(button_Main_ManualStart, System.Drawing.SystemColors.Control, Color.Black);
+                SetEnable(button_Main_Reset, true);
             }
 
             // 장비 상태 UI에 반영
@@ -4289,8 +4287,6 @@ namespace SLD200_MSL
 
                 string inputText = GetValue(baseTextBox_SocketCountPerModule);
 
-                //SetValue(baseTextBox_Module_TotalCount, 
-
                 SetValue(baseTextBox_Module_TotalCount, workStage.DrillingManager.CycleTimer_DoneModuleCount.ToString());
 
                 int nSocketCnt = inputText == "" ? 0 : ToInt(inputText);
@@ -4413,6 +4409,23 @@ namespace SLD200_MSL
                 control.Checked = value;
             }
         }
+        private void SetEnable(System.Windows.Forms.Control control, bool isEnable)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetEnable(control, isEnable);
+                }));
+            }
+            else
+            {
+                control.Enabled = isEnable;
+            }
+        }
+
+
 
         private void button_Module_WaitTime_sec_Click(object sender, EventArgs e)
         {
