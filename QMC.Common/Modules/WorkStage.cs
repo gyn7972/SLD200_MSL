@@ -25122,6 +25122,7 @@ namespace QMC.Common.Modules
             //  성부장 작업
             switch (m_LayerType)
             {
+                //0605--
                 case LayerType.LAYER_DRILLING:
                     m_dOffset = m_dHoleLayer_Defocusing;
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
