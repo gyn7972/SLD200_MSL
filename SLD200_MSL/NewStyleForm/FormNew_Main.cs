@@ -4348,6 +4348,10 @@ namespace SLD200_MSL
         private void button_TEST2_Click(object sender, EventArgs e)
         {
             //workStage.workStageParameter.DO_AirCurtain_Purge(true);
+
+            double freq = 0.0;
+            bds.DustCollector_Upper.GetFrequency(out freq);
+
             return;
 
             //Test
