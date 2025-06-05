@@ -20,6 +20,7 @@ using static QMC.Common.Modules.WorkStage;
 using static QMC.Common.Parts.DustCollectorController;
 using static System.Windows.Forms.AxHost;
 using static SpiralLab.Sirius.JPTTypeE;
+using System.Threading;
 
 namespace SLD200_MSL
 {
@@ -609,11 +610,15 @@ namespace SLD200_MSL
         private void button_DustCollector_Upper_Write_Click(object sender, EventArgs e)
         {
             //byte m_bData = getHex(textBox_DustCollector_Upper_Address.Text);
-
             if ((workStage.m_dustCollector_UpperPos_Comm != null) &&
                 (textBox_DustCollector_Upper_Address.Text != "") && (textBox_DustCollector_Upper_Address.Text.Length == 4))
             {
-                workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, textBox_DustCollector_Upper_Address.Text, 1, textBox_DustCollector_Upper_Data.Text);
+                // write command 함수 만들어서 적용.
+                //double dFreq = Equipment.ToDouble(textBox_DustCollector_Upper_Frequency.Text);
+                //workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, dFreq);
+
+                //workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, 
+                //    textBox_DustCollector_Upper_Address.Text, 1, textBox_DustCollector_Upper_Data.Text);
             }
         }
 
@@ -622,7 +627,8 @@ namespace SLD200_MSL
             if ((workStage.m_dustCollector_LowerPos_Comm != null) &&
                 (textBox_DustCollector_Lower_Address.Text != "") && (textBox_DustCollector_Lower_Address.Text.Length == 4))
             {
-                workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, textBox_DustCollector_Lower_Address.Text, 1, textBox_DustCollector_Lower_Data.Text);
+                //workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower,
+                //                                      textBox_DustCollector_Lower_Address.Text, 1, textBox_DustCollector_Lower_Data.Text);
             }
         }
 
@@ -733,7 +739,7 @@ namespace SLD200_MSL
 
         private void button_TEST1_Click(object sender, EventArgs e)
         {
-            bool bOn = bds.DustCollector_Upper.DustCollector_On();
+            bool bOn = bds.DustCollector_Upper.Start();
 
             DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
             if (runState == CollectorRunState.Running)
@@ -747,7 +753,7 @@ namespace SLD200_MSL
 
         private void button_Test2_Click(object sender, EventArgs e)
         {
-            bds.DustCollector_Upper.DustCollector_Off();
+            bool bOn = bds.DustCollector_Upper.Stop();
 
             DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
             if (runState == CollectorRunState.Running)
@@ -763,10 +769,12 @@ namespace SLD200_MSL
             //string strFrequency = "";
             double dFrequency = 0.0;
             bds.DustCollector_Upper.GetFrequency(out dFrequency);
-            //dFrequency = string.IsNullOrEmpty(strFrequency) ? 0.0 : Equipment.ToDouble(strFrequency);
+        }
 
-            DustCollectorController.CollectorRunState runState;
-            bds.DustCollector_Upper.GetStatus(out runState, out dFrequency);
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //Thread.Sleep(100);
+            bds.DustCollector_Upper.SetFrequency(10);
         }
     }
 }

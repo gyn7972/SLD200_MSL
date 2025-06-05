@@ -1899,6 +1899,8 @@ namespace QMC.Common.Modules
         #endregion
 
 
+        // 클래스 상단 (예: Loader 관련 클래스 또는 제어 클래스 내부)
+        private bool m_bStackerZ0_DownWhenEmpty = false;
 
         #region Stacker Move Function (Module PickUp & PutDown 높이로 이동 -> 이건 Loader Unloader 에서 하도록 해야 할듯???)
 
@@ -1962,26 +1964,64 @@ namespace QMC.Common.Modules
 
             //  Stacker0 에서 Module 을 Pick-Up 하는 도중에, 모든 Module 이 들려올라가면서 자재 감지 센서가 Off 되는 상황이 있음. 이것 때문에 Pause 상태로 변경됨을 확인.
             //  자재 감지 센서가 설정된 시간 동안 감지되지 않을 경우에만 Pause 상태로 변경되도록 함.
-            if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
+            bool isMaterialDetected = loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0);
+            if (!isMaterialDetected)
             {
                 if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
                 {
                     Equipment.Loader_RPort_Pause = true;
+                    Equipment.Loader_RPort_Empty = true;
                 }
-                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000)))
+                else if (TickCount_Elapsed((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT) > 
+                        (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000))
                 {
                     Equipment.Loader_RPort_Pause = true;
-                }
+                    Equipment.Loader_RPort_Empty = true;
 
-                Equipment.Loader_RPort_Empty = true;    // 자재 없음 알림.
+                    // 자재가 없고, 감지OFF 시간이 충분히 지나면 Z축을 내림 (중복 방지용 Flag 사용)
+                    if (!m_bStackerZ0_DownWhenEmpty &&
+                        m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
+                        m_nMAlign_Step == (int)MAlign_Step.None &&
+                        MC_Func.MC_GetDone((int)nAxis.Z0) &&
+                        MC_Func.MC_GetInposition((int)nAxis.Z0))
+                    {
+                        Log.Write("SLD-200", "Stacker0 No Material 상태 → Z축 하강 실행");
+                        StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                        m_bStackerZ0_DownWhenEmpty = true;
+                    }
+                }
             }
             else
             {
+                // 자재 감지 → 타이머 리셋 및 Z축 하강 Flag 초기화
                 TickCount_Start((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT);
-
-                Equipment.Loader_RPort_Empty = false;    // 자재 있음 알림.
+                m_bStackerZ0_DownWhenEmpty = false;
+                Equipment.Loader_RPort_Empty = false;
             }
 
+            //기존 코드
+            {
+            //    if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
+            //    {
+            //        if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
+            //        {
+            //            Equipment.Loader_RPort_Pause = true;
+            //        }
+            //        else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && 
+            //                (TickCount_Elapsed((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT) > 
+            //                (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000)))
+            //        {
+            //            Equipment.Loader_RPort_Pause = true;
+            //        }
+
+            //        Equipment.Loader_RPort_Empty = true;    // 자재 없음 알림.
+            //    }
+            //    else
+            //    {
+            //        TickCount_Start((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT);
+            //        Equipment.Loader_RPort_Empty = false;    // 자재 있음 알림.
+            //    }
+            }
 
             //  Stacker0 이 Pause 되는 시점에 Stacker0 을 아래로 내림
             if (Equipment.Loader_RPort_Pause && !Equipment.Loader_RPort_Pause_Before)// &&
@@ -2862,6 +2902,7 @@ namespace QMC.Common.Modules
         }
 
 
+        private bool m_bStackerZ1_DownWhenEmpty = false; // Stacker Z1이 자재가 없을 때 하강했는지 여부를 확인하는 플래그
         int Run_Stacker1Module_PickupWaitingPos_Func()
         {
             int ret = 0;
@@ -2881,28 +2922,68 @@ namespace QMC.Common.Modules
 
             //  Stacker1 에서 Module 을 Pick-Up 하는 도중에, 모든 Module 이 들려올라가면서 자재 감지 센서가 Off 되는 상황이 있음. 이것 때문에 Pause 상태로 변경됨을 확인.
             //  자재 감지 센서가 설정된 시간 동안 감지되지 않을 경우에만 Pause 상태로 변경되도록 함.
-            if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
+            //  Stacker0 에서 Module 을 Pick-Up 하는 도중에, 모든 Module 이 들려올라가면서 자재 감지 센서가 Off 되는 상황이 있음. 이것 때문에 Pause 상태로 변경됨을 확인.
+            //  자재 감지 센서가 설정된 시간 동안 감지되지 않을 경우에만 Pause 상태로 변경되도록 함.
+            bool isMaterialDetected = loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1);
+            if (!isMaterialDetected)
             {
-                //감지 센서에 감지가 안되는게 문제인데.
                 if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
                 {
                     Equipment.Loader_LPort_Pause = true;
+                    Equipment.Loader_LPort_Empty = true;
                 }
-                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && 
-                    (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000))) //여기를 늘려놔야하나?
+                else if (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) >
+                        (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000))
                 {
                     Equipment.Loader_LPort_Pause = true;
-                }
+                    Equipment.Loader_LPort_Empty = true;
 
-                Equipment.Loader_LPort_Empty = true;    // 자재 없음 알림.
+                    // 자재가 없고, 감지OFF 시간이 충분히 지나면 Z축을 내림 (중복 방지용 Flag 사용)
+                    if (!m_bStackerZ1_DownWhenEmpty &&
+                        m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
+                        m_nMAlign_Step == (int)MAlign_Step.None &&
+                        MC_Func.MC_GetDone((int)nAxis.Z1) &&
+                        MC_Func.MC_GetInposition((int)nAxis.Z1))
+                    {
+                        Log.Write("SLD-200", "Stacker1 No Material 상태 → Z축 하강 실행");
+                        StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                        m_bStackerZ1_DownWhenEmpty = true;
+                    }
+                }
             }
             else
             {
+                // 자재 감지 → 타이머 리셋 및 Z축 하강 Flag 초기화
                 TickCount_Start((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT);
-
-                Equipment.Loader_LPort_Empty = false;    // 자재 있음 알림.
+                m_bStackerZ1_DownWhenEmpty = false;
+                Equipment.Loader_RPort_Empty = false;
             }
 
+            //기존 코드 
+            {
+                //if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
+                //{
+                //    //감지 센서에 감지가 안되는게 문제인데.
+                //    if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
+                //    {
+                //        Equipment.Loader_LPort_Pause = true;
+                //    }
+                //    else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && 
+                //        (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000))) //여기를 늘려놔야하나?
+                //    {
+                //        Equipment.Loader_LPort_Pause = true;
+                //    }
+
+                //    Equipment.Loader_LPort_Empty = true;    // 자재 없음 알림.
+                //}
+                //else
+                //{
+                //    TickCount_Start((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT);
+
+                //    Equipment.Loader_LPort_Empty = false;    // 자재 있음 알림.
+                //}
+
+            }
 
             //  Stacker1 이 Pause 되는 시점에 Stacker1 을 아래로 내림
             if (Equipment.Loader_LPort_Pause && !Equipment.Loader_LPort_Pause_Before)// &&
@@ -2974,9 +3055,7 @@ namespace QMC.Common.Modules
                 }
             }
 
-
             StackerModulePickupWaitingPos_Step currentStep = (StackerModulePickupWaitingPos_Step)m_nStacker1_ModulePickupWaitingPos_Step;
-
             switch (m_nStacker1_ModulePickupWaitingPos_Step)
             {
                 case (int)StackerModulePickupWaitingPos_Step.Start:
@@ -8263,7 +8342,8 @@ namespace QMC.Common.Modules
 
             workStage.workStageParameter.DO_Stage_Vacuum(true);
             workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
-            workStage.DustCollector_SetFrequence(Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
+            workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
+            //workStage.DustCollector_SetFrequence(Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
             Thread.Sleep(1000);
 
             if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
