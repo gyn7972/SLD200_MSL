@@ -1128,14 +1128,13 @@
             this.button_TEST12.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_TEST12.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_TEST12.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_TEST12.Location = new System.Drawing.Point(1463, 832);
+            this.button_TEST12.Location = new System.Drawing.Point(1463, 831);
             this.button_TEST12.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_TEST12.Name = "button_TEST12";
             this.button_TEST12.Size = new System.Drawing.Size(57, 24);
             this.button_TEST12.TabIndex = 192;
             this.button_TEST12.Text = "TEST";
             this.button_TEST12.UseVisualStyleBackColor = false;
-            this.button_TEST12.Visible = false;
             this.button_TEST12.Click += new System.EventHandler(this.button_TEST12_Click);
             // 
             // button_TestbyUser_LPort_Start
@@ -2180,7 +2179,6 @@
             this.button_TEST2.TabIndex = 213;
             this.button_TEST2.Text = "TEST";
             this.button_TEST2.UseVisualStyleBackColor = false;
-            this.button_TEST2.Visible = false;
             this.button_TEST2.Click += new System.EventHandler(this.button_TEST2_Click);
             // 
             // groupBox_BET_Status
