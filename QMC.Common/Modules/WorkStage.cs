@@ -9636,11 +9636,12 @@ namespace QMC.Common.Modules
                         //  진공레귤레이터도 Off --> 한번에 꺼질란가???
                         ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);                       //  가장 낮은 값이 -1.3
 
+                        m_bHomeOK = false;
+                        m_bHomeProgressForm_Close = true;
+                        m_nHomeStep = (int)Home_Step.Fail;
 
                         AlarmPost(AlarmKey.Home_LoaderPicker_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Loader Picker Vacuum Off Fail");
-
-                        m_nHomeStep = (int)Home_Step.Fail;
                     }
                     //Stage 진공 체크
                     else if (workStageParameter.DI_Stage_Vacuum_Check() && (m_dEPRO_Value < -12.0))              //  모듈이 없을 때 EPRO 에 얼마나 인가되는지 확인 후 변경
@@ -9654,11 +9655,12 @@ namespace QMC.Common.Modules
                         //  진공레귤레이터도 Off --> 한번에 꺼질란가???
                         ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);                       //  가장 낮은 값이 -1.3
 
+                        m_bHomeOK = false;
+                        m_bHomeProgressForm_Close = true;
+                        m_nHomeStep = (int)Home_Step.Fail;
 
                         AlarmPost(AlarmKey.Home_MainStage_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Stage Vacuum Off Fail");
-
-                        m_nHomeStep = (int)Home_Step.Fail;
                     }
                     //Unloader 진공 체크    
                     else if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
@@ -9673,11 +9675,12 @@ namespace QMC.Common.Modules
                         //  진공레귤레이터도 Off --> 한번에 꺼질란가???
                         ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);                       //  가장 낮은 값이 -1.3
 
+                        m_bHomeOK = false;
+                        m_bHomeProgressForm_Close = true;
+                        m_nHomeStep = (int)Home_Step.Fail;
 
                         AlarmPost(AlarmKey.Home_UnloaderPicker_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Unloader Picker Vacuum Off Fail");
-
-                        m_nHomeStep = (int)Home_Step.Fail;
                     }
                     else
                     {
@@ -9713,7 +9716,6 @@ namespace QMC.Common.Modules
                     unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, false);
                     unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, false);
 
-                    
                     //  Stage Vacuum 이 한번에 안꺼지는 경우가 있어서 한번 더 한다.
                     Thread.Sleep(500);
 
@@ -9723,7 +9725,6 @@ namespace QMC.Common.Modules
 
                     //  진공레귤레이터도 Off --> 요번엔 꺼질란가???
                     ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);                       //  가장 낮은 값이 -1.3
-
 
                     m_nHomeStep = (int)Home_Step.AxisAlarmCheck;
 
@@ -9858,11 +9859,13 @@ namespace QMC.Common.Modules
                         Equipment.MachineStop_byAlarm = true;
 
                         timer_Motion_Home.Enabled = false;
+
                         m_btimer_Motion_Home_Stop = true;
 
                         m_bHomeProgressForm_Close = true;
 
                         m_nHomeStep = (int)Home_Step.None;
+                        //m_nHomeStep = (int)Home_Step.Fail;
 
                         MessageBox.Show("Aligner X 축 0.1mm 이동 검증 실패.\r\n\r\n[장비 초기화 금지!!  지령값 확인 필요!!!]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
