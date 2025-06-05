@@ -550,7 +550,6 @@ namespace SLD200_MSL
             this.SiriusEditor.Marker = workStage.marker;                        //  Sirius1
             this.SiriusEditor.Rtc = workStage.rtc;
 
-
             #region RTC extension IO 
             //// create RTC io 
             //var rtcExt1DInput = new RtcDInputExt1(rtc, 0, "DIN RTC EXT1");

@@ -3918,6 +3918,9 @@ namespace QMC.Common.Modules
             BETA_Change,                                               //  BET A 변경 (CO2)
             BETA_Change_Check,                                         //  BET A 변경 확인 (CO2)
 
+            Vario_Change,                                               // Vario 변경 (CO2)
+            Vario_Change_Check,                                         // Vario 변경 확인 (CO2)
+
             StageXY_Move_CenterPos,
             StageXY_Move_CenterPos_Check,
 
@@ -26315,10 +26318,8 @@ namespace QMC.Common.Modules
         private void LaserDrillingStepBETChange(int m_nBET_Index)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "BET 축, 설정된 BET 로 세팅 시작.");
-
             double m_dZoom = 0.0;
             double m_dMrad = 0.0;
-
             //  BET Zoom, Mrad 변경
             switch(m_nBET_Index)
             {
@@ -26379,84 +26380,6 @@ namespace QMC.Common.Modules
             DustCollectorComm_Send_SetFrequency((int)WorkStage.nDustCollector.DustCollector_Lower, m_dFreq_Lower);
 
             return strTemp;
-
-            //string m_strTemp;
-            ////  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
-            //double m_dRet_Freq_Upper = GetClosestValue_DustCollector(m_dFreq_Upper);
-            //double m_dRet_Freq_Lower = GetClosestValue_DustCollector(m_dFreq_Lower);
-
-            ////  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            //m_dRet_Freq_Upper = m_dRet_Freq_Upper * 100.0;
-            //m_dRet_Freq_Lower = m_dRet_Freq_Lower * 100.0;
-
-            ////  숫자를 4자리 숫자로 고정
-            //string m_strFreq_Upper = m_dRet_Freq_Upper.ToString("0000");
-            //string m_strFreq_Lower = m_dRet_Freq_Lower.ToString("0000");
-            //string m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
-            //string m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
-
-            ////  상부 집진 데이터 OK 이면?
-            //if (m_strRet_Upper != "NG")
-            //{
-            //    m_strTemp = string.Format("상부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper);
-            //    Log.Write("SLD-200", "Auto Run", m_strTemp);
-
-            //    m_bDustCollector_UpperPos_CommData_Received = false;
-            //    m_strDustCollector_UpperPos_Comm_ReceivedData = "";
-
-            //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
-            //}
-            //else
-            //{
-            //    m_strTemp = string.Format("상부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
-            //    Log.Write("SLD-200", "Auto Run", m_strTemp);
-
-            //    //  29.0 Hz 로 설정
-            //    //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            //    m_dFreq_Upper = 29.0 * 100.0;
-
-            //    //  숫자를 4자리 숫자로 고정
-            //    m_strFreq_Upper = m_dFreq_Upper.ToString("0000");
-
-            //    m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
-
-            //    m_bDustCollector_UpperPos_CommData_Received = false;
-            //    m_strDustCollector_UpperPos_Comm_ReceivedData = "";
-
-            //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
-            //}
-
-            ////  하부 집진 데이터 OK 이면?
-            //if (m_strRet_Lower != "NG")
-            //{
-            //    m_strTemp = string.Format("하부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
-            //    Log.Write("SLD-200", "Auto Run", m_strTemp);
-
-            //    m_bDustCollector_LowerPos_CommData_Received = false;
-            //    m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-
-            //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
-            //}
-            //else
-            //{
-            //    m_strTemp = string.Format("하부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
-            //    Log.Write("SLD-200", "Auto Run", m_strTemp);
-
-            //    //  29.0 Hz 로 설정
-            //    //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            //    m_dFreq_Lower = 29.0 * 100.0;
-
-            //    //  숫자를 4자리 숫자로 고정
-            //    m_strFreq_Lower = m_dFreq_Lower.ToString("0000");
-
-            //    m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
-
-            //    m_bDustCollector_LowerPos_CommData_Received = false;
-            //    m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-
-            //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
-            //}
-            //return m_strTemp;
         }
 
         private void LaserDrilling_StepLaserOff()
@@ -38104,87 +38027,18 @@ namespace QMC.Common.Modules
 
                 case (int)ScannerCalibration_Step.DustCollector_Frequency_Set:
 
-                    //
-                    ////기존 Main 함수 똑같이 사용하면.. 문제 되나.. 
-                    ////Data를 recipe꺼를 불러오네..
-                    ////strTemp = LaserDrillingStepDustCollectorFrequenceSet();
-                    ////  입력한 주파수 
-                    //double m_dFreq_Upper = 20;  // Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper;
-                    //double m_dFreq_Lower = 30;  // Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower;
+                    if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 1000)
+                    {
+                        //임의로 freq시 지정.
+                        double m_dFreq_Upper = 30;
+                        double m_dFreq_Lower = 30;
 
-                    ////  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
-                    //double m_dRet_Freq_Upper = GetClosestValue_DustCollector(m_dFreq_Upper);
-                    //double m_dRet_Freq_Lower = GetClosestValue_DustCollector(m_dFreq_Lower);
+                        DustCollectorComm_Send_SetFrequency((int)WorkStage.nDustCollector.DustCollector_Upper, m_dFreq_Upper);
+                        DustCollectorComm_Send_SetFrequency((int)WorkStage.nDustCollector.DustCollector_Lower, m_dFreq_Lower);
 
-                    ////  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-                    //m_dRet_Freq_Upper = m_dRet_Freq_Upper * 100.0;
-                    //m_dRet_Freq_Lower = m_dRet_Freq_Lower * 100.0;
-
-                    ////  숫자를 4자리 숫자로 고정
-                    //string m_strFreq_Upper = m_dRet_Freq_Upper.ToString("0000");
-                    //string m_strFreq_Lower = m_dRet_Freq_Lower.ToString("0000");
-                    //string m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
-                    //string m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
-
-                    ////  상부 집진 데이터 OK 이면?
-                    //if (m_strRet_Upper != "NG")
-                    //{
-                    //    strTemp = string.Format("상부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper);
-                    //    Log.Write("SLD-200", "ScannerCalibration", strTemp);
-
-                    //    m_bDustCollector_UpperPos_CommData_Received = false;
-                    //    m_strDustCollector_UpperPos_Comm_ReceivedData = "";
-
-                    //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
-                    //}
-                    //else
-                    //{
-                    //    strTemp = string.Format("상부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
-                    //    Log.Write("SLD-200", "ScannerCalibration", strTemp);
-
-                    //    //  29.0 Hz 로 설정
-                    //    //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-                    //    m_dFreq_Upper = 29.0 * 100.0;   //? upper는 고정인가?
-                    //    //  숫자를 4자리 숫자로 고정
-                    //    m_strFreq_Upper = m_dFreq_Upper.ToString("0000");
-                    //    m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
-
-                    //    m_bDustCollector_UpperPos_CommData_Received = false;
-                    //    m_strDustCollector_UpperPos_Comm_ReceivedData = "";
-
-                    //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet_Upper);
-                    //}
-
-                    ////  하부 집진 데이터 OK 이면?
-                    //if (m_strRet_Lower != "NG")
-                    //{
-                    //    strTemp = string.Format("하부 집진기 Frequency 계산 OK : {0} Hz", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
-                    //    Log.Write("SLD-200", "ScannerCalibration", strTemp);
-
-                    //    m_bDustCollector_LowerPos_CommData_Received = false;
-                    //    m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-                    //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
-                    //}
-                    //else
-                    //{
-                    //    strTemp = string.Format("하부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
-                    //    Log.Write("SLD-200", "ScannerCalibration", strTemp);
-
-                    //    //  29.0 Hz 로 설정
-                    //    //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-                    //    m_dFreq_Lower = 29.0 * 100.0;
-                    //    //  숫자를 4자리 숫자로 고정
-                    //    m_strFreq_Lower = m_dFreq_Lower.ToString("0000");
-
-                    //    m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
-                    //    m_bDustCollector_LowerPos_CommData_Received = false;
-                    //    m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-                    //    DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
-                    //}
-
-                    TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
-                    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.DustCollector_On_Check;
-
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.DustCollector_On_Check;
+                    }
                     break;
 
                 case (int)ScannerCalibration_Step.DustCollector_On_Check:
@@ -38279,7 +38133,7 @@ namespace QMC.Common.Modules
                         else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
                         {
                             strTemp = string.Format("Water Supply Line Open 실패");
-                            Log.Write("SLD-200", "Scanner Calibration", strTemp);
+                            Log.Write("SLD-200", "ScannerCalibration", strTemp);
                             MessageBox.Show(strTemp, "Error");
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
 
@@ -38289,146 +38143,147 @@ namespace QMC.Common.Modules
 
                 case (int)ScannerCalibration_Step.Mask_Change:
 
-                    //CO2 시 확인 필요!
-                    //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Mask Y 축, Hole1 Layer 의 Mask 로 이동 시작.");
+                    //LaserDrillingStepMaskChange(out lfVelocity, out lfAccDec);
+                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
 
-                    //workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+                    //  속도 설정
+                    lfVelocity = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Speed_Coarse;
+                    lfAccDec = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Acceleration_Coarse;
 
-                    ////  속도 설정
-                    //lfVelocity = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Speed_Coarse;
-                    //lfAccDec = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Acceleration_Coarse;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y] =
+                        bds.stBDSTeachingPos[(int)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_MaskIndex].Mask_Y;
 
-                    //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y] =
-                    //    bds.stBDSTeachingPos[(int)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_MaskIndex].Mask_Y;
+                    MC_Func.MC_MovePosition((int)Bds.nAxis.MASK_Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y],
+                                          lfVelocity, lfAccDec, lfAccDec);
 
-                    //MC_Func.MC_MovePosition((int)Bds.nAxis.MASK_Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y],
-                    //                      lfVelocity, lfAccDec, lfAccDec);
-
-                    //TickCount_Start((int)TickType.TICK_MAIN);
-
-                break;
-                case (int)ScannerCalibration_Step.Mask_Change_Check:
-
-                    //CO2 시 확인 필요!!
-                    //if (MC_Func.MC_GetDone((int)Bds.nAxis.MASK_Y) && MC_Func.MC_PosTolerance((int)Bds.nAxis.MASK_Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y]))
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Mask Y 축, Hole1 Layer 의 Mask 로 이동 완료.");
-
-                    //    m_nBETChange_RetryCount = 0;
-
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change;
-                    //}
-                    //else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Mask Y 축, Hole1 Layer 의 Mask 로 이동 실패. (Timeout)");
-
-                    //    //  알람 정지 (LED Bar - Red Blink)
-                    //    Equipment.MachineStop_byAlarm = true;
-
-                    //    //timer_LaserDrillingWork.Enabled = false;
-                    //    //m_btimer_Motion_Home_Stop = true;
-
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-                    //    MessageBox.Show("Mask Y 축, Hole1 Layer 의 Mask 로 이동", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //}
+                    TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Mask_Change_Check;
 
                     break;
+                case (int)ScannerCalibration_Step.Mask_Change_Check:
+
+                    if (MC_Func.MC_GetDone((int)Bds.nAxis.MASK_Y) &&
+                        MC_Func.MC_PosTolerance((int)Bds.nAxis.MASK_Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "ScannerCalibration", "Mask Y 축, Mask 로 이동 완료.");
+                        m_nBETChange_RetryCount = 0;
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.BETA_Change;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "ScannerCalibration", "Mask Y 축, Mask 로 이동 실패. (Timeout)");
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                    }
+                    break;
+
                 case (int)ScannerCalibration_Step.BETA_Change:
 
-                    //int m_nBETIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
-                    //if (m_nBETIndex < 0 || m_nBETIndex >= 5)                                    //  BET 배율은 총4개로 고정되어 있음.
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "지정되지 않은 BET Index 입니다. (0 ~ 4)");
+                    int m_nBETIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex; // BET 배율 설정 필요.
+                    if (m_nBETIndex < 0 || m_nBETIndex >= 5)                                    //  BET 배율은 총4개로 고정되어 있음.
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "ScannerCalibration", "지정되지 않은 BET Index 입니다. (0 ~ 4)");
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        return AlarmPost(AlarmKey.eBETIndexFail);
+                    }
+                    else
+                    {
+                        LaserDrillingStepBETChange(m_nBETIndex);
 
-                    //    //  알람 정지 (LED Bar - Red Blink)
-                    //    Equipment.MachineStop_byAlarm = true;
-
-                    //    //timer_LaserDrillingWork.Enabled = false;
-                    //    //m_btimer_Motion_Home_Stop = true;
-
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-                    //    return AlarmPost(AlarmKey.eBETIndexFail);
-                    //}
-                    //else
-                    //{
-                    //    LaserDrillingStepBETChange(m_nBETIndex);
-
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change_Check;
-                    //}
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.BETA_Change_Check;
+                    }
 
                     break;
                 case (int)ScannerCalibration_Step.BETA_Change_Check:
 
-                    //if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 500)
-                    //{
-                    //    m_nBETIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
+                    if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 500)
+                    {
+                        m_nBETIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
+                        double m_dBET_Zoom = 0.0;
+                        double m_dBET_Mrad = 0.0;
+                        //  BET Zoom, Mrad 변경
+                        switch (m_nBETIndex)
+                        {
+                            case 0:         //  0.8x
+                                m_dBET_Zoom = 0.8;
+                                m_dBET_Mrad = Equipment.BET_0_8X_Mrad;
+                                break;
 
-                    //    double m_dBET_Zoom = 0.0;
-                    //    double m_dBET_Mrad = 0.0;
+                            case 1:         //  0.9x
+                                m_dBET_Zoom = 0.9;
+                                m_dBET_Mrad = Equipment.BET_0_9X_Mrad;
+                                break;
 
-                    //    //  BET Zoom, Mrad 변경
-                    //    switch (m_nBETIndex)
-                    //    {
-                    //        case 0:         //  0.8x
-                    //            m_dBET_Zoom = 0.8;
-                    //            m_dBET_Mrad = Equipment.BET_0_8X_Mrad;
-                    //            break;
+                            case 2:         //  1.0x
+                                m_dBET_Zoom = 1.0;
+                                m_dBET_Mrad = Equipment.BET_1_0X_Mrad;
+                                break;
 
-                    //        case 1:         //  0.9x
-                    //            m_dBET_Zoom = 0.9;
-                    //            m_dBET_Mrad = Equipment.BET_0_9X_Mrad;
-                    //            break;
+                            case 3:         //  1.1x
+                                m_dBET_Zoom = 1.1;
+                                m_dBET_Mrad = Equipment.BET_1_1X_Mrad;
+                                break;
 
-                    //        case 2:         //  1.0x
-                    //            m_dBET_Zoom = 1.0;
-                    //            m_dBET_Mrad = Equipment.BET_1_0X_Mrad;
-                    //            break;
+                            case 4:         //  1.2x
+                                m_dBET_Zoom = 1.2;
+                                m_dBET_Mrad = Equipment.BET_1_2X_Mrad;
+                                break;
+                        }
 
-                    //        case 3:         //  1.1x
-                    //            m_dBET_Zoom = 1.1;
-                    //            m_dBET_Mrad = Equipment.BET_1_1X_Mrad;
-                    //            break;
+                        if (((m_dBET_ZoomValue > (m_dBET_Zoom - 0.005)) && (m_dBET_ZoomValue < (m_dBET_Zoom + 0.005))) &&
+                            ((m_dBET_MradValue > (m_dBET_Mrad - 0.005)) && (m_dBET_MradValue < (m_dBET_Mrad + 0.005))))
+                        {
+                            strTemp = string.Format("BET Zoom ({0} / {1}), Mrad ({2} / {3}) 변경 성공", m_dBET_ZoomValue, m_dBET_Zoom, m_dBET_MradValue, m_dBET_Mrad);
+                            Log.Write("SLD-200", Equipment.User_Name, "ScannerCalibration", strTemp);
 
-                    //        case 4:         //  1.2x
-                    //            m_dBET_Zoom = 1.2;
-                    //            m_dBET_Mrad = Equipment.BET_1_2X_Mrad;
-                    //            break;
-                    //    }
+                            TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Vario_Change;
+                        }
+                        else
+                        {
+                            if (m_nBETChange_RetryCount++ < 3)
+                            {
+                                strTemp = string.Format("BET Zoom ({0} / {1}), Mrad ({2} / {3}) 변경 실패. 재시도 ({4}/{5})", m_dBET_ZoomValue, m_dBET_Zoom, m_dBET_MradValue, m_dBET_Mrad, m_nBETChange_RetryCount, 3);
+                                Log.Write("SLD-200", Equipment.User_Name, "ScannerCalibration", strTemp);
 
-                    //    if (((m_dBET_ZoomValue > (m_dBET_Zoom - 0.005)) && (m_dBET_ZoomValue < (m_dBET_Zoom + 0.005))) &&
-                    //        ((m_dBET_MradValue > (m_dBET_Mrad - 0.005)) && (m_dBET_MradValue < (m_dBET_Mrad + 0.005))))
-                    //    {
-                    //        m_strTemp = string.Format("BET Zoom ({0} / {1}), Mrad ({2} / {3}) 변경 성공", m_dBET_ZoomValue, m_dBET_Zoom, m_dBET_MradValue, m_dBET_Mrad);
-                    //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.BETA_Change;
+                                Thread.Sleep(200);
+                            }
+                            else
+                            {
+                                Equipment.MachineStop_byAlarm = true;
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                                return AlarmPost(AlarmKey.eBETChangeFail);
+                            }
+                        }
+                    }
+                    break;
 
-                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
-                    //    }
-                    //    else
-                    //    {
-                    //        if (m_nBETChange_RetryCount++ < 3)
-                    //        {
-                    //            m_strTemp = string.Format("BET Zoom ({0} / {1}), Mrad ({2} / {3}) 변경 실패. 재시도 ({4}/{5})", m_dBET_ZoomValue, m_dBET_Zoom, m_dBET_MradValue, m_dBET_Mrad, m_nBETChange_RetryCount, 3);
-                    //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                case (int)ScannerCalibration_Step.Vario_Change:
 
-                    //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change;
+                    bds.spiralLabVario.fSetZOffset = 0;
+                    bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
 
-                    //            Thread.Sleep(200);
-                    //        }
-                    //        else
-                    //        {
-                    //            //  알람 정지 (LED Bar - Red Blink)
-                    //            Equipment.MachineStop_byAlarm = true;
+                    TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Vario_Change_Check;
+                    break;
+                case (int)ScannerCalibration_Step.Vario_Change_Check:
 
-                    //            //timer_LaserDrillingWork.Enabled = false;
-                    //            //m_btimer_Motion_Home_Stop = true;
-
-                    //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-                    //            return AlarmPost(AlarmKey.eBETChangeFail);
-                    //        }
-                    //    }
-                    //}
-
+                    if(bds.spiralLabVario.GetCurrentZOffset() == bds.spiralLabVario.fSetZOffset)
+                    {
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_CenterPos;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "ScannerCalibration", "Vario 이동 실패. (Timeout)");
+                        Equipment.MachineStop_byAlarm = true;
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                    }
                     break;
 
                     //StageXY_Move_CenterPos,
@@ -38448,7 +38303,7 @@ namespace QMC.Common.Modules
                     else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000 * 10)
                     {
                         strTemp = string.Format("Stage XY Move Center Position 실패");
-                        Log.Write("SLD-200", "Scanner Calibration", strTemp);
+                        Log.Write("SLD-200", "ScannerCalibration", strTemp);
                         MessageBox.Show(strTemp, "Error");
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
                     }
@@ -38633,7 +38488,6 @@ namespace QMC.Common.Modules
                     {
                         //맵 변환을.. FineCam으로 해야 하나?
                         //xyInterpolatedCoordinate = ConvertFineCamToLaserHeightSensor(new XyCoordinate(m_dCurrentCalPosX, m_dCurrentCalPosY));
-
                         XyCoordinate result = new XyCoordinate(0, 0);
                         result.X += m_dCurrentCalPosX;
                         result.Y += m_dCurrentCalPosY;
