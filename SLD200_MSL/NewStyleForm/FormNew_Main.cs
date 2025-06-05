@@ -775,7 +775,7 @@ namespace SLD200_MSL
             }
 
             //  Dust Collector (Lower Position)
-            if (bds.DustCollector_Lower.IsConnected)
+            if (!bds.DustCollector_Lower.IsConnected)
             {
                 bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower);
             }
