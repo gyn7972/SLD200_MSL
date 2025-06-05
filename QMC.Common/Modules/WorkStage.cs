@@ -2724,9 +2724,10 @@ namespace QMC.Common.Modules
 
 
         public int m_nLaserHeightSensorSocketStep { set; get; }
-
         public int m_nLaserHeightSensorSocketRecvData_CR_Count { set; get; }
         public double m_dLaserHeightSensorSocket_Value { set; get; }
+        private bool m_bSensorRequestPending = false;   // 요청 보냄
+        private bool m_bSensorResponseReady = false;    // 응답 받음
 
         //public bool m_bLaserHeightSensorSocket_Paused { get; set; }                       //  Laser Height Sensor Socket func. 이 Pause 상태인지?
 
@@ -7682,6 +7683,8 @@ namespace QMC.Common.Modules
 
         #region Socket - Laser Height Sensor
 
+        //CL-3000 Model
+
         public void LaserSensor_Socket_Connect()
         {
             string m_strIP = "127.0.0.1";
@@ -8741,7 +8744,6 @@ namespace QMC.Common.Modules
                 Run_BETComm_Func();
                 Run_LaserComm_Func();
                 Run_EPROComm_Func();
-
                 Run_LaserHeightSensorSocket_Func();
                 Run_Flatness_Measurement_Func();
 
@@ -12022,7 +12024,6 @@ namespace QMC.Common.Modules
 
                 case (int)LaserHeightSensorSocket_Step.Socket_Pause_Check:
 
-
                     m_nLaserHeightSensorSocketStep = (int)LaserHeightSensorSocket_Step.LaserHeightSensorSocket_Read;
                     break;
 
@@ -12039,13 +12040,11 @@ namespace QMC.Common.Modules
                         LaserSensor_Socket_ReadValue();
 
                         TickCount_Start((int)TickType.TICK_LASER_HEIGHT_SENSOR);
-
                         m_nLaserHeightSensorSocketStep = (int)LaserHeightSensorSocket_Step.LaserHeightSensorSocket_Received;
                     }
                     else
                     {
                         m_nLaserHeightSensorSocketStep = (int)LaserHeightSensorSocket_Step.None;
-
                         MessageBox.Show("Laser Height Sensor Socket Not Opened.", "Error");
                     }
                     break;
@@ -12067,14 +12066,23 @@ namespace QMC.Common.Modules
 
                             //  데이터 구분
                             string[] LaserSensorData = m_strData.Split(',');
-
                             if (LaserSensorData.Length > 1)
                             {
-                                //  값을 읽었을 때
-                                m_dLaserHeightSensorSocket_Value = Equipment.ToDouble(LaserSensorData[1]);
-
-                                //label_CommunicationTerminal_ReceivedData.Text = string.Format("Laser Height Sensor Value : {0}", );
-                                m_strLaserSensorSocket_ReceivedData = "";
+                                if(m_bSensorRequestPending &&
+                                   Equipment.AutoManualStatus &&
+                                   (Equipment.AutoRunStatus || Equipment.AutoManualStatus))
+                                {
+                                    m_dLaserHeightSensorSocket_Value = Equipment.ToDouble(LaserSensorData[1]);
+                                    m_bSensorResponseReady = true;
+                                    m_bSensorRequestPending = false;
+                                }
+                                else if(!Equipment.AutoManualStatus)
+                                {
+                                    // 값을 읽었을 때
+                                    m_dLaserHeightSensorSocket_Value = Equipment.ToDouble(LaserSensorData[1]);
+                                    //label_CommunicationTerminal_ReceivedData.Text = string.Format("Laser Height Sensor Value : {0}", );
+                                    m_strLaserSensorSocket_ReceivedData = "";
+                                }
                             }
                             else if (LaserSensorData.Length == 1)
                             {
@@ -12374,7 +12382,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", m_strTemp);
 
                         m_nFlatnessMeasure_Count++;     //  다음위치
-
                         m_nHeightValue_OK_Count++;                                                                                  //  Data OK Count
 
                         m_dHeightValue_Min_Value = Math.Min(m_dHeightValue_Min_Value, m_dLaserHeightSensorSocket_Value);            //  Height Value Min
@@ -18672,11 +18679,18 @@ namespace QMC.Common.Modules
                     {
                         if (TickCount_Elapsed((int)TickType.TICK_MAIN) > Equipment.Machine_LaserHeightCheckStableTime)
                         {
+
+                            m_bSensorRequestPending = true;
+                            m_bSensorResponseReady = false;
+                            TickCount_Start((int)TickType.TICK_MAIN);
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
                         }
                     }
                     else //Enable ; false 시에 안정화 시간 없이 값 읽어옴.
                     {
+                        m_bSensorRequestPending = true;
+                        m_bSensorResponseReady = false;
+                        TickCount_Start((int)TickType.TICK_MAIN);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
                     }
                     break;
@@ -18684,9 +18698,20 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get:                                                    //  Laser Height Sensor 값 읽기
 
+                    if (!m_bSensorResponseReady)
+                    {
+                        // 아직 응답 안옴 → 대기 or 타임아웃 처리
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 1000)
+                        {
+                            //알람 처리 해야 할 수도.
+                            m_dZOffset_SocketHeightCheck = 0.0;
+                        }
+                        break;
+                    }
+                    m_bSensorResponseReady = false; // 응답 소비 완료
+
                     //  Laser Focus 위치에서 Laser Height 값과, 현재 Laser Height Sensor 값의 차이만큼 가공 높이 보정
                     //m_dZOffset_SocketHeightCheck = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition - m_dLaserHeightSensorSocket_Value;
-
                     //  Laser Height Sensor 값은, 제품이 두꺼워질 수록 값이 커지고, 얇아질 수록 값이 작아짐.
                     // Limit값 파라미터로 빼야함.
                     if ((m_dLaserHeightSensorSocket_Value < -4.5) || (m_dLaserHeightSensorSocket_Value > 5.5) || (m_dLaserHeightSensorSocket_Value < -99.9))
@@ -18760,7 +18785,7 @@ namespace QMC.Common.Modules
                         }
                     }
 
-                    //  소켓 얼라인을 하지 않을 경우, 여기서 바로 가공 높이로 보정 이동
+                    //  소켓 얼라인을 하지 않을 경우, 여기서 바로 가공 높이로 보정 이동.
                     if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
                     {
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move;
