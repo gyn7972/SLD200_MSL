@@ -1323,12 +1323,9 @@ namespace QMC.Common.Parts
         public int DO_AirCurtain_Purge(bool m_bOnOff)
         {
             int nRet = 0;
-
             DioPoint dioString = null;
-
             //  해당 채널 출력 성공 여부 리턴
             dioString = m_dicDioPoints[DioPointKey.Output_AirCurtainPurge.ToString()];
-
             if (dioString == null) return -1;
 
             //m_bOnOff 바뀌어 있음. :: 여기서 바꿔서 넣자. Is도 해줘야 하네.
