@@ -486,7 +486,6 @@ namespace SLD200_MSL
 
             /////////////////////////////////////////////////////////////////////////////////////
             /// VarioScan
-            /// 
             float? zOffset = bds.CurrentRtcZOffset;
             float? zDefocus = bds.CurrentRtcZDefocus;
             label_VarioScan_Z_Offset_Pos.Text = string.Format("{0:0.00000}", zOffset.HasValue ? zOffset.Value : 0.0f);

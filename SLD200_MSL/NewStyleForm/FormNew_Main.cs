@@ -47,6 +47,7 @@ using netDxf;
 using netDxf.Tables;
 using Vector2 = System.Numerics.Vector2;
 using Layer = SpiralLab.Sirius.Layer;
+using static QMC.Common.Vision.EureSys.GenICam;
 
 namespace SLD200_MSL
 {
@@ -1107,7 +1108,9 @@ namespace SLD200_MSL
         // -----------------------
         private void DoHeavyLogicPart()
         {
-            if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
+            //HomeStep 실패 시에도 ProcessForm을 닫아야 한다.
+            if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close) ||
+                workStage.m_nHomeStep == (int)WorkStage.Home_Step.Fail)
             {
                 workStage.m_bHomeProgressForm_Close = false;
                 m_bHomeProgress_Show = false;
@@ -1184,17 +1187,16 @@ namespace SLD200_MSL
                 return;
             }
 
+            // 이거 안해도 될거 같은데.
+            //if (workStage.Camera_HighRes.Opened)
+            //{
+            //    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+            //}
 
-                // 이거 안해도 될거 같은데.
-                //if (workStage.Camera_HighRes.Opened)
-                //{
-                //    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
-                //}
-
-                //if (workStage.jigAligner_LowRes.Camera.Opened)
-                //{
-                //    ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
-                //}
+            //if (workStage.jigAligner_LowRes.Camera.Opened)
+            //{
+            //    ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
+            //}
 
             UpdateCycleTimerUI();
             Motor_Position2();
@@ -1215,12 +1217,9 @@ namespace SLD200_MSL
                     }
                     else
                     {
-
                         m_FormProgress.Hide();
                     }
-                   
-                }    
-                
+                }
             }
 
             if (m_NeedDocumentSync)
@@ -1273,7 +1272,6 @@ namespace SLD200_MSL
             SetValue(label_Main_LaserStatus, strText);
             Color backcolor = workStage.GetLaserBusyStatus() ? Color.Red : Color.Black;
             Color foreColor = workStage.GetLaserBusyStatus() ? Color.White : Color.Lime;
-
             SetColor(label_Main_LaserStatus, backcolor, foreColor);
 
             strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
@@ -1347,10 +1345,12 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus)
             {
                 SetColor(button_Main_Start, Color.Lime, Color.Black);
+                
             }
             else
             {
                 SetColor(button_Main_Start, System.Drawing.SystemColors.Control, Color.Black);
+                
             }
 
             if (workStage.m_bForceEjectRequest)
@@ -1372,8 +1372,17 @@ namespace SLD200_MSL
                 SetColor(button_Main_ManualStart, System.Drawing.SystemColors.Control, Color.Black);
             }
 
-            // 장비 상태 UI에 반영
-            UpdateDeviceStatusImages();
+            if (Equipment.AutoRunStatus || Equipment.ManualRunStatus)
+            {
+                SetEnable(button_Main_Reset, false);
+            }
+            else
+            {
+                SetEnable(button_Main_Reset, true);
+            }
+
+                // 장비 상태 UI에 반영
+                UpdateDeviceStatusImages();
         }
 
         
@@ -1402,9 +1411,11 @@ namespace SLD200_MSL
             //    var mb1 = new MessageBoxOk();
             //    mb1.ShowDialog("Information !", "먼저 로그인 하십시오.");
             //    return;
-            //}
+            //}  Home_Step.Fail
 
-            if (workStage.m_nHomeStep == (int)WorkStage.Home_Step.None)
+            //Fail일때도 다시 홈을 실행할 수 있도록 변경
+            if (workStage.m_nHomeStep == (int)WorkStage.Home_Step.None ||
+                workStage.m_nHomeStep == (int)WorkStage.Home_Step.Fail  )
             {
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "장비를 초기화 하시겠습니까?"))
@@ -3384,6 +3395,10 @@ namespace SLD200_MSL
                 workStage.m_nFindAlignMark_Step = (int)WorkStage.FindAlignMark_Step.None;
                 workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
 
+                workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.X, 2000);
+                workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Y, 2000);
+                workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Z, 2000);
+
                 workStage.laser.Rtc.CtlAbort();             //  실행중인 리스트 명령(busy 상태를)을 강제 종료
                 Thread.Sleep(2000);
                 workStage.laser.Rtc.CtlReset();             //  에러 해제
@@ -4289,8 +4304,6 @@ namespace SLD200_MSL
 
                 string inputText = GetValue(baseTextBox_SocketCountPerModule);
 
-                //SetValue(baseTextBox_Module_TotalCount, 
-
                 SetValue(baseTextBox_Module_TotalCount, workStage.DrillingManager.CycleTimer_DoneModuleCount.ToString());
 
                 int nSocketCnt = inputText == "" ? 0 : ToInt(inputText);
@@ -4413,6 +4426,23 @@ namespace SLD200_MSL
                 control.Checked = value;
             }
         }
+        private void SetEnable(System.Windows.Forms.Control control, bool isEnable)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetEnable(control, isEnable);
+                }));
+            }
+            else
+            {
+                control.Enabled = isEnable;
+            }
+        }
+
+
 
         private void button_Module_WaitTime_sec_Click(object sender, EventArgs e)
         {

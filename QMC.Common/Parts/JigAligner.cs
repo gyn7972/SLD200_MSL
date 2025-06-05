@@ -450,7 +450,6 @@ namespace QMC.Common.Parts
                         }
                         else if(Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                         {
-
                             double dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
                             double dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
                             double dRadius = m_dRadius[0];
