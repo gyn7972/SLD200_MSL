@@ -196,10 +196,17 @@ namespace QMC.Common.Parts
             try
             {
                 _lastReceivedData += _serialPort.ReadExisting();
-                if (_lastReceivedData.Contains(((char)0x04).ToString()))
+                Log.Write("DustCollector", $"[RAW RX] {_lastReceivedData}");
+
+                // 응답은 항상 STX(0x06)로 시작, EOT(0x04)로 끝남
+                int start = _lastReceivedData.IndexOf((char)0x06);
+                int end = _lastReceivedData.IndexOf((char)0x04, start + 1);
+
+                if (start >= 0 && end > start)
                 {
-                    _dataReceived = _lastReceivedData.StartsWith(((char)0x06).ToString());
-                    _lastReceivedData = _lastReceivedData.Trim((char)0x06, (char)0x04);
+                    string packet = _lastReceivedData.Substring(start + 1, end - start - 1); // 사이 내용만
+                    _lastReceivedData = packet;
+                    _dataReceived = true;
                     _receiveEvent.Set();
                 }
             }
@@ -207,6 +214,21 @@ namespace QMC.Common.Parts
             {
                 Log.Write("DustCollector", $"[G100] RX Error: {ex.Message}");
             }
+
+            //try
+            //{
+            //    _lastReceivedData += _serialPort.ReadExisting();
+            //    if (_lastReceivedData.Contains(((char)0x04).ToString()))
+            //    {
+            //        _dataReceived = _lastReceivedData.StartsWith(((char)0x06).ToString());
+            //        _lastReceivedData = _lastReceivedData.Trim((char)0x06, (char)0x04);
+            //        _receiveEvent.Set();
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Write("DustCollector", $"[G100] RX Error: {ex.Message}");
+            //}
         }
 
         private string ExtractData(string response)
