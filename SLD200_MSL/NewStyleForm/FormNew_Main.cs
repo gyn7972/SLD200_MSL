@@ -4354,10 +4354,10 @@ namespace SLD200_MSL
         {
             //workStage.workStageParameter.DO_AirCurtain_Purge(true);
 
-            double freq = 0.0;
-            bds.DustCollector_Upper.GetFrequency(out freq);
+            //double freq = 0.0;
+            //bds.DustCollector_Upper.GetFrequency(out freq);
 
-            return;
+            
             string strTemp = "";
             double offsetX = 0.0, offsetY = 0.0;
 
