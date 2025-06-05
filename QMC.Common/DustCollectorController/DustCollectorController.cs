@@ -105,7 +105,7 @@ namespace QMC.Common.Parts
         public bool GetFrequency(out double freqHz)
         {
             freqHz = 0.0;
-            if (!SendRead("000A", out string raw))
+            if (!SendRead("0005", out string raw))
                 return false;
 
             string data = ExtractData(raw);
@@ -136,6 +136,9 @@ namespace QMC.Common.Parts
         private bool SendWrite(string address, string data)
         {
             string cmd = BuildWriteCommand(address, data, 1);
+
+            Log.Write("DustCollector", $"[TX] {cmd}");
+
             return SendAndWaitForAck(cmd);
         }
 

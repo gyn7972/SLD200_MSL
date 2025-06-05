@@ -3534,6 +3534,7 @@ namespace SLD200_MSL
         
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            //workStage.workStageParameter.DO_AirCurtain_Purge(false);
             return;
             workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
 
@@ -4351,6 +4352,11 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            //workStage.workStageParameter.DO_AirCurtain_Purge(true);
+
+            double freq = 0.0;
+            bds.DustCollector_Upper.GetFrequency(out freq);
+
             return;
             string strTemp = "";
             double offsetX = 0.0, offsetY = 0.0;
