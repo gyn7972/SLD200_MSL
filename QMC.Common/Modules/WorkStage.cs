@@ -8019,6 +8019,7 @@ namespace QMC.Common.Modules
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "UseMaskImage", Equipment.Scanner_Calibration_PatternMatchingParameters.UseMaskImage.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_01", Equipment.Scanner_Calibration_Illumination_channel_01_Value.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_02", Equipment.Scanner_Calibration_Illumination_channel_02_Value.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "ExposureTime_High", Equipment.Scanner_Calibration_ExposureTime_High.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "UsePatternMatching", Equipment.Scanner_Calibration_UsePatternMatching.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "UseBlobVisionTool", Equipment.Scanner_Calibration_UseBlobVisionTool.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "MarkType_Cross", Equipment.Scanner_Calibration_MarkType_Cross.ToString(), strFIle);
@@ -8028,6 +8029,7 @@ namespace QMC.Common.Modules
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Polarity", Equipment.Scanner_Calibration_BlobVisionToolParameter.Polarity.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "RepeatCount", Equipment.Scanner_Calibration_BlobVisionToolParameter.RepeatCount.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "HasChanged", Equipment.Scanner_Calibration_BlobVisionToolParameter.HasChanged.ToString(), strFIle);
+
 
         }
 
@@ -37853,10 +37855,15 @@ namespace QMC.Common.Modules
 
                         int ch1Val = Equipment.Scanner_Calibration_Illumination_channel_01_Value;
                         int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
+                        int exposureTime = Equipment.Scanner_Calibration_ExposureTime_High;
                         SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
                         Thread.Sleep(100);
                         SetLightingByChannel(LightingChannel.FineCamRed, ch1Val);
                         SetLightingByChannel(LightingChannel.FineCamIR, ch2Val);
+
+                        // 카메라 노출 설정
+                        jigAligner_HighRes.Camera.SetExposureTime(exposureTime);
+                        
 
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Laser_Off;
                         Log.Write("SLD-200", "Scanner Calibration", "Laser&Scanner Calibration Start");
@@ -38872,10 +38879,14 @@ namespace QMC.Common.Modules
                         // Todo : 조명 디버깅 필요 
                         int ch1Val = Equipment.Scanner_Calibration_Illumination_channel_01_Value;
                         int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
+                        int exposureTime = Equipment.Scanner_Calibration_ExposureTime_High;
                         SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
                         Thread.Sleep(100);
                         SetLightingByChannel(Equipment.LightingChannel.FineCamRed, ch1Val);
                         SetLightingByChannel(Equipment.LightingChannel.FineCamIR, ch2Val);
+
+                        // 카메라 노출 설정
+                        jigAligner_HighRes.Camera.SetExposureTime(exposureTime);
 
                         XyzCoordinate currentPos = new XyzCoordinate();
                         if (scannerCompensator == null || scannerCompensator.Stage == null)

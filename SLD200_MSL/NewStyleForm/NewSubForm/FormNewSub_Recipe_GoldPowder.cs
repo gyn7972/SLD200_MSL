@@ -544,5 +544,14 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.Camera_HighRes.StartLive();
             }
         }
+
+        private void button_Recipe_GoldPowder_Camera_ExposureTime_Click(object sender, EventArgs e)
+        {
+            double dExposureTime = Equipment.ToDouble(textBox_Recipe_GoldPowder_Camera_ExposureTime.Text);
+            if (workStage.jigAligner_HighRes.Camera.Opened)
+            {
+                workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
+            }
+        }
     }
 }

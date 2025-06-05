@@ -1533,8 +1533,12 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_RecipeVision_Camera_ExposureTime_Click(object sender, EventArgs e)
         {
-            double dExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_High.Text);//Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
-            workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
+            double dExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_High.Text);
+            if (workStage.jigAligner_HighRes.Camera.Opened)
+            {
+
+                workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
+            }
         }
 
         private void button_RecipeVision_AxisZ_Setting_Click(object sender, EventArgs e)
@@ -1577,7 +1581,10 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void button_RecipeVision_Camera_ExposureTime_Low_Click(object sender, EventArgs e)
         {
             double dExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);//Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
-            workStage.jigAligner_LowRes.Camera.SetExposureTime(dExposureTime);
+            if (workStage.jigAligner_LowRes.Camera.Opened)
+            {
+                workStage.jigAligner_LowRes.Camera.SetExposureTime(dExposureTime);
+            }
         }
     }
 }
