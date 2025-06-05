@@ -2724,9 +2724,10 @@ namespace QMC.Common.Modules
 
 
         public int m_nLaserHeightSensorSocketStep { set; get; }
-
         public int m_nLaserHeightSensorSocketRecvData_CR_Count { set; get; }
         public double m_dLaserHeightSensorSocket_Value { set; get; }
+        private bool m_bSensorRequestPending = false;   // 요청 보냄
+        private bool m_bSensorResponseReady = false;    // 응답 받음
 
         //public bool m_bLaserHeightSensorSocket_Paused { get; set; }                       //  Laser Height Sensor Socket func. 이 Pause 상태인지?
 
@@ -7682,6 +7683,8 @@ namespace QMC.Common.Modules
 
         #region Socket - Laser Height Sensor
 
+        //CL-3000 Model
+
         public void LaserSensor_Socket_Connect()
         {
             string m_strIP = "127.0.0.1";
@@ -8741,7 +8744,6 @@ namespace QMC.Common.Modules
                 Run_BETComm_Func();
                 Run_LaserComm_Func();
                 Run_EPROComm_Func();
-
                 Run_LaserHeightSensorSocket_Func();
                 Run_Flatness_Measurement_Func();
 
@@ -9636,11 +9638,12 @@ namespace QMC.Common.Modules
                         //  진공레귤레이터도 Off --> 한번에 꺼질란가???
                         ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);                       //  가장 낮은 값이 -1.3
 
+                        m_bHomeOK = false;
+                        m_bHomeProgressForm_Close = true;
+                        m_nHomeStep = (int)Home_Step.Fail;
 
                         AlarmPost(AlarmKey.Home_LoaderPicker_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Loader Picker Vacuum Off Fail");
-
-                        m_nHomeStep = (int)Home_Step.Fail;
                     }
                     //Stage 진공 체크
                     else if (workStageParameter.DI_Stage_Vacuum_Check() && (m_dEPRO_Value < -12.0))              //  모듈이 없을 때 EPRO 에 얼마나 인가되는지 확인 후 변경
@@ -9654,11 +9657,12 @@ namespace QMC.Common.Modules
                         //  진공레귤레이터도 Off --> 한번에 꺼질란가???
                         ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);                       //  가장 낮은 값이 -1.3
 
+                        m_bHomeOK = false;
+                        m_bHomeProgressForm_Close = true;
+                        m_nHomeStep = (int)Home_Step.Fail;
 
                         AlarmPost(AlarmKey.Home_MainStage_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Stage Vacuum Off Fail");
-
-                        m_nHomeStep = (int)Home_Step.Fail;
                     }
                     //Unloader 진공 체크    
                     else if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
@@ -9673,11 +9677,12 @@ namespace QMC.Common.Modules
                         //  진공레귤레이터도 Off --> 한번에 꺼질란가???
                         ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);                       //  가장 낮은 값이 -1.3
 
+                        m_bHomeOK = false;
+                        m_bHomeProgressForm_Close = true;
+                        m_nHomeStep = (int)Home_Step.Fail;
 
                         AlarmPost(AlarmKey.Home_UnloaderPicker_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Unloader Picker Vacuum Off Fail");
-
-                        m_nHomeStep = (int)Home_Step.Fail;
                     }
                     else
                     {
@@ -9713,7 +9718,6 @@ namespace QMC.Common.Modules
                     unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, false);
                     unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, false);
 
-                    
                     //  Stage Vacuum 이 한번에 안꺼지는 경우가 있어서 한번 더 한다.
                     Thread.Sleep(500);
 
@@ -9723,7 +9727,6 @@ namespace QMC.Common.Modules
 
                     //  진공레귤레이터도 Off --> 요번엔 꺼질란가???
                     ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);                       //  가장 낮은 값이 -1.3
-
 
                     m_nHomeStep = (int)Home_Step.AxisAlarmCheck;
 
@@ -9858,11 +9861,13 @@ namespace QMC.Common.Modules
                         Equipment.MachineStop_byAlarm = true;
 
                         timer_Motion_Home.Enabled = false;
+
                         m_btimer_Motion_Home_Stop = true;
 
                         m_bHomeProgressForm_Close = true;
 
                         m_nHomeStep = (int)Home_Step.None;
+                        //m_nHomeStep = (int)Home_Step.Fail;
 
                         MessageBox.Show("Aligner X 축 0.1mm 이동 검증 실패.\r\n\r\n[장비 초기화 금지!!  지령값 확인 필요!!!]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -12019,7 +12024,6 @@ namespace QMC.Common.Modules
 
                 case (int)LaserHeightSensorSocket_Step.Socket_Pause_Check:
 
-
                     m_nLaserHeightSensorSocketStep = (int)LaserHeightSensorSocket_Step.LaserHeightSensorSocket_Read;
                     break;
 
@@ -12036,13 +12040,11 @@ namespace QMC.Common.Modules
                         LaserSensor_Socket_ReadValue();
 
                         TickCount_Start((int)TickType.TICK_LASER_HEIGHT_SENSOR);
-
                         m_nLaserHeightSensorSocketStep = (int)LaserHeightSensorSocket_Step.LaserHeightSensorSocket_Received;
                     }
                     else
                     {
                         m_nLaserHeightSensorSocketStep = (int)LaserHeightSensorSocket_Step.None;
-
                         MessageBox.Show("Laser Height Sensor Socket Not Opened.", "Error");
                     }
                     break;
@@ -12064,14 +12066,23 @@ namespace QMC.Common.Modules
 
                             //  데이터 구분
                             string[] LaserSensorData = m_strData.Split(',');
-
                             if (LaserSensorData.Length > 1)
                             {
-                                //  값을 읽었을 때
-                                m_dLaserHeightSensorSocket_Value = Equipment.ToDouble(LaserSensorData[1]);
-
-                                //label_CommunicationTerminal_ReceivedData.Text = string.Format("Laser Height Sensor Value : {0}", );
-                                m_strLaserSensorSocket_ReceivedData = "";
+                                if(m_bSensorRequestPending &&
+                                   Equipment.AutoManualStatus &&
+                                   (Equipment.AutoRunStatus || Equipment.AutoManualStatus))
+                                {
+                                    m_dLaserHeightSensorSocket_Value = Equipment.ToDouble(LaserSensorData[1]);
+                                    m_bSensorResponseReady = true;
+                                    m_bSensorRequestPending = false;
+                                }
+                                else if(!Equipment.AutoManualStatus)
+                                {
+                                    // 값을 읽었을 때
+                                    m_dLaserHeightSensorSocket_Value = Equipment.ToDouble(LaserSensorData[1]);
+                                    //label_CommunicationTerminal_ReceivedData.Text = string.Format("Laser Height Sensor Value : {0}", );
+                                    m_strLaserSensorSocket_ReceivedData = "";
+                                }
                             }
                             else if (LaserSensorData.Length == 1)
                             {
@@ -12371,7 +12382,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", m_strTemp);
 
                         m_nFlatnessMeasure_Count++;     //  다음위치
-
                         m_nHeightValue_OK_Count++;                                                                                  //  Data OK Count
 
                         m_dHeightValue_Min_Value = Math.Min(m_dHeightValue_Min_Value, m_dLaserHeightSensorSocket_Value);            //  Height Value Min
@@ -16888,6 +16898,10 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 완료 확인");
 
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
                         //  가공할 차례의 Socket 위치에 왔으니 Object 카운트 변수를 초기화 한다. 
                         m_nThruHole_ObjectDataCount = 0;
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck;
@@ -17221,6 +17235,10 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline Layer Z Offset 이동 완료 확인");
 
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
                         //  가공할 차례의 Socket 위치에 왔으니 Object 카운트 변수를 초기화 한다. 
                         m_nOutLine_ObjectDataCount = 0;
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck;
@@ -17547,6 +17565,10 @@ namespace QMC.Common.Modules
                         MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Marking Layer Z Offset 이동 완료 확인");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos;
                     }
@@ -18076,14 +18098,14 @@ namespace QMC.Common.Modules
                         int m_nIncreaseStep = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep;
                         if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
                         {
-                            m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+                            //m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
                         }
                         else                                                                            //  Serial Number Data
                         {
                             //  Prefix 있으면 붙이고
                             if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData.Length > 0)
                             {
-                                m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+                                //m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
                             }
 
                             //  중요!!
@@ -18273,6 +18295,10 @@ namespace QMC.Common.Modules
                         MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Layer Z Offset 이동 완료 확인");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
 
                         if (Equipment.Machine_LaserType_CO2)
                         {
@@ -18653,11 +18679,18 @@ namespace QMC.Common.Modules
                     {
                         if (TickCount_Elapsed((int)TickType.TICK_MAIN) > Equipment.Machine_LaserHeightCheckStableTime)
                         {
+
+                            m_bSensorRequestPending = true;
+                            m_bSensorResponseReady = false;
+                            TickCount_Start((int)TickType.TICK_MAIN);
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
                         }
                     }
                     else //Enable ; false 시에 안정화 시간 없이 값 읽어옴.
                     {
+                        m_bSensorRequestPending = true;
+                        m_bSensorResponseReady = false;
+                        TickCount_Start((int)TickType.TICK_MAIN);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
                     }
                     break;
@@ -18665,9 +18698,20 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get:                                                    //  Laser Height Sensor 값 읽기
 
+                    if (!m_bSensorResponseReady)
+                    {
+                        // 아직 응답 안옴 → 대기 or 타임아웃 처리
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 1000)
+                        {
+                            //알람 처리 해야 할 수도.
+                            m_dZOffset_SocketHeightCheck = 0.0;
+                        }
+                        break;
+                    }
+                    m_bSensorResponseReady = false; // 응답 소비 완료
+
                     //  Laser Focus 위치에서 Laser Height 값과, 현재 Laser Height Sensor 값의 차이만큼 가공 높이 보정
                     //m_dZOffset_SocketHeightCheck = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition - m_dLaserHeightSensorSocket_Value;
-
                     //  Laser Height Sensor 값은, 제품이 두꺼워질 수록 값이 커지고, 얇아질 수록 값이 작아짐.
                     // Limit값 파라미터로 빼야함.
                     if ((m_dLaserHeightSensorSocket_Value < -4.5) || (m_dLaserHeightSensorSocket_Value > 5.5) || (m_dLaserHeightSensorSocket_Value < -99.9))
@@ -18677,6 +18721,8 @@ namespace QMC.Common.Modules
                     else
                     {
                         m_dZOffset_SocketHeightCheck = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                        //m_dZOffset_SocketHeightCheck *= -1; // 변위센서는 상부가 원점이다. Z축모터도 상부가 원점이다.
+                        // 변위센서 값이 - 부호에서 - 부호를 빼면 Z축이 위로 올라가야 하므로 부호가 반대로 먹어야 한다.
                     }
 
                     //  Laser Height Sensor 값을 파일로 저장
@@ -18739,7 +18785,7 @@ namespace QMC.Common.Modules
                         }
                     }
 
-                    //  소켓 얼라인을 하지 않을 경우, 여기서 바로 가공 높이로 보정 이동
+                    //  소켓 얼라인을 하지 않을 경우, 여기서 바로 가공 높이로 보정 이동.
                     if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
                     {
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move;
@@ -18765,6 +18811,11 @@ namespace QMC.Common.Modules
                         MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Socket 가공 Focus 조정 완료.");
+
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
 
                         //  소켓 얼라인을 하지 않으므로 바로 가공하러 이동
                         //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Complete;
@@ -18834,7 +18885,11 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 완료.");
 
-                        if(m_bPreAlignCompleted)
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
+                        if (m_bPreAlignCompleted)
                         {
                             m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
@@ -19749,6 +19804,10 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 가공 높이로 조정 완료.");
 
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Complete;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
@@ -20058,6 +20117,10 @@ namespace QMC.Common.Modules
                         MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Layer Z Offset 이동 완료 확인");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
 
                         //  UV Laser 일 경우만
                         if (Equipment.Machine_LaserType_CO2)
@@ -24924,6 +24987,7 @@ namespace QMC.Common.Modules
             //  성부장 작업
             switch (m_LayerType)
             {
+                //0605--
                 case LayerType.LAYER_DRILLING:
                     m_dOffset = m_dHoleLayer_Defocusing;
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
@@ -38547,6 +38611,8 @@ namespace QMC.Common.Modules
                         else
                         {
                             m_dZOffset_SocketHeightCheck = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                            m_dZOffset_SocketHeightCheck *= -1; // 변위센서는 상부가 원점이다. Z축모터도 상부가 원점이다.
+                                                                // 변위센서 값이 - 부호에서 - 부호를 빼면 Z축이 위로 올라가야 하므로 부호가 반대로 먹어야 한다.
                         }
 
                         Log.Write("SLD-200", "ScannerCalibration", $"변위Data: Z={m_dZOffset_SocketHeightCheck}");
@@ -38580,6 +38646,10 @@ namespace QMC.Common.Modules
                             vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
                             m_dZOffset_SocketHeightCheck + m_dHeightOffsetScanner))
                         {
+                            double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                                $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout * 5)
@@ -38807,6 +38877,10 @@ namespace QMC.Common.Modules
                             vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
                             m_dZOffset_SocketHeightCheck + m_dHeightOffsetVision))
                         {
+                            double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                                $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
                             //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
                         }

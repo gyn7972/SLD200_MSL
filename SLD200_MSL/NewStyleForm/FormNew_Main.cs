@@ -775,7 +775,7 @@ namespace SLD200_MSL
             }
 
             //  Dust Collector (Lower Position)
-            if (bds.DustCollector_Lower.IsConnected)
+            if (!bds.DustCollector_Lower.IsConnected)
             {
                 bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower);
             }
@@ -1108,7 +1108,9 @@ namespace SLD200_MSL
         // -----------------------
         private void DoHeavyLogicPart()
         {
-            if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
+            //HomeStep 실패 시에도 ProcessForm을 닫아야 한다.
+            if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close) ||
+                workStage.m_nHomeStep == (int)WorkStage.Home_Step.Fail)
             {
                 workStage.m_bHomeProgressForm_Close = false;
                 m_bHomeProgress_Show = false;
@@ -1321,8 +1323,8 @@ namespace SLD200_MSL
             SetValue(label_Title_Stacker_LPort,Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
             SetColor(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? Color.Red : Color.Black, Equipment.Loader_LPort_Empty ? Color.White : Color.Lime);
 
-            SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
-            SetColor(label_Title_Stacker_LPort, Equipment.Loader_RPort_Empty ? Color.Red : Color.Black, Equipment.Loader_LPort_Empty ? Color.White : Color.Lime);
+            SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 없음." : "Loader_Stacker Right: 자재 있음.");
+            SetColor(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? Color.Red : Color.Black, Equipment.Loader_RPort_Empty ? Color.White : Color.Lime);
 
             //  소켓 가공 건너뛰기 (얼라인만 사용)
             SetColor(checkBox_Main_SocketDrilling_Pass, Equipment.SocketDrilling_Skip ? Color.LightGreen : Color.LightGreen);
@@ -1409,9 +1411,11 @@ namespace SLD200_MSL
             //    var mb1 = new MessageBoxOk();
             //    mb1.ShowDialog("Information !", "먼저 로그인 하십시오.");
             //    return;
-            //}
+            //}  Home_Step.Fail
 
-            if (workStage.m_nHomeStep == (int)WorkStage.Home_Step.None)
+            //Fail일때도 다시 홈을 실행할 수 있도록 변경
+            if (workStage.m_nHomeStep == (int)WorkStage.Home_Step.None ||
+                workStage.m_nHomeStep == (int)WorkStage.Home_Step.Fail  )
             {
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "장비를 초기화 하시겠습니까?"))

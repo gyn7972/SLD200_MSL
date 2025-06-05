@@ -83,8 +83,8 @@ namespace QMC.Common.Parts
             ok &= SendWrite("0006", "0002");
             Thread.Sleep(10);
             ok &= SendWrite("0007", "0001");
-            Thread.Sleep(10);
-            ok &= SetFrequency(60);
+            //Thread.Sleep(10);
+            //ok &= SetFrequency(60);
             return ok;
         }
 
