@@ -55,6 +55,13 @@ namespace SLD200_MSL
             set { m_FormcalfilePopup = value; }
         }
 
+        FormNew_VerifyScannerCameraOffset m_FormVerifyScannerVisionOffsetPopup;
+        public FormNew_VerifyScannerCameraOffset FormVerifyScannerVisionOffsetPopup
+        {
+            get { return m_FormVerifyScannerVisionOffsetPopup; }
+            set { m_FormVerifyScannerVisionOffsetPopup = value; }
+        }
+
         private bool m_bBET_Status_1time = false;               //  프로그램 구동 후 BET Zoom, Mrad 위치값을 세팅 edit 에 1회만 표시하기 위한 Flag
 
         private bool m_bEmgBtn_Clicked = false;
@@ -103,6 +110,9 @@ namespace SLD200_MSL
 
             m_FormcalfilePopup = new FormNew_CalFilePopup();
             m_FormcalfilePopup.Owner = this;
+
+            m_FormVerifyScannerVisionOffsetPopup = new FormNew_VerifyScannerCameraOffset();
+            m_FormVerifyScannerVisionOffsetPopup.Owner = this;
 
             m_keyPad = new FormNew_KeyPad();
 
@@ -5942,6 +5952,15 @@ namespace SLD200_MSL
             textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
             textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";
             MessageBox.Show("Vario Scan - Z Offset & Z Defocus 값이 초기화 되었습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void button_Config_TabLaser_ScannerVisionOffset_Click(object sender, EventArgs e)
+        {
+            if (!FormVerifyScannerVisionOffsetPopup.Visible)
+            {
+                FormVerifyScannerVisionOffsetPopup.Show();
+                FormVerifyScannerVisionOffsetPopup.Activate();
+            }
         }
     }
 }

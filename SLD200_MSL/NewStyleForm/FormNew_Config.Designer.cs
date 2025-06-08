@@ -590,6 +590,7 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
+            this.button_Config_TabLaser_ScannerVisionOffset = new System.Windows.Forms.Button();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -4978,6 +4979,7 @@
             // 
             // tabPage_Config_Laser
             // 
+            this.tabPage_Config_Laser.Controls.Add(this.button_Config_TabLaser_ScannerVisionOffset);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox_MotorizedBET);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox_VarioScan);
             this.tabPage_Config_Laser.Controls.Add(this.button_Config__TabLaser_CalFilePopup);
@@ -8114,6 +8116,18 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // button_Config_TabLaser_ScannerVisionOffset
+            // 
+            this.button_Config_TabLaser_ScannerVisionOffset.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_TabLaser_ScannerVisionOffset.Location = new System.Drawing.Point(474, 79);
+            this.button_Config_TabLaser_ScannerVisionOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_TabLaser_ScannerVisionOffset.Name = "button_Config_TabLaser_ScannerVisionOffset";
+            this.button_Config_TabLaser_ScannerVisionOffset.Size = new System.Drawing.Size(172, 46);
+            this.button_Config_TabLaser_ScannerVisionOffset.TabIndex = 83;
+            this.button_Config_TabLaser_ScannerVisionOffset.Text = "ScannerVisionOffset";
+            this.button_Config_TabLaser_ScannerVisionOffset.UseVisualStyleBackColor = true;
+            this.button_Config_TabLaser_ScannerVisionOffset.Click += new System.EventHandler(this.button_Config_TabLaser_ScannerVisionOffset_Click);
+            // 
             // FormNew_Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -8828,5 +8842,6 @@
         private System.Windows.Forms.Label textBox_Config_BDS_BET_Zoom;
         private System.Windows.Forms.Label label56;
         private System.Windows.Forms.Label label49;
+        private System.Windows.Forms.Button button_Config_TabLaser_ScannerVisionOffset;
     }
 }

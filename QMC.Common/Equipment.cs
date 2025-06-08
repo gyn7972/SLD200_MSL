@@ -55,7 +55,8 @@ namespace QMC.Common
         {
             FineCamRed = 1,
             FineCamIR = 2,
-            CoarseCamIR = 3
+            CoarseCamIR = 3,
+            CoarseCamRed = 4
         }
 
         public enum AlignMode
@@ -3294,6 +3295,8 @@ namespace QMC.Common
         public static float m_fDividedX { set; get; } = 0.0f;
         public static float m_fDividedY { set; get; } = 0.0f;
         public static bool m_bDivided { set; get; } = false;
+
+        public static List<BoundRect> LastDividedRects = new List<BoundRect>();
 
     }
 }

@@ -73,6 +73,7 @@ using static QMC.Common.Global.HoleAlignHelper;
 using System.Net.Sockets;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using netDxf.Tables;
+using QMC.Common.Q_Sequence;
 
 
 namespace QMC.Common.Modules
@@ -4014,6 +4015,10 @@ namespace QMC.Common.Modules
             Complete                                            //  완료
         }
 
+
+        public Sequence_VerifyScannerCameraOffset m_ScannerCameraOffsetSequence { get; set; }
+
+
         #region Constructor
         public WorkStage(string strName) : base(strName)
         {
@@ -4316,6 +4321,9 @@ namespace QMC.Common.Modules
 
 
             m_bPassedSocket_Exist = false;
+
+
+            m_ScannerCameraOffsetSequence = new Sequence_VerifyScannerCameraOffset();
 
         }
 
@@ -14008,6 +14016,8 @@ namespace QMC.Common.Modules
 
                     // Socket Align 시작시 PreAlign Camera 끄기
                     SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
+                    SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
+
                     Thread.Sleep(100);
                     if (alignMode == AlignMode.Socket)
                     {
@@ -14320,6 +14330,8 @@ namespace QMC.Common.Modules
 
                     // 여기서 조명을 해야 제대로 먹는 느낌적인 느낌?
                     SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
+                    SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
+
                     Thread.Sleep(100);
                     if (alignMode == AlignMode.Socket)
                     {
@@ -18927,6 +18939,7 @@ namespace QMC.Common.Modules
                     // 카메라 노출 설정
                     jigAligner_LowRes.Camera.SetExposureTime(Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime);
                     SetLightingByChannel(LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
+                    SetLightingByChannel(LightingChannel.CoarseCamRed, Equipment.stVisionRecipeSet.nPreIlluminationRed);
                     Thread.Sleep(100);
                     SetLightingByChannel(LightingChannel.FineCamRed, 4000, true);
                     SetLightingByChannel(LightingChannel.FineCamIR, 0, false);
@@ -26352,7 +26365,7 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
-        private void LaserDrillingStepBETChange(int m_nBET_Index)
+        public void LaserDrillingStepBETChange(int m_nBET_Index)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "BET 축, 설정된 BET 로 세팅 시작.");
             double m_dZoom = 0.0;
@@ -34544,6 +34557,24 @@ namespace QMC.Common.Modules
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_OUTLINE;
                         m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Outline;                //  Layer Parameter 변경을 위한 Index
 
+
+                        // 2025-06-08:: Group이 하나도 없으면 처리 중단
+                        // Group일때만 진행되도록 해놨잖아...
+                        bool hasValidGroup = false;
+                        foreach (var entity in layer)
+                        {
+                            if (entity is Group)
+                            {
+                                hasValidGroup = true;
+                                break;
+                            }
+                        }
+                        if (!hasValidGroup)
+                        {
+                            Log.Write("Marking", "[Error] Outline Layer에는 최소 하나 이상의 Group이 포함되어야 합니다.");
+                            return -1;
+                        }
+
                         //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
                         int m_nCount = 0;
                         foreach (var entity in layer)
@@ -34553,7 +34584,6 @@ namespace QMC.Common.Modules
                             if (group == null)
                             {
                                 LayerIsGroup = false;
-
                                 m_nCount = layer.Count;
                             }
                             else
@@ -34567,7 +34597,6 @@ namespace QMC.Common.Modules
                         }
 
                         //  위에서 공간 할당
-
                         //if (!LayerIsGroup || (m_nCount > 1))
                         //{
                         //    //m_stOutline_LayerData = new LaserDrilling.stOutLine_SocketData();
@@ -34610,6 +34639,10 @@ namespace QMC.Common.Modules
                         m_nGroupData_Count = 0;
                         foreach (var entity in layer)
                         {
+                            // Group 이외는 무시
+                            if (!(entity is Group))
+                                continue;
+
                             switch (entity.EntityType)
                             {
                                 case EType.Point:
@@ -34776,8 +34809,16 @@ namespace QMC.Common.Modules
                                     break;
 
                                 case EType.LWPolyline:
+
                                     var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
                                     //lwPolyline.IsClosed
+
+                                    if (lwPolyline.Count <= 0 || lwPolyline == null)
+                                    {
+                                        Log.Write("Marking", "[Error] lwPolyline 데이터가 비정상입니다.");
+                                        return -1;
+                                        //break; // 또는 return;
+                                    }
 
                                     m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
 
@@ -35020,7 +35061,7 @@ namespace QMC.Common.Modules
                                         }
                                         else        //  또 뭐가 있나...
                                         {
-
+                                            //Group안에 Group가 있다...ㄴ
                                         }
                                     }
 
@@ -37857,6 +37898,7 @@ namespace QMC.Common.Modules
                         int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
                         int exposureTime = Equipment.Scanner_Calibration_ExposureTime_High;
                         SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
+                        SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
                         Thread.Sleep(100);
                         SetLightingByChannel(LightingChannel.FineCamRed, ch1Val);
                         SetLightingByChannel(LightingChannel.FineCamIR, ch2Val);
@@ -38589,8 +38631,6 @@ namespace QMC.Common.Modules
                         else
                         {
                             m_dZOffset_SocketHeightCheck = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
-                            m_dZOffset_SocketHeightCheck *= -1; // 변위센서는 상부가 원점이다. Z축모터도 상부가 원점이다.
-                                                                // 변위센서 값이 - 부호에서 - 부호를 빼면 Z축이 위로 올라가야 하므로 부호가 반대로 먹어야 한다.
                         }
 
                         Log.Write("SLD-200", "ScannerCalibration", $"변위Data: Z={m_dZOffset_SocketHeightCheck}");
@@ -38881,6 +38921,7 @@ namespace QMC.Common.Modules
                         int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
                         int exposureTime = Equipment.Scanner_Calibration_ExposureTime_High;
                         SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                        SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
                         Thread.Sleep(100);
                         SetLightingByChannel(Equipment.LightingChannel.FineCamRed, ch1Val);
                         SetLightingByChannel(Equipment.LightingChannel.FineCamIR, ch2Val);

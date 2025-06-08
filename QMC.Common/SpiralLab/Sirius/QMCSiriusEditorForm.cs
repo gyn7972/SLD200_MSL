@@ -1,9 +1,10 @@
-using QMC.Common;
+ï»¿using QMC.Common;
 using SpiralLab.Sirius;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Windows;
 using System.Windows.Forms;
 using static QMC.Common.Equipment;
 
@@ -15,7 +16,7 @@ namespace SpiralLab.Sirius
         //CustomEditorForm
         public QMCSiriusEditorForm() : base()
         {
-            // »ı¼ºÀÚ¿¡¼­ ÇÊ¿äÇÑ ÃÊ±âÈ­ ÀÛ¾÷ ¼öÇà
+            // ìƒì„±ìì—ì„œ í•„ìš”í•œ ì´ˆê¸°í™” ì‘ì—… ìˆ˜í–‰
         }
         protected override void Action_OnSelectedEntityChanged(IDocument doc, List<IEntity> list)
         {
@@ -40,33 +41,68 @@ namespace SpiralLab.Sirius
 
         void RenameNewLayer(int Count)
         {
-
+            // ìš°ì„ ìˆœìœ„ì— ë”°ë¼ Layer ì´ë¦„ ìˆœì„œë¥¼ ë™ì ìœ¼ë¡œ êµ¬ì„±
             List<string> list = new List<string>();
+
             list.Add("Hole1");
             list.Add("Thruhole");
+
+            if (Count >= 5)
+                list.Add("Outline");
+
+            if (Count >= 6)
+                list.Add("Marking");
+
             list.Add("Fiducial");
             list.Add("PreAlign");
-            list.Add("Outline");
-            list.Add("Marking");
-            if (Count > list.Count)
-            {
-                Count = list.Count;
-            }
+
+            // ìµœì¢… ê°œìˆ˜ì— ë§ì¶° ë¦¬ìŠ¤íŠ¸ ì˜ë¼ë‚´ê¸°
+            if (Count < list.Count)
+                list = list.Take(Count).ToList();
+
             var Document = this.Document;
+            var layers = Document.Layers;
+
             for (int iter = 0; iter < Count; iter++)
             {
-                var l = Document.Layers;
-                if (l.Count > iter)
+                if (layers.Count > iter)
                 {
-                    l[iter].Name = list[iter];
+                    layers[iter].Name = list[iter];
                 }
                 else
                 {
                     var layer = new Layer();
                     layer.Name = list[iter];
-                    l.Add(layer);
+                    layers.Add(layer);
                 }
             }
+
+            //List<string> list = new List<string>();
+            //list.Add("Hole1");
+            //list.Add("Thruhole");
+            //list.Add("Outline");
+            //list.Add("Marking");
+            //list.Add("Fiducial");
+            //list.Add("PreAlign");
+            //if (Count > list.Count)
+            //{
+            //    Count = list.Count;
+            //}
+            //var Document = this.Document;
+            //for (int iter = 0; iter < Count; iter++)
+            //{
+            //    var l = Document.Layers;
+            //    if (l.Count > iter)
+            //    {
+            //        l[iter].Name = list[iter];
+            //    }
+            //    else
+            //    {
+            //        var layer = new Layer();
+            //        layer.Name = list[iter];
+            //        l.Add(layer);
+            //    }
+            //}
         }
         private void AddHoleLayer()
         {
@@ -274,23 +310,23 @@ namespace SpiralLab.Sirius
 
         private void AutoDivide()
         {
-            //AutoDivideBySize(10, 22); // ¿øÇÏ´Â mm ´ÜÀ§ ¼¿ Å©±â ¼³Á¤
-            //AutoDivideByLayer("Outline", 10f, 22f); // ¿øÇÏ´Â mm ´ÜÀ§ ¼¿ Å©±â ¼³Á¤
+            //AutoDivideBySize(10, 22); // ì›í•˜ëŠ” mm ë‹¨ìœ„ ì…€ í¬ê¸° ì„¤ì •
+            //AutoDivideByLayer("Outline", 10f, 22f); // ì›í•˜ëŠ” mm ë‹¨ìœ„ ì…€ í¬ê¸° ì„¤ì •
 
             if(Equipment.m_bDivided)
             {
-                // ÇöÀç ¼±ÅÃµÈ ·¹ÀÌ¾î ÇÏ³ª °¡Á®¿À±â
+                // í˜„ì¬ ì„ íƒëœ ë ˆì´ì–´ í•˜ë‚˜ ê°€ì ¸ì˜¤ê¸°
                 var selectedLayer = doc.Layers.FirstOrDefault(l => l.IsSelected);
                 if (selectedLayer == null)
                 {
-                    MessageBox.Show("¼±ÅÃµÈ ·¹ÀÌ¾î°¡ ¾ø½À´Ï´Ù. ·¹ÀÌ¾î¸¦ ¸ÕÀú ¼±ÅÃÇÏ¼¼¿ä.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("ì„ íƒëœ ë ˆì´ì–´ê°€ ì—†ìŠµë‹ˆë‹¤. ë ˆì´ì–´ë¥¼ ë¨¼ì € ì„ íƒí•˜ì„¸ìš”.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
                 //var outlineRecipe = Equipment.stLayerRecipeSet[(int)LayerList.Outline];
                 //if (outlineRecipe.Miscellaneous_GroupSplitSize <= 0 ||
                 //    outlineRecipe.Miscellaneous_GroupSplitSize_Height <= 0)
                 //{
-                //    Log.Write("SiriusEditor", "Outline ·¹ÀÌ¾îÀÇ ±×·ì ºĞÇÒ Å©±â°¡ À¯È¿ÇÏÁö ¾Ê½À´Ï´Ù.");
+                //    Log.Write("SiriusEditor", "Outline ë ˆì´ì–´ì˜ ê·¸ë£¹ ë¶„í•  í¬ê¸°ê°€ ìœ íš¨í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
                 //    return;
                 //}
 
@@ -298,10 +334,15 @@ namespace SpiralLab.Sirius
                 //float dSplitH = (float)outlineRecipe.Miscellaneous_GroupSplitSize_Height;
                 float dSplitW = Equipment.m_fDividedX;
                 float dSplitH = Equipment.m_fDividedY;
-                AutoDivideByLayer(selectedLayer.Name, dSplitW, dSplitH); // ¿øÇÏ´Â mm ´ÜÀ§ ¼¿ Å©±â ¼³Á¤
+                AutoDivideByLayer(selectedLayer.Name, dSplitW, dSplitH); // ì›í•˜ëŠ” mm ë‹¨ìœ„ ì…€ í¬ê¸° ì„¤ì •
                 UnGroupAllDividedGroupsInSelectedLayer();
+
+                RegroupEntitiesByLastDividedRects(selectedLayer.Name);
+
             }
         }
+
+        
 
 
         private void AutoDivideByLayer(string layerName, float cellWidth, float cellHeight)
@@ -309,22 +350,24 @@ namespace SpiralLab.Sirius
             var doc = this.Document;
             if (doc == null || doc.Layers == null)
             {
-                MessageBox.Show("¹®¼­ ¶Ç´Â ·¹ÀÌ¾î Á¤º¸°¡ ¾ø½À´Ï´Ù.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("ë¬¸ì„œ ë˜ëŠ” ë ˆì´ì–´ ì •ë³´ê°€ ì—†ìŠµë‹ˆë‹¤.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             var layer = doc.Layers.FirstOrDefault(l => l.Name.Contains(layerName));
             if (layer == null)
             {
-                MessageBox.Show($"Layer '{layerName}' ¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"Layer '{layerName}' ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            const float epsilon = 0.001f; // °ãÄ§ ¹æÁö¿ë ¹Ì¼¼ °£°İ
+            const float epsilon = 0.001f; // ê²¹ì¹¨ ë°©ì§€ìš© ë¯¸ì„¸ ê°„ê²©
 
             var entities = layer
                 .Where(e => !(e is Group))
                 .ToList();
+
+            Equipment.LastDividedRects.Clear(); // ì´ì „ ì…€ ì •ë³´ ì œê±°
 
             foreach (var entity in entities)
             {
@@ -354,7 +397,10 @@ namespace SpiralLab.Sirius
                         float bottom = centerY - cellHeight / 2f;
                         float top = centerY + cellHeight / 2f;
 
-                        rectList.Add(new BoundRect(left, top, right, bottom));
+                        var rect = new BoundRect(left, top, right, bottom);
+                        //rectList.Add(new BoundRect(left, top, right, bottom));
+                        rectList.Add(rect);
+                        Equipment.LastDividedRects.Add(rect);
                     }
                 }
 
@@ -375,35 +421,43 @@ namespace SpiralLab.Sirius
             return !(a.Right < b.Left || a.Left > b.Right || a.Top < b.Bottom || a.Bottom > b.Top);
         }
 
+        private bool IsFullyContained(BoundRect inner, BoundRect outer)
+        {
+            return inner.Left >= outer.Left &&
+                   inner.Right <= outer.Right &&
+                   inner.Top <= outer.Top &&
+                   inner.Bottom >= outer.Bottom;
+        }
+
         public void UnGroupAllDividedGroupsInSelectedLayer()
         {
             var doc = this.Document;
             var action = doc.Action;
 
-            // ¼±ÅÃµÈ ·¹ÀÌ¾î °¡Á®¿À±â
+            // ì„ íƒëœ ë ˆì´ì–´ ê°€ì ¸ì˜¤ê¸°
             var selectedLayer = doc.Layers.FirstOrDefault(l => l.IsSelected);
             if (selectedLayer == null)
             {
-                MessageBox.Show("¼±ÅÃµÈ ·¹ÀÌ¾î°¡ ¾ø½À´Ï´Ù. ·¹ÀÌ¾î¸¦ ¸ÕÀú ¼±ÅÃÇÏ¼¼¿ä.", "UnGroup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("ì„ íƒëœ ë ˆì´ì–´ê°€ ì—†ìŠµë‹ˆë‹¤. ë ˆì´ì–´ë¥¼ ë¨¼ì € ì„ íƒí•˜ì„¸ìš”.", "UnGroup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             List<IEntity> toUngroup = new List<IEntity>();
 
-            // ÃÊ±â ±×·ì ¼öÁı
+            // ì´ˆê¸° ê·¸ë£¹ ìˆ˜ì§‘
             foreach (var entity in selectedLayer)
             {
                 if (entity is Group)
                     toUngroup.Add(entity);
             }
 
-            // ¹İº¹ÀûÀ¸·Î ±×·ì ÇØÃ¼
+            // ë°˜ë³µì ìœ¼ë¡œ ê·¸ë£¹ í•´ì²´
             while (toUngroup.Count > 0)
             {
                 action.ActEntitySelect(toUngroup);
                 action.ActEntityUngroup(toUngroup, selectedLayer);
 
-                // ´Ù½Ã ±×·ì Ã£±â
+                // ë‹¤ì‹œ ê·¸ë£¹ ì°¾ê¸°
                 toUngroup.Clear();
                 foreach (var entity in selectedLayer)
                 {
@@ -412,7 +466,69 @@ namespace SpiralLab.Sirius
                 }
             }
 
-            //Console.WriteLine($"[¿Ï·á] ¼±ÅÃµÈ ·¹ÀÌ¾î '{selectedLayer.Name}' ÀÇ ¸ğµç ±×·ì ÇØÃ¼");
+            //Console.WriteLine($"[ì™„ë£Œ] ì„ íƒëœ ë ˆì´ì–´ '{selectedLayer.Name}' ì˜ ëª¨ë“  ê·¸ë£¹ í•´ì²´");
+        }
+
+
+        //private void RegroupEntitiesByLastDividedRects(string layerName)
+        //{
+        //    var doc = this.Document;
+        //    if (doc == null || LastDividedRects.Count == 0)
+        //        return;
+
+        //    var layer = doc.Layers.FirstOrDefault(l => l.Name.Contains(layerName));
+        //    if (layer == null) return;
+
+        //    var allEntities = layer.Where(e => !(e is Group)).ToList();
+
+        //    foreach (var rect in LastDividedRects)
+        //    {
+        //        var entitiesInRect = allEntities
+        //            .Where(e => e?.BoundRect != null && IsIntersecting(e.BoundRect, rect))
+        //            .ToList();
+
+        //        if (entitiesInRect.Count > 0)
+        //            doc.Action.ActEntityGroup(entitiesInRect, layer);
+        //    }
+        //}
+        private void RegroupEntitiesByLastDividedRects(string layerName)
+        {
+            var doc = this.Document;
+            if (doc == null || Equipment.LastDividedRects.Count == 0)
+                return;
+
+            var layer = doc.Layers.FirstOrDefault(l => l.Name.Contains(layerName));
+            if (layer == null) return;
+
+            var allEntities = layer.Where(e => !(e is Group)).ToList();
+            HashSet<IEntity> usedEntities = new HashSet<IEntity>();
+
+            var sortedRects = Equipment.LastDividedRects
+                .OrderByDescending(r => r.Top)
+                .ThenBy(r => r.Left)
+                .ToList();
+
+            foreach (var rect in sortedRects)
+            {
+                //var entitiesInRect = allEntities
+                //    .Where(e => e?.BoundRect != null &&
+                //                !usedEntities.Contains(e) &&
+                //                IsIntersecting(e.BoundRect, rect))
+                //    .ToList();
+
+                var entitiesInRect = allEntities
+                                    .Where(e => e?.BoundRect != null &&
+                                                !usedEntities.Contains(e) &&
+                                                IsFullyContained(e.BoundRect, rect))
+                                    .ToList();
+
+                if (entitiesInRect.Count > 0)
+                {
+                    doc.Action.ActEntityGroup(entitiesInRect, layer);
+                    foreach (var e in entitiesInRect)
+                        usedEntities.Add(e);
+                }
+            }
         }
 
 
@@ -437,18 +553,18 @@ namespace SpiralLab.Sirius
         //    var doc = this.Document;
         //    if (doc == null || doc.Layers == null)
         //    {
-        //        MessageBox.Show("¹®¼­ ¶Ç´Â ·¹ÀÌ¾î Á¤º¸°¡ ¾ø½À´Ï´Ù.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        MessageBox.Show("ë¬¸ì„œ ë˜ëŠ” ë ˆì´ì–´ ì •ë³´ê°€ ì—†ìŠµë‹ˆë‹¤.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         //        return;
         //    }
 
         //    var layer = doc.Layers.FirstOrDefault(l => l.Name.Contains(layerName));
         //    if (layer == null)
         //    {
-        //        MessageBox.Show($"Layer '{layerName}' ¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        MessageBox.Show($"Layer '{layerName}' ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         //        return;
         //    }
 
-        //    // Group Á¦¿Ü
+        //    // Group ì œì™¸
         //    var entities = layer.Where(e => !(e is Group)).ToList();
         //    if (entities.Count == 0)
         //        return;
@@ -500,29 +616,29 @@ namespace SpiralLab.Sirius
 
 
 
-        //·¹ÀÌ¾î¸¦ µû·Î ¼±ÅÃÇØ¼­ ¿µ¿ª ºĞÇÒ. ( ÀüÃ¼ ¼±ÅÃÇÑ »óÅÂ¿¡¼­ ¼öÇà)
+        //ë ˆì´ì–´ë¥¼ ë”°ë¡œ ì„ íƒí•´ì„œ ì˜ì—­ ë¶„í• . ( ì „ì²´ ì„ íƒí•œ ìƒíƒœì—ì„œ ìˆ˜í–‰)
         //private void AutoDivideByLayer(string layerName, float cellWidth, float cellHeight)
         //{
         //    var doc = this.Document;
         //    if (doc == null || doc.Layers == null)
         //    {
-        //        MessageBox.Show("¹®¼­ ¶Ç´Â ·¹ÀÌ¾î Á¤º¸°¡ ¾ø½À´Ï´Ù.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        MessageBox.Show("ë¬¸ì„œ ë˜ëŠ” ë ˆì´ì–´ ì •ë³´ê°€ ì—†ìŠµë‹ˆë‹¤.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         //        return;
         //    }
 
         //    var layer = doc.Layers.FirstOrDefault(l => l.Name.Contains(layerName));
         //    if (layer == null)
         //    {
-        //        MessageBox.Show($"Layer '{layerName}' ¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        MessageBox.Show($"Layer '{layerName}' ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         //        return;
         //    }
 
-        //    // Group Á¦¿Ü
+        //    // Group ì œì™¸
         //    var entities = layer.Where(e => !(e is Group)).ToList();
         //    if (entities.Count == 0)
         //        return;
 
-        //    // ÀüÃ¼ ¿£Æ¼Æ¼ ¿µ¿ª °è»ê
+        //    // ì „ì²´ ì—”í‹°í‹° ì˜ì—­ ê³„ì‚°
         //    float globalMinX = entities.Min(e => e.BoundRect.Left);
         //    float globalMaxX = entities.Max(e => e.BoundRect.Right);
         //    float globalMinY = entities.Min(e => e.BoundRect.Bottom);
@@ -540,7 +656,7 @@ namespace SpiralLab.Sirius
         //    float startX = centerX - (cols * cellWidth) / 2;
         //    float startY = centerY - (rows * cellHeight) / 2;
 
-        //    // ¿µ¿ª »ı¼º (°ãÄ¡Áö ¾Ê°Ô, Áß½É Á¤·Ä)
+        //    // ì˜ì—­ ìƒì„± (ê²¹ì¹˜ì§€ ì•Šê²Œ, ì¤‘ì‹¬ ì •ë ¬)
         //    List<BoundRect> rectList = new List<BoundRect>();
         //    for (int row = 0; row < rows; row++)
         //    {
@@ -555,7 +671,7 @@ namespace SpiralLab.Sirius
         //        }
         //    }
 
-        //    // °¢ ¿µ¿ªº°·Î Æ÷ÇÔµÈ entity°¡ ÀÖ´Â °æ¿ì¸¸ ºĞÇÒ ¼öÇà
+        //    // ê° ì˜ì—­ë³„ë¡œ í¬í•¨ëœ entityê°€ ìˆëŠ” ê²½ìš°ë§Œ ë¶„í•  ìˆ˜í–‰
         //    foreach (var rect in rectList)
         //    {
         //        var includedEntities = entities.Where(e =>
@@ -583,20 +699,20 @@ namespace SpiralLab.Sirius
         //    var doc = this.Document;
         //    if (doc == null || doc.Layers == null)
         //    {
-        //        MessageBox.Show("¹®¼­ ¶Ç´Â ·¹ÀÌ¾î Á¤º¸°¡ ¾ø½À´Ï´Ù.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        MessageBox.Show("ë¬¸ì„œ ë˜ëŠ” ë ˆì´ì–´ ì •ë³´ê°€ ì—†ìŠµë‹ˆë‹¤.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         //        return;
         //    }
 
-        //    // ÀÌ¸§ÀÌ Æ÷ÇÔµÈ ·¹ÀÌ¾î Ã£±â (¿¹: "Frame_Cut(Top)" µî)
+        //    // ì´ë¦„ì´ í¬í•¨ëœ ë ˆì´ì–´ ì°¾ê¸° (ì˜ˆ: "Frame_Cut(Top)" ë“±)
         //    var layer = doc.Layers.Where(l => l.Name.Contains(layerName)).FirstOrDefault();
         //    if (layer == null)
         //    {
-        //        MessageBox.Show($"Layer '{layerName}' ¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        MessageBox.Show($"Layer '{layerName}' ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         //        return;
         //    }
 
-        //    // LayerÀÇ ¿£Æ¼Æ¼ ¸ñ·ÏÀ» ¾ÈÀüÇÏ°Ô º¹»ç
-        //    // GroupÀº Á¦¿ÜÇÏ°í °³º° ¿£Æ¼Æ¼¸¸ ¼±ÅÃ
+        //    // Layerì˜ ì—”í‹°í‹° ëª©ë¡ì„ ì•ˆì „í•˜ê²Œ ë³µì‚¬
+        //    // Groupì€ ì œì™¸í•˜ê³  ê°œë³„ ì—”í‹°í‹°ë§Œ ì„ íƒ
         //    var entities = layer
         //        .Where(e => !(e is Group))
         //        .ToList();
@@ -626,7 +742,7 @@ namespace SpiralLab.Sirius
         //                float bottom = minY + row * cellHeight;
         //                float top = bottom + cellHeight;
 
-        //                rectList.Add(new BoundRect(left, top, right, bottom));  // ÁÖÀÇ: top > bottom
+        //                rectList.Add(new BoundRect(left, top, right, bottom));  // ì£¼ì˜: top > bottom
         //            }
         //        }
 
@@ -642,7 +758,7 @@ namespace SpiralLab.Sirius
         //    }
         //}
 
-        //°´Ã¼¸¦ µû·Î ¼±ÅÃÇØ¼­ ¿µ¿ª ºĞÇÒ.
+        //ê°ì²´ë¥¼ ë”°ë¡œ ì„ íƒí•´ì„œ ì˜ì—­ ë¶„í• .
         private void AutoDivideBySize(float cellWidth, float cellHeight)
         {
             var doc = this.Document;
@@ -681,7 +797,7 @@ namespace SpiralLab.Sirius
 
                         BoundRect rect = new BoundRect(left, top, right, bottom);
 
-                        // ¼¿ ¿µ¿ªÀÌ ´ë»ó ¿£Æ¼Æ¼¿Í ±³Â÷µÇ´Â °æ¿ì¸¸ Ãß°¡
+                        // ì…€ ì˜ì—­ì´ ëŒ€ìƒ ì—”í‹°í‹°ì™€ êµì°¨ë˜ëŠ” ê²½ìš°ë§Œ ì¶”ê°€
                         if (entity.BoundRect.HitTest(rect, 0))
                         {
                             rectList.Add(rect);

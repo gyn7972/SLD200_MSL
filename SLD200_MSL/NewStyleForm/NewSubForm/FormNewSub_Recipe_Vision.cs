@@ -375,6 +375,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text = Equipment.stVisionRecipeSet.nSocketIlluminationRed.ToString();
                 textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text = Equipment.stVisionRecipeSet.nSocketIlluminationIR.ToString();
                 textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text = Equipment.stVisionRecipeSet.nPreIlluminationIR.ToString();
+                textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text = Equipment.stVisionRecipeSet.nPreIlluminationRed.ToString();
 
                 SetScroll();
             }
@@ -671,9 +672,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             //Channel 0: Red - high, 1: IR - high, 2: IR - Low
             if (radioButton_RecipeVision_CameraSelection_LowMag.Checked)
             {
-                hScrollBar_RecipeVision_Illuminator_Red.Minimum = (int)workStage.Config.ListIlluminationChannel[0].Min;
-                hScrollBar_RecipeVision_Illuminator_Red.Maximum = (int)workStage.Config.ListIlluminationChannel[0].Max;
-                hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
+                hScrollBar_RecipeVision_Illuminator_Red.Minimum = (int)workStage.Config.ListIlluminationChannel[3].Min;
+                hScrollBar_RecipeVision_Illuminator_Red.Maximum = (int)workStage.Config.ListIlluminationChannel[3].Max;
+                hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nPreIlluminationRed;
                 baseLabel_RecipeVision_Min_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Minimum.ToString();
                 baseLabel_RecipeVision_Max_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Maximum.ToString();
 
@@ -779,6 +780,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 stVisionRecipeSet.pointPreInspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
                 stVisionRecipeSet.pointPreInspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
                 stVisionRecipeSet.nPreIlluminationIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
+                stVisionRecipeSet.nPreIlluminationRed = hScrollBar_RecipeVision_Illuminator_Red.Value;
 
                 PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
                 PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
@@ -1013,6 +1015,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             Equipment.stVisionRecipeSet.nSocketIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);// workStage.Config.ListIlluminationChannel[0].Value;
             Equipment.stVisionRecipeSet.nSocketIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);//workStage.Config.ListIlluminationChannel[1].Value;
             Equipment.stVisionRecipeSet.nPreIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text);//workStage.Config.ListIlluminationChannel[2].Value;
+            Equipment.stVisionRecipeSet.nPreIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text);//workStage.Config.ListIlluminationChannel[2].Value;
 
             Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);
 
@@ -1358,6 +1361,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void radioButton_RecipeVision_CameraSelection_LowMag_CheckedChanged(object sender, EventArgs e)
         {
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, Equipment.stVisionRecipeSet.nPreIlluminationRed);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 4000, true);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
@@ -1369,20 +1373,20 @@ namespace SLD200.NewStyleForm.NewSubForm
             baseLabel_RecipeVision_Min_IR.Enabled = true;
             label_RecipeVision_Light_IR.Enabled = true;
 
-            hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nPreIlluminationIR;
+            hScrollBar_RecipeVision_Illuminator_Red.Enabled = true;
+            textBox_RecipeVision_IlluminationValue_Red.Enabled = true;
+            button_RecipeVision_Illumin_value_Red.Enabled = true;
+            baseLabel_RecipeVision_Max_Red.Enabled = true;
+            baseLabel_RecipeVision_Min_Red.Enabled = true;
+            label_RecipeVision_Light_Red.Enabled = true;
 
             checkBox_RecipeVision_Illuminator_Red.Enabled = false;
             checkBox_RecipeVision_Illuminator_IR.Enabled = false;
             textBox_RecipeVision_Camera_ExposureTime_High.Enabled = false;
             textBox_RecipeVision_AxisZ_Setting.Enabled = false;
-            hScrollBar_RecipeVision_Illuminator_Red.Enabled = false;
-            textBox_RecipeVision_IlluminationValue_Red.Enabled = false;
-            button_RecipeVision_Illumin_value_Red.Enabled = false;
-            baseLabel_RecipeVision_Max_Red.Enabled = false;
-            baseLabel_RecipeVision_Min_Red.Enabled = false;
-            label_RecipeVision_Light_Red.Enabled = false;
 
-
+            hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nPreIlluminationIR;
+            hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nPreIlluminationRed;
 
             SetScroll();
         }
@@ -1390,6 +1394,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void radioButton_RecipeVision_CameraSelection_HighMag_CheckedChanged(object sender, EventArgs e)
         {
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, Equipment.stVisionRecipeSet.nSocketIlluminationRed);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, Equipment.stVisionRecipeSet.nSocketIlluminationIR);

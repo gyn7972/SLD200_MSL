@@ -365,6 +365,12 @@
     <Compile Include="NewStyleForm\FormNew_Alarm.Designer.cs">
       <DependentUpon>FormNew_Alarm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\FormNew_VerifyScannerCameraOffset.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_VerifyScannerCameraOffset.Designer.cs">
+      <DependentUpon>FormNew_VerifyScannerCameraOffset.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStyleForm\FormNew_VisionPopup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1422,6 +1428,9 @@
     <EmbeddedResource Include="NewStyleForm\FormNew_Alarm.resx">
       <DependentUpon>FormNew_Alarm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\FormNew_VerifyScannerCameraOffset.resx">
+      <DependentUpon>FormNew_VerifyScannerCameraOffset.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_VisionPopup.resx">
       <DependentUpon>FormNew_VisionPopup.cs</DependentUpon>
     </EmbeddedResource>
@@ -2000,9 +2009,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Global\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "C:\Program Files\QMC\SLD200_MSL\"

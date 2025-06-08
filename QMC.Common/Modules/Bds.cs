@@ -111,7 +111,6 @@ namespace QMC.Common.Modules
         public bool m_btimer_MainWork_Stop;
 
         public bool m_bBlink;
-
         public bool m_bAlignVisionThread_Use;                                                       //  2022. 04. 08.  SCH : Align Vision 을 Thread 로 할지 말지?
 
         //  단일 동작 중 안전센서를 터치할 경우 모터 Stop
