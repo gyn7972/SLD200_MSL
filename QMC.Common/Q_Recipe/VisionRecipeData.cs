@@ -48,6 +48,7 @@ namespace QMC.Common.Recipe
         public System.Drawing.Point pointPreInspectRoiStartLocation;
         public System.Drawing.Point pointPreInspectRoiEndLocation;
         public int nPreIlluminationIR;
+        public int nPreIlluminationRed;
         public string pointPreTrainImagePath;
 
         public int nPreCircleColor;  //0: White, 1: Black, 2: Ignore
@@ -118,6 +119,7 @@ namespace QMC.Common.Recipe
                 NativeMethods.WritePrivateProfileString("Vision", "PatternShape", ((int)ePreMarkType).ToString(), path);
 
                 NativeMethods.WritePrivateProfileString("PreAlign_llumination", "IR", nPreIlluminationIR.ToString(), path);
+                NativeMethods.WritePrivateProfileString("PreAlign_llumination", "Red", nPreIlluminationRed.ToString(), path);
 
                 NativeMethods.WritePrivateProfileString("CircleDetection", "Color", nPreCircleColor.ToString(), path);
                 NativeMethods.WritePrivateProfileString("CircleDetection", "SizeW", dPreCircleMarkRadius.ToString(), path);
@@ -249,6 +251,9 @@ namespace QMC.Common.Recipe
 
                 NativeMethods.GetPrivateProfileString("PreAlign_llumination", "IR", "3000", sb, sb.Capacity, path);
                 data.nPreIlluminationIR = Equipment.ToInt(sb.ToString());
+
+                NativeMethods.GetPrivateProfileString("PreAlign_llumination", "Red", "0", sb, sb.Capacity, path);
+                data.nPreIlluminationRed = Equipment.ToInt(sb.ToString());
 
                 NativeMethods.GetPrivateProfileString("CircleDetection", "Color", "true", sb, sb.Capacity, path);
                 data.nPreCircleColor = Equipment.ToInt(sb.ToString());

@@ -530,6 +530,7 @@
             this.button_Recipe_GoldPowder_Camera_ExposureTime.TabIndex = 223;
             this.button_Recipe_GoldPowder_Camera_ExposureTime.Text = "#";
             this.button_Recipe_GoldPowder_Camera_ExposureTime.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_Camera_ExposureTime.Click += new System.EventHandler(this.button_Recipe_GoldPowder_Camera_ExposureTime_Click);
             // 
             // label_Recipe_GoldPowder_Camera_ExposureTime
             // 

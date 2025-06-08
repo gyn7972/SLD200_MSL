@@ -1128,7 +1128,7 @@
             this.button_TEST12.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_TEST12.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_TEST12.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_TEST12.Location = new System.Drawing.Point(1463, 832);
+            this.button_TEST12.Location = new System.Drawing.Point(1463, 831);
             this.button_TEST12.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_TEST12.Name = "button_TEST12";
             this.button_TEST12.Size = new System.Drawing.Size(57, 24);
@@ -1161,7 +1161,7 @@
             this.label_Title_Stacker_LPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(344, 40);
             this.label_Title_Stacker_LPort.TabIndex = 205;
-            this.label_Title_Stacker_LPort.Text = "R Stacker 자재 유/무";
+            this.label_Title_Stacker_LPort.Text = "L Stacker 자재 유/무";
             this.label_Title_Stacker_LPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label_Title_Stacker_RPort
@@ -1175,7 +1175,7 @@
             this.label_Title_Stacker_RPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_RPort.Size = new System.Drawing.Size(344, 40);
             this.label_Title_Stacker_RPort.TabIndex = 206;
-            this.label_Title_Stacker_RPort.Text = "L Stacker 자재 유/무";
+            this.label_Title_Stacker_RPort.Text = "R Stacker 자재 유/무";
             this.label_Title_Stacker_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // groupBox_Main_DiviceStatus

@@ -39,8 +39,9 @@ namespace QMC.Common.Q_Config
         public double Scanner_Calibration_CalPitch;
         public double Scanner_Calibration_PosX_Last;
         public double Scanner_Calibration_PosY_Last;
-        public int Scanner_Calibration_Illumination_channel_01_Value;
-        public int Scanner_Calibration_Illumination_channel_02_Value;
+        public int Scanner_Calibration_Illumination_Red_Value;
+        public int Scanner_Calibration_Illumination_IR_Value;
+        public int Scanner_Calibration_ExposureTime_High; //  Scanner Calibration Exposure Time High (ms)
         public bool Scanner_Calibration_UsePatternMatching; //  Scanner Calibration Use Pattern Matching (true: Use, false: Not Use)
         public bool Scanner_Calibration_UseBlobVisionTool;            //  Scanner Calibration Use Blob Vision Tool (true: Use, false: Not Use)
         public bool Scanner_Calibration_MarkType_Cross;
@@ -91,8 +92,9 @@ namespace QMC.Common.Q_Config
             Scanner_Calibration_CalPitch = 0.0;
             Scanner_Calibration_PosX_Last = 0.0;
             Scanner_Calibration_PosY_Last = 0.0;
-            Scanner_Calibration_Illumination_channel_01_Value = 0;
-            Scanner_Calibration_Illumination_channel_02_Value = 0;
+            Scanner_Calibration_Illumination_Red_Value = 0;
+            Scanner_Calibration_Illumination_IR_Value = 0;
+            Scanner_Calibration_ExposureTime_High = 0;
             Scanner_Calibration_UsePatternMatching = false; //  Scanner Calibration Use Pattern Matching (true: Use, false: Not Use)
             Scanner_Calibration_UseBlobVisionTool = false;            //  Scanner Calibration Use Blob Vision Tool (true: Use, false: Not Use)
             Scanner_Calibration_MarkType_Cross = false;
@@ -160,8 +162,10 @@ namespace QMC.Common.Q_Config
                 NativeMethods.WritePrivateProfileString("Position", "VisionOffsetZ", Scanner_Calibration_VisionZOffset.ToString(), savePath);
                 NativeMethods.WritePrivateProfileString("Position", "Enable", Scanner_Calibration_Position_Enable.ToString(), savePath);
 
-                NativeMethods.WritePrivateProfileString("Illumination", "Ch1", Scanner_Calibration_Illumination_channel_01_Value.ToString(), savePath);
-                NativeMethods.WritePrivateProfileString("Illumination", "Ch2", Scanner_Calibration_Illumination_channel_02_Value.ToString(), savePath);
+                NativeMethods.WritePrivateProfileString("Illumination", "Ch1", Scanner_Calibration_Illumination_Red_Value.ToString(), savePath);
+                NativeMethods.WritePrivateProfileString("Illumination", "Ch2", Scanner_Calibration_Illumination_IR_Value.ToString(), savePath);
+                //Scanner_Calibration_ExposureTime_High
+                NativeMethods.WritePrivateProfileString("Illumination", "ExposureTime_High", Scanner_Calibration_ExposureTime_High.ToString(), savePath);
 
                 NativeMethods.WritePrivateProfileString("File", "SourcePath", Scanner_Calibration_srcFilePath, savePath);
                 NativeMethods.WritePrivateProfileString("File", "TargetPath", Scanner_Calibration_targetFilePath, savePath);
@@ -199,6 +203,13 @@ namespace QMC.Common.Q_Config
 
             try
             {
+                // 이미 생성자에서 초기화했기 때문에 중복은 아니지만, 이중 확인 가능
+                if (data.Scanner_Calibration_PatternMatchingParameters == null)
+                    data.Scanner_Calibration_PatternMatchingParameters = new PatternMatchingParameters();
+
+                if (data.Scanner_Calibration_BlobVisionToolParameter == null)
+                    data.Scanner_Calibration_BlobVisionToolParameter = new BlobVisionToolParameter();
+
                 data.Scanner_Calibration_UsePatternMatching = Equipment.ToBoolean(Read("ScannerCal", "UsePatternMatching", "False"));
                 data.Scanner_Calibration_UseBlobVisionTool = Equipment.ToBoolean(Read("ScannerCal", "UseBlobTool", "False"));
                 data.Scanner_Calibration_MarkType_Cross = Equipment.ToBoolean(Read("ScannerCal", "MarkType_Cross", "False"));
@@ -237,8 +248,10 @@ namespace QMC.Common.Q_Config
                 data.Scanner_Calibration_VisionZOffset = Equipment.ToDouble(Read("Position", "VisionOffsetZ", "0"));
                 data.Scanner_Calibration_Position_Enable = Equipment.ToBoolean(Read("Position", "Enable", "False"));
 
-                data.Scanner_Calibration_Illumination_channel_01_Value = Equipment.ToInt(Read("Illumination", "Ch1", "0"));
-                data.Scanner_Calibration_Illumination_channel_02_Value = Equipment.ToInt(Read("Illumination", "Ch2", "0"));
+                data.Scanner_Calibration_Illumination_Red_Value = Equipment.ToInt(Read("Illumination", "Ch1", "0"));
+                data.Scanner_Calibration_Illumination_IR_Value = Equipment.ToInt(Read("Illumination", "Ch2", "0"));
+                //Scanner_Calibration_ExposureTime_High
+                data.Scanner_Calibration_ExposureTime_High = Equipment.ToInt(Read("Illumination", "ExposureTime_High", "0"));
 
                 data.Scanner_Calibration_srcFilePath = Read("File", "SourcePath", "");
                 data.Scanner_Calibration_targetFilePath = Read("File", "TargetPath", "");

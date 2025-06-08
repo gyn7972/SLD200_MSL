@@ -383,6 +383,7 @@ namespace SLD200_MSL
             this.radioButton_Setup_ScannerCal_Light_Red.Checked = false;
             workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_channel_01_Value; //RED
             workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_channel_02_Value; //IR
+
             IsPixel = true;
 
             //  Scanner Calibration Position : 처음에는 Cal Pan으로 설정.
@@ -3463,6 +3464,11 @@ namespace SLD200_MSL
                 baseToggleButton_Setup_ScannerCal_UseMaskImage.UpdateToggleStatus(bOn);
                 PatternMatchingParameter.UseMaskImage = bOn;
             }
+
+            textBox_Setup_ScannerCal_Illuminator_FineCamRed.Text = Equipment.Scanner_Calibration_Illumination_channel_01_Value.ToString();
+            textBox_Setup_ScannerCal_Illuminator_FineCamIR.Text = Equipment.Scanner_Calibration_Illumination_channel_02_Value.ToString();
+            textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Text = Equipment.Scanner_Calibration_ExposureTime_High.ToString();
+
         }
 
         private void InitBlobParameter()
@@ -3765,6 +3771,7 @@ namespace SLD200_MSL
             this.textBox_Setup_ScannerCal_IlluminationValue.Text = hScrollBar_Setup_ScannerCal_Illuminator.Value.ToString();
 
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBar_Setup_ScannerCal_Illuminator.Value);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, workStage.Config.ListIlluminationChannel[1].Value);
@@ -3780,6 +3787,7 @@ namespace SLD200_MSL
             this.textBox_Setup_ScannerCal_IlluminationValue.Text = hScrollBar_Setup_ScannerCal_Illuminator.Value.ToString();
 
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, workStage.Config.ListIlluminationChannel[0].Value);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBar_Setup_ScannerCal_Illuminator.Value);
@@ -3793,8 +3801,9 @@ namespace SLD200_MSL
 
         private void button_Setup_ScannerCal_Vision_Save_Click(object sender, EventArgs e)
         {
-            Equipment.Scanner_Calibration_Illumination_channel_01_Value = workStage.Config.ListIlluminationChannel[0].Value; //RED
-            Equipment.Scanner_Calibration_Illumination_channel_02_Value = workStage.Config.ListIlluminationChannel[1].Value; //IR
+            Equipment.Scanner_Calibration_Illumination_channel_01_Value = Equipment.ToInt(textBox_Setup_ScannerCal_Illuminator_FineCamRed.Text); //RED
+            Equipment.Scanner_Calibration_Illumination_channel_02_Value = Equipment.ToInt(textBox_Setup_ScannerCal_Illuminator_FineCamIR.Text); //IR
+            Equipment.Scanner_Calibration_ExposureTime_High = Equipment.ToInt(textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Text);
 
             Equipment.Scanner_Calibration_TrainRoiStartLocation_X = RoiTrain.Parameter.StartLocation.X;
             Equipment.Scanner_Calibration_TrainRoiStartLocation_Y = RoiTrain.Parameter.StartLocation.Y;
@@ -4110,6 +4119,18 @@ namespace SLD200_MSL
             //config.ConfigPath = System.IO.Path.Combine(ConfigManager.GetConfigPath(), "Machine ScannerCalibration (Do not delete or modify).ini");
 
             return config;
+        }
+
+        private void button_ScannerCal_Illuminator_Camera_ExposureTime_High_Click(object sender, EventArgs e)
+        {
+            double dExposureTime = Equipment.ToDouble(textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Text);
+
+            if(workStage.jigAligner_HighRes.Camera.Opened)
+            {
+                workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
+
+            }
+
         }
     }
 }

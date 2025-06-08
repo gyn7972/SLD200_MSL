@@ -73,6 +73,7 @@ using static QMC.Common.Global.HoleAlignHelper;
 using System.Net.Sockets;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using netDxf.Tables;
+using QMC.Common.Q_Sequence;
 
 
 namespace QMC.Common.Modules
@@ -4014,6 +4015,10 @@ namespace QMC.Common.Modules
             Complete                                            //  완료
         }
 
+
+        public Sequence_VerifyScannerCameraOffset m_ScannerCameraOffsetSequence { get; set; }
+
+
         #region Constructor
         public WorkStage(string strName) : base(strName)
         {
@@ -4316,6 +4321,9 @@ namespace QMC.Common.Modules
 
 
             m_bPassedSocket_Exist = false;
+
+
+            m_ScannerCameraOffsetSequence = new Sequence_VerifyScannerCameraOffset();
 
         }
 
@@ -8019,6 +8027,7 @@ namespace QMC.Common.Modules
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "UseMaskImage", Equipment.Scanner_Calibration_PatternMatchingParameters.UseMaskImage.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_01", Equipment.Scanner_Calibration_Illumination_channel_01_Value.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_02", Equipment.Scanner_Calibration_Illumination_channel_02_Value.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "ExposureTime_High", Equipment.Scanner_Calibration_ExposureTime_High.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "UsePatternMatching", Equipment.Scanner_Calibration_UsePatternMatching.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "UseBlobVisionTool", Equipment.Scanner_Calibration_UseBlobVisionTool.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "MarkType_Cross", Equipment.Scanner_Calibration_MarkType_Cross.ToString(), strFIle);
@@ -8028,6 +8037,7 @@ namespace QMC.Common.Modules
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Polarity", Equipment.Scanner_Calibration_BlobVisionToolParameter.Polarity.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "RepeatCount", Equipment.Scanner_Calibration_BlobVisionToolParameter.RepeatCount.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "HasChanged", Equipment.Scanner_Calibration_BlobVisionToolParameter.HasChanged.ToString(), strFIle);
+
 
         }
 
@@ -14006,6 +14016,8 @@ namespace QMC.Common.Modules
 
                     // Socket Align 시작시 PreAlign Camera 끄기
                     SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
+                    SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
+
                     Thread.Sleep(100);
                     if (alignMode == AlignMode.Socket)
                     {
@@ -14318,6 +14330,8 @@ namespace QMC.Common.Modules
 
                     // 여기서 조명을 해야 제대로 먹는 느낌적인 느낌?
                     SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
+                    SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
+
                     Thread.Sleep(100);
                     if (alignMode == AlignMode.Socket)
                     {
@@ -14793,7 +14807,7 @@ namespace QMC.Common.Modules
                                         double dOffsetY = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[i].Y +
                                                             ((double)Fiducial_circlesResult[i].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
 
-                                        Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::dOffsetXY:{i}, - X: {dOffsetX:F6}, Y: {dOffsetY:F6}");
+                                        //Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::dOffsetXY:{i}, - X: {dOffsetX:F6}, Y: {dOffsetY:F6}");
 
                                         double dGoldPowderPosX = dMotionPosX - dOffsetX;
                                         double dGoldPowderPosY = dMotionPosY - dOffsetY;
@@ -14821,12 +14835,20 @@ namespace QMC.Common.Modules
                                         totalOffsetX += offsetX;
                                         totalOffsetY += offsetY;
                                         matchCount++;
-                                        Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::offsetXY Offset - X: {offsetX:F6}, Y: {offsetY:F6}");
+
+                                        //Log 파일 필요.
+                                        strTemp = $"Fiducial Makr No: " + m_nSocketAlign_FiducialCount.ToString() + "," +
+                                                  $"도면_Hole_Pos{i}, posX: {matched.X:F4}, posY: {matched.Y:F4}, " +
+                                                  $"측정_Hole_Pos{i}, posX: {measuredHole.X:F4}, posY: {measuredHole.Y:F4}, " +
+                                                  $"Offset_X: {offsetX:F4}, Offset_Y: {offsetY:F4}";
+                                        Log.Write("Goldpowder", "Result", strTemp);
+
+                                        //Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::offsetXY Offset - X: {offsetX:F6}, Y: {offsetY:F6}");
                                     }
                                 }
 
-                                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::totalOffsetXY Offset - X: {totalOffsetX:F6}, Y: {totalOffsetY:F6}");
-                                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::matchCount: {matchCount:F6}");
+                                //Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::totalOffsetXY Offset - X: {totalOffsetX:F6}, Y: {totalOffsetY:F6}");
+                                //Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::matchCount: {matchCount:F6}");
 
                                 // 평균 Offset 계산
                                 if (matchCount == 0)
@@ -14846,46 +14868,21 @@ namespace QMC.Common.Modules
 
                                 Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::averageOffsetXY - X: {averageOffsetX:F6}, Y: {averageOffsetY:F6}");
 
+                                strTemp = $"Fiducial Makr No: " + m_nSocketAlign_FiducialCount.ToString() + "," +
+                                          $"검출 갯수: {matchCount}, finalOffsetX: {averageOffsetX:F4}, finalOffsetY: {averageOffsetY:F4}";
+                                Log.Write("Goldpowder", "Result", strTemp);
+
                                 m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = averageOffsetX;
                                 m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = averageOffsetY;
                                 Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() +
                                     "FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
                                     " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
                                     ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
+                                
                                 Log.Write("SLD-200", " Socket NO : " + nSocketNum.ToString() +
-                                    "AlignMode.GoldPowder::FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
+                                    "AlignMode.GoldPowder::FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() + "," +
                                     " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
                                     ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
-
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
-                                //    MC_Func.MC_GetEncPos((int)nAxis.X) - averageOffsetX;
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
-                                //    MC_Func.MC_GetEncPos((int)nAxis.Y) - averageOffsetY;
-                                //Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() +
-                                //    "FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
-                                //    " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
-                                //    ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
-                                //Log.Write("SLD-200", " Socket NO : " + nSocketNum.ToString() +
-                                //    "AlignMode.GoldPowder::FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
-                                //    " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
-                                //    ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
-                                ////  데이터 위치를 Scanner 위치로 변경
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
-                                //    Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
-                                //    Equipment.stOffsetDistance.FromScannerToFineCam.Y;
-                                ////  여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
-                                //    Equipment.StageOffset_forDrilling_X -
-                                //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
-                                //    Equipment.StageOffset_forDrilling_Y -
-                                //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width =
-                                //    Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height =
-                                //    Fiducial_circlesResult[0].Height * Config.ParamConfig.UpperVision_Scale_X;
-
 
                                 m_nSocketAlign_FiducialCount++;
                                 m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RemainedCheck;
@@ -14942,27 +14939,15 @@ namespace QMC.Common.Modules
                                 {
                                     m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
 
-                                    strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                                            "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                                            "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                                    strTemp = "Align이동량계산성공.\r\n\r\n" +
+                                            "- Final_Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                                            "- Final_Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
                                             "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                                    Log.Write("Goldpowder", "Result", strTemp);
+
                                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align:GoldPowder", strTemp);
                                 }
-
-                                //2차 Test X,Y,T 보상
-                                //{
-                                //    //dOffsetX  += m_st4PointPosition_DwgPos[iter].ptFiducial_Center.X - m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
-                                //    m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
-
-                                //    strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                                //            "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                                //            "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
-                                //            "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
-                                //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align:GoldPowder", strTemp);
-                                //}
                             }
-                            
-
                         }
                         else if (alignMode == AlignMode.Socket)
                         {
@@ -18954,6 +18939,7 @@ namespace QMC.Common.Modules
                     // 카메라 노출 설정
                     jigAligner_LowRes.Camera.SetExposureTime(Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime);
                     SetLightingByChannel(LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
+                    SetLightingByChannel(LightingChannel.CoarseCamRed, Equipment.stVisionRecipeSet.nPreIlluminationRed);
                     Thread.Sleep(100);
                     SetLightingByChannel(LightingChannel.FineCamRed, 4000, true);
                     SetLightingByChannel(LightingChannel.FineCamIR, 0, false);
@@ -26379,7 +26365,7 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
-        private void LaserDrillingStepBETChange(int m_nBET_Index)
+        public void LaserDrillingStepBETChange(int m_nBET_Index)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "BET 축, 설정된 BET 로 세팅 시작.");
             double m_dZoom = 0.0;
@@ -34571,6 +34557,24 @@ namespace QMC.Common.Modules
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_OUTLINE;
                         m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Outline;                //  Layer Parameter 변경을 위한 Index
 
+
+                        // 2025-06-08:: Group이 하나도 없으면 처리 중단
+                        // Group일때만 진행되도록 해놨잖아...
+                        bool hasValidGroup = false;
+                        foreach (var entity in layer)
+                        {
+                            if (entity is Group)
+                            {
+                                hasValidGroup = true;
+                                break;
+                            }
+                        }
+                        if (!hasValidGroup)
+                        {
+                            Log.Write("Marking", "[Error] Outline Layer에는 최소 하나 이상의 Group이 포함되어야 합니다.");
+                            return -1;
+                        }
+
                         //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
                         int m_nCount = 0;
                         foreach (var entity in layer)
@@ -34580,7 +34584,6 @@ namespace QMC.Common.Modules
                             if (group == null)
                             {
                                 LayerIsGroup = false;
-
                                 m_nCount = layer.Count;
                             }
                             else
@@ -34594,7 +34597,6 @@ namespace QMC.Common.Modules
                         }
 
                         //  위에서 공간 할당
-
                         //if (!LayerIsGroup || (m_nCount > 1))
                         //{
                         //    //m_stOutline_LayerData = new LaserDrilling.stOutLine_SocketData();
@@ -34637,6 +34639,10 @@ namespace QMC.Common.Modules
                         m_nGroupData_Count = 0;
                         foreach (var entity in layer)
                         {
+                            // Group 이외는 무시
+                            if (!(entity is Group))
+                                continue;
+
                             switch (entity.EntityType)
                             {
                                 case EType.Point:
@@ -34803,8 +34809,16 @@ namespace QMC.Common.Modules
                                     break;
 
                                 case EType.LWPolyline:
+
                                     var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
                                     //lwPolyline.IsClosed
+
+                                    if (lwPolyline.Count <= 0 || lwPolyline == null)
+                                    {
+                                        Log.Write("Marking", "[Error] lwPolyline 데이터가 비정상입니다.");
+                                        return -1;
+                                        //break; // 또는 return;
+                                    }
 
                                     m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
 
@@ -35047,7 +35061,7 @@ namespace QMC.Common.Modules
                                         }
                                         else        //  또 뭐가 있나...
                                         {
-
+                                            //Group안에 Group가 있다...ㄴ
                                         }
                                     }
 
@@ -37882,10 +37896,16 @@ namespace QMC.Common.Modules
 
                         int ch1Val = Equipment.Scanner_Calibration_Illumination_channel_01_Value;
                         int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
+                        int exposureTime = Equipment.Scanner_Calibration_ExposureTime_High;
                         SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
+                        SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
                         Thread.Sleep(100);
                         SetLightingByChannel(LightingChannel.FineCamRed, ch1Val);
                         SetLightingByChannel(LightingChannel.FineCamIR, ch2Val);
+
+                        // 카메라 노출 설정
+                        jigAligner_HighRes.Camera.SetExposureTime(exposureTime);
+                        
 
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Laser_Off;
                         Log.Write("SLD-200", "Scanner Calibration", "Laser&Scanner Calibration Start");
@@ -38611,8 +38631,6 @@ namespace QMC.Common.Modules
                         else
                         {
                             m_dZOffset_SocketHeightCheck = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
-                            m_dZOffset_SocketHeightCheck *= -1; // 변위센서는 상부가 원점이다. Z축모터도 상부가 원점이다.
-                                                                // 변위센서 값이 - 부호에서 - 부호를 빼면 Z축이 위로 올라가야 하므로 부호가 반대로 먹어야 한다.
                         }
 
                         Log.Write("SLD-200", "ScannerCalibration", $"변위Data: Z={m_dZOffset_SocketHeightCheck}");
@@ -38901,10 +38919,15 @@ namespace QMC.Common.Modules
                         // Todo : 조명 디버깅 필요 
                         int ch1Val = Equipment.Scanner_Calibration_Illumination_channel_01_Value;
                         int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
+                        int exposureTime = Equipment.Scanner_Calibration_ExposureTime_High;
                         SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                        SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
                         Thread.Sleep(100);
                         SetLightingByChannel(Equipment.LightingChannel.FineCamRed, ch1Val);
                         SetLightingByChannel(Equipment.LightingChannel.FineCamIR, ch2Val);
+
+                        // 카메라 노출 설정
+                        jigAligner_HighRes.Camera.SetExposureTime(exposureTime);
 
                         XyzCoordinate currentPos = new XyzCoordinate();
                         if (scannerCompensator == null || scannerCompensator.Stage == null)

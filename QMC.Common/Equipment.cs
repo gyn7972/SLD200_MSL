@@ -55,7 +55,8 @@ namespace QMC.Common
         {
             FineCamRed = 1,
             FineCamIR = 2,
-            CoarseCamIR = 3
+            CoarseCamIR = 3,
+            CoarseCamRed = 4
         }
 
         public enum AlignMode
@@ -725,6 +726,7 @@ namespace QMC.Common
         
         public static int Scanner_Calibration_Illumination_channel_01_Value { set; get; } = 0;
         public static int Scanner_Calibration_Illumination_channel_02_Value { set; get; } = 0;
+        public static int Scanner_Calibration_ExposureTime_High { set; get; } = 0;
         //public static double Scanner_Calibration_AngleTolerance { set; get; } = 0.0;            //  Scanner Calibration Angle Tolerance (degree)
         //public static double Scanner_Calibration_MaxInstance { set; get; } = 0.0;            //  Scanner Calibration Offset X
         //public static double Scanner_Calibration_MinScore { set; get; } = 0.0;            //  Scanner Calibration Offset Y
@@ -2913,6 +2915,8 @@ namespace QMC.Common
             Equipment.Scanner_Calibration_Illumination_channel_01_Value = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_02", "0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_Illumination_channel_02_Value = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "ExposureTime_High", "0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_ExposureTime_High = Equipment.ToInt(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "UsePatternMatching", "false", temp, 255, strFIle);
             Equipment.Scanner_Calibration_UsePatternMatching = Convert.ToBoolean(temp.ToString());
@@ -3291,6 +3295,8 @@ namespace QMC.Common
         public static float m_fDividedX { set; get; } = 0.0f;
         public static float m_fDividedY { set; get; } = 0.0f;
         public static bool m_bDivided { set; get; } = false;
+
+        public static List<BoundRect> LastDividedRects = new List<BoundRect>();
 
     }
 }

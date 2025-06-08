@@ -48,6 +48,8 @@ using netDxf.Tables;
 using Vector2 = System.Numerics.Vector2;
 using Layer = SpiralLab.Sirius.Layer;
 using static QMC.Common.Vision.EureSys.GenICam;
+using System.Text.RegularExpressions;
+using Group = SpiralLab.Sirius.Group;
 
 namespace SLD200_MSL
 {
@@ -1320,7 +1322,7 @@ namespace SLD200_MSL
 
             // label_Title_MESMessage
             // 여기에 자재 유/무에 대한 메세지 표시
-            SetValue(label_Title_Stacker_LPort,Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
+            SetValue(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
             SetColor(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? Color.Red : Color.Black, Equipment.Loader_LPort_Empty ? Color.White : Color.Lime);
 
             SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 없음." : "Loader_Stacker Right: 자재 있음.");
@@ -4103,10 +4105,6 @@ namespace SLD200_MSL
                 // 완료 수량도 초기화
                 workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
 
-
-                // UI 갱신
-                UpdateCycleTimerUI();
-
                 // 로그 출력
                 Log.Write("SLD-200", Equipment.User_Name, "CycleTimer", "Average One Cycle Time만 초기화 완료");
             }
@@ -4341,20 +4339,48 @@ namespace SLD200_MSL
 
         private void button_PNLCount_Clear_Click(object sender, EventArgs e)
         {
+            workStage.DrillingManager.CycleTimer_TargetModuleCount = 0;
+            workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
+            workStage.DrillingManager.CycleTimer_NGSocketCount = 0;
+
             numericUpDown_Module_TargetCount.Value = 0;
             baseTextBox_Module_TotalCount.Text = "0";
             baseTextBox_Module_NGCount.Text = "0";
             baseTextBox_TotalSocketCount.Text = "0";
             baseTextBox_NGSocketCount.Text = "0";
-
         }
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
             //workStage.workStageParameter.DO_AirCurtain_Purge(true);
 
-            double freq = 0.0;
-            bds.DustCollector_Upper.GetFrequency(out freq);
+            //double freq = 0.0;
+            //bds.DustCollector_Upper.GetFrequency(out freq);
+
+            
+            string strTemp = "";
+            double offsetX = 0.0, offsetY = 0.0;
+
+            for (int i = 0; i < 20; i++)
+            {
+                strTemp = $"Fiducial Makr No: " + "0" + "," +
+                            $"도면_Hole_Pos{i}, X: {offsetX + i:F4}, Y: {offsetY + i:F4}, " +
+                          $"측정_Hole_Pos{i}, X: {offsetX + i*2:F4}, Y: {offsetX + i * 2:F4}, " +
+                          $"Offset - X: {offsetX + i * 3:F4}, Y: {offsetX + i * 3:F4}";
+                Log.Write("Goldpowder", "Result", strTemp);
+            }
+            
+
+
+            strTemp = $"Fiducial Makr No: " + "0" + "," +
+                      $"검출 갯수: {20}, finalOffsetX: {offsetX+22.45:F4}, finalOffsetY: {offsetX + 22.45:F4}";
+            Log.Write("Goldpowder", "Result", strTemp);
+
+            strTemp = "Align이동량계산성공.\r\n\r\n" +
+                    "- Final_Offset X : " + "0.008" + "\r\n" +
+                    "- Final_Offset Y : " + "0.003" + "\r\n" +
+                    "- Angle : " + "0";
+            Log.Write("Goldpowder", "Result", strTemp);
 
             return;
 

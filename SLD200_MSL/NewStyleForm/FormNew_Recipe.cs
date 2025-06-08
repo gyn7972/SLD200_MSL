@@ -1005,16 +1005,6 @@ namespace SLD200_MSL
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Outer", "false", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer = Convert.ToBoolean(temp.ToString());
 
-                //  Fine Cam. Red
-                //NativeMethods.GetPrivateProfileString(strTemp, "FineCam_Red", "0", temp, 255, strFIle);
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = Equipment.ToInt(temp.ToString());
-                //  Fine Cam. IR
-                //NativeMethods.GetPrivateProfileString(strTemp, "FineCam_IR", "0", temp, 255, strFIle);
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = Equipment.ToInt(temp.ToString());
-                //  Coarse Cam. IR
-                //NativeMethods.GetPrivateProfileString(strTemp, "CoarseCam_IR", "0", temp, 255, strFIle);
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = Equipment.ToInt(temp.ToString());
-
                 //  Dust Collector
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", "false", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use = Convert.ToBoolean(temp.ToString());
@@ -1161,10 +1151,6 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center = ReadBool(data, "MAlignerVacuumUse_Center", true);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner = ReadBool(data, "MAlignerVacuumUse_Inner", false);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer = ReadBool(data, "MAlignerVacuumUse_Outer", false);
-
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = ReadInt(data, "FineCam_Red", 0);
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = ReadInt(data, "FineCam_IR", 0);
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = ReadInt(data, "CoarseCam_IR", 0);
 
                 Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use = ReadBool(data, "DustCollector_RemoteMode_Use", false);
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper = ReadDouble(data, "DustCollector_Frequency_Upper", 20.0);
@@ -1334,13 +1320,6 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Inner", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Outer", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer.ToString(), strFIle);
 
-                //  Fine Cam. Red
-                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
-                //  Fine Cam. IR
-                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
-                //  Coarse Cam. IR
-                //NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
-
                 //  Dust Collector
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Upper", Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper.ToString(), strFIle);
@@ -1448,10 +1427,6 @@ namespace SLD200_MSL
                 layerDict["MAlignerVacuumUse_Center"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center.ToString();
                 layerDict["MAlignerVacuumUse_Inner"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner.ToString();
                 layerDict["MAlignerVacuumUse_Outer"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer.ToString();
-
-                //layerDict["FineCam_Red"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString();
-                //layerDict["FineCam_IR"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString();
-                //layerDict["CoarseCam_IR"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString();
 
                 layerDict["DustCollector_RemoteMode_Use"] = Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use.ToString();
                 layerDict["DustCollector_Frequency_Upper"] = Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper.ToString();
@@ -1816,11 +1791,6 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner = checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked;       //  Inner
             Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer = checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked;       //  Outer
 
-            //  조명값 (Fiducial Layer 의 것만 사용한다)
-            //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text) : 0;
-            //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text) : 0;
-            //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text) : 0;
-
             //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
             //  집진기 주파수
             Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use = checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked;                         //  집진기 Remote Mode 사용 여부
@@ -2093,11 +2063,6 @@ namespace SLD200_MSL
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
-
-                //  Illuminator
-                //textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
-                //textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
-                //textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
 
                 //  집진기 주파수
                 checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                          //  집진기 Remote Mode 사용 여부
@@ -2549,11 +2514,6 @@ namespace SLD200_MSL
             checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
             checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
 
-            //  Illuminator
-            //textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
-            //textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
-            //textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
-
             //  집진기 주파수
             checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                          //  집진기 Remote Mode 사용 여부
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
@@ -2789,11 +2749,6 @@ namespace SLD200_MSL
             checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
             checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
             checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
-
-            //  Illuminator
-            //textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
-            //textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
-            //textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
 
             //  집진기 주파수
             checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                          //  집진기 Remote Mode 사용 여부

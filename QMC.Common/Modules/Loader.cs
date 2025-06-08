@@ -2956,7 +2956,7 @@ namespace QMC.Common.Modules
                 // 자재 감지 → 타이머 리셋 및 Z축 하강 Flag 초기화
                 TickCount_Start((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT);
                 m_bStackerZ1_DownWhenEmpty = false;
-                Equipment.Loader_RPort_Empty = false;
+                Equipment.Loader_LPort_Empty = false;
             }
 
             //기존 코드 
