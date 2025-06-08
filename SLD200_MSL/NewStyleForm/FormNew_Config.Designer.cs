@@ -5028,6 +5028,7 @@
             this.Button_Config_BDS_BET_Mrad_Init.TabIndex = 52;
             this.Button_Config_BDS_BET_Mrad_Init.Text = "Init.";
             this.Button_Config_BDS_BET_Mrad_Init.UseVisualStyleBackColor = true;
+            this.Button_Config_BDS_BET_Mrad_Init.Click += new System.EventHandler(this.Button_Config_BDS_BET_Mrad_Init_Click);
             // 
             // label62
             // 
@@ -5050,6 +5051,7 @@
             this.Button_Config_BDS_BET_Mrad_Position_Move.TabIndex = 50;
             this.Button_Config_BDS_BET_Mrad_Position_Move.Text = "Move";
             this.Button_Config_BDS_BET_Mrad_Position_Move.UseVisualStyleBackColor = true;
+            this.Button_Config_BDS_BET_Mrad_Position_Move.Click += new System.EventHandler(this.Button_Config_BDS_BET_Mrad_Position_Move_Click);
             // 
             // textBox_Config_BDS_BET_Mrad_Position
             // 
@@ -5071,6 +5073,7 @@
             this.Button_Config_BDS_BET_Zoom_Init.TabIndex = 48;
             this.Button_Config_BDS_BET_Zoom_Init.Text = "Initialize";
             this.Button_Config_BDS_BET_Zoom_Init.UseVisualStyleBackColor = true;
+            this.Button_Config_BDS_BET_Zoom_Init.Click += new System.EventHandler(this.Button_Config_BDS_BET_Zoom_Init_Click);
             // 
             // label61
             // 
@@ -5093,6 +5096,7 @@
             this.Button_Config_BDS_BET_Zoom_Position_Move.TabIndex = 46;
             this.Button_Config_BDS_BET_Zoom_Position_Move.Text = "Move";
             this.Button_Config_BDS_BET_Zoom_Position_Move.UseVisualStyleBackColor = true;
+            this.Button_Config_BDS_BET_Zoom_Position_Move.Click += new System.EventHandler(this.Button_Config_BDS_BET_Zoom_Position_Move_Click);
             // 
             // textBox_Config_BDS_BET_Zoom_Position
             // 
