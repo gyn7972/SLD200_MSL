@@ -60,6 +60,16 @@ namespace SLD200.NewStyleForm
             _scannerCalConfig = ScannerCalConfigData.LoadFromIni();
             ApplyConfigToUI(); // 다음 단계에서 이 함수 구현 예정
 
+            // Vision Offset 표시
+            if (label_VerifyScannerCameraOffset_OffsetX.Text != Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString())
+            {
+                label_VerifyScannerCameraOffset_OffsetX.Text = Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString();
+            }
+            if (label_VerifyScannerCameraOffset_OffsetY.Text != Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString())
+            {
+                label_VerifyScannerCameraOffset_OffsetY.Text = Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString();
+            }
+
             // ROI 설정
             this.RoiTrain = workStage.scannerCompensator.GetTrainRoi();
             this.RoiInspect = workStage.scannerCompensator.GetInspectRoi();
@@ -465,7 +475,22 @@ namespace SLD200.NewStyleForm
         private void checkBox_VerifyScannerCameraOffset_Position_CheckedChanged(object sender, EventArgs e)
         {
             // 위치 기준 변경 여부 저장
-            _scannerCalConfig.Scanner_Calibration_Position_Enable = checkBox_VerifyScannerCameraOffset_Position.Checked;
+            _scannerCalConfig.Scanner_Calibration_Position_Enable = false;  //checkBox_VerifyScannerCameraOffset_Position.Checked;
+            if (checkBox_VerifyScannerCameraOffset_Position.Checked)
+            {
+                _scannerCalConfig.Scanner_Calibration_Position_Enable = true;
+
+                checkBox_VerifyScannerCameraOffset_Position.Text = "Cal Pan";
+                checkBox_VerifyScannerCameraOffset_Position.ForeColor = Color.BlueViolet;
+            }
+            else
+            {
+                _scannerCalConfig.Scanner_Calibration_Position_Enable = false;
+
+                checkBox_VerifyScannerCameraOffset_Position.Text = "Stage Center";
+                checkBox_VerifyScannerCameraOffset_Position.ForeColor = Color.BlueViolet;
+            }
+
         }
 
 
@@ -858,6 +883,17 @@ namespace SLD200.NewStyleForm
                 e.Cancel = true; // 폼이 종료되지 않도록 방지
                 //OnHide();
                 this.Hide();     // 대신 숨긴다
+            }
+        }
+
+        private void button_VerifyScannerCameraOffset_Camera_ExposureTime_High_Click(object sender, EventArgs e)
+        {
+            double dExposureTime = Equipment.ToDouble(textBox_VerifyScannerCameraOffset_Illuminator_Camera_ExposureTime_High.Text);
+
+            if (workStage.jigAligner_HighRes.Camera.Opened)
+            {
+                workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
+
             }
         }
     }

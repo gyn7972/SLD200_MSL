@@ -710,6 +710,9 @@ namespace QMC.Common
         public static double Scanner_Calibration_CalPitch   { set; get; } = 0.0;
         public static double Scanner_Calibration_PosX_Last { set; get; } = 0.0;
         public static double Scanner_Calibration_PosY_Last { set; get; } = 0.0;
+        public static int Scanner_Calibration_MaskIndex { set; get; } = 0;
+        public static int Scanner_Calibration_BETPositionIndex { set; get; } = 0;         //  Scanner Calibration Miscellaneous BET Position Index (0:0.8x, 1:0.9x, 2:1.0x, 3:1.1x, 4:1.2x)
+
 
         public static double Scanner_Calibration_TrainRoiStartLocation_X { set; get; } = 0.0;         //  Scanner Calibration Train Roi Start Location
         public static double Scanner_Calibration_TrainRoiStartLocation_Y { set; get; } = 0.0;
@@ -724,8 +727,8 @@ namespace QMC.Common
         public static BlobVisionToolParameter Scanner_Calibration_BlobVisionToolParameter { set; get; } = new BlobVisionToolParameter();         //  Scanner Calibration Blob Vision Tool Parameter
         //public static IlluminationDataSet Scanner_Calibration_IlluminationDataSet { set; get; } = new IlluminationDataSet(part);         //  Scanner Calibration Illumination Data Set
         
-        public static int Scanner_Calibration_Illumination_channel_01_Value { set; get; } = 0;
-        public static int Scanner_Calibration_Illumination_channel_02_Value { set; get; } = 0;
+        public static int Scanner_Calibration_Illumination_Red_Value { set; get; } = 0;
+        public static int Scanner_Calibration_Illumination_IR_Value { set; get; } = 0;
         public static int Scanner_Calibration_ExposureTime_High { set; get; } = 0;
         //public static double Scanner_Calibration_AngleTolerance { set; get; } = 0.0;            //  Scanner Calibration Angle Tolerance (degree)
         //public static double Scanner_Calibration_MaxInstance { set; get; } = 0.0;            //  Scanner Calibration Offset X
@@ -1341,6 +1344,8 @@ namespace QMC.Common
             Scanner_Calibration_CalPitch = 0.0;               //  Scanner Calibration Area Pitch (mm)
             Scanner_Calibration_PosX_Last = 0.0;
             Scanner_Calibration_PosY_Last = 0.0;
+            Scanner_Calibration_MaskIndex = 0;
+            Scanner_Calibration_BETPositionIndex = 0;
 
             //Scanner_Calibration_TrainRoiStartLocation     //  Scanner Calibration Train ROI Start Location
 
@@ -2883,6 +2888,11 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "VisionZOffset", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_VisionZOffset = Equipment.ToDouble(temp.ToString());
 
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MaskIndex", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_MaskIndex = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "BETPositionIndex", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_BETPositionIndex = Equipment.ToInt(temp.ToString());
+
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_X", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_TrainRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_Y", "0.0", temp, 255, strFIle);
@@ -2912,9 +2922,9 @@ namespace QMC.Common
             Equipment.Scanner_Calibration_PatternMatchingParameters.UseMaskImage = Convert.ToBoolean(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_01", "0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_Illumination_channel_01_Value = Equipment.ToInt(temp.ToString());
+            Equipment.Scanner_Calibration_Illumination_Red_Value = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_02", "0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_Illumination_channel_02_Value = Equipment.ToInt(temp.ToString());
+            Equipment.Scanner_Calibration_Illumination_IR_Value = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "ExposureTime_High", "0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_ExposureTime_High = Equipment.ToInt(temp.ToString());
 

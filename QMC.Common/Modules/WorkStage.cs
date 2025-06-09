@@ -2727,8 +2727,8 @@ namespace QMC.Common.Modules
         public int m_nLaserHeightSensorSocketStep { set; get; }
         public int m_nLaserHeightSensorSocketRecvData_CR_Count { set; get; }
         public double m_dLaserHeightSensorSocket_Value { set; get; }
-        private bool m_bSensorRequestPending = false;   // 요청 보냄
-        private bool m_bSensorResponseReady = false;    // 응답 받음
+        public bool m_bSensorRequestPending = false;   // 요청 보냄
+        public bool m_bSensorResponseReady = false;    // 응답 받음
 
         //public bool m_bLaserHeightSensorSocket_Paused { get; set; }                       //  Laser Height Sensor Socket func. 이 Pause 상태인지?
 
@@ -3473,6 +3473,9 @@ namespace QMC.Common.Modules
             None = 0,
             Start,                                                                          //  시작
 
+            //
+            Step_VerifyScannerCameraOffset,
+            Step_VerifyScannerCameraOffset_Check,
             LaserOff,                                                                       //  레이저 Off
             LaserOff_Check,                                                                 //  레이저 Off 확인
 
@@ -3878,6 +3881,7 @@ namespace QMC.Common.Modules
             Complete                                    //  완료
         }
 
+        //  Scanner Calibration
         public int m_nScanner_Calibration_Step { set; get; }         //  Scanner Center 와 Camera Center 간 오차 검증 Step
         public bool m_bScannerCalibration_Complete { set; get; }
 
@@ -4016,6 +4020,7 @@ namespace QMC.Common.Modules
         }
 
 
+        //VerifyScannerCameraOffset
         public Sequence_VerifyScannerCameraOffset m_ScannerCameraOffsetSequence { get; set; }
 
 
@@ -4324,7 +4329,6 @@ namespace QMC.Common.Modules
 
 
             m_ScannerCameraOffsetSequence = new Sequence_VerifyScannerCameraOffset();
-
         }
 
         public void Module_Allocation()
@@ -8025,8 +8029,8 @@ namespace QMC.Common.Modules
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "MinScore", Equipment.Scanner_Calibration_PatternMatchingParameters.MinScore.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "DuplicateCheck", Equipment.Scanner_Calibration_PatternMatchingParameters.DuplicateChecked.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "UseMaskImage", Equipment.Scanner_Calibration_PatternMatchingParameters.UseMaskImage.ToString(), strFIle);
-            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_01", Equipment.Scanner_Calibration_Illumination_channel_01_Value.ToString(), strFIle);
-            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_02", Equipment.Scanner_Calibration_Illumination_channel_02_Value.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_01", Equipment.Scanner_Calibration_Illumination_Red_Value.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_02", Equipment.Scanner_Calibration_Illumination_IR_Value.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "ExposureTime_High", Equipment.Scanner_Calibration_ExposureTime_High.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "UsePatternMatching", Equipment.Scanner_Calibration_UsePatternMatching.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "UseBlobVisionTool", Equipment.Scanner_Calibration_UseBlobVisionTool.ToString(), strFIle);
@@ -16126,11 +16130,69 @@ namespace QMC.Common.Modules
                         TickCount_Start((int)TickType.TICK_MAIN);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
                     }
+
+
+                    // VerifyScannerCameraOffset 시작 시.
+                    if (false)
+                    {
+                        if (m_ScannerCameraOffsetSequence != null)
+                        {
+                            if (false)
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset;
+                            }
+                        }
+                    }
+                        
                     break;
 
+                case (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset:
 
+                    // m_ScannerCameraOffsetSequence.m_bVerifyScannerCameraOffset_Complete 이 신호가 
+                    // 무조건 false 여야 정상임.
+                    if (m_ScannerCameraOffsetSequence.m_bVerifyScannerCameraOffset_Complete == false)
+                    {
+                        m_ScannerCameraOffsetSequence.Reset();
+                        m_ScannerCameraOffsetSequence.Start();
+                        scannerCompensator.SetRunStatus(Part.RunStatus.Run);
+                        m_ScannerCameraOffsetSequence.m_MainTick_Start = true;
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset_Check;
+                    }
+                    else
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                    }
+                    
+                    break;
+
+                case (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset_Check:
+
+                    if (m_ScannerCameraOffsetSequence.m_bVerifyScannerCameraOffset_Complete)
+                    {
+                        m_ScannerCameraOffsetSequence.Reset();
+                        scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+                        m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        m_ScannerCameraOffsetSequence.Reset();
+                        scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+                        m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+
+                        m_strTemp = "ScannerCameraOffsetSequence 실패.";
+                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_VerifyScannerCameraOffset_Check", m_strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                    }
+
+                    break;
 
                 case (int)LaserDrilling_Step.LaserOff:
+
                     LaserDrilling_StepLaserOff();
 
                     //  선택 가공이면? 가공해야 할 Socket 번호를 선택한 번호로 변경                    
@@ -26541,6 +26603,10 @@ namespace QMC.Common.Modules
 
             //  마킹데이터가 1개인 경우, 첫번째 소켓 얼라인과 함께 얼라인 시켜주기 위한 Flag 초기화
             Equipment.m_bOneMarkingData_AlignCompleted = false;
+
+            m_ScannerCameraOffsetSequence.Reset();
+            scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+            m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
         }
         #endregion
 
@@ -37894,8 +37960,8 @@ namespace QMC.Common.Modules
                         m_pStageXY_Pos_AfterVerify.X = 0.0;
                         m_pStageXY_Pos_AfterVerify.Y = 0.0;
 
-                        int ch1Val = Equipment.Scanner_Calibration_Illumination_channel_01_Value;
-                        int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
+                        int ch1Val = Equipment.Scanner_Calibration_Illumination_Red_Value;
+                        int ch2Val = Equipment.Scanner_Calibration_Illumination_IR_Value;
                         int exposureTime = Equipment.Scanner_Calibration_ExposureTime_High;
                         SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
                         SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
@@ -38917,8 +38983,8 @@ namespace QMC.Common.Modules
                 case (int)ScannerCalibration_Step.ScannerCompensation_StartPosition_Set:
                     {
                         // Todo : 조명 디버깅 필요 
-                        int ch1Val = Equipment.Scanner_Calibration_Illumination_channel_01_Value;
-                        int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
+                        int ch1Val = Equipment.Scanner_Calibration_Illumination_Red_Value;
+                        int ch2Val = Equipment.Scanner_Calibration_Illumination_IR_Value;
                         int exposureTime = Equipment.Scanner_Calibration_ExposureTime_High;
                         SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
                         SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
