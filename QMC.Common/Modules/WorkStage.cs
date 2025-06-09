@@ -3470,6 +3470,9 @@ namespace QMC.Common.Modules
 
         public enum LaserDrilling_Step
         {
+            // * 중요 * //
+            // SetRecoveryLaserDrilling_MainStep 함수에서 MainStep 을 변경할 때, 여기에 있는 Step 순서와 맞춰서 변경해야 한다.
+            // 순서가 맞지 않으면, 이상 동작 발생함.!!!
             None = 0,
             Start,                                                                          //  시작
 
@@ -8432,79 +8435,59 @@ namespace QMC.Common.Modules
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
             }
-            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.StageZ_MoveProcessingPos_DoneCheck)
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Start;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.StageXY_MoveCenterPos_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.StageXY_MoveCenterPos;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.StageZ_MoveProcessingPos_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.StageZ_MoveProcessingPos;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_Load;
             }
-            //else if (LaserDrilling_MainStep < (int)LaserDrilling_Step.ThruHole_DrillingWork_Start)
-            //{
-            //    m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
-            //}
-            //else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_StageZ_MoveStartPos_DoneCheck)
-            //{
-            //    m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_StageZ_MoveStartPos;
-            //}
-            //else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change_DoneCheck)
-            //{
-            //    m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change;
-            //}
-            ///
-            //  Thruhole Align 에 관한 Recovery 
-            ///
-            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck)
-            {
-                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
-            }
-            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck)
-            {
-                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change;
-            }
-            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck)
-            {
-                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
-            }
-            //else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_StageZ_MoveStartPos_DoneCheck)
-            //{
-            //    m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.OutLine_StageZ_MoveStartPos;
-            //}
-            //else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change_DoneCheck)
-            //{
-            //    m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change;
-            //}
-            //else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_LayerParameter_Change_Complete)
-            //{
-            //    m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
-            //}
-            ///
-            //  Outline Align 에 관한 Recovery 
-            ///
-            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change_DoneCheck)
-            {
-                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change;
-            }
-            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck)
-            {
-                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
-            }
-            ///
-            //  Text Marking 에 관한 Recovery 
-            ///
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move_DoneCheck)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Check)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Set;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Set)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Set;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change;
             }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Complete)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
             }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Start)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.MapDataFlagCheck_FineCamMap)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.MapDataChange_FineCamMap;
+            }
+            // 소켓 높이 측정 시작 // 공통
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
@@ -8513,10 +8496,13 @@ namespace QMC.Common.Modules
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos;
             }
-
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get)
             {
@@ -8534,6 +8520,10 @@ namespace QMC.Common.Modules
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
             }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_Change_Calibration_Cal_File_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_Change_Calibration_Cal_File;
+            }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_PreAlign_Correction_Complete)
             {
                 m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
@@ -8543,9 +8533,8 @@ namespace QMC.Common.Modules
             {
                 m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
                 //여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
-
-               m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-               //m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+               //m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+               m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.GoldPowderAlign_start)
             {
@@ -8553,16 +8542,13 @@ namespace QMC.Common.Modules
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.GoldPowderAlign_CompleteCheck)
             {
-                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
-            }
-            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move)
-            {
-                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.GoldPowderAlign_start;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_Reload)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
             }
+
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Start)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
@@ -8587,6 +8573,72 @@ namespace QMC.Common.Modules
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
             }
+
+            //  Thruhole Align 에 관한 Recovery 
+            ///
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
+            }
+
+            //  Outline Align 에 관한 Recovery 
+            ///
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatComplete)
+            {
+                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
+            }
+            ///
+            //  Text Marking 에 관한 Recovery 
+            ///
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos_StableTime)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Marking_RepeatComplete)
+            {
+                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
+            }
+            /// 드릴링 Layer 가공 - 끝
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.LaserOff2)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
@@ -9307,7 +9359,7 @@ namespace QMC.Common.Modules
                                 jigAligner_LowRes.Work();
                             }
 
-                                Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Work() 완료");
+                            Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Work() 완료");
                         }
                         catch(Exception ex)
                         {
@@ -15976,6 +16028,8 @@ namespace QMC.Common.Modules
 
         int m_nStage_RetryCount = 0;
         bool m_bWorkStage_LogOnce = false;
+        public bool m_bFirstAutoCrossCheckDone = false; // 최초 1회 실행 여부 플래그
+
         //Todo: 공정시컨스닷!
         private int Run_LaserDrilling_Main_Cycle()
         {
@@ -16137,15 +16191,33 @@ namespace QMC.Common.Modules
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
                     }
 
-
+                    
                     // VerifyScannerCameraOffset 시작 시.
-                    if (false)
+                    if (Equipment.Machine_AutoCrossCheck_Enable)
                     {
                         if (m_ScannerCameraOffsetSequence != null)
                         {
-                            if (false)
+                            bool bNeedToCheck = false;
+
+                            // 1. 처음엔 무조건 실행
+                            if (!m_bFirstAutoCrossCheckDone)
                             {
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset;
+                                bNeedToCheck = true;
+                                m_bFirstAutoCrossCheckDone = true;
+                            }
+                            // 2. 이후엔 Count 간격마다 실행
+                            else if (Equipment.Machine_AutoCrossCheck_Count > 0 &&
+                                     DrillingManager.CycleTimer_DoneModuleCount % Equipment.Machine_AutoCrossCheck_Count == 0)
+                            {
+                                bNeedToCheck = true;
+                            }
+
+                            if (bNeedToCheck)
+                            {
+                                if (m_ScannerCameraOffsetSequence != null)
+                                {
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset;
+                                }
                             }
                         }
                     }

@@ -1970,13 +1970,13 @@ namespace QMC.Common.Modules
                 if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
                 {
                     Equipment.Loader_RPort_Pause = true;
-                    Equipment.Loader_RPort_Empty = true;
+                    Equipment.Loader_RPort_Empty = false;
                 }
                 else if (TickCount_Elapsed((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT) > 
                         (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000))
                 {
                     Equipment.Loader_RPort_Pause = true;
-                    Equipment.Loader_RPort_Empty = true;
+                    Equipment.Loader_RPort_Empty = false;
 
                     // 자재가 없고, 감지OFF 시간이 충분히 지나면 Z축을 내림 (중복 방지용 Flag 사용)
                     if (!m_bStackerZ0_DownWhenEmpty &&
@@ -1996,7 +1996,7 @@ namespace QMC.Common.Modules
                 // 자재 감지 → 타이머 리셋 및 Z축 하강 Flag 초기화
                 TickCount_Start((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT);
                 m_bStackerZ0_DownWhenEmpty = false;
-                Equipment.Loader_RPort_Empty = false;
+                Equipment.Loader_RPort_Empty = true;
             }
 
             //기존 코드
@@ -2930,13 +2930,13 @@ namespace QMC.Common.Modules
                 if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
                 {
                     Equipment.Loader_LPort_Pause = true;
-                    Equipment.Loader_LPort_Empty = true;
+                    Equipment.Loader_LPort_Empty = false;
                 }
                 else if (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) >
                         (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000))
                 {
                     Equipment.Loader_LPort_Pause = true;
-                    Equipment.Loader_LPort_Empty = true;
+                    Equipment.Loader_LPort_Empty = false;
 
                     // 자재가 없고, 감지OFF 시간이 충분히 지나면 Z축을 내림 (중복 방지용 Flag 사용)
                     if (!m_bStackerZ1_DownWhenEmpty &&
@@ -2956,7 +2956,7 @@ namespace QMC.Common.Modules
                 // 자재 감지 → 타이머 리셋 및 Z축 하강 Flag 초기화
                 TickCount_Start((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT);
                 m_bStackerZ1_DownWhenEmpty = false;
-                Equipment.Loader_LPort_Empty = false;
+                Equipment.Loader_LPort_Empty = true;
             }
 
             //기존 코드 
@@ -10644,7 +10644,6 @@ namespace QMC.Common.Modules
 
             //m_btimer_LoaderWork_Stop = false;
             timer_LoaderWork.Enabled = false;
-
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  메인 화면 갱신용 변수

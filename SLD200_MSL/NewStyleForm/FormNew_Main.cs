@@ -1322,11 +1322,11 @@ namespace SLD200_MSL
 
             // label_Title_MESMessage
             // 여기에 자재 유/무에 대한 메세지 표시
-            SetValue(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
-            SetColor(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? Color.Red : Color.Black, Equipment.Loader_LPort_Empty ? Color.White : Color.Lime);
+            SetValue(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 있음." : "Loader_Stacker Left: 자재 없음.");
+            SetColor(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? Color.Black : Color.Red, Equipment.Loader_LPort_Empty ? Color.Lime : Color.White);
 
-            SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 없음." : "Loader_Stacker Right: 자재 있음.");
-            SetColor(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? Color.Red : Color.Black, Equipment.Loader_RPort_Empty ? Color.White : Color.Lime);
+            SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 있음." : "Loader_Stacker Right: 자재 없음.");
+            SetColor(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? Color.Black : Color.Red, Equipment.Loader_RPort_Empty ? Color.Lime : Color.White);
 
             //  소켓 가공 건너뛰기 (얼라인만 사용)
             SetColor(checkBox_Main_SocketDrilling_Pass, Equipment.SocketDrilling_Skip ? Color.LightGreen : Color.LightGreen);
@@ -1501,6 +1501,8 @@ namespace SLD200_MSL
 
                 //통신 초기화
                 Comm_Init();
+
+                workStage.m_bFirstAutoCrossCheckDone = false;
 
                 workStage.m_bHomeOK = false;
                 m_bHomeProgress_Show = true;
@@ -2876,6 +2878,9 @@ namespace SLD200_MSL
             workStage.m_bAlignCompleted = false;
             Equipment.ManualRunStatus = false;
             workStage.m_bForceEjectRequest = false;
+
+
+            workStage.m_bFirstAutoCrossCheckDone = false;
 
             workStage.ResetRecovery();
             unloader.ResetRecovery();

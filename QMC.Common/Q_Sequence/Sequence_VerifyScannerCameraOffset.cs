@@ -922,7 +922,17 @@ namespace QMC.Common.Q_Sequence
 
                 case (int)VerifyScannerCameraOffset_Step.StageZ_Move_LaserHeightSensorPos_DoneCheck:
                     {
-                        if (workStage.IsWorkStage_TeachingPositionsZ((int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos))
+                        int nZPos = 0;
+                        if (bCalPosition)
+                        {
+                            nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos;
+                        }
+                        else
+                        {
+                            nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                        }
+
+                        if (workStage.IsWorkStage_TeachingPositionsZ((int)nZPos))
                         {
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.StageXY_Move_LaserHeightSensorPos;
                         }
@@ -979,44 +989,45 @@ namespace QMC.Common.Q_Sequence
 
                 case (int)VerifyScannerCameraOffset_Step.Move_LaserHeightSensorPos_StableTime:
                     {
-                        //if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > nVerifyScannerCameraOffsetTimeout)
-                        //{
-                        //    m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.ScannerCalHeightValue_Get;
-                        //}
-                        if (Equipment.Machine_LaserHeightCheckStableTime_Enable)
+                        if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > 1000)
                         {
-                            if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > Equipment.Machine_LaserHeightCheckStableTime)
-                            {
-
-                                workStage.m_bSensorRequestPending = true;
-                                workStage.m_bSensorResponseReady = false;
-                                TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
-                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.ScannerCalHeightValue_Get;
-                            }
-                        }
-                        else //Enable ; false 시에 안정화 시간 없이 값 읽어옴.
-                        {
-                            workStage.m_bSensorRequestPending = true;
-                            workStage.m_bSensorResponseReady = false;
-                            TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.ScannerCalHeightValue_Get;
                         }
+                        //if (Equipment.Machine_LaserHeightCheckStableTime_Enable)
+                        //{
+                        //    if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > Equipment.Machine_LaserHeightCheckStableTime)
+                        //    {
+
+                        //        workStage.m_bSensorRequestPending = true;
+                        //        workStage.m_bSensorResponseReady = false;
+                        //        TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
+                        //        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.ScannerCalHeightValue_Get;
+                        //    }
+                        //}
+                        //else //Enable ; false 시에 안정화 시간 없이 값 읽어옴.
+                        //{
+                        //    workStage.m_bSensorRequestPending = true;
+                        //    workStage.m_bSensorResponseReady = false;
+                        //    TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
+                        //    m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.ScannerCalHeightValue_Get;
+                        //}
                     }
                     break;
 
                 case (int)VerifyScannerCameraOffset_Step.ScannerCalHeightValue_Get:
                     {
-                        if (!workStage.m_bSensorResponseReady)
-                        {
-                            // 아직 응답 안옴 → 대기 or 타임아웃 처리
-                            if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > 1000)
-                            {
-                                //알람 처리 해야 할 수도.
-                                m_dZOffset_SocketHeightCheck = 0.0;
-                            }
-                            break;
-                        }
-                        workStage.m_bSensorResponseReady = false; // 응답 소비 완료
+                        // Manual도 측정해야 함.
+                        //if (!workStage.m_bSensorResponseReady)
+                        //{
+                        //    // 아직 응답 안옴 → 대기 or 타임아웃 처리
+                        //    if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > 1000)
+                        //    {
+                        //        //알람 처리 해야 할 수도.
+                        //        m_dZOffset_SocketHeightCheck = 0.0;
+                        //    }
+                        //    break;
+                        //}
+                        //workStage.m_bSensorResponseReady = false; // 응답 소비 완료
 
                         //  Laser Focus 위치에서 Laser Height 값과, 현재 Laser Height Sensor 값의 차이만큼 가공 높이 보정
                         //m_dZOffset_SocketHeightCheck = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition - m_dLaserHeightSensorSocket_Value;
@@ -1045,7 +1056,8 @@ namespace QMC.Common.Q_Sequence
 
                         double dPosZ = vision.stVisionTeachingPos[(int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
                             m_dZOffset_SocketHeightCheck + m_dHeightOffsetScanner;
-                        workStage.MovetoWorkStage_ABS_PositionsZ(dPosZ, Type_Motor_Speed.Fine);
+
+                        //workStage.MovetoWorkStage_ABS_PositionsZ(dPosZ, Type_Motor_Speed.Fine);
 
                         Log.Write("SLD-200", "VerifyScannerCameraOffset",
                         $"LaserZAxis: {dPosZ}" +
@@ -1059,24 +1071,29 @@ namespace QMC.Common.Q_Sequence
 
                 case (int)VerifyScannerCameraOffset_Step.ScannerCalHeight_ZOffset_Move_DoneCheck:
                     {
-                        if (workStage.IsWorkStage_Positions(WorkStage.nAxis.Z,
+                        if(false)
+                        {
+                            if (workStage.IsWorkStage_Positions(WorkStage.nAxis.Z,
                             vision.stVisionTeachingPos[(int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
                             m_dZOffset_SocketHeightCheck + m_dHeightOffsetScanner))
-                        {
-                            double targetZ = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
-                            Log.Write("SLD-200", Equipment.User_Name, "VerifyScannerCameraOffset",
-                                $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+                            {
+                                double targetZ = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                                Log.Write("SLD-200", Equipment.User_Name, "VerifyScannerCameraOffset",
+                                    $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
 
-                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.StageXY_Move_ScannerCalibrationPos;
-                        }
-                        else if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > nVerifyScannerCameraOffsetTimeout)
-                        {
-                            strTemp = string.Format("Stage Z 축, Socket 가공 Focus 조정 실패. (Timeout)");
-                            Log.Write("SLD-200", "VerifyScannerCameraOffset", strTemp);
+                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.StageXY_Move_ScannerCalibrationPos;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > nVerifyScannerCameraOffsetTimeout)
+                            {
+                                strTemp = string.Format("Stage Z 축, Socket 가공 Focus 조정 실패. (Timeout)");
+                                Log.Write("SLD-200", "VerifyScannerCameraOffset", strTemp);
 
-                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
-                            return workStage.AlarmPost(AlarmKey.ScannerCalibration_Fail);
+                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
+                                return workStage.AlarmPost(AlarmKey.ScannerCalibration_Fail);
+                            }
                         }
+
+                        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.StageXY_Move_ScannerCalibrationPos;
                     }
                     break;
 
@@ -1148,17 +1165,17 @@ namespace QMC.Common.Q_Sequence
                                 //걍 무조건 Closs로
                                 workStage.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
                             }
-                            else
-                            {
-                                if (Equipment.Scanner_Calibration_MarkType_Cross)
-                                {
-                                    workStage.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
-                                }
-                                else //Circle
-                                {
-                                    workStage.DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
-                                }
-                            }
+                            //else
+                            //{
+                            //    if (Equipment.Scanner_Calibration_MarkType_Cross)
+                            //    {
+                            //        workStage.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                            //    }
+                            //    else //Circle
+                            //    {
+                            //        workStage.DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
+                            //    }
+                            //}
                         }
                         else //UV
                         {
@@ -1167,17 +1184,17 @@ namespace QMC.Common.Q_Sequence
                                 //걍 무조건 Closs로
                                 workStage.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
                             }
-                            else
-                            {
-                                if (Equipment.Scanner_Calibration_MarkType_Cross)
-                                {
-                                    workStage.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
-                                }
-                                else //Circle
-                                {
-                                    workStage.DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
-                                }
-                            }
+                            //else
+                            //{
+                            //    if (Equipment.Scanner_Calibration_MarkType_Cross)
+                            //    {
+                            //        workStage.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                            //    }
+                            //    else //Circle
+                            //    {
+                            //        workStage.DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
+                            //    }
+                            //}
                         }
 
                         TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
@@ -1273,15 +1290,20 @@ namespace QMC.Common.Q_Sequence
                 case (int)VerifyScannerCameraOffset_Step.VisionCalHeight_ZOffset_Move:
                     {
                         // Vision 진행 시 Z Offset 값이 있으면 적용하자.
-                        m_dHeightOffsetVision = 0;
+                        m_dHeightOffsetVision = Equipment.Scanner_Calibration_VisionZOffset;
 
-                        double dPosZ = vision.stVisionTeachingPos[(int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
-                            m_dZOffset_SocketHeightCheck + m_dHeightOffsetVision;
+                        //Laser_Sensor_HeightCheck_CalPos
+                        //double dPosZ = vision.stVisionTeachingPos[(int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos].Vision_Z +
+                        //    m_dZOffset_SocketHeightCheck + m_dHeightOffsetVision;
+
+                        double dPosZ = vision.stVisionTeachingPos[(int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos].Vision_Z +
+                            m_dHeightOffsetVision;
+
                         workStage.MovetoWorkStage_ABS_PositionsZ(dPosZ, Type_Motor_Speed.Fine);
 
                         Log.Write("SLD-200", "VerifyScannerCameraOffset",
                         $"VisionZAxis: {dPosZ}" +
-                            $"VisionFocusPos={vision.stVisionTeachingPos[(int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z}" +
+                            $"VisionFocusPos={vision.stVisionTeachingPos[(int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos].Vision_Z}" +
                             $"HeightCheck={m_dZOffset_SocketHeightCheck}" +
                             $"OffsetPos={m_dHeightOffsetVision}");
                         TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
@@ -1291,13 +1313,13 @@ namespace QMC.Common.Q_Sequence
 
                 case (int)VerifyScannerCameraOffset_Step.VisionCalHeight_ZOffset_Move_DoneCheck:
                     {
-                        if (workStage.IsWorkStage_Positions(WorkStage.nAxis.Z,
-                            vision.stVisionTeachingPos[(int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
-                            m_dZOffset_SocketHeightCheck + m_dHeightOffsetVision))
+                        double dPosZ = vision.stVisionTeachingPos[(int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos].Vision_Z +
+                            m_dHeightOffsetVision;
+
+                        if (workStage.IsWorkStage_Positions(WorkStage.nAxis.Z, dPosZ))
                         {
-                            double targetZ = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
                             Log.Write("SLD-200", Equipment.User_Name, "VerifyScannerCameraOffset",
-                                $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+                                $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {dPosZ:F3})");
 
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.ScannerCompensation_StartPosition_Set;
                         }
@@ -1563,8 +1585,9 @@ namespace QMC.Common.Q_Sequence
                                         $" Setting X: {Equipment.Scanner_Vision_Offset_Setting_X:F6}, " +
                                         $"Y: {Equipment.Scanner_Vision_Offset_Setting_Y:F6}");
 
-                                    Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
-                                    Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
+                                    //  Scanner <-> FineCam Offset 적용 <- 검증 후에 적용하자.
+                                    //Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
+                                    //Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
 
                                     // 적용 후 로그
                                     Log.Write("SLD-200", "VerifyScannerCameraOffset", $"[After Offset Apply] " +

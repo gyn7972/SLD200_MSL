@@ -632,7 +632,8 @@ namespace QMC.Common
         public static int Machine_LoaderStacker_NoMaterialDetectTime { set; get; } = 10;                    //  Loader Stacker No Material Detect Time
         public static int Machine_PolylineCurve_Resolution { set; get; } = 100;                             //  Polyline Curve Resolution
 
-
+        public static bool Machine_AutoCrossCheck_Enable { set; get; } = false  ;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static int Machine_AutoCrossCheck_Count { set; get; } = 1;                     //  Auto Cross Check Threshold (mm)
         //  Offset Distance
         public struct stOffsetDistanceParameter
         {

@@ -1366,7 +1366,12 @@ namespace SLD200_MSL
             checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked = Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable;
             textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text = Equipment.Machine_LoaderStacker_NoMaterialDetectTime.ToString();
             textBox_Setup_Option_PolylineCurve_Resolution.Text = Equipment.Machine_PolylineCurve_Resolution.ToString();
-            
+
+            checkBox_Setup_Option_AutoCrossCheck.Checked = Equipment.Machine_AutoCrossCheck_Enable;
+            textBox_Setup_Option_AutoCrossCheck.Text = Equipment.Machine_AutoCrossCheck_Count.ToString();
+
+
+
             if (Equipment.Machine_FiducialImageSave_Always)
             {
                 radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
@@ -1684,7 +1689,6 @@ namespace SLD200_MSL
                 return;
             }
 
-
             strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
 
             if (File.Exists(strFIle) == false)
@@ -1693,9 +1697,7 @@ namespace SLD200_MSL
                 //return false;
             }
 
-
             //  Machine Option  로드
-
             //  Laser Type                                                                            //  True : CO₂,    False : UV
             NativeMethods.GetPrivateProfileString("Machine_Option", "Laser_Type", "True", temp, 255, strFIle);
             m_bCurrentLaserType = temp.ToString() == "False" ? false : true;
@@ -1713,9 +1715,31 @@ namespace SLD200_MSL
         public void Machine_Option_Save()
         {
             string strTemp = "";
-
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            // 백업 처리 추가 시작
+            try
+            {
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+
 
             if (File.Exists(strFIle) == false)
             {
@@ -1793,6 +1817,11 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime", textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text.ToString(), strFIle);
             Equipment.Machine_PolylineCurve_Resolution = Equipment.ToInt(textBox_Setup_Option_PolylineCurve_Resolution.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "PolylineCurve_Resolution", textBox_Setup_Option_PolylineCurve_Resolution.Text.ToString(), strFIle);
+            Equipment.Machine_AutoCrossCheck_Enable = checkBox_Setup_Option_AutoCrossCheck.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "AutoCrossCheck_Enable", checkBox_Setup_Option_AutoCrossCheck.Checked.ToString(), strFIle);
+            Equipment.Machine_AutoCrossCheck_Count = Equipment.ToInt(textBox_Setup_Option_AutoCrossCheck.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "AutoCrossCheck_Count", textBox_Setup_Option_AutoCrossCheck.Text.ToString(), strFIle);
+
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2328,6 +2357,19 @@ namespace SLD200_MSL
                 checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked = false;
                 textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Enabled = false;
             }
+
+            if (Equipment.Machine_AutoCrossCheck_Enable)
+            {
+                checkBox_Setup_Option_AutoCrossCheck.Checked = true;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_AutoCrossCheck.Checked = false;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = false;
+            }
+
+
         }
 
         private void checkBox_Setup_Option_VacuumSensorEnable_CheckedChanged(object sender, EventArgs e)
@@ -4182,6 +4224,22 @@ namespace SLD200_MSL
 
             }
 
+        }
+
+        private void checkBox_Setup_Option_AutoCrossCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_AutoCrossCheck.Checked)
+            {
+                Equipment.Machine_AutoCrossCheck_Enable = true;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = true;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_AutoCrossCheck_Enable = false;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = false;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = false;
+            }
         }
     }
 }
