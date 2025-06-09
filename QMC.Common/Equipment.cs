@@ -1477,6 +1477,11 @@ namespace QMC.Common
             bds.Create();
             Modules.Add(bds);
 
+
+            //전부 생성한 후 Init하자
+            workStage.m_ScannerCameraOffsetSequence.Init();
+
+
             // 여기때문에 시작이 느림. 
             // 재 확인 후 연결 시도 하자.
             //AlarmSaver alarmSaver = new AlarmSaver();

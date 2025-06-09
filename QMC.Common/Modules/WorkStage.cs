@@ -4024,7 +4024,7 @@ namespace QMC.Common.Modules
 
 
         //VerifyScannerCameraOffset
-        public Sequence_VerifyScannerCameraOffset m_ScannerCameraOffsetSequence { get; set; }
+        public Sequence_VerifyScannerCameraOffset m_ScannerCameraOffsetSequence { get; set; } = new Sequence_VerifyScannerCameraOffset();
 
 
         #region Constructor
@@ -4331,7 +4331,7 @@ namespace QMC.Common.Modules
             m_bPassedSocket_Exist = false;
 
 
-            m_ScannerCameraOffsetSequence = new Sequence_VerifyScannerCameraOffset();
+            //m_ScannerCameraOffsetSequence = new Sequence_VerifyScannerCameraOffset();
         }
 
         public void Module_Allocation()

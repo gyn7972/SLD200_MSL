@@ -177,45 +177,7 @@ namespace QMC.Common.Q_Sequence
         //생성자
         public Sequence_VerifyScannerCameraOffset()
         {
-            ModuleCollection m_collectionModules;
-            m_collectionModules = Equipment.Modules;
-            foreach (Module module in m_collectionModules)
-            {
-                if (module.Name == "WorkStage")
-                {
-                    workStage = module as WorkStage;
-                }
-                else if (module.Name == "BDS")
-                {
-                    bds = module as Bds;
-                }
-            }
-
-            m_scannerCalConfig = ScannerCalConfigData.LoadFromIni();
-
-            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
-
-
-
-            //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
-            m_taskTimer_Main_Tick = Task.Factory.StartNew(() =>
-            {
-                Thread.CurrentThread.Name = "m_taskTimer_VerifyScannerCameraOffset_Tick";
-
-                while (true)
-                {
-                    Thread.Sleep(20);
-
-                    if (isModuleClose)
-                    {
-                        break;
-                    }
-
-                    Timer_MainStatus_Tick(null, null);
-                }
-            });
-            listTask.Add(m_taskTimer_Main_Tick);
-
+            
 
         }
         //소멸자
@@ -257,7 +219,54 @@ namespace QMC.Common.Q_Sequence
         private const int nVerifyScannerCameraOffsetTimeout = 60000; // 5초
         #endregion
 
-        
+
+
+        public void Init()
+        {
+            ModuleCollection m_collectionModules;
+            m_collectionModules = Equipment.Modules;
+            foreach (Module module in m_collectionModules)
+            {
+                if (module.Name == "WorkStage")
+                {
+                    workStage = module as QMC.Common.Modules.WorkStage;
+                }
+                else if (module.Name == "BDS")
+                {
+                    bds = module as QMC.Common.Modules.Bds;
+                }
+                else if (module.Name == "Vision")
+                {
+                    vision = module as QMC.Common.Modules.Vision;
+                }
+            }
+
+            m_scannerCalConfig = ScannerCalConfigData.LoadFromIni();
+
+            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
+
+
+
+            //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
+            m_taskTimer_Main_Tick = Task.Factory.StartNew(() =>
+            {
+                Thread.CurrentThread.Name = "m_taskTimer_VerifyScannerCameraOffset_Tick";
+
+                while (true)
+                {
+                    Thread.Sleep(20);
+
+                    if (isModuleClose)
+                    {
+                        break;
+                    }
+
+                    Timer_MainStatus_Tick(null, null);
+                }
+            });
+            listTask.Add(m_taskTimer_Main_Tick);
+        }
+
         public void Start()
         {
             m_scannerCalConfig = ScannerCalConfigData.LoadFromIni();
@@ -593,8 +602,7 @@ namespace QMC.Common.Q_Sequence
 
                     // Recipe에서 설정한 Y축 Mask 위치로 이동 - 
                     workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y] =
-                        //bds.stBDSTeachingPos[(int)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_MaskIndex].Mask_Y;
-                        Equipment.Scanner_Calibration_MaskIndex;
+                        bds.stBDSTeachingPos[(int)Equipment.Scanner_Calibration_MaskIndex].Mask_Y;
 
                     workStage.MC_Func.MC_MovePosition((int)Bds.nAxis.MASK_Y, workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y],
                                           lfVelocity, lfAccDec, lfAccDec);
@@ -1662,8 +1670,8 @@ namespace QMC.Common.Q_Sequence
                         {
                             strTemp = string.Format("Stage XY축, 보정 Center 위치로 이동 실패. (Timeout)");
                             Log.Write("SLD-200", "Scanner Calibration", strTemp);
-                            MessageBox.Show(strTemp, "Error");
-                            m_VerifyScannerCameraOffsetStep = (int)VerifyScannerCameraOffset_Step.None;
+                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
+                            return workStage.AlarmPost(AlarmKey.ScannerCalibration_Fail);
 
                             return workStage.AlarmPost(AlarmKey.ScannerCalibration_Fail);
                         }
@@ -1677,9 +1685,9 @@ namespace QMC.Common.Q_Sequence
                             m_deltaX = Equipment.Scanner_Vision_Offset_Setting_X;
                             m_deltaY = Equipment.Scanner_Vision_Offset_Setting_Y;
 
-                            MessageBox.Show("OK: Cross Mark XY 위치.\n" +
-                                "DeltaX: {deltaX}, DeltaY: {deltaY}", "Completed",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            //MessageBox.Show("OK: Cross Mark XY 위치.\n" +
+                            //    "DeltaX: {deltaX}, DeltaY: {deltaY}", "Completed",
+                            //    MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Complete;
                         }
