@@ -32,6 +32,7 @@ using Cognex.VisionPro.Exceptions;
 using System.Windows.Controls.Primitives;
 using static QMC.Common.Part;
 using QMC.Common.Q_Config;
+using QMC.Common.Q_Sequence;
 //using OpenCvSharp;
 
 namespace SLD200_MSL
@@ -90,6 +91,7 @@ namespace SLD200_MSL
         public BlobVisionToolParameter BlobParameter { get; set; }
 
         public bool IsPixel { get; set; }
+
         #endregion
 
         public FormNew_Setup()
@@ -243,6 +245,10 @@ namespace SLD200_MSL
             ////Scanner_Calibration_VisionZOffset
             textBox_Setup_ScannerCal_VisionZOffset.Text = Equipment.Scanner_Calibration_VisionZOffset.ToString();
 
+            comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.SelectedIndex = Equipment.Scanner_Calibration_MaskIndex;
+            comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.Scanner_Calibration_BETPositionIndex;
+
+
             //cal Last Position Display 하자.
             label_Setup_ScannerCal_LastPosX.Text = Equipment.Scanner_Calibration_PosX_Last.ToString();
             label_Setup_ScannerCal_LastPosY.Text = Equipment.Scanner_Calibration_PosY_Last.ToString();
@@ -381,8 +387,9 @@ namespace SLD200_MSL
 
             this.radioButton_Setup_ScannerCal_Light_IR.Checked = true;
             this.radioButton_Setup_ScannerCal_Light_Red.Checked = false;
-            workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_channel_01_Value; //RED
-            workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_channel_02_Value; //IR
+            workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_Red_Value; //RED
+            workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_IR_Value; //IR
+
             IsPixel = true;
 
             //  Scanner Calibration Position : 처음에는 Cal Pan으로 설정.
@@ -457,8 +464,8 @@ namespace SLD200_MSL
 
                 this.radioButton_Setup_ScannerCal_Light_IR.Checked = true;
                 this.radioButton_Setup_ScannerCal_Light_Red.Checked = false;
-                workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_channel_01_Value; //RED
-                workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_channel_02_Value; //IR
+                workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_Red_Value; //RED
+                workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_IR_Value; //IR
             }
             else
             {
@@ -1898,6 +1905,8 @@ namespace SLD200_MSL
             Equipment.Scanner_Calibration_CalAreaWidth = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaWidth.Text);
             Equipment.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaHeight.Text);
             Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(textBox_Setup_ScannerCal_CalPitch.Text);
+            Equipment.Scanner_Calibration_MaskIndex = comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.SelectedIndex;
+            Equipment.Scanner_Calibration_BETPositionIndex = comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.SelectedIndex;
 
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", textBox_Setup_ScannerCal_LaserFrequency.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Pulse_Width", textBox_Setup_ScannerCal_PulseWidth.Text, strFIle);
@@ -1914,6 +1923,9 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", textBox_Setup_ScannerCal_CalAreaHeight.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", textBox_Setup_ScannerCal_CalPitch.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Vision_Z_Offset", textBox_Setup_ScannerCal_VisionZOffset.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "MaskIndex", comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.SelectedIndex.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "BETPositionIndex", comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.SelectedIndex.ToString(), strFIle);
+
 
 
             Equipment.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile; // m_srcFile;
@@ -2479,9 +2491,30 @@ namespace SLD200_MSL
 
         private void btnCalStop_Click(object sender, EventArgs e)
         {
-            workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
-            workStage.m_ScannerCalibration_Start = false;
-            workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
+            if(true)
+            {
+                if (workStage.m_ScannerCameraOffsetSequence != null)
+                {
+                    workStage.m_ScannerCalibration_Start = false;
+                    workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+                    workStage.m_ScannerCameraOffsetSequence.Reset();
+                    workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+                }
+                else
+                {
+                    MessageBox.Show("ScannerCameraOffsetSequence이 선언되지 않았습니다.", "Information!!");
+                    return;
+                }
+            }
+            else
+            {
+                workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+                workStage.m_ScannerCalibration_Start = false;
+                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
+            }
+            
+
+            
         }
 
         private void btnCalStart_Vision_Click(object sender, EventArgs e)
@@ -3227,8 +3260,6 @@ namespace SLD200_MSL
                 return;
             }
 
-            
-
             // 캘판 변경 유/무에 대해서 물어보는 메세지 박스해주고 True/False 리턴받기
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", 
@@ -3241,13 +3272,34 @@ namespace SLD200_MSL
                 Equipment.Scanner_Calibration_Change = true;
             }
 
-            if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
+            Equipment.Scanner_Vision_Offset_Setting_Use = true;
+
+            if(true)
             {
-                Equipment.Scanner_Vision_Offset_Setting_Use = true;
-                WorkStartTick = Environment.TickCount;
-                workStage.m_ScannerCalibration_Start = true;
-                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
-                
+                if (workStage.m_ScannerCameraOffsetSequence != null)
+                {
+                    workStage.m_ScannerCalibration_Start = false;
+                    workStage.m_ScannerCameraOffsetSequence.Reset();
+                    workStage.m_ScannerCameraOffsetSequence.Start();
+                    workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run);
+                    workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = true;
+                }
+                else
+                {
+                    MessageBox.Show("ScannerCameraOffsetSequence이 선언되지 않았습니다.", "Information!!");
+                    return;
+                }
+            }
+            else
+            {
+                if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
+                {
+                    Equipment.Scanner_Vision_Offset_Setting_Use = true;
+                    WorkStartTick = Environment.TickCount;
+                    workStage.m_ScannerCalibration_Start = true;
+                    workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
+
+                }
             }
         }
 
@@ -3463,6 +3515,11 @@ namespace SLD200_MSL
                 baseToggleButton_Setup_ScannerCal_UseMaskImage.UpdateToggleStatus(bOn);
                 PatternMatchingParameter.UseMaskImage = bOn;
             }
+
+            textBox_Setup_ScannerCal_Illuminator_FineCamRed.Text = Equipment.Scanner_Calibration_Illumination_Red_Value.ToString();
+            textBox_Setup_ScannerCal_Illuminator_FineCamIR.Text = Equipment.Scanner_Calibration_Illumination_IR_Value.ToString();
+            textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Text = Equipment.Scanner_Calibration_ExposureTime_High.ToString();
+
         }
 
         private void InitBlobParameter()
@@ -3765,6 +3822,7 @@ namespace SLD200_MSL
             this.textBox_Setup_ScannerCal_IlluminationValue.Text = hScrollBar_Setup_ScannerCal_Illuminator.Value.ToString();
 
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBar_Setup_ScannerCal_Illuminator.Value);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, workStage.Config.ListIlluminationChannel[1].Value);
@@ -3780,6 +3838,7 @@ namespace SLD200_MSL
             this.textBox_Setup_ScannerCal_IlluminationValue.Text = hScrollBar_Setup_ScannerCal_Illuminator.Value.ToString();
 
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, workStage.Config.ListIlluminationChannel[0].Value);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBar_Setup_ScannerCal_Illuminator.Value);
@@ -3793,8 +3852,9 @@ namespace SLD200_MSL
 
         private void button_Setup_ScannerCal_Vision_Save_Click(object sender, EventArgs e)
         {
-            Equipment.Scanner_Calibration_Illumination_channel_01_Value = workStage.Config.ListIlluminationChannel[0].Value; //RED
-            Equipment.Scanner_Calibration_Illumination_channel_02_Value = workStage.Config.ListIlluminationChannel[1].Value; //IR
+            Equipment.Scanner_Calibration_Illumination_Red_Value = Equipment.ToInt(textBox_Setup_ScannerCal_Illuminator_FineCamRed.Text); //RED
+            Equipment.Scanner_Calibration_Illumination_IR_Value = Equipment.ToInt(textBox_Setup_ScannerCal_Illuminator_FineCamIR.Text); //IR
+            Equipment.Scanner_Calibration_ExposureTime_High = Equipment.ToInt(textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Text);
 
             Equipment.Scanner_Calibration_TrainRoiStartLocation_X = RoiTrain.Parameter.StartLocation.X;
             Equipment.Scanner_Calibration_TrainRoiStartLocation_Y = RoiTrain.Parameter.StartLocation.Y;
@@ -4110,6 +4170,18 @@ namespace SLD200_MSL
             //config.ConfigPath = System.IO.Path.Combine(ConfigManager.GetConfigPath(), "Machine ScannerCalibration (Do not delete or modify).ini");
 
             return config;
+        }
+
+        private void button_ScannerCal_Illuminator_Camera_ExposureTime_High_Click(object sender, EventArgs e)
+        {
+            double dExposureTime = Equipment.ToDouble(textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Text);
+
+            if(workStage.jigAligner_HighRes.Camera.Opened)
+            {
+                workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
+
+            }
+
         }
     }
 }

@@ -1322,7 +1322,7 @@ namespace SLD200_MSL
 
             // label_Title_MESMessage
             // 여기에 자재 유/무에 대한 메세지 표시
-            SetValue(label_Title_Stacker_LPort,Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
+            SetValue(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
             SetColor(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? Color.Red : Color.Black, Equipment.Loader_LPort_Empty ? Color.White : Color.Lime);
 
             SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 없음." : "Loader_Stacker Right: 자재 있음.");
@@ -4354,10 +4354,10 @@ namespace SLD200_MSL
         {
             //workStage.workStageParameter.DO_AirCurtain_Purge(true);
 
-            double freq = 0.0;
-            bds.DustCollector_Upper.GetFrequency(out freq);
+            //double freq = 0.0;
+            //bds.DustCollector_Upper.GetFrequency(out freq);
 
-            return;
+            
             string strTemp = "";
             double offsetX = 0.0, offsetY = 0.0;
 

@@ -199,6 +199,31 @@ namespace SLD200_MSL
                         return;
                     }
 
+                    double epsilon = 0.01;
+
+                    if (Equipment.LastDividedRects.Count > 0)
+                    {
+                        renderer.Color(200.0f, 200.0f, 0.0f); // Lime color
+                        
+
+                        foreach (var rect in Equipment.LastDividedRects)
+                        {
+                            double left = rect.Left + epsilon;
+                            double right = rect.Right - epsilon;
+                            double top = rect.Top - epsilon;
+                            double bottom = rect.Bottom + epsilon;
+
+                            renderer.Begin(OpenGL.GL_LINE_LOOP);
+                            renderer.Vertex(left, bottom, 0.0f);
+                            renderer.Vertex(right, bottom, 0.0f);
+                            renderer.Vertex(right, top, 0.0f);
+                            renderer.Vertex(left, top, 0.0f);
+                            renderer.End();
+                        }
+
+                        return; // 직접 렌더링 했으므로 함수 종료
+                    }
+
                     var outlineRecipe = Equipment.stLayerRecipeSet[(int)LayerList.Outline];
                     if (outlineRecipe.Miscellaneous_GroupSplitSize <= 0 ||
                         outlineRecipe.Miscellaneous_GroupSplitSize_Height <= 0)
@@ -209,7 +234,7 @@ namespace SLD200_MSL
 
                     double dSplitW = outlineRecipe.Miscellaneous_GroupSplitSize;
                     double dSplitH = outlineRecipe.Miscellaneous_GroupSplitSize_Height;
-                    double epsilon = 0.01; // 미세하게 띄워서 시각적으로 겹쳐 보이지 않게 함
+                    //double epsilon = 0.01; // 미세하게 띄워서 시각적으로 겹쳐 보이지 않게 함
 
                     renderer.Color(200.0f, 200.0f, 0.0f); // 라임색
 
@@ -253,6 +278,71 @@ namespace SLD200_MSL
                         }
                     }
                 }
+                //else if (layer.Name.Contains("Outline"))
+                //{
+                //    OpenGL renderer = view.Renderer;
+
+                //    if (Equipment.stLayerRecipeSet == null ||
+                //        (int)LayerList.Outline >= Equipment.stLayerRecipeSet.Length)
+                //    {
+                //        Log.Write("SiriusEditor", "Outline 레이어의 레시피 정보가 존재하지 않습니다.");
+                //        return;
+                //    }
+
+                //    var outlineRecipe = Equipment.stLayerRecipeSet[(int)LayerList.Outline];
+                //    if (outlineRecipe.Miscellaneous_GroupSplitSize <= 0 ||
+                //        outlineRecipe.Miscellaneous_GroupSplitSize_Height <= 0)
+                //    {
+                //        Log.Write("SiriusEditor", "Outline 레이어의 그룹 분할 크기가 유효하지 않습니다.");
+                //        return;
+                //    }
+
+                //    double dSplitW = outlineRecipe.Miscellaneous_GroupSplitSize;
+                //    double dSplitH = outlineRecipe.Miscellaneous_GroupSplitSize_Height;
+                //    double epsilon = 0.01; // 미세하게 띄워서 시각적으로 겹쳐 보이지 않게 함
+
+                //    renderer.Color(200.0f, 200.0f, 0.0f); // 라임색
+
+                //    foreach (var entity in layer.Items)
+                //    {
+                //        if (entity == null || entity.BoundRect == null)
+                //            continue;
+
+                //        var bounds = entity.BoundRect;
+
+                //        double width = bounds.Width;
+                //        double height = bounds.Height;
+                //        double centerX = bounds.Center.X;
+                //        double centerY = bounds.Center.Y;
+
+                //        int colCount = Math.Max(1, (int)Math.Ceiling(width / dSplitW));
+                //        int rowCount = Math.Max(1, (int)Math.Ceiling(height / dSplitH));
+
+                //        double offsetX = centerX - (colCount * dSplitW) / 2.0 + dSplitW / 2.0;
+                //        double offsetY = centerY + (rowCount * dSplitH) / 2.0 - dSplitH / 2.0;
+
+                //        for (int row = 0; row < rowCount; row++)
+                //        {
+                //            for (int col = 0; col < colCount; col++)
+                //            {
+                //                double cellCenterX = offsetX + col * dSplitW;
+                //                double cellCenterY = offsetY - row * dSplitH;
+
+                //                double left = cellCenterX - dSplitW / 2.0 + epsilon;
+                //                double right = cellCenterX + dSplitW / 2.0 - epsilon;
+                //                double bottom = cellCenterY - dSplitH / 2.0 + epsilon;
+                //                double top = cellCenterY + dSplitH / 2.0 - epsilon;
+
+                //                renderer.Begin(OpenGL.GL_LINE_LOOP);
+                //                renderer.Vertex(left, bottom, 0.0f);
+                //                renderer.Vertex(right, bottom, 0.0f);
+                //                renderer.Vertex(right, top, 0.0f);
+                //                renderer.Vertex(left, top, 0.0f);
+                //                renderer.End();
+                //            }
+                //        }
+                //    }
+                //}
 
             }
         }
@@ -2342,6 +2432,27 @@ namespace SLD200_MSL
 
         private void SiriusEditor_OnDocumentSave(object sender)
         {
+            string fileName = SiriusEditor.Document.FileName;
+
+            // 파일명이 없거나 .sirius 확장자가 아니면 강제로 .sirius 확장자로 저장
+            if (string.IsNullOrEmpty(fileName) || System.IO.Path.GetExtension(fileName).ToLower() != ".sirius")
+            {
+                string fileDirectory = string.IsNullOrEmpty(fileName) ? "D:\\Temp" : System.IO.Path.GetDirectoryName(fileName);
+                string fileBaseName = string.IsNullOrEmpty(fileName) ? "DefaultSave" : System.IO.Path.GetFileNameWithoutExtension(fileName);
+                string newFilePath = System.IO.Path.Combine(fileDirectory, fileBaseName + ".sirius");
+
+                // 경로 없으면 폴더 생성
+                if (!Directory.Exists(fileDirectory))
+                    Directory.CreateDirectory(fileDirectory);
+
+                SiriusEditor.OnSave(newFilePath);
+            }
+            else
+            {
+                // 원래 파일명 유지하여 저장
+                SiriusEditor.OnSave(fileName);
+            }
+
             //bool bRtn = false;
             ////Data Parsing 후에 저장된 도면 데이터가 변경되었을 때, 다시 Parsing 하도록 한다.
             //var mb = new MessageBoxOk();
@@ -2412,9 +2523,9 @@ namespace SLD200_MSL
 
 
             //if (bRtn)
-            {
-                SiriusEditor.OnSave(SiriusEditor.Document.FileName);
-            }
+            //{
+            //    SiriusEditor.OnSave(SiriusEditor.Document.FileName);
+            //}
 
             //if (SiriusEditor.Document != null)
             //{
@@ -2442,6 +2553,8 @@ namespace SLD200_MSL
             Equipment.m_bDivided = false;
             if (checkBox_SiriusEditor_Divided.Checked)
             {
+                Equipment.LastDividedRects.Clear(); // 이전 셀 정보 제거
+
                 Equipment.m_bDivided = true;    //  분할 여부
                 fDividedX = textBox_SiriusEditor_Divided_W.Text == "" ? 0.0f : float.Parse(textBox_SiriusEditor_Divided_W.Text);
                 fDividedY = textBox_SiriusEditor_Divided_H.Text == "" ? 0.0f : float.Parse(textBox_SiriusEditor_Divided_H.Text);
@@ -2461,6 +2574,8 @@ namespace SLD200_MSL
             }
             else
             {
+                Equipment.LastDividedRects.Clear(); // 이전 셀 정보 제거
+
                 m_bDivided = false;
                 m_fDividedX = 0;
                 m_fDividedY = 0;

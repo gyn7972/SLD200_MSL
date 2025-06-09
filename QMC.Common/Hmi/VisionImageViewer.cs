@@ -2105,7 +2105,6 @@ namespace QMC.Common.Hmi
                         }
                     }
 
-                    
                     Thread.Sleep(UpdateDelayTime);
                 }
             });

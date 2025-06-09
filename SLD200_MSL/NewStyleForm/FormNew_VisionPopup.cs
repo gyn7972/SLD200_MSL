@@ -143,9 +143,19 @@ namespace SLD200_MSL
 
         private void hScrollBarIlluminator_Red_ValueChanged(object sender, System.EventArgs e)
         {
-            workStage.Config.ListIlluminationChannel[0].Value = hScrollBarIlluminator_Red.Value;
-            this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
-            CommonModule.Instance.Illuminator.SetVolume(this.hScrollBarIlluminator_Red.Value, 1);
+            if (radioButton_VisionPopup_CameraSelection_LowMag.Checked)
+            {
+                workStage.Config.ListIlluminationChannel[3].Value = hScrollBarIlluminator_Red.Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+                CommonModule.Instance.Illuminator.SetVolume(this.hScrollBarIlluminator_Red.Value, 4);
+            }
+            else
+            {
+                workStage.Config.ListIlluminationChannel[0].Value = hScrollBarIlluminator_Red.Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+                CommonModule.Instance.Illuminator.SetVolume(this.hScrollBarIlluminator_Red.Value, 1);
+            }
+                
         }
 
         private void Timer_Status_Func(object sender, EventArgs e)
@@ -431,7 +441,11 @@ namespace SLD200_MSL
             hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[2].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
             this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
+            hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[3].Value;                //  저해상도 카메라 IR 조명 (4번, Index 는 3번)
+            this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, hScrollBarIlluminator_IR.Value);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, hScrollBarIlluminator_Red.Value);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 0, false);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
@@ -474,6 +488,7 @@ namespace SLD200_MSL
             this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
 
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_Red.Value);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBarIlluminator_IR.Value);
@@ -1298,7 +1313,6 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_Y", Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString(), strFIle);
 
-
             //MessageBox.Show("Scanner 와 Fine Camera 간 Offset 데이터를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -1576,11 +1590,6 @@ namespace SLD200_MSL
 
             if (Equipment.Current_Recipe.Length > 0)
             {
-                //  현재 조명값을 얼라인 조명값으로 설정
-                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = workStage.Config.ListIlluminationChannel[0].Value;      //  Fine Camera Red
-                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = workStage.Config.ListIlluminationChannel[1].Value;       //  Fine Camera IR
-                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = workStage.Config.ListIlluminationChannel[2].Value;     //  Coarse Camera IR
-
                 //  리스트 전체 저장
                 Recipe_Data_Save_LightValue(Equipment.Current_Recipe);
 
@@ -1611,18 +1620,11 @@ namespace SLD200_MSL
                 return;
             }
 
-
             //  Recipe Parameter 저장
             for (int i = 0; i < (int)System.Enum.GetValues(typeof(LayerList)).Length; i++)
             {
                 strTemp = string.Format("Layer_{0}", i);
 
-                //  Fine Cam. Red
-                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
-                //  Fine Cam. IR
-                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
-                //  Coarse Cam. IR
-                //NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
             }
         }
 
@@ -1635,7 +1637,11 @@ namespace SLD200_MSL
                 hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[2].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
                 this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
+                hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[3].Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
                 workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, hScrollBarIlluminator_IR.Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, hScrollBarIlluminator_Red.Value);
                 Thread.Sleep(100);
                 workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 0, false);
                 workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
@@ -1644,12 +1650,16 @@ namespace SLD200_MSL
             {
                 SetScroll(1);
 
+                hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[0].Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
                 hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[1].Value;                //  고해상도 카메라 IR 조명 (2번, Index 는 1번)
                 this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
                 workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
                 Thread.Sleep(100);
-                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, workStage.Config.ListIlluminationChannel[0].Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_Red.Value);
                 workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBarIlluminator_IR.Value);
             }
         }
@@ -1660,13 +1670,17 @@ namespace SLD200_MSL
             {
                 SetScroll(0);
 
-                hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[0].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
+                hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[0].Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
+                hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[1].Value;
                 this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
                 workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
                 Thread.Sleep(100);
-                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_IR.Value);
-                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, workStage.Config.ListIlluminationChannel[1].Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_Red.Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBarIlluminator_IR.Value);
             }
         }
 

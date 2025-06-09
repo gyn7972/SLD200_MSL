@@ -231,6 +231,14 @@
             this.label51 = new System.Windows.Forms.Label();
             this.label53 = new System.Windows.Forms.Label();
             this.tabPage_Setup_ScannerCalibration = new System.Windows.Forms.TabPage();
+            this.groupBox_Setup_ScannerCal__Illuminator2 = new System.Windows.Forms.GroupBox();
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High = new System.Windows.Forms.Button();
+            this.label_RecipeVision_Camera_ExposureTime_High = new System.Windows.Forms.Label();
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed = new System.Windows.Forms.TextBox();
+            this.label_Setup_ScannerCal_High_Red = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR = new System.Windows.Forms.TextBox();
+            this.label_Setup_ScannerCal_High_IR = new System.Windows.Forms.Label();
             this.label85 = new System.Windows.Forms.Label();
             this.checkBox_Setup_ScannerCal_Position = new System.Windows.Forms.CheckBox();
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Save = new System.Windows.Forms.Button();
@@ -524,6 +532,10 @@
             this.textBox_Setup_Option_BET_Mrad_11x = new System.Windows.Forms.TextBox();
             this.label81 = new System.Windows.Forms.Label();
             this.groupBox_Offset = new System.Windows.Forms.GroupBox();
+            this.label_Setup_Option_OffsetY = new System.Windows.Forms.Label();
+            this.label_Setup_Option_OffsetX = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_OffsetY = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_Option_OffsetX = new System.Windows.Forms.TextBox();
             this.label87 = new System.Windows.Forms.Label();
             this.label86 = new System.Windows.Forms.Label();
             this.button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show = new System.Windows.Forms.Button();
@@ -551,10 +563,10 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.textBox_Setup_Option_OffsetY = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_Option_OffsetX = new System.Windows.Forms.TextBox();
-            this.label_Setup_Option_OffsetX = new System.Windows.Forms.Label();
-            this.label_Setup_Option_OffsetY = new System.Windows.Forms.Label();
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex = new System.Windows.Forms.ComboBox();
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex = new System.Windows.Forms.ComboBox();
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition = new System.Windows.Forms.Label();
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask = new System.Windows.Forms.Label();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -592,6 +604,7 @@
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.tabPage_Setup_ScannerCalibration.SuspendLayout();
+            this.groupBox_Setup_ScannerCal__Illuminator2.SuspendLayout();
             this.groupBox_Setup_ScannerCal_Illumination.SuspendLayout();
             this.groupBox_Setup_ScannerCal_MarkMatching.SuspendLayout();
             this.groupBox_Setup_ScannerCal_MarkType.SuspendLayout();
@@ -3143,6 +3156,7 @@
             // 
             // tabPage_Setup_ScannerCalibration
             // 
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.groupBox_Setup_ScannerCal__Illuminator2);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.label85);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.checkBox_Setup_ScannerCal_Position);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.button_Setup_ScannerCal_Rtc6_Cal_File_Save);
@@ -3177,6 +3191,100 @@
             this.tabPage_Setup_ScannerCalibration.Text = "Scanner Calibration";
             this.tabPage_Setup_ScannerCalibration.UseVisualStyleBackColor = true;
             // 
+            // groupBox_Setup_ScannerCal__Illuminator2
+            // 
+            this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.button_ScannerCal_Illuminator_Camera_ExposureTime_High);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.label_RecipeVision_Camera_ExposureTime_High);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.textBox_Setup_ScannerCal_Illuminator_FineCamRed);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.label_Setup_ScannerCal_High_Red);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.textBox_Setup_ScannerCal_Illuminator_FineCamIR);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.label_Setup_ScannerCal_High_IR);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Location = new System.Drawing.Point(1028, 531);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Name = "groupBox_Setup_ScannerCal__Illuminator2";
+            this.groupBox_Setup_ScannerCal__Illuminator2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Size = new System.Drawing.Size(204, 208);
+            this.groupBox_Setup_ScannerCal__Illuminator2.TabIndex = 224;
+            this.groupBox_Setup_ScannerCal__Illuminator2.TabStop = false;
+            this.groupBox_Setup_ScannerCal__Illuminator2.Text = " Illuminator (for Fiducial Mark Find) ";
+            // 
+            // button_ScannerCal_Illuminator_Camera_ExposureTime_High
+            // 
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Location = new System.Drawing.Point(161, 177);
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(2);
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Name = "button_ScannerCal_Illuminator_Camera_ExposureTime_High";
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Size = new System.Drawing.Size(38, 25);
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.TabIndex = 225;
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Text = "#";
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.UseVisualStyleBackColor = true;
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Click += new System.EventHandler(this.button_ScannerCal_Illuminator_Camera_ExposureTime_High_Click);
+            // 
+            // label_RecipeVision_Camera_ExposureTime_High
+            // 
+            this.label_RecipeVision_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_RecipeVision_Camera_ExposureTime_High.Location = new System.Drawing.Point(6, 150);
+            this.label_RecipeVision_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Camera_ExposureTime_High.Name = "label_RecipeVision_Camera_ExposureTime_High";
+            this.label_RecipeVision_Camera_ExposureTime_High.Size = new System.Drawing.Size(119, 24);
+            this.label_RecipeVision_Camera_ExposureTime_High.TabIndex = 226;
+            this.label_RecipeVision_Camera_ExposureTime_High.Text = "ExposureTime :";
+            this.label_RecipeVision_Camera_ExposureTime_High.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // textBox_ScannerCal_Illuminator_Camera_ExposureTime_High
+            // 
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Location = new System.Drawing.Point(6, 177);
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Name = "textBox_ScannerCal_Illuminator_Camera_ExposureTime_High";
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Size = new System.Drawing.Size(151, 23);
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.TabIndex = 225;
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Text = "000";
+            // 
+            // textBox_Setup_ScannerCal_Illuminator_FineCamRed
+            // 
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Location = new System.Drawing.Point(6, 64);
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Name = "textBox_Setup_ScannerCal_Illuminator_FineCamRed";
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Size = new System.Drawing.Size(151, 23);
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.TabIndex = 19;
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Text = "0";
+            // 
+            // label_Setup_ScannerCal_High_Red
+            // 
+            this.label_Setup_ScannerCal_High_Red.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Setup_ScannerCal_High_Red.Location = new System.Drawing.Point(6, 41);
+            this.label_Setup_ScannerCal_High_Red.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Setup_ScannerCal_High_Red.Name = "label_Setup_ScannerCal_High_Red";
+            this.label_Setup_ScannerCal_High_Red.Size = new System.Drawing.Size(119, 24);
+            this.label_Setup_ScannerCal_High_Red.TabIndex = 18;
+            this.label_Setup_ScannerCal_High_Red.Text = "Fine Cam. Red :";
+            this.label_Setup_ScannerCal_High_Red.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // textBox_Setup_ScannerCal_Illuminator_FineCamIR
+            // 
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Location = new System.Drawing.Point(6, 118);
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Name = "textBox_Setup_ScannerCal_Illuminator_FineCamIR";
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Size = new System.Drawing.Size(151, 23);
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.TabIndex = 14;
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Text = "0";
+            // 
+            // label_Setup_ScannerCal_High_IR
+            // 
+            this.label_Setup_ScannerCal_High_IR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Setup_ScannerCal_High_IR.Location = new System.Drawing.Point(6, 92);
+            this.label_Setup_ScannerCal_High_IR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Setup_ScannerCal_High_IR.Name = "label_Setup_ScannerCal_High_IR";
+            this.label_Setup_ScannerCal_High_IR.Size = new System.Drawing.Size(119, 24);
+            this.label_Setup_ScannerCal_High_IR.TabIndex = 6;
+            this.label_Setup_ScannerCal_High_IR.Text = "Fine Cam. IR :";
+            this.label_Setup_ScannerCal_High_IR.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // label85
             // 
             this.label85.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -3204,9 +3312,9 @@
             // button_Setup_ScannerCal_Rtc6_Cal_File_Save
             // 
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Location = new System.Drawing.Point(1068, 569);
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Location = new System.Drawing.Point(1242, 745);
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Name = "button_Setup_ScannerCal_Rtc6_Cal_File_Save";
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Size = new System.Drawing.Size(166, 35);
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Size = new System.Drawing.Size(145, 45);
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.TabIndex = 172;
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Text = "Rtc6calFile Save";
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.UseVisualStyleBackColor = true;
@@ -3226,24 +3334,26 @@
             // 
             this.checkBox_Setup_ScannerCal_CirclePos.AutoSize = true;
             this.checkBox_Setup_ScannerCal_CirclePos.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox_Setup_ScannerCal_CirclePos.Location = new System.Drawing.Point(1028, 648);
+            this.checkBox_Setup_ScannerCal_CirclePos.Location = new System.Drawing.Point(1656, 708);
             this.checkBox_Setup_ScannerCal_CirclePos.Name = "checkBox_Setup_ScannerCal_CirclePos";
             this.checkBox_Setup_ScannerCal_CirclePos.Size = new System.Drawing.Size(87, 20);
             this.checkBox_Setup_ScannerCal_CirclePos.TabIndex = 170;
             this.checkBox_Setup_ScannerCal_CirclePos.Text = "Circle X,Y";
             this.checkBox_Setup_ScannerCal_CirclePos.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_ScannerCal_CirclePos.Visible = false;
             // 
             // label_Setup_ScannerCal_CirclePosY
             // 
             this.label_Setup_ScannerCal_CirclePosY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label_Setup_ScannerCal_CirclePosY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Setup_ScannerCal_CirclePosY.Location = new System.Drawing.Point(1028, 703);
+            this.label_Setup_ScannerCal_CirclePosY.Location = new System.Drawing.Point(1656, 763);
             this.label_Setup_ScannerCal_CirclePosY.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Setup_ScannerCal_CirclePosY.Name = "label_Setup_ScannerCal_CirclePosY";
             this.label_Setup_ScannerCal_CirclePosY.Size = new System.Drawing.Size(111, 25);
             this.label_Setup_ScannerCal_CirclePosY.TabIndex = 159;
             this.label_Setup_ScannerCal_CirclePosY.Text = "--";
             this.label_Setup_ScannerCal_CirclePosY.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label_Setup_ScannerCal_CirclePosY.Visible = false;
             // 
             // button_Setup_ScannerCal_CameraLive
             // 
@@ -3259,20 +3369,21 @@
             // 
             this.label_Setup_ScannerCal_CirclePosX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label_Setup_ScannerCal_CirclePosX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Setup_ScannerCal_CirclePosX.Location = new System.Drawing.Point(1028, 671);
+            this.label_Setup_ScannerCal_CirclePosX.Location = new System.Drawing.Point(1656, 731);
             this.label_Setup_ScannerCal_CirclePosX.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Setup_ScannerCal_CirclePosX.Name = "label_Setup_ScannerCal_CirclePosX";
             this.label_Setup_ScannerCal_CirclePosX.Size = new System.Drawing.Size(111, 25);
             this.label_Setup_ScannerCal_CirclePosX.TabIndex = 158;
             this.label_Setup_ScannerCal_CirclePosX.Text = "--";
             this.label_Setup_ScannerCal_CirclePosX.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label_Setup_ScannerCal_CirclePosX.Visible = false;
             // 
             // button_Setup_ScannerCal_Rtc6_Cal_File_Load
             // 
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Location = new System.Drawing.Point(1068, 528);
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Location = new System.Drawing.Point(1242, 698);
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Name = "button_Setup_ScannerCal_Rtc6_Cal_File_Load";
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Size = new System.Drawing.Size(166, 35);
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Size = new System.Drawing.Size(145, 45);
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.TabIndex = 168;
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Text = "Rtc6calFile Load";
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.UseVisualStyleBackColor = true;
@@ -3280,9 +3391,9 @@
             // 
             // button_Setup_ScannerCal_Vision_Save
             // 
-            this.button_Setup_ScannerCal_Vision_Save.Location = new System.Drawing.Point(1026, 741);
+            this.button_Setup_ScannerCal_Vision_Save.Location = new System.Drawing.Point(1028, 745);
             this.button_Setup_ScannerCal_Vision_Save.Name = "button_Setup_ScannerCal_Vision_Save";
-            this.button_Setup_ScannerCal_Vision_Save.Size = new System.Drawing.Size(113, 51);
+            this.button_Setup_ScannerCal_Vision_Save.Size = new System.Drawing.Size(206, 47);
             this.button_Setup_ScannerCal_Vision_Save.TabIndex = 167;
             this.button_Setup_ScannerCal_Vision_Save.Text = "SAVE";
             this.button_Setup_ScannerCal_Vision_Save.UseVisualStyleBackColor = true;
@@ -3651,10 +3762,10 @@
             // button_Setup_ScannerCal_Save
             // 
             this.button_Setup_ScannerCal_Save.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_ScannerCal_Save.Location = new System.Drawing.Point(1395, 613);
+            this.button_Setup_ScannerCal_Save.Location = new System.Drawing.Point(1395, 698);
             this.button_Setup_ScannerCal_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_ScannerCal_Save.Name = "button_Setup_ScannerCal_Save";
-            this.button_Setup_ScannerCal_Save.Size = new System.Drawing.Size(172, 64);
+            this.button_Setup_ScannerCal_Save.Size = new System.Drawing.Size(172, 92);
             this.button_Setup_ScannerCal_Save.TabIndex = 59;
             this.button_Setup_ScannerCal_Save.Text = "Save";
             this.button_Setup_ScannerCal_Save.UseVisualStyleBackColor = true;
@@ -3662,9 +3773,13 @@
             // 
             // groupBox15
             // 
+            this.groupBox15.Controls.Add(this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex);
             this.groupBox15.Controls.Add(this.label_Setup_ScannerCal_VisionZOffset);
+            this.groupBox15.Controls.Add(this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex);
             this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_VisionZOffset);
+            this.groupBox15.Controls.Add(this.label_Recipe_TabRecipe_Miscellaneous_BETPosition);
             this.groupBox15.Controls.Add(this.button_Setup_ScannerCal_VisionZOffset);
+            this.groupBox15.Controls.Add(this.label_Recipe_TabRecipe_Miscellaneous_Mask);
             this.groupBox15.Controls.Add(this.label_Setup_ScannerCal_LastPosY_Disp);
             this.groupBox15.Controls.Add(this.label_Setup_ScannerCal_LastPosX_Disp);
             this.groupBox15.Controls.Add(this.label_Setup_ScannerCal_CalPitch);
@@ -3716,7 +3831,7 @@
             this.groupBox15.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox15.Name = "groupBox15";
             this.groupBox15.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox15.Size = new System.Drawing.Size(325, 600);
+            this.groupBox15.Size = new System.Drawing.Size(325, 686);
             this.groupBox15.TabIndex = 58;
             this.groupBox15.TabStop = false;
             this.groupBox15.Text = " Laser Param. for Scanner Cal. ";
@@ -3756,7 +3871,7 @@
             // label_Setup_ScannerCal_LastPosY_Disp
             // 
             this.label_Setup_ScannerCal_LastPosY_Disp.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label_Setup_ScannerCal_LastPosY_Disp.Location = new System.Drawing.Point(8, 568);
+            this.label_Setup_ScannerCal_LastPosY_Disp.Location = new System.Drawing.Point(8, 651);
             this.label_Setup_ScannerCal_LastPosY_Disp.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Setup_ScannerCal_LastPosY_Disp.Name = "label_Setup_ScannerCal_LastPosY_Disp";
             this.label_Setup_ScannerCal_LastPosY_Disp.Size = new System.Drawing.Size(175, 25);
@@ -3767,7 +3882,7 @@
             // label_Setup_ScannerCal_LastPosX_Disp
             // 
             this.label_Setup_ScannerCal_LastPosX_Disp.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label_Setup_ScannerCal_LastPosX_Disp.Location = new System.Drawing.Point(8, 536);
+            this.label_Setup_ScannerCal_LastPosX_Disp.Location = new System.Drawing.Point(8, 619);
             this.label_Setup_ScannerCal_LastPosX_Disp.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Setup_ScannerCal_LastPosX_Disp.Name = "label_Setup_ScannerCal_LastPosX_Disp";
             this.label_Setup_ScannerCal_LastPosX_Disp.Size = new System.Drawing.Size(175, 25);
@@ -3855,7 +3970,7 @@
             // 
             this.label_Setup_ScannerCal_LastPosY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label_Setup_ScannerCal_LastPosY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label_Setup_ScannerCal_LastPosY.Location = new System.Drawing.Point(193, 568);
+            this.label_Setup_ScannerCal_LastPosY.Location = new System.Drawing.Point(193, 651);
             this.label_Setup_ScannerCal_LastPosY.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Setup_ScannerCal_LastPosY.Name = "label_Setup_ScannerCal_LastPosY";
             this.label_Setup_ScannerCal_LastPosY.Size = new System.Drawing.Size(123, 25);
@@ -3867,7 +3982,7 @@
             // 
             this.label_Setup_ScannerCal_LastPosX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label_Setup_ScannerCal_LastPosX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label_Setup_ScannerCal_LastPosX.Location = new System.Drawing.Point(193, 536);
+            this.label_Setup_ScannerCal_LastPosX.Location = new System.Drawing.Point(193, 619);
             this.label_Setup_ScannerCal_LastPosX.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Setup_ScannerCal_LastPosX.Name = "label_Setup_ScannerCal_LastPosX";
             this.label_Setup_ScannerCal_LastPosX.Size = new System.Drawing.Size(123, 25);
@@ -6723,6 +6838,48 @@
             this.groupBox_Offset.TabStop = false;
             this.groupBox_Offset.Text = " Offset Distance (mm) ";
             // 
+            // label_Setup_Option_OffsetY
+            // 
+            this.label_Setup_Option_OffsetY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Setup_Option_OffsetY.Location = new System.Drawing.Point(8, 149);
+            this.label_Setup_Option_OffsetY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label_Setup_Option_OffsetY.Name = "label_Setup_Option_OffsetY";
+            this.label_Setup_Option_OffsetY.Size = new System.Drawing.Size(301, 24);
+            this.label_Setup_Option_OffsetY.TabIndex = 76;
+            this.label_Setup_Option_OffsetY.Text = "Offset [Y] :";
+            this.label_Setup_Option_OffsetY.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Setup_Option_OffsetX
+            // 
+            this.label_Setup_Option_OffsetX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Setup_Option_OffsetX.Location = new System.Drawing.Point(8, 122);
+            this.label_Setup_Option_OffsetX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label_Setup_Option_OffsetX.Name = "label_Setup_Option_OffsetX";
+            this.label_Setup_Option_OffsetX.Size = new System.Drawing.Size(301, 24);
+            this.label_Setup_Option_OffsetX.TabIndex = 75;
+            this.label_Setup_Option_OffsetX.Text = "Offset [X] :";
+            this.label_Setup_Option_OffsetX.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Option_OffsetY
+            // 
+            this.textBox_Setup_Option_OffsetY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Setup_Option_OffsetY.Location = new System.Drawing.Point(312, 150);
+            this.textBox_Setup_Option_OffsetY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_OffsetY.Name = "textBox_Setup_Option_OffsetY";
+            this.textBox_Setup_Option_OffsetY.Size = new System.Drawing.Size(114, 23);
+            this.textBox_Setup_Option_OffsetY.TabIndex = 74;
+            this.textBox_Setup_Option_OffsetY.Text = "0.0";
+            // 
+            // textBox_Setup_Option_OffsetX
+            // 
+            this.textBox_Setup_Option_OffsetX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Setup_Option_OffsetX.Location = new System.Drawing.Point(312, 122);
+            this.textBox_Setup_Option_OffsetX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_OffsetX.Name = "textBox_Setup_Option_OffsetX";
+            this.textBox_Setup_Option_OffsetX.Size = new System.Drawing.Size(114, 23);
+            this.textBox_Setup_Option_OffsetX.TabIndex = 73;
+            this.textBox_Setup_Option_OffsetX.Text = "0.0";
+            // 
             // label87
             // 
             this.label87.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -7023,47 +7180,61 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // textBox_Setup_Option_OffsetY
+            // comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex
             // 
-            this.textBox_Setup_Option_OffsetY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Setup_Option_OffsetY.Location = new System.Drawing.Point(312, 150);
-            this.textBox_Setup_Option_OffsetY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Option_OffsetY.Name = "textBox_Setup_Option_OffsetY";
-            this.textBox_Setup_Option_OffsetY.Size = new System.Drawing.Size(114, 23);
-            this.textBox_Setup_Option_OffsetY.TabIndex = 74;
-            this.textBox_Setup_Option_OffsetY.Text = "0.0";
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.FormattingEnabled = true;
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Items.AddRange(new object[] {
+            "0.8x",
+            "0.9x",
+            "1.0x",
+            "1.1x",
+            "1.2x"});
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Location = new System.Drawing.Point(186, 535);
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Name = "comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex";
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Size = new System.Drawing.Size(73, 24);
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.TabIndex = 228;
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Text = "1.0x";
             // 
-            // textBox_Setup_Option_OffsetX
+            // comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex
             // 
-            this.textBox_Setup_Option_OffsetX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Setup_Option_OffsetX.Location = new System.Drawing.Point(312, 122);
-            this.textBox_Setup_Option_OffsetX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Option_OffsetX.Name = "textBox_Setup_Option_OffsetX";
-            this.textBox_Setup_Option_OffsetX.Size = new System.Drawing.Size(114, 23);
-            this.textBox_Setup_Option_OffsetX.TabIndex = 73;
-            this.textBox_Setup_Option_OffsetX.Text = "0.0";
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.FormattingEnabled = true;
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Items.AddRange(new object[] {
+            "None Mask Position",
+            "#1 Mask Position",
+            "#2 Mask Position",
+            "#3 Mask Position",
+            "#4 Mask Position"});
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Location = new System.Drawing.Point(186, 508);
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Name = "comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex";
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Size = new System.Drawing.Size(129, 24);
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.TabIndex = 227;
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Text = "None Mask Position";
             // 
-            // label_Setup_Option_OffsetX
+            // label_Recipe_TabRecipe_Miscellaneous_BETPosition
             // 
-            this.label_Setup_Option_OffsetX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Setup_Option_OffsetX.Location = new System.Drawing.Point(8, 122);
-            this.label_Setup_Option_OffsetX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label_Setup_Option_OffsetX.Name = "label_Setup_Option_OffsetX";
-            this.label_Setup_Option_OffsetX.Size = new System.Drawing.Size(301, 24);
-            this.label_Setup_Option_OffsetX.TabIndex = 75;
-            this.label_Setup_Option_OffsetX.Text = "Offset [X] :";
-            this.label_Setup_Option_OffsetX.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Location = new System.Drawing.Point(8, 534);
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Name = "label_Recipe_TabRecipe_Miscellaneous_BETPosition";
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Size = new System.Drawing.Size(174, 25);
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.TabIndex = 226;
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Text = "BET Zoom Position :";
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label_Setup_Option_OffsetY
+            // label_Recipe_TabRecipe_Miscellaneous_Mask
             // 
-            this.label_Setup_Option_OffsetY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Setup_Option_OffsetY.Location = new System.Drawing.Point(8, 149);
-            this.label_Setup_Option_OffsetY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label_Setup_Option_OffsetY.Name = "label_Setup_Option_OffsetY";
-            this.label_Setup_Option_OffsetY.Size = new System.Drawing.Size(301, 24);
-            this.label_Setup_Option_OffsetY.TabIndex = 76;
-            this.label_Setup_Option_OffsetY.Text = "Offset [Y] :";
-            this.label_Setup_Option_OffsetY.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Location = new System.Drawing.Point(8, 508);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Name = "label_Recipe_TabRecipe_Miscellaneous_Mask";
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Size = new System.Drawing.Size(174, 25);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.TabIndex = 225;
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Text = "Mask Position :";
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNew_Setup
             // 
@@ -7127,6 +7298,8 @@
             this.groupBox10.ResumeLayout(false);
             this.tabPage_Setup_ScannerCalibration.ResumeLayout(false);
             this.tabPage_Setup_ScannerCalibration.PerformLayout();
+            this.groupBox_Setup_ScannerCal__Illuminator2.ResumeLayout(false);
+            this.groupBox_Setup_ScannerCal__Illuminator2.PerformLayout();
             this.groupBox_Setup_ScannerCal_Illumination.ResumeLayout(false);
             this.groupBox_Setup_ScannerCal_Illumination.PerformLayout();
             this.groupBox_Setup_ScannerCal_MarkMatching.ResumeLayout(false);
@@ -7700,5 +7873,17 @@
         private System.Windows.Forms.Label label_Setup_Option_OffsetX;
         private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetY;
         private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetX;
+        private System.Windows.Forms.GroupBox groupBox_Setup_ScannerCal__Illuminator2;
+        private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_Illuminator_FineCamRed;
+        private System.Windows.Forms.Label label_Setup_ScannerCal_High_Red;
+        private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_Illuminator_FineCamIR;
+        private System.Windows.Forms.Label label_Setup_ScannerCal_High_IR;
+        private System.Windows.Forms.Label label_RecipeVision_Camera_ExposureTime_High;
+        private System.Windows.Forms.TextBox textBox_ScannerCal_Illuminator_Camera_ExposureTime_High;
+        private System.Windows.Forms.Button button_ScannerCal_Illuminator_Camera_ExposureTime_High;
+        private System.Windows.Forms.ComboBox comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex;
+        private System.Windows.Forms.ComboBox comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex;
+        private System.Windows.Forms.Label label_Recipe_TabRecipe_Miscellaneous_BETPosition;
+        private System.Windows.Forms.Label label_Recipe_TabRecipe_Miscellaneous_Mask;
     }
 }

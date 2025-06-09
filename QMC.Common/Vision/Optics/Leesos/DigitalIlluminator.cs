@@ -175,6 +175,9 @@ namespace QMC.Common.Vision.Optics.Leesos
 
         private void SendVolumn(VolumnData data)
         {
+            if (m_Communicator == null)
+                return;
+
             if (m_Communicator.IsOpen)
             {
                 if(m_Communicator.SetVolume(data.Volumn, data.Channel) != 0)
@@ -187,6 +190,10 @@ namespace QMC.Common.Vision.Optics.Leesos
         public override int CheckPowerOn(int channel)
         {
             int ret = -1;
+
+            if (m_Communicator == null)
+                return ret;
+
             if (m_Communicator.IsOpen)
             {
                 ret = m_Communicator.CheckPowerOn(channel);
@@ -214,6 +221,10 @@ namespace QMC.Common.Vision.Optics.Leesos
         public int TurnOnOff(DigitalIlluminatorCommunicator.Commands onoff, int channel)
         {
             int ret = -1;
+
+            if (m_Communicator == null)
+                return ret;
+
             if (m_Communicator.IsOpen)
             {
                 ret = m_Communicator.TurnOnOff(onoff, channel);
