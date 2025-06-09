@@ -411,13 +411,13 @@ namespace QMC.Common.Parts
             patternMatchingResult = Search();
             if(patternMatchingResult == null)
             {
-                MessageBox.Show("Can not Search Center Mark");
+                //MessageBox.Show("Can not Search Center Mark");
                 return -1;
             }
 
             if (patternMatchingResult.Values.Count <= 0)
             {
-                MessageBox.Show("Can not Search Center Mark");
+                //MessageBox.Show("Can not Search Center Mark");
                 return -1;
             }
 

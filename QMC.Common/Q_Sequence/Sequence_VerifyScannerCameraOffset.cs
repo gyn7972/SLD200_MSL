@@ -117,7 +117,7 @@ namespace QMC.Common.Q_Sequence
         private ScannerCalConfigData m_scannerCalConfig;
         private VerifyScannerCameraOffset_Step m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
 
-        public bool m_bVerifyScannerCameraOffset_Complete { get; private set; }
+        public bool m_bVerifyScannerCameraOffset_Complete { get; set; }
 
         #region Thread(Task)
         protected Task m_taskTimer_Main_Tick = null;

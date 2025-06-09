@@ -16216,6 +16216,7 @@ namespace QMC.Common.Modules
                             {
                                 if (m_ScannerCameraOffsetSequence != null)
                                 {
+                                    m_ScannerCameraOffsetSequence.m_bVerifyScannerCameraOffset_Complete = false;
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset;
                                 }
                             }
@@ -39797,7 +39798,55 @@ namespace QMC.Common.Modules
 
             float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength; //1.0f; //(float)markLength; 
 
-            if (!Equipment.Machine_LaserType_CO2)
+            //if (!Equipment.Machine_LaserType_CO2)
+            //{
+            //    float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
+            //    float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
+
+            //    if (fFrequency / 2 <= fPulseWidth)
+            //        fPulseWidth = fFrequency / 2;
+            //    if (fFrequency <= 0) fFrequency = 0f;
+            //    if (fPulseWidth <= 0) fPulseWidth = 0f;
+
+            //    if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
+            //    {
+            //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
+            //        return false;
+            //    }
+            //}
+
+            //float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
+            //float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
+            //if (fJumpSpeed <= 0) fJumpSpeed = 0;
+            //if (fMarkSpeed <= 0) fMarkSpeed = 0;
+
+            //if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
+            //{
+            //    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
+            //    return false;
+            //}
+
+            //float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
+            //float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
+            //float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
+            //float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
+            //float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
+            //if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
+            //if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
+            //if (fMarkDelay <= 0) fMarkDelay = 0;
+            //if (fJumpDelay <= 0) fJumpDelay = 200;
+            //if (fPolygonDelay <= 0) fPolygonDelay = 0;
+
+            //if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
+            //{
+            //    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
+            //    return false;
+            //}
+
+            rtc.ListBegin(laser, ListType.Auto);
+
+
+            //if (Equipment.Machine_LaserType_CO2)
             {
                 float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
                 float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
@@ -39807,7 +39856,7 @@ namespace QMC.Common.Modules
                 if (fFrequency <= 0) fFrequency = 0f;
                 if (fPulseWidth <= 0) fPulseWidth = 0f;
 
-                if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
+                if (!rtc.ListFrequency(fFrequency, fPulseWidth))
                 {
                     Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
                     return false;
@@ -39819,7 +39868,7 @@ namespace QMC.Common.Modules
             if (fJumpSpeed <= 0) fJumpSpeed = 0;
             if (fMarkSpeed <= 0) fMarkSpeed = 0;
 
-            if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
+            if (!rtc.ListSpeed(fJumpSpeed, fMarkSpeed))
             {
                 Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
                 return false;
@@ -39836,13 +39885,12 @@ namespace QMC.Common.Modules
             if (fJumpDelay <= 0) fJumpDelay = 200;
             if (fPolygonDelay <= 0) fPolygonDelay = 0;
 
-            if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
+            if (!rtc.ListDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
             {
                 Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
                 return false;
             }
 
-            rtc.ListBegin(laser, ListType.Auto);
             // 중심 기준 좌표로 시작점 계산
             float startX = -((cols - 1) * pitchX) / 2.0f;
             float startY = -((rows - 1) * pitchY) / 2.0f;
