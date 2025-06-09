@@ -344,9 +344,6 @@ namespace SLD200_MSL
         private void button_Recipe_TabRecipe_OpenEditor_Click(object sender, EventArgs e)
         {
             //  Sirius Editor 창을 연다.
-
-           
-
             if (workStage.rtc == null)
             {
                 var mb = new MessageBoxOk();
@@ -2305,6 +2302,9 @@ namespace SLD200_MSL
                             workStage.DrillingManager.CycleTimer_LaserDrilling.Clear();
                             workStage.DrillingManager.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
                             workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
+                            workStage.DrillingManager.CycleTimer_TargetModuleCount = 0;
+                            workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
+                            workStage.DrillingManager.CycleTimer_NGSocketCount = 0;
 
                             //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
                             workStage.GetDrillingData_ProcessingFlagCheck();
