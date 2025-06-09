@@ -2432,6 +2432,27 @@ namespace SLD200_MSL
 
         private void SiriusEditor_OnDocumentSave(object sender)
         {
+            string fileName = SiriusEditor.Document.FileName;
+
+            // 파일명이 없거나 .sirius 확장자가 아니면 강제로 .sirius 확장자로 저장
+            if (string.IsNullOrEmpty(fileName) || System.IO.Path.GetExtension(fileName).ToLower() != ".sirius")
+            {
+                string fileDirectory = string.IsNullOrEmpty(fileName) ? "D:\\Temp" : System.IO.Path.GetDirectoryName(fileName);
+                string fileBaseName = string.IsNullOrEmpty(fileName) ? "DefaultSave" : System.IO.Path.GetFileNameWithoutExtension(fileName);
+                string newFilePath = System.IO.Path.Combine(fileDirectory, fileBaseName + ".sirius");
+
+                // 경로 없으면 폴더 생성
+                if (!Directory.Exists(fileDirectory))
+                    Directory.CreateDirectory(fileDirectory);
+
+                SiriusEditor.OnSave(newFilePath);
+            }
+            else
+            {
+                // 원래 파일명 유지하여 저장
+                SiriusEditor.OnSave(fileName);
+            }
+
             //bool bRtn = false;
             ////Data Parsing 후에 저장된 도면 데이터가 변경되었을 때, 다시 Parsing 하도록 한다.
             //var mb = new MessageBoxOk();
@@ -2502,9 +2523,9 @@ namespace SLD200_MSL
 
 
             //if (bRtn)
-            {
-                SiriusEditor.OnSave(SiriusEditor.Document.FileName);
-            }
+            //{
+            //    SiriusEditor.OnSave(SiriusEditor.Document.FileName);
+            //}
 
             //if (SiriusEditor.Document != null)
             //{

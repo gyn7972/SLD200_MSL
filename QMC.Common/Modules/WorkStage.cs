@@ -10634,7 +10634,13 @@ namespace QMC.Common.Modules
                     //  맵 데이터 변경 (기준위치 : Scanner)
                     //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
                     //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-                    MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                    
+                    // 20250609 -> 이게 왜 이걸로 되어있지?
+                    //MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+
+                    //MapData_Stage_Scanner
+                    MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///
                     //  Target Position 변경 : Module Loading 위치
