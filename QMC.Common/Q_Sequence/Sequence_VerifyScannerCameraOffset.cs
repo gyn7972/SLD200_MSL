@@ -1489,8 +1489,8 @@ namespace QMC.Common.Q_Sequence
                                     m_pCrossMark_AlignMarkPosition_Average.X = m_pCrossMark_AlignMarkPosition_Sum.X / m_nCrossMark_AlignMark_Count;
                                     m_pCrossMark_AlignMarkPosition_Average.Y = m_pCrossMark_AlignMarkPosition_Sum.Y / m_nCrossMark_AlignMark_Count;
 
-                                    if (Math.Abs(m_pCrossMark_AlignMarkPosition_Average.X - markX) <= 0.05 &&
-                                        Math.Abs(m_pCrossMark_AlignMarkPosition_Average.Y - markY) <= 0.05)
+                                    if (Math.Abs(m_pCrossMark_AlignMarkPosition_Average.X - markX) <= 0.1 &&
+                                        Math.Abs(m_pCrossMark_AlignMarkPosition_Average.Y - markY) <= 0.1)
                                     {
                                         Log.Write("SLD-200", Equipment.User_Name, "VerifyScannerCameraOffset", "Cross Mark 평균값 OK");
                                         m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X = m_pCrossMark_AlignMarkPosition_Average.X;
@@ -1572,8 +1572,8 @@ namespace QMC.Common.Q_Sequence
 
                                 if (Equipment.Scanner_Vision_Offset_Setting_Use == true)
                                 {
-                                    Equipment.Scanner_Vision_Offset_Setting_X = m_deltaX;
-                                    Equipment.Scanner_Vision_Offset_Setting_Y = m_deltaY;
+                                    Equipment.Scanner_Vision_Offset_Setting_X = m_deltaX * 1;
+                                    Equipment.Scanner_Vision_Offset_Setting_Y = m_deltaY * -1;
 
                                     // 수동 확인 용.
                                     if(false)
@@ -1594,8 +1594,9 @@ namespace QMC.Common.Q_Sequence
                                         $"Y: {Equipment.Scanner_Vision_Offset_Setting_Y:F6}");
 
                                     //  Scanner <-> FineCam Offset 적용 <- 검증 후에 적용하자.
-                                    //Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
-                                    //Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
+                                    Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
+                                    Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
+                                    Equipment.Scanner_FineCam_Offset_Save();
 
                                     // 적용 후 로그
                                     Log.Write("SLD-200", "VerifyScannerCameraOffset", $"[After Offset Apply] " +
@@ -1636,7 +1637,7 @@ namespace QMC.Common.Q_Sequence
                         else
                         {
                             // 이거 검증 다시 필요!
-                            xyInterpolatedCoordinate.X = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + (m_deltaX * -1); //X는 -
+                            xyInterpolatedCoordinate.X = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + m_deltaX; // (m_deltaX * -1); //X는 -
                             xyInterpolatedCoordinate.Y = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + m_deltaY;
 
                             if (bCalPosition)
@@ -1713,5 +1714,8 @@ namespace QMC.Common.Q_Sequence
             return nRtn;
         }
     }
+
+
+
 
 }

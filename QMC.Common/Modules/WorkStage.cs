@@ -39843,7 +39843,9 @@ namespace QMC.Common.Modules
             //    return false;
             //}
 
-            rtc.ListBegin(laser, ListType.Auto);
+            var rtcMode = rtc as IRtc;
+
+            rtcMode.ListBegin(laser, ListType.Auto);
 
 
             //if (Equipment.Machine_LaserType_CO2)
@@ -39856,7 +39858,7 @@ namespace QMC.Common.Modules
                 if (fFrequency <= 0) fFrequency = 0f;
                 if (fPulseWidth <= 0) fPulseWidth = 0f;
 
-                if (!rtc.ListFrequency(fFrequency, fPulseWidth))
+                if (!rtcMode.ListFrequency(fFrequency, fPulseWidth))
                 {
                     Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
                     return false;
@@ -39868,7 +39870,7 @@ namespace QMC.Common.Modules
             if (fJumpSpeed <= 0) fJumpSpeed = 0;
             if (fMarkSpeed <= 0) fMarkSpeed = 0;
 
-            if (!rtc.ListSpeed(fJumpSpeed, fMarkSpeed))
+            if (!rtcMode.ListSpeed(fJumpSpeed, fMarkSpeed))
             {
                 Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
                 return false;
@@ -39885,7 +39887,7 @@ namespace QMC.Common.Modules
             if (fJumpDelay <= 0) fJumpDelay = 200;
             if (fPolygonDelay <= 0) fPolygonDelay = 0;
 
-            if (!rtc.ListDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
+            if (!rtcMode.ListDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
             {
                 Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
                 return false;
@@ -39906,8 +39908,8 @@ namespace QMC.Common.Modules
                 }
             }
 
-            rtc.ListEnd();
-            rtc.ListExecute();
+            rtcMode.ListEnd();
+            rtcMode.ListExecute();
 
             bRtn = true;
             return bRtn;
@@ -39921,15 +39923,17 @@ namespace QMC.Common.Modules
         /// <param name="size">십자가의 크기 (mm)</param>
         private void DrawCross(float centerX, float centerY, float size)
         {
+            var rtcMode = rtc as IRtc;
+
             float halfSize = size / 2;
 
             // 가로선 그리기
-            rtc.ListJump(centerX - halfSize, centerY);
-            rtc.ListMark(centerX + halfSize, centerY);
+            rtcMode.ListJump(centerX - halfSize, centerY);
+            rtcMode.ListMark(centerX + halfSize, centerY);
 
             // 세로선 그리기
-            rtc.ListJump(centerX, centerY - halfSize);
-            rtc.ListMark(centerX, centerY + halfSize);
+            rtcMode.ListJump(centerX, centerY - halfSize);
+            rtcMode.ListMark(centerX, centerY + halfSize);
         }
 
 

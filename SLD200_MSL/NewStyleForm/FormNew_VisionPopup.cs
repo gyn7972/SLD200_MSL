@@ -1294,8 +1294,6 @@ namespace SLD200_MSL
 
         public void Scanner_FineCam_Offset_Save()
         {
-            string strTemp = "";
-
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
 

@@ -3314,5 +3314,50 @@ namespace QMC.Common
 
         public static List<BoundRect> LastDividedRects = new List<BoundRect>();
 
+
+        public static void Scanner_FineCam_Offset_Save()
+        {
+            string strTemp = "";
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            // 백업 처리 추가 시작
+            try
+            {
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+                //return;
+
+                //MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
+            }
+
+            //  Offset Distance
+            NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_Y", Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString(), strFIle);
+            //MessageBox.Show("Scanner 와 Fine Camera 간 Offset 데이터를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
     }
 }
