@@ -8053,7 +8053,7 @@ namespace QMC.Common.Modules
         {
             string strTemp = "";
             string strFIle = "";
-            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine ScannerCalibration (Do not delete or modify).ini";
 
             // 백업 처리 추가 시작
             try
@@ -8073,7 +8073,8 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Log.Write(ex);
+                //MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             // 백업 처리 추가 끝
 
@@ -8099,12 +8100,37 @@ namespace QMC.Common.Modules
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\Machine ScannerCalibration (Do not delete or modify).ini";
 
+            // 백업 처리 추가 시작
+            try
+            {
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                //MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+
+
             if (File.Exists(strFIle) == false)
             {
                 File.Create(strFIle);
-                //MessageBox.Show("Machine ScannerCalibration 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
 
-                return;
+                //MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
             }
 
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_X", Equipment.Scanner_Calibration_TrainRoiStartLocation_X.ToString(), strFIle);
@@ -40016,17 +40042,6 @@ namespace QMC.Common.Modules
                 }
             }
 
-            float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
-            float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
-            if (fJumpSpeed <= 0) fJumpSpeed = 0;
-            if (fMarkSpeed <= 0) fMarkSpeed = 0;
-
-            if (!rtcMode.ListSpeed(fJumpSpeed, fMarkSpeed))
-            {
-                Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
-                return false;
-            }
-
             float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
             float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
             float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
@@ -40041,6 +40056,17 @@ namespace QMC.Common.Modules
             if (!rtcMode.ListDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
             {
                 Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
+                return false;
+            }
+
+            float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
+            float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
+            if (fJumpSpeed <= 0) fJumpSpeed = 0;
+            if (fMarkSpeed <= 0) fMarkSpeed = 0;
+
+            if (!rtcMode.ListSpeed(fJumpSpeed, fMarkSpeed))
+            {
+                Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
                 return false;
             }
 

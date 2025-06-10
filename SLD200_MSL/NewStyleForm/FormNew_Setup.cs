@@ -1948,19 +1948,38 @@ namespace SLD200_MSL
             string strTemp = "";
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\Machine ScannerCalibration (Do not delete or modify).ini";
-            if (File.Exists(strFIle) == false)
+
+            // 백업 처리 추가 시작
+            try
             {
-                MessageBox.Show("Machine ScannerCalibration 파일이 없습니다.\r\n\r\n[Default 값(CO₂)으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //return false;
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
             }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                //MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+
 
             if (File.Exists(strFIle) == false)
             {
                 File.Create(strFIle);
                 //return;
 
-                MessageBox.Show("Machine ScannerCalibration 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                //MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
             }
 
             //  Scanner Calibration parameter
