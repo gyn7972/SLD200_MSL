@@ -1380,7 +1380,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             baseLabel_RecipeVision_Min_Red.Enabled = true;
             label_RecipeVision_Light_Red.Enabled = true;
 
-            checkBox_RecipeVision_Illuminator_Red.Enabled = false;
+            //checkBox_RecipeVision_Illuminator_Red.Enabled = false;
             checkBox_RecipeVision_Illuminator_IR.Enabled = false;
             textBox_RecipeVision_Camera_ExposureTime_High.Enabled = false;
             textBox_RecipeVision_AxisZ_Setting.Enabled = false;

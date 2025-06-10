@@ -19068,7 +19068,6 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Socket 가공 Focus 조정 완료.");
 
-
                         double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
                             $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
