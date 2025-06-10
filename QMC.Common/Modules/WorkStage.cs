@@ -16119,6 +16119,9 @@ namespace QMC.Common.Modules
         int m_nStage_RetryCount = 0;
         bool m_bWorkStage_LogOnce = false;
         public bool m_bFirstAutoCrossCheckDone = false; // 최초 1회 실행 여부 플래그
+        private int m_nSensorRetryCount = 0;
+        private const int MAX_SENSOR_RETRY = 3;
+
 
         //Todo: 공정시컨스닷!
         private int Run_LaserDrilling_Main_Cycle()
@@ -18917,20 +18920,57 @@ namespace QMC.Common.Modules
                     if (!m_bSensorResponseReady)
                     {
                         // 아직 응답 안옴 → 대기 or 타임아웃 처리
-                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 1000)
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 500)   //500ms만 기다리자.
                         {
-                            //알람 처리 해야 할 수도.
-                            m_dZOffset_SocketHeightCheck = 0.0;
+                            m_nSensorRetryCount++;
+
+                            if (m_nSensorRetryCount <= MAX_SENSOR_RETRY)
+                            {
+                                // 리트라이 전에도 저장 (단, 비정상값은 0.0 보정)
+                                double retryOffset = 0.0;
+                                if ((m_dLaserHeightSensorSocket_Value < -4.5) ||
+                                    (m_dLaserHeightSensorSocket_Value > 5.5) ||
+                                    (m_dLaserHeightSensorSocket_Value < -99.9))
+                                {
+                                    retryOffset = 0.0;
+                                }
+                                else
+                                {
+                                    retryOffset = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                                }
+
+                                LaserHeightSensorValue_Save( Equipment.Current_Recipe,
+                                                             m_nDrillingWork_Group_Count,
+                                                             Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition,
+                                                             m_dLaserHeightSensorSocket_Value,
+                                                             retryOffset
+                                                             );
+
+                                Log.Write("SLD-200", $"센서 응답 지연 - 리트라이 {m_nSensorRetryCount}/{MAX_SENSOR_RETRY}");
+                                TickCount_Start((int)TickType.TICK_MAIN);
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
+                                break;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", "센서 응답 실패. 보정 없이 진행");
+                                m_dZOffset_SocketHeightCheck = 0.0;
+
+                                m_nSensorRetryCount = 0;
+                            }
                         }
                         break;
                     }
                     m_bSensorResponseReady = false; // 응답 소비 완료
+                    m_nSensorRetryCount = 0;
 
                     //  Laser Focus 위치에서 Laser Height 값과, 현재 Laser Height Sensor 값의 차이만큼 가공 높이 보정
                     //m_dZOffset_SocketHeightCheck = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition - m_dLaserHeightSensorSocket_Value;
                     //  Laser Height Sensor 값은, 제품이 두꺼워질 수록 값이 커지고, 얇아질 수록 값이 작아짐.
                     // Limit값 파라미터로 빼야함.
-                    if ((m_dLaserHeightSensorSocket_Value < -4.5) || (m_dLaserHeightSensorSocket_Value > 5.5) || (m_dLaserHeightSensorSocket_Value < -99.9))
+                    if ((m_dLaserHeightSensorSocket_Value < -4.5) || 
+                        (m_dLaserHeightSensorSocket_Value > 5.5) || 
+                        (m_dLaserHeightSensorSocket_Value < -99.9))
                     {
                         m_dZOffset_SocketHeightCheck = 0.0;
                     }
@@ -26795,6 +26835,10 @@ namespace QMC.Common.Modules
             m_ScannerCameraOffsetSequence.Reset();
             scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
             m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+
+            m_nSensorRetryCount = 0;
+            m_bSensorResponseReady = false;
+
         }
         #endregion
 
