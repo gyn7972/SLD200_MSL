@@ -1681,6 +1681,7 @@ namespace QMC.Common.Modules
             ScannerCalibration_Timeout,
             ScannerCalibration_Fail,
 
+            StageCal_Vacuum_On_Fail,
             LaserPowerChange_Fail,
             WaterLine_Open_Fail,
             MaskY_Axis_Fail,
@@ -2160,6 +2161,15 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.VarioScan_Flow_Alarm;
             alarm.Title = "VarioScan_Flow";
             alarm.Cause = "VarioScan_Flow 가 알람 상태 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            //StageCal_Vacuum_On_Fail
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.StageCal_Vacuum_On_Fail;
+            alarm.Title = "StageCal_Vacuum_On_Fail";
+            alarm.Cause = "StageCal Vacuum On 실패 입니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -8042,22 +8052,45 @@ namespace QMC.Common.Modules
         public void Scanner_Calibration_Option_Save()
         {
             string strTemp = "";
-
             string strFIle = "";
-            strFIle = ConfigManager.GetConfigPath() + "\\Machine ScannerCalibration (Do not delete or modify).ini";
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            // 백업 처리 추가 시작
+            try
+            {
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+
 
             if (File.Exists(strFIle) == false)
             {
                 File.Create(strFIle);
-                //MessageBox.Show("Machine ScannerCalibration 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
 
-                return;
+                //MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
             }
 
-            Equipment.Scanner_Calibration_PosX_Last = m_dScannerCalPosX_Last;
-            Equipment.Scanner_Calibration_PosY_Last = m_dScannerCalPosY_Last;
-            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", m_dScannerCalPosX_Last.ToString(), strFIle);
-            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", m_dScannerCalPosY_Last.ToString(), strFIle);
+            //Equipment.Scanner_Calibration_PosX_Last = m_dScannerCalPosX_Last;
+            //Equipment.Scanner_Calibration_PosY_Last = m_dScannerCalPosY_Last;
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", Equipment.Scanner_Calibration_PosX_Last.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", Equipment.Scanner_Calibration_PosY_Last.ToString(), strFIle);
         }
 
         public void Scanner_Calibration_Vision_Save()
@@ -14006,13 +14039,13 @@ namespace QMC.Common.Modules
 
                             Log.Write("DrillStatus", $"최종 결과: {forceNG}");
 
+                            //if (forceNG)
                             if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
                                 m_bworkStageVacuumFail ||
                                 m_bForceEjectRequest ||
                                 !m_bSocketAlign_OK ||
                                 !m_bFindLowerAlignMark_OK ||
                                 !m_bPreAlignCompleted)
-                            //if (forceNG)
                             {
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
                                 m_bworkStageVacuumFail = false;
@@ -14020,6 +14053,8 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
+                                // 최종으로 정상적일때만 Count 증가.
+                                //Equipment.m_nSerialNumberMarkingCount++;
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
                             }                            
 
@@ -18307,7 +18342,7 @@ namespace QMC.Common.Modules
 
                             //  Serial Number 계산해서 만들고                            
                             m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", Equipment.m_nSerialNumberMarkingCount);
-                            //Equipment.m_nSerialNumberMarkingCount += m_nIncreaseStep;
+                            Equipment.m_nSerialNumberMarkingCount += m_nIncreaseStep;
 
                             //  Suffix 있으면 붙이고
                             if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData.Length > 0)
@@ -22235,7 +22270,8 @@ namespace QMC.Common.Modules
                     m_strTemp = string.Format("전체 가공 완료");
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-                    Equipment.m_nSerialNumberMarkingCount++;
+                    // 시점 변경 필요함.
+                    //Equipment.m_nSerialNumberMarkingCount++;
 
                     //Cycle Time
                     DrillingManager.CycleTimer_DoneModuleCount++;

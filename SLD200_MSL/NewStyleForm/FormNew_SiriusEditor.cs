@@ -143,7 +143,7 @@ namespace SLD200_MSL
 
         }
 
-        private static void DrawGrid(IView view, Layer layer)
+        private void DrawGrid(IView view, Layer layer)
         {
             if (layer != null)
             {
@@ -201,10 +201,21 @@ namespace SLD200_MSL
 
                     double epsilon = 0.01;
 
+                    //if(Equipment.m_bDivided)
+                    //{
+                    //    float dx = Equipment.m_fDividedX;
+                    //    float dy = Equipment.m_fDividedY;
+                    //    QMCSiriusEditorForm editorForm = SiriusEditor as QMCSiriusEditorForm;
+                    //    editorForm?.RefreshDividedRectsOnly("Outline", dx, dy);
+                    //}
+                    //else
+                    //{
+                    //    //Equipment.LastDividedRects.Clear();
+                    //}
+
                     if (Equipment.LastDividedRects.Count > 0)
                     {
                         renderer.Color(200.0f, 200.0f, 0.0f); // Lime color
-                        
 
                         foreach (var rect in Equipment.LastDividedRects)
                         {

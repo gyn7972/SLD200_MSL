@@ -3318,6 +3318,5 @@ namespace QMC.Common
         public static bool m_bDivided { set; get; } = false;
 
         public static List<BoundRect> LastDividedRects = new List<BoundRect>();
-
     }
 }

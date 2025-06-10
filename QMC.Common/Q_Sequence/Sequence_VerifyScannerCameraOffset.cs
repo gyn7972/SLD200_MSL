@@ -27,6 +27,9 @@ namespace QMC.Common.Q_Sequence
             None = 0,
             Start,                                                      //  시작
 
+            Stage_Cal_Vacuum_On,                                       //  Stage 진공 On
+            Stage_Cal_Vacuum_On_Check,                                 //  Stage 진공 On 확인
+
             Laser_Off,                                                  //  레이저 Off 
             Laser_Off_Check,                                            //  레이저 Off Check
 
@@ -353,8 +356,54 @@ namespace QMC.Common.Q_Sequence
                         // 카메라 노출 설정
                         workStage.jigAligner_HighRes.Camera.SetExposureTime(exposureTime);
 
-                        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Laser_Off;
+                        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Stage_Cal_Vacuum_On;
                         Log.Write("SLD-200", "VerifyScannerCameraOffset", "Laser&Scanner Calibration Start");
+                    }
+                    break;
+
+                case (int)VerifyScannerCameraOffset_Step.Stage_Cal_Vacuum_On:                                              //  레이저 Off
+                    {
+                        if (bCalPosition)
+                        {
+                            workStage.workStageParameter.DO_Laser_CalSheet_Vacuum(true);
+                        }
+                        else
+                        {
+                            workStage.workStageParameter.DO_Stage_Vacuum(true);
+                        }
+                        Thread.Sleep(100); // 진공이 안정화 될 때까지 잠시 대기
+
+                        TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
+                        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Stage_Cal_Vacuum_On_Check;
+                    }
+                    break;
+
+                case (int)VerifyScannerCameraOffset_Step.Stage_Cal_Vacuum_On_Check:                                              //  레이저 Off
+                    {
+                        bool bRtn= false;
+                        if (bCalPosition)
+                        {
+                            bRtn = workStage.workStageParameter.DI_Laser_CalSheet_Vacuum_Check();
+                        }
+                        else
+                        {
+                            bRtn = bRtn = workStage.workStageParameter.DI_Stage_Vacuum_Check();
+                        }
+
+                        if (bRtn)
+                        {
+                            Log.Write("SLD-200", "VerifyScannerCameraOffset", "Stage 진공 On 확인");
+                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Laser_Off;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > nVerifyScannerCameraOffsetTimeout)
+                        {
+                            Log.Write("SLD-200", "VerifyScannerCameraOffset", "Stage 진공 On 실패");
+                            m_VerifyScannerCameraOffsetStep = (int)VerifyScannerCameraOffset_Step.None;
+                            return workStage.AlarmPost(WorkStage.AlarmKey.StageCal_Vacuum_On_Fail);
+                        }
+
+                        TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
+                        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Laser_Off;
                     }
                     break;
 
@@ -1351,9 +1400,12 @@ namespace QMC.Common.Q_Sequence
                     {
                         if (workStage.rtc.CtlGetStatus(RtcStatus.NotBusy))
                         {
-                            m_dScannerCalPosX_Last = m_dCurrentCalPosX;
-                            m_dScannerCalPosY_Last = m_dCurrentCalPosY;
+                            Equipment.Scanner_Calibration_PosX_Last = m_dCurrentCalPosX;
+                            Equipment.Scanner_Calibration_PosY_Last = m_dCurrentCalPosY;
                             workStage.Scanner_Calibration_Option_Save();
+                            //m_dScannerCalPosX_Last = m_dCurrentCalPosX;
+                            //m_dScannerCalPosY_Last = m_dCurrentCalPosY;
+                            //workStage.Scanner_Calibration_Option_Save();
 
                             Log.Write("SLD-200", "VerifyScannerCameraOffset", "VerifyScannerCameraOffset, Cross Mark 가공 완료");
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.MapDataChange_FineCamMap;
