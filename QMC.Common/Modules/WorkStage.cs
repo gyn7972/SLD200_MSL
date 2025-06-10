@@ -39956,7 +39956,6 @@ namespace QMC.Common.Modules
 
             rtcMode.ListBegin(laser, ListType.Auto);
 
-
             //if (Equipment.Machine_LaserType_CO2)
             {
                 float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;

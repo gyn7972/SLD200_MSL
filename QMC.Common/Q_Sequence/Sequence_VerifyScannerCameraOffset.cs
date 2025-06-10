@@ -878,25 +878,25 @@ namespace QMC.Common.Q_Sequence
                                 $"Y Range = {dScannerCalAreaPosY_Min:F3} ~ {dScannerCalAreaPosY_Max:F3}");
 
                         Log.Write("SLD-200", "VerifyScannerCameraOffset",
-                                $"[Last 위치] X = {m_dScannerCalPosX_Last:F3}, Y = {m_dScannerCalPosY_Last:F3}");
+                                $"[Last 위치] X = {Equipment.Scanner_Calibration_PosX_Last:F3}, Y = {Equipment.Scanner_Calibration_PosY_Last:F3}");
 
                         if (bCalChagne)
                         {
-                            m_dCurrentCalPosX = m_dScannerCalPosX_Last;
-                            m_dCurrentCalPosY = m_dScannerCalPosY_Last;
+                            m_dCurrentCalPosX = dScannerCalTeachingPosX;// m_dScannerCalPosX_Last;
+                            m_dCurrentCalPosY = dScannerCalTeachingPosY;// - 10;
                             Equipment.Scanner_Calibration_Change = false;
                             bCalChagne = false;
                         }
                         else
                         {
-                            m_dCurrentCalPosX = m_dScannerCalPosX_Last - (dCalWidth + dCalPitchOffset);
-                            m_dCurrentCalPosY = m_dScannerCalPosY_Last;
+                            m_dCurrentCalPosX = Equipment.Scanner_Calibration_PosX_Last - (dCalWidth + dCalPitchOffset);
+                            m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last;
 
                             if (m_dCurrentCalPosX < dScannerCalAreaPosX_Min)
                             {
                                 // 다음 Y 줄로 이동
                                 m_dCurrentCalPosX = dScannerCalAreaPosX_Max;
-                                m_dCurrentCalPosY = m_dScannerCalPosY_Last - dCalPitchOffset;
+                                m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last - dCalPitchOffset;
 
                                 Log.Write("SLD-200", "VerifyScannerCameraOffset",
                                     $"X 범위 초과로 다음 Y줄 이동 시도 → X: {m_dCurrentCalPosX:F3}, Y: {m_dCurrentCalPosY:F3}");
