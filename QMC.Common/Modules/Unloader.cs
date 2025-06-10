@@ -302,6 +302,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "드릴링 가공 진행중입니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Transfer_Picker_Module_Exist;
@@ -309,6 +310,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더 트랜스퍼 Picker 에 모듈이 존재합니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.WorkStage_Module_NotExist;
@@ -316,6 +318,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "WorkStage 에 Unloading 할 모듈이 존재하지 않습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Transfer_Picker_Module_NotExist;
@@ -323,6 +326,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더 트랜스퍼 Picker 에 모듈이 없습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Stacker0_Running;
@@ -330,6 +334,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더 스태커0 가동중입니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Stacker1_Running;
@@ -337,6 +342,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더 스태커1 가동중입니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_NGPort_Full;
@@ -344,6 +350,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더 NG 포트가 가득 차 있습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.WorkStage_DustCollector_Off_Fail;
@@ -351,6 +358,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "집진기가 Off 되지 않았습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
         }
 
         public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)
@@ -1925,10 +1933,25 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_ULSZ0);
         }
 
-        protected int AlarmPost(AlarmKey AlarmCode)
+        public int AlarmPost(AlarmKey AlarmCode)
         {
             
             Alarm alarm = GetAlarm((int)AlarmCode);
+
+            // 알람 정보 로그 기록
+            Log.Write("AlarmPost", $"[ALARM 발생] Code: {(int)AlarmCode}, Grade: {alarm.Grade}, Cause: {alarm.Cause}");
+
+            string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AlarmLog");
+            string logFile = Path.Combine(logFolder, $"AlarmLog_{DateTime.Now:yyyyMMdd}.csv");
+            Directory.CreateDirectory(logFolder);
+
+            // UTF-8 with BOM로 저장
+            using (var writer = new StreamWriter(logFile, true, new UTF8Encoding(true))) // true → BOM 포함
+            {
+                string logLine = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss},{alarm.Title},{alarm.Grade},{alarm.Source},{alarm.Cause},{(int)AlarmCode}";
+                writer.WriteLine(logLine);
+            }
+
             if (alarm.Grade.Equals("Error"))
             {
                 this.m_UnloaderWork_Start = false;

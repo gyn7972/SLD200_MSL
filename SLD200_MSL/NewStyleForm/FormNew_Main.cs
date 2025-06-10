@@ -4357,12 +4357,20 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);
+
+            unloader.AlarmPost(Unloader.AlarmKey.UL_Transfer_Picker_Module_NotExist);
+
+            loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
+
+            return;
+
             //workStage.workStageParameter.DO_AirCurtain_Purge(true);
 
             //double freq = 0.0;
             //bds.DustCollector_Upper.GetFrequency(out freq);
 
-            
+
             string strTemp = "";
             double offsetX = 0.0, offsetY = 0.0;
 
@@ -4374,8 +4382,6 @@ namespace SLD200_MSL
                           $"Offset - X: {offsetX + i * 3:F4}, Y: {offsetX + i * 3:F4}";
                 Log.Write("Goldpowder", "Result", strTemp);
             }
-            
-
 
             strTemp = $"Fiducial Makr No: " + "0" + "," +
                       $"검출 갯수: {20}, finalOffsetX: {offsetX+22.45:F4}, finalOffsetY: {offsetX + 22.45:F4}";
@@ -4387,7 +4393,7 @@ namespace SLD200_MSL
                     "- Angle : " + "0";
             Log.Write("Goldpowder", "Result", strTemp);
 
-            return;
+            
 
             //Test
             workStage.UpdateLastDrillTime();

@@ -3347,13 +3347,13 @@ namespace SLD200_MSL
 
         private void btnOffsetApply_Click(object sender, EventArgs e)
         {
-            Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
-            Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
+            //Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
+            //Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
 
-            Log.Write("SLD-200", "Button Click", "Offset Distance 가 적용되었습니다.\n\r\n" +
-                "X : " + Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString() + "\n\r\n" +
-                "Y : " + Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString());
-            MessageBox.Show("Offset Distance 가 적용되었습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //Log.Write("SLD-200", "Button Click", "Offset Distance 가 적용되었습니다.\n\r\n" +
+            //    "X : " + Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString() + "\n\r\n" +
+            //    "Y : " + Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString());
+            //MessageBox.Show("Offset Distance 가 적용되었습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 

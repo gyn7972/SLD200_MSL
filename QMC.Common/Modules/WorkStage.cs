@@ -1681,6 +1681,14 @@ namespace QMC.Common.Modules
             ScannerCalibration_Timeout,
             ScannerCalibration_Fail,
 
+            LaserPowerChange_Fail,
+            WaterLine_Open_Fail,
+            MaskY_Axis_Fail,
+            Vario_Scan_Fail,
+            Scan_Area_Fail,
+            Mark_Search_Fail,
+            Mark_Search_Error_Range_Fail,
+
             SoftLimitFail,
 
             LastAlarm = 3999
@@ -1985,10 +1993,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-
-
-
-
             //
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.eGetdata_Drildata_No_group;
@@ -2200,9 +2204,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-            
-
-
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.ScannerCalibration_Timeout;
             alarm.Title = "ScannerCalibration";
@@ -2219,6 +2220,62 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LaserPowerChange_Fail;
+            alarm.Title = "LaserPowerChange_Fail";
+            alarm.Cause = "LaserPowerChange가 실패하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.WaterLine_Open_Fail;
+            alarm.Title = "WaterLine_Open_Fail";
+            alarm.Cause = "WaterLine_Open 실패하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.MaskY_Axis_Fail;
+            alarm.Title = "MaskY_Axis_Fail";
+            alarm.Cause = "MaskY_Axis 구동이 실패하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Vario_Scan_Fail;
+            alarm.Title = "Vario_Scan_Fail";
+            alarm.Cause = "Vario_Scan 구동이 실패하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Scan_Area_Fail;
+            alarm.Title = "Scan_Area_Fail";
+            alarm.Cause = "Cal - Scan_Area 영역이 벗어났습니다. Cal판 교체 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Mark_Search_Fail;
+            alarm.Title = "Mark_Search_Fail";
+            alarm.Cause = "Mark_Search가 실패하였습니다. Mark 확인 및 설정 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Mark_Search_Error_Range_Fail;
+            alarm.Title = "Mark_Search_Error_Range_Fail";
+            alarm.Cause = "Mark Search 후 Range가 벗어났습니다. Mark 확인 및 위치 확인 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
             //SoftLimitFail
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.SoftLimitFail;
@@ -2227,8 +2284,6 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
-
-
         }
 
         #region 집진기 유량 제어 가능 데이터 (임시)
@@ -26441,21 +26496,39 @@ namespace QMC.Common.Modules
         {
             try
             {
-
                 Alarm alarm = GetAlarm((int)AlarmCode);
+
+                // 알람 정보 로그 기록
+                Log.Write("AlarmPost", $"[ALARM 발생] Code: {(int)AlarmCode}, Grade: {alarm.Grade}, Cause: {alarm.Cause}");
+
+                string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AlarmLog");
+                string logFile = Path.Combine(logFolder, $"AlarmLog_{DateTime.Now:yyyyMMdd}.csv");
+                Directory.CreateDirectory(logFolder);
+
+                // UTF-8 with BOM로 저장
+                using (var writer = new StreamWriter(logFile, true, new UTF8Encoding(true))) // true → BOM 포함
+                {
+                    string logLine = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss},{alarm.Title},{alarm.Grade},{alarm.Source},{alarm.Cause},{(int)AlarmCode}";
+                    writer.WriteLine(logLine);
+                }
+
                 if (alarm.Grade.Equals("Error"))
                 {
                     this.m_VerifyScannerCamOffset_Start = false;
                     this.m_MotionHome_Start = false;
-                    this.m_ScannerCalibration_Start = false;
                     this.m_ProductAlign_Start = false;
+                    //this.m_Comm_Start = false;
                     this.m_SubWork_Start = false;
+                    this.m_ScannerCalibration_Start = false;
                     this.m_LaserDrillingWork_Start = false;
                     this.m_MainWork_Start = false;
-                    Equipment.LaserDrillingCycStop_Reservation = false;
+                    //this.m_MainStatus_Start = false;
 
+                    Equipment.LaserDrillingCycStop_Reservation = false;
                 }
                 //MessageBox.Show(alarm.Cause);
+                //Log 남기자.
+
                 AlarmManager.Instance.ShowAlarm(alarm);
             }catch(Exception ex)
             {
