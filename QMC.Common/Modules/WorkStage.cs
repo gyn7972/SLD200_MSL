@@ -30675,7 +30675,8 @@ namespace QMC.Common.Modules
                     markingText.IsMarkerable = true;
                     markingText.FontName = trueType_fontName;// trueType_fontName;
                     markingText.IsHatchable = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use;
-                    markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
+                    //markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
+                    markingText.Hatch(HatchMode.Line, HatchOrder.Ascending, false, 0,0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
 
                     markingText.Width = (float)m_nEntityWidth;                                  //  Text 는 Width 값이 있어도 Cap-Height 값에 의해 Width 가 가변된다.
                     markingText.CapHeight = (float)m_nEntityHeight;
@@ -41385,7 +41386,7 @@ namespace QMC.Common.Modules
             var socket = DrillingManager.GetSocket(layerName, socketIndex);
             if (socket == null)
             {
-                Log.Write("DrillResult", $"[오류] Layer '{layerName}', Socket {socketIndex} 찾을 수 없음");
+                Log.Write("DrillStatus", $"[오류] Layer '{layerName}', Socket {socketIndex} 찾을 수 없음");
                 return;
             }
 
@@ -41398,12 +41399,12 @@ namespace QMC.Common.Modules
                     DrillingManager.CycleTimer_NGSocketCount++;
 
                 string result = isOK ? "성공" : "실패";
-                Log.Write("DrillResult", $"[SetDrillResult] {layerName} 소켓 {socket.SocketNumber} 가공 결과: {result}");
+                Log.Write("DrillStatus", $"[SetDrillResult] {layerName} 소켓 {socket.SocketNumber} 가공 결과: {result}");
             }
             else
             {
                 // 이미 기록된 경우에도 로그 남김 (중복 방지 확인용)
-                Log.Write("DrillResult", $"[중복] {layerName} 소켓 {socket.SocketNumber} 이미 기록됨 (성공 여부: {socket.IsSuccess})");
+                Log.Write("DrillStatus", $"[중복] {layerName} 소켓 {socket.SocketNumber} 이미 기록됨 (성공 여부: {socket.IsSuccess})");
             }
         }
 

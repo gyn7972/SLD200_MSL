@@ -83,7 +83,26 @@ namespace QMC.Common.Global
 
         public SocketProcessData GetSocket(int socketNumber)
         {
-            return SocketList.FirstOrDefault(s => s.SocketNumber == socketNumber);
+            //return SocketList.FirstOrDefault(s => s.SocketNumber == socketNumber);
+            if (SocketList == null)
+            {
+                Log.Write("LayerProcessData", $"GetSocket 실패 - SocketList가 null입니다. 요청된 Socket: {socketNumber}");
+                return null;
+            }
+
+            if (SocketList.Count == 0)
+            {
+                Log.Write("LayerProcessData", $"GetSocket 실패 - SocketList가 비어 있습니다. 요청된 Socket: {socketNumber}");
+                return null;
+            }
+
+            var socket = SocketList.FirstOrDefault(s => s.SocketNumber == socketNumber);
+            if (socket == null)
+            {
+                Log.Write("LayerProcessData", $"GetSocket 실패 - Socket {socketNumber} 이(가) 존재하지 않습니다.");
+            }
+
+            return socket;
         }
     }
 
@@ -106,12 +125,57 @@ namespace QMC.Common.Global
 
         public LayerProcessData GetLayer(string layerName)
         {
-            return LayerList.FirstOrDefault(l => l.LayerName == layerName);
+            //return LayerList.FirstOrDefault(l => l.LayerName == layerName);
+            if (string.IsNullOrEmpty(layerName))
+            {
+                Log.Write("DrillStatus", "GetLayer 실패 - 입력된 layerName이 null 또는 빈 문자열입니다.");
+                return null;
+            }
+
+            if (LayerList == null)
+            {
+                Log.Write("DrillStatus", $"GetLayer 실패 - LayerList가 null입니다. 요청된 LayerName: {layerName}");
+                return null;
+            }
+
+            if (LayerList.Count == 0)
+            {
+                Log.Write("DrillStatus", $"GetLayer 실패 - LayerList가 비어 있습니다. 요청된 LayerName: {layerName}");
+                return null;
+            }
+
+            var layer = LayerList.FirstOrDefault(l => l.LayerName == layerName);
+            if (layer == null)
+            {
+                Log.Write("DrillStatus", $"GetLayer 실패 - '{layerName}' 이름의 Layer가 존재하지 않습니다.");
+            }
+
+            return layer;
         }
 
         public LayerProcessData GetLayer(Equipment.LayerList layerEnum)
         {
-            return LayerList.FirstOrDefault(l => l.LayerEnum == layerEnum);
+            // catch (Exception ex)로 빠진다.
+            //return LayerList.FirstOrDefault(l => l.LayerEnum == layerEnum);
+            if (LayerList == null)
+            {
+                Log.Write("DrillStatus", "LayerList가 null입니다. 초기화되지 않았습니다.");
+                return null;
+            }
+
+            if (LayerList.Count == 0)
+            {
+                Log.Write("DrillStatus", $"LayerList에 데이터가 없습니다. 요청된 LayerEnum: {layerEnum}");
+                return null;
+            }
+
+            var layer = LayerList.FirstOrDefault(l => l.LayerEnum == layerEnum);
+            if (layer == null)
+            {
+                Log.Write("DrillStatus", $"GetLayer 실패 - 요청한 LayerEnum({layerEnum}) 이 존재하지 않습니다.");
+            }
+
+            return layer;
         }
 
         public SocketProcessData GetSocket(string layerName, int socketNumber)

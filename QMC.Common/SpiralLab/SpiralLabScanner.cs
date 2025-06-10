@@ -15,6 +15,8 @@ using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
 using QMC.Common.Parts;
 using QMC.Common.VisionPart;
 using QMC.Common.Modules;
+using RTC6Import;
+using System.Threading;
 
 
 
@@ -127,44 +129,96 @@ namespace QMC.Common.Parts
 
                 switch (status)
                 {
-                    case RtcStatus.Busy:
-                        logMsg = $"Busy (0x1, 0x80, 0x8000, 0x800000): {(current ? "✅ OK" : "❌ Not Busy")}";
-                        break;
-                    case RtcStatus.NotBusy:
-                        logMsg = $"NotBusy (Inverse of Busy): {(current ? "✅ OK" : "❌ Busy")}";
-                        break;
-                    case RtcStatus.List1Busy:
-                        logMsg = $"List1Busy (Status & 0x0F): {(current ? "✅ OK" : "❌ Idle")}";
-                        break;
-                    case RtcStatus.List2Busy:
-                        logMsg = $"List2Busy (Status & 0x10): {(current ? "✅ OK" : "❌ Idle")}";
-                        break;
-                    case RtcStatus.NoError:
-                        logMsg = $"NoError (No Abort + LastError == 0): {(current ? "✅ OK" : "❌ Error Detected")}";
-                        break;
-                    case RtcStatus.Aborted:
-                        logMsg = $"Aborted (Manual Abort Flag): {(current ? "❌ Aborted" : "✅ Not Aborted")}";
-                        break;
-                    case RtcStatus.PositionAckOK:
-                        logMsg = $"PositionAckOK (HeadStatus & 0x08, 0x10): {(current ? "✅ OK" : "❌ Not Acknowledged")}";
-                        break;
+                    //case RtcStatus.Busy:
+                    //    logMsg = $"Busy (0x1, 0x80, 0x8000, 0x800000): {(current ? "✅ OK" : "❌ Not Busy")}";
+                    //    break;
+                    //case RtcStatus.NotBusy:
+                    //    logMsg = $"NotBusy (Inverse of Busy): {(current ? "✅ OK" : "❌ Busy")}";
+                    //    break;
+                    //case RtcStatus.List1Busy:
+                    //    logMsg = $"List1Busy (Status & 0x0F): {(current ? "✅ OK" : "❌ Idle")}";
+                    //    break;
+                    //case RtcStatus.List2Busy:
+                    //    logMsg = $"List2Busy (Status & 0x10): {(current ? "✅ OK" : "❌ Idle")}";
+                    //    break;
+                    //case RtcStatus.NoError:
+                    //    logMsg = $"NoError (No Abort + LastError == 0): {(current ? "✅ OK" : "❌ Error Detected")}";
+                    //    break;
+                    //case RtcStatus.Aborted:
+                    //    logMsg = $"Aborted (Manual Abort Flag): {(current ? "❌ Aborted" : "✅ Not Aborted")}";
+                    //    break;
+                    //case RtcStatus.PositionAckOK:
+                    //    logMsg = $"PositionAckOK (HeadStatus & 0x08, 0x10): {(current ? "✅ OK" : "❌ Not Acknowledged")}";
+                    //    break;
                     case RtcStatus.PowerOK:
                         logMsg = $"PowerOK (HeadStatus & 0x80): {(current ? "✅ OK" : "❌ Power Fault")}";
                         break;
                     case RtcStatus.TempOK:
                         logMsg = $"TempOK (HeadStatus & 0x40): {(current ? "✅ OK" : "❌ Over Temp / Sensor Fault")}";
                         break;
-                    case RtcStatus.MotfOutOfRange:
-                        logMsg = $"MotfOutOfRange (MOF Overflow/Underflow): {(current ? "❌ Out of Range" : "✅ OK")}";
-                        break;
+                    //case RtcStatus.MotfOutOfRange:
+                    //    logMsg = $"MotfOutOfRange (MOF Overflow/Underflow): {(current ? "❌ Out of Range" : "✅ OK")}";
+                    //    break;
                     default:
-                        logMsg = $"{status}: {(current ? "✅ OK" : "❌ FAIL")}";
+                        //logMsg = $"{status}: {(current ? "✅ OK" : "❌ FAIL")}";
                         break;
                 }
 
                 Log.Write("Rtc6", logMsg);
             }
         }
+
+        public bool IsOverTemperatureWarning()
+        {
+            if (rtc == null)
+                return false;
+
+            bool isOverTemp = false;
+            try
+            {
+                RTC6Wrap.control_command(1, 1, 0x0514);
+                RTC6Wrap.control_command(1, 2, 0x0514);
+                Thread.Sleep(5);
+                int nPCBTemp1 = RTC6Wrap.get_value(1);
+                int nPCBTemp2 = RTC6Wrap.get_value(2);
+                double pcbTemp1 = (nPCBTemp1 >> 4) / 10.0; // °C
+                double pcbTemp2 = (nPCBTemp2 >> 4) / 10.0;
+
+                Thread.Sleep(1);
+
+                // Galvo_Temp
+                RTC6Wrap.control_command(1, 1, 0x0515);
+                RTC6Wrap.control_command(1, 2, 0x0515);
+                Thread.Sleep(5); // 10 ms wait
+                int nGalvoTemp1 = RTC6Wrap.get_value(1);
+                int nGalvoTemp2 = RTC6Wrap.get_value(2);
+                double galvoTemp1 = (nGalvoTemp1 >> 4) / 10.0;
+                double galvoTemp2 = (nGalvoTemp2 >> 4) / 10.0;
+
+                // --- 온도 임계값 ---
+                const double warningThreshold = 75.0; // 임계값 설정 (필요 시 변경)
+
+                isOverTemp =
+                    pcbTemp1 >= warningThreshold || pcbTemp2 >= warningThreshold ||
+                    galvoTemp1 >= warningThreshold || galvoTemp2 >= warningThreshold;
+
+                // --- 로그 메시지 구성 ---
+                string logMsg = string.Format(
+                    "[RTC6 Temp Check] PCB1: {0:F1}°C, PCB2: {1:F1}°C | Galvo1: {2:F1}°C, Galvo2: {3:F1}°C => {4}",
+                    pcbTemp1, pcbTemp2, galvoTemp1, galvoTemp2,
+                    isOverTemp ? "Over Temp Detected!" : "Normal");
+
+                Log.Write("Rtc6", logMsg);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return false;
+            }
+            
+            return isOverTemp;
+        }
+
         public bool GetScannerPosition(out double x_mm, out double y_mm)
         {
             x_mm = 0;
@@ -173,27 +227,30 @@ namespace QMC.Common.Parts
             if (rtc == null)
                 return false;
 
-            //try
-            //{
-            //    int x_raw, y_raw;
-            //            // Rtc6 클래스 내부 cardId는 protected이거나 private일 수 있으므로 추가적으로 확인 필요
-            //    var cardIdField = rtc.GetType().GetField("cardId", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            //    if (cardIdField == null)
-            //        return false;
+            try
+            {
+                // 파일럿 호출: X, Y 실제 위치 읽기
+                RTC6Wrap.control_command(1, 1, 0x0530); // X축
+                RTC6Wrap.control_command(1, 2, 0x0530);
+                Thread.Sleep(2);
+                int rawX = RTC6Wrap.get_value(1);
 
-            //    int cardId = (int)cardIdField.GetValue(rtc);
+                RTC6Wrap.control_command(1, 1, 0x0531); // Y축
+                RTC6Wrap.control_command(1, 2, 0x0531);
+                Thread.Sleep(2);
+                int rawY = RTC6Wrap.get_value(2);
 
-            //    Rtc6Native.n_get_actual_position(cardId, out x_raw, out y_raw);
+                // 20비트 수치 → mm 단위 변환 (1 unit = 1/65536 mm)
+                x_mm = rawX / 65536.0;
+                y_mm = rawY / 65536.0;
 
-            //    x_mm = x_raw / 65536.0;
-            //    y_mm = y_raw / 65536.0;
-            //    return true;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Write("Rtc6", $"⚠️ Failed to get scanner position: {ex.Message}");
-            //    return false;
-            //}
+                Log.Write("Rtc6", $"Scanner Position → X: {x_mm:F3} mm, Y: {y_mm:F3} mm");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return false;
+            }
 
             return true;
         }
@@ -203,10 +260,3 @@ namespace QMC.Common.Parts
 
     }
 }
-
-
-//internal static class Rtc6Native
-//{
-//    [DllImport("rtc6.dll", CallingConvention = CallingConvention.Cdecl)]
-//    public static extern void n_get_actual_position(int cardNo, out int x, out int y);
-//}

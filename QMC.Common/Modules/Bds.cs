@@ -448,17 +448,18 @@ namespace QMC.Common.Modules
 
                 if (spiralLabScanner != null && spiralLabScanner.IsInitialized)
                 {
+                    spiralLabScanner.IsOverTemperatureWarning();
+
                     spiralLabScanner.CheckAndLogAllStatuses();
 
                     double dPosX=0.0, dPosY = 0.0;
                     spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
                 }
-
             }
             catch (Exception ex)
             {
                 Log.Write(ex);
-                Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
+                //Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
             }
             finally
             {

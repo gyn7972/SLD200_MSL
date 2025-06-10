@@ -413,7 +413,12 @@ namespace SpiralLab.Sirius
                 try
                 {
                     if (rectList.Count > 0)
-                        doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
+                    {
+                        List<Group> groupList = new List<Group>();
+                        //doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
+                        doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList, groupList);
+                    }
+                        
                 }
                 catch (Exception ex)
                 {
@@ -536,6 +541,7 @@ namespace SpiralLab.Sirius
                 int rows = Math.Max(1, (int)Math.Ceiling((maxY - minY) / cellHeight));
 
                 List<BoundRect> rectList = new List<BoundRect>();
+                List<Group> groupList = new List<Group>();
 
                 for (int row = 0; row < rows; row++)
                 {
@@ -559,7 +565,11 @@ namespace SpiralLab.Sirius
                 try
                 {
                     if (rectList.Count > 0)
-                        doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
+                    {
+                        //doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
+                        doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList, groupList);
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
