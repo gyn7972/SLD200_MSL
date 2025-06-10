@@ -1681,6 +1681,15 @@ namespace QMC.Common.Modules
             ScannerCalibration_Timeout,
             ScannerCalibration_Fail,
 
+            StageCal_Vacuum_On_Fail,
+            LaserPowerChange_Fail,
+            WaterLine_Open_Fail,
+            MaskY_Axis_Fail,
+            Vario_Scan_Fail,
+            Scan_Area_Fail,
+            Mark_Search_Fail,
+            Mark_Search_Error_Range_Fail,
+
             SoftLimitFail,
 
             LastAlarm = 3999
@@ -1985,10 +1994,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-
-
-
-
             //
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.eGetdata_Drildata_No_group;
@@ -2160,6 +2165,15 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+            //StageCal_Vacuum_On_Fail
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.StageCal_Vacuum_On_Fail;
+            alarm.Title = "StageCal_Vacuum_On_Fail";
+            alarm.Cause = "StageCal Vacuum On 실패 입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.Mask_Leak_Alarm;
             alarm.Title = "Mask_Leak";
@@ -2200,9 +2214,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-            
-
-
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.ScannerCalibration_Timeout;
             alarm.Title = "ScannerCalibration";
@@ -2219,6 +2230,62 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LaserPowerChange_Fail;
+            alarm.Title = "LaserPowerChange_Fail";
+            alarm.Cause = "LaserPowerChange가 실패하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.WaterLine_Open_Fail;
+            alarm.Title = "WaterLine_Open_Fail";
+            alarm.Cause = "WaterLine_Open 실패하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.MaskY_Axis_Fail;
+            alarm.Title = "MaskY_Axis_Fail";
+            alarm.Cause = "MaskY_Axis 구동이 실패하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Vario_Scan_Fail;
+            alarm.Title = "Vario_Scan_Fail";
+            alarm.Cause = "Vario_Scan 구동이 실패하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Scan_Area_Fail;
+            alarm.Title = "Scan_Area_Fail";
+            alarm.Cause = "Cal - Scan_Area 영역이 벗어났습니다. Cal판 교체 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Mark_Search_Fail;
+            alarm.Title = "Mark_Search_Fail";
+            alarm.Cause = "Mark_Search가 실패하였습니다. Mark 확인 및 설정 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Mark_Search_Error_Range_Fail;
+            alarm.Title = "Mark_Search_Error_Range_Fail";
+            alarm.Cause = "Mark Search 후 Range가 벗어났습니다. Mark 확인 및 위치 확인 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
             //SoftLimitFail
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.SoftLimitFail;
@@ -2227,8 +2294,6 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
-
-
         }
 
         #region 집진기 유량 제어 가능 데이터 (임시)
@@ -7987,22 +8052,45 @@ namespace QMC.Common.Modules
         public void Scanner_Calibration_Option_Save()
         {
             string strTemp = "";
-
             string strFIle = "";
-            strFIle = ConfigManager.GetConfigPath() + "\\Machine ScannerCalibration (Do not delete or modify).ini";
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            // 백업 처리 추가 시작
+            try
+            {
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+
 
             if (File.Exists(strFIle) == false)
             {
                 File.Create(strFIle);
-                //MessageBox.Show("Machine ScannerCalibration 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
 
-                return;
+                //MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
             }
 
-            Equipment.Scanner_Calibration_PosX_Last = m_dScannerCalPosX_Last;
-            Equipment.Scanner_Calibration_PosY_Last = m_dScannerCalPosY_Last;
-            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", m_dScannerCalPosX_Last.ToString(), strFIle);
-            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", m_dScannerCalPosY_Last.ToString(), strFIle);
+            //Equipment.Scanner_Calibration_PosX_Last = m_dScannerCalPosX_Last;
+            //Equipment.Scanner_Calibration_PosY_Last = m_dScannerCalPosY_Last;
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", Equipment.Scanner_Calibration_PosX_Last.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", Equipment.Scanner_Calibration_PosY_Last.ToString(), strFIle);
         }
 
         public void Scanner_Calibration_Vision_Save()
@@ -13951,13 +14039,13 @@ namespace QMC.Common.Modules
 
                             Log.Write("DrillStatus", $"최종 결과: {forceNG}");
 
+                            //if (forceNG)
                             if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
                                 m_bworkStageVacuumFail ||
                                 m_bForceEjectRequest ||
                                 !m_bSocketAlign_OK ||
                                 !m_bFindLowerAlignMark_OK ||
                                 !m_bPreAlignCompleted)
-                            //if (forceNG)
                             {
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
                                 m_bworkStageVacuumFail = false;
@@ -13965,6 +14053,8 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
+                                // 최종으로 정상적일때만 Count 증가.
+                                //Equipment.m_nSerialNumberMarkingCount++;
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
                             }                            
 
@@ -18252,7 +18342,7 @@ namespace QMC.Common.Modules
 
                             //  Serial Number 계산해서 만들고                            
                             m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", Equipment.m_nSerialNumberMarkingCount);
-                            //Equipment.m_nSerialNumberMarkingCount += m_nIncreaseStep;
+                            Equipment.m_nSerialNumberMarkingCount += m_nIncreaseStep;
 
                             //  Suffix 있으면 붙이고
                             if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData.Length > 0)
@@ -22180,7 +22270,8 @@ namespace QMC.Common.Modules
                     m_strTemp = string.Format("전체 가공 완료");
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-                    Equipment.m_nSerialNumberMarkingCount++;
+                    // 시점 변경 필요함.
+                    //Equipment.m_nSerialNumberMarkingCount++;
 
                     //Cycle Time
                     DrillingManager.CycleTimer_DoneModuleCount++;
@@ -26441,21 +26532,39 @@ namespace QMC.Common.Modules
         {
             try
             {
-
                 Alarm alarm = GetAlarm((int)AlarmCode);
+
+                // 알람 정보 로그 기록
+                Log.Write("AlarmPost", $"[ALARM 발생] Code: {(int)AlarmCode}, Grade: {alarm.Grade}, Cause: {alarm.Cause}");
+
+                string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AlarmLog");
+                string logFile = Path.Combine(logFolder, $"AlarmLog_{DateTime.Now:yyyyMMdd}.csv");
+                Directory.CreateDirectory(logFolder);
+
+                // UTF-8 with BOM로 저장
+                using (var writer = new StreamWriter(logFile, true, new UTF8Encoding(true))) // true → BOM 포함
+                {
+                    string logLine = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss},{alarm.Title},{alarm.Grade},{alarm.Source},{alarm.Cause},{(int)AlarmCode}";
+                    writer.WriteLine(logLine);
+                }
+
                 if (alarm.Grade.Equals("Error"))
                 {
                     this.m_VerifyScannerCamOffset_Start = false;
                     this.m_MotionHome_Start = false;
-                    this.m_ScannerCalibration_Start = false;
                     this.m_ProductAlign_Start = false;
+                    //this.m_Comm_Start = false;
                     this.m_SubWork_Start = false;
+                    this.m_ScannerCalibration_Start = false;
                     this.m_LaserDrillingWork_Start = false;
                     this.m_MainWork_Start = false;
-                    Equipment.LaserDrillingCycStop_Reservation = false;
+                    //this.m_MainStatus_Start = false;
 
+                    Equipment.LaserDrillingCycStop_Reservation = false;
                 }
                 //MessageBox.Show(alarm.Cause);
+                //Log 남기자.
+
                 AlarmManager.Instance.ShowAlarm(alarm);
             }catch(Exception ex)
             {

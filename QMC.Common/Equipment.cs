@@ -3062,6 +3062,11 @@ namespace QMC.Common
             Equipment.Machine_LoaderStacker_NoMaterialDetectTime = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "PolylineCurve_Resolution", "100", temp, 255, strFIle);
             Equipment.Machine_PolylineCurve_Resolution = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "AutoCrossCheck_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_AutoCrossCheck_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "AutoCrossCheck_Count", "1", temp, 255, strFIle);
+            Equipment.Machine_AutoCrossCheck_Count = Equipment.ToInt(temp.ToString());
+
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);
