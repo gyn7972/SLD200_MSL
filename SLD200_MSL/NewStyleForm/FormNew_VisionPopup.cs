@@ -366,12 +366,21 @@ namespace SLD200_MSL
             }
             else
             {
-                //  Red 조명부분 Hide
-                textBox_IlluminationValue_Red.Visible = false;
-                hScrollBarIlluminator_Red.Visible = false;
-                baseLabel_Red.Visible = false;
-                baseLabelMin_Red.Visible = false;
-                baseLabelMax_Red.Visible = false;
+                //  Red 조명부분 Show
+                textBox_IlluminationValue_Red.Visible = true;
+                hScrollBarIlluminator_Red.Visible = true;
+                baseLabel_Red.Visible = true;
+                baseLabelMin_Red.Visible = true;
+                baseLabelMax_Red.Visible = true;
+
+                hScrollBarIlluminator_Red.Minimum = (int)workStage.Config.ListIlluminationChannel[3].Min;
+                hScrollBarIlluminator_Red.Maximum = (int)workStage.Config.ListIlluminationChannel[3].Max;
+                baseLabelMin_Red.Text = hScrollBarIlluminator_Red.Minimum.ToString();
+                baseLabelMax_Red.Text = hScrollBarIlluminator_Red.Maximum.ToString();
+                //  조명값 변경
+                hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[3].Value;            //  고해상도 카메라 조명은 채널 1번, 2번
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
 
                 hScrollBarIlluminator_IR.Minimum = (int)workStage.Config.ListIlluminationChannel[2].Min;
                 hScrollBarIlluminator_IR.Maximum = (int)workStage.Config.ListIlluminationChannel[2].Max;
@@ -445,7 +454,7 @@ namespace SLD200_MSL
             this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
 
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, hScrollBarIlluminator_IR.Value);
-            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, hScrollBarIlluminator_Red.Value);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, hScrollBarIlluminator_Red.Value);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 0, false);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
@@ -1667,6 +1676,22 @@ namespace SLD200_MSL
             if (radioButton_VisionPopup_CameraSelection_HighMag.Checked)
             {
                 SetScroll(0);
+
+                hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[0].Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
+                hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[1].Value;
+                this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
+
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
+                Thread.Sleep(100);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_Red.Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBarIlluminator_IR.Value);
+            }
+            else
+            {
+                SetScroll(3);
 
                 hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[0].Value;
                 this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
