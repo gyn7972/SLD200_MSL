@@ -168,6 +168,13 @@ namespace QMC.Common.Parts
             }
         }
 
+        // 클래스 멤버로 이전 온도값 저장
+        private double _prevPcbTemp1 = -1;
+        private double _prevPcbTemp2 = -1;
+        private double _prevGalvoTemp1 = -1;
+        private double _prevGalvoTemp2 = -1;
+        private const double logDeltaThreshold = 1; // 로그 갱신 임계값 (°C 단위) //1도 이상 바뀌면 로그 남김.
+
         public bool IsOverTemperatureWarning()
         {
             if (rtc == null)
@@ -202,13 +209,36 @@ namespace QMC.Common.Parts
                     pcbTemp1 >= warningThreshold || pcbTemp2 >= warningThreshold ||
                     galvoTemp1 >= warningThreshold || galvoTemp2 >= warningThreshold;
 
-                // --- 로그 메시지 구성 ---
-                string logMsg = string.Format(
-                    "[RTC6 Temp Check] PCB1: {0:F1}°C, PCB2: {1:F1}°C | Galvo1: {2:F1}°C, Galvo2: {3:F1}°C => {4}",
-                    pcbTemp1, pcbTemp2, galvoTemp1, galvoTemp2,
-                    isOverTemp ? "Over Temp Detected!" : "Normal");
+                // 로그 남길 조건
+                bool shouldLog =
+                    isOverTemp ||
+                    Math.Abs(pcbTemp1 - _prevPcbTemp1) >= logDeltaThreshold ||
+                    Math.Abs(pcbTemp2 - _prevPcbTemp2) >= logDeltaThreshold ||
+                    Math.Abs(galvoTemp1 - _prevGalvoTemp1) >= logDeltaThreshold ||
+                    Math.Abs(galvoTemp2 - _prevGalvoTemp2) >= logDeltaThreshold;
 
-                Log.Write("Rtc6", logMsg);
+                if (shouldLog)
+                {
+                    string logMsg = string.Format(
+                        "[RTC6 Temp Check] PCB1: {0:F1}°C, PCB2: {1:F1}°C | Galvo1: {2:F1}°C, Galvo2: {3:F1}°C => {4}",
+                        pcbTemp1, pcbTemp2, galvoTemp1, galvoTemp2,
+                        isOverTemp ? "Over Temp Detected!" : "Normal");
+
+                    Log.Write("Rtc6", logMsg);
+
+                    // 온도 갱신
+                    _prevPcbTemp1 = pcbTemp1;
+                    _prevPcbTemp2 = pcbTemp2;
+                    _prevGalvoTemp1 = galvoTemp1;
+                    _prevGalvoTemp2 = galvoTemp2;
+                }
+
+                //// --- 로그 메시지 구성 ---
+                //string logMsg = string.Format(
+                //    "[RTC6 Temp Check] PCB1: {0:F1}°C, PCB2: {1:F1}°C | Galvo1: {2:F1}°C, Galvo2: {3:F1}°C => {4}",
+                //    pcbTemp1, pcbTemp2, galvoTemp1, galvoTemp2,
+                //    isOverTemp ? "Over Temp Detected!" : "Normal");
+                //Log.Write("Rtc6", logMsg);
             }
             catch (Exception ex)
             {
@@ -244,7 +274,7 @@ namespace QMC.Common.Parts
                 x_mm = rawX / 65536.0;
                 y_mm = rawY / 65536.0;
 
-                Log.Write("Rtc6", $"Scanner Position → X: {x_mm:F3} mm, Y: {y_mm:F3} mm");
+                //Log.Write("Rtc6", $"Scanner Position → X: {x_mm:F3} mm, Y: {y_mm:F3} mm");
             }
             catch (Exception ex)
             {
