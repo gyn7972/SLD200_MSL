@@ -215,6 +215,14 @@ namespace QMC.Common.Modules
 
             //
             alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LD_Stacker1_Error;
+            alarm.Title = "Loader Left 스태커";
+            alarm.Cause = "Loader Left stacker 동작 시 Full 센서 이상 감지 되었습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Stacker1_MoveZ_Timeout;
             alarm.Title = "Loader Left 스태커";
             alarm.Cause = "Loader Left stacker 동작 시 타임아웃 발생하였습니다.";

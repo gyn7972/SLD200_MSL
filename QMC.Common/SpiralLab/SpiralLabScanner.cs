@@ -211,7 +211,6 @@ namespace QMC.Common.Parts
 
                 // 로그 남길 조건
                 bool shouldLog =
-                    isOverTemp ||
                     Math.Abs(pcbTemp1 - _prevPcbTemp1) >= logDeltaThreshold ||
                     Math.Abs(pcbTemp2 - _prevPcbTemp2) >= logDeltaThreshold ||
                     Math.Abs(galvoTemp1 - _prevGalvoTemp1) >= logDeltaThreshold ||

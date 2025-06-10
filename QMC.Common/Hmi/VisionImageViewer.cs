@@ -1699,7 +1699,17 @@ namespace QMC.Common.Hmi
                                 try
                                 {
                                     bmpCutImage = (Bitmap)visionImage.CutImage(point, (Size)size);
+
+                                    if (bmpCutImage == null)
+                                    {
+                                        Log.Write("VisionViewer", $"CutImage() 실패 - Point: {point}, Size: {size}");
+                                        return;
+                                    }
                                     bmpCutImage = new Bitmap(bmpCutImage, this.Width, this.Height);
+
+                                    //여기서 계속 Exeption 발생함.
+                                    //bmpCutImage = (Bitmap)visionImage.CutImage(point, (Size)size);
+                                    //bmpCutImage = new Bitmap(bmpCutImage, this.Width, this.Height);
                                 }
                                 catch (Exception ex)
                                 {
