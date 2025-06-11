@@ -409,7 +409,8 @@ namespace QMC.Common.Modules
             return ret;
         }
 
-        //private async void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
+        private DateTime _lastScannerCheckTime = DateTime.MinValue;
+        private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(1000);  // 1초 간격
         private void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -426,13 +427,11 @@ namespace QMC.Common.Modules
                 {
                     return;
                 }
-
                 // Home 잡기 전에는 Device 알람 X
-                //if (!workStage.m_bHomeOK)
-                //{
-                //    return;
-                //}
-
+                if (!workStage.m_bHomeOK)
+                {
+                    return;
+                }
                 // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
                 if (Equipment.AutoRunStatus)
                 {
@@ -441,21 +440,30 @@ namespace QMC.Common.Modules
                 {
                 }
 
+                if (spiralLabScanner != null && spiralLabScanner.IsInitialized)
+                {
+                    spiralLabScanner.CheckAndLogAllStatuses();
+                    if (spiralLabScanner.IsRtcBusy)
+                        return;
+
+                    var now = DateTime.Now;
+                    if (now - _lastScannerCheckTime > _scannerCheckInterval)
+                    {
+                         _lastScannerCheckTime = now;
+
+                        spiralLabScanner.IsOverTemperatureWarning();
+                        //spiralLabScanner.CheckAndLogAllStatuses();
+                        //double dPosX = 0.0, dPosY = 0.0;
+                        //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
+                    }
+                }
+
                 if (spiralLabVario != null && spiralLabVario.IsInitialized)
                 {
                     CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();
                     CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
                 }
 
-                if (spiralLabScanner != null && spiralLabScanner.IsInitialized)
-                {
-                    spiralLabScanner.IsOverTemperatureWarning();
-
-                    spiralLabScanner.CheckAndLogAllStatuses();
-
-                    double dPosX=0.0, dPosY = 0.0;
-                    spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
-                }
             }
             catch (Exception ex)
             {

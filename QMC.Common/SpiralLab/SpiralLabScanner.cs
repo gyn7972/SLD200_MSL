@@ -109,6 +109,8 @@ namespace QMC.Common.Parts
 
 
         private Dictionary<RtcStatus, bool> previousStatus = new Dictionary<RtcStatus, bool>();
+        public bool IsRtcBusy { get; private set; } = false;
+
         public void CheckAndLogAllStatuses()
         {
             if (rtc == null)
@@ -129,9 +131,10 @@ namespace QMC.Common.Parts
 
                 switch (status)
                 {
-                    //case RtcStatus.Busy:
-                    //    logMsg = $"Busy (0x1, 0x80, 0x8000, 0x800000): {(current ? "✅ OK" : "❌ Not Busy")}";
-                    //    break;
+                    case RtcStatus.Busy:
+                        IsRtcBusy = current;  // 상태 캐싱
+                        logMsg = $"Busy (0x1, 0x80, 0x8000, 0x800000): {(current ? "✅ OK" : "❌ Not Busy")}";
+                        break;
                     //case RtcStatus.NotBusy:
                     //    logMsg = $"NotBusy (Inverse of Busy): {(current ? "✅ OK" : "❌ Busy")}";
                     //    break;
