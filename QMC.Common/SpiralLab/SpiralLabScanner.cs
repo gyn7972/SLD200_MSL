@@ -173,7 +173,7 @@ namespace QMC.Common.Parts
         private double _prevPcbTemp2 = -1;
         private double _prevGalvoTemp1 = -1;
         private double _prevGalvoTemp2 = -1;
-        private const double logDeltaThreshold = 1; // 로그 갱신 임계값 (°C 단위) //1도 이상 바뀌면 로그 남김.
+        private const double logDeltaThreshold = 0.1; // 로그 갱신 임계값 (°C 단위) //1도 이상 바뀌면 로그 남김.
 
         public bool IsOverTemperatureWarning()
         {
