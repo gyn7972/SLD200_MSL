@@ -2525,6 +2525,10 @@ namespace SLD200_MSL
             workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
             workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
 
+            workStage.m_bSensorRequestPending = false;   // 요청 보냄
+            workStage.m_bSensorResponseReady = false;    // 응답 받음
+
+
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
             //  장비 운전 정지 시점의 모든 상태 데이터 저장
@@ -2882,6 +2886,14 @@ namespace SLD200_MSL
             workStage.m_bAlignCompleted = false;
             Equipment.ManualRunStatus = false;
             workStage.m_bForceEjectRequest = false;
+
+
+            // 장비 정지 시 그냥 정지 시킨다.
+            workStage.m_ScannerCameraOffsetSequence.Reset();
+            workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+            workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+            workStage.m_bSensorRequestPending = false;   // 요청 보냄
+            workStage.m_bSensorResponseReady = false;    // 응답 받음
 
 
             workStage.m_bFirstAutoCrossCheckDone = false;
@@ -3405,6 +3417,13 @@ namespace SLD200_MSL
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                 workStage.m_nFindAlignMark_Step = (int)WorkStage.FindAlignMark_Step.None;
                 workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
+
+                // 장비 정지 시 그냥 정지 시킨다.
+                workStage.m_ScannerCameraOffsetSequence.Reset();
+                workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+                workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+                workStage.m_bSensorRequestPending = false;   // 요청 보냄
+                workStage.m_bSensorResponseReady = false;    // 응답 받음
 
                 workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.X, 2000);
                 workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Y, 2000);

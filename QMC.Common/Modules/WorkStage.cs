@@ -19010,7 +19010,7 @@ namespace QMC.Common.Modules
 
                     // Laser Height Sensor 값을 파일로 저장
                     LaserHeightSensorValue_Save(Equipment.Current_Recipe, m_nDrillingWork_Group_Count,
-                        Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, avgSensorValue, m_dZOffset_SocketHeightCheck);
+                        Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, avgSensorValue, m_dZOffset_SocketHeightCheck, true);
 
                     // Layer별 소켓 데이터에 저장
                     switch (m_LayerType)
@@ -40805,7 +40805,7 @@ namespace QMC.Common.Modules
             }
         }
         //  Laser Height Sensor Value 저장
-        public void LaserHeightSensorValue_Save(string m_strRecipeName, int m_nSocketNum, double m_dLaserHeightValue_Base, double m_dLaserHeightValue, double m_dLaserHeight_Calc)
+        public void LaserHeightSensorValue_Save(string m_strRecipeName, int m_nSocketNum, double m_dLaserHeightValue_Base, double m_dLaserHeightValue, double m_dLaserHeight_Calc, bool bFinal = false)
         {
             //  폴더 없으면 만들기
             string m_strLaserHeightValueDataPath = LogManager.Instance.GetLogPath() + "\\LaserHeightData";
@@ -40829,10 +40829,19 @@ namespace QMC.Common.Modules
             //strData += "Reference Height Value : " + m_dLaserHeightValue_Base.ToString();             //  레이저 높이 센서의 기준값 
             //strData += " , ";
             //strData += "Laser Height Sensor Value : " + m_dLaserHeightValue.ToString();               //  실제 레이저 센서에서 읽은 값
-            strData += " , ";
-            strData += "Calculated Height Value : " + m_dLaserHeight_Calc.ToString();
-            strData += "\n";
 
+            if(bFinal)
+            {
+                strData += " , ";
+                strData += "Calculated Height Value(Average) : " + m_dLaserHeight_Calc.ToString();
+                strData += "\n";
+            }
+            else
+            {
+                strData += " , ";
+                strData += "Calculated Height Value(Retry) : " + m_dLaserHeight_Calc.ToString();
+                strData += "\n";
+            }
             File.AppendAllText(fileName + ".txt", strData);
         }
 

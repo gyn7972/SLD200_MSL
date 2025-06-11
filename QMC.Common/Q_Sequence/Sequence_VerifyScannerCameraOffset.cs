@@ -191,7 +191,6 @@ namespace QMC.Common.Q_Sequence
             foreach (var task in listTask)
             {
                 task.Wait();
-
                 task.Dispose();
 
             }
