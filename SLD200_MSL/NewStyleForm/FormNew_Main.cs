@@ -2521,6 +2521,12 @@ namespace SLD200_MSL
             checkBox_Main_AutoRun.Checked = false;
 
 
+            // 장비 정지 시 그냥 정지 시킨다.
+            workStage.m_ScannerCameraOffsetSequence.Reset();
+            workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+            workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+
+
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
             //  장비 운전 정지 시점의 모든 상태 데이터 저장
