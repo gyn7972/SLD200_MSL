@@ -1932,10 +1932,25 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_ULSZ0);
         }
 
-        protected int AlarmPost(AlarmKey AlarmCode)
+        public int AlarmPost(AlarmKey AlarmCode)
         {
             
             Alarm alarm = GetAlarm((int)AlarmCode);
+
+            // 알람 정보 로그 기록
+            Log.Write("AlarmPost", $"[ALARM 발생] Code: {(int)AlarmCode}, Grade: {alarm.Grade}, Cause: {alarm.Cause}");
+
+            string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AlarmLog");
+            string logFile = Path.Combine(logFolder, $"AlarmLog_{DateTime.Now:yyyyMMdd}.csv");
+            Directory.CreateDirectory(logFolder);
+
+            // UTF-8 with BOM로 저장
+            using (var writer = new StreamWriter(logFile, true, new UTF8Encoding(true))) // true → BOM 포함
+            {
+                string logLine = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss},{alarm.Title},{alarm.Grade},{alarm.Source},{alarm.Cause},{(int)AlarmCode}";
+                writer.WriteLine(logLine);
+            }
+
             if (alarm.Grade.Equals("Error"))
             {
                 this.m_UnloaderWork_Start = false;

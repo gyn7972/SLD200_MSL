@@ -132,6 +132,17 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
         }
 
+
+
+
+
+
+
+
+
+
+
+
         private void button_Recipe_GoldPowder_Save_Click(object sender, EventArgs e)
         {
             UpdateRecipeFromUI();
@@ -196,13 +207,13 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 hScrollBar_Recipe_GoldPowder_Illuminator_Red.Minimum = (int)workStage.Config.ListIlluminationChannel[0].Min;
                 hScrollBar_Recipe_GoldPowder_Illuminator_Red.Maximum = (int)workStage.Config.ListIlluminationChannel[0].Max;
-                hScrollBar_Recipe_GoldPowder_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
+                hScrollBar_Recipe_GoldPowder_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed;
                 baseLabel_Recipe_GoldPowder_Min_Red.Text = hScrollBar_Recipe_GoldPowder_Illuminator_Red.Minimum.ToString();
                 baseLabel_Recipe_GoldPowder_Max_Red.Text = hScrollBar_Recipe_GoldPowder_Illuminator_Red.Maximum.ToString();
 
                 hScrollBar_Recipe_GoldPowder_Illuminator_IR.Minimum = (int)workStage.Config.ListIlluminationChannel[1].Min;
                 hScrollBar_Recipe_GoldPowder_Illuminator_IR.Maximum = (int)workStage.Config.ListIlluminationChannel[1].Max;
-                hScrollBar_Recipe_GoldPowder_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
+                hScrollBar_Recipe_GoldPowder_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR;
                 baseLabel_Recipe_GoldPowder_Min_IR.Text = hScrollBar_Recipe_GoldPowder_Illuminator_IR.Minimum.ToString();
                 baseLabel_Recipe_GoldPowder_Max_IR.Text = hScrollBar_Recipe_GoldPowder_Illuminator_IR.Maximum.ToString();
             }
@@ -269,8 +280,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = true;
             }
 
-
-
             // 마크 타입
             if (m_recipe.dGoldPowderMarkType == 0)
             {
@@ -331,8 +340,10 @@ namespace SLD200.NewStyleForm.NewSubForm
             textBox_Recipe_GoldPowder_AxisZ_Setting.Text = m_recipe.dGoldPowderAxisZ_Offset.ToString("F3");
 
             // 조명 세기
-            textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = m_recipe.nGoldPowderIlluminationIR.ToString();
+            Equipment.stVisionRecipeSet.nSocketIlluminationRed = m_recipe.nGoldPowderIlluminationRed;
+            Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR = m_recipe.nGoldPowderIlluminationIR;
             textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text = m_recipe.nGoldPowderIlluminationRed.ToString();
+            textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = m_recipe.nGoldPowderIlluminationIR.ToString();
 
             SetScroll();
         }

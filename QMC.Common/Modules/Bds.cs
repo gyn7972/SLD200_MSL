@@ -401,7 +401,15 @@ namespace QMC.Common.Modules
                     {
                         break;
                     }
-                    Timer_BDS_MainStatus_Tick(null, null);
+                    try
+                    {
+                        Timer_BDS_MainStatus_Tick(null, null);
+                    }
+                    catch(Exception ex)
+                    {
+                        Log.Write(ex);
+                    }
+                    
                 }
             }); ;
             listTask.Add(m_taskTimer_BDS_MainStatus_Tick);
@@ -409,7 +417,9 @@ namespace QMC.Common.Modules
             return ret;
         }
 
-        private async void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
+        private DateTime _lastScannerCheckTime = DateTime.MinValue;
+        private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(1000);  // 1초 간격
+        private void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
             if (_isMainStatusRunning)
@@ -425,13 +435,11 @@ namespace QMC.Common.Modules
                 {
                     return;
                 }
-
                 // Home 잡기 전에는 Device 알람 X
                 //if (!workStage.m_bHomeOK)
                 //{
                 //    return;
                 //}
-
                 // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
                 if (Equipment.AutoRunStatus)
                 {
@@ -440,25 +448,34 @@ namespace QMC.Common.Modules
                 {
                 }
 
-                if (spiralLabVario != null && spiralLabVario.IsInitialized)
-                {
-                    CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();
-                    CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
-                }
-
                 if (spiralLabScanner != null && spiralLabScanner.IsInitialized)
                 {
-                    spiralLabScanner.CheckAndLogAllStatuses();
+                    var now = DateTime.Now;
+                    if (now - _lastScannerCheckTime > _scannerCheckInterval)
+                    {
+                        _lastScannerCheckTime = now;
 
-                    double dPosX=0.0, dPosY = 0.0;
-                    spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
+                        spiralLabScanner.CheckAndLogAllStatuses();
+                        if (!spiralLabScanner.IsRtcBusy &&
+                            (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
+                        {
+                            spiralLabScanner.IsOverTemperatureWarning();
+                            //spiralLabScanner.CheckAndLogAllStatuses();
+                            //double dPosX = 0.0, dPosY = 0.0;
+                            //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
+                            if (spiralLabVario != null && spiralLabVario.IsInitialized)
+                            {
+                                CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();
+                                CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
+                            }
+                        }
+                    }
                 }
-
             }
             catch (Exception ex)
             {
                 Log.Write(ex);
-                Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
+                //Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
             }
             finally
             {

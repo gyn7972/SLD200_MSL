@@ -663,8 +663,16 @@ namespace SLD200.NewStyleForm.NewSubForm
                 //1:Red-High Mag, 2:IR-High Mag, 3:IR-Low Mag
                 CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_RecipeVision_Illuminator_Red.Value, 1);
             }
-            
-            this.textBox_RecipeVision_IlluminationValue_Red.Refresh();
+            else
+            {
+                //0:Red-High Mag, 1:IR-High Mag, 2:IR-Low Mag
+                workStage.Config.ListIlluminationChannel[3].Value = hScrollBar_RecipeVision_Illuminator_Red.Value;
+                this.textBox_RecipeVision_IlluminationValue_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Value.ToString();
+                //1:Red-High Mag, 2:IR-High Mag, 3:IR-Low Mag
+                CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_RecipeVision_Illuminator_Red.Value, 4);
+            }
+
+                this.textBox_RecipeVision_IlluminationValue_Red.Refresh();
         }
 
         private void SetScroll()
@@ -1380,7 +1388,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             baseLabel_RecipeVision_Min_Red.Enabled = true;
             label_RecipeVision_Light_Red.Enabled = true;
 
-            checkBox_RecipeVision_Illuminator_Red.Enabled = false;
+            //checkBox_RecipeVision_Illuminator_Red.Enabled = false;
             checkBox_RecipeVision_Illuminator_IR.Enabled = false;
             textBox_RecipeVision_Camera_ExposureTime_High.Enabled = false;
             textBox_RecipeVision_AxisZ_Setting.Enabled = false;

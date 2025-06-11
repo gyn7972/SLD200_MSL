@@ -375,39 +375,50 @@ namespace SpiralLab.Sirius
                     continue;
 
                 var bounds = entity.BoundRect;
-                var entityCenter = bounds.Center;
 
-                int cols = (int)Math.Ceiling(bounds.Width / cellWidth);
-                int rows = (int)Math.Ceiling(bounds.Height / cellHeight);
+                // 새로 만든 함수로 Rect 리스트 계산
+                var rectList = CalculateDividedRects(bounds, cellWidth, cellHeight);
+                // 계산된 Rect들을 LastDividedRects에 추가 저장 (그리기/그룹핑용)
+                Equipment.LastDividedRects.AddRange(rectList);
 
-                float offsetX = entityCenter.X - (cols * cellWidth) / 2f + cellWidth / 2f;
-                float offsetY = entityCenter.Y + (rows * cellHeight) / 2f - cellHeight / 2f;
+                //var entityCenter = bounds.Center;
 
-                List<BoundRect> rectList = new List<BoundRect>();
+                //int cols = (int)Math.Ceiling(bounds.Width / cellWidth);
+                //int rows = (int)Math.Ceiling(bounds.Height / cellHeight);
 
-                for (int row = 0; row < rows; row++)
-                {
-                    for (int col = 0; col < cols; col++)
-                    {
-                        float centerX = offsetX + col * cellWidth;
-                        float centerY = offsetY - row * cellHeight;
+                //float offsetX = entityCenter.X - (cols * cellWidth) / 2f + cellWidth / 2f;
+                //float offsetY = entityCenter.Y + (rows * cellHeight) / 2f - cellHeight / 2f;
 
-                        float left = centerX - cellWidth / 2f;
-                        float right = centerX + cellWidth / 2f;
-                        float bottom = centerY - cellHeight / 2f;
-                        float top = centerY + cellHeight / 2f;
+                //List<BoundRect> rectList = new List<BoundRect>();
 
-                        var rect = new BoundRect(left, top, right, bottom);
-                        //rectList.Add(new BoundRect(left, top, right, bottom));
-                        rectList.Add(rect);
-                        Equipment.LastDividedRects.Add(rect);
-                    }
-                }
+                //for (int row = 0; row < rows; row++)
+                //{
+                //    for (int col = 0; col < cols; col++)
+                //    {
+                //        float centerX = offsetX + col * cellWidth;
+                //        float centerY = offsetY - row * cellHeight;
+
+                //        float left = centerX - cellWidth / 2f;
+                //        float right = centerX + cellWidth / 2f;
+                //        float bottom = centerY - cellHeight / 2f;
+                //        float top = centerY + cellHeight / 2f;
+
+                //        var rect = new BoundRect(left, top, right, bottom);
+                //        //rectList.Add(new BoundRect(left, top, right, bottom));
+                //        rectList.Add(rect);
+                //        Equipment.LastDividedRects.Add(rect);
+                //    }
+                //}
 
                 try
                 {
                     if (rectList.Count > 0)
-                        doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
+                    {
+                        List<Group> groupList = new List<Group>();
+                        //doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
+                        doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList, groupList);
+                    }
+                        
                 }
                 catch (Exception ex)
                 {
@@ -469,28 +480,6 @@ namespace SpiralLab.Sirius
             //Console.WriteLine($"[완료] 선택된 레이어 '{selectedLayer.Name}' 의 모든 그룹 해체");
         }
 
-
-        //private void RegroupEntitiesByLastDividedRects(string layerName)
-        //{
-        //    var doc = this.Document;
-        //    if (doc == null || LastDividedRects.Count == 0)
-        //        return;
-
-        //    var layer = doc.Layers.FirstOrDefault(l => l.Name.Contains(layerName));
-        //    if (layer == null) return;
-
-        //    var allEntities = layer.Where(e => !(e is Group)).ToList();
-
-        //    foreach (var rect in LastDividedRects)
-        //    {
-        //        var entitiesInRect = allEntities
-        //            .Where(e => e?.BoundRect != null && IsIntersecting(e.BoundRect, rect))
-        //            .ToList();
-
-        //        if (entitiesInRect.Count > 0)
-        //            doc.Action.ActEntityGroup(entitiesInRect, layer);
-        //    }
-        //}
         private void RegroupEntitiesByLastDividedRects(string layerName)
         {
             var doc = this.Document;
@@ -510,12 +499,6 @@ namespace SpiralLab.Sirius
 
             foreach (var rect in sortedRects)
             {
-                //var entitiesInRect = allEntities
-                //    .Where(e => e?.BoundRect != null &&
-                //                !usedEntities.Contains(e) &&
-                //                IsIntersecting(e.BoundRect, rect))
-                //    .ToList();
-
                 var entitiesInRect = allEntities
                                     .Where(e => e?.BoundRect != null &&
                                                 !usedEntities.Contains(e) &&
@@ -530,233 +513,6 @@ namespace SpiralLab.Sirius
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //private void AutoDivideByLayer(string layerName, float cellWidth, float cellHeight)
-        //{
-        //    var doc = this.Document;
-        //    if (doc == null || doc.Layers == null)
-        //    {
-        //        MessageBox.Show("문서 또는 레이어 정보가 없습니다.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        return;
-        //    }
-
-        //    var layer = doc.Layers.FirstOrDefault(l => l.Name.Contains(layerName));
-        //    if (layer == null)
-        //    {
-        //        MessageBox.Show($"Layer '{layerName}' 를 찾을 수 없습니다.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        return;
-        //    }
-
-        //    // Group 제외
-        //    var entities = layer.Where(e => !(e is Group)).ToList();
-        //    if (entities.Count == 0)
-        //        return;
-
-        //    foreach (var entity in entities)
-        //    {
-        //        if (entity == null || entity.BoundRect == null)
-        //            continue;
-
-        //        var bounds = entity.BoundRect;
-
-        //        float width = bounds.Width;
-        //        float height = bounds.Height;
-        //        float centerX = bounds.Center.X;
-        //        float centerY = bounds.Center.Y;
-
-        //        int cols = Math.Max(1, (int)Math.Ceiling(width / cellWidth));
-        //        int rows = Math.Max(1, (int)Math.Ceiling(height / cellHeight));
-
-        //        float startX = centerX - (cols * cellWidth) / 2;
-        //        float startY = centerY - (rows * cellHeight) / 2;
-
-        //        List<BoundRect> rectList = new List<BoundRect>();
-
-        //        for (int row = 0; row < rows; row++)
-        //        {
-        //            for (int col = 0; col < cols; col++)
-        //            {
-        //                float left = startX + col * cellWidth;
-        //                float right = left + cellWidth;
-        //                float bottom = startY + row * cellHeight;
-        //                float top = bottom + cellHeight;
-
-        //                rectList.Add(new BoundRect(left, top, right, bottom));  // top > bottom
-        //            }
-        //        }
-
-        //        try
-        //        {
-        //            if (rectList.Count > 0)
-        //                doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show($"Divide Error: {ex.Message}", "Divide", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        }
-        //    }
-        //}
-
-
-
-        //레이어를 따로 선택해서 영역 분할. ( 전체 선택한 상태에서 수행)
-        //private void AutoDivideByLayer(string layerName, float cellWidth, float cellHeight)
-        //{
-        //    var doc = this.Document;
-        //    if (doc == null || doc.Layers == null)
-        //    {
-        //        MessageBox.Show("문서 또는 레이어 정보가 없습니다.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        return;
-        //    }
-
-        //    var layer = doc.Layers.FirstOrDefault(l => l.Name.Contains(layerName));
-        //    if (layer == null)
-        //    {
-        //        MessageBox.Show($"Layer '{layerName}' 를 찾을 수 없습니다.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        return;
-        //    }
-
-        //    // Group 제외
-        //    var entities = layer.Where(e => !(e is Group)).ToList();
-        //    if (entities.Count == 0)
-        //        return;
-
-        //    // 전체 엔티티 영역 계산
-        //    float globalMinX = entities.Min(e => e.BoundRect.Left);
-        //    float globalMaxX = entities.Max(e => e.BoundRect.Right);
-        //    float globalMinY = entities.Min(e => e.BoundRect.Bottom);
-        //    float globalMaxY = entities.Max(e => e.BoundRect.Top);
-
-        //    float totalWidth = globalMaxX - globalMinX;
-        //    float totalHeight = globalMaxY - globalMinY;
-
-        //    int cols = Math.Max(1, (int)Math.Ceiling(totalWidth / cellWidth));
-        //    int rows = Math.Max(1, (int)Math.Ceiling(totalHeight / cellHeight));
-
-        //    float centerX = (globalMinX + globalMaxX) / 2;
-        //    float centerY = (globalMinY + globalMaxY) / 2;
-
-        //    float startX = centerX - (cols * cellWidth) / 2;
-        //    float startY = centerY - (rows * cellHeight) / 2;
-
-        //    // 영역 생성 (겹치지 않게, 중심 정렬)
-        //    List<BoundRect> rectList = new List<BoundRect>();
-        //    for (int row = 0; row < rows; row++)
-        //    {
-        //        for (int col = 0; col < cols; col++)
-        //        {
-        //            float left = startX + col * cellWidth;
-        //            float right = left + cellWidth;
-        //            float bottom = startY + row * cellHeight;
-        //            float top = bottom + cellHeight;
-
-        //            rectList.Add(new BoundRect(left, top, right, bottom)); // top > bottom
-        //        }
-        //    }
-
-        //    // 각 영역별로 포함된 entity가 있는 경우만 분할 수행
-        //    foreach (var rect in rectList)
-        //    {
-        //        var includedEntities = entities.Where(e =>
-        //        {
-        //            var b = e.BoundRect;
-        //            return !(b.Right < rect.Left || b.Left > rect.Right || b.Top < rect.Bottom || b.Bottom > rect.Top);
-        //        }).ToList();
-
-        //        if (includedEntities.Count > 0)
-        //        {
-        //            try
-        //            {
-        //                doc.Action.ActEntityDivide(includedEntities, new List<BoundRect> { rect });
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show($"Divide Error: {ex.Message}", "Divide", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private void AutoDivideByLayer(string layerName, float cellWidth, float cellHeight)
-        //{
-        //    var doc = this.Document;
-        //    if (doc == null || doc.Layers == null)
-        //    {
-        //        MessageBox.Show("문서 또는 레이어 정보가 없습니다.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        return;
-        //    }
-
-        //    // 이름이 포함된 레이어 찾기 (예: "Frame_Cut(Top)" 등)
-        //    var layer = doc.Layers.Where(l => l.Name.Contains(layerName)).FirstOrDefault();
-        //    if (layer == null)
-        //    {
-        //        MessageBox.Show($"Layer '{layerName}' 를 찾을 수 없습니다.", "Auto Divide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        return;
-        //    }
-
-        //    // Layer의 엔티티 목록을 안전하게 복사
-        //    // Group은 제외하고 개별 엔티티만 선택
-        //    var entities = layer
-        //        .Where(e => !(e is Group))
-        //        .ToList();
-
-        //    foreach (var entity in entities)
-        //    {
-        //        if (entity == null || entity.BoundRect == null)
-        //            continue;
-
-        //        var bounds = entity.BoundRect;
-        //        float minX = Math.Min(bounds.Left, bounds.Right);
-        //        float maxX = Math.Max(bounds.Left, bounds.Right);
-        //        float minY = Math.Min(bounds.Bottom, bounds.Top);
-        //        float maxY = Math.Max(bounds.Bottom, bounds.Top);
-
-        //        int cols = Math.Max(1, (int)Math.Ceiling((maxX - minX) / cellWidth));
-        //        int rows = Math.Max(1, (int)Math.Ceiling((maxY - minY) / cellHeight));
-
-        //        List<BoundRect> rectList = new List<BoundRect>();
-
-        //        for (int row = 0; row < rows; row++)
-        //        {
-        //            for (int col = 0; col < cols; col++)
-        //            {
-        //                float left = minX + col * cellWidth;
-        //                float right = left + cellWidth;
-        //                float bottom = minY + row * cellHeight;
-        //                float top = bottom + cellHeight;
-
-        //                rectList.Add(new BoundRect(left, top, right, bottom));  // 주의: top > bottom
-        //            }
-        //        }
-
-        //        try
-        //        {
-        //            if (rectList.Count > 0)
-        //                doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show($"Divide Error: {ex.Message}", "Divide", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        }
-        //    }
-        //}
 
         //객체를 따로 선택해서 영역 분할.
         private void AutoDivideBySize(float cellWidth, float cellHeight)
@@ -785,6 +541,7 @@ namespace SpiralLab.Sirius
                 int rows = Math.Max(1, (int)Math.Ceiling((maxY - minY) / cellHeight));
 
                 List<BoundRect> rectList = new List<BoundRect>();
+                List<Group> groupList = new List<Group>();
 
                 for (int row = 0; row < rows; row++)
                 {
@@ -808,7 +565,11 @@ namespace SpiralLab.Sirius
                 try
                 {
                     if (rectList.Count > 0)
-                        doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
+                    {
+                        //doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList);
+                        doc.Action.ActEntityDivide(new List<IEntity> { entity }, rectList, groupList);
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -816,6 +577,69 @@ namespace SpiralLab.Sirius
                 }
             }
         }
+
+
+        /// <summary>
+        /// BoundRect 기준으로 지정된 셀 크기로 격자 분할된 BoundRect 리스트를 계산합니다.
+        /// </summary>
+        private List<BoundRect> CalculateDividedRects(BoundRect bounds, float cellWidth, float cellHeight)
+        {
+            List<BoundRect> result = new List<BoundRect>();
+
+            if (bounds == null || cellWidth <= 0 || cellHeight <= 0)
+                return result;
+
+            int cols = (int)Math.Ceiling(bounds.Width / cellWidth);
+            int rows = (int)Math.Ceiling(bounds.Height / cellHeight);
+
+            float offsetX = bounds.Center.X - (cols * cellWidth) / 2f + cellWidth / 2f;
+            float offsetY = bounds.Center.Y + (rows * cellHeight) / 2f - cellHeight / 2f;
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    float centerX = offsetX + col * cellWidth;
+                    float centerY = offsetY - row * cellHeight;
+
+                    float left = centerX - cellWidth / 2f;
+                    float right = centerX + cellWidth / 2f;
+                    float bottom = centerY - cellHeight / 2f;
+                    float top = centerY + cellHeight / 2f;
+
+                    result.Add(new BoundRect(left, top, right, bottom));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 선택된 레이어 기준으로 분할 Rect만 계산하고 LastDividedRects에 저장합니다. Divide는 수행하지 않습니다.
+        /// </summary>
+        public void RefreshDividedRectsOnly(string layerName, float cellWidth, float cellHeight)
+        {
+            var doc = this.Document;
+            if (doc == null || doc.Layers == null)
+                return;
+
+            var layer = doc.Layers.FirstOrDefault(l => l.Name.Contains(layerName));
+            if (layer == null)
+                return;
+
+            Equipment.LastDividedRects.Clear();
+
+            foreach (var entity in layer)
+            {
+                if (entity?.BoundRect == null || entity is Group)
+                    continue;
+
+                var rectList = CalculateDividedRects(entity.BoundRect, cellWidth, cellHeight);
+                Equipment.LastDividedRects.AddRange(rectList);
+            }
+        }
+
+
 
     }
 }

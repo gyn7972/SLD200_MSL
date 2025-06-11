@@ -78,6 +78,8 @@ namespace QMC.Common.Modules
             {
                 Illuminator.TurnOnOff(false, 1);
                 Illuminator.TurnOnOff(false, 2);
+                Illuminator.TurnOnOff(false, 3);
+                Illuminator.TurnOnOff(false, 4);
                 Illuminator.Close();
             }
 

@@ -1322,11 +1322,9 @@ namespace SLD200_MSL
 
             // label_Title_MESMessage
             // 여기에 자재 유/무에 대한 메세지 표시
-            //SetValue(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.");
             SetValue(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 있음." : "Loader_Stacker Left: 자재 없음.");
             SetColor(label_Title_Stacker_LPort, Equipment.Loader_LPort_Empty ? Color.Black : Color.Red, Equipment.Loader_LPort_Empty ? Color.Lime : Color.White);
 
-            //SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 없음." : "Loader_Stacker Right: 자재 있음.");
             SetValue(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? "Loader_Stacker Right : 자재 있음." : "Loader_Stacker Right: 자재 없음.");
             SetColor(label_Title_Stacker_RPort, Equipment.Loader_RPort_Empty ? Color.Black : Color.Red, Equipment.Loader_RPort_Empty ? Color.Lime : Color.White);
 
@@ -1503,6 +1501,8 @@ namespace SLD200_MSL
 
                 //통신 초기화
                 Comm_Init();
+
+                workStage.m_bFirstAutoCrossCheckDone = false;
 
                 workStage.m_bHomeOK = false;
                 m_bHomeProgress_Show = true;
@@ -2878,6 +2878,9 @@ namespace SLD200_MSL
             workStage.m_bAlignCompleted = false;
             Equipment.ManualRunStatus = false;
             workStage.m_bForceEjectRequest = false;
+
+
+            workStage.m_bFirstAutoCrossCheckDone = false;
 
             workStage.ResetRecovery();
             unloader.ResetRecovery();
@@ -4354,12 +4357,20 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);
+
+            unloader.AlarmPost(Unloader.AlarmKey.UL_Transfer_Picker_Module_NotExist);
+
+            loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
+
+            return;
+
             //workStage.workStageParameter.DO_AirCurtain_Purge(true);
 
             //double freq = 0.0;
             //bds.DustCollector_Upper.GetFrequency(out freq);
 
-            
+
             string strTemp = "";
             double offsetX = 0.0, offsetY = 0.0;
 
@@ -4371,8 +4382,6 @@ namespace SLD200_MSL
                           $"Offset - X: {offsetX + i * 3:F4}, Y: {offsetX + i * 3:F4}";
                 Log.Write("Goldpowder", "Result", strTemp);
             }
-            
-
 
             strTemp = $"Fiducial Makr No: " + "0" + "," +
                       $"검출 갯수: {20}, finalOffsetX: {offsetX+22.45:F4}, finalOffsetY: {offsetX + 22.45:F4}";
@@ -4384,7 +4393,7 @@ namespace SLD200_MSL
                     "- Angle : " + "0";
             Log.Write("Goldpowder", "Result", strTemp);
 
-            return;
+            
 
             //Test
             workStage.UpdateLastDrillTime();

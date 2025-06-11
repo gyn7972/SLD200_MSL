@@ -17,7 +17,7 @@
             <param name="rect"></param>
             <param name="subLwPolylines"></param>
         </member>
-        <member name="M:SpiralLab.Sirius.UndoRedoEntityDivide.#ctor(SpiralLab.Sirius.IDocument,SpiralLab.Sirius.Layer,System.Collections.Generic.List{SpiralLab.Sirius.IEntity},System.Collections.Generic.List{SpiralLab.Sirius.BoundRect},System.Single)">
+        <member name="M:SpiralLab.Sirius.UndoRedoEntityDivide.#ctor(SpiralLab.Sirius.IDocument,SpiralLab.Sirius.Layer,System.Collections.Generic.List{SpiralLab.Sirius.IEntity},System.Collections.Generic.List{SpiralLab.Sirius.BoundRect},System.Collections.Generic.List{SpiralLab.Sirius.Group},System.Single)">
             <summary>
             개체 영역으로 나누기
             </summary>
@@ -25,6 +25,7 @@
             <param name="layer"></param>
             <param name="entities"></param>
             <param name="rects">영역 목록</param>
+            <param name="results">결과 목록</param>
             <param name="threshold">영역 경계면에 있는 개체들중 가로/세로 크기가 지정된 길이(threshold) 보다 작을 경우 대상 개체는 예외적으로 나누지 않고 첫 영역에 포함시킨다</param>
         </member>
         <member name="T:SpiralLab.Sirius.UndoRedoEntityGroupOffsets">
@@ -1689,6 +1690,11 @@
             해치 모드
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.CellHatches.HatchOrder">
+            <summary>
+            해치 순서
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.CellHatches.HatchInterval">
             <summary>
             해치 간격 (mm)
@@ -1825,6 +1831,11 @@
             해치 모드
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.Circle3D.HatchOrder">
+            <summary>
+            해치 순서
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.Circle3D.HatchZigZag">
             <summary>
             해치 지그 재그 여부
@@ -1885,7 +1896,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SpiralLab.Sirius.Circle3D.Hatch(SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SpiralLab.Sirius.Circle3D.Hatch(SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <inheritdoc/>
         </member>
         <member name="M:SpiralLab.Sirius.Circle3D.ToLwPolyline">
@@ -2238,6 +2249,11 @@
             해치 모드
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.Triangle3D.HatchOrder">
+            <summary>
+            해치 순서
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.Triangle3D.HatchZigZag">
             <summary>
             해치 지그 재그 여부
@@ -2298,7 +2314,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SpiralLab.Sirius.Triangle3D.Hatch(SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SpiralLab.Sirius.Triangle3D.Hatch(SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <inheritdoc/>
         </member>
         <member name="M:SpiralLab.Sirius.Triangle3D.ToLwPolyline">
@@ -2438,6 +2454,11 @@
             해치 모드
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.Triangle.HatchOrder">
+            <summary>
+            해치 순서
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.Triangle.HatchZigZag">
             <summary>
             해치 지그 재그 여부
@@ -2492,7 +2513,7 @@
         <member name="M:SpiralLab.Sirius.Triangle.Explode">
             <inheritdoc/>
         </member>
-        <member name="M:SpiralLab.Sirius.Triangle.Hatch(SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SpiralLab.Sirius.Triangle.Hatch(SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <inheritdoc/>
         </member>
         <member name="M:SpiralLab.Sirius.Triangle.ToLwPolyline">
@@ -4076,6 +4097,11 @@
             해치 모드
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.Ellipse.HatchOrder">
+            <summary>
+            해치 순서
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.Ellipse.HatchZigZag">
             <summary>
             해치 지그 재그 여부
@@ -4156,7 +4182,7 @@
         <member name="M:SpiralLab.Sirius.Ellipse.Explode">
             <inheritdoc/>
         </member>
-        <member name="M:SpiralLab.Sirius.Ellipse.Hatch(SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SpiralLab.Sirius.Ellipse.Hatch(SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <inheritdoc/>
         </member>
         <member name="M:SpiralLab.Sirius.Ellipse.Mark(SpiralLab.Sirius.IMarkerArg)">
@@ -8293,6 +8319,11 @@
             단계
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.PowerMapCategoriesForm.SetupTimeMs">
+            <summary>
+            대기시간 (msec)
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.PowerMapCategoriesForm.HoldTimeMs">
             <summary>
             유지시간 (msec)
@@ -9265,6 +9296,16 @@
             선 해치 (두개의 각도로 구성된)
             </summary>
         </member>
+        <member name="F:SpiralLab.Sirius.HatchOrder.Ascending">
+            <summary>
+            작은거 부터 큰 방향
+            </summary>
+        </member>
+        <member name="F:SpiralLab.Sirius.HatchOrder.Descending">
+            <summary>
+            큰거 부터 작은 방향
+            </summary>
+        </member>
         <member name="T:SpiralLab.Sirius.IHatchable">
             <summary>
             Hatchable 인터페이스
@@ -9275,12 +9316,13 @@
             </para>
             </summary>    
         </member>
-        <member name="M:SpiralLab.Sirius.IHatchable.Hatch(SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SpiralLab.Sirius.IHatchable.Hatch(SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             해치 인자를 통해 해칭된 그룹 객체를 얻는다
             <para>Do hatch</para>
             </summary>
             <param name="mode">해치 모드</param>
+            <param name="order">해치 순서</param>
             <param name="zigZag">지그재그 사용여부</param>
             <param name="angle">해치 각도</param>
             <param name="angle2">Cross Line 모드시 두번재 해치 각도</param>        
@@ -9940,13 +9982,14 @@
             <param name="layer">대상 레이어</param>
             <returns></returns>
         </member>
-        <member name="M:SpiralLab.Sirius.Action.ActEntityHatch(System.Collections.Generic.List{SpiralLab.Sirius.IEntity},SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single,SpiralLab.Sirius.Layer)">
+        <member name="M:SpiralLab.Sirius.Action.ActEntityHatch(System.Collections.Generic.List{SpiralLab.Sirius.IEntity},SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single,SpiralLab.Sirius.Layer)">
             <summary>
             지정된 엔티티가 닫힌 형태라면 해치 패턴을 추가하고 이를 신규 그룹 개체로 생성한다
             <para>Hatch entities</para>
             </summary>
             <param name="entities">엔티티 리스트</param>
             <param name="mode">해치 모드</param>
+            <param name="order">해치 순서</param>
             <param name="zigZag">지그 재그 사용여부</param>
             <param name="angle">해치 각도</param>
             <param name="angle2">크로스 해치 모드 시 두번째 해치 각도</param>
@@ -10031,7 +10074,7 @@
             <param name="replaceEntity">교체할 엔티티</param>
             <returns></returns>
         </member>
-        <member name="M:SpiralLab.Sirius.Action.ActEntityDivide(System.Collections.Generic.List{SpiralLab.Sirius.IEntity},System.Collections.Generic.List{SpiralLab.Sirius.BoundRect},System.Single)">
+        <member name="M:SpiralLab.Sirius.Action.ActEntityDivide(System.Collections.Generic.List{SpiralLab.Sirius.IEntity},System.Collections.Generic.List{SpiralLab.Sirius.BoundRect},System.Collections.Generic.List{SpiralLab.Sirius.Group},System.Single)">
             <summary>
             지정된 그룹 엔티티를 지정된 사각영역에 포함되어 있는 엔티티들로 골라 분해 복제하고, 대상 그룹은 삭제한다
             <para>Divide entity</para>
@@ -13811,6 +13854,11 @@
             해치 모드
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.Circle.HatchOrder">
+            <summary>
+            해치 순서
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.Circle.HatchZigZag">
             <summary>
             해치 지그재그 사용 여부
@@ -13893,7 +13941,7 @@
         <member name="M:SpiralLab.Sirius.Circle.Explode">
             <inheritdoc/>
         </member>
-        <member name="M:SpiralLab.Sirius.Circle.Hatch(SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SpiralLab.Sirius.Circle.Hatch(SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <inheritdoc/>
         </member>
         <member name="M:SpiralLab.Sirius.Circle.ToLwPolyline">
@@ -14223,6 +14271,12 @@
             <para>Grip rectangle size (pixel)</para>
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.Config.IsSnapToGridHatchInterval">
+            <summary>
+            Hatch 시 선분의 위치를 정렬(전역적으로 Interval 간격을 사용)시킬지 여부
+            <para>기본값: True</para>
+            </summary>
+        </member>
         <member name="F:SpiralLab.Sirius.Config.GripPointCursor">
             <summary>
             Grip 위치별 커서 모양 정의
@@ -14525,6 +14579,11 @@
             해치 모드
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.Group.HatchOrder">
+            <summary>
+            해치 순서
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.Group.HatchZigZag">
             <summary>
             해치 지그 재그 여부
@@ -14646,7 +14705,7 @@
         <member name="M:SpiralLab.Sirius.Group.Explode">
             <inheritdoc/>
         </member>
-        <member name="M:SpiralLab.Sirius.Group.Hatch(SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SpiralLab.Sirius.Group.Hatch(SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <inheritdoc/>
         </member>
         <member name="M:SpiralLab.Sirius.Group.Mark(SpiralLab.Sirius.IMarkerArg)">
@@ -15200,6 +15259,11 @@
             해치 모드
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.LwPolyline.HatchOrder">
+            <summary>
+            해치 순서
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.LwPolyline.HatchAngle">
             <summary>
             해치 각도
@@ -15308,7 +15372,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SpiralLab.Sirius.LwPolyline.Hatch(SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SpiralLab.Sirius.LwPolyline.Hatch(SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <inheritdoc/>
         </member>
         <member name="M:SpiralLab.Sirius.LwPolyline.ReverseWinding">
@@ -15475,6 +15539,11 @@
             해치 모드
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.Rectangle.HatchOrder">
+            <summary>
+            해치 순서
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.Rectangle.HatchZigZag">
             <summary>
             해치 지그 재그 여부
@@ -15529,7 +15598,7 @@
         <member name="M:SpiralLab.Sirius.Rectangle.Explode">
             <inheritdoc/>
         </member>
-        <member name="M:SpiralLab.Sirius.Rectangle.Hatch(SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SpiralLab.Sirius.Rectangle.Hatch(SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <inheritdoc/>
         </member>
         <member name="M:SpiralLab.Sirius.Rectangle.ToLwPolyline">
@@ -16261,6 +16330,11 @@
             해치 모드
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.Text.HatchOrder">
+            <summary>
+            해치 순서
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.Text.HatchZigZag">
             <summary>
             해치 지그재그 사용 여부
@@ -16394,7 +16468,7 @@
         <member name="M:SpiralLab.Sirius.Text.Explode">
             <inheritdoc/>
         </member>
-        <member name="M:SpiralLab.Sirius.Text.Hatch(SpiralLab.Sirius.HatchMode,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SpiralLab.Sirius.Text.Hatch(SpiralLab.Sirius.HatchMode,SpiralLab.Sirius.HatchOrder,System.Boolean,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <inheritdoc/>
         </member>
         <member name="M:SpiralLab.Sirius.Text.Mark(SpiralLab.Sirius.IMarkerArg)">

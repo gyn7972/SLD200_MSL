@@ -467,6 +467,17 @@ namespace SLD200_MSL
                 workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_Red_Value; //RED
                 workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_IR_Value; //IR
             }
+            else if(tabControl_Setup.SelectedTab == tabPage_Setup_Option)
+            {
+                if (textBox_Setup_Option_Offset_ScannerFineCam_X.Text != Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString())
+                {
+                    textBox_Setup_Option_Offset_ScannerFineCam_X.Text = Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString();
+                }
+                if (textBox_Setup_Option_Offset_ScannerFineCam_Y.Text != Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString())
+                {
+                    textBox_Setup_Option_Offset_ScannerFineCam_Y.Text = Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString();
+                }
+            }
             else
             {
                 //  Scanner Calibration 탭 이외의 탭 선택 시
@@ -580,9 +591,42 @@ namespace SLD200_MSL
                     }
                 }
 
-                // Scanner Calibration //0504. 화면 전환 시 안해도 됨.
-                label_Setup_ScannerCal_LastPosX.Text = Equipment.Scanner_Calibration_PosX_Last.ToString();
-                label_Setup_ScannerCal_LastPosY.Text = Equipment.Scanner_Calibration_PosY_Last.ToString();
+                //// Option Status - 화면 전환되면 해야겠다..
+                //if (textBox_Setup_Option_Offset_ScannerFineCam_X.Text != Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString())
+                //{
+                //    textBox_Setup_Option_Offset_ScannerFineCam_X.Text = Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString();
+                //}
+                //if (textBox_Setup_Option_Offset_ScannerFineCam_X.Text != Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString())
+                //{
+                //    textBox_Setup_Option_Offset_ScannerFineCam_X.Text = Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString();
+                //}
+
+
+                // Scanner Calibration -.
+                if (label_Setup_S_V_OffsetX.Text != Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString())
+                {
+                    label_Setup_S_V_OffsetX.Text = Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString();
+                }
+                if (label_Setup_S_V_OffsetY.Text != Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString())
+                {
+                    label_Setup_S_V_OffsetY.Text = Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString();
+                }
+                if (label_Setup_ScannerCal_OffsetX.Text != Equipment.Scanner_Vision_Offset_Setting_X.ToString())
+                {
+                    label_Setup_ScannerCal_OffsetX.Text = Equipment.Scanner_Vision_Offset_Setting_X.ToString();
+                }
+                if (label_Setup_ScannerCal_OffsetY.Text != Equipment.Scanner_Vision_Offset_Setting_Y.ToString())
+                {
+                    label_Setup_ScannerCal_OffsetY.Text = Equipment.Scanner_Vision_Offset_Setting_Y.ToString();
+                }
+                if (label_Setup_ScannerCal_LastPosX.Text != Equipment.Scanner_Calibration_PosX_Last.ToString())
+                {
+                    label_Setup_ScannerCal_LastPosX.Text = Equipment.Scanner_Calibration_PosX_Last.ToString();
+                }
+                if (label_Setup_ScannerCal_LastPosY.Text != Equipment.Scanner_Calibration_PosY_Last.ToString())
+                {
+                    label_Setup_ScannerCal_LastPosY.Text = Equipment.Scanner_Calibration_PosY_Last.ToString();
+                }
 
                 timer_Status.Enabled = true;
             }
@@ -1366,7 +1410,12 @@ namespace SLD200_MSL
             checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked = Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable;
             textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text = Equipment.Machine_LoaderStacker_NoMaterialDetectTime.ToString();
             textBox_Setup_Option_PolylineCurve_Resolution.Text = Equipment.Machine_PolylineCurve_Resolution.ToString();
-            
+
+            checkBox_Setup_Option_AutoCrossCheck.Checked = Equipment.Machine_AutoCrossCheck_Enable;
+            textBox_Setup_Option_AutoCrossCheck.Text = Equipment.Machine_AutoCrossCheck_Count.ToString();
+
+
+
             if (Equipment.Machine_FiducialImageSave_Always)
             {
                 radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
@@ -1684,7 +1733,6 @@ namespace SLD200_MSL
                 return;
             }
 
-
             strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
 
             if (File.Exists(strFIle) == false)
@@ -1693,9 +1741,7 @@ namespace SLD200_MSL
                 //return false;
             }
 
-
             //  Machine Option  로드
-
             //  Laser Type                                                                            //  True : CO₂,    False : UV
             NativeMethods.GetPrivateProfileString("Machine_Option", "Laser_Type", "True", temp, 255, strFIle);
             m_bCurrentLaserType = temp.ToString() == "False" ? false : true;
@@ -1713,9 +1759,31 @@ namespace SLD200_MSL
         public void Machine_Option_Save()
         {
             string strTemp = "";
-
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            // 백업 처리 추가 시작
+            try
+            {
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+
 
             if (File.Exists(strFIle) == false)
             {
@@ -1793,6 +1861,11 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime", textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text.ToString(), strFIle);
             Equipment.Machine_PolylineCurve_Resolution = Equipment.ToInt(textBox_Setup_Option_PolylineCurve_Resolution.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "PolylineCurve_Resolution", textBox_Setup_Option_PolylineCurve_Resolution.Text.ToString(), strFIle);
+            Equipment.Machine_AutoCrossCheck_Enable = checkBox_Setup_Option_AutoCrossCheck.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "AutoCrossCheck_Enable", checkBox_Setup_Option_AutoCrossCheck.Checked.ToString(), strFIle);
+            Equipment.Machine_AutoCrossCheck_Count = Equipment.ToInt(textBox_Setup_Option_AutoCrossCheck.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "AutoCrossCheck_Count", textBox_Setup_Option_AutoCrossCheck.Text.ToString(), strFIle);
+
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -1875,19 +1948,38 @@ namespace SLD200_MSL
             string strTemp = "";
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\Machine ScannerCalibration (Do not delete or modify).ini";
-            if (File.Exists(strFIle) == false)
+
+            // 백업 처리 추가 시작
+            try
             {
-                MessageBox.Show("Machine ScannerCalibration 파일이 없습니다.\r\n\r\n[Default 값(CO₂)으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //return false;
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
             }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                //MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+
 
             if (File.Exists(strFIle) == false)
             {
                 File.Create(strFIle);
                 //return;
 
-                MessageBox.Show("Machine ScannerCalibration 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                //MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
             }
 
             //  Scanner Calibration parameter
@@ -2328,6 +2420,19 @@ namespace SLD200_MSL
                 checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked = false;
                 textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Enabled = false;
             }
+
+            if (Equipment.Machine_AutoCrossCheck_Enable)
+            {
+                checkBox_Setup_Option_AutoCrossCheck.Checked = true;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_AutoCrossCheck.Checked = false;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = false;
+            }
+
+
         }
 
         private void checkBox_Setup_Option_VacuumSensorEnable_CheckedChanged(object sender, EventArgs e)
@@ -3305,13 +3410,13 @@ namespace SLD200_MSL
 
         private void btnOffsetApply_Click(object sender, EventArgs e)
         {
-            Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
-            Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
+            //Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
+            //Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
 
-            Log.Write("SLD-200", "Button Click", "Offset Distance 가 적용되었습니다.\n\r\n" +
-                "X : " + Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString() + "\n\r\n" +
-                "Y : " + Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString());
-            MessageBox.Show("Offset Distance 가 적용되었습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //Log.Write("SLD-200", "Button Click", "Offset Distance 가 적용되었습니다.\n\r\n" +
+            //    "X : " + Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString() + "\n\r\n" +
+            //    "Y : " + Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString());
+            //MessageBox.Show("Offset Distance 가 적용되었습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 
@@ -4182,6 +4287,22 @@ namespace SLD200_MSL
 
             }
 
+        }
+
+        private void checkBox_Setup_Option_AutoCrossCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_AutoCrossCheck.Checked)
+            {
+                Equipment.Machine_AutoCrossCheck_Enable = true;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = true;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_AutoCrossCheck_Enable = false;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = false;
+                textBox_Setup_Option_AutoCrossCheck.Enabled = false;
+            }
         }
     }
 }
