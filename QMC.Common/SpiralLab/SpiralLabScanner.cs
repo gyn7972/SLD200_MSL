@@ -188,22 +188,30 @@ namespace QMC.Common.Parts
             {
                 //var Rtc6 = rtc as rtc.RTC6Import.RTC6Wrap;
 
+                var rtcMeasurement = rtc as IRtcMeasurement;
+                if (rtcMeasurement == null)
+                {
+                    Log.Write("Rtc6", "RTC6 Measurement interface not implemented.");
+                    return false;
+                }
+                // --- 온도 측정 명령어 ---
+                // PCB_Temp
                 RTC6Wrap.control_command(1, 1, 0x0514);
-                Thread.Sleep(5);
+                Thread.Sleep(10);
                 RTC6Wrap.control_command(1, 2, 0x0514);
-                Thread.Sleep(5);
+                Thread.Sleep(10);
                 int nPCBTemp1 = RTC6Wrap.get_value(1);
                 int nPCBTemp2 = RTC6Wrap.get_value(2);
                 double pcbTemp1 = (nPCBTemp1 >> 4) / 10.0; // °C
                 double pcbTemp2 = (nPCBTemp2 >> 4) / 10.0;
 
-                Thread.Sleep(1);
+                Thread.Sleep(10);
 
                 // Galvo_Temp
                 RTC6Wrap.control_command(1, 1, 0x0515);
-                Thread.Sleep(5);
+                Thread.Sleep(10);
                 RTC6Wrap.control_command(1, 2, 0x0515);
-                Thread.Sleep(5); // 10 ms wait
+                Thread.Sleep(10); // 10 ms wait
                 int nGalvoTemp1 = RTC6Wrap.get_value(1);
                 int nGalvoTemp2 = RTC6Wrap.get_value(2);
                 double galvoTemp1 = (nGalvoTemp1 >> 4) / 10.0;

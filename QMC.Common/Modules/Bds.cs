@@ -453,25 +453,24 @@ namespace QMC.Common.Modules
                     var now = DateTime.Now;
                     if (now - _lastScannerCheckTime > _scannerCheckInterval)
                     {
-                         _lastScannerCheckTime = now;
+                        _lastScannerCheckTime = now;
 
                         spiralLabScanner.CheckAndLogAllStatuses();
-                        if (spiralLabScanner.IsRtcBusy)
-                            return;
-
-                        spiralLabScanner.IsOverTemperatureWarning();
-                        //spiralLabScanner.CheckAndLogAllStatuses();
-                        //double dPosX = 0.0, dPosY = 0.0;
-                        //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
+                        if (!spiralLabScanner.IsRtcBusy &&
+                            (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
+                        {
+                            spiralLabScanner.IsOverTemperatureWarning();
+                            //spiralLabScanner.CheckAndLogAllStatuses();
+                            //double dPosX = 0.0, dPosY = 0.0;
+                            //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
+                            if (spiralLabVario != null && spiralLabVario.IsInitialized)
+                            {
+                                CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();
+                                CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
+                            }
+                        }
                     }
                 }
-
-                if (spiralLabVario != null && spiralLabVario.IsInitialized)
-                {
-                    CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();
-                    CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
-                }
-
             }
             catch (Exception ex)
             {
