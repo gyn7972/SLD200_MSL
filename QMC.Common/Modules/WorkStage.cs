@@ -14665,9 +14665,9 @@ namespace QMC.Common.Modules
                                     Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
                                     Log.Write("Alaign Test", "Angle : ", m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle.ToString());
                                 }
-                                {
-                                    xyCoordinateGoldpowderAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
-                                }
+                                //{
+                                //    xyCoordinateGoldpowderAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+                                //}
                             }   
                         }
                     }
@@ -15001,8 +15001,12 @@ namespace QMC.Common.Modules
                                                             .First();
 
                                         //여기 부호가 중요할듯.
-                                        double offsetX = measuredHole.X - matched.X;
-                                        double offsetY = measuredHole.Y - matched.Y;
+                                        //double offsetX = measuredHole.X - matched.X;
+                                        //double offsetY = measuredHole.Y - matched.Y;
+                                        //이거든 둘중에 하나인데.. 
+                                        double offsetX = matched.X - measuredHole.X;
+                                        double offsetY = matched.Y - measuredHole.Y;
+
                                         double distance = Math.Sqrt(offsetX * offsetX + offsetY * offsetY);
 
                                         if (Math.Abs(offsetX) > 0.03 || Math.Abs(offsetY) > 0.03)
