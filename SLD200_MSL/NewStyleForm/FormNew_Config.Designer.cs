@@ -352,6 +352,7 @@
             this.label39 = new System.Windows.Forms.Label();
             this.listBox_Config_Vision_TeachingPositions = new System.Windows.Forms.ListBox();
             this.tabPage_Config_Laser = new System.Windows.Forms.TabPage();
+            this.button_Config_TabLaser_ScannerVisionOffset = new System.Windows.Forms.Button();
             this.groupBox_MotorizedBET = new System.Windows.Forms.GroupBox();
             this.Button_Config_BDS_BET_Mrad_Init = new System.Windows.Forms.Button();
             this.label62 = new System.Windows.Forms.Label();
@@ -590,7 +591,6 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
-            this.button_Config_TabLaser_ScannerVisionOffset = new System.Windows.Forms.Button();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -4996,6 +4996,18 @@
             this.tabPage_Config_Laser.Text = "Laser";
             this.tabPage_Config_Laser.UseVisualStyleBackColor = true;
             // 
+            // button_Config_TabLaser_ScannerVisionOffset
+            // 
+            this.button_Config_TabLaser_ScannerVisionOffset.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_TabLaser_ScannerVisionOffset.Location = new System.Drawing.Point(474, 79);
+            this.button_Config_TabLaser_ScannerVisionOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_TabLaser_ScannerVisionOffset.Name = "button_Config_TabLaser_ScannerVisionOffset";
+            this.button_Config_TabLaser_ScannerVisionOffset.Size = new System.Drawing.Size(172, 46);
+            this.button_Config_TabLaser_ScannerVisionOffset.TabIndex = 83;
+            this.button_Config_TabLaser_ScannerVisionOffset.Text = "ScannerVisionOffset";
+            this.button_Config_TabLaser_ScannerVisionOffset.UseVisualStyleBackColor = true;
+            this.button_Config_TabLaser_ScannerVisionOffset.Click += new System.EventHandler(this.button_Config_TabLaser_ScannerVisionOffset_Click);
+            // 
             // groupBox_MotorizedBET
             // 
             this.groupBox_MotorizedBET.Controls.Add(this.Button_Config_BDS_BET_Mrad_Init);
@@ -8094,6 +8106,7 @@
             this.groupBox30.TabIndex = 84;
             this.groupBox30.TabStop = false;
             this.groupBox30.Text = " Dust Collector (Lower) ";
+            this.groupBox30.Visible = false;
             // 
             // labelStagePressure
             // 
@@ -8119,18 +8132,6 @@
             this.label51.TabIndex = 49;
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // button_Config_TabLaser_ScannerVisionOffset
-            // 
-            this.button_Config_TabLaser_ScannerVisionOffset.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_TabLaser_ScannerVisionOffset.Location = new System.Drawing.Point(474, 79);
-            this.button_Config_TabLaser_ScannerVisionOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button_Config_TabLaser_ScannerVisionOffset.Name = "button_Config_TabLaser_ScannerVisionOffset";
-            this.button_Config_TabLaser_ScannerVisionOffset.Size = new System.Drawing.Size(172, 46);
-            this.button_Config_TabLaser_ScannerVisionOffset.TabIndex = 83;
-            this.button_Config_TabLaser_ScannerVisionOffset.Text = "ScannerVisionOffset";
-            this.button_Config_TabLaser_ScannerVisionOffset.UseVisualStyleBackColor = true;
-            this.button_Config_TabLaser_ScannerVisionOffset.Click += new System.EventHandler(this.button_Config_TabLaser_ScannerVisionOffset_Click);
             // 
             // FormNew_Config
             // 
