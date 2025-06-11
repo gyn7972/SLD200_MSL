@@ -395,7 +395,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(20);
+                    Thread.Sleep(100);
 
                     if (isModuleClose)
                     {
@@ -409,7 +409,8 @@ namespace QMC.Common.Modules
             return ret;
         }
 
-        private async void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
+        //private async void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
+        private void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
             if (_isMainStatusRunning)
