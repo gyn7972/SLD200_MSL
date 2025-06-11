@@ -395,13 +395,21 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(20);
 
                     if (isModuleClose)
                     {
                         break;
                     }
-                    Timer_BDS_MainStatus_Tick(null, null);
+                    try
+                    {
+                        Timer_BDS_MainStatus_Tick(null, null);
+                    }
+                    catch(Exception ex)
+                    {
+                        Log.Write(ex);
+                    }
+                    
                 }
             }); ;
             listTask.Add(m_taskTimer_BDS_MainStatus_Tick);
@@ -428,10 +436,10 @@ namespace QMC.Common.Modules
                     return;
                 }
                 // Home 잡기 전에는 Device 알람 X
-                if (!workStage.m_bHomeOK)
-                {
-                    return;
-                }
+                //if (!workStage.m_bHomeOK)
+                //{
+                //    return;
+                //}
                 // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
                 if (Equipment.AutoRunStatus)
                 {
@@ -442,14 +450,14 @@ namespace QMC.Common.Modules
 
                 if (spiralLabScanner != null && spiralLabScanner.IsInitialized)
                 {
-                    spiralLabScanner.CheckAndLogAllStatuses();
-                    if (spiralLabScanner.IsRtcBusy)
-                        return;
-
                     var now = DateTime.Now;
                     if (now - _lastScannerCheckTime > _scannerCheckInterval)
                     {
                          _lastScannerCheckTime = now;
+
+                        spiralLabScanner.CheckAndLogAllStatuses();
+                        if (spiralLabScanner.IsRtcBusy)
+                            return;
 
                         spiralLabScanner.IsOverTemperatureWarning();
                         //spiralLabScanner.CheckAndLogAllStatuses();

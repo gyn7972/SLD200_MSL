@@ -186,7 +186,10 @@ namespace QMC.Common.Parts
             bool isOverTemp = false;
             try
             {
+                //var Rtc6 = rtc as rtc.RTC6Import.RTC6Wrap;
+
                 RTC6Wrap.control_command(1, 1, 0x0514);
+                Thread.Sleep(5);
                 RTC6Wrap.control_command(1, 2, 0x0514);
                 Thread.Sleep(5);
                 int nPCBTemp1 = RTC6Wrap.get_value(1);
@@ -198,6 +201,7 @@ namespace QMC.Common.Parts
 
                 // Galvo_Temp
                 RTC6Wrap.control_command(1, 1, 0x0515);
+                Thread.Sleep(5);
                 RTC6Wrap.control_command(1, 2, 0x0515);
                 Thread.Sleep(5); // 10 ms wait
                 int nGalvoTemp1 = RTC6Wrap.get_value(1);
