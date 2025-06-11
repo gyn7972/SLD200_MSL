@@ -16139,16 +16139,16 @@ namespace QMC.Common.Modules
 
 
                     // VerifyScannerCameraOffset 시작 시.
-                    if (false)
-                    {
-                        if (m_ScannerCameraOffsetSequence != null)
-                        {
-                            if (false)
-                            {
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset;
-                            }
-                        }
-                    }
+                    //if (false)
+                    //{
+                    //    if (m_ScannerCameraOffsetSequence != null)
+                    //    {
+                    //        if (false)
+                    //        {
+                    //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset;
+                    //        }
+                    //    }
+                    //}
                         
                     break;
 
