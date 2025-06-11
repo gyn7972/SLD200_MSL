@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -436,6 +436,8 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.checkBox_Setup_Option_AutoCrossCheck = new System.Windows.Forms.CheckBox();
+            this.textBox_Setup_Option_AutoCrossCheck = new System.Windows.Forms.TextBox();
             this.label78 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ModulePickup_1stDistance = new System.Windows.Forms.TextBox();
             this.label79 = new System.Windows.Forms.Label();
@@ -567,8 +569,8 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.checkBox_Setup_Option_AutoCrossCheck = new System.Windows.Forms.CheckBox();
-            this.textBox_Setup_Option_AutoCrossCheck = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_Option_LaserHeight_Retry_Count = new System.Windows.Forms.TextBox();
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable = new System.Windows.Forms.CheckBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -1243,14 +1245,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1303,14 +1305,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -5685,6 +5687,8 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.checkBox_Setup_Option_LaserHeight_Retry_Enable);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_LaserHeight_Retry_Count);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_AutoCrossCheck);
             this.groupBox13.Controls.Add(this.textBox_Setup_Option_AutoCrossCheck);
             this.groupBox13.Controls.Add(this.label78);
@@ -5753,6 +5757,26 @@
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
+            // 
+            // checkBox_Setup_Option_AutoCrossCheck
+            // 
+            this.checkBox_Setup_Option_AutoCrossCheck.Location = new System.Drawing.Point(1024, 27);
+            this.checkBox_Setup_Option_AutoCrossCheck.Name = "checkBox_Setup_Option_AutoCrossCheck";
+            this.checkBox_Setup_Option_AutoCrossCheck.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_AutoCrossCheck.TabIndex = 121;
+            this.checkBox_Setup_Option_AutoCrossCheck.Text = "AutoCrossCheck (ea):";
+            this.checkBox_Setup_Option_AutoCrossCheck.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_AutoCrossCheck.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_AutoCrossCheck_CheckedChanged);
+            // 
+            // textBox_Setup_Option_AutoCrossCheck
+            // 
+            this.textBox_Setup_Option_AutoCrossCheck.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_AutoCrossCheck.Location = new System.Drawing.Point(1246, 27);
+            this.textBox_Setup_Option_AutoCrossCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_AutoCrossCheck.Name = "textBox_Setup_Option_AutoCrossCheck";
+            this.textBox_Setup_Option_AutoCrossCheck.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_AutoCrossCheck.TabIndex = 120;
+            this.textBox_Setup_Option_AutoCrossCheck.Text = "1";
             // 
             // label78
             // 
@@ -7240,25 +7264,25 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox_Setup_Option_AutoCrossCheck
+            // textBox_Setup_Option_LaserHeight_Retry_Count
             // 
-            this.checkBox_Setup_Option_AutoCrossCheck.Location = new System.Drawing.Point(1024, 27);
-            this.checkBox_Setup_Option_AutoCrossCheck.Name = "checkBox_Setup_Option_AutoCrossCheck";
-            this.checkBox_Setup_Option_AutoCrossCheck.Size = new System.Drawing.Size(221, 20);
-            this.checkBox_Setup_Option_AutoCrossCheck.TabIndex = 121;
-            this.checkBox_Setup_Option_AutoCrossCheck.Text = "AutoCrossCheck (ea):";
-            this.checkBox_Setup_Option_AutoCrossCheck.UseVisualStyleBackColor = true;
-            this.checkBox_Setup_Option_AutoCrossCheck.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_AutoCrossCheck_CheckedChanged);
+            this.textBox_Setup_Option_LaserHeight_Retry_Count.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_LaserHeight_Retry_Count.Location = new System.Drawing.Point(1246, 70);
+            this.textBox_Setup_Option_LaserHeight_Retry_Count.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_LaserHeight_Retry_Count.Name = "textBox_Setup_Option_LaserHeight_Retry_Count";
+            this.textBox_Setup_Option_LaserHeight_Retry_Count.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_LaserHeight_Retry_Count.TabIndex = 122;
+            this.textBox_Setup_Option_LaserHeight_Retry_Count.Text = "1";
             // 
-            // textBox_Setup_Option_AutoCrossCheck
+            // checkBox_Setup_Option_LaserHeight_Retry_Enable
             // 
-            this.textBox_Setup_Option_AutoCrossCheck.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_AutoCrossCheck.Location = new System.Drawing.Point(1246, 27);
-            this.textBox_Setup_Option_AutoCrossCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Option_AutoCrossCheck.Name = "textBox_Setup_Option_AutoCrossCheck";
-            this.textBox_Setup_Option_AutoCrossCheck.Size = new System.Drawing.Size(50, 24);
-            this.textBox_Setup_Option_AutoCrossCheck.TabIndex = 120;
-            this.textBox_Setup_Option_AutoCrossCheck.Text = "1";
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Location = new System.Drawing.Point(1024, 70);
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Name = "checkBox_Setup_Option_LaserHeight_Retry_Enable";
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.TabIndex = 123;
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Text = "Height Sensor - Retry(ea):";
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_LaserHeight_Retry_Enable_CheckedChanged);
             // 
             // FormNew_Setup
             // 
@@ -7911,5 +7935,7 @@
         private System.Windows.Forms.Label label_Recipe_TabRecipe_Miscellaneous_Mask;
         private System.Windows.Forms.CheckBox checkBox_Setup_Option_AutoCrossCheck;
         private System.Windows.Forms.TextBox textBox_Setup_Option_AutoCrossCheck;
+        private System.Windows.Forms.CheckBox checkBox_Setup_Option_LaserHeight_Retry_Enable;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_LaserHeight_Retry_Count;
     }
 }

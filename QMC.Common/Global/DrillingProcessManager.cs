@@ -86,13 +86,13 @@ namespace QMC.Common.Global
             //return SocketList.FirstOrDefault(s => s.SocketNumber == socketNumber);
             if (SocketList == null)
             {
-                Log.Write("LayerProcessData", $"GetSocket 실패 - SocketList가 null입니다. 요청된 Socket: {socketNumber}");
+                //Log.Write("LayerProcessData", $"GetSocket 실패 - SocketList가 null입니다. 요청된 Socket: {socketNumber}");
                 return null;
             }
 
             if (SocketList.Count == 0)
             {
-                Log.Write("LayerProcessData", $"GetSocket 실패 - SocketList가 비어 있습니다. 요청된 Socket: {socketNumber}");
+                //Log.Write("LayerProcessData", $"GetSocket 실패 - SocketList가 비어 있습니다. 요청된 Socket: {socketNumber}");
                 return null;
             }
 
@@ -159,13 +159,13 @@ namespace QMC.Common.Global
             //return LayerList.FirstOrDefault(l => l.LayerEnum == layerEnum);
             if (LayerList == null)
             {
-                Log.Write("DrillStatus", "LayerList가 null입니다. 초기화되지 않았습니다.");
+                //Log.Write("DrillStatus", "LayerList가 null입니다. 초기화되지 않았습니다.");
                 return null;
             }
 
             if (LayerList.Count == 0)
             {
-                Log.Write("DrillStatus", $"LayerList에 데이터가 없습니다. 요청된 LayerEnum: {layerEnum}");
+                //Log.Write("DrillStatus", $"LayerList에 데이터가 없습니다. 요청된 LayerEnum: {layerEnum}");
                 return null;
             }
 

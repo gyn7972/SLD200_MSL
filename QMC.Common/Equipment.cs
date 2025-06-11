@@ -633,7 +633,11 @@ namespace QMC.Common
         public static int Machine_PolylineCurve_Resolution { set; get; } = 100;                             //  Polyline Curve Resolution
 
         public static bool Machine_AutoCrossCheck_Enable { set; get; } = false  ;                     //  Socket Align Use (true: Use, false: Not Use)
-        public static int Machine_AutoCrossCheck_Count { set; get; } = 1;                     //  Auto Cross Check Threshold (mm)
+        public static int Machine_AutoCrossCheck_Count { set; get; } = 1;                    
+        public static bool Machine_HeightSensorRetry_Enable { set; get; } = false;                    
+        public static int Machine_HeightSensorRetry_Count { set; get; } = 5;                    
+
+
         //  Offset Distance
         public struct stOffsetDistanceParameter
         {
@@ -3066,7 +3070,10 @@ namespace QMC.Common
             Equipment.Machine_AutoCrossCheck_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "AutoCrossCheck_Count", "1", temp, 255, strFIle);
             Equipment.Machine_AutoCrossCheck_Count = Equipment.ToInt(temp.ToString());
-
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightSensorRetry_Enable", "true", temp, 255, strFIle);
+            Equipment.Machine_HeightSensorRetry_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightSensorRetry_Count", "5", temp, 255, strFIle);
+            Equipment.Machine_HeightSensorRetry_Count = Equipment.ToInt(temp.ToString());
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

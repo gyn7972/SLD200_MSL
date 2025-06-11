@@ -157,6 +157,70 @@ namespace QMC.Common.Modules
         protected override void InitAlarm()
         {
             Alarm alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Drilling_NotCompleted;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "드릴링 가공 진행중입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Transfer_Picker_Module_Exist;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더 트랜스퍼 Picker 에 모듈이 존재합니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.WorkStage_Module_NotExist;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "WorkStage 에 Unloading 할 모듈이 존재하지 않습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Transfer_Picker_Module_NotExist;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더 트랜스퍼 Picker 에 모듈이 없습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Stacker0_Running;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더 스태커0 가동중입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Stacker1_Running;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더 스태커1 가동중입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_NGPort_Full;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더 NG 포트가 가득 차 있습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.WorkStage_DustCollector_Off_Fail;
+            alarm.Title = "Unloader";
+            alarm.Cause = "집진기가 Off 되지 않았습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Staker0_Too_Many_Module;
             alarm.Title = "Unloader";
             alarm.Cause = "언로더에 R-Port에 자재가 너무 많이 적재 되어 있습니다.";
@@ -291,71 +355,6 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.UL_Transfer_Picker_Vacuum_On_Check;
             alarm.Title = "Unloader Transfer";
             alarm.Cause = "언로더에 트랜스퍼 Picker Vacuum On Check 에 실패 하였습니다.";
-            alarm.Source = Name;
-            alarm.Grade = "Error";
-            m_dicAlarms.Add(alarm.Code, alarm);
-
-
-            alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.Drilling_NotCompleted;
-            alarm.Title = "Unloader Transfer";
-            alarm.Cause = "드릴링 가공 진행중입니다.";
-            alarm.Source = Name;
-            alarm.Grade = "Error";
-            m_dicAlarms.Add(alarm.Code, alarm);
-
-            alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.UL_Transfer_Picker_Module_Exist;
-            alarm.Title = "Unloader Transfer";
-            alarm.Cause = "언로더 트랜스퍼 Picker 에 모듈이 존재합니다.";
-            alarm.Source = Name;
-            alarm.Grade = "Error";
-            m_dicAlarms.Add(alarm.Code, alarm);
-
-            alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.WorkStage_Module_NotExist;
-            alarm.Title = "Unloader Transfer";
-            alarm.Cause = "WorkStage 에 Unloading 할 모듈이 존재하지 않습니다.";
-            alarm.Source = Name;
-            alarm.Grade = "Error";
-            m_dicAlarms.Add(alarm.Code, alarm);
-
-            alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.UL_Transfer_Picker_Module_NotExist;
-            alarm.Title = "Unloader Transfer";
-            alarm.Cause = "언로더 트랜스퍼 Picker 에 모듈이 없습니다.";
-            alarm.Source = Name;
-            alarm.Grade = "Error";
-            m_dicAlarms.Add(alarm.Code, alarm);
-
-            alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.UL_Stacker0_Running;
-            alarm.Title = "Unloader Transfer";
-            alarm.Cause = "언로더 스태커0 가동중입니다.";
-            alarm.Source = Name;
-            alarm.Grade = "Error";
-            m_dicAlarms.Add(alarm.Code, alarm);
-
-            alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.UL_Stacker1_Running;
-            alarm.Title = "Unloader Transfer";
-            alarm.Cause = "언로더 스태커1 가동중입니다.";
-            alarm.Source = Name;
-            alarm.Grade = "Error";
-            m_dicAlarms.Add(alarm.Code, alarm);
-
-            alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.UL_NGPort_Full;
-            alarm.Title = "Unloader Transfer";
-            alarm.Cause = "언로더 NG 포트가 가득 차 있습니다.";
-            alarm.Source = Name;
-            alarm.Grade = "Error";
-            m_dicAlarms.Add(alarm.Code, alarm);
-
-            alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.WorkStage_DustCollector_Off_Fail;
-            alarm.Title = "Unloader";
-            alarm.Cause = "집진기가 Off 되지 않았습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
