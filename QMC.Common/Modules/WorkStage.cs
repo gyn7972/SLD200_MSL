@@ -14441,6 +14441,7 @@ namespace QMC.Common.Modules
                                 }
                                 else
                                 {
+
                                     var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stDividedRegion_GroupData);
                                     for (int i = 0; i < 4; i++)
                                     {
@@ -14621,6 +14622,33 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
+                            //double dTargetX = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                            //double dTargetY = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                            //xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
+                            //xyInterpolatedCoordinate = xyCoordinateAlign;
+
+                            ////Pre Align Data -> Sorket Postion 적용
+                            //if (m_bIsFirstAlign == false)
+                            //{
+                            //    XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+                            //    Log.Write("Alaign Test", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                            //    Log.Write("Alaign Test", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                            //    Log.Write("Alaign Test", "Offset  : " + offset.ToString());
+                            //    Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
+
+                            //    xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionOrgLast.X,
+                            //        xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+
+                            //    xyCoordinateAlign = xyCoordinateAlign + offset;
+                            //    Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
+                            //    Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+                            //}
+                            //이거 하면 안됨.
+                            //xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+
+
+
+                            //기존 코드 (수정했던)
                             double dTargetX = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
                             double dTargetY = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
                             xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
@@ -14629,24 +14657,41 @@ namespace QMC.Common.Modules
                             //Pre Align Data -> Sorket Postion 적용
                             if (m_bIsFirstAlign == false)
                             {
-                                if(m_nSocketAlign_FiducialCount == 0) // 첫번째일때
+                                if (m_nSocketAlign_FiducialCount == 0) // 첫번째일때
                                 {
                                     xyInterpolatedCoordinate = xyCoordinateAlign;
                                     //Pre Align Data -> Sorket Postion 적용
                                     if (m_bIsFirstAlign == false)
                                     {
-                                        XyCoordinate offset = xyCoordinateGoldpowderAlignPositionLast - xyCoordinateGoldpowderAlignPositionOrgLast;
-                                        Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionLast : ", xyCoordinateGoldpowderAlignPositionLast.ToString());
-                                        Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionOrgLast : ", xyCoordinateGoldpowderAlignPositionOrgLast.ToString());
-                                        Log.Write("Alaign Test", "Offset  : " + offset.ToString());
-                                        Log.Write("Alaign Test", "xyCoordinateGoldpowderAlign before : ", xyCoordinateAlign.ToString());
+                                        XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+                                        //Log.Write("Alaign Test", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                                        //Log.Write("Alaign Test", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                                        //Log.Write("Alaign Test", "Offset  : " + offset.ToString());
+                                        //Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
 
-                                        xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateGoldpowderAlignPositionOrgLast.X,
-                                            xyCoordinateGoldpowderAlignPositionOrgLast.Y, -m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle);
+                                        xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionOrgLast.X,
+                                            xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
 
                                         xyCoordinateAlign = xyCoordinateAlign + offset;
-                                        Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
-                                        Log.Write("Alaign Test", "Angle : ", m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle.ToString());
+                                        //Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
+                                        //Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+
+                                        //XyCoordinate offset = xyCoordinateGoldpowderAlignPositionLast - xyCoordinateGoldpowderAlignPositionOrgLast;
+                                        //Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionLast : ", xyCoordinateGoldpowderAlignPositionLast.ToString());
+                                        //Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionOrgLast : ", xyCoordinateGoldpowderAlignPositionOrgLast.ToString());
+                                        //Log.Write("Alaign Test", "Offset  : " + offset.ToString());
+                                        //Log.Write("Alaign Test", "xyCoordinateGoldpowderAlign before : ", xyCoordinateAlign.ToString());
+
+                                        //xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateGoldpowderAlignPositionOrgLast.X,
+                                        //    xyCoordinateGoldpowderAlignPositionOrgLast.Y, -m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle);
+
+                                        //xyCoordinateAlign = xyCoordinateAlign + offset;
+                                        //Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
+                                        //Log.Write("Alaign Test", "Angle : ", m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle.ToString());
+
+                                        xyCoordinateGoldpowderAlignPositionLast = xyCoordinateAlignPositionLast;
+                                        xyCoordinateGoldpowderAlignPositionOrgLast = xyCoordinateAlignPositionOrgLast;
+
                                         xyCoordinateGoldpowderAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                                     }
                                 }
@@ -14664,11 +14709,13 @@ namespace QMC.Common.Modules
                                     xyCoordinateAlign = xyCoordinateAlign + offset;
                                     Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
                                     Log.Write("Alaign Test", "Angle : ", m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle.ToString());
+
+                                    {
+                                        xyCoordinateGoldpowderAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+                                    }
                                 }
-                                //{
-                                //    xyCoordinateGoldpowderAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
-                                //}
-                            }   
+
+                            }
                         }
                     }
 
@@ -18931,6 +18978,7 @@ namespace QMC.Common.Modules
 
                             m_bSensorRequestPending = true;
                             m_bSensorResponseReady = false;
+                            Thread.Sleep(100);
                             TickCount_Start((int)TickType.TICK_MAIN);
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
                         }
@@ -18939,6 +18987,7 @@ namespace QMC.Common.Modules
                     {
                         m_bSensorRequestPending = true;
                         m_bSensorResponseReady = false;
+                        Thread.Sleep(100);
                         TickCount_Start((int)TickType.TICK_MAIN);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
                     }
@@ -18947,7 +18996,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get:                                                    //  Laser Height Sensor 값 읽기
 
-                    if (!m_bSensorResponseReady)
+                    //if (!m_bSensorResponseReady)
+                    if (m_bSensorResponseReady)
                     {
                         // 아직 응답 안옴 → 대기 or 타임아웃 처리
                         if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 500)   //500ms만 기다리자.
@@ -18983,9 +19033,12 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                Log.Write("SLD-200", "센서 응답 실패. 보정 없이 진행");
-                                m_dZOffset_SocketHeightCheck = 0.0;
+                                //Log.Write("SLD-200", "센서 응답 실패. 보정 없이 진행");
+                                Log.Write("SLD-200", $"센서 응답 지연 - 리트라이 완료");
+                                //보정 완료임.
+                                //m_dZOffset_SocketHeightCheck = 0.0;
 
+                                m_bSensorResponseReady = false; // 응답 소비 완료
                                 m_nSensorRetryCount = 0;
                             }
                         }

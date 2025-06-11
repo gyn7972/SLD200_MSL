@@ -459,10 +459,13 @@ namespace QMC.Common.Modules
                         if (!spiralLabScanner.IsRtcBusy &&
                             (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
                         {
-                            spiralLabScanner.IsOverTemperatureWarning();
                             //spiralLabScanner.CheckAndLogAllStatuses();
+
+                            //우선 막음.
+                            //spiralLabScanner.IsOverTemperatureWarning();
                             //double dPosX = 0.0, dPosY = 0.0;
                             //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
+
                             if (spiralLabVario != null && spiralLabVario.IsInitialized)
                             {
                                 CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();

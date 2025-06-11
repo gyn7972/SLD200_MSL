@@ -465,7 +465,7 @@ namespace SLD200_MSL
 
             DIO_Status();
             Motor_Position();
-            AIO_Status();
+            //AIO_Status(); // Data가 정확하지 않아서 사용 안함. - 20250611
             UpdateSeqStatus();
 
             /////////////////////////////////////////////////////////////////////////////////////
