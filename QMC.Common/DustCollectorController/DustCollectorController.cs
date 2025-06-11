@@ -63,7 +63,7 @@ namespace QMC.Common.Parts
             }
             catch (Exception ex)
             {
-                Log.Write("DustCollector", $"[G100] Port Open Fail: {ex.Message}");
+                Log.Write(ex);
                 return false;
             }
         }
@@ -127,7 +127,7 @@ namespace QMC.Common.Parts
                 return CollectorRunState.Unknown;
 
             string result = ParseInverterRunState(data);
-            Log.Write("DustCollector", $"운전 상태: {result}");
+            //Log.Write("DustCollector", $"운전 상태: {result}");
 
             bool isRunning = (value & (1 << 0)) != 0;
             return isRunning ? CollectorRunState.Running : CollectorRunState.Stopped;
@@ -137,7 +137,7 @@ namespace QMC.Common.Parts
         {
             string cmd = BuildWriteCommand(address, data, 1);
 
-            Log.Write("DustCollector", $"[TX] {cmd}");
+            //Log.Write("DustCollector", $"[TX] {cmd}");
 
             return SendAndWaitForAck(cmd);
         }
@@ -146,7 +146,7 @@ namespace QMC.Common.Parts
         {
             string cmd = BuildReadCommand(address, 1);
 
-            Log.Write("DustCollector", $"[TX] {cmd}");
+            //Log.Write("DustCollector", $"[TX] {cmd}");
 
             bool result = SendAndWaitForAck(cmd);
             response = result ? _lastReceivedData : "";
@@ -185,13 +185,13 @@ namespace QMC.Common.Parts
                     _serialPort.Write(cmd);
                     if (_receiveEvent.WaitOne(1000))
                     {
-                        Log.Write("DustCollector", $"[RX] {_lastReceivedData}");
+                        //Log.Write("DustCollector", $"[RX] {_lastReceivedData}");
                         return _dataReceived;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Write("DustCollector", $"[G100] Comm Error: {ex.Message}");
+                    Log.Write(ex);
                 }
                 return false;
             }
@@ -202,7 +202,7 @@ namespace QMC.Common.Parts
             try
             {
                 _lastReceivedData += _serialPort.ReadExisting();
-                Log.Write("DustCollector", $"[RAW RX] {_lastReceivedData}");
+                //Log.Write("DustCollector", $"[RAW RX] {_lastReceivedData}");
 
                 // 응답은 항상 STX(0x06)로 시작, EOT(0x04)로 끝남
                 int start = _lastReceivedData.IndexOf((char)0x06);
@@ -218,7 +218,7 @@ namespace QMC.Common.Parts
             }
             catch (Exception ex)
             {
-                Log.Write("DustCollector", $"[G100] RX Error: {ex.Message}");
+                Log.Write(ex);
             }
 
             //try

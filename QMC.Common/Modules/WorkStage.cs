@@ -12066,32 +12066,6 @@ namespace QMC.Common.Modules
         {
             string m_strData = "";
 
-            //if ((m_nLaserDrilling_MainStep != (int)LaserDrilling_Step.None) ||
-
-            //    ((m_nLaserPowerCal_Step >= (int)LaserPowerCal_Step.ThruHole_LaserParameter_Change_Start) && (m_nLaserPowerCal_Step <= (int)LaserPowerCal_Step.ThruHole_LaserParameter_Change_Complete)) ||
-            //    ((m_nLaserPowerCal_Step >= (int)LaserPowerCal_Step.OutLine_LaserParameter_Change_Start) && (m_nLaserPowerCal_Step <= (int)LaserPowerCal_Step.OutLine_LaserParameter_Change_Complete)) ||
-            //    ((m_nLaserPowerCal_Step >= (int)LaserPowerCal_Step.Drilling_LaserParameter_Change_Start) && (m_nLaserPowerCal_Step <= (int)LaserPowerCal_Step.Drilling_LaserParameter_Change_Complete)) ||
-
-            //    ((m_nLaserPowerCal_byRange_Step >= (int)LaserPowerCal_byRange_Step.Thruhole_LaserParameter_Change_Start) && (m_nLaserPowerCal_byRange_Step <= (int)LaserPowerCal_byRange_Step.Thruhole_LaserParameter_Change_Complete)) ||
-            //    ((m_nLaserPowerCal_byRange_Step >= (int)LaserPowerCal_byRange_Step.Outline_LaserParameter_Change_Start) && (m_nLaserPowerCal_byRange_Step <= (int)LaserPowerCal_byRange_Step.Outline_LaserParameter_Change_Complete)) ||
-            //    ((m_nLaserPowerCal_byRange_Step >= (int)LaserPowerCal_byRange_Step.Drilling_LaserParameter_Change_Start) && (m_nLaserPowerCal_byRange_Step <= (int)LaserPowerCal_byRange_Step.Drilling_LaserParameter_Change_Complete)))
-            //{
-            //    if (m_nLaserCommStep == (int)LaserComm_Step.GateStatus_Check)
-            //    {
-            //        m_bLaserComm_Paused = true;
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        m_bLaserComm_Paused = false;
-            //    }
-            //}
-            //else
-            //{
-            //    m_bLaserComm_Paused = false;
-            //}
-
-
             if (m_SocketLaserHeightSensor == null)
             {
                 m_nLaserHeightSensorSocketStep = (int)LaserHeightSensorSocket_Step.None;
@@ -14598,6 +14572,7 @@ namespace QMC.Common.Modules
                             //m_st4Dwg_RepairPos
                             double dTargetX = m_st4Dwg_RepairPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
                             double dTargetY = m_st4Dwg_RepairPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                            
                             xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
                             xyInterpolatedCoordinate = xyCoordinateAlign;
                             //Pre Align Data -> Sorket Postion 적용
@@ -14622,100 +14597,35 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            //double dTargetX = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
-                            //double dTargetY = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
-                            //xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
-                            //xyInterpolatedCoordinate = xyCoordinateAlign;
-
-                            ////Pre Align Data -> Sorket Postion 적용
-                            //if (m_bIsFirstAlign == false)
-                            //{
-                            //    XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
-                            //    Log.Write("Alaign Test", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
-                            //    Log.Write("Alaign Test", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
-                            //    Log.Write("Alaign Test", "Offset  : " + offset.ToString());
-                            //    Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
-
-                            //    xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionOrgLast.X,
-                            //        xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
-
-                            //    xyCoordinateAlign = xyCoordinateAlign + offset;
-                            //    Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
-                            //    Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
-                            //}
-                            //이거 하면 안됨.
-                            //xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
-
-
-
-                            //기존 코드 (수정했던)
                             double dTargetX = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
                             double dTargetY = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
-                            xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
 
+                            strTemp = string.Format(
+                                "Fiducial Mark No: {0}, TargetX: {1:F4}, TargetY: {2:F4}",
+                                m_nSocketAlign_FiducialCount,
+                                dTargetX, dTargetY
+                            );
+                            Log.Write("Goldpowder", "Result", strTemp);
+
+                            xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
                             xyInterpolatedCoordinate = xyCoordinateAlign;
                             //Pre Align Data -> Sorket Postion 적용
                             if (m_bIsFirstAlign == false)
                             {
-                                if (m_nSocketAlign_FiducialCount == 0) // 첫번째일때
-                                {
-                                    xyInterpolatedCoordinate = xyCoordinateAlign;
-                                    //Pre Align Data -> Sorket Postion 적용
-                                    if (m_bIsFirstAlign == false)
-                                    {
-                                        XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
-                                        //Log.Write("Alaign Test", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
-                                        //Log.Write("Alaign Test", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
-                                        //Log.Write("Alaign Test", "Offset  : " + offset.ToString());
-                                        //Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
+                                XyCoordinate offset = xyCoordinateGoldpowderAlignPositionLast - xyCoordinateGoldpowderAlignPositionOrgLast;
+                                Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionLast : ", xyCoordinateGoldpowderAlignPositionLast.ToString());
+                                Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionOrgLast : ", xyCoordinateGoldpowderAlignPositionOrgLast.ToString());
+                                Log.Write("Alaign Test", "Offset  : " + offset.ToString());
+                                Log.Write("Alaign Test", "xyCoordinateGoldpowderAlign before : ", xyCoordinateAlign.ToString());
 
-                                        xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionOrgLast.X,
-                                            xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+                                xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateGoldpowderAlignPositionOrgLast.X,
+                                    xyCoordinateGoldpowderAlignPositionOrgLast.Y, -m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle);
 
-                                        xyCoordinateAlign = xyCoordinateAlign + offset;
-                                        //Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
-                                        //Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
-
-                                        //XyCoordinate offset = xyCoordinateGoldpowderAlignPositionLast - xyCoordinateGoldpowderAlignPositionOrgLast;
-                                        //Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionLast : ", xyCoordinateGoldpowderAlignPositionLast.ToString());
-                                        //Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionOrgLast : ", xyCoordinateGoldpowderAlignPositionOrgLast.ToString());
-                                        //Log.Write("Alaign Test", "Offset  : " + offset.ToString());
-                                        //Log.Write("Alaign Test", "xyCoordinateGoldpowderAlign before : ", xyCoordinateAlign.ToString());
-
-                                        //xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateGoldpowderAlignPositionOrgLast.X,
-                                        //    xyCoordinateGoldpowderAlignPositionOrgLast.Y, -m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle);
-
-                                        //xyCoordinateAlign = xyCoordinateAlign + offset;
-                                        //Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
-                                        //Log.Write("Alaign Test", "Angle : ", m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle.ToString());
-
-                                        xyCoordinateGoldpowderAlignPositionLast = xyCoordinateAlignPositionLast;
-                                        xyCoordinateGoldpowderAlignPositionOrgLast = xyCoordinateAlignPositionOrgLast;
-
-                                        xyCoordinateGoldpowderAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
-                                    }
-                                }
-                                else
-                                {
-                                    XyCoordinate offset = xyCoordinateGoldpowderAlignPositionLast - xyCoordinateGoldpowderAlignPositionOrgLast;
-                                    Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionLast : ", xyCoordinateGoldpowderAlignPositionLast.ToString());
-                                    Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionOrgLast : ", xyCoordinateGoldpowderAlignPositionOrgLast.ToString());
-                                    Log.Write("Alaign Test", "Offset  : " + offset.ToString());
-                                    Log.Write("Alaign Test", "xyCoordinateGoldpowderAlign before : ", xyCoordinateAlign.ToString());
-
-                                    xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateGoldpowderAlignPositionOrgLast.X,
-                                        xyCoordinateGoldpowderAlignPositionOrgLast.Y, -m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle);
-
-                                    xyCoordinateAlign = xyCoordinateAlign + offset;
-                                    Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
-                                    Log.Write("Alaign Test", "Angle : ", m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle.ToString());
-
-                                    {
-                                        xyCoordinateGoldpowderAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
-                                    }
-                                }
-
+                                xyCoordinateAlign = xyCoordinateAlign + offset;
+                                Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
+                                Log.Write("Alaign Test", "Angle : ", m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle.ToString());
                             }
+                            xyCoordinateGoldpowderAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                         }
                     }
 
@@ -15113,6 +15023,12 @@ namespace QMC.Common.Modules
                                     " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
                                     ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
 
+                                // 이거 안해서 다음 위치갈때 이상한거네.
+                                xyCoordinateGoldpowderAlignPositionLast = new XyCoordinate(
+                                                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
+                                                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
+                                xyCoordinateGoldpowderAlignPositionOrgLast = xyCoordinateGoldpowderAlignPositionOrgLastTemp;
+
                                 m_nSocketAlign_FiducialCount++;
                                 m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RemainedCheck;
                             }
@@ -15190,6 +15106,17 @@ namespace QMC.Common.Modules
                                             "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
                                             "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
                                 Log.Write("SLD-200", Equipment.User_Name, "Socket Align:SocketAlign", strTemp);
+
+                                if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                                {
+                                    strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                                            "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                                            "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                                            "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+
+                                    Log.Write("Goldpowder", "Result", strTemp);
+                                }
+
                             }
                         }
                     }
@@ -16198,7 +16125,8 @@ namespace QMC.Common.Modules
         public bool m_bFirstAutoCrossCheckDone = false; // 최초 1회 실행 여부 플래그
         private int m_nSensorRetryCount = 0;
         private const int MAX_SENSOR_RETRY = 3;
-
+        private List<double> m_listSensorRetryValues = new List<double>();
+        private List<double> m_listSensorRetryOffsets = new List<double>();
 
         //Todo: 공정시컨스닷!
         private int Run_LaserDrilling_Main_Cycle()
@@ -17237,7 +17165,7 @@ namespace QMC.Common.Modules
                         {
                             layerEnum = GetCurrentLayerEnum(m_LayerType);
                             layer = DrillingManager.GetLayer(layerEnum);
-                            socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
@@ -17499,7 +17427,7 @@ namespace QMC.Common.Modules
                         {
                             layerEnum = GetCurrentLayerEnum(m_LayerType);
                             layer = DrillingManager.GetLayer(layerEnum);
-                            socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
@@ -17830,7 +17758,7 @@ namespace QMC.Common.Modules
                         {
                             layerEnum = GetCurrentLayerEnum(m_LayerType);
                             layer = DrillingManager.GetLayer(layerEnum);
-                            socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
@@ -18324,7 +18252,7 @@ namespace QMC.Common.Modules
                             {
                                 layerEnum = GetCurrentLayerEnum(m_LayerType);
                                 layer = DrillingManager.GetLayer(layerEnum);
-                                socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                                socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                                 if (layer != null && socket != null)
                                 {
                                     SetDrillResult(layer.LayerName, socket.SocketNumber, true);
@@ -18341,7 +18269,7 @@ namespace QMC.Common.Modules
                             {
                                 layerEnum = GetCurrentLayerEnum(m_LayerType);
                                 layer = DrillingManager.GetLayer(layerEnum);
-                                socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                                socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                                 if (layer != null && socket != null)
                                 {
                                     SetDrillResult(layer.LayerName, socket.SocketNumber, true);
@@ -18503,7 +18431,7 @@ namespace QMC.Common.Modules
                             {
                                 layerEnum = GetCurrentLayerEnum(m_LayerType);
                                 layer = DrillingManager.GetLayer(layerEnum);
-                                socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                                socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                                 if (layer != null && socket != null)
                                 {
                                     SetDrillResult(layer.LayerName, socket.SocketNumber, true);
@@ -18520,7 +18448,7 @@ namespace QMC.Common.Modules
                             {
                                 layerEnum = GetCurrentLayerEnum(m_LayerType);
                                 layer = DrillingManager.GetLayer(layerEnum);
-                                socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                                socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                                 if (layer != null && socket != null)
                                 {
                                     SetDrillResult(layer.LayerName, socket.SocketNumber, true);
@@ -18996,17 +18924,23 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get:                                                    //  Laser Height Sensor 값 읽기
 
-                    //if (!m_bSensorResponseReady)
                     if (m_bSensorResponseReady)
                     {
-                        // 아직 응답 안옴 → 대기 or 타임아웃 처리
-                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 500)   //500ms만 기다리자.
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 100)
                         {
                             m_nSensorRetryCount++;
 
-                            if (m_nSensorRetryCount <= MAX_SENSOR_RETRY)
+                            // 정상 범위 측정값만 리스트에 저장
+                            if ((m_dLaserHeightSensorSocket_Value > -4.5) && (m_dLaserHeightSensorSocket_Value < 5.5))
                             {
-                                // 리트라이 전에도 저장 (단, 비정상값은 0.0 보정)
+                                m_listSensorRetryValues.Add(m_dLaserHeightSensorSocket_Value);
+                                double retryOffset = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                                m_listSensorRetryOffsets.Add(retryOffset);
+                            }
+                            
+                            //if (m_nSensorRetryCount <= MAX_SENSOR_RETRY)
+                            if (m_nSensorRetryCount <= Equipment.Machine_HeightSensorRetry_Count)
+                            {
                                 double retryOffset = 0.0;
                                 if ((m_dLaserHeightSensorSocket_Value < -4.5) ||
                                     (m_dLaserHeightSensorSocket_Value > 5.5) ||
@@ -19019,12 +18953,11 @@ namespace QMC.Common.Modules
                                     retryOffset = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
                                 }
 
-                                LaserHeightSensorValue_Save( Equipment.Current_Recipe,
+                                LaserHeightSensorValue_Save(Equipment.Current_Recipe,
                                                              m_nDrillingWork_Group_Count,
                                                              Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition,
                                                              m_dLaserHeightSensorSocket_Value,
-                                                             retryOffset
-                                                             );
+                                                             retryOffset);
 
                                 Log.Write("SLD-200", $"센서 응답 지연 - 리트라이 {m_nSensorRetryCount}/{MAX_SENSOR_RETRY}");
                                 TickCount_Start((int)TickType.TICK_MAIN);
@@ -19033,76 +18966,77 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                //Log.Write("SLD-200", "센서 응답 실패. 보정 없이 진행");
                                 Log.Write("SLD-200", $"센서 응답 지연 - 리트라이 완료");
-                                //보정 완료임.
-                                //m_dZOffset_SocketHeightCheck = 0.0;
-
                                 m_bSensorResponseReady = false; // 응답 소비 완료
                                 m_nSensorRetryCount = 0;
                             }
                         }
                         break;
                     }
-                    m_bSensorResponseReady = false; // 응답 소비 완료
+                    m_bSensorResponseReady = false;
                     m_nSensorRetryCount = 0;
 
-                    //  Laser Focus 위치에서 Laser Height 값과, 현재 Laser Height Sensor 값의 차이만큼 가공 높이 보정
-                    //m_dZOffset_SocketHeightCheck = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition - m_dLaserHeightSensorSocket_Value;
-                    //  Laser Height Sensor 값은, 제품이 두꺼워질 수록 값이 커지고, 얇아질 수록 값이 작아짐.
-                    // Limit값 파라미터로 빼야함.
-                    if ((m_dLaserHeightSensorSocket_Value < -4.5) || 
-                        (m_dLaserHeightSensorSocket_Value > 5.5) || 
-                        (m_dLaserHeightSensorSocket_Value < -99.9))
+                    // 최종 보정값 계산 (평균 기반)
+                    double avgSensorValue = 0.0;
+                    double avgRetryOffset = 0.0;
+
+                    if (m_listSensorRetryValues.Count > 0)
+                    {
+                        avgSensorValue = m_listSensorRetryValues.Average();
+                        avgRetryOffset = m_listSensorRetryOffsets.Average();
+                    }
+                    else
+                    {
+                        avgSensorValue = m_dLaserHeightSensorSocket_Value;
+                        avgRetryOffset = (m_dLaserHeightSensorSocket_Value > -4.5 && m_dLaserHeightSensorSocket_Value < 5.5)
+                                         ? m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition
+                                         : 0.0;
+                    }
+
+                    m_listSensorRetryValues.Clear();
+                    m_listSensorRetryOffsets.Clear();
+
+                    // Laser Focus 위치에서 Laser Height 값과의 차이만큼 보정
+                    if ((avgSensorValue < -4.5) ||
+                        (avgSensorValue > 5.5) ||
+                        (avgSensorValue < -99.9))
                     {
                         m_dZOffset_SocketHeightCheck = 0.0;
                     }
                     else
                     {
-                        m_dZOffset_SocketHeightCheck = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
-                        //m_dZOffset_SocketHeightCheck *= -1; // 변위센서는 상부가 원점이다. Z축모터도 상부가 원점이다.
-                        // 변위센서 값이 - 부호에서 - 부호를 빼면 Z축이 위로 올라가야 하므로 부호가 반대로 먹어야 한다.
+                        m_dZOffset_SocketHeightCheck = avgRetryOffset;
                     }
 
-                    //  Laser Height Sensor 값을 파일로 저장
-                    //  레시피 명, 소켓 번호, 소켓 높이값(기준값 대비 차이값)
-                    LaserHeightSensorValue_Save(Equipment.Current_Recipe, m_nDrillingWork_Group_Count, 
-                        Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck);
+                    // Laser Height Sensor 값을 파일로 저장
+                    LaserHeightSensorValue_Save(Equipment.Current_Recipe, m_nDrillingWork_Group_Count,
+                        Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, avgSensorValue, m_dZOffset_SocketHeightCheck);
 
-                    //  여기서 측정한 소켓 높이값을 Thruhole, Outline 등에서 사용하도록 한다.
+                    // Layer별 소켓 데이터에 저장
                     switch (m_LayerType)
                     {
                         case LayerType.LAYER_DRILLING:
                             break;
+
                         case LayerType.LAYER_OUTLINE:
                             if (m_stOutLine_SocketData != null)
                             {
-                                //if (m_stOutLine_SocketData.Length == m_stDividedRegion_GroupData.Length)
-                                {
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 일치");
-                                    m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
-                                }
-                               
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 일치");
+                                m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
                             }
                             break;
+
                         case LayerType.LAYER_THRUHOLE:
                             if (m_stThruHole_SocketData != null)
                             {
-                                // 여기 왜함?
-                                //if (m_stThruHole_SocketData.Length == m_stDividedRegion_GroupData.Length)
-                                {
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
-                                    m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
-                                }
-                                
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
+                                m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
                             }
                             break;
+
                         case LayerType.LAYER_MARKING:
                             if (m_stMarking_SocketData.m_stMarking_ObjectData != null)
                             {
-                                //if (m_stMarking_SocketData.m_stMarking_ObjectData.Length == m_stDividedRegion_GroupData.Length)
-
-                                //  Marking 은 소켓 개수보다 적을 수 있기 때문에, 소켓의 Group Count 만큼 계속 채워넣으면 안된다. 넣을 수 있는 만큼만 넣도록 한다.
                                 if (m_nDrillingWork_Group_Count < m_stMarking_SocketData.m_stMarking_ObjectData.Length)
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 일치");
@@ -19111,9 +19045,10 @@ namespace QMC.Common.Modules
                             }
                             break;
                     }
-                    // === DrillingManager 저장 (공통 처리) ===
+
+                    // DrillingManager 저장
                     {
-                        var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);  // LayerList.Hole12 등
+                        var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
                         int socketIndex = m_nDrillingWork_Group_Count;
 
                         socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
@@ -19124,7 +19059,7 @@ namespace QMC.Common.Modules
                         }
                     }
 
-                    //  소켓 얼라인을 하지 않을 경우, 여기서 바로 가공 높이로 보정 이동.
+                    // 소켓 얼라인 여부에 따라 분기
                     if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
                     {
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move;
@@ -19132,6 +19067,147 @@ namespace QMC.Common.Modules
                     else
                     {
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                    }
+
+                    //기존 코드.
+                    {
+                    //if (m_bSensorResponseReady)
+                    //{
+                    //    // 아직 응답 안옴 → 대기 or 타임아웃 처리
+                    //    if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 500)   //500ms만 기다리자.
+                    //    {
+                    //        m_nSensorRetryCount++;
+
+                    //        if (m_nSensorRetryCount <= MAX_SENSOR_RETRY)
+                    //        {
+                    //            // 리트라이 전에도 저장 (단, 비정상값은 0.0 보정)
+                    //            double retryOffset = 0.0;
+                    //            if ((m_dLaserHeightSensorSocket_Value < -4.5) ||
+                    //                (m_dLaserHeightSensorSocket_Value > 5.5) ||
+                    //                (m_dLaserHeightSensorSocket_Value < -99.9))
+                    //            {
+                    //                retryOffset = 0.0;
+                    //            }
+                    //            else
+                    //            {
+                    //                retryOffset = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                    //            }
+
+                    //            LaserHeightSensorValue_Save( Equipment.Current_Recipe,
+                    //                                         m_nDrillingWork_Group_Count,
+                    //                                         Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition,
+                    //                                         m_dLaserHeightSensorSocket_Value,
+                    //                                         retryOffset
+                    //                                         );
+
+                    //            Log.Write("SLD-200", $"센서 응답 지연 - 리트라이 {m_nSensorRetryCount}/{MAX_SENSOR_RETRY}");
+                    //            TickCount_Start((int)TickType.TICK_MAIN);
+                    //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
+                    //            break;
+                    //        }
+                    //        else
+                    //        {
+                    //            //Log.Write("SLD-200", "센서 응답 실패. 보정 없이 진행");
+                    //            Log.Write("SLD-200", $"센서 응답 지연 - 리트라이 완료");
+                    //            //보정 완료임.
+                    //            //m_dZOffset_SocketHeightCheck = 0.0;
+
+                    //            m_bSensorResponseReady = false; // 응답 소비 완료
+                    //            m_nSensorRetryCount = 0;
+                    //        }
+                    //    }
+                    //    break;
+                    //}
+                    //m_bSensorResponseReady = false; // 응답 소비 완료
+                    //m_nSensorRetryCount = 0;
+
+                    ////  Laser Focus 위치에서 Laser Height 값과, 현재 Laser Height Sensor 값의 차이만큼 가공 높이 보정
+                    ////m_dZOffset_SocketHeightCheck = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition - m_dLaserHeightSensorSocket_Value;
+                    ////  Laser Height Sensor 값은, 제품이 두꺼워질 수록 값이 커지고, 얇아질 수록 값이 작아짐.
+                    //// Limit값 파라미터로 빼야함.
+                    //if ((m_dLaserHeightSensorSocket_Value < -4.5) || 
+                    //    (m_dLaserHeightSensorSocket_Value > 5.5) || 
+                    //    (m_dLaserHeightSensorSocket_Value < -99.9))
+                    //{
+                    //    m_dZOffset_SocketHeightCheck = 0.0;
+                    //}
+                    //else
+                    //{
+                    //    m_dZOffset_SocketHeightCheck = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                    //    //m_dZOffset_SocketHeightCheck *= -1; // 변위센서는 상부가 원점이다. Z축모터도 상부가 원점이다.
+                    //    // 변위센서 값이 - 부호에서 - 부호를 빼면 Z축이 위로 올라가야 하므로 부호가 반대로 먹어야 한다.
+                    //}
+
+                    ////  Laser Height Sensor 값을 파일로 저장
+                    ////  레시피 명, 소켓 번호, 소켓 높이값(기준값 대비 차이값)
+                    //LaserHeightSensorValue_Save(Equipment.Current_Recipe, m_nDrillingWork_Group_Count, 
+                    //    Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck);
+
+                    ////  여기서 측정한 소켓 높이값을 Thruhole, Outline 등에서 사용하도록 한다.
+                    //switch (m_LayerType)
+                    //{
+                    //    case LayerType.LAYER_DRILLING:
+                    //        break;
+                    //    case LayerType.LAYER_OUTLINE:
+                    //        if (m_stOutLine_SocketData != null)
+                    //        {
+                    //            //if (m_stOutLine_SocketData.Length == m_stDividedRegion_GroupData.Length)
+                    //            {
+                    //                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 일치");
+                    //                m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                    //            }
+                               
+                    //        }
+                    //        break;
+                    //    case LayerType.LAYER_THRUHOLE:
+                    //        if (m_stThruHole_SocketData != null)
+                    //        {
+                    //            // 여기 왜함?
+                    //            //if (m_stThruHole_SocketData.Length == m_stDividedRegion_GroupData.Length)
+                    //            {
+                    //                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
+                    //                m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                    //            }
+                                
+                    //        }
+                    //        break;
+                    //    case LayerType.LAYER_MARKING:
+                    //        if (m_stMarking_SocketData.m_stMarking_ObjectData != null)
+                    //        {
+                    //            //if (m_stMarking_SocketData.m_stMarking_ObjectData.Length == m_stDividedRegion_GroupData.Length)
+
+                    //            //  Marking 은 소켓 개수보다 적을 수 있기 때문에, 소켓의 Group Count 만큼 계속 채워넣으면 안된다. 넣을 수 있는 만큼만 넣도록 한다.
+                    //            if (m_nDrillingWork_Group_Count < m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                    //            {
+                    //                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 일치");
+                    //                m_stMarking_SocketData.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                    //            }
+                    //        }
+                    //        break;
+                    //}
+                    //// === DrillingManager 저장 (공통 처리) ===
+                    //{
+                    //    var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);  // LayerList.Hole12 등
+                    //    int socketIndex = m_nDrillingWork_Group_Count;
+
+                    //    socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                    //    if (socket != null)
+                    //    {
+                    //        socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                    //        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                    //    }
+                    //}
+
+                    ////  소켓 얼라인을 하지 않을 경우, 여기서 바로 가공 높이로 보정 이동.
+                    //if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+                    //{
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move;
+                    //}
+                    //else
+                    //{
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                    //}
+                    //break;
                     }
                     break;
 
@@ -23723,7 +23799,7 @@ namespace QMC.Common.Modules
                         {
                             var layerEnum = GetCurrentLayerEnum(m_LayerType);
                             var layer = DrillingManager.GetLayer(layerEnum);
-                            var socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                            var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
@@ -24709,7 +24785,7 @@ namespace QMC.Common.Modules
                             {
                                 var layerEnum = GetCurrentLayerEnum(m_LayerType);
                                 var layer = DrillingManager.GetLayer(layerEnum);
-                                var socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                                 if (layer != null && socket != null)
                                 {
                                     SetDrillResult(layer.LayerName, socket.SocketNumber, true);
@@ -25248,7 +25324,7 @@ namespace QMC.Common.Modules
                 {
                     var layerEnum = GetCurrentLayerEnum(m_LayerType);
                     var layer = DrillingManager.GetLayer(layerEnum);
-                    var socket = DrillingManager.GetSocket(layerEnum, m_nThruHole_ObjectDataCount);
+                    var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                     if (layer != null && socket != null)
                     {
                         SetDrillResult(layer.LayerName, socket.SocketNumber, true);

@@ -1414,6 +1414,8 @@ namespace SLD200_MSL
             checkBox_Setup_Option_AutoCrossCheck.Checked = Equipment.Machine_AutoCrossCheck_Enable;
             textBox_Setup_Option_AutoCrossCheck.Text = Equipment.Machine_AutoCrossCheck_Count.ToString();
 
+            checkBox_Setup_Option_LaserHeight_Retry_Enable.Checked = Equipment.Machine_HeightSensorRetry_Enable;
+            textBox_Setup_Option_LaserHeight_Retry_Count.Text = Equipment.Machine_HeightSensorRetry_Count.ToString();
 
 
             if (Equipment.Machine_FiducialImageSave_Always)
@@ -1865,6 +1867,10 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "AutoCrossCheck_Enable", checkBox_Setup_Option_AutoCrossCheck.Checked.ToString(), strFIle);
             Equipment.Machine_AutoCrossCheck_Count = Equipment.ToInt(textBox_Setup_Option_AutoCrossCheck.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "AutoCrossCheck_Count", textBox_Setup_Option_AutoCrossCheck.Text.ToString(), strFIle);
+            Equipment.Machine_HeightSensorRetry_Enable = checkBox_Setup_Option_LaserHeight_Retry_Enable.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "HeightSensorRetry_Enable", checkBox_Setup_Option_LaserHeight_Retry_Enable.Checked.ToString(), strFIle);
+            Equipment.Machine_HeightSensorRetry_Count = Equipment.ToInt(textBox_Setup_Option_LaserHeight_Retry_Count.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "HeightSensorRetry_Count", textBox_Setup_Option_LaserHeight_Retry_Count.Text.ToString(), strFIle);
 
 
             //  Offset Distance
@@ -2430,6 +2436,17 @@ namespace SLD200_MSL
             {
                 checkBox_Setup_Option_AutoCrossCheck.Checked = false;
                 textBox_Setup_Option_AutoCrossCheck.Enabled = false;
+            }
+
+            if (Equipment.Machine_HeightSensorRetry_Enable)
+            {
+                checkBox_Setup_Option_LaserHeight_Retry_Enable.Checked = true;
+                textBox_Setup_Option_LaserHeight_Retry_Count.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_LaserHeight_Retry_Enable.Checked = false;
+                textBox_Setup_Option_LaserHeight_Retry_Count.Enabled = false;
             }
 
 
@@ -4295,13 +4312,25 @@ namespace SLD200_MSL
             {
                 Equipment.Machine_AutoCrossCheck_Enable = true;
                 textBox_Setup_Option_AutoCrossCheck.Enabled = true;
-                textBox_Setup_Option_AutoCrossCheck.Enabled = true;
             }
             else
             {
                 Equipment.Machine_AutoCrossCheck_Enable = false;
                 textBox_Setup_Option_AutoCrossCheck.Enabled = false;
-                textBox_Setup_Option_AutoCrossCheck.Enabled = false;
+            }
+        }
+
+        private void checkBox_Setup_Option_LaserHeight_Retry_Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_LaserHeight_Retry_Enable.Checked)
+            {
+                Equipment.Machine_HeightSensorRetry_Enable = true;
+                textBox_Setup_Option_LaserHeight_Retry_Count.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_HeightSensorRetry_Enable = false;
+                textBox_Setup_Option_LaserHeight_Retry_Count.Enabled = false;
             }
         }
     }
