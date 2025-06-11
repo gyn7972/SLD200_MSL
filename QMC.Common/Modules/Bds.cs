@@ -460,6 +460,7 @@ namespace QMC.Common.Modules
                             (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
                         {
                             spiralLabScanner.IsOverTemperatureWarning();
+
                             //spiralLabScanner.CheckAndLogAllStatuses();
                             //double dPosX = 0.0, dPosY = 0.0;
                             //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
