@@ -1690,6 +1690,8 @@ namespace QMC.Common.Modules
             Mark_Search_Fail,
             Mark_Search_Error_Range_Fail,
 
+            eSensor_Height_Timeout,
+
             SoftLimitFail,
 
             LastAlarm = 3999
@@ -2282,6 +2284,15 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.Mark_Search_Error_Range_Fail;
             alarm.Title = "Mark_Search_Error_Range_Fail";
             alarm.Cause = "Mark Search 후 Range가 벗어났습니다. Mark 확인 및 위치 확인 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            //eSensor_Height_Timeout
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.eSensor_Height_Timeout;
+            alarm.Title = "Sensor_Height_Timeout";
+            alarm.Cause = "Sensor_Height_Timeout이 발생하였습니다. 재 시작 바랍니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -14642,16 +14653,25 @@ namespace QMC.Common.Modules
                             //Pre Align Data -> Sorket Postion 적용
                             if (m_bIsFirstAlign == false)
                             {
+                                if(m_nSocketAlign_FiducialCount == 0)
+                                {
+                                    xyCoordinateGoldpowderAlignPositionLast = xyCoordinateAlignPositionLast;
+                                    xyCoordinateGoldpowderAlignPositionOrgLast = xyCoordinateAlignPositionOrgLast;
+                                }
+
                                 XyCoordinate offset = xyCoordinateGoldpowderAlignPositionLast - xyCoordinateGoldpowderAlignPositionOrgLast;
                                 Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionLast : ", xyCoordinateGoldpowderAlignPositionLast.ToString());
                                 Log.Write("Alaign Test", "xyCoordinateGoldpowderAlignPositionOrgLast : ", xyCoordinateGoldpowderAlignPositionOrgLast.ToString());
                                 Log.Write("Alaign Test", "Offset  : " + offset.ToString());
                                 Log.Write("Alaign Test", "xyCoordinateGoldpowderAlign before : ", xyCoordinateAlign.ToString());
 
+                                //xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateGoldpowderAlignPositionOrgLast.X,
+                                //    xyCoordinateGoldpowderAlignPositionOrgLast.Y, -m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle);
                                 xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateGoldpowderAlignPositionOrgLast.X,
-                                    xyCoordinateGoldpowderAlignPositionOrgLast.Y, -m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle);
+                                    xyCoordinateGoldpowderAlignPositionOrgLast.Y, 0);
 
-                                xyCoordinateAlign = xyCoordinateAlign + offset;
+                                //이미 돌린 도면을 가져온거니깐...
+                                //xyCoordinateAlign = xyCoordinateAlign + offset;
                                 Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
                                 Log.Write("Alaign Test", "Angle : ", m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle.ToString());
                             }
@@ -14954,6 +14974,8 @@ namespace QMC.Common.Modules
                         {
                             double totalOffsetX = 0.0;
                             double totalOffsetY = 0.0;
+                            double dMotionPosX = 0.0;
+                            double dMotionPosY = 0.0;
                             int matchCount = 0;
                             if (Fiducial_circleFound && (Fiducial_circlesResult.Count > 0))
                             {
@@ -14962,8 +14984,8 @@ namespace QMC.Common.Modules
                                     var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stDividedRegion_GroupData);
                                     // 전체 홀 리스트 사용
                                     List<AlignPoint> allHoles = alignPositions.AllPoints;
-                                    double dMotionPosX = MC_Func.MC_GetEncPos((int)nAxis.X);
-                                    double dMotionPosY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+                                    dMotionPosX = MC_Func.MC_GetEncPos((int)nAxis.X);
+                                    dMotionPosY = MC_Func.MC_GetEncPos((int)nAxis.Y);
 
                                     for (int i = 0; i < Fiducial_circlesResult.Count; i++)
                                     {
@@ -14988,17 +15010,16 @@ namespace QMC.Common.Modules
                                                             .First();
 
                                         //여기 부호가 중요할듯.
-                                        //double offsetX = measuredHole.X - matched.X;
-                                        //double offsetY = measuredHole.Y - matched.Y;
+                                        double offsetX = measuredHole.X - matched.X;
+                                        double offsetY = measuredHole.Y - matched.Y;
                                         //이거든 둘중에 하나인데.. 
-                                        double offsetX = matched.X - measuredHole.X;
-                                        double offsetY = matched.Y - measuredHole.Y;
+                                        //double offsetX = matched.X - measuredHole.X;
+                                        //double offsetY = matched.Y - measuredHole.Y;
 
                                         double distance = Math.Sqrt(offsetX * offsetX + offsetY * offsetY);
 
-                                        if (Math.Abs(offsetX) > 0.03 || Math.Abs(offsetY) > 0.03)
+                                        if (Math.Abs(offsetX) > 0.04 || Math.Abs(offsetY) > 0.04)
                                         {
-                                            // ?
                                             continue;
                                         }
 
@@ -15055,9 +15076,9 @@ namespace QMC.Common.Modules
                                     ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
 
                                 // 이거 안해서 다음 위치갈때 이상한거네.
-                                xyCoordinateGoldpowderAlignPositionLast = new XyCoordinate(
-                                                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
-                                                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
+                                //m_st4PointPosition_InspectedPos // 센터로 이동하면서 찾으면 이걸로가 좋지만. 
+                                //골드파우더는 그게 아니니깐. 도면 좌표로 이동하자.
+                                xyCoordinateGoldpowderAlignPositionLast = new XyCoordinate(dMotionPosX,dMotionPosY);
                                 xyCoordinateGoldpowderAlignPositionOrgLast = xyCoordinateGoldpowderAlignPositionOrgLastTemp;
 
                                 m_nSocketAlign_FiducialCount++;
@@ -18973,9 +18994,24 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get:                                                    //  Laser Height Sensor 값 읽기
 
                     double retryOffset = 0.0;
+
+                    // 응답이 아직 안 왔으면 기다림
+                    if (!m_bSensorResponseReady)
+                    {
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 1000)
+                        {
+                            Log.Write("SLD-200", "Align", $"센서 응답 Timeout (1000ms)");
+                            //AlarmPost(AlarmKey.eSensor_Height_Timeout);
+
+                            // 강제 fallback 진입: 센서 응답 없는 상태로 시뮬레이션 강제 진행
+                            m_bSensorResponseReady = true;
+                        }
+                        break;
+                    }
+
                     if (m_bSensorResponseReady)
                     {
-                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 100)
+                        //if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 100)
                         {
                             m_nSensorRetryCount++;
 
@@ -18984,6 +19020,7 @@ namespace QMC.Common.Modules
                                     (m_dLaserHeightSensorSocket_Value > 5.5) ||
                                     (m_dLaserHeightSensorSocket_Value < -99.9))
                             {
+                                Log.Write("SLD-200", "Align", $"센서 이상값 감지: {m_dLaserHeightSensorSocket_Value:F4}, 값 무시됨");
                                 retryOffset = 0.0;
                             }
                             else
@@ -19022,11 +19059,11 @@ namespace QMC.Common.Modules
                             else
                             {
                                 Log.Write("SLD-200", $"센서 응답 - 리트라이 완료");
-                                m_bSensorResponseReady = false; // 응답 소비 완료
-                                m_nSensorRetryCount = 0;
+                                //m_bSensorResponseReady = false; // 응답 소비 완료
+                                //m_nSensorRetryCount = 0;
                             }
                         }
-                        break;
+                        //break;
                     }
                     m_bSensorResponseReady = false;
                     m_nSensorRetryCount = 0;
@@ -19051,6 +19088,16 @@ namespace QMC.Common.Modules
                     }
                     else
                     {
+                        avgSensorValue = m_dLaserHeightSensorSocket_Value;
+                        avgRetryOffset = (m_dLaserHeightSensorSocket_Value > -4.5 && m_dLaserHeightSensorSocket_Value < 5.5)
+                                         ? m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition
+                                         : 0.0;
+                    }
+
+                    if (m_listSensorRetryValues.Count == 0)
+                    {
+                        Log.Write("SLD-200", "Align", $"센서 유효 측정값 없음. 최종 보정값 fallback 적용: {m_dLaserHeightSensorSocket_Value:F4}");
+
                         avgSensorValue = m_dLaserHeightSensorSocket_Value;
                         avgRetryOffset = (m_dLaserHeightSensorSocket_Value > -4.5 && m_dLaserHeightSensorSocket_Value < 5.5)
                                          ? m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition
@@ -37936,6 +37983,25 @@ namespace QMC.Common.Modules
                         nSumCount++;
                     }
                 }
+
+                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::dSumOffsetXY Offset - X: {dSumOffsetX:F6}, Y: {dSumOffsetY:F6}");
+                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::nSumCount: {nSumCount:F6}");
+
+                if (nSumCount != 0)
+                {
+                    double dOffsetX = dSumOffsetX / nSumCount;
+                    double dOffsetY = dSumOffsetY / nSumCount;
+                    m_st4PointAlign_Result.dCenterOffsetX = dOffsetX;
+                    m_st4PointAlign_Result.dCenterOffsetY = dOffsetY;
+                    m_st4PointAlign_Result.dRotationAngle = 0;
+                }
+                else
+                {
+                    m_st4PointAlign_Result.dCenterOffsetX = 0;
+                    m_st4PointAlign_Result.dCenterOffsetY = 0;
+                    m_st4PointAlign_Result.dRotationAngle = 0;
+                }
+
             }
             else
             {
@@ -37952,26 +38018,28 @@ namespace QMC.Common.Modules
                         nSumCount++;
                     }
                 }
-            }
-                
 
-            Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::dSumOffsetXY Offset - X: {dSumOffsetX:F6}, Y: {dSumOffsetY:F6}");
-            Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::nSumCount: {nSumCount:F6}");
+                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::dSumOffsetXY Offset - X: {dSumOffsetX:F6}, Y: {dSumOffsetY:F6}");
+                Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::nSumCount: {nSumCount:F6}");
 
-            if (nSumCount != 0)
-            {
-                double dOffsetX = dSumOffsetX / nSumCount;
-                double dOffsetY = dSumOffsetY / nSumCount;
-                m_st4PointAlign_Result.dCenterOffsetX = dOffsetX;
-                m_st4PointAlign_Result.dCenterOffsetY = dOffsetY;
-                m_st4PointAlign_Result.dRotationAngle = 0;
+                // Offset 부호는 여기서 바뀌어야 한다.
+                if (nSumCount != 0)
+                {
+                    double dOffsetX = dSumOffsetX / nSumCount;
+                    double dOffsetY = dSumOffsetY / nSumCount;
+                    m_st4PointAlign_Result.dCenterOffsetX = dOffsetX * 1;
+                    m_st4PointAlign_Result.dCenterOffsetY = dOffsetY * -1;
+                    m_st4PointAlign_Result.dRotationAngle = 0;
+                }
+                else
+                {
+                    m_st4PointAlign_Result.dCenterOffsetX = 0;
+                    m_st4PointAlign_Result.dCenterOffsetY = 0;
+                    m_st4PointAlign_Result.dRotationAngle = 0;
+                }
+
             }
-            else
-            {
-                m_st4PointAlign_Result.dCenterOffsetX = 0;
-                m_st4PointAlign_Result.dCenterOffsetY = 0;
-                m_st4PointAlign_Result.dRotationAngle = 0;
-            }
+
 
             return m_st4PointAlign_Result;
         }

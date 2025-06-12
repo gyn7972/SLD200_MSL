@@ -255,7 +255,9 @@ namespace QMC.Common.VisionPart
                 Directory.CreateDirectory(baseDir);
 
             // 2. 초기 원본 이미지 저장
-            string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
+            //string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+            string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
             IsImageSave = false;
             SaveImage(pixelData, w, h, rawImagePath);
 
@@ -411,9 +413,11 @@ namespace QMC.Common.VisionPart
                 //strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
                 //IsImageSave = true;
                 //SaveImage(pixelData, w, h, strFileName);
-                string failPath = Path.Combine(baseDir, $"AlignFail_{DateTime.Now.Ticks}.bmp");
+                //string failPath = Path.Combine(baseDir, $"AlignFail_{DateTime.Now.Ticks}.bmp");
+                timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+                rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
                 IsImageSave = true;
-                SaveImage(pixelData, w, h, failPath);
+                SaveImage(pixelData, w, h, rawImagePath);
                 return new QMC_ImageProcessFindAlignResult();
             }
 
@@ -437,7 +441,9 @@ namespace QMC.Common.VisionPart
                 result.ScoreCollection.Add(dScore);
 
                 // 최종 결과 이미지 저장 (오버레이 포함)
-                string overlayPath = Path.Combine(baseDir, $"AlignSuccess_{DateTime.Now.Ticks}.bmp");
+                //string overlayPath = Path.Combine(baseDir, $"AlignSuccess_{DateTime.Now.Ticks}.bmp");
+                timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+                rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
                 //SaveImageWithOverlay(pixelData, w, h, points, resultCircle, overlayPath);
             }
             else
@@ -668,9 +674,6 @@ namespace QMC.Common.VisionPart
         public QMC_ImageProcessFindAlignResult FindGoldPowderForAutoTreshold(List<RectangleF> circlesResult,
             byte[] pixelData, int w, int h, int radius, double dScore, double dSpec, int nMaxInstance =20)
         {
-
-
-
             //List<RectangleF> result = new List<RectangleF>();
             QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             List<Circle> BestCircle = new List<Circle>();
@@ -685,7 +688,9 @@ namespace QMC.Common.VisionPart
                 Directory.CreateDirectory(baseDir);
 
             // [2] 초기 원본 이미지 저장
-            string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
+            //string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+            string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
             IsImageSave = true;
             SaveImage(pixelData, w, h, rawImagePath);
 
@@ -742,12 +747,14 @@ namespace QMC.Common.VisionPart
             //result.Circles.AddRange(BestCircle);
 
             // [4] 성공/실패 여부 판단 및 저장
+            timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
             string fileName = (result.Circles.Count > 0)
-                ? $"AlignSuccess_{DateTime.Now.Ticks}.bmp"
-                : $"AlignFail_{DateTime.Now.Ticks}.bmp";
-
+                ? $"AlignSuccess_{timestamp}.bmp"
+                : $"AlignFail_{timestamp}.bmp";
             string fullPath = Path.Combine(baseDir, fileName);
-            SaveImageWithOverlay(pixelData, w, h, BestCircle, fullPath);
+
+            //여기 다시 확인하자.
+            //SaveImageWithOverlay(pixelData, w, h, BestCircle, fullPath);
 
             return result;
         }

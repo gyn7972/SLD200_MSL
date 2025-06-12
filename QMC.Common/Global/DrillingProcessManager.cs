@@ -99,7 +99,8 @@ namespace QMC.Common.Global
             var socket = SocketList.FirstOrDefault(s => s.SocketNumber == socketNumber);
             if (socket == null)
             {
-                Log.Write("LayerProcessData", $"GetSocket 실패 - Socket {socketNumber} 이(가) 존재하지 않습니다.");
+                //Log.Write("LayerProcessData", $"GetSocket 실패 - Socket {socketNumber} 이(가) 존재하지 않습니다.");
+                return null;
             }
 
             return socket;
