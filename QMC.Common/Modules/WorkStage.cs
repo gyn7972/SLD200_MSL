@@ -40893,7 +40893,7 @@ namespace QMC.Common.Modules
 
             // 파일명에 bFinal 여부 따라 구분
             string fileSuffix = bFinal ? "_Final" : "_Retry";
-            string fileName = $"{m_strLaserHeightValueDataPath}\\{m_strRecipeName_Now}_{dateString}{fileSuffix}.txt";
+            string fileName = $"{m_strLaserHeightValueDataPath}\\{m_strRecipeName_Now}_{dateString}{fileSuffix}";
 
             //string m_strRecipeName_Now = System.IO.Path.GetFileName(m_strRecipeName);
             //string fileName = string.Format("{0}{1}_{2}", LogManager.Instance.GetLogPath() + "\\LaserHeightData\\", m_strRecipeName_Now, DateTime.Now.ToString("yyyy_MM_dd"));
@@ -40904,7 +40904,7 @@ namespace QMC.Common.Modules
 
             strData += timeString;
             strData += " , ";
-            strData += "Socket Numer : " + m_nSocketNum.ToString();
+            strData += "Socket Number : " + m_nSocketNum.ToString();
             //strData += " , ";
             //strData += "Reference Height Value : " + m_dLaserHeightValue_Base.ToString();             //  레이저 높이 센서의 기준값 
             //strData += " , ";
