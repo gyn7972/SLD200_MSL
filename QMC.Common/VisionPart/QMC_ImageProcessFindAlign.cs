@@ -438,7 +438,7 @@ namespace QMC.Common.VisionPart
 
                 // 최종 결과 이미지 저장 (오버레이 포함)
                 string overlayPath = Path.Combine(baseDir, $"AlignSuccess_{DateTime.Now.Ticks}.bmp");
-                SaveImageWithOverlay(pixelData, w, h, points, resultCircle, overlayPath);
+                //SaveImageWithOverlay(pixelData, w, h, points, resultCircle, overlayPath);
             }
             else
             {
