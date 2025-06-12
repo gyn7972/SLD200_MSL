@@ -4380,11 +4380,11 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);
+            workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
 
-            unloader.AlarmPost(Unloader.AlarmKey.UL_Transfer_Picker_Module_NotExist);
-
-            loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
+            //workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);
+            //unloader.AlarmPost(Unloader.AlarmKey.UL_Transfer_Picker_Module_NotExist);
+            //loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
 
             return;
 
