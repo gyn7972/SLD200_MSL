@@ -16415,6 +16415,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.LaserOff:
 
+                    Log.Write("SLD-200", "Auto Run", "가공 시작");
+
                     LaserDrilling_StepLaserOff();
 
                     //  선택 가공이면? 가공해야 할 Socket 번호를 선택한 번호로 변경                    
@@ -27011,7 +27013,7 @@ namespace QMC.Common.Modules
 
         private void LaserDrillingStepStart()
         {
-            Log.Write("SLD-200", "Auto Run", "가공 시작");
+            //Log.Write("SLD-200", "Auto Run", "가공 시작");
 
             m_bLaserDrilling_SocketStopped = false;                         //  Socket Stop 일 때 Laser Drilling Cycle 에 진입하지 못하도록 하는 변수
 
