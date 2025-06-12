@@ -1440,7 +1440,6 @@ namespace SLD200_MSL
                 workStage.m_nSafetyPos_Move_Step = (int)WorkStage.SafetyPos_Move_Step.None;
 
                 workStage.m_bFindAlignMark_OK = false;
-
                 Equipment.MachineStop_byUser = true;
 
                 //  소켓 가공 건너뛰기 취소
@@ -1451,7 +1450,6 @@ namespace SLD200_MSL
                 Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
                 checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
                 checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
-
 
                 workStage.m_MainWork_Start = false;
                 //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.None;
@@ -1468,7 +1466,6 @@ namespace SLD200_MSL
                 unloader.timer_UnloaderWork.Enabled = false;
                 unloader.m_UnloaderWork_Start = false;
                 //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
-
 
                 //  Product Align 타이머
                 //workStage.timer_VisionAlign_Stop = true;
@@ -1508,13 +1505,14 @@ namespace SLD200_MSL
 
                 workStage.m_bHomeOK = false;
                 m_bHomeProgress_Show = true;
+
+                workStage._currentHomeMode = (int)WorkStage.HomeMode.Full; 
                 workStage.m_nHomeStep = (int)WorkStage.Home_Step.Start;
 
                 //  Motion 홈 실행 타이머
                 workStage.m_btimer_Motion_Home_Stop = false;
                 workStage.timer_Motion_Home.Enabled = true;
                 workStage.m_MotionHome_Start = true;
-
                 workStage.m_bHomeProgressForm_Close = false;
 
                 if (!m_FormProgress.HasChildren)            //  Progress 창을 실수로 닫았다면, 다시 메모리 할당하자.
@@ -1530,7 +1528,6 @@ namespace SLD200_MSL
                 var doc = new DocumentDefault();
                 if(SiriusViewer_Main.Document != null)
                 {
-
                     if (SiriusViewer_Main.Document.Views != null)
                     {
 
@@ -4397,6 +4394,12 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            // 시작 Test
+            workStage.timer_Motion_Home.Enabled = true;
+            workStage.m_btimer_Motion_Home_Stop = false;
+            workStage.m_MotionHome_Start = true;
+            workStage._currentHomeMode = (int)WorkStage.HomeMode.StageXYOnly;
+
             return;
 
             workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);

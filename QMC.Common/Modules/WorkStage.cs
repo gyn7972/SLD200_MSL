@@ -1647,7 +1647,10 @@ namespace QMC.Common.Modules
             InitFail_CameraFine,
             InitFail_CameraPre,
             InitFail_Illuminator,
+            Home_StageXY_Timeout,
+
             LaserFail_External_Mode,
+            
 
             eDrillingDataloadFail,
             eStageMoveFail,
@@ -1871,6 +1874,15 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.InitFail_Illuminator;
             alarm.Title = "Illuminator";
             alarm.Cause = "Illuminator가 초기화 되지 않았습니다. 통신 연결 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            //
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Home_StageXY_Timeout;
+            alarm.Title = "Home_StageXY_Timeout";
+            alarm.Cause = "Home_StageXY_Timeout 초기화 되지 않았습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -3555,6 +3567,10 @@ namespace QMC.Common.Modules
             //
             Step_VerifyScannerCameraOffset,
             Step_VerifyScannerCameraOffset_Check,
+
+            Step_StageXY_Init,
+            Step_StageXY_Init_Check,                                                      //  XY 축 초기화 확인
+
             LaserOff,                                                                       //  레이저 Off
             LaserOff_Check,                                                                 //  레이저 Off 확인
 
@@ -9017,38 +9033,52 @@ namespace QMC.Common.Modules
             //Run_FindAlignMark_Func();
         }
 
-        
+
+        public enum HomeMode
+        {
+            None,
+            Full,
+            StageXYOnly
+        }
+        public int _currentHomeMode = (int)HomeMode.None;
+
         private async void Timer_MotionHome_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
             if (_isMotionHome)
-            {
-                //Console.WriteLine("MotionHome is already running. Skipping this call.");
                 return;
-            }
 
             try
             {
                 _isMotionHome = true;
-
                 if (!m_MotionHome_Start)
                 {
-                    Console.WriteLine("MotionHome is not started.");
                     return;
                 }
 
-                Run_Home_Func();
+                //Run_Home_Func();
+                if (_currentHomeMode == (int)HomeMode.Full)
+                {
+                    Run_Home_Func();
+                }
+                else if (_currentHomeMode == (int)HomeMode.StageXYOnly)
+                {
+                    Run_Home_StageXYOnly();
+                }
+                
             }
             catch (Exception ex)
             {
                 Log.Write(ex);
-                Console.WriteLine($"Error in Timer_MotionHome_Tick: {ex.Message}");
+                //Console.WriteLine($"Error in Timer_MotionHome_Tick: {ex.Message}");
             }
             finally
             {
                 _isMotionHome = false; // 플래그 해제
             }
         }
+
+
         private void Timer_MotionHome_Func(object sender, EventArgs e)
         {
             m_btimer_Motion_Home_Stop = false;
@@ -9061,9 +9091,6 @@ namespace QMC.Common.Modules
                 timer_Motion_Home.Enabled = true;
             }
         }
-
-        
-
 
         private void Timer_VerifyScannerCamOffset_Tick(object sender, ElapsedEventArgs e)
         {
@@ -10544,6 +10571,87 @@ namespace QMC.Common.Modules
         #endregion
 
 
+
+
+        enum StageXY_HomeStep
+        {
+            None = 0,
+            Start,
+            AxisAlarmCheck,
+            Complete,
+            Fail,
+        }
+        private int m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+        public bool m_bStageXYComp = false;
+
+        void Run_Home_StageXYOnly()
+        {
+            switch (m_nStageXY_HomeStep)
+            {
+                case (int)StageXY_HomeStep.Start:
+                    Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Stage X,Y 축 초기화 시작");
+
+                    m_bStageXYComp = false;
+
+                    // 서보 알람 해제
+                    for (int axis = (int)WorkStageParameter.AxisAjinEnum.X; axis <= (int)WorkStageParameter.AxisAjinEnum.Y; axis++)
+                    {
+                        if (MC_Func.MC_IsAlarm(axis))
+                        {
+                            MC_Func.MC_SetServoOnOff(axis, false);
+                            Thread.Sleep(200);
+                            MC_Func.MC_AlarmReset(axis, true);
+                            Thread.Sleep(100);
+                            MC_Func.MC_AlarmReset(axis, false);
+                            Thread.Sleep(100);
+                        }
+                        MC_Func.MC_SetServoOnOff(axis, true);
+                    }
+
+                    // 홈 서치 명령
+                    MC_Func.MC_HomeSearch((int)WorkStageParameter.AxisAjinEnum.X);
+                    MC_Func.MC_HomeSearch((int)WorkStageParameter.AxisAjinEnum.Y);
+
+                    TickCount_Start((int)TickType.TICK_HOME);
+                    m_nStageXY_HomeStep = (int)StageXY_HomeStep.AxisAlarmCheck;
+                    break;
+
+                case (int)StageXY_HomeStep.AxisAlarmCheck:
+                    if (TickCount_Elapsed((int)TickType.TICK_HOME) > 500 &&
+                        !MC_Func.MC_GetHoming((int)WorkStageParameter.AxisAjinEnum.X) &&
+                        !MC_Func.MC_GetHoming((int)WorkStageParameter.AxisAjinEnum.Y) &&
+                        MC_Func.MC_GetInposition((int)WorkStageParameter.AxisAjinEnum.X) &&
+                        MC_Func.MC_GetInposition((int)WorkStageParameter.AxisAjinEnum.Y))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Stage X,Y 축 초기화 완료");
+                        m_nStageXY_HomeStep = (int)StageXY_HomeStep.Complete;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_HOME) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Stage X,Y 축 초기화 실패 (Timeout)");
+                        m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+                        AlarmPost(AlarmKey.Home_StageXY_Timeout);
+                        MessageBox.Show("Stage X, Y 축 초기화 실패 (시간 초과)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+                case (int)StageXY_HomeStep.Complete:
+
+                    m_bStageXYComp = true;
+
+                    m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+                    Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Stage X,Y 축 초기화 루틴 완료");
+                    break;
+
+                case (int)StageXY_HomeStep.Fail:
+
+                    m_bStageXYComp = true;
+
+                    m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+                    Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Stage X,Y 축 초기화 실패 처리 완료");
+                    break;
+            }
+        }
 
         #region Work Stage Move Function
 
@@ -16412,6 +16520,52 @@ namespace QMC.Common.Modules
                     }
 
                     break;
+
+                case (int)LaserDrilling_Step.Step_StageXY_Init:
+
+                    m_nStageXY_HomeStep = (int)StageXY_HomeStep.Start;
+                    _currentHomeMode = (int)WorkStage.HomeMode.StageXYOnly;
+                    m_btimer_Motion_Home_Stop = false;
+                    timer_Motion_Home.Enabled = true;
+                    m_MotionHome_Start = true;
+                    m_bStageXYComp = false;
+
+                    rtc.CtlReset(); // RTC 초기화
+                    rtc.ListBegin(laser, ListType.Auto);
+                    rtc.ListJump(Vector2.Zero);
+                    rtc.ListEnd();
+                    rtc.ListExecute();
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init_Check;
+                    break;
+
+                case (int)LaserDrilling_Step.Step_StageXY_Init_Check:
+
+                    if (m_bStageXYComp)
+                    {
+                        m_MotionHome_Start = false;
+                        m_btimer_Motion_Home_Stop = true;
+                        timer_Motion_Home.Enabled = false;
+                        _currentHomeMode = (int)WorkStage.HomeMode.None;
+                        m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 5)
+                    {
+                        m_MotionHome_Start = false;
+                        m_btimer_Motion_Home_Stop = true;
+                        timer_Motion_Home.Enabled = false;
+                        _currentHomeMode = (int)WorkStage.HomeMode.None;
+                        m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+
+                        m_strTemp = "Step_StageXY_Init 실패.";
+                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_StageXY_Init_Check", m_strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    break;
+
 
                 case (int)LaserDrilling_Step.LaserOff:
 

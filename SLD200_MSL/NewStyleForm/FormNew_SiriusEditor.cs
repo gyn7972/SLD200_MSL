@@ -445,9 +445,7 @@ namespace SLD200_MSL
 
             //  Arc 를 Polyline 으로 만들 경우
             Config.LwPolylineBulgeToLines = true;
-
             Config.LwPolylineBulgeToLineMinThreshold = (float)0.001;
-
             if (Equipment.Machine_PolylineCurve_Resolution < 1)
                 Config.LwPolylineBulgePrecision = 100;
             else
@@ -556,7 +554,6 @@ namespace SLD200_MSL
                 //}
                 //var rtc = ScannerFactory.CreateRtc6(0, kfactor, LaserModes.Yag1, RtcSignalLevels.ActiveHigh, RtcSignalLevels.ActiveHigh, correctionFile);     //  Sirius2
             }
-
 
             // basic frequency and pulse width
             // laser frequency : 50KHz, pulse width : 2usec (주파수 50KHz, 펄스폭 2usec)
@@ -762,47 +759,19 @@ namespace SLD200_MSL
             {
                 timer_RtcInit.Enabled = false;
 
-                //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_NONE;
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
-
-                //if (btnTest_RTC6.BackColor == Color.GreenYellow)
-                //    return;
-                //if (btnTest_syncAxis.BackColor == Color.GreenYellow)
-                //{
-                //    var mb = new MessageBoxYesNo();
-                //    if (DialogResult.Yes != mb.ShowDialog("Question ?", "RTC6 모드로 변경하시겠습니까?"))
-                //        return;
-                //}
-                //btnTest_RTC6.BackColor = Color.GreenYellow;
-                //btnTest_syncAxis.BackColor = Color.Gray;
-                ////btnTest_syncAxis.Enabled = false;
-                //Equipment.RtcMode_syncAxis = (int)Equipment.RtcMode.RTC_RTC6;
 
                 Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
                 if (Rtc_Init())
                 {
-                    //
                     Equipment._InitDeviceStatus.Scanner = true;
-                    //MessageBox.Show("Scanner Board 초기화 완료", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     Equipment._InitDeviceStatus.Scanner = false;
                     MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
-
-                //Log.Write("SLD-200", "RTC_Initialize", "Recipe 화면의 Sirius Editor 초기화");
-
-                //// 신규 문서 생성
-                //var doc = new DocumentDefault();
-
-                //// 문서 지정
-                //SiriusEditor.Document = doc;
-                //SiriusEditor.Marker = workStage.SiriusEditor.Marker;
-                //SiriusEditor.Laser = workStage.SiriusEditor.Laser;
-                //SiriusEditor.Rtc = workStage.SiriusEditor.Rtc;
             }
-            //timer_RtcInit.Enabled = true;
         }
 
         private void FormNew_CommunicationTerminal_Shown(object sender, EventArgs e)
