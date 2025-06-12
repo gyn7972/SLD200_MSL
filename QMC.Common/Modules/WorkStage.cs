@@ -15066,7 +15066,7 @@ namespace QMC.Common.Modules
                             else
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry");
-                                m_nSocketAlign_Retry_Max = 0;
+                                m_nSocketAlign_Retry_Max = 3;
                                 if (m_nSocketAlign_Retry_Count < m_nSocketAlign_Retry_Max)
                                 {
                                     m_nSocketAlign_Retry_Count++;
@@ -19014,14 +19014,14 @@ namespace QMC.Common.Modules
                                                              m_dLaserHeightSensorSocket_Value,
                                                              retryOffset);
 
-                                Log.Write("SLD-200", $"센서 응답 지연 - 리트라이 {m_nSensorRetryCount}/{MAX_SENSOR_RETRY}");
+                                Log.Write("SLD-200", $"센서 응답 - 리트라이 {m_nSensorRetryCount}/{Equipment.Machine_HeightSensorRetry_Count}");
                                 TickCount_Start((int)TickType.TICK_MAIN);
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
                                 break;
                             }
                             else
                             {
-                                Log.Write("SLD-200", $"센서 응답 지연 - 리트라이 완료");
+                                Log.Write("SLD-200", $"센서 응답 - 리트라이 완료");
                                 m_bSensorResponseReady = false; // 응답 소비 완료
                                 m_nSensorRetryCount = 0;
                             }
