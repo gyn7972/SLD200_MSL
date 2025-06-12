@@ -20779,6 +20779,16 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 완료 확인");
 
+                        double dPoscurX = 0.0;
+                        double dPoscurY = 0.0;
+                        dPoscurX = MC_Func.MC_GetEncPos((int)nAxis.X);
+                        dPoscurY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+                        Log.Write("StageScannerPos",
+                                    "Socket NO : " + m_nDrillingWork_Group_Count.ToString() +
+                                    "  FieldSize NO : " + m_nDividedRegion_Region_CurrentIndex_forZigZag.ToString() +
+                                    "  Interpolated Target Pos (X: " + dPoscurX.ToString("F3") +
+                                    ", Y: " + dPoscurY.ToString("F3") + ")");
+
                         TickCount_Start((int)TickType.TICK_MAIN);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime;
                     }
@@ -20790,8 +20800,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:
                     {
-                        //
-                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
+                        // 여기를 막을꺼냐... 말꺼냐...
+                        //if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
                         {
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                         }
@@ -20876,7 +20886,9 @@ namespace QMC.Common.Modules
                     break;
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole:                                  //  List 에 데이터 추가
-                    //for (int nObject = 0; nObject < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex].nRegion_ObjectTotalNum; nObject++)
+                    
+                    //Scanner 0,0 으로 보내고 실행.
+                    rtc.ListJump(Vector2.Zero);
                     for (m_nDrillingWork_Repeat_Count = 0; m_nDrillingWork_Repeat_Count < /*Config.ParamConfig.Drilling_Repeat_Count*/m_nDrillingWork_Repeat_Count_Total; m_nDrillingWork_Repeat_Count++)
                     {
                         switch (m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[m_nLaserDrilling_InGroup_HoleCount].nObjectType)
@@ -20885,21 +20897,17 @@ namespace QMC.Common.Modules
                                 m_bRightAngle = LaserDrilling_StepDividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_HolePoli();
                                 break;
 
-
                             case (int)ObjectType.OBJECT_CIR:
                                 LaserDrilling_StepDividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_HoleCircle();
                                 break;
-
 
                             case (int)ObjectType.OBJECT_ARC:
                                 LaserDrilling_StepDividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_HoleArc();
                                 break;
 
-
                             case (int)ObjectType.OBJECT_RECT:
                                 LaserDrilling_StepDividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_HoleRect();
                                 break;
-
 
                             case (int)ObjectType.OBJECT_LINE:
                                 LaserDrilling_StepDividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_HoleLine();
@@ -21304,6 +21312,9 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect:                                  //  List 에 데이터 추가
                     //todo : 김영남 속도 개선중 
+
+                    //Scanner 0,0 으로 보내고 실행.
+                    rtc.ListJump(Vector2.Zero);
                     for (int nObject = 0; nObject < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum; nObject++)
                     {
                         switch (m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nObjectType)
@@ -23045,7 +23056,6 @@ namespace QMC.Common.Modules
 
                 //  사각형 돌릴 때 쓰던거
                 entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
-
                 m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
             }
 
@@ -23553,10 +23563,7 @@ namespace QMC.Common.Modules
 
                 m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
-
-
                 Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List Open");
-
 
                 if ((Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].ProcessPriority_P2P) &&                   //  P2P Mode
                     (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_P2PDistance > 0.0))
@@ -30961,16 +30968,15 @@ namespace QMC.Common.Modules
                     markingText.FontText = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].strMarkingText + m_strEntityData;
                     //width = GetTextWidthByCapHeight(m_strEntityData, trueType_fontName, (float)m_nEntityHeight);          //  Text 의 Center 로 보내는 게 아니니 계산할 필요 없고
 
-                    doc.Action.ActEntityAdd(markingText);
-
-                    markingText.Rotate((float)(90.0 + m_dRotateAngle));
-
                     //  Text 의 Location 좌표는 무조건 Object Center 보다 왼쪽 아래 (Center 의 X, Y 위치값이 Location 의 X, Y 위치값보다 무조건 큼)
                     //  Location 으로 가면 X 방향은 +, Y 방향은 -
                     //markingText.Location = new Vector2(((float)m_nEntityHeight / (float)2.0), -((float)width / (float)2.0));
-                    markingText.Location = new Vector2((float)(m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.Y - m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectLocation.Y), 
+                    markingText.Location = new Vector2((float)(m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.Y - m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectLocation.Y),
                                                     -(float)(m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.X - m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectLocation.X));
-                    break;
+
+                    doc.Action.ActEntityAdd(markingText);
+                    markingText.Rotate((float)(90.0 + m_dRotateAngle));
+                break;
 
                 case EType.SiriusText:
                     Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Sirius Text 데이터 생성");
@@ -31092,7 +31098,9 @@ namespace QMC.Common.Modules
             }
 
             m_bScannerLib_Success &= rtc.ListBegin(laser, ListType.Single);
-            m_bScannerLib_Success &= rtc.ListJump(Vector2.Zero);
+            
+            // 여기 넣으면.. 효과없음.
+            // m_bScannerLib_Success &= rtc.ListJump(Vector2.Zero);
 
             //  Frequency, Pulse Width 값이 있으면 적용
             if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency > 0.0)
@@ -31167,6 +31175,9 @@ namespace QMC.Common.Modules
             //m_bMarkingList_Success &= rtc.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
             m_bScannerLib_Success &= rtc.ListSpeed((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerJumpSpeed, (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerDrillingSpeed);
 
+            m_bScannerLib_Success &= rtc.ListJump(Vector2.Zero);
+            
+            // 여기를 반복 돌리면 돌아 갈려나ㅏ...
 
             var markerArg = new MarkerArgDefault()
             {
@@ -31175,7 +31186,6 @@ namespace QMC.Common.Modules
                 Laser = laser,
                 IsEnablePens = false,
             };
-
             //  데이터를 Marker Arg. 를 이용해서 Marking 한다.
             switch (m_nEntityType)
             {
@@ -39276,9 +39286,11 @@ namespace QMC.Common.Modules
                         //  Scanner Cal 진행 시 Z Offset 값이 있으면 적용하자.
                         m_dHeightOffsetScanner = 0;
 
-                        double dPosZ = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + 
+                        double dPosZ = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos].Vision_Z + 
                             m_dZOffset_SocketHeightCheck + m_dHeightOffsetScanner;
-                        MovetoWorkStage_ABS_PositionsZ(dPosZ, Type_Motor_Speed.Fine);
+
+
+                        //MovetoWorkStage_ABS_PositionsZ(dPosZ, Type_Motor_Speed.Fine);
 
                         Log.Write("SLD-200", "Scanner Calibration", 
                             $"LaserZAxis: {dPosZ}" +
@@ -39292,23 +39304,25 @@ namespace QMC.Common.Modules
 
                 case (int)ScannerCalibration_Step.ScannerCalHeight_ZOffset_Move_DoneCheck:
                     {
-                        if(IsWorkStage_Positions(nAxis.Z,
-                            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
-                            m_dZOffset_SocketHeightCheck + m_dHeightOffsetScanner))
-                        {
-                            double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
-                                $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+                        //if(IsWorkStage_Positions(nAxis.Z,
+                        //    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
+                        //    m_dZOffset_SocketHeightCheck + m_dHeightOffsetScanner))
+                        //{
+                        //    double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                        //        $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
 
-                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
-                        }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout * 5)
-                        {
-                            strTemp = string.Format("Stage Z 축, Socket 가공 Focus 조정 실패. (Timeout)");
-                            Log.Write("SLD-200", "Scanner Calibration", strTemp);
-                            MessageBox.Show(strTemp, "Error");
-                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-                        }
+                        //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
+                        //}
+                        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout * 5)
+                        //{
+                        //    strTemp = string.Format("Stage Z 축, Socket 가공 Focus 조정 실패. (Timeout)");
+                        //    Log.Write("SLD-200", "Scanner Calibration", strTemp);
+                        //    MessageBox.Show(strTemp, "Error");
+                        //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        //}
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
                     }
                     break;
 
@@ -39509,7 +39523,8 @@ namespace QMC.Common.Modules
 
                         double dPosZ = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
                             m_dZOffset_SocketHeightCheck + m_dHeightOffsetVision;
-                        MovetoWorkStage_ABS_PositionsZ(dPosZ, Type_Motor_Speed.Fine);
+
+                        //MovetoWorkStage_ABS_PositionsZ(dPosZ, Type_Motor_Speed.Fine);
 
                         Log.Write("SLD-200", "Scanner Calibration",
                             $"VisionZAxis: {dPosZ}" +
@@ -39523,24 +39538,27 @@ namespace QMC.Common.Modules
 
                 case (int)ScannerCalibration_Step.VisionCalHeight_ZOffset_Move_DoneCheck:
                     {
-                        if (IsWorkStage_Positions(nAxis.Z,
-                            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
-                            m_dZOffset_SocketHeightCheck + m_dHeightOffsetVision))
-                        {
-                            double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
-                                $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+                        //if (IsWorkStage_Positions(nAxis.Z,
+                        //    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z +
+                        //    m_dZOffset_SocketHeightCheck + m_dHeightOffsetVision))
+                        //{
+                        //    double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                        //        $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
 
-                            //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
-                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
-                        }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout * 5)
-                        {
-                            strTemp = string.Format("Stage Z 축, Vision Focus 조정 실패. (Timeout)");
-                            Log.Write("SLD-200", "Scanner Calibration", strTemp);
-                            MessageBox.Show(strTemp, "Error");
-                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-                        }
+                        //    //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
+                        //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
+                        //}
+                        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout * 5)
+                        //{
+                        //    strTemp = string.Format("Stage Z 축, Vision Focus 조정 실패. (Timeout)");
+                        //    Log.Write("SLD-200", "Scanner Calibration", strTemp);
+                        //    MessageBox.Show(strTemp, "Error");
+                        //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        //}
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
+
                     }
                     break;
 
@@ -39793,6 +39811,9 @@ namespace QMC.Common.Modules
 
                                     m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Complete;
                                 }
+
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibration_RightTopPos;
+
                             }
                             else
                             {

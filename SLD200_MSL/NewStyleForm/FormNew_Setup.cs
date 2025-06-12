@@ -2634,9 +2634,13 @@ namespace SLD200_MSL
                 workStage.m_ScannerCalibration_Start = false;
                 workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
             }
-            
 
-            
+            workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+            workStage.m_ScannerCalibration_Start = false;
+            workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
+
+
+
         }
 
         private void btnCalStart_Vision_Click(object sender, EventArgs e)
