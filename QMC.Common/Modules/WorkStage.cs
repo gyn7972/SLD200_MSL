@@ -14449,6 +14449,14 @@ namespace QMC.Common.Modules
                                         m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = alignPositions.CornerPoints[i].Y;
                                         m_st4PointPosition_DwgPos[i].dFiducial_Width = alignPositions.CornerPoints[i].Radius;
                                         m_st4PointPosition_DwgPos[i].dFiducial_Height = alignPositions.CornerPoints[i].Radius;
+
+                                        // 로그 추가
+                                        string logMsg = string.Format(
+                                            $"[Socket {nSocketNum}, CornerPoint {i} - 정렬 도면 위치 계산]\n" +
+                                            $"- 도면 기준점 X = {m_st4PointPosition_DwgPos[i].ptFiducial_Center.X:F4}, " +
+                                            $"Y = {m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y:F4}\n");
+
+                                        Log.Write("SLD-200", "Align", logMsg);
                                     }
                                 }
 
