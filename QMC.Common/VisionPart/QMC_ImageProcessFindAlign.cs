@@ -250,13 +250,13 @@ namespace QMC.Common.VisionPart
             //SaveImage(pixelData, w, h, strFileName);
             // 1. 폴더 생성 (날짜 기준)
             string dateFolder = DateTime.Now.ToString("yyyyMMdd");
-            string baseDir = Path.Combine("d:\\TempGoldpowder", dateFolder);
+            string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
             if (!Directory.Exists(baseDir))
                 Directory.CreateDirectory(baseDir);
 
             // 2. 초기 원본 이미지 저장
             string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
-            IsImageSave = true;
+            IsImageSave = false;
             SaveImage(pixelData, w, h, rawImagePath);
 
             if (bIsDarkCircleSearch == false)
@@ -669,12 +669,26 @@ namespace QMC.Common.VisionPart
             byte[] pixelData, int w, int h, int radius, double dScore, double dSpec, int nMaxInstance =20)
         {
 
+
+
             //List<RectangleF> result = new List<RectangleF>();
             QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             List<Circle> BestCircle = new List<Circle>();
             double dMaxCount = 0;
             object obj = new object();
             int nThresholdMax = 0;
+
+            // [1] 날짜 기반 폴더 생성
+            string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+            string baseDir = Path.Combine("d:\\TempGoldpowder", dateFolder);
+            if (!Directory.Exists(baseDir))
+                Directory.CreateDirectory(baseDir);
+
+            // [2] 초기 원본 이미지 저장
+            string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
+            IsImageSave = true;
+            SaveImage(pixelData, w, h, rawImagePath);
+
             Parallel.For(1, 20, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, threshold =>
             {
                 int myThreshold = threshold * 7 + 50;
@@ -712,6 +726,7 @@ namespace QMC.Common.VisionPart
                 }
 
             });
+
             circlesResult.Clear();
             var orderbyCircle = BestCircle.OrderByDescending(t => t.Score);
             int nResultCount = 0;
@@ -725,6 +740,14 @@ namespace QMC.Common.VisionPart
                 nResultCount++;
             }
             //result.Circles.AddRange(BestCircle);
+
+            // [4] 성공/실패 여부 판단 및 저장
+            string fileName = (result.Circles.Count > 0)
+                ? $"AlignSuccess_{DateTime.Now.Ticks}.bmp"
+                : $"AlignFail_{DateTime.Now.Ticks}.bmp";
+
+            string fullPath = Path.Combine(baseDir, fileName);
+            SaveImageWithOverlay(pixelData, w, h, BestCircle, fullPath);
 
             return result;
         }
@@ -1846,6 +1869,44 @@ namespace QMC.Common.VisionPart
                 bmp.Save(filename, ImageFormat.Bmp);
             }
         }
+
+        private void SaveImageWithOverlay(byte[] pixelData, int w, int h, List<Circle> circles, string filename)
+        {
+            using (Bitmap bmp = new Bitmap(w, h, PixelFormat.Format8bppIndexed))
+            {
+                // 그레이스케일 팔레트 설정
+                ColorPalette pal = bmp.Palette;
+                for (int i = 0; i < 256; i++)
+                    pal.Entries[i] = Color.FromArgb(i, i, i);
+                bmp.Palette = pal;
+
+                BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, bmp.PixelFormat);
+                int stride = bmpData.Stride;
+                for (int y = 0; y < h; y++)
+                {
+                    Marshal.Copy(pixelData, y * w, bmpData.Scan0 + y * stride, w);
+                }
+                bmp.UnlockBits(bmpData);
+
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    using (Pen pen = new Pen(Color.Red, 2))
+                    {
+                        foreach (var circle in circles)
+                        {
+                            float cx = circle.CenterX;
+                            float cy = circle.CenterY;
+                            float r = circle.Radius;
+                            g.DrawEllipse(pen, cx - r, cy - r, r * 2, r * 2);
+                            g.DrawEllipse(Pens.Yellow, cx - 2, cy - 2, 4, 4); // 중심점
+                        }
+                    }
+                }
+
+                bmp.Save(filename, ImageFormat.Bmp);
+            }
+        }
+
 
     }
 }
