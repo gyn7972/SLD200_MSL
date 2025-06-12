@@ -10581,7 +10581,7 @@ namespace QMC.Common.Modules
             Complete,
             Fail,
         }
-        private int m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+        public int m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
         public bool m_bStageXYComp = false;
 
         void Run_Home_StageXYOnly()
