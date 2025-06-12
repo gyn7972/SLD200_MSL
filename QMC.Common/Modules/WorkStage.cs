@@ -3721,6 +3721,7 @@ namespace QMC.Common.Modules
             /// 
             DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos,                          //  가공 할 Region Center 위치로 이동
             DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck,                //  가공 할 Region Center 위치로 이동 완료 확인
+            DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime,
             //  미세홀 가공 시 한번으로 하던 것.
             DividedRegion_ScannerOnly_RegionListData_RemainedCheck,                         //  가공 할 Region List Data 가 남아있는지 체크
             DividedRegion_ScannerOnly_RegionListOpen,                                       //  List Buffer Open
@@ -8489,7 +8490,6 @@ namespace QMC.Common.Modules
 
                             //  Thruhole 가공 Pass 여부를 결정하는 Flag 변수 선언을 여기에서 한번만 한다.
                             GetDrillingData_ProcessingFlagCheck();
-
 
                             if (m_stDividedRegion_GroupData != null)
                             {
@@ -17251,6 +17251,8 @@ namespace QMC.Common.Modules
                     {
                         m_strTemp = "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인";
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime;
                     }
                     else
@@ -20759,7 +20761,6 @@ namespace QMC.Common.Modules
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck;
                     break;
 
-
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck:                 //  가공 할 Region Center 위치로 이동 완료 확인
 
                     // 2025.06.01 // <- Check 구문 전부 이렇게 변경 필요.
@@ -20775,11 +20776,23 @@ namespace QMC.Common.Modules
                             (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 완료 확인");
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime;
                     }
                     else
                     {
                         m_nLaserDrilling_MainStep = tempStep;  // 다시 반영
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:
+                    {
+                        //
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+                        }
                     }
                     break;
 
@@ -21297,16 +21310,11 @@ namespace QMC.Common.Modules
 
                                 //  Polyline 도형이 직각사각형인지 마름모꼴인지 확인
                                 //  직각사각형 판정 기준 : 0번째 좌표와 1번째 좌표를 비교하여 X 좌표와 Y 좌표가 동일한 값이 있으면 직각사각형으로 본다. (직각사각형이라는 용어가 있나... -_-? 암튼...)
-
-
                                 var Data = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint;
                                 PointD[] rData = ResizePoliLine(Data , m_dHoleLayer_Resizing);
 
                                 m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling = rData;
                                 //  Rectangle 이고, 가공 사이즈 줄이기 옵션이 활성화 되어 있는 경우, Edge Point 를 줄여서 가공
-
-
-
 
                                 //  첫 번째 Edge Point 로 Jump 이동
                                 entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X -
@@ -21347,7 +21355,6 @@ namespace QMC.Common.Modules
                                     m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y;
 
                                 //  Circle 이지만, Spiral 가공 옵션이 활성화 되어 있는 경우, Spiral 데이터로 변환하여 가공
-
                                 //  Hole : Circle 타입으로 가공 (기존 가공 컨셉)
                                 if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Circle)
                                 {
@@ -23716,8 +23723,20 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
 
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = -m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+            double targetX = 0.0;
+            double targetY = 0.0;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 
+                -m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 
+                -m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+            targetX = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+            targetY = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+            Log.Write("StageScannerPos",
+                        "Socket NO : " + m_nDrillingWork_Group_Count.ToString() +
+                        "  FieldSize NO : " + m_nDividedRegion_Region_CurrentIndex_forZigZag.ToString() +
+                        "  Target Pos (X: " + targetX.ToString("F3") +
+                        ", Y: " + targetY.ToString("F3") + ")");
 
             //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용.
             //  Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
@@ -23727,11 +23746,6 @@ namespace QMC.Common.Modules
             //  속도 설정
             lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
             lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-            //MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X],
-            //                      lfVelocity, lfAccDec, lfAccDec);
-            //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y],
-            //                      lfVelocity, lfAccDec, lfAccDec);
 
             xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
             xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
@@ -23743,6 +23757,11 @@ namespace QMC.Common.Modules
                         "  Interpolated Target Pos (X: " + xyInterpolatedCoordinate.X.ToString("F3") +
                         ", Y: " + xyInterpolatedCoordinate.Y.ToString("F3") + ")");
 
+            Log.Write("StageScannerPos",
+                        "Socket NO : " + m_nDrillingWork_Group_Count.ToString() +
+                        "  FieldSize NO : " + m_nDividedRegion_Region_CurrentIndex_forZigZag.ToString() +
+                        "  Interpolated Target Pos (X: " + xyInterpolatedCoordinate.X.ToString("F3") +
+                        ", Y: " + xyInterpolatedCoordinate.Y.ToString("F3") + ")");
 
             TickCount_Start((int)TickType.TICK_MAIN);
         }
@@ -33352,66 +33371,80 @@ namespace QMC.Common.Modules
                                                     }
                                                 }
 
-                                                // Todo: Test 후 적용.
-                                                //if (group.GetType().Name == "Circle" || 
-                                                //    group.GetType().Name == "Arc")
-                                                //{
-                                                //    //// Hole 면적을 구하고 Divided 영역의 센터를 Hole 센터로 옮겨야함.
-                                                //    for (int m_Y = 0; m_Y < m_nGroupIndex_TotalY; m_Y++)
-                                                //    {
-                                                //        for (int m_X = 0; m_X < m_nGroupIndex_TotalX; m_X++)
-                                                //        {
-                                                //            int regionIndex = (m_Y * m_nGroupIndex_TotalX) + m_X;
-                                                //            var region = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex];
+                                                // Todo: Test 후 적용. - Scan영역 분할 후 hole 영역이 가공영역의 중심이 되어 drilling 하는 기능 : 검증 필요.
+                                                {
+                                                    //if (group.GetType().Name == "Circle" ||
+                                                    //    group.GetType().Name == "Arc")
+                                                    //{
+                                                    //    Log.Write("DivideRegion", "DivideRegion", $"[Group={m_nGroupCount}] Circle/Arc 기반 중심 좌표 보정 시작");
 
-                                                //            double sumX = 0.0;
-                                                //            double sumY = 0.0;
-                                                //            int holeCount = 0;
+                                                    //    //// Hole 면적을 구하고 Divided 영역의 센터를 Hole 센터로 옮겨야함.
+                                                    //    for (int m_Y = 0; m_Y < m_nGroupIndex_TotalY; m_Y++)
+                                                    //    {
+                                                    //        for (int m_X = 0; m_X < m_nGroupIndex_TotalX; m_X++)
+                                                    //        {
+                                                    //            int regionIndex = (m_Y * m_nGroupIndex_TotalX) + m_X;
+                                                    //            var region = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex];
 
-                                                //            int nTotalObject = region.nRegion_ObjectTotalNum;
-                                                //            for (int pt = 0; pt < nTotalObject; pt++)
-                                                //            {
-                                                //                var obj = region.m_stDividedRegion_ObjectData[pt];
-                                                //                {
-                                                //                    double centerX = 0.0;
-                                                //                    double centerY = 0.0;
-                                                //                    centerX += obj.dEdgePoint[0].X; //dEdgePoint[0]: center, dEdgePoint[1] : radius 
-                                                //                    centerY += obj.dEdgePoint[0].Y;
+                                                    //            double sumX = 0.0;
+                                                    //            double sumY = 0.0;
+                                                    //            int holeCount = 0;
 
-                                                //                    sumX += centerX;
-                                                //                    sumY += centerY;
-                                                //                    holeCount++;
-                                                //                }
-                                                //            }
+                                                    //            int nTotalObject = region.nRegion_ObjectTotalNum;
+                                                    //            for (int pt = 0; pt < nTotalObject; pt++)
+                                                    //            {
+                                                    //                var obj = region.m_stDividedRegion_ObjectData[pt];
+                                                    //                {
+                                                    //                    double centerX = 0.0;
+                                                    //                    double centerY = 0.0;
+                                                    //                    centerX += obj.dEdgePoint[0].X; //dEdgePoint[0]: center, dEdgePoint[1] : radius 
+                                                    //                    centerY += obj.dEdgePoint[0].Y;
 
-                                                //            if (holeCount > 0)
-                                                //            {
-                                                //                double centerX = sumX / holeCount;
-                                                //                double centerY = sumY / holeCount;
-                                                //                region.dRegionCenter.X = centerX;
-                                                //                region.dRegionCenter.Y = centerY;
+                                                    //                    sumX += centerX;
+                                                    //                    sumY += centerY;
+                                                    //                    holeCount++;
+                                                    //                }
+                                                    //            }
 
-                                                //                // 반드시 struct 복사
-                                                //                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex] = region;
-                                                //            }
-                                                //            else // else 기존 중심 그대로 유지
-                                                //            {
-                                                //                //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.X =
-                                                //                //m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
-                                                //                //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.Y =
-                                                //                //m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
-                                                //                region.dRegionCenter.X =
-                                                //                    m_dGroupStartPos_X + (m_dDrilling_FOV_Width * m_X) + (m_dDrilling_FOV_Width / 2.0);
-                                                //                region.dRegionCenter.Y =
-                                                //                    m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * m_Y) - (m_dDrilling_FOV_Height / 2.0);
+                                                    //            if (holeCount > 0)
+                                                    //            {
+                                                    //                double centerX = sumX / holeCount;
+                                                    //                double centerY = sumY / holeCount;
+                                                    //                region.dRegionCenter.X = centerX;
+                                                    //                region.dRegionCenter.Y = centerY;
+                                                    //                Log.Write("SLD-200", "DivideRegion",
+                                                    //                            $"[Region {regionIndex}] Hole 기반 → Center = ({centerX:F3}, {centerY:F3}), Count = {holeCount}");
 
-                                                //                // 반드시 struct 복사
-                                                //                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex] = region;
-                                                //            }
-                                                //        }
-                                                //    }
-                                                //}
-                                                
+                                                    //                double centerXOld = m_dGroupStartPos_X + (m_dDrilling_FOV_Width * m_X) + (m_dDrilling_FOV_Width / 2.0);
+                                                    //                double centerYOld = m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * m_Y) - (m_dDrilling_FOV_Height / 2.0);
+                                                    //                Log.Write("SLD-200", "DivideRegion",
+                                                    //                            $"[Region {regionIndex}] 기존 → Default Center = ({centerXOld:F3}, {centerYOld:F3})");
+
+                                                    //                // 반드시 struct 복사
+                                                    //                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex] = region;
+                                                    //            }
+                                                    //            else // else 기존 중심 그대로 유지
+                                                    //            {
+                                                    //                //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.X =
+                                                    //                //m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
+                                                    //                //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.Y =
+                                                    //                //m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
+                                                    //                region.dRegionCenter.X =
+                                                    //                    m_dGroupStartPos_X + (m_dDrilling_FOV_Width * m_X) + (m_dDrilling_FOV_Width / 2.0);
+                                                    //                region.dRegionCenter.Y =
+                                                    //                    m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * m_Y) - (m_dDrilling_FOV_Height / 2.0);
+
+                                                    //                Log.Write("SLD-200", "DivideRegion",
+                                                    //                            $"[Region {regionIndex}] Hole 없음 → Default Center = ({region.dRegionCenter.X:F3}, {region.dRegionCenter.Y:F3})");
+
+                                                    //                // 반드시 struct 복사
+                                                    //                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex] = region;
+                                                    //            }
+                                                    //        }
+                                                    //    }
+                                                    //}
+                                                }
+
                                                 //  Divided 영역 개수
                                                 m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[0].nRegion_Num = m_nGroupIndex_TotalX * m_nGroupIndex_TotalY;
                                                 m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[0].nRegion_Num_X = m_nGroupIndex_TotalX;
@@ -34071,7 +34104,6 @@ namespace QMC.Common.Modules
 
 
                                     //  요건 보고 살리던가 말던가... 살리긴 허야는디..
-
                                     //  데이터 정렬
                                     //if (Config.ParamConfig.Drilling_DataSort_Use)
                                     //{
@@ -35148,9 +35180,11 @@ namespace QMC.Common.Modules
                                 break;
                             }
                         }
+
+                        // 알람 처리 아닌가..
                         if (!hasValidGroup)
                         {
-                            Log.Write("Marking", "[Error] Outline Layer에는 최소 하나 이상의 Group이 포함되어야 합니다.");
+                            Log.Write("Error", "[Error] Outline Layer에는 최소 하나 이상의 Group이 포함되어야 합니다.");
                             return -1;
                         }
 
@@ -35168,10 +35202,8 @@ namespace QMC.Common.Modules
                             else
                             {
                                 LayerIsGroup = true;
-
                                 m_nCount = 1;
                             }
-
                             break;
                         }
 
@@ -36736,14 +36768,12 @@ namespace QMC.Common.Modules
                 if (m_ptFiducial.Length > 0)
                 {
                     //  Fiducial 데이터의 개수가 Socket 개수의 4배수인지 확인한다.
-
                     if (m_stDividedRegion_GroupData != null)                                                //  Hole1 Layer 가 있는 경우
                     {
                         //if (m_ptFiducial.Length == (m_stDividedRegion_GroupData[0].nGroup_Num * 4))
                         if ((m_ptFiducial.Length >= 4) && (m_stDividedRegion_GroupData.Length > 0))
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 4개 이상입니다.");
-
+                            //Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 4개 이상입니다.");
                             for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
                             {
                                 m_ptSocketCenter.X = m_stDividedRegion_GroupData[i].dGroupCenter.X;
@@ -41755,6 +41785,8 @@ namespace QMC.Common.Modules
             if (xOk && yOk && zOk)
             {
                 retryCount = 0;
+
+                TickCount_Start((int)TickType.TICK_MAIN);
                 return true;
             }
 

@@ -2259,7 +2259,8 @@ namespace SLD200_MSL
                     // 다른 곳 사용시!!! 아래 switch 구문 messagebox Log 등으로 수정 필요.!
                     // 선택 가공을 위해 Drilling Data Parsing 도 해준다.
                     var mb = new MessageBoxOk();
-                    int m_nReturn = workStage.GetDrillingData();
+                    //int m_nReturn = workStage.GetDrillingData();
+                    int m_nReturn = workStage.GetDrillingData(true);
                     switch (m_nReturn)
                     {
                         case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:

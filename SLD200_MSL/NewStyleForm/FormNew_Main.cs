@@ -50,6 +50,8 @@ using Layer = SpiralLab.Sirius.Layer;
 using static QMC.Common.Vision.EureSys.GenICam;
 using System.Text.RegularExpressions;
 using Group = SpiralLab.Sirius.Group;
+using SLD200.NewStyleForm.NewSubForm;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace SLD200_MSL
 {
@@ -3562,6 +3564,21 @@ namespace SLD200_MSL
         
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            try
+            {
+                var moduleUI = new FormNewSub_ModuleStatus();
+                moduleUI.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
+                moduleUI.Text = "모듈 상태 확인";
+                moduleUI.StartPosition = FormStartPosition.CenterParent;
+                moduleUI.Show();  // 모달리스
+                Log.Write("UI", "ModuleStatus 테스트 창이 열렸습니다.");
+            }
+            catch (Exception ex)
+            {
+                Log.Write("UI", $"ModuleStatus 테스트 창 열기 실패: {ex.Message}");
+                MessageBox.Show("모듈 상태 창 열기 실패:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             //workStage.workStageParameter.DO_AirCurtain_Purge(false);
             return;
             workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
@@ -4380,6 +4397,8 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            return;
+
             workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
 
             //workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);

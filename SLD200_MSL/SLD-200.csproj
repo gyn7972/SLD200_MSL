@@ -698,6 +698,12 @@
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.Designer.cs">
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ModuleStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ModuleStatus.Designer.cs">
+      <DependentUpon>FormNewSub_ModuleStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_GoldPowder.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1541,6 +1547,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.resx">
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_ModuleStatus.resx">
+      <DependentUpon>FormNewSub_ModuleStatus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_GoldPowder.resx">
       <DependentUpon>FormNewSub_Recipe_GoldPowder.cs</DependentUpon>

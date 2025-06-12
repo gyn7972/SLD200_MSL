@@ -40,6 +40,8 @@ namespace QMC.Common.Global
 
         public bool IsUsedInThisLayer { get; set; } = false;
 
+        public bool IsSelected { get; set; } = false;
+
         public void Reset()
         {
             DisplacementZ = 0;
@@ -52,6 +54,7 @@ namespace QMC.Common.Global
             IsDrilled = false;
             IsSuccess = false;
             IsUsedInThisLayer = false;
+            IsSelected = false;
         }
     }
 
@@ -71,6 +74,8 @@ namespace QMC.Common.Global
 
         public List<SocketProcessData> SocketList { get; set; } = new List<SocketProcessData>();
 
+        public bool IsSelected { get; set; } = false;
+
         public void Reset()
         {
             IsPreAligned = false;
@@ -79,6 +84,8 @@ namespace QMC.Common.Global
 
             foreach (var socket in SocketList)
                 socket.Reset();
+
+            IsSelected = false;
         }
 
         public SocketProcessData GetSocket(int socketNumber)
