@@ -40888,9 +40888,15 @@ namespace QMC.Common.Modules
                 Directory.CreateDirectory(m_strLaserHeightValueDataPath);
             }
 
-            string m_strRecipeName_Now = System.IO.Path.GetFileName(m_strRecipeName);
+            string m_strRecipeName_Now = Path.GetFileName(m_strRecipeName);
+            string dateString = DateTime.Now.ToString("yyyy_MM_dd");
 
-            string fileName = string.Format("{0}{1}_{2}", LogManager.Instance.GetLogPath() + "\\LaserHeightData\\", m_strRecipeName_Now, DateTime.Now.ToString("yyyy_MM_dd"));
+            // 파일명에 bFinal 여부 따라 구분
+            string fileSuffix = bFinal ? "_Final" : "_Retry";
+            string fileName = $"{m_strLaserHeightValueDataPath}\\{m_strRecipeName_Now}_{dateString}{fileSuffix}.txt";
+
+            //string m_strRecipeName_Now = System.IO.Path.GetFileName(m_strRecipeName);
+            //string fileName = string.Format("{0}{1}_{2}", LogManager.Instance.GetLogPath() + "\\LaserHeightData\\", m_strRecipeName_Now, DateTime.Now.ToString("yyyy_MM_dd"));
 
             DateTime now = DateTime.Now;
             string timeString = now.ToString("yyyy-MM-dd HH_mm_ss");
