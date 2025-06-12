@@ -250,7 +250,7 @@ namespace QMC.Common.VisionPart
             //SaveImage(pixelData, w, h, strFileName);
             // 1. 폴더 생성 (날짜 기준)
             string dateFolder = DateTime.Now.ToString("yyyyMMdd");
-            string baseDir = Path.Combine("d:\\TempGoldpowder", dateFolder);
+            string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
             if (!Directory.Exists(baseDir))
                 Directory.CreateDirectory(baseDir);
 
