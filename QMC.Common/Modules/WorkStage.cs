@@ -18972,6 +18972,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get:                                                    //  Laser Height Sensor 값 읽기
 
+                    double retryOffset = 0.0;
                     if (m_bSensorResponseReady)
                     {
                         if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 100)
@@ -18979,17 +18980,23 @@ namespace QMC.Common.Modules
                             m_nSensorRetryCount++;
 
                             // 정상 범위 측정값만 리스트에 저장
-                            if ((m_dLaserHeightSensorSocket_Value > -4.5) && (m_dLaserHeightSensorSocket_Value < 5.5))
+                            if ((m_dLaserHeightSensorSocket_Value < -4.5) ||
+                                    (m_dLaserHeightSensorSocket_Value > 5.5) ||
+                                    (m_dLaserHeightSensorSocket_Value < -99.9))
                             {
+                                retryOffset = 0.0;
+                            }
+                            else
+                            { 
                                 m_listSensorRetryValues.Add(m_dLaserHeightSensorSocket_Value);
-                                double retryOffset = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                                retryOffset = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
                                 m_listSensorRetryOffsets.Add(retryOffset);
                             }
                             
                             //if (m_nSensorRetryCount <= MAX_SENSOR_RETRY)
                             if (m_nSensorRetryCount <= Equipment.Machine_HeightSensorRetry_Count)
                             {
-                                double retryOffset = 0.0;
+                                retryOffset = 0.0;
                                 if ((m_dLaserHeightSensorSocket_Value < -4.5) ||
                                     (m_dLaserHeightSensorSocket_Value > 5.5) ||
                                     (m_dLaserHeightSensorSocket_Value < -99.9))
