@@ -19034,7 +19034,16 @@ namespace QMC.Common.Modules
                     double avgSensorValue = 0.0;
                     double avgRetryOffset = 0.0;
 
-                    if (m_listSensorRetryValues.Count > 0)
+                    if (m_listSensorRetryValues.Count > 2)
+                    {
+                        // 센서값 기준 Min/Max 제거 후 평균 계산
+                        var filteredValues = m_listSensorRetryValues.OrderBy(x => x).Skip(1).Take(m_listSensorRetryValues.Count - 2).ToList();
+                        avgSensorValue = filteredValues.Average();
+
+                        var filteredOffsets = m_listSensorRetryOffsets.OrderBy(x => x).Skip(1).Take(m_listSensorRetryOffsets.Count - 2).ToList();
+                        avgRetryOffset = filteredOffsets.Average();
+                    }
+                    else if (m_listSensorRetryValues.Count > 0)
                     {
                         avgSensorValue = m_listSensorRetryValues.Average();
                         avgRetryOffset = m_listSensorRetryOffsets.Average();
