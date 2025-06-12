@@ -14573,8 +14573,6 @@ namespace QMC.Common.Modules
 
                     if (alignMode == AlignMode.Socket)
                     {
-                        //double dTargetX = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[m_nSocketAlign_FiducialCount].X;
-                        //double dTargetY = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[m_nSocketAlign_FiducialCount].Y;
                         double dTargetX = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
                         double dTargetY = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
                         xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
@@ -14632,7 +14630,6 @@ namespace QMC.Common.Modules
                         {
                             double dTargetX = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
                             double dTargetY = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
-
                             strTemp = string.Format(
                                 "Fiducial Mark No: {0}, TargetX: {1:F4}, TargetY: {2:F4}",
                                 m_nSocketAlign_FiducialCount,
@@ -14953,7 +14950,7 @@ namespace QMC.Common.Modules
                                 }
                             }
                         }
-                        else
+                        else //AlignMode.GoldPowder
                         {
                             double totalOffsetX = 0.0;
                             double totalOffsetY = 0.0;
@@ -15001,6 +14998,7 @@ namespace QMC.Common.Modules
 
                                         if (Math.Abs(offsetX) > 0.03 || Math.Abs(offsetY) > 0.03)
                                         {
+                                            // ?
                                             continue;
                                         }
 
@@ -15832,19 +15830,6 @@ namespace QMC.Common.Modules
                         {
                             if (m_bCO2_repairMode)
                             {
-                                //nCenterX = (int)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
-                                //nOffsetX = nCenterX - Camera_HighRes.Resolution.Width / 2;
-
-                                //nCenterY = (int)(Fiducial_circlesResult[0].Y + Fiducial_circlesResult[0].Height / 2);
-                                //nOffsetY = nCenterY - Camera_HighRes.Resolution.Height / 2;
-
-                                //dXoffset = nOffsetX * this.Config.ParamConfig.UpperVision_Scale_X;
-                                //dYoffset = nOffsetY * this.Config.ParamConfig.UpperVision_Scale_Y;
-
-                                //currentPosition.X -= dXoffset;
-                                //currentPosition.Y += dYoffset;
-                                //bFound = true;
-
                                 if (bFound == false)
                                 {
                                     nCenterX = (int)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
@@ -15877,6 +15862,7 @@ namespace QMC.Common.Modules
                                 currentPosition.X -= dXoffset;
                                 currentPosition.Y += dYoffset;
                                 bFound = true;
+
                             }
                         }
 

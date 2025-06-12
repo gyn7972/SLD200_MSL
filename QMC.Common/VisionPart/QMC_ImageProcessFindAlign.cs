@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Lifetime;
 using System.Threading.Tasks;
 
@@ -244,10 +245,20 @@ namespace QMC.Common.VisionPart
             , double miscellaneous_FiducialMarkSocre = 0.7
             , bool bSpiralSearch = true)
         {
-
-            string strFileName = "d:\\Temp\\AlignOrg" + DateTime.Now.Ticks.ToString() + ".bmp";
-            IsImageSave = true;
+            //string strFileName = "d:\\TempGoldpowder\\AlignGoldPowder" + DateTime.Now.Ticks.ToString() + ".bmp";
+            //IsImageSave = true;
             //SaveImage(pixelData, w, h, strFileName);
+            // 1. 폴더 생성 (날짜 기준)
+            string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+            string baseDir = Path.Combine("d:\\TempGoldpowder", dateFolder);
+            if (!Directory.Exists(baseDir))
+                Directory.CreateDirectory(baseDir);
+
+            // 2. 초기 원본 이미지 저장
+            string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
+            IsImageSave = true;
+            SaveImage(pixelData, w, h, rawImagePath);
+
             if (bIsDarkCircleSearch == false)
             {
                 //pixelData = InversImage(pixelData);
@@ -397,9 +408,12 @@ namespace QMC.Common.VisionPart
             if (bFindCircle == false)
             {
                 circlesResult.Clear();
-                strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
+                //strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
+                //IsImageSave = true;
+                //SaveImage(pixelData, w, h, strFileName);
+                string failPath = Path.Combine(baseDir, $"AlignFail_{DateTime.Now.Ticks}.bmp");
                 IsImageSave = true;
-                SaveImage(pixelData, w, h, strFileName);
+                SaveImage(pixelData, w, h, failPath);
                 return new QMC_ImageProcessFindAlignResult();
             }
 
@@ -421,6 +435,10 @@ namespace QMC.Common.VisionPart
                 bFindCircle = true;
                 result.Circles.Add(resultCircle);
                 result.ScoreCollection.Add(dScore);
+
+                // 최종 결과 이미지 저장 (오버레이 포함)
+                string overlayPath = Path.Combine(baseDir, $"AlignSuccess_{DateTime.Now.Ticks}.bmp");
+                SaveImageWithOverlay(pixelData, w, h, points, resultCircle, overlayPath);
             }
             else
             {
@@ -1778,6 +1796,57 @@ namespace QMC.Common.VisionPart
             bitmap.UnlockBits(bitmapData);
             return pixelData;
         }
+
+
+        private void SaveImageWithOverlay(byte[] pixelData, int w, int h, List<PointF> polygon, Circle? circle, string filename)
+        {
+            using (Bitmap bmp = new Bitmap(w, h, PixelFormat.Format8bppIndexed))
+            {
+                // 그레이스케일 팔레트 적용
+                ColorPalette pal = bmp.Palette;
+                for (int i = 0; i < 256; i++) pal.Entries[i] = Color.FromArgb(i, i, i);
+                bmp.Palette = pal;
+
+                // 이미지 데이터 복사
+                BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, bmp.PixelFormat);
+                int stride = bmpData.Stride;
+                for (int y = 0; y < h; y++)
+                {
+                    Marshal.Copy(pixelData, y * w, bmpData.Scan0 + y * stride, w);
+                }
+                bmp.UnlockBits(bmpData);
+
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    // Polygon 외곽선
+                    if (polygon != null && polygon.Count > 1)
+                    {
+                        using (Pen pen = new Pen(Color.Lime, 1))
+                        {
+                            for (int i = 0; i < polygon.Count - 1; i++)
+                                g.DrawLine(pen, polygon[i], polygon[i + 1]);
+                            g.DrawLine(pen, polygon[polygon.Count - 1], polygon[0]); // 닫기
+                        }
+                    }
+
+                    // 원 중심 및 반지름
+                    if (circle != null)
+                    {
+                        using (Pen pen = new Pen(Color.Red, 2))
+                        {
+                            float cx = circle.Value.CenterX;
+                            float cy = circle.Value.CenterY;
+                            float r = circle.Value.Radius;
+                            g.DrawEllipse(pen, cx - r, cy - r, r * 2, r * 2);
+                            g.DrawEllipse(Pens.Yellow, cx - 2, cy - 2, 4, 4); // 중심점 표시
+                        }
+                    }
+                }
+
+                bmp.Save(filename, ImageFormat.Bmp);
+            }
+        }
+
     }
 }
 
