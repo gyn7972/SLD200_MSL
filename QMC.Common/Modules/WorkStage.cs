@@ -14988,11 +14988,11 @@ namespace QMC.Common.Modules
                                                             .First();
 
                                         //여기 부호가 중요할듯.
-                                        //double offsetX = measuredHole.X - matched.X;
-                                        //double offsetY = measuredHole.Y - matched.Y;
+                                        double offsetX = measuredHole.X - matched.X;
+                                        double offsetY = measuredHole.Y - matched.Y;
                                         //이거든 둘중에 하나인데.. 
-                                        double offsetX = matched.X - measuredHole.X;
-                                        double offsetY = matched.Y - measuredHole.Y;
+                                        //double offsetX = matched.X - measuredHole.X;
+                                        //double offsetY = matched.Y - measuredHole.Y;
 
                                         double distance = Math.Sqrt(offsetX * offsetX + offsetY * offsetY);
 
