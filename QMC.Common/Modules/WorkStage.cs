@@ -9065,7 +9065,6 @@ namespace QMC.Common.Modules
                 {
                     Run_Home_StageXYOnly();
                 }
-                
             }
             catch (Exception ex)
             {
@@ -10573,7 +10572,7 @@ namespace QMC.Common.Modules
 
 
 
-        enum StageXY_HomeStep
+        public enum StageXY_HomeStep
         {
             None = 0,
             Start,
@@ -20955,7 +20954,7 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:
                     {
                         // 여기를 막을꺼냐... 말꺼냐...
-                        //if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 100)
                         {
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                         }
