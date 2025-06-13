@@ -944,6 +944,8 @@ namespace QMC.Common.Modules
             public string strMarkingText;
             public string strFontName;
 
+            public int nRepeat;
+
             //  Text (Sirius-Text, TruType-Text) 데이터
             public stMarking_DetailedTextData[] stTextData;     //  Text 데이터 저장 배열
             public int nTextNum;                                //  Text 데이터 개수
@@ -10573,7 +10575,7 @@ namespace QMC.Common.Modules
 
 
 
-        enum StageXY_HomeStep
+        public enum StageXY_HomeStep
         {
             None = 0,
             Start,
@@ -10581,7 +10583,7 @@ namespace QMC.Common.Modules
             Complete,
             Fail,
         }
-        private int m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+        public int m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
         public bool m_bStageXYComp = false;
 
         void Run_Home_StageXYOnly()
@@ -16365,9 +16367,9 @@ namespace QMC.Common.Modules
             ActionLaserDrillingStep?.Invoke((LaserDrilling_Step)m_nLaserDrilling_MainStep);
 
             // 현재 LayerEnum, Layer, Socket 객체 미리 선언
-            Equipment.LayerList layerEnum = GetCurrentLayerEnum(m_LayerType);
-            var layer = DrillingManager.GetLayer(layerEnum);
-            var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+            Equipment.LayerList layerEnum;  // = GetCurrentLayerEnum(m_LayerType);
+            LayerProcessData layer;         // = DrillingManager.GetLayer(layerEnum);
+            SocketProcessData socket;       // = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
             LaserDrilling_Step currentStep = (LaserDrilling_Step)m_nLaserDrilling_MainStep;
             switch (m_nLaserDrilling_MainStep)
             {
@@ -17007,7 +17009,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.StageZ_MoveProcessingPos_DoneCheck:                            //  Z 축, 가공 위치로 이동 완료 체크
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z))
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 가공 위치로 이동 완료 확인");
 
@@ -18376,6 +18379,11 @@ namespace QMC.Common.Modules
                                 //  글자 단위
                                 for (m_nDrillingWork_Text_Count = 0; m_nDrillingWork_Text_Count < m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].nTextNum; m_nDrillingWork_Text_Count++)
                                 {
+                                    // 마킹 갯수만큼 하도록 하기.
+                                    // 마킹 갯수만큼 하기. hole1 있을때랑.
+                                    // hole1 그룹 갯수 있을때랑. 마킹이 달라야 한다. 
+                                    // stTextData[m_nDrillingWork_Text_Count] <- 여기에 마킹 정보가 있지만. Hole1 Group 갯수에 따라서 마킹 가능 유/무가 달라진다....
+
                                     //  Element 단위 (TrueType Font 의 Text 데이터는 모두 PolyLine 으로만 구성)
                                     for (m_nDrillingWork_Element_Count = 0; m_nDrillingWork_Element_Count < m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData[m_nDrillingWork_Text_Count].nTextElementNum; m_nDrillingWork_Element_Count++)
                                     {
@@ -20011,6 +20019,8 @@ namespace QMC.Common.Modules
                                 m_bPreAlignCompleted = false;
 
                                 // 추가: 전체 소켓 NG 처리
+                                layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                layer = DrillingManager.GetLayer(layerEnum);
                                 foreach (var layerList in DrillingManager.LayerList)
                                 {
                                     foreach (var socketList in layer.SocketList)
@@ -20954,11 +20964,21 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:
                     {
-                        // 여기를 막을꺼냐... 말꺼냐...
-                        //if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
+                        if(Equipment.Machine_LaserType_CO2)
                         {
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 100) //안전화 타임.
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+                            }
                         }
+                        else
+                        {
+                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 50) //안전화 타임.
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+                            }
+                        }
+                        
                     }
                     break;
 
@@ -31118,6 +31138,9 @@ namespace QMC.Common.Modules
                     markingText.Width = (float)m_nEntityWidth;                                  //  Text 는 Width 값이 있어도 Cap-Height 값에 의해 Width 가 가변된다.
                     markingText.CapHeight = (float)m_nEntityHeight;
 
+                    // 마킹 여기 Test.
+                    markingText.Repeat = (uint)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_DrillingRepetition; //  Text 의 Repeat 값은 Recipe 에서 설정한 값으로 한다.
+
                     markingText.FontName = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].strFontName; // siriusType_fontName;
                     markingText.FontText = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].strMarkingText + m_strEntityData;
                     //width = GetTextWidthByCapHeight(m_strEntityData, trueType_fontName, (float)m_nEntityHeight);          //  Text 의 Center 로 보내는 게 아니니 계산할 필요 없고
@@ -36170,6 +36193,9 @@ namespace QMC.Common.Modules
                                 //  2. Text 가공의 경우 Document 에 등록된 데이터를 이용해서 가공하거나, 데이터만 변경해서 사용한다.
                                 case EType.Text:                                                        //  True Type Font, Hatch (외곽선 있는 텍스트, 내부 Hatch 는 선택)
                                     var text = entity as SpiralLab.Sirius.Text;                         //  외곽선은 Polyline, Hatch 는 Line 으로 구성.
+
+
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].nRepeat = (int)text.Repeat;
 
                                     //text.TextData = "T";
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_stMarking_SocketData.nRegion_ObjectCount].strMarkingText = text.FontText;
