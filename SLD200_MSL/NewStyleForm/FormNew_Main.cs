@@ -4399,7 +4399,7 @@ namespace SLD200_MSL
             workStage.m_btimer_Motion_Home_Stop = false;
             workStage.m_MotionHome_Start = true;
             workStage._currentHomeMode = (int)WorkStage.HomeMode.StageXYOnly;
-            workStage.m_nStageXY_HomeStep = (int)StageXY_HomeStep.Start;
+            workStage.m_nStageXY_HomeStep = (int)WorkStage.StageXY_HomeStep.Start;
             return;
 
             workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
