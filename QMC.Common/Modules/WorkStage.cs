@@ -3124,6 +3124,10 @@ namespace QMC.Common.Modules
             /// </summary>
             /// 
             DividedRegion_DrillingWork_Start,                                               //  분할 영역 Drilling 작업 시작
+
+            DividedRegion_DrillingWork_HoleLayer_DelayWait,
+            DividedRegion_DrillingWork_HoleLayer_DelayWait_Check,
+
             MapDataChange_ScannerMap2,                                                      //  Scanner 위치 Map Data 로 변경
             MapDataFlagCheck_ScannerMap2,                                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
             DividedRegion_ScannerOnly_RegionRepeatStart,                                    //  가공 반복 시작
@@ -8923,6 +8927,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevFindAlignMarkStep)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "FindAlignMark", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "FindAlignMark", $"Step: {currentStep}");
                 m_prevFindAlignMarkStep = currentStep;
             }
         }
@@ -13473,6 +13478,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevMainWorkStep)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "MainWork", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "MainWork", $"Step: {currentStep}");
                 m_prevMainWorkStep = currentStep;
             }
 
@@ -14854,6 +14860,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevSocketAlignStep)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "SocketAlign", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "SocketAlign", $"Step: {currentStep}");
                 m_prevSocketAlignStep = currentStep;
             }
 
@@ -19905,6 +19912,83 @@ namespace QMC.Common.Modules
                 /// 
                 case (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start:                      //  분할 영역 Drilling 작업 시작
 
+                    // 여기서 일정 시간 기다렸다가 수행한다.
+                    // 조건이 아래인 경우.
+                    if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && 
+                        (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole50))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Group, (Hole2 ~ Hole50) 일정시간 대기.");
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_HoleLayer_DelayWait;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Group, ScannerOnly Mode, 반복 가공 시작");
+                        m_nDividedRegion_Region_CurrentIndex = 0;
+                        m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+
+                        //  모듈의 소켓 가공은 모두 건너뛰고 다른 가공만 진행해야 할 경우, 여기서 소켓 가공을 넘긴다.
+                        if (Equipment.SocketDrilling_Skip)
+                        {
+                            //  소켓 가공 건너뛰기. (현재 소켓 얼라인을 완료했으므로 다음 소켓이 남아있는지 확인하러 이동)
+                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                                                        // 여기가서 기존 공통 얼라인 Data 확인하고 다음 가공하는지 확인 필요하다.
+                                                                        // Hol 가공 끝나고나서 얼라인 정보를 다른 Layer에 넘기는게 아닌지 확인 필요.
+                                                                        // 정상 가공일때는 다른 Layer는 얼라인 재수행 안하고 가공 중.
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        }
+                        else if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                        {
+                            if (m_bCO2_repairMode)
+                            {
+                                //  소켓 가공 정상 진행
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                            }
+                            else
+                            {
+                                //선택 가공시 조건
+                                if (m_nSelectedSocket_Index >= 0)
+                                {
+                                    // Hole은 가공 안하는데...
+                                    // Group_Count 를 증가 시키면 Hole은 넘기고 Drilling 하지 않을까?
+                                    m_nDrillingWork_Group_Count++;// = m_nSelectedSocket_Index;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                                }
+                                else
+                                {
+                                    // Hole은 가공 안하니깐.
+                                    m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //  소켓 가공 정상 진행
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                        }
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DividedRegion_DrillingWork_HoleLayer_DelayWait:
+
+                    if(Equipment.Machine_Hole02_50_Wait_Enable)
+                    {
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > Equipment.Machine_Hole02_50_Wait_Time) // 원하는 시간 동안. Delay
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_HoleLayer_DelayWait_Check;
+                        }
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_HoleLayer_DelayWait_Check;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_DrillingWork_HoleLayer_DelayWait_Check:
+
                     Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Group, ScannerOnly Mode, 반복 가공 시작");
                     m_nDividedRegion_Region_CurrentIndex = 0;
                     m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
@@ -19914,15 +19998,14 @@ namespace QMC.Common.Modules
                     {
                         //  소켓 가공 건너뛰기. (현재 소켓 얼라인을 완료했으므로 다음 소켓이 남아있는지 확인하러 이동)
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-
-                        // 여기가서 기존 공통 얼라인 Data 확인하고 다음 가공하는지 확인 필요하다.
-                        // Hol 가공 끝나고나서 얼라인 정보를 다른 Layer에 넘기는게 아닌지 확인 필요.
-                        // 정상 가공일때는 다른 Layer는 얼라인 재수행 안하고 가공 중.
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck; 
+                                                                    // 여기가서 기존 공통 얼라인 Data 확인하고 다음 가공하는지 확인 필요하다.
+                                                                    // Hol 가공 끝나고나서 얼라인 정보를 다른 Layer에 넘기는게 아닌지 확인 필요.
+                                                                    // 정상 가공일때는 다른 Layer는 얼라인 재수행 안하고 가공 중.
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                     }
-                    else if(Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                    else if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                     {
-                        if(m_bCO2_repairMode)
+                        if (m_bCO2_repairMode)
                         {
                             //  소켓 가공 정상 진행
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
@@ -19951,6 +20034,7 @@ namespace QMC.Common.Modules
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
                     }
                     break;
+
 
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //  Map Data 변경 (Scanner) - 시작
@@ -22030,6 +22114,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevLaserDrillingStep)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}");
                 m_prevLaserDrillingStep = currentStep;
             }
             return 0;

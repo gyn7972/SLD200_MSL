@@ -2831,6 +2831,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevStacker0Step)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "Stacker0ModulePickupWaitPos", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "Stacker0ModulePickupWaitPos", $"Step: {currentStep}");
                 m_prevStacker0Step = currentStep;
             }
 
@@ -3632,6 +3633,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevStacker1Step)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "Stacker1ModulePickupWaitPos", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "Stacker1ModulePickupWaitPos", $"Step: {currentStep}");
                 m_prevStacker1Step = currentStep;
             }
 
@@ -7000,6 +7002,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevLoaderTransferStep)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "LoaderTransfer", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "LoaderTransfer", $"Step: {currentStep}");
                 m_prevLoaderTransferStep = currentStep;
             }
             return 0;     
@@ -8677,6 +8680,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevMAlignStep)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "MAlign", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "MAlign", $"Step: {currentStep}");
                 m_prevMAlignStep = currentStep;
             }
 

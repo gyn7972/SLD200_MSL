@@ -1733,6 +1733,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevStacker0PutdownStep)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "Stacker0Putdown", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "Stacker0Putdown", $"Step: {currentStep}");
                 m_prevStacker0PutdownStep = currentStep;
             }
 
@@ -2543,6 +2544,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevStacker1PutdownStep)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "Stacker1Putdown", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "Stacker1Putdown", $"Step: {currentStep}");
                 m_prevStacker1PutdownStep = currentStep;
             }
 
@@ -4811,6 +4813,7 @@ namespace QMC.Common.Modules
             if (currentStep != m_prevUnloaderTransferStep)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "UnloaderTransfer", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "UnloaderTransfer", $"Step: {currentStep}");
                 m_prevUnloaderTransferStep = currentStep;
             }
 
