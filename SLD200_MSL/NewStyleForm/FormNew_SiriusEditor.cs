@@ -415,11 +415,27 @@ namespace SLD200_MSL
 
         public bool Imported_DrawingFile_SameCheck(string strFileName)
         {
-            if (strFileName == SiriusEditor.Document.FileName)
-                return true;
-            else
-                return false;
+            bool bRtn = false;
+            try
+            {
+                if (SiriusEditor.Document == null)
+                {
+                    return false;
+                }
+
+                if (strFileName == SiriusEditor.Document.FileName)
+                    bRtn = true;
+                else
+                    bRtn = false;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
         }
+
         private void Timer_Status_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.

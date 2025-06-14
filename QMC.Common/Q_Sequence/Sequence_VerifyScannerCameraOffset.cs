@@ -1127,7 +1127,16 @@ namespace QMC.Common.Q_Sequence
                         result.Y += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY;
 
                         xyInterpolatedCoordinate = result;
-                        workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        //  속도 설정
+                        if (false)
+                        {
+                            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        }
+                        //workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
                         TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
                         m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.StageXY_Move_LaserHeightSensorPos_DoneCheck;
                     }
@@ -1306,7 +1315,16 @@ namespace QMC.Common.Q_Sequence
                             workStage.MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
                         }
 
-                        workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        //  속도 설정
+                        if (false)
+                        {
+                            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        }
+                        //workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
 
                         TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
                         m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.StageXY_Move_ScannerCalibrationPos_DoneCheck;
@@ -1454,7 +1472,16 @@ namespace QMC.Common.Q_Sequence
                             workStage.MapData_Apply((int)nMapData_Type.MapData_Stage_FineCam);
                         }
 
-                        workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        //  속도 설정
+                        if (false)
+                        {
+                            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        }
+                        //workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
 
                         TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
                         m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.StageXY_Move_CrossMarkCenterPos_DoneCheck;
@@ -1856,7 +1883,16 @@ namespace QMC.Common.Q_Sequence
                                 workStage.MapData_Apply((int)nMapData_Type.MapData_Stage_FineCam);
                             }
 
-                            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                            //  속도 설정
+                            if (false)
+                            {
+                                workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
+                            }
+                            else
+                            {
+                                workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                            }
+                            //workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
 
                             TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.CrossMarkCenter_XYAlign_CorrectionMove_DoneCheck;

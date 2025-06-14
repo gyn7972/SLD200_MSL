@@ -357,6 +357,7 @@ namespace SLD200_MSL
             {
                 m_formSiriusEditor = new FormNew_SiriusEditor();
                 m_formSiriusEditor.CreateSiriusEditor();
+                Thread.Sleep(500);
             }
 
             //창이 열려있을때 새로 눌렀을 경우. ( 창이 아래에 숨는경우 )
@@ -364,6 +365,11 @@ namespace SLD200_MSL
             string newPath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
             if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(newPath))
             {
+                if(m_formSiriusEditor.SiriusEditor.Document == null)
+                {
+                    Log.Write("SiriusEditor_Error", "Button Click", "Sirius Editor Document is null. Importing new drawing file.");
+                    return;
+                }
                 // 이전 도면 초기화
                 m_formSiriusEditor.SiriusEditor.Document.FileName = string.Empty;
                 m_formSiriusEditor.SiriusEditor.Document.Action.ActNew();

@@ -195,6 +195,22 @@ namespace SLD200_MSL
             textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
             textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";
 
+            //  Work Stage Process Speed
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+            workStage.m_pProcessConfigData.LoadFromIni(strFIle);
+
+            string strTemp = string.Empty;
+            strTemp = workStage.m_pProcessConfigData.nSpeedAxisX.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = strTemp;
+            strTemp = workStage.m_pProcessConfigData.nSpeedAxisY.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text = strTemp;
+            strTemp = workStage.m_pProcessConfigData.nAccelAxisX.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text = strTemp;
+            strTemp = workStage.m_pProcessConfigData.nAccelAxisY.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = strTemp;
+
+
             InitializeJogButtons();
         }
 
@@ -1105,7 +1121,6 @@ namespace SLD200_MSL
                     textBox_Config_BDS_Movement_MaskY.Text = string.Format("{0:F3}", 0.0);
                 }
             }
-
 
             //for (int i = 0; i < (int)LoaderParameter.MotionKey.Max; i++)
             //{
@@ -5960,6 +5975,41 @@ namespace SLD200_MSL
             {
                 FormVerifyScannerVisionOffsetPopup.Show();
                 FormVerifyScannerVisionOffsetPopup.Activate();
+            }
+        }
+
+        private void button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string strFIle = "";
+                strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+                if (File.Exists(strFIle) == false)
+                {
+                    MessageBox.Show("ConfigFile 파일이 없습니다.\r\n\r\n[Default값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (File.Exists(strFIle) == false)
+                {
+                    File.Create(strFIle);
+                }
+
+                // 값 가져오기
+                string strTemp = string.Empty;
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text;
+                workStage.m_pProcessConfigData.nSpeedAxisX = Equipment.ToInt(strTemp);
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text;
+                workStage.m_pProcessConfigData.nSpeedAxisY = Equipment.ToInt(strTemp);
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text;
+                workStage.m_pProcessConfigData.nAccelAxisX = Equipment.ToInt(strTemp);
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text;
+                workStage.m_pProcessConfigData.nAccelAxisY = Equipment.ToInt(strTemp);
+
+                workStage.m_pProcessConfigData.SaveToIni(strFIle);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
             }
         }
     }

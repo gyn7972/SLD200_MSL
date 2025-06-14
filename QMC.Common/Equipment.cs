@@ -328,6 +328,7 @@ namespace QMC.Common
         {
             Fine = 0,
             Coarse,
+            Process
         }
 
         //  Communication 장치 파라미터
