@@ -365,6 +365,11 @@ namespace SLD200_MSL
             string newPath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
             if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(newPath))
             {
+                if(m_formSiriusEditor.SiriusEditor.Document == null)
+                {
+                    Log.Write("SiriusEditor_Error", "Button Click", "Sirius Editor Document is null. Importing new drawing file.");
+                    return;
+                }
                 // 이전 도면 초기화
                 m_formSiriusEditor.SiriusEditor.Document.FileName = string.Empty;
                 m_formSiriusEditor.SiriusEditor.Document.Action.ActNew();
