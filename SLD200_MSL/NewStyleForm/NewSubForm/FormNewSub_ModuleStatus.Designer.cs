@@ -59,7 +59,7 @@
             this.groupBoxModuleStatus.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBoxModuleStatus.Location = new System.Drawing.Point(0, 0);
             this.groupBoxModuleStatus.Name = "groupBoxModuleStatus";
-            this.groupBoxModuleStatus.Size = new System.Drawing.Size(569, 291);
+            this.groupBoxModuleStatus.Size = new System.Drawing.Size(734, 291);
             this.groupBoxModuleStatus.TabIndex = 0;
             this.groupBoxModuleStatus.TabStop = false;
             this.groupBoxModuleStatus.Text = "Module Status";
@@ -90,7 +90,7 @@
             this.listViewLayers.HideSelection = false;
             this.listViewLayers.Location = new System.Drawing.Point(240, 40);
             this.listViewLayers.Name = "listViewLayers";
-            this.listViewLayers.Size = new System.Drawing.Size(300, 200);
+            this.listViewLayers.Size = new System.Drawing.Size(482, 200);
             this.listViewLayers.TabIndex = 1;
             this.listViewLayers.UseCompatibleStateImageBehavior = false;
             this.listViewLayers.View = System.Windows.Forms.View.Details;
@@ -99,20 +99,22 @@
             // columnHeaderLayer
             // 
             this.columnHeaderLayer.Text = "Layer";
-            this.columnHeaderLayer.Width = 80;
+            this.columnHeaderLayer.Width = 102;
             // 
             // columnHeaderType
             // 
             this.columnHeaderType.Text = "Type";
-            this.columnHeaderType.Width = 80;
+            this.columnHeaderType.Width = 115;
             // 
             // columnHeaderSocketCount
             // 
             this.columnHeaderSocketCount.Text = "Sockets";
+            this.columnHeaderSocketCount.Width = 100;
             // 
             // columnHeaderUsable
             // 
             this.columnHeaderUsable.Text = "Usable";
+            this.columnHeaderUsable.Width = 154;
             // 
             // buttonProcessAll
             // 
@@ -138,7 +140,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(569, 291);
+            this.ClientSize = new System.Drawing.Size(734, 291);
             this.Controls.Add(this.groupBoxModuleStatus);
             this.Name = "FormNewSub_ModuleStatus";
             this.groupBoxModuleStatus.ResumeLayout(false);

@@ -38,7 +38,7 @@ namespace QMC.Common.Global
         public bool IsDrilled { get; set; }
         public bool IsSuccess { get; set; }
 
-        public bool IsUsedInThisLayer { get; set; } = false;
+        public bool IsUsedInThisLayer { get; set; } = true;
 
         public bool IsSelected { get; set; } = false;
 
@@ -53,7 +53,7 @@ namespace QMC.Common.Global
             GoldOffsetX = GoldOffsetY = GoldTheta = 0;
             IsDrilled = false;
             IsSuccess = false;
-            IsUsedInThisLayer = false;
+            IsUsedInThisLayer = true;
             IsSelected = false;
         }
     }

@@ -24,6 +24,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using SpiralLab.Sirius;
 using System.Numerics;
 using SharpGL;
+using System.Xml.Linq;
 
 //using OpenTK;
 //using OpenTK.Graphics.OpenGL;
@@ -374,10 +375,12 @@ namespace SLD200_MSL
             //var doc = DocumentFactory.CreateDefault();
             //doc.ActOpen(strFileName);
             //siriusEditor.Document = doc;
-
             if (File.Exists(strFileName) == false)
             {
                 MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                SiriusEditor.Document.FileName = string.Empty;
+                SiriusEditor.Document.Action.ActNew();
                 return;
             }
 
@@ -395,7 +398,6 @@ namespace SLD200_MSL
             {
                 //SiriusEditor.Document.New();
                 doc = DocumentSerializer.OpenSirius(strFileName);
-                
             }
             if(doc!=null)
             {
@@ -407,7 +409,6 @@ namespace SLD200_MSL
                     }
                 }
                 SiriusEditor.Document = doc;
-
             }
             
         }
@@ -744,6 +745,9 @@ namespace SLD200_MSL
         {
             SiriusEditor.Document = doc;
             Equipment.SetEqpSiriusViewerDocument(doc);
+
+            // 이동 비활성화 설정 추가
+            //SiriusEditor.Document.Action.ActionMode = ActionModes.Select;
         }
 
         #endregion
@@ -788,6 +792,10 @@ namespace SLD200_MSL
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
+                {
+                    //m_formSiriusEditor.Import_DrawingFile(m_formSiriusEditor.SiriusEditor.Document.FileName);
+                }
+
                 e.Cancel = true;
                 Hide();
             }
@@ -2567,6 +2575,11 @@ namespace SLD200_MSL
         private void SiriusEditor_CausesValidationChanged(object sender, EventArgs e)
         {
             int ntest = 0;
+        }
+
+        private void FormNew_SiriusEditor_MouseMove(object sender, MouseEventArgs e)
+        {
+
         }
     }
 }

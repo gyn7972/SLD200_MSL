@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static QMC.Common.Equipment;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
@@ -16,7 +17,7 @@ namespace SLD200.NewStyleForm.NewSubForm
     {
         private DrillingProcessManager drillingProcessManager;
         private LayerProcessData selectedLayer;
-
+        private ToolTip socketToolTip = new ToolTip();
         public FormNewSub_ModuleStatus()
         {
             InitializeComponent();
@@ -34,7 +35,6 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             LoadLayerList();
             listViewLayers.Items[0].Selected = true; // 기본 선택
-            //CreateSocketButtons(GetMaxSocketCount());
         }
 
         private void LoadLayerList()
@@ -45,10 +45,15 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 foreach (var layer in drillingProcessManager.LayerList)
                 {
+                    // Fiducial, PreAlign 레이어는 표시하지 않음
+                    if (layer.LayerType == LayerType.LAYER_FIDUCIAL || layer.LayerType == LayerType.LAYER_PREALIGN)
+                        continue;
+
+                    var activeSockets = layer.SocketList.Count(s => s.IsSelected);
                     var item = new ListViewItem(layer.LayerName);
                     item.SubItems.Add(layer.LayerType.ToString());
                     item.SubItems.Add(layer.SocketList.Count.ToString());
-                    item.SubItems.Add(layer.SocketList.Any(s => s.IsUsedInThisLayer) ? "O" : "X");
+                    item.SubItems.Add(activeSockets.ToString());
                     item.Tag = layer;
 
                     listViewLayers.Items.Add(item);
@@ -95,23 +100,75 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             for (int i = 0; i < socketCount; i++)
             {
+                var socket = selectedLayer.SocketList[i];
                 var btn = new Button
                 {
                     Text = $"S{i + 1}",
                     Dock = DockStyle.Fill,
                     Tag = i,
-                    BackColor = selectedLayer.SocketList[i].IsSelected ? Color.LightGreen : SystemColors.Control
+                    BackColor = GetSocketColor(socket)
                 };
 
+                // 툴팁
+                socketToolTip.SetToolTip(btn, $"소켓 {socket.SocketNumber}\n" +
+                                            $"선택: {(socket.IsSelected ? "O" : "X")}, " +
+                                            $"가공완료: {(socket.IsDrilled ? "O" : "X")}, 성공: {(socket.IsSuccess ? "O" : "X")}");
+
+                // 좌클릭: 현재 소켓 번호 토글 (모든 레이어에 반영)
                 btn.Click += (s, e) =>
                 {
-                    int index = (int)((Button)s).Tag;
-                    var socket = selectedLayer.SocketList[index];
-                    socket.IsSelected = !socket.IsSelected;
-                    btn.BackColor = socket.IsSelected ? Color.LightGreen : SystemColors.Control;
+                    int socketNo = socket.SocketNumber;
+                    bool nextState = !socket.IsSelected;
 
-                    Log.Write("ModuleStatus", $"소켓 {socket.SocketNumber} 선택 상태: {socket.IsSelected}");
+                    foreach (var layer in drillingProcessManager.LayerList)
+                    {
+                        foreach (var sckt in layer.SocketList)
+                        {
+                            if (sckt.SocketNumber == socketNo)
+                                sckt.IsSelected = nextState;
+                        }
+                    }
+
+                    CreateSocketButtons(socketCount);
+                    LoadLayerList();
                 };
+
+                // 우클릭: Context 메뉴
+                var contextMenu = new ContextMenuStrip();
+                contextMenu.Items.Add("이 소켓만 선택", null, (s, e) =>
+                {
+                    int socketNo = socket.SocketNumber;
+
+                    foreach (var layer in drillingProcessManager.LayerList)
+                    {
+                        foreach (var sckt in layer.SocketList)
+                        {
+                            sckt.IsSelected = (sckt.SocketNumber == socketNo);
+                        }
+                    }
+
+                    CreateSocketButtons(socketCount);
+                    LoadLayerList();
+                });
+
+                contextMenu.Items.Add("선택 해제", null, (s, e) =>
+                {
+                    int socketNo = socket.SocketNumber;
+
+                    foreach (var layer in drillingProcessManager.LayerList)
+                    {
+                        foreach (var sckt in layer.SocketList)
+                        {
+                            if (sckt.SocketNumber == socketNo)
+                                sckt.IsSelected = false;
+                        }
+                    }
+
+                    CreateSocketButtons(socketCount);
+                    LoadLayerList();
+                });
+
+                btn.ContextMenuStrip = contextMenu;
 
                 int row = i / columnCount;
                 int col = i % columnCount;
@@ -120,9 +177,17 @@ namespace SLD200.NewStyleForm.NewSubForm
         }
 
 
+        private Color GetSocketColor(SocketProcessData socket)
+        {
+            if (socket.IsDrilled && socket.IsSuccess)
+                return Color.LightBlue;
+            if (socket.IsDrilled && !socket.IsSuccess)
+                return Color.IndianRed;
+            return socket.IsSelected ? Color.LightGreen : SystemColors.Control;
+        }
+
         private void ButtonProcessAll_Click(object sender, EventArgs e)
         {
-            // 전체 소켓 가공 로직
             try
             {
                 foreach (var layer in drillingProcessManager.LayerList)
@@ -145,7 +210,6 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void ButtonProcessSelected_Click(object sender, EventArgs e)
         {
-            // 선택 소켓만 가공 로직
             if (selectedLayer == null)
             {
                 MessageBox.Show("레이어를 먼저 선택해주세요.", "선택 가공 실패", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -156,7 +220,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             MessageBox.Show($"[{selectedLayer.LayerName}] 레이어의 선택된 소켓만 가공됩니다.\n장비를 시작하면 해당 소켓만 실행됩니다.", "선택 가공 준비 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // 이 함수는 실제 가공 장비 로직에서 호출됩니다
         public void ProcessSelectedSockets()
         {
             int processedCount = 0;
@@ -177,6 +240,15 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             Log.Write("Drill", $"총 {processedCount}개 소켓 가공 완료");
+        }
+
+        public void CopySelectionFromLayer(LayerProcessData sourceLayer, LayerProcessData targetLayer)
+        {
+            for (int i = 0; i < Math.Min(sourceLayer.SocketList.Count, targetLayer.SocketList.Count); i++)
+            {
+                targetLayer.SocketList[i].IsSelected = sourceLayer.SocketList[i].IsSelected;
+            }
+            Log.Write("ModuleStatus", $"레이어 [{sourceLayer.LayerName}] 선택 상태가 [{targetLayer.LayerName}]에 복사됨.");
         }
     }
 }

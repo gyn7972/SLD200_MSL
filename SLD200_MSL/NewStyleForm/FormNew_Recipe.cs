@@ -87,6 +87,8 @@ namespace SLD200_MSL
             MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
 
             m_formSiriusEditor = new FormNew_SiriusEditor();
+            m_formSiriusEditor.CreateSiriusEditor();
+            m_formSiriusEditor.Owner = this;
 
             //  Layer Data 를 보여주는 ListView 설정
             listView_Recipe_TabRecipe_LayerData.View = View.Details;
@@ -356,54 +358,73 @@ namespace SLD200_MSL
                 m_formSiriusEditor.CreateSiriusEditor();
             }
 
-            foreach ( Form openForm in Application.OpenForms)
+            //똑같은지를 왜 Check 해야하지?
+            //if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(richTextBox_Recipe_TabRecipe_DrawingFile.Text))
             {
-                if (openForm.Name == m_formSiriusEditor.Name)
-                {
-                    //  Sirius Edit 창을 열 때, 무조건 도면파일을 다시 불러오도록 변경. (얼라인 된 도면을 그대로 저장하는 경우가 있어서)
-                    //if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(richTextBox_Recipe_TabRecipe_DrawingFile.Text))
-                    {
-                        m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-                    }
-
-                    openForm.BringToFront();
-                    openForm.Show();
-                    return;
-                }
+                m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
             }
+            //else
+            //{
+            //    m_formSiriusEditor.SiriusEditor.Document.FileName = string.Empty;
+            //    m_formSiriusEditor.SiriusEditor.Document.Action.ActNew();
+            //}
 
-            if (richTextBox_Recipe_TabRecipe_DrawingFile.Text.Length != 0)
-            {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Drawing File 을 Open 하시겠습니까?\r\n\r\n[No : 마지막 작업하던 도면으로 Editor Open]"))
-                {
-                    //  해당 위치에 파일이 존재하는지 확인
-                    if (File.Exists(richTextBox_Recipe_TabRecipe_DrawingFile.Text) == false)
-                    {
-                        var mb1 = new MessageBoxOk();
-                        mb1.ShowDialog("Error !!", "도면 파일이 없습니다.\r\n\r\n[마지막 작업하던 도면으로 Editor Open]");
-                        //return;
-                    }
-                    else
-                    {
-                        //  확장자가 도면인지 확인 (.sirius2, .dwg, .dxf)
-                        string m_strExt = Path.GetExtension(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-
-                        if ((m_strExt.ToUpper() == ".SIRIUS") || (m_strExt.ToUpper() == ".DXF"))
-                        {
-                            m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-                        }
-                        else
-                        {
-                            var mb1 = new MessageBoxOk();
-                            mb1.ShowDialog("Error !!", "도면 파일 형식이 아닙니다. (*.sirius, *.dxf)\r\n\r\n[마지막 작업하던 도면으로 Editor Open]");
-                            //return;
-                        }
-                    }
-                }
-            }
-
+            m_formSiriusEditor.BringToFront();
             m_formSiriusEditor.Show();
+            return;
+
+            //기존 코드
+            {
+
+                // 여기를 못하는 경우가 있나?
+                //foreach ( Form openForm in Application.OpenForms)
+                //{
+                //    // 이게 왜 중요하지? 그리고.. 왜 다르지?
+                //    if (openForm.Name == m_formSiriusEditor.Name)
+                //    {
+                //        //  Sirius Edit 창을 열 때, 무조건 도면파일을 다시 불러오도록 변경. (얼라인 된 도면을 그대로 저장하는 경우가 있어서)
+                //        //if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(richTextBox_Recipe_TabRecipe_DrawingFile.Text))
+                //        {
+                //            m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
+                //        }
+
+                //        openForm.BringToFront();
+                //        openForm.Show();
+                //        return;
+                //    }
+                //}
+                //// 아래 조건이 왜 있는거지?
+                //if (richTextBox_Recipe_TabRecipe_DrawingFile.Text.Length != 0)
+                //{
+                //    var mb = new MessageBoxYesNo();
+                //    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Drawing File 을 Open 하시겠습니까?\r\n\r\n[No : 마지막 작업하던 도면으로 Editor Open]"))
+                //    {
+                //        //  해당 위치에 파일이 존재하는지 확인
+                //        if (File.Exists(richTextBox_Recipe_TabRecipe_DrawingFile.Text) == false)
+                //        {
+                //            var mb1 = new MessageBoxOk();
+                //            mb1.ShowDialog("Error !!", "도면 파일이 없습니다.\r\n\r\n[마지막 작업하던 도면으로 Editor Open]");
+                //            //return;
+                //        }
+                //        else
+                //        {
+                //            //  확장자가 도면인지 확인 (.sirius2, .dwg, .dxf)
+                //            string m_strExt = Path.GetExtension(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
+                //            if ((m_strExt.ToUpper() == ".SIRIUS") || (m_strExt.ToUpper() == ".DXF"))
+                //            {
+                //                m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
+                //            }
+                //            else
+                //            {
+                //                var mb1 = new MessageBoxOk();
+                //                mb1.ShowDialog("Error !!", "도면 파일 형식이 아닙니다. (*.sirius, *.dxf)\r\n\r\n[마지막 작업하던 도면으로 Editor Open]");
+                //                //return;
+                //            }
+                //        }
+                //    }
+                //}
+                //m_formSiriusEditor.Show();
+            }
         }
 
         private void button_Recipe_TabRecipe_OpenDwg_Click(object sender, EventArgs e)
@@ -466,29 +487,6 @@ namespace SLD200_MSL
                 //  확장자가 도면인지 확인 (.sirius, .dxf)
                 string m_strExt = Path.GetExtension(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
 
-                //if ((m_strExt.ToUpper() == ".SIRIUS2") || (m_strExt.ToUpper() == ".DWG") || (m_strExt.ToUpper() == ".DXF"))           //  Sirius2
-                //{
-                //    var doc = DocumentFactory.CreateDefault();
-                //    doc.ActOpen(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-                //    workStage.siriusEditorUserControl_WorkStage.Document = doc;
-                //    workStage.MainSiriusViewer.Document = doc;
-
-                //    workStage.DrillingData_Parsing();
-
-                //    //SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl siriusEditor_Temp = new SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl();
-
-                //    //var doc = DocumentFactory.CreateDefault();
-                //    //doc.ActOpen(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-                //    //siriusEditor_Temp.Document = doc;
-
-                //    foreach (var layer in workStage.siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
-                //    {
-                //        if (layer.IsMarkerable)
-                //        {
-                //            listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
-                //        }
-                //    }
-                //}
                 if (m_strExt.ToUpper() == ".DXF")
                 {
                     //SiriusEditor.Document.New();
@@ -511,12 +509,6 @@ namespace SLD200_MSL
                     mb1.ShowDialog("Information !!", "도면 파일이 아닙니다.\r\n\r\n[available  *.sirius, *.dxf]");
                     return;
                 }
-
-                //SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl siriusEditor_Temp = new SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl();
-
-                //var doc = DocumentFactory.CreateDefault();
-                //doc.ActOpen(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-                //siriusEditor_Temp.Document = doc;
 
                 Equipment.SetEqpSiriusViewerDocument(m_formSiriusEditor.SiriusEditor.Document);
 
@@ -1576,30 +1568,13 @@ namespace SLD200_MSL
             int m_nLayerIndex = -1; 
             int m_nIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
             string m_strLayerName = "";
-
             if (m_nIndex < 0)
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", "Layer 를 선택하지 않았습니다.");
                 return;
             }
-
             m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
-
-            // 아래 코드 위험하다.
-            // Layer 를 선택하지 않았을 때, Hole1 로 설정하는 것은 위험하다. // 그냥 Apply 안하는게 맞음.
-            //if (m_nIndex < 0)
-            //{
-            //    var mb = new MessageBoxYesNo();
-            //    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Layer 를 선택하지 않았습니다.\r\n\r\nLayer \"Hole1\" 의 파라미터로 설정하시겠습니까?"))
-            //        return;
-            //    m_nLayerIndex = 0;
-            //    m_strLayerName = "Hole1";
-            //}
-            //else
-            //{
-            //    m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
-            //}
 
             //  도면 확인
             if (richTextBox_Recipe_TabRecipe_DrawingFile.Text.Length <= 0)

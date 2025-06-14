@@ -23,14 +23,6 @@ namespace QMC.Common.Parts
 
         private readonly string _stationId;
 
-        private static readonly double[] DustCollector_FrequencyDataArray = new double[]
-        {
-            59, 58.1, 57.9, 56, 53, 52, 50.9, 50,
-            49, 48, 47, 46.1, 45.5, 44, 43,
-            41, 40, 39.9, 29, 26.5, 26, 25.9,
-            23.6, 23.2, 22, 21.5, 21.2, 20
-        };
-
         public DustCollectorController(string name, CollectorPosition position, string stationId = "01") : base(name)
         {
             _stationId = stationId;

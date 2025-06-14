@@ -3569,7 +3569,8 @@ namespace SLD200_MSL
             //  음압이므로 양수가 들어와도 음수로 변경
             m_dkPa = Math.Abs(Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text));
 
-            //if ((Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) > -1.3) || (Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
+            //if ((Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) > -1.3) ||
+            //(Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
 
             if (m_dkPa == 0.0)
             {
@@ -3584,7 +3585,6 @@ namespace SLD200_MSL
             m_dkPa *= -1.0;         //  음압으로 변경
 
             workStage.m_bElectroRegulator_CommData_Received = false;
-
             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(m_dkPa);
         }
 

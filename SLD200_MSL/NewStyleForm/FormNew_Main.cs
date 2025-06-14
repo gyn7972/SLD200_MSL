@@ -2576,15 +2576,8 @@ namespace SLD200_MSL
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
         {
-            //SiriusViewer_Main.Document = Equipment.EqpSiriusViewer_Origin.Document;
-            //workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-            //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-            //Equipment.m_bDrawingFileOpen_1time = true;
-
             UpdatePCBStatus(0, 0, 3);
             return;
-
-
 
             //  RTC 초기화 테스트
             bool m_bRet = true;

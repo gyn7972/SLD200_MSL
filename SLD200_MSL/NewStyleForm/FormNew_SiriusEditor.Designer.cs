@@ -31,7 +31,6 @@ namespace SLD200_MSL
         /// </summary>
         private void InitializeComponent()
         {
-            this.SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
             this.button_DataParsing = new System.Windows.Forms.Button();
             this.button_Rotate = new System.Windows.Forms.Button();
             this.groupBox167 = new System.Windows.Forms.GroupBox();
@@ -61,40 +60,9 @@ namespace SLD200_MSL
             this.label_SiriusEditor_Divided_H = new System.Windows.Forms.Label();
             this.button_SiriusEditor_Divided = new System.Windows.Forms.Button();
             this.checkBox_SiriusEditor_Divided = new System.Windows.Forms.CheckBox();
+            this.SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
             this.groupBox167.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // SiriusEditor
-            // 
-            this.SiriusEditor.AliasName = "NoName";
-            this.SiriusEditor.AllowDrop = true;
-            this.SiriusEditor.BackColor = System.Drawing.SystemColors.Control;
-            this.SiriusEditor.Document = null;
-            this.SiriusEditor.EnablePens = true;
-            this.SiriusEditor.FileName = "NoName";
-            this.SiriusEditor.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SiriusEditor.HidePropertyGrid = false;
-            this.SiriusEditor.Index = ((uint)(0u));
-            this.SiriusEditor.Laser = null;
-            this.SiriusEditor.Location = new System.Drawing.Point(5, 5);
-            this.SiriusEditor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.SiriusEditor.Marker = null;
-            this.SiriusEditor.Motors = null;
-            this.SiriusEditor.MotorZ = null;
-            this.SiriusEditor.Name = "SiriusEditor";
-            this.SiriusEditor.PowerMap = null;
-            this.SiriusEditor.PowerMeter = null;
-            this.SiriusEditor.Progress = 0;
-            this.SiriusEditor.Rtc = null;
-            this.SiriusEditor.RtcExtension1Input = null;
-            this.SiriusEditor.RtcExtension1Output = null;
-            this.SiriusEditor.RtcExtension2Output = null;
-            this.SiriusEditor.RtcPin2Input = null;
-            this.SiriusEditor.RtcPin2Output = null;
-            this.SiriusEditor.Size = new System.Drawing.Size(1286, 871);
-            this.SiriusEditor.TabIndex = 69;
-            this.SiriusEditor.OnDocumentSave += new SpiralLab.Sirius.SiriusDocumentSave(this.SiriusEditor_OnDocumentSave);
-            this.SiriusEditor.CausesValidationChanged += new System.EventHandler(this.SiriusEditor_CausesValidationChanged);
             // 
             // button_DataParsing
             // 
@@ -406,6 +374,38 @@ namespace SLD200_MSL
             this.checkBox_SiriusEditor_Divided.Text = "Divided Use";
             this.checkBox_SiriusEditor_Divided.UseVisualStyleBackColor = true;
             // 
+            // SiriusEditor
+            // 
+            this.SiriusEditor.AliasName = "NoName";
+            this.SiriusEditor.AllowDrop = true;
+            this.SiriusEditor.BackColor = System.Drawing.SystemColors.Control;
+            this.SiriusEditor.Document = null;
+            this.SiriusEditor.EnablePens = true;
+            this.SiriusEditor.FileName = "NoName";
+            this.SiriusEditor.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SiriusEditor.HidePropertyGrid = false;
+            this.SiriusEditor.Index = ((uint)(0u));
+            this.SiriusEditor.Laser = null;
+            this.SiriusEditor.Location = new System.Drawing.Point(5, 5);
+            this.SiriusEditor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.SiriusEditor.Marker = null;
+            this.SiriusEditor.Motors = null;
+            this.SiriusEditor.MotorZ = null;
+            this.SiriusEditor.Name = "SiriusEditor";
+            this.SiriusEditor.PowerMap = null;
+            this.SiriusEditor.PowerMeter = null;
+            this.SiriusEditor.Progress = 0;
+            this.SiriusEditor.Rtc = null;
+            this.SiriusEditor.RtcExtension1Input = null;
+            this.SiriusEditor.RtcExtension1Output = null;
+            this.SiriusEditor.RtcExtension2Output = null;
+            this.SiriusEditor.RtcPin2Input = null;
+            this.SiriusEditor.RtcPin2Output = null;
+            this.SiriusEditor.Size = new System.Drawing.Size(1286, 871);
+            this.SiriusEditor.TabIndex = 69;
+            this.SiriusEditor.OnDocumentSave += new SpiralLab.Sirius.SiriusDocumentSave(this.SiriusEditor_OnDocumentSave);
+            this.SiriusEditor.CausesValidationChanged += new System.EventHandler(this.SiriusEditor_CausesValidationChanged);
+            // 
             // FormNew_SiriusEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -443,6 +443,7 @@ namespace SLD200_MSL
             this.Text = "QMC Sirius Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormNew_SiriusEditor_FormClosing);
             this.Shown += new System.EventHandler(this.FormNew_CommunicationTerminal_Shown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FormNew_SiriusEditor_MouseMove);
             this.groupBox167.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
