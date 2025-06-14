@@ -4245,17 +4245,6 @@ namespace QMC.Common.Modules
                         m_strTemp = "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.LD_TransferZ_Move_ReadyPos_Timeout);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        return AlarmPost(AlarmKey.LD_TransferZ_Move_ReadyPos_Timeout);
-
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer Z 축, 대기 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -4283,13 +4272,6 @@ namespace QMC.Common.Modules
                         m_strTemp = "Transfer X 축, 대기 위치로 이동 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.LD_TransferX_Move_ReadyPos_Timeout);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, 대기 위치로 이동 실패. (Timeout)");
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-                        return AlarmPost(AlarmKey.LD_TransferX_Move_ReadyPos_Timeout);
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
-                        MessageBox.Show("Transfer X 축, 대기 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -4336,7 +4318,6 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byTimeout_Loader = true;
                             Loader_CurrentStatus_Save_StopedByTimeout();
                             return AlarmPost(AlarmKey.LD_Stacker0_ModulePickup_ConditionCheck_Stacker0FullSensorNotExist);
-                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                         }                        
                     }
                     else if (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
@@ -5253,6 +5234,7 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 2단계 이동 완료");
 
+                        //이거 사용 유/무를 떠나서 무조건 해야 하겠는데?
                         if (Equipment.Machine_VacuumSensor_Enable)
                         {
                             //  여기서 Module 을 정상적으로 들어 올렸는지 한번 더 체크
@@ -5280,9 +5262,7 @@ namespace QMC.Common.Modules
                                     //////////////////////////////////////////////////////////////////////////////////////////
 
                                     m_nStacker1_Retry_Count = 0;                    //  Pick Up Retry Count 초기화
-
                                     m_bStacker1_PickUp_Failed = true;
-
                                     //  Pick Up 실패. Stacker1 에서 Pick Up 할 수 있는 조건인지 체크
                                     if (!Equipment.Loader_RPort_Pause && 
                                         loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0) && 
@@ -7889,12 +7869,11 @@ namespace QMC.Common.Modules
         private void Loader_Transfer_Step_Stacker1PickUp_TransferZ_Move_ReadyPos2_1stStep(out double m_dSpeed, out double m_dAccDec)
         {
             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 시작. (1단계, 현재 위치에서 10mm 위)");
-
             double m_dDownDistance = 5.0;
-
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
             //  Target Position 변경 : 대기 위치 1단계 --> 10mm 고정으로 올리던 것을, 옵션으로 조정 가능하게 변경
+            double dInterlockDistance = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_SafetyPos].LD_Transfer_Z - Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance;
             if (Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance < 10.0)
             {
                 loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + 10.0;
@@ -7903,7 +7882,6 @@ namespace QMC.Common.Modules
             {
                 loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance;
             }
-
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1] = MC_Func.MC_GetEncPos((int)nAxis.Z1);
 
             //  LoaderZ 축을 올리면서 Stacker 축을 내릴 경우
@@ -8484,10 +8462,6 @@ namespace QMC.Common.Modules
                         m_strTemp = "Module Size 가 입력되지 않았으므로 동작 중지.";
                         Log.Write("SLD-200", Equipment.User_Name, "MAlign_Step", m_strTemp);
                         return AlarmPost(AlarmKey.MAligner_Error);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Size 가 입력되지 않았으므로 동작 중지.");
-                        //return AlarmPost(AlarmKey.LD_Maligner_Not_Set_Module_Size);
-                        m_nMAlign_Step = (int)MAlign_Step.None;
                     }
                     else
                     {
@@ -8570,13 +8544,6 @@ namespace QMC.Common.Modules
                         m_strTemp = "Module Vacuum On 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "MAlign_Step", m_strTemp);
                         return AlarmPost(AlarmKey.MAligner_VacuumOn_Fail);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On 실패. (Timeout)");
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-                        return AlarmPost(AlarmKey.MAligner_VacuumOn_Fail);
-                        m_nMAlign_Step = (int)MAlign_Step.None;
-                        MessageBox.Show("Module Vacuum On 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -8605,13 +8572,6 @@ namespace QMC.Common.Modules
                         m_strTemp = "M-Aligner Module Size 보다 1.0 mm 더 좁게 Close 이동 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "MAlign_Step", m_strTemp);
                         return AlarmPost(AlarmKey.MAligner_MoveXY_Narrowly_Fail);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "M-Aligner Module Size 보다 1.0 mm 더 좁게 Close 이동 실패. (Timeout)");
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-                        return AlarmPost(AlarmKey.MAligner_MoveXY_Narrowly_Fail);
-                        m_nMAlign_Step = (int)MAlign_Step.None;
-                        MessageBox.Show("M-Aligner Module Size 보다 1.0 mm 더 좁게 Close 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -8639,13 +8599,6 @@ namespace QMC.Common.Modules
                         m_strTemp = "계산된 M-Aligner Module Size 위치로 이동 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "MAlign_Step", m_strTemp);
                         return AlarmPost(AlarmKey.MAligner_MoveXY_LittleWidely_Fail);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "계산된 M-Aligner Module Size 위치로 이동 실패. (Timeout)");
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-                        return AlarmPost(AlarmKey.MAligner_MoveXY_LittleWidely_Fail);
-                        m_nMAlign_Step = (int)MAlign_Step.None;
-                        MessageBox.Show("계산된 M-Aligner Module Size 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 

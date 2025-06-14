@@ -357,6 +357,7 @@ namespace SLD200_MSL
             {
                 m_formSiriusEditor = new FormNew_SiriusEditor();
                 m_formSiriusEditor.CreateSiriusEditor();
+                Thread.Sleep(500);
             }
 
             //창이 열려있을때 새로 눌렀을 경우. ( 창이 아래에 숨는경우 )

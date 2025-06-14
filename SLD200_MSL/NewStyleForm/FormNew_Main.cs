@@ -3554,6 +3554,8 @@ namespace SLD200_MSL
         
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            return;
+
             try
             {
                 var moduleUI = new FormNewSub_ModuleStatus();
@@ -4387,6 +4389,8 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            return;
+
             // 시작 Test
             workStage.timer_Motion_Home.Enabled = true;
             workStage.m_btimer_Motion_Home_Stop = false;

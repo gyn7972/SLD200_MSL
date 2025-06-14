@@ -74,6 +74,7 @@ using System.Net.Sockets;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using netDxf.Tables;
 using QMC.Common.Q_Sequence;
+using QMC.Common.Q_Config;
 
 
 namespace QMC.Common.Modules
@@ -3806,6 +3807,13 @@ namespace QMC.Common.Modules
 
             m_bPassedSocket_Exist = false;
 
+            if(m_pProcessConfigData == null)
+            {
+                m_pProcessConfigData = new ProcessConfigData();
+            }
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+            m_pProcessConfigData.LoadFromIni(strFIle);
 
             //m_ScannerCameraOffsetSequence = new Sequence_VerifyScannerCameraOffset();
         }
@@ -14016,7 +14024,16 @@ namespace QMC.Common.Modules
                         }
                     }
 
-                    MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Coarse);
+
+                    //  속도 설정
+                    if (false)
+                    {
+                        MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Process);
+                    }
+                    else
+                    {
+                        MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Coarse);
+                    }
 
                     TickCount_Start((int)TickType.TICK_ALIGN);
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignXY_MoveFiducialPosDoneCheck;
@@ -15028,9 +15045,18 @@ namespace QMC.Common.Modules
                     if (i != 0)
                     {
                         // 이동 명령 실행
-                        MC_Func.MovePosition(currentPosition, lfVelocity, lfAccDec, lfAccDec); // 속도 및 가속도는 예시 값
+                        //  속도 설정
+                        if (false)
+                        {
+                            MovetoWorkStage_ABS_PositionsXY(currentPosition, Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            MovetoWorkStage_ABS_PositionsXY(currentPosition, Type_Motor_Speed.Coarse);
+                        }
+                        //MC_Func.MovePosition(currentPosition, lfVelocity, lfAccDec, lfAccDec); // 속도 및 가속도는 예시 값
                         int tick = 0;
-                        Thread.Sleep(50);
+                        Thread.Sleep(100);
                         while (!MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
                         !MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, currentPosition.X))
                         {
@@ -15047,7 +15073,7 @@ namespace QMC.Common.Modules
                             if (tick > 5000)
                                 break;
                         }
-                        Thread.Sleep(100);
+                        Thread.Sleep(200);
                     }
 
 
@@ -17276,8 +17302,16 @@ namespace QMC.Common.Modules
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
                     //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                    if (false)
+                    {
+                        lfVelocity = m_pProcessConfigData.nSpeedAxisX;
+                        lfAccDec = m_pProcessConfigData.nAccelAxisX;
+                    }
+                    else
+                    {
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                    }
 
                     xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
                     xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
@@ -23229,8 +23263,16 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  속도 설정
-            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            if (false)
+            {
+                lfVelocity = m_pProcessConfigData.nSpeedAxisX;
+                lfAccDec = m_pProcessConfigData.nAccelAxisX;
+            }
+            else
+            {
+                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            }
 
             xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
             xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
@@ -23643,7 +23685,15 @@ namespace QMC.Common.Modules
             }
 
             xyInterpolatedCoordinate = ConvertFineCamToLaserHeightSensor(new XyCoordinate(dTargetX, dTargetY));
-            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse, 1);
+            //  속도 설정
+            if (false)
+            {
+                MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Process);
+            }
+            else
+            {
+                MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Coarse);
+            }
 
             TickCount_Start((int)TickType.TICK_MAIN);
         }
@@ -24801,8 +24851,16 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  속도 설정
-            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            if (false)
+            {
+                lfVelocity = m_pProcessConfigData.nSpeedAxisX;
+                lfAccDec = m_pProcessConfigData.nAccelAxisX;
+            }
+            else
+            {
+                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            }
 
             xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
             xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
@@ -25184,8 +25242,16 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  속도 설정
-            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            if (false)
+            {
+                lfVelocity = m_pProcessConfigData.nSpeedAxisX;
+                lfAccDec = m_pProcessConfigData.nAccelAxisX;
+            }
+            else
+            {
+                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            }
 
             xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
             xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
@@ -37856,7 +37922,17 @@ namespace QMC.Common.Modules
                         result.Y += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY;
 
                         xyInterpolatedCoordinate = result;
-                        MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        //  속도 설정
+                        if (false)
+                        {
+                            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        }
+                        //MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos_DoneCheck;
                     }
@@ -37970,7 +38046,16 @@ namespace QMC.Common.Modules
                             MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
                         }
 
-                        MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        //  속도 설정
+                        if (false)
+                        {
+                            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        }
+                        //MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
 
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos_DoneCheck;
@@ -38115,7 +38200,16 @@ namespace QMC.Common.Modules
                             MapData_Apply((int)nMapData_Type.MapData_Stage_FineCam);
                         }
 
-                        MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        //  속도 설정
+                        if (false)
+                        {
+                            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        }
+                        //MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
 
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos_DoneCheck;
@@ -38487,7 +38581,17 @@ namespace QMC.Common.Modules
                                 MapData_Apply((int)nMapData_Type.MapData_Stage_FineCam);
                             }
 
-                            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+
+                            //  속도 설정
+                            if (false)
+                            {
+                                MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
+                            }
+                            else
+                            {
+                                MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                            }
+                            //MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
 
                             TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_XYAlign_CorrectionMove_DoneCheck;
@@ -38586,7 +38690,16 @@ namespace QMC.Common.Modules
                             MapData_Apply((int)nMapData_Type.MapData_Stage_FineCam);
                         }
 
-                        MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        //  속도 설정
+                        if (false)
+                        {
+                            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                        }
+                        //MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
 
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibration_RightTopPos_DoneCheck;
@@ -39930,7 +40043,6 @@ namespace QMC.Common.Modules
         public bool MovetoWorkStage_ABS_PositionsXY(XyCoordinate xyCoordinate, Type_Motor_Speed typeSpeed, double dv = 1)
         {
             // WorkStage Teaching Position 이동
-            // string strTemp = "";
             bool bRtn = false;
             double dVelocity = 0.0;
             double dAcc = 0.0;
@@ -39955,6 +40067,18 @@ namespace QMC.Common.Modules
                             case Type_Motor_Speed.Coarse:
                                 dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse * dv;
+                                break;
+                            case Type_Motor_Speed.Process:
+                                if(m_pProcessConfigData == null)
+                                {
+                                    dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                                    dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse * dv;
+                                }
+                                else
+                                {
+                                    dVelocity = m_pProcessConfigData.nSpeedAxisX;
+                                    dAcc = m_pProcessConfigData.nAccelAxisX;
+                                }
                                 break;
                             default:
                                 dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
@@ -40453,6 +40577,9 @@ namespace QMC.Common.Modules
 
             return false;
         }
+
+
+        public ProcessConfigData m_pProcessConfigData = new ProcessConfigData();
 
     }
 }

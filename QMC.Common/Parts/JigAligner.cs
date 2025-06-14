@@ -18,6 +18,7 @@ using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.Net.Http.Headers;
 using QMC.Common.Motion.Ajin.Motions;
 using QMC.Common.Hmi;
+using static QMC.Common.Equipment;
 
 namespace QMC.Common.Parts
 {
@@ -418,8 +419,16 @@ namespace QMC.Common.Parts
                         xyInterpolatedCoordinate.Y = position.Y;
                         Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX1:{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY1:{xyInterpolatedCoordinate.Y}"));
 
-                        m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
-                        //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                        //  속도 설정
+                        if (false)
+                        {
+                            m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+                        }
+                        //m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
 
                         Thread.Sleep(100);
                         Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
@@ -509,8 +518,16 @@ namespace QMC.Common.Parts
 
                     Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX2{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY2{xyInterpolatedCoordinate.Y}"));
 
-                    m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
-                    //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                    //  속도 설정
+                    if (false)
+                    {
+                        m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Process);
+                    }
+                    else
+                    {
+                        m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+                    }
+                    //m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
 
                     Thread.Sleep(100);
 

@@ -205,6 +205,7 @@
     <Compile Include="Modules\Scanner.cs" />
     <Compile Include="Modules\LaserConfig.cs" />
     <Compile Include="Modules\LaserRecipe.cs" />
+    <Compile Include="Q_Config\ProcessConfigData.cs" />
     <Compile Include="Q_Config\ScannerCalConfigData.cs" />
     <Compile Include="Q_Recipe\ScannerCalManager.cs" />
     <Compile Include="Q_Recipe\VisionRecipeData.cs" />

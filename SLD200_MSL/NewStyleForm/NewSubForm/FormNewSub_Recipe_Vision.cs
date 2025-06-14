@@ -1286,7 +1286,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             xyInterpolatedCoordinate.X = lfTargetX;
             xyInterpolatedCoordinate.Y = lfTargetY;
             workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, motor_Speed);
-            //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
             bool bWaitPosX = false;
             bool bWaitPosY = false;
