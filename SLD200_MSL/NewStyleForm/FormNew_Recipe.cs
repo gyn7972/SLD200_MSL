@@ -353,24 +353,42 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (m_formSiriusEditor == null)
+            if (m_formSiriusEditor == null || m_formSiriusEditor.IsDisposed)
             {
+                m_formSiriusEditor = new FormNew_SiriusEditor();
                 m_formSiriusEditor.CreateSiriusEditor();
             }
 
-            //똑같은지를 왜 Check 해야하지?
-            //if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(richTextBox_Recipe_TabRecipe_DrawingFile.Text))
+            //창이 열려있을때 새로 눌렀을 경우. ( 창이 아래에 숨는경우 )
+            // 도면이 다르면 새로 Import
+            string newPath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
+            if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(newPath))
             {
-                m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-            }
-            //else
-            //{
-            //    m_formSiriusEditor.SiriusEditor.Document.FileName = string.Empty;
-            //    m_formSiriusEditor.SiriusEditor.Document.Action.ActNew();
-            //}
+                // 이전 도면 초기화
+                m_formSiriusEditor.SiriusEditor.Document.FileName = string.Empty;
+                m_formSiriusEditor.SiriusEditor.Document.Action.ActNew();
 
-            m_formSiriusEditor.BringToFront();
-            m_formSiriusEditor.Show();
+                // 새 도면 불러오기
+                m_formSiriusEditor.Import_DrawingFile(newPath);
+            }
+            //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
+
+            // 이미 열려 있으면 앞으로 가져오기
+            if (!m_formSiriusEditor.Visible)
+            {
+                m_formSiriusEditor.BringToFront();
+                m_formSiriusEditor.Show();
+            }
+            else
+            {
+                if (m_formSiriusEditor.WindowState == FormWindowState.Minimized)
+                {
+                    m_formSiriusEditor.WindowState = FormWindowState.Normal;
+                }
+
+                m_formSiriusEditor.BringToFront();
+                m_formSiriusEditor.Focus();
+            }
             return;
 
             //기존 코드

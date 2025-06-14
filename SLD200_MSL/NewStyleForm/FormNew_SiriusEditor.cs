@@ -2422,6 +2422,12 @@ namespace SLD200_MSL
         {
             string fileName = SiriusEditor.Document.FileName;
 
+            // 파일명 포함하여 저장 여부 묻기
+            var mb = new MessageBoxYesNo();
+            string message = $"저장 하시겠습니까?\n\n파일명: {fileName}";
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", message))
+                return;
+
             // 파일명이 없거나 .sirius 확장자가 아니면 강제로 .sirius 확장자로 저장
             if (string.IsNullOrEmpty(fileName) || System.IO.Path.GetExtension(fileName).ToLower() != ".sirius")
             {

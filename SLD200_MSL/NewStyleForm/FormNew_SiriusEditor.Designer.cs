@@ -438,7 +438,6 @@ namespace SLD200_MSL
             this.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "FormNew_SiriusEditor";
             this.Text = "QMC Sirius Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormNew_SiriusEditor_FormClosing);
