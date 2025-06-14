@@ -5241,6 +5241,7 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep:                            //  Transfer Z 축, 대기 위치로 이동 (2단계, 최종 위치)
 
+                    //여기서 버큠 다시 한 번 확인해야하나.
                     Loader_Transfer_Step_Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep(out m_dSpeed, out m_dAccDec);
 
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck;
