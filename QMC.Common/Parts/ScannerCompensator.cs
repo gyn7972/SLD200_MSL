@@ -615,7 +615,7 @@ namespace QMC.Common.Parts
                     xyInterpolatedCoordinate.Y = position.Y;
 
                     //  속도 설정
-                    if (false)
+                    if (true)
                     {
                         m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process, 1);
                     }

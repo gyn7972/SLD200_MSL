@@ -1473,7 +1473,7 @@ namespace QMC.Common.Q_Sequence
                         }
 
                         //  속도 설정
-                        if (false)
+                        if (true)
                         {
                             workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
                         }
@@ -1884,7 +1884,7 @@ namespace QMC.Common.Q_Sequence
                             }
 
                             //  속도 설정
-                            if (false)
+                            if (true)
                             {
                                 workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
                             }

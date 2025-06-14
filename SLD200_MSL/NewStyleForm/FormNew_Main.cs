@@ -4264,7 +4264,7 @@ namespace SLD200_MSL
                             if (Equipment._InitDeviceStatus.MotionIo)
                             {
                                 var v = workStage.ConvertPointFineCam(new XyzCoordinate(ptReal.X, ptReal.Y, 0));
-                                workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X, v.Y), Type_Motor_Speed.Coarse);
+                                workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X, v.Y), Type_Motor_Speed.Process);
                                 return;
                             }
                             else

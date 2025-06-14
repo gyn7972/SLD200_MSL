@@ -10309,6 +10309,17 @@ namespace QMC.Common.Modules
                     //  속도 설정
                     lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
                     lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                    //  속도 설정
+                    if (false)
+                    {
+                        lfVelocity = m_pProcessConfigData.nSpeedAxisX;
+                        lfAccDec = m_pProcessConfigData.nAccelAxisX;
+                    }
+                    else
+                    {
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                    }
 
                     xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
                     xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
@@ -14026,7 +14037,7 @@ namespace QMC.Common.Modules
 
 
                     //  속도 설정
-                    if (false)
+                    if (true)
                     {
                         MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Process);
                     }
@@ -15046,7 +15057,7 @@ namespace QMC.Common.Modules
                     {
                         // 이동 명령 실행
                         //  속도 설정
-                        if (false)
+                        if (true)
                         {
                             MovetoWorkStage_ABS_PositionsXY(currentPosition, Type_Motor_Speed.Process);
                         }
@@ -17302,7 +17313,7 @@ namespace QMC.Common.Modules
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
                     //  속도 설정
-                    if (false)
+                    if (true)
                     {
                         lfVelocity = m_pProcessConfigData.nSpeedAxisX;
                         lfAccDec = m_pProcessConfigData.nAccelAxisX;
@@ -20301,7 +20312,7 @@ namespace QMC.Common.Modules
                     {
                         if(Equipment.Machine_LaserType_CO2)
                         {
-                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 100) //안전화 타임.
+                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500) //안전화 타임.
                             {
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                             }
@@ -23263,7 +23274,7 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  속도 설정
-            if (false)
+            if (true)
             {
                 lfVelocity = m_pProcessConfigData.nSpeedAxisX;
                 lfAccDec = m_pProcessConfigData.nAccelAxisX;
@@ -23688,11 +23699,11 @@ namespace QMC.Common.Modules
             //  속도 설정
             if (false)
             {
-                MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Process);
+                MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
             }
             else
             {
-                MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Coarse);
+                MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
             }
 
             TickCount_Start((int)TickType.TICK_MAIN);
@@ -24851,7 +24862,7 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  속도 설정
-            if (false)
+            if (true)
             {
                 lfVelocity = m_pProcessConfigData.nSpeedAxisX;
                 lfAccDec = m_pProcessConfigData.nAccelAxisX;
@@ -25242,7 +25253,7 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  속도 설정
-            if (false)
+            if (true)
             {
                 lfVelocity = m_pProcessConfigData.nSpeedAxisX;
                 lfAccDec = m_pProcessConfigData.nAccelAxisX;
@@ -38047,7 +38058,7 @@ namespace QMC.Common.Modules
                         }
 
                         //  속도 설정
-                        if (false)
+                        if (true)
                         {
                             MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
                         }
@@ -38201,7 +38212,7 @@ namespace QMC.Common.Modules
                         }
 
                         //  속도 설정
-                        if (false)
+                        if (true)
                         {
                             MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
                         }
@@ -38583,7 +38594,7 @@ namespace QMC.Common.Modules
 
 
                             //  속도 설정
-                            if (false)
+                            if (true)
                             {
                                 MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
                             }
@@ -38691,7 +38702,7 @@ namespace QMC.Common.Modules
                         }
 
                         //  속도 설정
-                        if (false)
+                        if (true)
                         {
                             MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
                         }
@@ -39905,15 +39916,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
                                 break;
                         }
@@ -40065,13 +40076,13 @@ namespace QMC.Common.Modules
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine * dv;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse * dv;
                                 break;
                             case Type_Motor_Speed.Process:
                                 if(m_pProcessConfigData == null)
                                 {
-                                    dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                                    dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
                                     dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse * dv;
                                 }
                                 else
@@ -40081,7 +40092,7 @@ namespace QMC.Common.Modules
                                 }
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
                                 break;
                         }
