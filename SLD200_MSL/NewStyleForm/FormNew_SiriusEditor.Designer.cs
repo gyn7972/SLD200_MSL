@@ -78,9 +78,9 @@ namespace SLD200_MSL
             // button_Rotate
             // 
             this.button_Rotate.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Rotate.Location = new System.Drawing.Point(1324, 521);
+            this.button_Rotate.Location = new System.Drawing.Point(1324, 560);
             this.button_Rotate.Name = "button_Rotate";
-            this.button_Rotate.Size = new System.Drawing.Size(153, 57);
+            this.button_Rotate.Size = new System.Drawing.Size(153, 32);
             this.button_Rotate.TabIndex = 2;
             this.button_Rotate.Text = "Data  Select";
             this.button_Rotate.UseVisualStyleBackColor = true;
@@ -173,9 +173,9 @@ namespace SLD200_MSL
             // button_Test_OffsetAngle_Calc
             // 
             this.button_Test_OffsetAngle_Calc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_OffsetAngle_Calc.Location = new System.Drawing.Point(1324, 583);
+            this.button_Test_OffsetAngle_Calc.Location = new System.Drawing.Point(1324, 595);
             this.button_Test_OffsetAngle_Calc.Name = "button_Test_OffsetAngle_Calc";
-            this.button_Test_OffsetAngle_Calc.Size = new System.Drawing.Size(153, 57);
+            this.button_Test_OffsetAngle_Calc.Size = new System.Drawing.Size(153, 45);
             this.button_Test_OffsetAngle_Calc.TabIndex = 85;
             this.button_Test_OffsetAngle_Calc.Text = "Test : Angle, Offset Calc.";
             this.button_Test_OffsetAngle_Calc.UseVisualStyleBackColor = true;
@@ -257,7 +257,7 @@ namespace SLD200_MSL
             // tb_SelectSocketNumber
             // 
             this.tb_SelectSocketNumber.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.tb_SelectSocketNumber.Location = new System.Drawing.Point(1446, 493);
+            this.tb_SelectSocketNumber.Location = new System.Drawing.Point(1446, 531);
             this.tb_SelectSocketNumber.Name = "tb_SelectSocketNumber";
             this.tb_SelectSocketNumber.Size = new System.Drawing.Size(31, 24);
             this.tb_SelectSocketNumber.TabIndex = 96;
@@ -267,7 +267,7 @@ namespace SLD200_MSL
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.Color.Black;
-            this.label5.Location = new System.Drawing.Point(1323, 497);
+            this.label5.Location = new System.Drawing.Point(1323, 535);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(118, 16);
             this.label5.TabIndex = 95;
@@ -296,7 +296,7 @@ namespace SLD200_MSL
             // 
             this.label7.AutoSize = true;
             this.label7.ForeColor = System.Drawing.Color.Black;
-            this.label7.Location = new System.Drawing.Point(1322, 655);
+            this.label7.Location = new System.Drawing.Point(1322, 668);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(68, 16);
             this.label7.TabIndex = 88;
@@ -305,7 +305,7 @@ namespace SLD200_MSL
             // textboxCorX
             // 
             this.textboxCorX.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textboxCorX.Location = new System.Drawing.Point(1407, 650);
+            this.textboxCorX.Location = new System.Drawing.Point(1407, 663);
             this.textboxCorX.Name = "textboxCorX";
             this.textboxCorX.Size = new System.Drawing.Size(70, 27);
             this.textboxCorX.TabIndex = 89;

@@ -14496,7 +14496,6 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                // 골드파우더 에서 앵글 보상 할거면 아래 코드 삭제.
                                 //1차 Test : X,Y만 보상.
                                 {
                                     m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
@@ -14506,7 +14505,6 @@ namespace QMC.Common.Modules
                                             "- Final_Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
                                             "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
                                     Log.Write("Goldpowder", "Result", strTemp);
-
                                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align:GoldPowder", strTemp);
                                 }
                             }
@@ -14527,13 +14525,14 @@ namespace QMC.Common.Modules
                                 if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                                 {
                                     strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                                            "- RotationCenter_X : " + m_st4PointAlign_Result.dRotationCenterX.ToString() + "\r\n" +
+                                            "- RotationCenter_Y : " + m_st4PointAlign_Result.dRotationCenterY.ToString() + "\r\n" +
                                             "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
                                             "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
                                             "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
 
                                     Log.Write("Goldpowder", "Result", strTemp);
                                 }
-
                             }
                         }
                     }
@@ -14642,8 +14641,6 @@ namespace QMC.Common.Modules
                             m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationCenterX = m_st4PointAlign_Result.dRotationCenterX;
                             m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationCenterY = m_st4PointAlign_Result.dRotationCenterY;
                         }
-
-
                     }
 
                     if (m_AlignMode == AlignMode.Socket)
@@ -36760,7 +36757,7 @@ namespace QMC.Common.Modules
                     dOffsetX1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
                     dOffsetY1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.Y;
 
-                    //0.03 -> 0.07
+                    //0.03 -> 0.03
                     if (Math.Abs(dOffsetX1) < 0.03 && Math.Abs(dOffsetY1) < 0.03)
                     {
                         dSumOffsetX += dOffsetX1;
@@ -39833,6 +39830,7 @@ namespace QMC.Common.Modules
         public void StoptoWorkStage_Motor(WorkStage.nAxis nAxis)
         {
             double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+            dAcc = 2000; // 장비 내부에서 사용 파라미터.
             MC_Func.MC_MotorStop((int)nAxis, dAcc);
         }
         public bool IsInterlock_WorkStageXY_Enabled()
@@ -40010,15 +40008,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
                                 break;
                         }
@@ -40072,7 +40070,7 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine * dv;
                                 break;
                             case Type_Motor_Speed.Coarse:
@@ -40128,15 +40126,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
                                 break;
                         }
@@ -40169,15 +40167,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Acceleration_Fine;
                                 break;
                         }
@@ -40264,15 +40262,15 @@ namespace QMC.Common.Modules
                 switch (typeSpeed)
                 {
                     case Type_Motor_Speed.Fine:
-                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Fine;
                         dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
                         break;
                     case Type_Motor_Speed.Coarse:
-                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Coarse;
                         dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
                         break;
                     default:
-                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Fine;
                         dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
                         break;
                 }

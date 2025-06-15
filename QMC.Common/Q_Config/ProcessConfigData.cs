@@ -13,7 +13,7 @@ namespace QMC.Common.Q_Config
         public int nSpeedAxisY { get; set; } = 100; // mm/s
         public int nAccelAxisX { get; set; } = 500; // mm/s^2
         public int nAccelAxisY { get; set; } = 500; // mm/s^2
-
+        public double dModuleSizeSet { get; set; } = 200.0; // mm, 모듈 사이즈 Limit 설정
 
         public ProcessConfigData()
         {
@@ -34,6 +34,8 @@ namespace QMC.Common.Q_Config
                 NativeMethods.WritePrivateProfileString("ProcessSpeed", "SpeedAxisY", nSpeedAxisY.ToString(), path);
                 NativeMethods.WritePrivateProfileString("ProcessAccel", "AccelAxisX", nAccelAxisX.ToString(), path);
                 NativeMethods.WritePrivateProfileString("ProcessAccel", "AccelAxisY", nAccelAxisY.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString("ProcessModule", "ModuleSizeSet", dModuleSizeSet.ToString(), path);
                 bRet = true;
             }
             catch (Exception ex)
@@ -60,6 +62,9 @@ namespace QMC.Common.Q_Config
                 nAccelAxisX = int.Parse(strValue);
                 NativeMethods.GetPrivateProfileString("ProcessAccel", "AccelAxisY", "500", sb, sb.Capacity, path);
                 nAccelAxisY = int.Parse(strValue);
+
+                NativeMethods.GetPrivateProfileString("ProcessModule", "ModuleSizeSet", "200.0", sb, sb.Capacity, path);
+                dModuleSizeSet = double.Parse(strValue);
 
                 bRet = true;
             }

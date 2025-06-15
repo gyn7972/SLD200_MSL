@@ -201,6 +201,7 @@ namespace SLD200_MSL
             workStage.m_pProcessConfigData.LoadFromIni(strFIle);
 
             string strTemp = string.Empty;
+            //workStage Page
             strTemp = workStage.m_pProcessConfigData.nSpeedAxisX.ToString();
             textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = strTemp;
             strTemp = workStage.m_pProcessConfigData.nSpeedAxisY.ToString();
@@ -210,6 +211,9 @@ namespace SLD200_MSL
             strTemp = workStage.m_pProcessConfigData.nAccelAxisY.ToString();
             textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = strTemp;
 
+            //loader Page
+            strTemp = workStage.m_pProcessConfigData.dModuleSizeSet.ToString();
+            textBox_Config_LDUL_Module_Size_Set.Text = strTemp;
 
             InitializeJogButtons();
         }
@@ -6008,6 +6012,78 @@ namespace SLD200_MSL
                 workStage.m_pProcessConfigData.nAccelAxisX = Equipment.ToInt(strTemp);
                 strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text;
                 workStage.m_pProcessConfigData.nAccelAxisY = Equipment.ToInt(strTemp);
+
+                workStage.m_pProcessConfigData.SaveToIni(strFIle);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
+
+        private void Button_Config_LDUL_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            loader.StoptoLoader_Motor(Loader.nAxis.Z0);
+            loader.StoptoLoader_Motor(Loader.nAxis.Z1);
+            loader.StoptoLoader_Motor(Loader.nAxis.TR_X);
+            loader.StoptoLoader_Motor(Loader.nAxis.TR_Z);
+            loader.StoptoLoader_Motor(Loader.nAxis.ALN_X);
+            loader.StoptoLoader_Motor(Loader.nAxis.ALN_Y);
+
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.Z0);
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.Z1);
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.TR_X);
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.TR_Z);
+        }
+
+        private void button_Config_WorkStage_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            // Head도 같이 정지.
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.X);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Y);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Z);
+        }
+
+        private void button_Config_Vision_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            // Stage도 같이 정지.
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.X);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Y);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Z);
+        }
+
+        private void button_Config_BDS_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            if (!Equipment.Machine_LaserType_CO2)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "UV Laser System 에는 Mask 가 없습니다.");
+                return;
+            }
+
+            bds.MC_Func.MC_MotorStop((int)Bds.nAxis.MASK_Y, 2000);
+        }
+
+        private void button_Config_LDUL_Module_Size_Save_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string strFIle = "";
+                strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+                if (File.Exists(strFIle) == false)
+                {
+                    MessageBox.Show("ConfigFile 파일이 없습니다.\r\n\r\n[Default값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (File.Exists(strFIle) == false)
+                {
+                    File.Create(strFIle);
+                }
+
+                // 값 가져오기
+                string strTemp = string.Empty;
+                strTemp = textBox_Config_LDUL_Module_Size_Set.Text;
+                workStage.m_pProcessConfigData.dModuleSizeSet = Equipment.ToDouble(strTemp);
 
                 workStage.m_pProcessConfigData.SaveToIni(strFIle);
             }

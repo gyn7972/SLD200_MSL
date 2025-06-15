@@ -2003,6 +2003,8 @@ namespace SLD200_MSL
             }
             else
             {
+                Log.Write("SLD-200", Equipment.User_Name, "StartButton_Click", "시컨스 처음 부터 시작.");
+
                 //if (!workStage.IsProcessing)
                 //{
                 //    //  가공할 것이 없음.
@@ -2013,8 +2015,8 @@ namespace SLD200_MSL
                 //    {
                 //        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
 
-                //        //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-                //        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                //        // workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                //        // workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                 //    }
 
                 //    workStage.m_bLaserDrilling_Complete = true;
