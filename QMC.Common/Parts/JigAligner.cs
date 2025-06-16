@@ -506,7 +506,6 @@ namespace QMC.Common.Parts
                     position = new XyzCoordinate(m_AlignPositions[1].X, m_AlignPositions[1].Y, 0.0);
                     Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX2: {position.X}, positionY2: {position.Y}"));
 
-
                     //  속도 설정
                     //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
                     //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
@@ -516,7 +515,7 @@ namespace QMC.Common.Parts
                     xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
                     xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX2{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY2{xyInterpolatedCoordinate.Y}"));
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX2:{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY2:{xyInterpolatedCoordinate.Y}"));
 
                     //  속도 설정
                     if (false)
