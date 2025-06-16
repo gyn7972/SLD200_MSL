@@ -537,7 +537,6 @@ namespace SLD200_MSL
                 this.SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged1;
             }
 
-
             #region RTC 초기화
             //create Rtc for dummy (가상 RTC 카드)
             //var rtc = new RtcVirtual(0); 
@@ -953,6 +952,7 @@ namespace SLD200_MSL
             }
             workStage.rtc.Dispose();
             workStage.laser.Dispose();
+
 
             bRtn = true;
             return bRtn;
