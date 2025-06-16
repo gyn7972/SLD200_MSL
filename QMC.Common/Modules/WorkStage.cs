@@ -40546,6 +40546,12 @@ namespace QMC.Common.Modules
             bds.InitspiralLabScannerModule();
         }
 
+        public void DisposespiralLabScannerModule()
+        {
+            bds.DisposespiralLabScannerVarioModule();
+            bds.DisposespiralLabScannerModule();
+        }
+
         public void SetDrillResult(string layerName, int socketIndex, bool isOK)
         {
             var socket = DrillingManager.GetSocket(layerName, socketIndex);

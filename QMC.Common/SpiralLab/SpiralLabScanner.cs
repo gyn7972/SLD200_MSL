@@ -70,7 +70,16 @@ namespace QMC.Common.Parts
             {
                 if (disposing)
                 {
-                    //StopMonitoring();
+                //Dispose(true);
+                // 관리되는 리소스 해제
+                if (rtc != null && rtc is IDisposable dRtc)
+                    dRtc.Dispose();
+
+                rtc = null;
+
+                // 비관리 리소스 해제 (필요시 여기에 작성)
+                IsInitialized = false;
+
                 }
                 _disposed = true;
             }

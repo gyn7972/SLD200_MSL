@@ -32,6 +32,24 @@ namespace QMC.Common.Parts
             return base.Create();
         }
 
+        public void Dispose()
+        {
+            //Dispose(true);
+            // 관리되는 리소스 해제
+            if (Rtc != null && Rtc is IDisposable dRtc)
+                dRtc.Dispose();
+
+            laser = null;
+            Rtc = null;
+            Rtc3D = null;
+
+            // 비관리 리소스 해제 (필요시 여기에 작성)
+            IsInitialized = false;
+
+
+            GC.SuppressFinalize(this); // Finalizer 호출 방지
+        }
+
         public bool MoveZAbsolute(float zMm)
         {
             return Rtc3D.CtlMove(new Vector3(0, 0, zMm));

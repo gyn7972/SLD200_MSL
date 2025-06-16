@@ -504,18 +504,17 @@ namespace QMC.Common.Modules
             }
         }
 
-        public float? GetRtcZOffset()
+        public void DisposespiralLabScannerVarioModule()
         {
-            return spiralLabVario?.GetCurrentZOffset();
+            if (spiralLabVario != null)
+            {
+                spiralLabVario.Dispose();               // 자원 해제
+                Parts.Remove(spiralLabVario);           // 컬렉션에서 제거
+                spiralLabVario = null;                  // 참조 제거
+
+                Log.Write("SLD-200", "ReleaseSpiralLabScannerVarioModule", "ScannerVario 모듈 해제 완료");
+            }
         }
-
-        public float? GetRtcZDefocus()
-        {
-            return spiralLabVario?.GetCurrentZDefocus();
-        }
-
-
-
 
         public void InitspiralLabScannerModule()
         {
@@ -530,6 +529,34 @@ namespace QMC.Common.Modules
             }
         }
 
+        public void DisposespiralLabScannerModule()
+        {
+            if (spiralLabScanner != null)
+            {
+                spiralLabScanner.Dispose();               // 자원 해제
+                Parts.Remove(spiralLabScanner);           // 컬렉션에서 제거
+                spiralLabScanner = null;                  // 참조 제거
+
+                Log.Write("SLD-200", "DisposespiralLabScannerModule", "Scanner 모듈 해제 완료");
+            }
+        }
+
+
+
+        public float? GetRtcZOffset()
+        {
+            return spiralLabVario?.GetCurrentZOffset();
+        }
+
+        public float? GetRtcZDefocus()
+        {
+            return spiralLabVario?.GetCurrentZDefocus();
+        }
+
+
+
+
+        
 
 
         public bool InitDustCollector(DustCollectorController.CollectorPosition position)

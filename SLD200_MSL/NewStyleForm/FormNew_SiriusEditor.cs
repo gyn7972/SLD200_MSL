@@ -953,6 +953,10 @@ namespace SLD200_MSL
             workStage.rtc.Dispose();
             workStage.laser.Dispose();
 
+            workStage.rtc = null;
+            workStage.laser = null;
+
+            workStage.DisposespiralLabScannerModule();
 
             bRtn = true;
             return bRtn;
@@ -979,7 +983,8 @@ namespace SLD200_MSL
             if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
             {
                 //시컨스에서 초기화 했다 안했다 할거니깐.. 죽이면 안됨.
-                timer_RtcInit.Enabled = false;
+                //우선 안되니깐 죽이자.
+                //timer_RtcInit.Enabled = false;
 
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
 
