@@ -4454,8 +4454,16 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On");
 
                     loaderParameter.DO_Loader_Picker_Blow(false);
-                    loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
-                    loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
+                    if (Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width < workStage.m_pProcessConfigData.dModuleSizeSet ||
+                       Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height < workStage.m_pProcessConfigData.dModuleSizeSet)
+                    {
+                        loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
+                    }
+                    else
+                    {
+                        loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
+                        loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
+                    }
 
                     m_nStacker0_StepUp_Count = 0;
 
@@ -5726,9 +5734,20 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On");
 
-                    loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
-                    loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
+                    //loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
+                    //loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
                     loaderParameter.DO_Loader_Picker_Blow(false);
+                    if (Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width < workStage.m_pProcessConfigData.dModuleSizeSet ||
+                       Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height < workStage.m_pProcessConfigData.dModuleSizeSet)
+                    {
+                        loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
+                    }
+                    else
+                    {
+                        loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
+                        loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
+                    }
+                    
 
                     TickCount_Start((int)TickType.TICK_LDTR);
 
@@ -6594,7 +6613,8 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.MAlignerPutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck:                       //  Transfer Z 축, Module Put Down 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, M-Aligner Module PutDown 대기 위치로 이동 완료");
 
@@ -6619,7 +6639,8 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.MAlignerPutDown_TransferZ_Move_PutDownPos_2ndStep_DoneCheck:                       //  Transfer Z 축, Module Put Down 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, M-Aligner Module Put Down 위치로 이동 완료");
 
@@ -7929,9 +7950,20 @@ namespace QMC.Common.Modules
         {
             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On");
 
-            loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
-            loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
+            //loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
+            //loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
             loaderParameter.DO_Loader_Picker_Blow(false);
+            loaderParameter.DO_Loader_Picker_Blow(false);
+            if (Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width < workStage.m_pProcessConfigData.dModuleSizeSet ||
+               Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height < workStage.m_pProcessConfigData.dModuleSizeSet)
+            {
+                loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
+            }
+            else
+            {
+                loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
+                loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
+            }
 
             TickCount_Start((int)TickType.TICK_LDTR);
         }
@@ -9710,6 +9742,7 @@ namespace QMC.Common.Modules
             try
             {
                 double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                dAcc = 2000; // 장비 내부에서 사용 파라미터.
                 MC_Func.MC_MotorStop((int)nAxis, dAcc);
             }
             catch (Exception ex)
@@ -9769,15 +9802,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int) Loader.nAxis.Z0].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int) Loader.nAxis.Z0].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Fine;
                                 break;
                         }
@@ -9863,15 +9896,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Fine;
                                 break;
                         }
@@ -9950,15 +9983,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Fine;
                                 break;
                         }
@@ -10113,15 +10146,15 @@ namespace QMC.Common.Modules
                             switch (typeSpeed)
                             {
                                 case Type_Motor_Speed.Fine:
-                                    dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Fine;
+                                    dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Speed_Fine;
                                     dAcc = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Fine;
                                     break;
                                 case Type_Motor_Speed.Coarse:
-                                    dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Coarse;
+                                    dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Speed_Coarse;
                                     dAcc = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Coarse;
                                     break;
                                 default:
-                                    dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Fine;
+                                    dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Speed_Fine;
                                     dAcc = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Fine;
                                     break;
                             }
@@ -10280,15 +10313,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Fine;
                                 break;
                         }
@@ -10362,15 +10395,15 @@ namespace QMC.Common.Modules
                     switch (typeSpeed)
                     {
                         case Type_Motor_Speed.Fine:
-                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Fine;
                             dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
                             break;
                         case Type_Motor_Speed.Coarse:
-                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Coarse;
                             dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
                             break;
                         default:
-                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Fine;
                             dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
                             break;
                     }
@@ -10457,15 +10490,15 @@ namespace QMC.Common.Modules
                 switch (typeSpeed)
                 {
                     case Type_Motor_Speed.Fine:
-                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Fine;
                         dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
                         break;
                     case Type_Motor_Speed.Coarse:
-                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Coarse;
                         dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
                         break;
                     default:
-                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Fine;
                         dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
                         break;
                 }

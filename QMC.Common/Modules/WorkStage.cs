@@ -14496,7 +14496,6 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                // 골드파우더 에서 앵글 보상 할거면 아래 코드 삭제.
                                 //1차 Test : X,Y만 보상.
                                 {
                                     m_st4PointAlign_Result = Calc_4Point_GoldPowder(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
@@ -14527,13 +14526,14 @@ namespace QMC.Common.Modules
                                 if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                                 {
                                     strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                                            "- RotationCenter_X : " + m_st4PointAlign_Result.dRotationCenterX.ToString() + "\r\n" +
+                                            "- RotationCenter_Y : " + m_st4PointAlign_Result.dRotationCenterY.ToString() + "\r\n" +
                                             "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
                                             "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
                                             "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
 
                                     Log.Write("Goldpowder", "Result", strTemp);
                                 }
-
                             }
                         }
                     }
@@ -14642,8 +14642,6 @@ namespace QMC.Common.Modules
                             m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationCenterX = m_st4PointAlign_Result.dRotationCenterX;
                             m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationCenterY = m_st4PointAlign_Result.dRotationCenterY;
                         }
-
-
                     }
 
                     if (m_AlignMode == AlignMode.Socket)
@@ -20319,7 +20317,7 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 50) //안전화 타임.
+                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 100) //안전화 타임.
                             {
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                             }
@@ -21099,11 +21097,13 @@ namespace QMC.Common.Modules
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
+                                    //TEST 완료. 이정도면 충분하다.
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
 
                                     MarkSpiralCircle(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
+                                    //TEST 완료. 이정도면 충분하다.
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
 
                                 }
                                 break;
@@ -29011,29 +29011,31 @@ namespace QMC.Common.Modules
                     }
                 }
             }
-            
 
-            ////  Marking 소켓 --> 마킹은 일단 보류. 모듈 단위 마킹일 경우는, Hole1 의 소켓 얼라인할 때 같이 얼라인 해주기 때문에, 여기서 또 얼라인 하면 문제가 될 수 있다.
-            //if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length > 0)
-            //{
-            //    for (int i = 0; i < m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length; i++)
-            //    {
-            //        if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[i].bProcessing == false)
-            //        {
-            //            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
-            //            {
-            //                if (i >= m_nSocketAlign_StartIndex)
-            //                {
-            //                    m_nListCount++;
-            //                }
-            //            }
-            //            else                                                                                                                                        //  전체 가공 모드일 경우
-            //            {
-            //                m_nListCount++;
-            //            }
-            //        }
-            //    }
-            //}
+
+            {
+                ////  Marking 소켓 --> 마킹은 일단 보류. 모듈 단위 마킹일 경우는, Hole1 의 소켓 얼라인할 때 같이 얼라인 해주기 때문에, 여기서 또 얼라인 하면 문제가 될 수 있다.
+                //if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length > 0)
+                //{
+                //    for (int i = 0; i < m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length; i++)
+                //    {
+                //        if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[i].bProcessing == false)
+                //        {
+                //            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                //            {
+                //                if (i >= m_nSocketAlign_StartIndex)
+                //                {
+                //                    m_nListCount++;
+                //                }
+                //            }
+                //            else                                                                                                                                        //  전체 가공 모드일 경우
+                //            {
+                //                m_nListCount++;
+                //            }
+                //        }
+                //    }
+                //}
+            }
 
             m_strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, Align 이 필요한 Thruhole 개수 : {0}", m_nListCount);
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
@@ -36227,7 +36229,7 @@ namespace QMC.Common.Modules
                 var doc = DocumentSerializer.OpenDxf(strFileName);
                 //SiriusViewer_Main.Document = doc;
                 
-                Equipment.SetEqpSiriusViewerDocument(  doc);
+                Equipment.SetEqpSiriusViewerDocument(doc);
             }
             else if (m_strExt.ToUpper() == ".SIRIUS")
             {
@@ -39833,6 +39835,7 @@ namespace QMC.Common.Modules
         public void StoptoWorkStage_Motor(WorkStage.nAxis nAxis)
         {
             double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+            dAcc = 2000; // 장비 내부에서 사용 파라미터.
             MC_Func.MC_MotorStop((int)nAxis, dAcc);
         }
         public bool IsInterlock_WorkStageXY_Enabled()
@@ -40010,15 +40013,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
                                 break;
                         }
@@ -40072,7 +40075,7 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine * dv;
                                 break;
                             case Type_Motor_Speed.Coarse:
@@ -40128,15 +40131,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
                                 break;
                         }
@@ -40169,15 +40172,15 @@ namespace QMC.Common.Modules
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Acceleration_Fine;
                                 break;
                             case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Jog_Speed_Coarse;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Speed_Coarse;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Acceleration_Coarse;
                                 break;
                             default:
-                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Jog_Speed_Fine;
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Speed_Fine;
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Acceleration_Fine;
                                 break;
                         }
@@ -40264,15 +40267,15 @@ namespace QMC.Common.Modules
                 switch (typeSpeed)
                 {
                     case Type_Motor_Speed.Fine:
-                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Fine;
                         dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
                         break;
                     case Type_Motor_Speed.Coarse:
-                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Coarse;
                         dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
                         break;
                     default:
-                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Common_Speed_Fine;
                         dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
                         break;
                 }

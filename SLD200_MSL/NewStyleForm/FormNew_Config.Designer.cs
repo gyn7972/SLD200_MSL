@@ -120,7 +120,7 @@
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse = new System.Windows.Forms.RadioButton();
             this.radioButton_Config_LDUL_Move_MoveMode_Fine = new System.Windows.Forms.RadioButton();
             this.groupBox_Config_LDUL_TeachingPositions = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.Button_Config_LDUL_TeachingPositions_Stop = new System.Windows.Forms.Button();
             this.button_Config_LDUL_TeachingPositions_Save = new System.Windows.Forms.Button();
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition = new System.Windows.Forms.GroupBox();
             this.Button_Config_LDUL_TeachingPositions_Move = new System.Windows.Forms.Button();
@@ -266,7 +266,21 @@
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse = new System.Windows.Forms.RadioButton();
             this.radioButton_Config_WorkStage_Move_MoveMode_Fine = new System.Windows.Forms.RadioButton();
             this.groupBox_Config_WorkStage_TeachingPositions = new System.Windows.Forms.GroupBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed = new System.Windows.Forms.GroupBox();
+            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc = new System.Windows.Forms.Label();
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY = new System.Windows.Forms.Button();
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX = new System.Windows.Forms.Button();
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY = new System.Windows.Forms.TextBox();
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX = new System.Windows.Forms.TextBox();
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed = new System.Windows.Forms.Label();
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save = new System.Windows.Forms.Button();
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY = new System.Windows.Forms.Button();
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX = new System.Windows.Forms.Button();
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY = new System.Windows.Forms.TextBox();
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis = new System.Windows.Forms.Label();
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX = new System.Windows.Forms.TextBox();
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis = new System.Windows.Forms.Label();
+            this.button_Config_WorkStage_TeachingPositions_Stop = new System.Windows.Forms.Button();
             this.button_Config_WorkStage_TeachingPositions_Save = new System.Windows.Forms.Button();
             this.groupBox102 = new System.Windows.Forms.GroupBox();
             this.Button_Config_WorkStage_TeachingPositions_Move = new System.Windows.Forms.Button();
@@ -337,7 +351,7 @@
             this.radioButton_Config_Vision_Move_MoveMode_Fine = new System.Windows.Forms.RadioButton();
             this.groupBox32 = new System.Windows.Forms.GroupBox();
             this.button_Config_Vision_ImageDisplay_Show = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
+            this.button_Config_Vision_TeachingPositions_Stop = new System.Windows.Forms.Button();
             this.button_Config_Vision_TeachingPositions_Save = new System.Windows.Forms.Button();
             this.groupBox34 = new System.Windows.Forms.GroupBox();
             this.Button_Config_Vision_TeachingPositions_Move = new System.Windows.Forms.Button();
@@ -481,7 +495,7 @@
             this.radioButton_Config_BDS_Move_MoveMode_Fine = new System.Windows.Forms.RadioButton();
             this.groupBox77 = new System.Windows.Forms.GroupBox();
             this.label_Mask_Gap = new System.Windows.Forms.Label();
-            this.button37 = new System.Windows.Forms.Button();
+            this.button_Config_BDS_TeachingPositions_Stop = new System.Windows.Forms.Button();
             this.button_Config_BDS_TeachingPositions_Save = new System.Windows.Forms.Button();
             this.groupBox78 = new System.Windows.Forms.GroupBox();
             this.Button_Config_BDS_TeachingPositions_Move = new System.Windows.Forms.Button();
@@ -591,20 +605,10 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed = new System.Windows.Forms.GroupBox();
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save = new System.Windows.Forms.Button();
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY = new System.Windows.Forms.Button();
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX = new System.Windows.Forms.Button();
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY = new System.Windows.Forms.TextBox();
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis = new System.Windows.Forms.Label();
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX = new System.Windows.Forms.TextBox();
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis = new System.Windows.Forms.Label();
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed = new System.Windows.Forms.Label();
-            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc = new System.Windows.Forms.Label();
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY = new System.Windows.Forms.Button();
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX = new System.Windows.Forms.Button();
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY = new System.Windows.Forms.TextBox();
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX = new System.Windows.Forms.TextBox();
+            this.button_Config_LDUL_Module_Size_Set = new System.Windows.Forms.Button();
+            this.textBox_Config_LDUL_Module_Size_Set = new System.Windows.Forms.TextBox();
+            this.label_Config_LDUL_Module_Size_Set = new System.Windows.Forms.Label();
+            this.button_Config_LDUL_Module_Size_Save = new System.Windows.Forms.Button();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -646,6 +650,7 @@
             this.groupBox46.SuspendLayout();
             this.groupBox47.SuspendLayout();
             this.groupBox_Config_WorkStage_TeachingPositions.SuspendLayout();
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.SuspendLayout();
             this.groupBox102.SuspendLayout();
             this.groupBox103.SuspendLayout();
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.SuspendLayout();
@@ -713,7 +718,6 @@
             this.groupBox_Config_AxisPositions_LoadTransfer.SuspendLayout();
             this.groupBox_Config_AxisPositions_Loader.SuspendLayout();
             this.groupBox30.SuspendLayout();
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl_Config
@@ -797,7 +801,7 @@
             this.checkedListBox_Config_LDUL_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_LDUL_DIO_Output.Name = "checkedListBox_Config_LDUL_DIO_Output";
             this.checkedListBox_Config_LDUL_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(279, 220);
+            this.checkedListBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(279, 214);
             this.checkedListBox_Config_LDUL_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_LDUL_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_LDUL_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_LDUL_DIO_Output_MouseClick);
@@ -847,7 +851,7 @@
             this.checkedListBox_Config_LDUL_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_LDUL_DIO_Input.Name = "checkedListBox_Config_LDUL_DIO_Input";
             this.checkedListBox_Config_LDUL_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_LDUL_DIO_Input.Size = new System.Drawing.Size(279, 220);
+            this.checkedListBox_Config_LDUL_DIO_Input.Size = new System.Drawing.Size(279, 214);
             this.checkedListBox_Config_LDUL_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_LDUL_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -1950,7 +1954,11 @@
             // 
             // groupBox_Config_LDUL_TeachingPositions
             // 
-            this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.button1);
+            this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.button_Config_LDUL_Module_Size_Save);
+            this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.button_Config_LDUL_Module_Size_Set);
+            this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.Button_Config_LDUL_TeachingPositions_Stop);
+            this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.textBox_Config_LDUL_Module_Size_Set);
+            this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.label_Config_LDUL_Module_Size_Set);
             this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.button_Config_LDUL_TeachingPositions_Save);
             this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.groupBox_Config_LDUL_TeachingPositions_MovePosition);
             this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition);
@@ -1965,16 +1973,17 @@
             this.groupBox_Config_LDUL_TeachingPositions.TabStop = false;
             this.groupBox_Config_LDUL_TeachingPositions.Text = " Teaching Positions ";
             // 
-            // button1
+            // Button_Config_LDUL_TeachingPositions_Stop
             // 
-            this.button1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button1.Location = new System.Drawing.Point(502, 429);
-            this.button1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(110, 52);
-            this.button1.TabIndex = 42;
-            this.button1.Text = "Cancel";
-            this.button1.UseVisualStyleBackColor = true;
+            this.Button_Config_LDUL_TeachingPositions_Stop.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.Button_Config_LDUL_TeachingPositions_Stop.Location = new System.Drawing.Point(502, 429);
+            this.Button_Config_LDUL_TeachingPositions_Stop.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.Button_Config_LDUL_TeachingPositions_Stop.Name = "Button_Config_LDUL_TeachingPositions_Stop";
+            this.Button_Config_LDUL_TeachingPositions_Stop.Size = new System.Drawing.Size(110, 52);
+            this.Button_Config_LDUL_TeachingPositions_Stop.TabIndex = 42;
+            this.Button_Config_LDUL_TeachingPositions_Stop.Text = "Stop";
+            this.Button_Config_LDUL_TeachingPositions_Stop.UseVisualStyleBackColor = true;
+            this.Button_Config_LDUL_TeachingPositions_Stop.Click += new System.EventHandler(this.Button_Config_LDUL_TeachingPositions_Stop_Click);
             // 
             // button_Config_LDUL_TeachingPositions_Save
             // 
@@ -2324,7 +2333,7 @@
             this.listBox_Config_LDUL_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_LDUL_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_LDUL_TeachingPositions.Name = "listBox_Config_LDUL_TeachingPositions";
-            this.listBox_Config_LDUL_TeachingPositions.Size = new System.Drawing.Size(285, 436);
+            this.listBox_Config_LDUL_TeachingPositions.Size = new System.Drawing.Size(285, 400);
             this.listBox_Config_LDUL_TeachingPositions.TabIndex = 0;
             this.listBox_Config_LDUL_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_LDUL_TeachingPositions_SelectedIndexChanged);
             // 
@@ -3145,7 +3154,7 @@
             this.checkedListBox_Config_WorkStage_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_WorkStage_DIO_Output.Name = "checkedListBox_Config_WorkStage_DIO_Output";
             this.checkedListBox_Config_WorkStage_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_WorkStage_DIO_Output.Size = new System.Drawing.Size(279, 292);
+            this.checkedListBox_Config_WorkStage_DIO_Output.Size = new System.Drawing.Size(279, 277);
             this.checkedListBox_Config_WorkStage_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_WorkStage_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_WorkStage_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_WorkStage_DIO_Output_MouseClick);
@@ -3878,7 +3887,7 @@
             // groupBox_Config_WorkStage_TeachingPositions
             // 
             this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed);
-            this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.button2);
+            this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.button_Config_WorkStage_TeachingPositions_Stop);
             this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.button_Config_WorkStage_TeachingPositions_Save);
             this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.groupBox102);
             this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition);
@@ -3893,21 +3902,191 @@
             this.groupBox_Config_WorkStage_TeachingPositions.TabStop = false;
             this.groupBox_Config_WorkStage_TeachingPositions.Text = " Teaching Positions ";
             // 
-            // button2
+            // groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed
             // 
-            this.button2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button2.Location = new System.Drawing.Point(502, 339);
-            this.button2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(110, 52);
-            this.button2.TabIndex = 44;
-            this.button2.Text = "Cancel";
-            this.button2.UseVisualStyleBackColor = true;
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Location = new System.Drawing.Point(10, 248);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Name = "groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed";
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Size = new System.Drawing.Size(301, 160);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.TabIndex = 44;
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.TabStop = false;
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Text = " Process Speed";
+            // 
+            // label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc
+            // 
+            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Location = new System.Drawing.Point(181, 20);
+            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Margin = new System.Windows.Forms.Padding(5);
+            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Name = "label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc";
+            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Size = new System.Drawing.Size(113, 24);
+            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.TabIndex = 49;
+            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Text = "Acc(mm/s²) ";
+            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY
+            // 
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Location = new System.Drawing.Point(269, 77);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Margin = new System.Windows.Forms.Padding(5);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Name = "button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY";
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Size = new System.Drawing.Size(25, 25);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.TabIndex = 48;
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = "#";
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.UseVisualStyleBackColor = true;
+            // 
+            // button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX
+            // 
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Location = new System.Drawing.Point(269, 47);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Margin = new System.Windows.Forms.Padding(5);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Name = "button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX";
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Size = new System.Drawing.Size(25, 25);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.TabIndex = 47;
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text = "#";
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.UseVisualStyleBackColor = true;
+            // 
+            // textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY
+            // 
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Location = new System.Drawing.Point(181, 77);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY";
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Size = new System.Drawing.Size(87, 23);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.TabIndex = 46;
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = "000.000";
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX
+            // 
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Location = new System.Drawing.Point(181, 47);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX";
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Size = new System.Drawing.Size(87, 23);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.TabIndex = 45;
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text = "000.000";
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed
+            // 
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Location = new System.Drawing.Point(60, 20);
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Name = "label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed";
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Size = new System.Drawing.Size(113, 24);
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.TabIndex = 44;
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Text = "Speed(mm/sec) ";
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save
+            // 
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Location = new System.Drawing.Point(181, 111);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Name = "button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save";
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Size = new System.Drawing.Size(113, 41);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.TabIndex = 43;
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Text = "Save";
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.UseVisualStyleBackColor = true;
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Click += new System.EventHandler(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save_Click);
+            // 
+            // button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY
+            // 
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Location = new System.Drawing.Point(148, 77);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Margin = new System.Windows.Forms.Padding(5);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Name = "button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY";
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Size = new System.Drawing.Size(25, 25);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.TabIndex = 26;
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text = "#";
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.UseVisualStyleBackColor = true;
+            // 
+            // button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX
+            // 
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Location = new System.Drawing.Point(148, 47);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Margin = new System.Windows.Forms.Padding(5);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Name = "button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX";
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Size = new System.Drawing.Size(25, 25);
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.TabIndex = 25;
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = "#";
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.UseVisualStyleBackColor = true;
+            // 
+            // textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY
+            // 
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Location = new System.Drawing.Point(60, 77);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY";
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Size = new System.Drawing.Size(87, 23);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.TabIndex = 24;
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text = "000.000";
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis
+            // 
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Location = new System.Drawing.Point(5, 77);
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Name = "label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis";
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Size = new System.Drawing.Size(53, 24);
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.TabIndex = 23;
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Text = "Y Axis :";
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX
+            // 
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Location = new System.Drawing.Point(60, 47);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX";
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Size = new System.Drawing.Size(87, 23);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.TabIndex = 22;
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = "000.000";
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis
+            // 
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Location = new System.Drawing.Point(5, 47);
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Name = "label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis";
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Size = new System.Drawing.Size(53, 24);
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.TabIndex = 21;
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Text = "X Axis :";
+            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Config_WorkStage_TeachingPositions_Stop
+            // 
+            this.button_Config_WorkStage_TeachingPositions_Stop.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_WorkStage_TeachingPositions_Stop.Location = new System.Drawing.Point(502, 295);
+            this.button_Config_WorkStage_TeachingPositions_Stop.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_WorkStage_TeachingPositions_Stop.Name = "button_Config_WorkStage_TeachingPositions_Stop";
+            this.button_Config_WorkStage_TeachingPositions_Stop.Size = new System.Drawing.Size(110, 52);
+            this.button_Config_WorkStage_TeachingPositions_Stop.TabIndex = 44;
+            this.button_Config_WorkStage_TeachingPositions_Stop.Text = "Stop";
+            this.button_Config_WorkStage_TeachingPositions_Stop.UseVisualStyleBackColor = true;
+            this.button_Config_WorkStage_TeachingPositions_Stop.Click += new System.EventHandler(this.button_Config_WorkStage_TeachingPositions_Stop_Click);
             // 
             // button_Config_WorkStage_TeachingPositions_Save
             // 
             this.button_Config_WorkStage_TeachingPositions_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_TeachingPositions_Save.Location = new System.Drawing.Point(376, 339);
+            this.button_Config_WorkStage_TeachingPositions_Save.Location = new System.Drawing.Point(376, 295);
             this.button_Config_WorkStage_TeachingPositions_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_TeachingPositions_Save.Name = "button_Config_WorkStage_TeachingPositions_Save";
             this.button_Config_WorkStage_TeachingPositions_Save.Size = new System.Drawing.Size(110, 52);
@@ -4788,7 +4967,7 @@
             // groupBox32
             // 
             this.groupBox32.Controls.Add(this.button_Config_Vision_ImageDisplay_Show);
-            this.groupBox32.Controls.Add(this.button6);
+            this.groupBox32.Controls.Add(this.button_Config_Vision_TeachingPositions_Stop);
             this.groupBox32.Controls.Add(this.button_Config_Vision_TeachingPositions_Save);
             this.groupBox32.Controls.Add(this.groupBox34);
             this.groupBox32.Controls.Add(this.groupBox40);
@@ -4815,16 +4994,17 @@
             this.button_Config_Vision_ImageDisplay_Show.UseVisualStyleBackColor = true;
             this.button_Config_Vision_ImageDisplay_Show.Click += new System.EventHandler(this.button_Config_Vision_ImageDisplay_Show_Click);
             // 
-            // button6
+            // button_Config_Vision_TeachingPositions_Stop
             // 
-            this.button6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button6.Location = new System.Drawing.Point(502, 321);
-            this.button6.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(110, 52);
-            this.button6.TabIndex = 46;
-            this.button6.Text = "Cancel";
-            this.button6.UseVisualStyleBackColor = true;
+            this.button_Config_Vision_TeachingPositions_Stop.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_Vision_TeachingPositions_Stop.Location = new System.Drawing.Point(502, 321);
+            this.button_Config_Vision_TeachingPositions_Stop.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_Vision_TeachingPositions_Stop.Name = "button_Config_Vision_TeachingPositions_Stop";
+            this.button_Config_Vision_TeachingPositions_Stop.Size = new System.Drawing.Size(110, 52);
+            this.button_Config_Vision_TeachingPositions_Stop.TabIndex = 46;
+            this.button_Config_Vision_TeachingPositions_Stop.Text = "Stop";
+            this.button_Config_Vision_TeachingPositions_Stop.UseVisualStyleBackColor = true;
+            this.button_Config_Vision_TeachingPositions_Stop.Click += new System.EventHandler(this.button_Config_Vision_TeachingPositions_Stop_Click);
             // 
             // button_Config_Vision_TeachingPositions_Save
             // 
@@ -6682,7 +6862,7 @@
             // groupBox77
             // 
             this.groupBox77.Controls.Add(this.label_Mask_Gap);
-            this.groupBox77.Controls.Add(this.button37);
+            this.groupBox77.Controls.Add(this.button_Config_BDS_TeachingPositions_Stop);
             this.groupBox77.Controls.Add(this.button_Config_BDS_TeachingPositions_Save);
             this.groupBox77.Controls.Add(this.groupBox78);
             this.groupBox77.Controls.Add(this.groupBox83);
@@ -6708,16 +6888,17 @@
             this.label_Mask_Gap.Text = "(* Gap between masks : 35.0 mm)";
             this.label_Mask_Gap.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button37
+            // button_Config_BDS_TeachingPositions_Stop
             // 
-            this.button37.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button37.Location = new System.Drawing.Point(502, 319);
-            this.button37.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button37.Name = "button37";
-            this.button37.Size = new System.Drawing.Size(110, 52);
-            this.button37.TabIndex = 46;
-            this.button37.Text = "Cancel";
-            this.button37.UseVisualStyleBackColor = true;
+            this.button_Config_BDS_TeachingPositions_Stop.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_BDS_TeachingPositions_Stop.Location = new System.Drawing.Point(502, 319);
+            this.button_Config_BDS_TeachingPositions_Stop.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_BDS_TeachingPositions_Stop.Name = "button_Config_BDS_TeachingPositions_Stop";
+            this.button_Config_BDS_TeachingPositions_Stop.Size = new System.Drawing.Size(110, 52);
+            this.button_Config_BDS_TeachingPositions_Stop.TabIndex = 46;
+            this.button_Config_BDS_TeachingPositions_Stop.Text = "Stop";
+            this.button_Config_BDS_TeachingPositions_Stop.UseVisualStyleBackColor = true;
+            this.button_Config_BDS_TeachingPositions_Stop.Click += new System.EventHandler(this.button_Config_BDS_TeachingPositions_Stop_Click);
             // 
             // button_Config_BDS_TeachingPositions_Save
             // 
@@ -8149,174 +8330,50 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed
+            // button_Config_LDUL_Module_Size_Set
             // 
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Controls.Add(this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Location = new System.Drawing.Point(10, 248);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Name = "groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed";
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Size = new System.Drawing.Size(301, 160);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.TabIndex = 44;
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.TabStop = false;
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.Text = " Process Speed";
+            this.button_Config_LDUL_Module_Size_Set.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Config_LDUL_Module_Size_Set.Location = new System.Drawing.Point(252, 429);
+            this.button_Config_LDUL_Module_Size_Set.Margin = new System.Windows.Forms.Padding(5);
+            this.button_Config_LDUL_Module_Size_Set.Name = "button_Config_LDUL_Module_Size_Set";
+            this.button_Config_LDUL_Module_Size_Set.Size = new System.Drawing.Size(43, 25);
+            this.button_Config_LDUL_Module_Size_Set.TabIndex = 45;
+            this.button_Config_LDUL_Module_Size_Set.Text = "#";
+            this.button_Config_LDUL_Module_Size_Set.UseVisualStyleBackColor = true;
             // 
-            // button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save
+            // textBox_Config_LDUL_Module_Size_Set
             // 
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Location = new System.Drawing.Point(181, 111);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Name = "button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save";
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Size = new System.Drawing.Size(113, 41);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.TabIndex = 43;
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Text = "Save";
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.UseVisualStyleBackColor = true;
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save.Click += new System.EventHandler(this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save_Click);
+            this.textBox_Config_LDUL_Module_Size_Set.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Config_LDUL_Module_Size_Set.Location = new System.Drawing.Point(150, 429);
+            this.textBox_Config_LDUL_Module_Size_Set.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_LDUL_Module_Size_Set.Name = "textBox_Config_LDUL_Module_Size_Set";
+            this.textBox_Config_LDUL_Module_Size_Set.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_Module_Size_Set.TabIndex = 44;
+            this.textBox_Config_LDUL_Module_Size_Set.Text = "000.000";
+            this.textBox_Config_LDUL_Module_Size_Set.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY
+            // label_Config_LDUL_Module_Size_Set
             // 
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Location = new System.Drawing.Point(148, 77);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Margin = new System.Windows.Forms.Padding(5);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Name = "button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY";
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Size = new System.Drawing.Size(25, 25);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.TabIndex = 26;
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text = "#";
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.UseVisualStyleBackColor = true;
+            this.label_Config_LDUL_Module_Size_Set.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_LDUL_Module_Size_Set.Location = new System.Drawing.Point(10, 429);
+            this.label_Config_LDUL_Module_Size_Set.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Config_LDUL_Module_Size_Set.Name = "label_Config_LDUL_Module_Size_Set";
+            this.label_Config_LDUL_Module_Size_Set.Size = new System.Drawing.Size(142, 24);
+            this.label_Config_LDUL_Module_Size_Set.TabIndex = 43;
+            this.label_Config_LDUL_Module_Size_Set.Text = "Module Size Set(mm) :";
+            this.label_Config_LDUL_Module_Size_Set.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX
+            // button_Config_LDUL_Module_Size_Save
             // 
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Location = new System.Drawing.Point(148, 47);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Margin = new System.Windows.Forms.Padding(5);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Name = "button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX";
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Size = new System.Drawing.Size(25, 25);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.TabIndex = 25;
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = "#";
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY
-            // 
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Location = new System.Drawing.Point(60, 77);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Size = new System.Drawing.Size(87, 23);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.TabIndex = 24;
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text = "000.000";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis
-            // 
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Location = new System.Drawing.Point(5, 77);
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Margin = new System.Windows.Forms.Padding(5);
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Name = "label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis";
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Size = new System.Drawing.Size(53, 24);
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.TabIndex = 23;
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.Text = "Y Axis :";
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_YAxis.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX
-            // 
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Location = new System.Drawing.Point(60, 47);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Size = new System.Drawing.Size(87, 23);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.TabIndex = 22;
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = "000.000";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis
-            // 
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Location = new System.Drawing.Point(5, 47);
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Margin = new System.Windows.Forms.Padding(5);
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Name = "label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis";
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Size = new System.Drawing.Size(53, 24);
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.TabIndex = 21;
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.Text = "X Axis :";
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_XAxis.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed
-            // 
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Location = new System.Drawing.Point(60, 20);
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Margin = new System.Windows.Forms.Padding(5);
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Name = "label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed";
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Size = new System.Drawing.Size(113, 24);
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.TabIndex = 44;
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.Text = "Speed(mm/sec) ";
-            this.label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc
-            // 
-            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Location = new System.Drawing.Point(181, 20);
-            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Name = "label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc";
-            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Size = new System.Drawing.Size(113, 24);
-            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.TabIndex = 49;
-            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.Text = "Acc(mm/s²) ";
-            this.label__Config_WorkStage_TeachingPositions_ProcessSpeed_Acc.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY
-            // 
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Location = new System.Drawing.Point(269, 77);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Margin = new System.Windows.Forms.Padding(5);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Name = "button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY";
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Size = new System.Drawing.Size(25, 25);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.TabIndex = 48;
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = "#";
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.UseVisualStyleBackColor = true;
-            // 
-            // button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX
-            // 
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Location = new System.Drawing.Point(269, 47);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Margin = new System.Windows.Forms.Padding(5);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Name = "button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX";
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Size = new System.Drawing.Size(25, 25);
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.TabIndex = 47;
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text = "#";
-            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY
-            // 
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Location = new System.Drawing.Point(181, 77);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Size = new System.Drawing.Size(87, 23);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.TabIndex = 46;
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = "000.000";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX
-            // 
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Location = new System.Drawing.Point(181, 47);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Size = new System.Drawing.Size(87, 23);
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.TabIndex = 45;
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text = "000.000";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.button_Config_LDUL_Module_Size_Save.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Config_LDUL_Module_Size_Save.Location = new System.Drawing.Point(150, 458);
+            this.button_Config_LDUL_Module_Size_Save.Margin = new System.Windows.Forms.Padding(5);
+            this.button_Config_LDUL_Module_Size_Save.Name = "button_Config_LDUL_Module_Size_Save";
+            this.button_Config_LDUL_Module_Size_Save.Size = new System.Drawing.Size(145, 25);
+            this.button_Config_LDUL_Module_Size_Save.TabIndex = 46;
+            this.button_Config_LDUL_Module_Size_Save.Text = "Save";
+            this.button_Config_LDUL_Module_Size_Save.UseVisualStyleBackColor = true;
+            this.button_Config_LDUL_Module_Size_Save.Click += new System.EventHandler(this.button_Config_LDUL_Module_Size_Save_Click);
             // 
             // FormNew_Config
             // 
@@ -8354,6 +8411,7 @@
             this.groupBox_Config_LDUL_Move_JogMove_Transfer.ResumeLayout(false);
             this.groupBox_Config_LDUL_Move_MoveMode.ResumeLayout(false);
             this.groupBox_Config_LDUL_TeachingPositions.ResumeLayout(false);
+            this.groupBox_Config_LDUL_TeachingPositions.PerformLayout();
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.ResumeLayout(false);
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition_MoveMode.ResumeLayout(false);
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.ResumeLayout(false);
@@ -8385,6 +8443,8 @@
             this.groupBox46.ResumeLayout(false);
             this.groupBox47.ResumeLayout(false);
             this.groupBox_Config_WorkStage_TeachingPositions.ResumeLayout(false);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.ResumeLayout(false);
+            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.PerformLayout();
             this.groupBox102.ResumeLayout(false);
             this.groupBox103.ResumeLayout(false);
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.ResumeLayout(false);
@@ -8464,8 +8524,6 @@
             this.groupBox_Config_AxisPositions_LoadTransfer.ResumeLayout(false);
             this.groupBox_Config_AxisPositions_Loader.ResumeLayout(false);
             this.groupBox30.ResumeLayout(false);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.ResumeLayout(false);
-            this.groupBox_Config_WorkStage_TeachingPositions_ProcessSpeed.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -8749,19 +8807,19 @@
         private System.Windows.Forms.CheckedListBox checkedListBox_Config_LDUL_DIO_Output;
         private System.Windows.Forms.GroupBox groupBox_Config_LDUL_DIO_Input;
         private System.Windows.Forms.CheckedListBox checkedListBox_Config_LDUL_DIO_Input;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button Button_Config_LDUL_TeachingPositions_Stop;
         private System.Windows.Forms.Button button_Config_LDUL_TeachingPositions_Save;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox52;
         private System.Windows.Forms.CheckedListBox checkedListBox_Config_WorkStage_DIO_Output;
         private System.Windows.Forms.GroupBox groupBox53;
         private System.Windows.Forms.CheckedListBox checkedListBox_Config_WorkStage_DIO_Input;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button_Config_WorkStage_TeachingPositions_Stop;
         private System.Windows.Forms.Button button_Config_WorkStage_TeachingPositions_Save;
         private System.Windows.Forms.Button button_Config_Vision_ImageDisplay_Show;
-        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button_Config_Vision_TeachingPositions_Stop;
         private System.Windows.Forms.Button button_Config_Vision_TeachingPositions_Save;
-        private System.Windows.Forms.Button button37;
+        private System.Windows.Forms.Button button_Config_BDS_TeachingPositions_Stop;
         private System.Windows.Forms.Button button_Config_BDS_TeachingPositions_Save;
         private System.Windows.Forms.GroupBox groupBox59;
         private System.Windows.Forms.GroupBox groupBox60;
@@ -9049,5 +9107,9 @@
         private System.Windows.Forms.TextBox textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY;
         private System.Windows.Forms.TextBox textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX;
         private System.Windows.Forms.Label label_Config_WorkStage_TeachingPositions_ProcessSpeed_Speed;
+        private System.Windows.Forms.Button button_Config_LDUL_Module_Size_Set;
+        private System.Windows.Forms.TextBox textBox_Config_LDUL_Module_Size_Set;
+        private System.Windows.Forms.Label label_Config_LDUL_Module_Size_Set;
+        private System.Windows.Forms.Button button_Config_LDUL_Module_Size_Save;
     }
 }
