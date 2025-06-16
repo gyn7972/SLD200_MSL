@@ -195,6 +195,26 @@ namespace SLD200_MSL
             textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
             textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";
 
+            //  Work Stage Process Speed
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+            workStage.m_pProcessConfigData.LoadFromIni(strFIle);
+
+            string strTemp = string.Empty;
+            //workStage Page
+            strTemp = workStage.m_pProcessConfigData.nSpeedAxisX.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = strTemp;
+            strTemp = workStage.m_pProcessConfigData.nSpeedAxisY.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text = strTemp;
+            strTemp = workStage.m_pProcessConfigData.nAccelAxisX.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text = strTemp;
+            strTemp = workStage.m_pProcessConfigData.nAccelAxisY.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = strTemp;
+
+            //loader Page
+            strTemp = workStage.m_pProcessConfigData.dModuleSizeSet.ToString();
+            textBox_Config_LDUL_Module_Size_Set.Text = strTemp;
+
             InitializeJogButtons();
         }
 
@@ -1105,7 +1125,6 @@ namespace SLD200_MSL
                     textBox_Config_BDS_Movement_MaskY.Text = string.Format("{0:F3}", 0.0);
                 }
             }
-
 
             //for (int i = 0; i < (int)LoaderParameter.MotionKey.Max; i++)
             //{
@@ -2651,6 +2670,10 @@ namespace SLD200_MSL
                 lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
                 lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
+                //TEST
+                //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
                 //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
                 //lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
                 //lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
@@ -3569,7 +3592,8 @@ namespace SLD200_MSL
             //  음압이므로 양수가 들어와도 음수로 변경
             m_dkPa = Math.Abs(Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text));
 
-            //if ((Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) > -1.3) || (Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
+            //if ((Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) > -1.3) ||
+            //(Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
 
             if (m_dkPa == 0.0)
             {
@@ -3584,7 +3608,6 @@ namespace SLD200_MSL
             m_dkPa *= -1.0;         //  음압으로 변경
 
             workStage.m_bElectroRegulator_CommData_Received = false;
-
             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(m_dkPa);
         }
 
@@ -5960,6 +5983,113 @@ namespace SLD200_MSL
             {
                 FormVerifyScannerVisionOffsetPopup.Show();
                 FormVerifyScannerVisionOffsetPopup.Activate();
+            }
+        }
+
+        private void button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string strFIle = "";
+                strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+                if (File.Exists(strFIle) == false)
+                {
+                    MessageBox.Show("ConfigFile 파일이 없습니다.\r\n\r\n[Default값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (File.Exists(strFIle) == false)
+                {
+                    File.Create(strFIle);
+                }
+
+                // 값 가져오기
+                string strTemp = string.Empty;
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text;
+                workStage.m_pProcessConfigData.nSpeedAxisX = Equipment.ToInt(strTemp);
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text;
+                workStage.m_pProcessConfigData.nSpeedAxisY = Equipment.ToInt(strTemp);
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text;
+                workStage.m_pProcessConfigData.nAccelAxisX = Equipment.ToInt(strTemp);
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text;
+                workStage.m_pProcessConfigData.nAccelAxisY = Equipment.ToInt(strTemp);
+
+                workStage.m_pProcessConfigData.SaveToIni(strFIle);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
+
+        private void Button_Config_LDUL_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            loader.StoptoLoader_Motor(Loader.nAxis.Z0);
+            loader.StoptoLoader_Motor(Loader.nAxis.Z1);
+            loader.StoptoLoader_Motor(Loader.nAxis.TR_X);
+            loader.StoptoLoader_Motor(Loader.nAxis.TR_Z);
+            loader.StoptoLoader_Motor(Loader.nAxis.ALN_X);
+            loader.StoptoLoader_Motor(Loader.nAxis.ALN_Y);
+
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.Z0);
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.Z1);
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.TR_X);
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.TR_Z);
+        }
+
+        private void button_Config_WorkStage_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            // Head도 같이 정지.
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.X);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Y);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Z);
+        }
+
+        private void button_Config_Vision_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            // Stage도 같이 정지.
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.X);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Y);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Z);
+        }
+
+        private void button_Config_BDS_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            if (!Equipment.Machine_LaserType_CO2)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "UV Laser System 에는 Mask 가 없습니다.");
+                return;
+            }
+
+            bds.MC_Func.MC_MotorStop((int)Bds.nAxis.MASK_Y, 2000);
+        }
+
+        private void button_Config_LDUL_Module_Size_Save_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string strFIle = "";
+                strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+                if (File.Exists(strFIle) == false)
+                {
+                    MessageBox.Show("ConfigFile 파일이 없습니다.\r\n\r\n[Default값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (File.Exists(strFIle) == false)
+                {
+                    File.Create(strFIle);
+                }
+
+                // 값 가져오기
+                string strTemp = string.Empty;
+                strTemp = textBox_Config_LDUL_Module_Size_Set.Text;
+                workStage.m_pProcessConfigData.dModuleSizeSet = Equipment.ToDouble(strTemp);
+
+                workStage.m_pProcessConfigData.SaveToIni(strFIle);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
             }
         }
     }

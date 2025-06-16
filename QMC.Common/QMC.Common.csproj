@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -205,6 +205,7 @@
     <Compile Include="Modules\Scanner.cs" />
     <Compile Include="Modules\LaserConfig.cs" />
     <Compile Include="Modules\LaserRecipe.cs" />
+    <Compile Include="Q_Config\ProcessConfigData.cs" />
     <Compile Include="Q_Config\ScannerCalConfigData.cs" />
     <Compile Include="Q_Recipe\ScannerCalManager.cs" />
     <Compile Include="Q_Recipe\VisionRecipeData.cs" />

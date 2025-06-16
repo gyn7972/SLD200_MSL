@@ -2,6 +2,7 @@
 using QMC.Common.Modules;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QMC.Common.Parts
@@ -870,6 +871,8 @@ namespace QMC.Common.Parts
             if (m_bOnOff) nRet = dioString.Write(DioValue.On);
             else nRet = dioString.Write(DioValue.Off);
 
+            Thread.Sleep(1);
+
             if (nRet != 0) return nRet;
 
             return nRet;
@@ -889,6 +892,8 @@ namespace QMC.Common.Parts
             if (m_bOnOff) nRet = dioString.Write(DioValue.On);
             else nRet = dioString.Write(DioValue.Off);
 
+            Thread.Sleep(1);
+
             if (nRet != 0) return nRet;
 
             return nRet;
@@ -899,7 +904,6 @@ namespace QMC.Common.Parts
             int nRet = 0;
 
             DioPoint dioString = null;
-
             //  해당 채널 출력 성공 여부 리턴
             switch (m_nPos)
             {
@@ -922,6 +926,8 @@ namespace QMC.Common.Parts
 
             if (m_bOnOff) nRet = dioString.Write(DioValue.On);
             else nRet = dioString.Write(DioValue.Off);
+            
+            Thread.Sleep(1); //  잠시 대기
 
             if (nRet != 0) return nRet;
 
@@ -956,6 +962,8 @@ namespace QMC.Common.Parts
 
             if (m_bOnOff) nRet = dioString.Write(DioValue.On);
             else nRet = dioString.Write(DioValue.Off);
+
+            Thread.Sleep(1); //  잠시 대기
 
             if (nRet != 0) return nRet;
 

@@ -33,6 +33,8 @@ using System.Windows.Controls.Primitives;
 using static QMC.Common.Part;
 using QMC.Common.Q_Config;
 using QMC.Common.Q_Sequence;
+using OpenCvSharp.Internal;
+using NativeMethods = QMC.Core.NativeMethods;
 //using OpenCvSharp;
 
 namespace SLD200_MSL
@@ -1417,6 +1419,8 @@ namespace SLD200_MSL
             checkBox_Setup_Option_LaserHeight_Retry_Enable.Checked = Equipment.Machine_HeightSensorRetry_Enable;
             textBox_Setup_Option_LaserHeight_Retry_Count.Text = Equipment.Machine_HeightSensorRetry_Count.ToString();
 
+            checkBox_Setup_Option_Hole02_50_Wait_Enable.Checked = Equipment.Machine_Hole02_50_Wait_Enable;
+            textBox_Setup_Option_Hole02_50_Wait_Time.Text =  Equipment.Machine_Hole02_50_Wait_Time.ToString();
 
             if (Equipment.Machine_FiducialImageSave_Always)
             {
@@ -1872,6 +1876,10 @@ namespace SLD200_MSL
             Equipment.Machine_HeightSensorRetry_Count = Equipment.ToInt(textBox_Setup_Option_LaserHeight_Retry_Count.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "HeightSensorRetry_Count", textBox_Setup_Option_LaserHeight_Retry_Count.Text.ToString(), strFIle);
 
+            Equipment.Machine_Hole02_50_Wait_Enable = checkBox_Setup_Option_Hole02_50_Wait_Enable.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "Hole02_50_Wait_Enable", checkBox_Setup_Option_Hole02_50_Wait_Enable.Checked.ToString(), strFIle);
+            Equipment.Machine_Hole02_50_Wait_Time = Equipment.ToInt(textBox_Setup_Option_Hole02_50_Wait_Time.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "Hole02_50_Wait_Time", textBox_Setup_Option_Hole02_50_Wait_Time.Text.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2449,6 +2457,16 @@ namespace SLD200_MSL
                 textBox_Setup_Option_LaserHeight_Retry_Count.Enabled = false;
             }
 
+            if (Equipment.Machine_Hole02_50_Wait_Enable)
+            {
+                checkBox_Setup_Option_Hole02_50_Wait_Enable.Checked = true;
+                textBox_Setup_Option_Hole02_50_Wait_Time.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_Hole02_50_Wait_Enable.Checked = false;
+                textBox_Setup_Option_Hole02_50_Wait_Time.Enabled = false;
+            }
 
         }
 
@@ -2634,9 +2652,13 @@ namespace SLD200_MSL
                 workStage.m_ScannerCalibration_Start = false;
                 workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
             }
-            
 
-            
+            workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+            workStage.m_ScannerCalibration_Start = false;
+            workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
+
+
+
         }
 
         private void btnCalStart_Vision_Click(object sender, EventArgs e)

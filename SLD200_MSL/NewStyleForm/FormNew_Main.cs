@@ -50,6 +50,8 @@ using Layer = SpiralLab.Sirius.Layer;
 using static QMC.Common.Vision.EureSys.GenICam;
 using System.Text.RegularExpressions;
 using Group = SpiralLab.Sirius.Group;
+using SLD200.NewStyleForm.NewSubForm;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace SLD200_MSL
 {
@@ -1438,7 +1440,6 @@ namespace SLD200_MSL
                 workStage.m_nSafetyPos_Move_Step = (int)WorkStage.SafetyPos_Move_Step.None;
 
                 workStage.m_bFindAlignMark_OK = false;
-
                 Equipment.MachineStop_byUser = true;
 
                 //  소켓 가공 건너뛰기 취소
@@ -1449,7 +1450,6 @@ namespace SLD200_MSL
                 Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
                 checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
                 checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
-
 
                 workStage.m_MainWork_Start = false;
                 //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.None;
@@ -1466,7 +1466,6 @@ namespace SLD200_MSL
                 unloader.timer_UnloaderWork.Enabled = false;
                 unloader.m_UnloaderWork_Start = false;
                 //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
-
 
                 //  Product Align 타이머
                 //workStage.timer_VisionAlign_Stop = true;
@@ -1506,13 +1505,14 @@ namespace SLD200_MSL
 
                 workStage.m_bHomeOK = false;
                 m_bHomeProgress_Show = true;
+
+                workStage._currentHomeMode = (int)WorkStage.HomeMode.Full; 
                 workStage.m_nHomeStep = (int)WorkStage.Home_Step.Start;
 
                 //  Motion 홈 실행 타이머
                 workStage.m_btimer_Motion_Home_Stop = false;
                 workStage.timer_Motion_Home.Enabled = true;
                 workStage.m_MotionHome_Start = true;
-
                 workStage.m_bHomeProgressForm_Close = false;
 
                 if (!m_FormProgress.HasChildren)            //  Progress 창을 실수로 닫았다면, 다시 메모리 할당하자.
@@ -1528,7 +1528,6 @@ namespace SLD200_MSL
                 var doc = new DocumentDefault();
                 if(SiriusViewer_Main.Document != null)
                 {
-
                     if (SiriusViewer_Main.Document.Views != null)
                     {
 
@@ -2004,6 +2003,8 @@ namespace SLD200_MSL
             }
             else
             {
+                Log.Write("SLD-200", Equipment.User_Name, "StartButton_Click", "시컨스 처음 부터 시작.");
+
                 //if (!workStage.IsProcessing)
                 //{
                 //    //  가공할 것이 없음.
@@ -2014,8 +2015,8 @@ namespace SLD200_MSL
                 //    {
                 //        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
 
-                //        //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-                //        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                //        // workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                //        // workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                 //    }
 
                 //    workStage.m_bLaserDrilling_Complete = true;
@@ -2577,15 +2578,9 @@ namespace SLD200_MSL
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
         {
-            //SiriusViewer_Main.Document = Equipment.EqpSiriusViewer_Origin.Document;
-            //workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-            //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-            //Equipment.m_bDrawingFileOpen_1time = true;
-
+			return;
             UpdatePCBStatus(0, 0, 3);
             return;
-
-
 
             //  RTC 초기화 테스트
             bool m_bRet = true;
@@ -3562,6 +3557,23 @@ namespace SLD200_MSL
         
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            return;
+
+            try
+            {
+                var moduleUI = new FormNewSub_ModuleStatus();
+                moduleUI.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
+                moduleUI.Text = "모듈 상태 확인";
+                moduleUI.StartPosition = FormStartPosition.CenterParent;
+                moduleUI.Show();  // 모달리스
+                Log.Write("UI", "ModuleStatus 테스트 창이 열렸습니다.");
+            }
+            catch (Exception ex)
+            {
+                Log.Write("UI", $"ModuleStatus 테스트 창 열기 실패: {ex.Message}");
+                MessageBox.Show("모듈 상태 창 열기 실패:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             //workStage.workStageParameter.DO_AirCurtain_Purge(false);
             return;
             workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
@@ -4255,7 +4267,7 @@ namespace SLD200_MSL
                             if (Equipment._InitDeviceStatus.MotionIo)
                             {
                                 var v = workStage.ConvertPointFineCam(new XyzCoordinate(ptReal.X, ptReal.Y, 0));
-                                workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X, v.Y), Type_Motor_Speed.Coarse);
+                                workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X, v.Y), Type_Motor_Speed.Process);
                                 return;
                             }
                             else
@@ -4380,6 +4392,16 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            return;
+
+            // 시작 Test
+            workStage.timer_Motion_Home.Enabled = true;
+            workStage.m_btimer_Motion_Home_Stop = false;
+            workStage.m_MotionHome_Start = true;
+            workStage._currentHomeMode = (int)WorkStage.HomeMode.StageXYOnly;
+            workStage.m_nStageXY_HomeStep = (int)WorkStage.StageXY_HomeStep.Start;
+            return;
+
             workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
 
             //workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);

@@ -24,6 +24,8 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using SpiralLab.Sirius;
 using System.Numerics;
 using SharpGL;
+using System.Xml.Linq;
+using SpiralLab;
 
 //using OpenTK;
 //using OpenTK.Graphics.OpenGL;
@@ -88,6 +90,9 @@ namespace SLD200_MSL
             textBox_SiriusEditor_Divided_H.Text = Equipment.m_fDividedY.ToString();
             checkBox_SiriusEditor_Divided.Checked = false;
 
+
+            //HookEditorToolbarButtons();
+            //this.Load += (s, e) => HookEditorToolbarButtons(); // Load 이후 실행
         }
 
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
@@ -370,55 +375,115 @@ namespace SLD200_MSL
 
         public void Import_DrawingFile(string strFileName)
         {
+            // Auto인 경우에는 파일명없으면 아에 들어오면 안됨.
             //  Sirius2
             //var doc = DocumentFactory.CreateDefault();
             //doc.ActOpen(strFileName);
             //siriusEditor.Document = doc;
-
             if (File.Exists(strFileName) == false)
             {
                 MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                if (SiriusEditor.Document == null)
+                    SiriusEditor.Document = new DocumentDefault();
+
+                SiriusEditor.Document.FileName = "New Document";
+                SiriusEditor.Document.Action.ActNew();
                 return;
             }
 
             //  확장자 확인
             string m_strExt = System.IO.Path.GetExtension(strFileName);
             IDocument doc = null;
-            //  Sirius1
-            if (m_strExt.ToUpper() == ".DXF")
-            {
-                //SiriusEditor.Document.New();
-                doc = DocumentSerializer.OpenDxf(strFileName);
-                SiriusEditor.Document = doc;
-            }
-            else if (m_strExt.ToUpper() == ".SIRIUS")
-            {
-                //SiriusEditor.Document.New();
-                doc = DocumentSerializer.OpenSirius(strFileName);
-                
-            }
-            if(doc!=null)
-            {
-                if (SiriusEditor.Document != null)
-                {
-                    if (SiriusEditor.Document.Views != null)
-                    {
-                        SiriusEditor.Document.Views.Clear();
-                    }
-                }
-                SiriusEditor.Document = doc;
 
+            try
+            {
+                if (m_strExt.ToUpper() == ".DXF")
+                {
+                    doc = DocumentSerializer.OpenDxf(strFileName);
+                }
+                else if (m_strExt.ToUpper() == ".SIRIUS")
+                {
+                    doc = DocumentSerializer.OpenSirius(strFileName);
+                }
+
+                if (doc != null)
+                {
+                    // 기존 View 정리
+                    if (SiriusEditor.Document != null && SiriusEditor.Document.Views != null)
+                        SiriusEditor.Document.Views.Clear();
+
+                    SiriusEditor.Document = doc;
+                }
+                else
+                {
+                    Log.Write("SLD-200", "Import_DrawingFile", "문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
+                    //throw new Exception("문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
+                }
             }
-            
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                MessageBox.Show("도면 파일을 불러오는 중 오류가 발생했습니다.\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                if (SiriusEditor.Document == null)
+                    SiriusEditor.Document = new DocumentDefault();
+
+                SiriusEditor.Document.FileName = "New Document";
+                SiriusEditor.Document.Action.ActNew();
+            }
+
+            //기존 코드
+            {
+                ////  Sirius1
+                //if (m_strExt.ToUpper() == ".DXF")
+                //{
+                //    //SiriusEditor.Document.New();
+                //    doc = DocumentSerializer.OpenDxf(strFileName);
+                //    SiriusEditor.Document = doc;
+                //}
+                //else if (m_strExt.ToUpper() == ".SIRIUS")
+                //{
+                //    //SiriusEditor.Document.New();
+                //    doc = DocumentSerializer.OpenSirius(strFileName);
+                //}
+                //if(doc!=null)
+                //{
+                //    if (SiriusEditor.Document != null)
+                //    {
+                //        if (SiriusEditor.Document.Views != null)
+                //        {
+                //            SiriusEditor.Document.Views.Clear();
+                //        }
+                //    }
+                //    SiriusEditor.Document = doc;
+                //}
+            }
         }
 
         public bool Imported_DrawingFile_SameCheck(string strFileName)
         {
-            if (strFileName == SiriusEditor.Document.FileName)
-                return true;
-            else
-                return false;
+            bool bRtn = false;
+            try
+            {
+                if (SiriusEditor.Document == null)
+                {
+                    return false;
+                }
+
+                if (strFileName == SiriusEditor.Document.FileName)
+                    bRtn = true;
+                else
+                    bRtn = false;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
         }
+
         private void Timer_Status_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -445,9 +510,7 @@ namespace SLD200_MSL
 
             //  Arc 를 Polyline 으로 만들 경우
             Config.LwPolylineBulgeToLines = true;
-
             Config.LwPolylineBulgeToLineMinThreshold = (float)0.001;
-
             if (Equipment.Machine_PolylineCurve_Resolution < 1)
                 Config.LwPolylineBulgePrecision = 100;
             else
@@ -556,7 +619,6 @@ namespace SLD200_MSL
                 //}
                 //var rtc = ScannerFactory.CreateRtc6(0, kfactor, LaserModes.Yag1, RtcSignalLevels.ActiveHigh, RtcSignalLevels.ActiveHigh, correctionFile);     //  Sirius2
             }
-
 
             // basic frequency and pulse width
             // laser frequency : 50KHz, pulse width : 2usec (주파수 50KHz, 펄스폭 2usec)
@@ -747,6 +809,9 @@ namespace SLD200_MSL
         {
             SiriusEditor.Document = doc;
             Equipment.SetEqpSiriusViewerDocument(doc);
+
+            // 이동 비활성화 설정 추가
+            //SiriusEditor.Document.Action.ActionMode = ActionModes.Select;
         }
 
         #endregion
@@ -762,47 +827,19 @@ namespace SLD200_MSL
             {
                 timer_RtcInit.Enabled = false;
 
-                //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_NONE;
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
-
-                //if (btnTest_RTC6.BackColor == Color.GreenYellow)
-                //    return;
-                //if (btnTest_syncAxis.BackColor == Color.GreenYellow)
-                //{
-                //    var mb = new MessageBoxYesNo();
-                //    if (DialogResult.Yes != mb.ShowDialog("Question ?", "RTC6 모드로 변경하시겠습니까?"))
-                //        return;
-                //}
-                //btnTest_RTC6.BackColor = Color.GreenYellow;
-                //btnTest_syncAxis.BackColor = Color.Gray;
-                ////btnTest_syncAxis.Enabled = false;
-                //Equipment.RtcMode_syncAxis = (int)Equipment.RtcMode.RTC_RTC6;
 
                 Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
                 if (Rtc_Init())
                 {
-                    //
                     Equipment._InitDeviceStatus.Scanner = true;
-                    //MessageBox.Show("Scanner Board 초기화 완료", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     Equipment._InitDeviceStatus.Scanner = false;
                     MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
-
-                //Log.Write("SLD-200", "RTC_Initialize", "Recipe 화면의 Sirius Editor 초기화");
-
-                //// 신규 문서 생성
-                //var doc = new DocumentDefault();
-
-                //// 문서 지정
-                //SiriusEditor.Document = doc;
-                //SiriusEditor.Marker = workStage.SiriusEditor.Marker;
-                //SiriusEditor.Laser = workStage.SiriusEditor.Laser;
-                //SiriusEditor.Rtc = workStage.SiriusEditor.Rtc;
             }
-            //timer_RtcInit.Enabled = true;
         }
 
         private void FormNew_CommunicationTerminal_Shown(object sender, EventArgs e)
@@ -819,6 +856,10 @@ namespace SLD200_MSL
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
+                {
+                    //m_formSiriusEditor.Import_DrawingFile(m_formSiriusEditor.SiriusEditor.Document.FileName);
+                }
+
                 e.Cancel = true;
                 Hide();
             }
@@ -2445,6 +2486,12 @@ namespace SLD200_MSL
         {
             string fileName = SiriusEditor.Document.FileName;
 
+            // 파일명 포함하여 저장 여부 묻기
+            var mb = new MessageBoxYesNo();
+            string message = $"저장 하시겠습니까?\n\n파일명: {fileName}";
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", message))
+                return;
+
             // 파일명이 없거나 .sirius 확장자가 아니면 강제로 .sirius 확장자로 저장
             if (string.IsNullOrEmpty(fileName) || System.IO.Path.GetExtension(fileName).ToLower() != ".sirius")
             {
@@ -2599,5 +2646,66 @@ namespace SLD200_MSL
         {
             int ntest = 0;
         }
+
+        private void FormNew_SiriusEditor_MouseMove(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void SiriusEditor_OnDocumentOpen(object sender)
+        {
+            var dlg = new OpenFileDialog();
+            dlg.Title = "Open File";
+            dlg.Filter = "Supported files (*.sirius, *.dxf)|*.sirius;*.dxf|sirius data files (*.sirius)|*.sirius|dxf cad files (*.dxf)|*.dxf|All Files (*.*)|*.*";
+            dlg.FileName = string.Empty;
+            dlg.Multiselect = false;
+
+            if (dlg.ShowDialog(this) == DialogResult.OK)
+            {
+                try
+                {
+                    SiriusEditor.OnOpen(dlg.FileName); // 이 시점에 문서 열림
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                    MessageBox.Show("입력 문자열의 형식이 잘 못되어 도면 파일을 열 수 없습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                }
+                
+            }
+        }
+
+
+        private void HookEditorToolbarButtons()
+        {
+            var type = SiriusEditor.GetType();
+
+            // 모든 ToolStrip을 찾음
+            var toolStrips = SiriusEditor.Controls.OfType<ToolStrip>().ToList();
+
+            foreach (var toolStrip in toolStrips)
+            {
+                foreach (ToolStripItem item in toolStrip.Items)
+                {
+                    if (item is ToolStripButton btn)
+                    {
+                        // 예: 버튼 툴팁에 "Bottom to Top"이 포함된 경우
+                        if (!string.IsNullOrEmpty(btn.ToolTipText) && btn.ToolTipText.Contains("Bottom"))
+                        {
+                            btn.Click += (s, e) =>
+                            {
+                                MessageBox.Show("정렬 버튼 클릭됨: " + btn.ToolTipText);
+                                // 여기서 정렬 후 후처리 실행 가능
+                            };
+                        }
+
+                        // 예: 버튼 이미지로 식별
+                        // if (btn.Image != null && btn.ImageIndex == 25) { ... }
+                    }
+                }
+            }
+        }
+
     }
 }

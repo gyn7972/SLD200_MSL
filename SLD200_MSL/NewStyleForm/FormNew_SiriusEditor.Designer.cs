@@ -31,7 +31,6 @@ namespace SLD200_MSL
         /// </summary>
         private void InitializeComponent()
         {
-            this.SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
             this.button_DataParsing = new System.Windows.Forms.Button();
             this.button_Rotate = new System.Windows.Forms.Button();
             this.groupBox167 = new System.Windows.Forms.GroupBox();
@@ -61,40 +60,9 @@ namespace SLD200_MSL
             this.label_SiriusEditor_Divided_H = new System.Windows.Forms.Label();
             this.button_SiriusEditor_Divided = new System.Windows.Forms.Button();
             this.checkBox_SiriusEditor_Divided = new System.Windows.Forms.CheckBox();
+            this.SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
             this.groupBox167.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // SiriusEditor
-            // 
-            this.SiriusEditor.AliasName = "NoName";
-            this.SiriusEditor.AllowDrop = true;
-            this.SiriusEditor.BackColor = System.Drawing.SystemColors.Control;
-            this.SiriusEditor.Document = null;
-            this.SiriusEditor.EnablePens = true;
-            this.SiriusEditor.FileName = "NoName";
-            this.SiriusEditor.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SiriusEditor.HidePropertyGrid = false;
-            this.SiriusEditor.Index = ((uint)(0u));
-            this.SiriusEditor.Laser = null;
-            this.SiriusEditor.Location = new System.Drawing.Point(5, 5);
-            this.SiriusEditor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.SiriusEditor.Marker = null;
-            this.SiriusEditor.Motors = null;
-            this.SiriusEditor.MotorZ = null;
-            this.SiriusEditor.Name = "SiriusEditor";
-            this.SiriusEditor.PowerMap = null;
-            this.SiriusEditor.PowerMeter = null;
-            this.SiriusEditor.Progress = 0;
-            this.SiriusEditor.Rtc = null;
-            this.SiriusEditor.RtcExtension1Input = null;
-            this.SiriusEditor.RtcExtension1Output = null;
-            this.SiriusEditor.RtcExtension2Output = null;
-            this.SiriusEditor.RtcPin2Input = null;
-            this.SiriusEditor.RtcPin2Output = null;
-            this.SiriusEditor.Size = new System.Drawing.Size(1286, 871);
-            this.SiriusEditor.TabIndex = 69;
-            this.SiriusEditor.OnDocumentSave += new SpiralLab.Sirius.SiriusDocumentSave(this.SiriusEditor_OnDocumentSave);
-            this.SiriusEditor.CausesValidationChanged += new System.EventHandler(this.SiriusEditor_CausesValidationChanged);
             // 
             // button_DataParsing
             // 
@@ -110,9 +78,9 @@ namespace SLD200_MSL
             // button_Rotate
             // 
             this.button_Rotate.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Rotate.Location = new System.Drawing.Point(1324, 521);
+            this.button_Rotate.Location = new System.Drawing.Point(1324, 560);
             this.button_Rotate.Name = "button_Rotate";
-            this.button_Rotate.Size = new System.Drawing.Size(153, 57);
+            this.button_Rotate.Size = new System.Drawing.Size(153, 32);
             this.button_Rotate.TabIndex = 2;
             this.button_Rotate.Text = "Data  Select";
             this.button_Rotate.UseVisualStyleBackColor = true;
@@ -205,9 +173,9 @@ namespace SLD200_MSL
             // button_Test_OffsetAngle_Calc
             // 
             this.button_Test_OffsetAngle_Calc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_OffsetAngle_Calc.Location = new System.Drawing.Point(1324, 583);
+            this.button_Test_OffsetAngle_Calc.Location = new System.Drawing.Point(1324, 595);
             this.button_Test_OffsetAngle_Calc.Name = "button_Test_OffsetAngle_Calc";
-            this.button_Test_OffsetAngle_Calc.Size = new System.Drawing.Size(153, 57);
+            this.button_Test_OffsetAngle_Calc.Size = new System.Drawing.Size(153, 45);
             this.button_Test_OffsetAngle_Calc.TabIndex = 85;
             this.button_Test_OffsetAngle_Calc.Text = "Test : Angle, Offset Calc.";
             this.button_Test_OffsetAngle_Calc.UseVisualStyleBackColor = true;
@@ -289,7 +257,7 @@ namespace SLD200_MSL
             // tb_SelectSocketNumber
             // 
             this.tb_SelectSocketNumber.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.tb_SelectSocketNumber.Location = new System.Drawing.Point(1446, 493);
+            this.tb_SelectSocketNumber.Location = new System.Drawing.Point(1446, 531);
             this.tb_SelectSocketNumber.Name = "tb_SelectSocketNumber";
             this.tb_SelectSocketNumber.Size = new System.Drawing.Size(31, 24);
             this.tb_SelectSocketNumber.TabIndex = 96;
@@ -299,7 +267,7 @@ namespace SLD200_MSL
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.Color.Black;
-            this.label5.Location = new System.Drawing.Point(1323, 497);
+            this.label5.Location = new System.Drawing.Point(1323, 535);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(118, 16);
             this.label5.TabIndex = 95;
@@ -328,7 +296,7 @@ namespace SLD200_MSL
             // 
             this.label7.AutoSize = true;
             this.label7.ForeColor = System.Drawing.Color.Black;
-            this.label7.Location = new System.Drawing.Point(1322, 655);
+            this.label7.Location = new System.Drawing.Point(1322, 668);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(68, 16);
             this.label7.TabIndex = 88;
@@ -337,7 +305,7 @@ namespace SLD200_MSL
             // textboxCorX
             // 
             this.textboxCorX.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textboxCorX.Location = new System.Drawing.Point(1407, 650);
+            this.textboxCorX.Location = new System.Drawing.Point(1407, 663);
             this.textboxCorX.Name = "textboxCorX";
             this.textboxCorX.Size = new System.Drawing.Size(70, 27);
             this.textboxCorX.TabIndex = 89;
@@ -406,6 +374,39 @@ namespace SLD200_MSL
             this.checkBox_SiriusEditor_Divided.Text = "Divided Use";
             this.checkBox_SiriusEditor_Divided.UseVisualStyleBackColor = true;
             // 
+            // SiriusEditor
+            // 
+            this.SiriusEditor.AliasName = "NoName";
+            this.SiriusEditor.AllowDrop = true;
+            this.SiriusEditor.BackColor = System.Drawing.SystemColors.Control;
+            this.SiriusEditor.Document = null;
+            this.SiriusEditor.EnablePens = true;
+            this.SiriusEditor.FileName = "NoName";
+            this.SiriusEditor.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SiriusEditor.HidePropertyGrid = false;
+            this.SiriusEditor.Index = ((uint)(0u));
+            this.SiriusEditor.Laser = null;
+            this.SiriusEditor.Location = new System.Drawing.Point(5, 5);
+            this.SiriusEditor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.SiriusEditor.Marker = null;
+            this.SiriusEditor.Motors = null;
+            this.SiriusEditor.MotorZ = null;
+            this.SiriusEditor.Name = "SiriusEditor";
+            this.SiriusEditor.PowerMap = null;
+            this.SiriusEditor.PowerMeter = null;
+            this.SiriusEditor.Progress = 0;
+            this.SiriusEditor.Rtc = null;
+            this.SiriusEditor.RtcExtension1Input = null;
+            this.SiriusEditor.RtcExtension1Output = null;
+            this.SiriusEditor.RtcExtension2Output = null;
+            this.SiriusEditor.RtcPin2Input = null;
+            this.SiriusEditor.RtcPin2Output = null;
+            this.SiriusEditor.Size = new System.Drawing.Size(1286, 871);
+            this.SiriusEditor.TabIndex = 69;
+            this.SiriusEditor.OnDocumentOpen += new SpiralLab.Sirius.SiriusDocumentOpen(this.SiriusEditor_OnDocumentOpen);
+            this.SiriusEditor.OnDocumentSave += new SpiralLab.Sirius.SiriusDocumentSave(this.SiriusEditor_OnDocumentSave);
+            this.SiriusEditor.CausesValidationChanged += new System.EventHandler(this.SiriusEditor_CausesValidationChanged);
+            // 
             // FormNew_SiriusEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -438,11 +439,11 @@ namespace SLD200_MSL
             this.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "FormNew_SiriusEditor";
             this.Text = "QMC Sirius Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormNew_SiriusEditor_FormClosing);
             this.Shown += new System.EventHandler(this.FormNew_CommunicationTerminal_Shown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FormNew_SiriusEditor_MouseMove);
             this.groupBox167.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
