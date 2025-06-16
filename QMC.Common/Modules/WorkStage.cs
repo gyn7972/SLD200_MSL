@@ -14505,6 +14505,7 @@ namespace QMC.Common.Modules
                                             "- Final_Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
                                             "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
                                     Log.Write("Goldpowder", "Result", strTemp);
+
                                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align:GoldPowder", strTemp);
                                 }
                             }
@@ -20316,7 +20317,7 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 50) //안전화 타임.
+                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 100) //안전화 타임.
                             {
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                             }
@@ -29008,29 +29009,31 @@ namespace QMC.Common.Modules
                     }
                 }
             }
-            
 
-            ////  Marking 소켓 --> 마킹은 일단 보류. 모듈 단위 마킹일 경우는, Hole1 의 소켓 얼라인할 때 같이 얼라인 해주기 때문에, 여기서 또 얼라인 하면 문제가 될 수 있다.
-            //if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length > 0)
-            //{
-            //    for (int i = 0; i < m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length; i++)
-            //    {
-            //        if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[i].bProcessing == false)
-            //        {
-            //            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
-            //            {
-            //                if (i >= m_nSocketAlign_StartIndex)
-            //                {
-            //                    m_nListCount++;
-            //                }
-            //            }
-            //            else                                                                                                                                        //  전체 가공 모드일 경우
-            //            {
-            //                m_nListCount++;
-            //            }
-            //        }
-            //    }
-            //}
+
+            {
+                ////  Marking 소켓 --> 마킹은 일단 보류. 모듈 단위 마킹일 경우는, Hole1 의 소켓 얼라인할 때 같이 얼라인 해주기 때문에, 여기서 또 얼라인 하면 문제가 될 수 있다.
+                //if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length > 0)
+                //{
+                //    for (int i = 0; i < m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length; i++)
+                //    {
+                //        if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[i].bProcessing == false)
+                //        {
+                //            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                //            {
+                //                if (i >= m_nSocketAlign_StartIndex)
+                //                {
+                //                    m_nListCount++;
+                //                }
+                //            }
+                //            else                                                                                                                                        //  전체 가공 모드일 경우
+                //            {
+                //                m_nListCount++;
+                //            }
+                //        }
+                //    }
+                //}
+            }
 
             m_strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, Align 이 필요한 Thruhole 개수 : {0}", m_nListCount);
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
@@ -36224,7 +36227,7 @@ namespace QMC.Common.Modules
                 var doc = DocumentSerializer.OpenDxf(strFileName);
                 //SiriusViewer_Main.Document = doc;
                 
-                Equipment.SetEqpSiriusViewerDocument(  doc);
+                Equipment.SetEqpSiriusViewerDocument(doc);
             }
             else if (m_strExt.ToUpper() == ".SIRIUS")
             {
@@ -36757,7 +36760,7 @@ namespace QMC.Common.Modules
                     dOffsetX1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
                     dOffsetY1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.Y;
 
-                    //0.03 -> 0.03
+                    //0.03 -> 0.07
                     if (Math.Abs(dOffsetX1) < 0.03 && Math.Abs(dOffsetY1) < 0.03)
                     {
                         dSumOffsetX += dOffsetX1;

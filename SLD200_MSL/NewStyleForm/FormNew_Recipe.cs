@@ -365,19 +365,19 @@ namespace SLD200_MSL
             string newPath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
             if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(newPath))
             {
-                if(m_formSiriusEditor.SiriusEditor.Document == null)
+                // Document가 null이면 새로 생성
+                if (m_formSiriusEditor.SiriusEditor.Document == null)
                 {
-                    Log.Write("SiriusEditor_Error", "Button Click", "Sirius Editor Document is null. Importing new drawing file.");
-                    return;
-                }
-                // 이전 도면 초기화
-                m_formSiriusEditor.SiriusEditor.Document.FileName = string.Empty;
-                m_formSiriusEditor.SiriusEditor.Document.Action.ActNew();
+                    m_formSiriusEditor.SiriusEditor.Document = new DocumentDefault();
+                    m_formSiriusEditor.SiriusEditor.Document.FileName = "NewDocument";
+                    m_formSiriusEditor.SiriusEditor.Document.Action.ActNew();
 
-                // 새 도면 불러오기
-                m_formSiriusEditor.Import_DrawingFile(newPath);
+                    Log.Write("SiriusEditor_Info", "Button Click", "Document was null. Created new document.");
+                }
             }
-            //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
+
+            // 새 도면 불러오기
+            m_formSiriusEditor.Import_DrawingFile(newPath);
 
             // 이미 열려 있으면 앞으로 가져오기
             if (!m_formSiriusEditor.Visible)
@@ -841,9 +841,13 @@ namespace SLD200_MSL
             {
                 SetRecipeTabControlsVisible(m_strLayerName, false);
             }
+            else
+            {
 
-            // 리스트뷰를 Refresh하여 보여줌
-            listView_Recipe_TabRecipe_LayerData.EndUpdate();
+            }
+
+                // 리스트뷰를 Refresh하여 보여줌
+                listView_Recipe_TabRecipe_LayerData.EndUpdate();
 
             // Layer 에 대한 Miscellaneous Data 표시
             Recipe_Data_Refresh(m_strLayerName);
@@ -1853,7 +1857,7 @@ namespace SLD200_MSL
             }  
 
 
-            //  도면 데이터를 가공용 Document 에 적용
+            //  도면 데이터를 가공용 Document에 적용
             Equipment.SetEqpSiriusViewerDocument(m_formSiriusEditor.SiriusEditor.Document);
 
             //  Frequency 데이터가 있는지 체크
@@ -2231,13 +2235,10 @@ namespace SLD200_MSL
                 
                 //  도면 Import
                 m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-
                 Equipment.SetEqpSiriusViewerDocument( m_formSiriusEditor.SiriusEditor.Document);
                 //Equipment.EqpSiriusViewer_Origin.Document = m_formSiriusEditor.SiriusEditor.Document;
-
                 //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
                 Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
-
                 if (workStage.DrillingData_Parsing())
                 {
                     //  Layer List 전체 삭제
@@ -2429,6 +2430,13 @@ namespace SLD200_MSL
             else if (m_strLayerName == "PreAlign")
             {
                 m_nIndex = (int)LayerList.PreAlign;
+            }
+
+            if(m_nIndex < 0)
+            {
+
+                Log.Write("SLD-200", Equipment.User_Name, "Recipe_Data_Refresh - Fail.");
+                return;
             }
 
             //  Laser Parameter

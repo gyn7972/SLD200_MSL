@@ -25,6 +25,7 @@ using SpiralLab.Sirius;
 using System.Numerics;
 using SharpGL;
 using System.Xml.Linq;
+using SpiralLab;
 
 //using OpenTK;
 //using OpenTK.Graphics.OpenGL;
@@ -89,6 +90,9 @@ namespace SLD200_MSL
             textBox_SiriusEditor_Divided_H.Text = Equipment.m_fDividedY.ToString();
             checkBox_SiriusEditor_Divided.Checked = false;
 
+
+            //HookEditorToolbarButtons();
+            //this.Load += (s, e) => HookEditorToolbarButtons(); // Load 이후 실행
         }
 
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
@@ -371,6 +375,7 @@ namespace SLD200_MSL
 
         public void Import_DrawingFile(string strFileName)
         {
+            // Auto인 경우에는 파일명없으면 아에 들어오면 안됨.
             //  Sirius2
             //var doc = DocumentFactory.CreateDefault();
             //doc.ActOpen(strFileName);
@@ -379,7 +384,10 @@ namespace SLD200_MSL
             {
                 MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                SiriusEditor.Document.FileName = string.Empty;
+                if (SiriusEditor.Document == null)
+                    SiriusEditor.Document = new DocumentDefault();
+
+                SiriusEditor.Document.FileName = "New Document";
                 SiriusEditor.Document.Action.ActNew();
                 return;
             }
@@ -387,30 +395,70 @@ namespace SLD200_MSL
             //  확장자 확인
             string m_strExt = System.IO.Path.GetExtension(strFileName);
             IDocument doc = null;
-            //  Sirius1
-            if (m_strExt.ToUpper() == ".DXF")
+
+            try
             {
-                //SiriusEditor.Document.New();
-                doc = DocumentSerializer.OpenDxf(strFileName);
-                SiriusEditor.Document = doc;
-            }
-            else if (m_strExt.ToUpper() == ".SIRIUS")
-            {
-                //SiriusEditor.Document.New();
-                doc = DocumentSerializer.OpenSirius(strFileName);
-            }
-            if(doc!=null)
-            {
-                if (SiriusEditor.Document != null)
+                if (m_strExt.ToUpper() == ".DXF")
                 {
-                    if (SiriusEditor.Document.Views != null)
-                    {
-                        SiriusEditor.Document.Views.Clear();
-                    }
+                    doc = DocumentSerializer.OpenDxf(strFileName);
                 }
-                SiriusEditor.Document = doc;
+                else if (m_strExt.ToUpper() == ".SIRIUS")
+                {
+                    doc = DocumentSerializer.OpenSirius(strFileName);
+                }
+
+                if (doc != null)
+                {
+                    // 기존 View 정리
+                    if (SiriusEditor.Document != null && SiriusEditor.Document.Views != null)
+                        SiriusEditor.Document.Views.Clear();
+
+                    SiriusEditor.Document = doc;
+                }
+                else
+                {
+                    Log.Write("SLD-200", "Import_DrawingFile", "문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
+                    //throw new Exception("문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
+                }
             }
-            
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                MessageBox.Show("도면 파일을 불러오는 중 오류가 발생했습니다.\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                if (SiriusEditor.Document == null)
+                    SiriusEditor.Document = new DocumentDefault();
+
+                SiriusEditor.Document.FileName = "New Document";
+                SiriusEditor.Document.Action.ActNew();
+            }
+
+            //기존 코드
+            {
+                ////  Sirius1
+                //if (m_strExt.ToUpper() == ".DXF")
+                //{
+                //    //SiriusEditor.Document.New();
+                //    doc = DocumentSerializer.OpenDxf(strFileName);
+                //    SiriusEditor.Document = doc;
+                //}
+                //else if (m_strExt.ToUpper() == ".SIRIUS")
+                //{
+                //    //SiriusEditor.Document.New();
+                //    doc = DocumentSerializer.OpenSirius(strFileName);
+                //}
+                //if(doc!=null)
+                //{
+                //    if (SiriusEditor.Document != null)
+                //    {
+                //        if (SiriusEditor.Document.Views != null)
+                //        {
+                //            SiriusEditor.Document.Views.Clear();
+                //        }
+                //    }
+                //    SiriusEditor.Document = doc;
+                //}
+            }
         }
 
         public bool Imported_DrawingFile_SameCheck(string strFileName)
@@ -2603,5 +2651,61 @@ namespace SLD200_MSL
         {
 
         }
+
+        private void SiriusEditor_OnDocumentOpen(object sender)
+        {
+            var dlg = new OpenFileDialog();
+            dlg.Title = "Open File";
+            dlg.Filter = "Supported files (*.sirius, *.dxf)|*.sirius;*.dxf|sirius data files (*.sirius)|*.sirius|dxf cad files (*.dxf)|*.dxf|All Files (*.*)|*.*";
+            dlg.FileName = string.Empty;
+            dlg.Multiselect = false;
+
+            if (dlg.ShowDialog(this) == DialogResult.OK)
+            {
+                try
+                {
+                    SiriusEditor.OnOpen(dlg.FileName); // 이 시점에 문서 열림
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                    MessageBox.Show("입력 문자열의 형식이 잘 못되어 도면 파일을 열 수 없습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                }
+                
+            }
+        }
+
+
+        private void HookEditorToolbarButtons()
+        {
+            var type = SiriusEditor.GetType();
+
+            // 모든 ToolStrip을 찾음
+            var toolStrips = SiriusEditor.Controls.OfType<ToolStrip>().ToList();
+
+            foreach (var toolStrip in toolStrips)
+            {
+                foreach (ToolStripItem item in toolStrip.Items)
+                {
+                    if (item is ToolStripButton btn)
+                    {
+                        // 예: 버튼 툴팁에 "Bottom to Top"이 포함된 경우
+                        if (!string.IsNullOrEmpty(btn.ToolTipText) && btn.ToolTipText.Contains("Bottom"))
+                        {
+                            btn.Click += (s, e) =>
+                            {
+                                MessageBox.Show("정렬 버튼 클릭됨: " + btn.ToolTipText);
+                                // 여기서 정렬 후 후처리 실행 가능
+                            };
+                        }
+
+                        // 예: 버튼 이미지로 식별
+                        // if (btn.Image != null && btn.ImageIndex == 25) { ... }
+                    }
+                }
+            }
+        }
+
     }
 }

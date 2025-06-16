@@ -403,6 +403,7 @@ namespace SLD200_MSL
             this.SiriusEditor.RtcPin2Output = null;
             this.SiriusEditor.Size = new System.Drawing.Size(1286, 871);
             this.SiriusEditor.TabIndex = 69;
+            this.SiriusEditor.OnDocumentOpen += new SpiralLab.Sirius.SiriusDocumentOpen(this.SiriusEditor_OnDocumentOpen);
             this.SiriusEditor.OnDocumentSave += new SpiralLab.Sirius.SiriusDocumentSave(this.SiriusEditor_OnDocumentSave);
             this.SiriusEditor.CausesValidationChanged += new System.EventHandler(this.SiriusEditor_CausesValidationChanged);
             // 

@@ -418,7 +418,7 @@ namespace QMC.Common.Modules
         }
 
         private DateTime _lastScannerCheckTime = DateTime.MinValue;
-        private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(1000);  // 1초 간격
+        private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(20000);  // 1초 간격 -> //20초 간격.
         private void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -436,10 +436,10 @@ namespace QMC.Common.Modules
                     return;
                 }
                 // Home 잡기 전에는 Device 알람 X
-                //if (!workStage.m_bHomeOK)
-                //{
-                //    return;
-                //}
+                if (!workStage.m_bHomeOK)
+                {
+                    return;
+                }
                 // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
                 if (Equipment.AutoRunStatus)
                 {
@@ -459,10 +459,11 @@ namespace QMC.Common.Modules
                         if (!spiralLabScanner.IsRtcBusy &&
                             (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
                         {
-                            //spiralLabScanner.CheckAndLogAllStatuses();
-
-                            //우선 막음.
-                            //spiralLabScanner.IsOverTemperatureWarning();
+                            // spiralLabScanner.CheckAndLogAllStatuses();
+                            // 1초 안됨. 한 번 들어왔다가 가공 후 부터 안됨.
+                            // 업체 측 -> 20초로 수정 요청하여 수정.
+                            spiralLabScanner.IsOverTemperatureWarning();
+                            
                             //double dPosX = 0.0, dPosY = 0.0;
                             //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
 

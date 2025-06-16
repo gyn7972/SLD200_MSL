@@ -2578,6 +2578,7 @@ namespace SLD200_MSL
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
         {
+			return;
             UpdatePCBStatus(0, 0, 3);
             return;
 

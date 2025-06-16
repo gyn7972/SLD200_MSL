@@ -2671,8 +2671,8 @@ namespace SLD200_MSL
                 lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
                 //TEST
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
                 //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
                 //lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
