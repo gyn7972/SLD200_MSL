@@ -21097,11 +21097,13 @@ namespace QMC.Common.Modules
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
+                                    //TEST 완료. 이정도면 충분하다.
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
 
                                     MarkSpiralCircle(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
+                                    //TEST 완료. 이정도면 충분하다.
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
 
                                 }
                                 break;
