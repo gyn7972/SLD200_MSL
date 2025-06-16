@@ -49,7 +49,7 @@ namespace SLD200_MSL
         static WorkStage workStage;
 
         private System.Windows.Forms.Timer timer_Status;
-        private System.Windows.Forms.Timer timer_RtcInit;
+        public System.Windows.Forms.Timer timer_RtcInit;
 
         public FormNew_SiriusEditor()
         {
@@ -973,7 +973,7 @@ namespace SLD200_MSL
 
             if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
             {
-                timer_RtcInit.Enabled = false;
+                //timer_RtcInit.Enabled = false;
 
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
 

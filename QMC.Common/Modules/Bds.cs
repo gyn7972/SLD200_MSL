@@ -26,6 +26,7 @@ using static QMC.Common.Modules.Vision;
 using static QMC.Common.Modules.WorkStage;
 using System.Threading.Tasks;
 using System.Timers;
+using SpiralLab.Sirius;
 
 
 namespace QMC.Common.Modules
@@ -418,7 +419,7 @@ namespace QMC.Common.Modules
         }
 
         private DateTime _lastScannerCheckTime = DateTime.MinValue;
-        private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(20000);  // 1초 간격 -> //20초 간격.
+        private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(2000);  // 1초 간격 -> //20초 간격.
         private void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -455,9 +456,11 @@ namespace QMC.Common.Modules
                     {
                         _lastScannerCheckTime = now;
 
-                        spiralLabScanner.CheckAndLogAllStatuses();
-                        if (!spiralLabScanner.IsRtcBusy &&
-                            (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
+                        //spiralLabScanner.CheckAndLogAllStatuses();
+                        //if (!spiralLabScanner.IsRtcBusy &&
+                        //    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
+                        if(!workStage.rtc.CtlGetStatus(RtcStatus.Busy) &&
+                           (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
                         {
                             // spiralLabScanner.CheckAndLogAllStatuses();
                             // 1초 안됨. 한 번 들어왔다가 가공 후 부터 안됨.

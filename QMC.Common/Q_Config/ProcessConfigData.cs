@@ -55,16 +55,16 @@ namespace QMC.Common.Q_Config
             {
                 string strValue = "";
                 NativeMethods.GetPrivateProfileString("ProcessSpeed", "SpeedAxisX", "100", sb, sb.Capacity, path);
-                nSpeedAxisX = int.Parse(strValue);
+                nSpeedAxisX = Equipment.ToInt(sb.ToString());
                 NativeMethods.GetPrivateProfileString("ProcessSpeed", "SpeedAxisY", "100", sb, sb.Capacity, path);
-                nSpeedAxisY = int.Parse(strValue);
+                nSpeedAxisY = Equipment.ToInt(sb.ToString());
                 NativeMethods.GetPrivateProfileString("ProcessAccel", "AccelAxisX", "500", sb, sb.Capacity, path);
-                nAccelAxisX = int.Parse(strValue);
+                nAccelAxisX = Equipment.ToInt(sb.ToString());
                 NativeMethods.GetPrivateProfileString("ProcessAccel", "AccelAxisY", "500", sb, sb.Capacity, path);
-                nAccelAxisY = int.Parse(strValue);
+                nAccelAxisY = Equipment.ToInt(sb.ToString());
 
                 NativeMethods.GetPrivateProfileString("ProcessModule", "ModuleSizeSet", "200.0", sb, sb.Capacity, path);
-                dModuleSizeSet = double.Parse(strValue);
+                dModuleSizeSet = Equipment.ToDouble(sb.ToString());
 
                 bRet = true;
             }
