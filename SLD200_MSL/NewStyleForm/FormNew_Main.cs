@@ -4393,7 +4393,7 @@ namespace SLD200_MSL
         private void button_TEST2_Click(object sender, EventArgs e)
         {
             Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
-            //timer_RtcInit.Enable = true;
+
             return;
 
             // 시작 Test

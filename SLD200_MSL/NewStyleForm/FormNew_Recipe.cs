@@ -535,7 +535,6 @@ namespace SLD200_MSL
                 }
 
                 Equipment.SetEqpSiriusViewerDocument(m_formSiriusEditor.SiriusEditor.Document);
-
                 if (workStage.DrillingData_Parsing())
                 {
                     foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
@@ -1860,7 +1859,6 @@ namespace SLD200_MSL
 
             //  도면 데이터를 가공용 Document에 적용
             Equipment.SetEqpSiriusViewerDocument(m_formSiriusEditor.SiriusEditor.Document);
-
             //  Frequency 데이터가 있는지 체크
             if (m_nLayerIndex == (int)LayerList.Hole1)
             {

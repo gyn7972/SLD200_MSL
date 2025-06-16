@@ -90,7 +90,6 @@ namespace SLD200_MSL
             textBox_SiriusEditor_Divided_H.Text = Equipment.m_fDividedY.ToString();
             checkBox_SiriusEditor_Divided.Checked = false;
 
-
             //HookEditorToolbarButtons();
             //this.Load += (s, e) => HookEditorToolbarButtons(); // Load 이후 실행
         }
@@ -382,8 +381,7 @@ namespace SLD200_MSL
             //siriusEditor.Document = doc;
             if (File.Exists(strFileName) == false)
             {
-                MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                //MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (SiriusEditor.Document == null)
                     SiriusEditor.Document = new DocumentDefault();
 
@@ -392,10 +390,12 @@ namespace SLD200_MSL
                 return;
             }
 
+            // 여기서는 이거 사용하면 안됨. 
+            //workStage.Import_DrawingFile(strFileName);
+
             //  확장자 확인
             string m_strExt = System.IO.Path.GetExtension(strFileName);
             IDocument doc = null;
-
             try
             {
                 if (m_strExt.ToUpper() == ".DXF")
@@ -424,7 +424,7 @@ namespace SLD200_MSL
             catch (Exception ex)
             {
                 Log.Write(ex);
-                MessageBox.Show("도면 파일을 불러오는 중 오류가 발생했습니다.\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("도면 파일을 불러오는 중 오류가 발생했습니다.\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 if (SiriusEditor.Document == null)
                     SiriusEditor.Document = new DocumentDefault();
@@ -494,44 +494,49 @@ namespace SLD200_MSL
 
         #region RTC Initialize
 
-        public bool Rtc_Init()
+        public bool Rtc_Init(bool bRetryInit = false)
         {
             bool m_bRet = true;
-            //SpiralLab.Sirius.Config.AngleFactor = 50;
-            if (Equipment.SiriusDrawing_Rendering_Resolution < 0)
+
+            if (!bRetryInit)
             {
-                SpiralLab.Sirius.Config.AngleFactor = 50;
-            }
-            else
-            {
-                SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
+                //SpiralLab.Sirius.Config.AngleFactor = 50;
+                if (Equipment.SiriusDrawing_Rendering_Resolution < 0)
+                {
+                    SpiralLab.Sirius.Config.AngleFactor = 50;
+                }
+                else
+                {
+                    SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
+                }
+
+                //  Arc 를 Polyline 으로 만들 경우
+                Config.LwPolylineBulgeToLines = true;
+                Config.LwPolylineBulgeToLineMinThreshold = (float)0.001;
+                if (Equipment.Machine_PolylineCurve_Resolution < 1)
+                    Config.LwPolylineBulgePrecision = 100;
+                else
+                    Config.LwPolylineBulgePrecision = Equipment.Machine_PolylineCurve_Resolution;
+
+                m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
+                                                                        // create document
+                                                                        // 신규 문서 생성
+                var doc = new DocumentDefault();                        //  Sirius1
+                                                                        //var doc = new DocumentBase();                         //  Sirius2             --> 나중에 수정해야함. 필요하면..
+                                                                        // assign document into editor
+                                                                        //  변수 초기화 (Laser 에서 사용)
+                if (SiriusEditor == null)
+                {
+                    SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
+                }
+                // 문서 지정
+                //this.SiriusViewer.Document = doc;
+                this.SiriusEditor.Document = doc;
+                // assign document source changed event handler
+                // 내부 데이타(IDocument) 가 변경될경우 이를 이벤트 통지를 받는 핸들러 등록
+                this.SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged1;
             }
 
-            //  Arc 를 Polyline 으로 만들 경우
-            Config.LwPolylineBulgeToLines = true;
-            Config.LwPolylineBulgeToLineMinThreshold = (float)0.001;
-            if (Equipment.Machine_PolylineCurve_Resolution < 1)
-                Config.LwPolylineBulgePrecision = 100;
-            else
-                Config.LwPolylineBulgePrecision = Equipment.Machine_PolylineCurve_Resolution;
-
-            m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
-            // create document
-            // 신규 문서 생성
-            var doc = new DocumentDefault();                        //  Sirius1
-            //var doc = new DocumentBase();                         //  Sirius2             --> 나중에 수정해야함. 필요하면..
-            // assign document into editor
-            //  변수 초기화 (Laser 에서 사용)
-            if (SiriusEditor == null)
-            {
-                SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
-            }
-            // 문서 지정
-            //this.SiriusViewer.Document = doc;
-            this.SiriusEditor.Document = doc;
-            // assign document source changed event handler
-            // 내부 데이타(IDocument) 가 변경될경우 이를 이벤트 통지를 받는 핸들러 등록
-            this.SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged1;
 
             #region RTC 초기화
             //create Rtc for dummy (가상 RTC 카드)
@@ -934,7 +939,7 @@ namespace SLD200_MSL
 
                 //return m_bRet;
             }
-        }
+          }
 
         public bool Rtc_Close()
         {
@@ -973,6 +978,7 @@ namespace SLD200_MSL
 
             if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
             {
+                //시컨스에서 초기화 했다 안했다 할거니깐.. 죽이면 안됨.
                 //timer_RtcInit.Enabled = false;
 
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
@@ -983,19 +989,28 @@ namespace SLD200_MSL
                 {
                     //  이미 RTC 가 초기화 되어 있다면 Rtc 객체를 닫고 다시 초기화 한다.
                     Rtc_Close();
-                    //Log.Write("SLD-200", "RTC_Initialize", "RTC6 이미 초기화 되어 있습니다.");
-                    //Equipment._InitDeviceStatus.Scanner = true;
-                    //return;
-                }
-
-                if (Rtc_Init())
-                {
-                    Equipment._InitDeviceStatus.Scanner = true;
+                    Equipment._InitDeviceStatus.Scanner = false;
+                    if (Rtc_Init(true))
+                    {
+                        Equipment._InitDeviceStatus.Scanner = true;
+                    }
+                    else
+                    {
+                        Equipment._InitDeviceStatus.Scanner = false;
+                        MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
                 }
                 else
                 {
-                    Equipment._InitDeviceStatus.Scanner = false;
-                    MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    if (Rtc_Init())
+                    {
+                        Equipment._InitDeviceStatus.Scanner = true;
+                    }
+                    else
+                    {
+                        Equipment._InitDeviceStatus.Scanner = false;
+                        MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
                 }
             }
         }
@@ -1028,14 +1043,12 @@ namespace SLD200_MSL
             //  여기 도면 데이터를 WorkStage 의 Doc 로 넘겨준다.
             //  Sirius2
             //  workStage.siriusEditorUserControl_WorkStage = siriusEditor;
-
+            Equipment.SetEqpSiriusViewerDocument(SiriusEditor.Document);
             if (workStage.DrillingData_Parsing())
             {
                 MessageBox.Show("데이터 추출 성공", "Processing Data ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                //workStage.SiriusEditor.Document = SiriusEditor.Document;
                 Equipment.SetEqpSiriusViewerDocument(SiriusEditor.Document);
-
                 int m_nReturn = workStage.GetDrillingData();
                 switch (m_nReturn)
                 {
@@ -2668,97 +2681,6 @@ namespace SLD200_MSL
                 // 원래 파일명 유지하여 저장
                 SiriusEditor.OnSave(fileName);
             }
-
-            //bool bRtn = false;
-            ////Data Parsing 후에 저장된 도면 데이터가 변경되었을 때, 다시 Parsing 하도록 한다.
-            //var mb = new MessageBoxOk();
-            //int m_nReturn = workStage.GetDrillingData();
-            //switch (m_nReturn)
-            //{
-            //    case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
-
-            //        workStage.DrillingManager.CycleTimer_LaserDrilling.Clear();
-            //        workStage.DrillingManager.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
-            //        workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
-
-            //        //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
-            //        workStage.GetDrillingData_ProcessingFlagCheck();
-            //        mb.ShowDialog("Information !!", "가공 데이터 Parsing 성공 및 Recipe Data를 로드 성공.");
-            //        bRtn = true;
-            //        break;
-
-            //    case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
-            //        mb.ShowDialog("Error !!", "데이터가 정상적으로 로드 되지 않았습니다.");
-            //        bRtn = false;
-            //        break;
-
-            //    case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
-            //        mb.ShowDialog("Error !!", "데이터가 Group 이 아닙니다.");
-            //        bRtn = false;
-            //        break;
-
-            //    case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
-            //        mb.ShowDialog("Error !!", "데이터를 Group 해제 해야 합니다.");
-            //        bRtn = false;
-            //        break;
-
-            //    case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
-            //        mb.ShowDialog("Error !!", "Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.");
-            //        bRtn = false;
-            //        break;
-
-            //    case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
-            //        mb.ShowDialog("Error !!", "Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.");
-            //        bRtn = false;
-            //        break;
-
-            //    case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
-            //        mb.ShowDialog("Error !!", "Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지 데이터로만 구성되어야 합니다.");
-            //        bRtn = false;
-            //        break;
-
-            //    case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
-            //        mb.ShowDialog("Error !!", "Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다.");
-            //        bRtn = false;
-            //        break;
-
-            //    case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
-            //        mb.ShowDialog("Error !!", "Line 으로 이루어진 Drilling Data 가 닫힌 도형이 아닙니다.");
-            //        bRtn = false;
-            //        break;
-            //    case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_GROUP:
-            //        mb.ShowDialog("Error !!", "Layer Group이 잘못되었습니다.");
-            //        bRtn = false;
-            //        break;
-
-            //    case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
-            //        mb.ShowDialog("Error !!", "RTC 보드가 초기화 되지 않았습니다.");
-            //        bRtn = false;
-            //        break;
-            //}
-
-
-            //if (bRtn)
-            //{
-            //    SiriusEditor.OnSave(SiriusEditor.Document.FileName);
-            //}
-
-            //if (SiriusEditor.Document != null)
-            //{
-            //    // FileName이 없으면 저장 불가
-            //    if (string.IsNullOrEmpty(SiriusEditor.Document.FileName) || !File.Exists(SiriusEditor.Document.FileName))
-            //    {
-            //        MessageBox.Show("파일 경로가 없거나 유효하지 않습니다. 다른 이름으로 저장을 시도합니다.", "Save Error");
-            //        string path = "D:\\Temp\\DefaultSave.sirius"; // 예시: 백업용 기본 경로
-            //        //SiriusEditor.Document.Save(path);
-            //    }
-            //    else
-            //    {
-            //        // 정상 경로가 있으면 해당 경로로 저장
-            //        //SiriusEditor.Document.Save(SiriusEditor.Document.FileName);
-                    
-            //    }
-            //}
         }
 
         private void button_SiriusEditor_Divided_Click(object sender, EventArgs e)

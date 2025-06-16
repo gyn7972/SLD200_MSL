@@ -212,6 +212,7 @@ namespace QMC.Common
         }
 
         public static int ScannerMode_Change_byUser { set; get; }           //  0: None         1: Change To RTC6       2: Change to syncAxis
+        public static bool FormNew_SiriusEditor_TimerStart { set; get; }           //  Scanner Mode가 변경되었는지 여부. (RTC6, syncAxis)
 
         public static bool m_bWorkTotalTime_Changed { set; get; }
         public static bool m_bWorkElapsedTime_Changed { set; get; }

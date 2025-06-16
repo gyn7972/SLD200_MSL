@@ -15699,7 +15699,14 @@ namespace QMC.Common.Modules
                     else
                     {
                         TickCount_Start((int)TickType.TICK_MAIN);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                        if (false)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init;
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                        }
                     }
 
                     
@@ -15728,7 +15735,15 @@ namespace QMC.Common.Modules
                                 if (m_ScannerCameraOffsetSequence != null)
                                 {
                                     m_ScannerCameraOffsetSequence.m_bVerifyScannerCameraOffset_Complete = false;
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset;
+                                    if (false)
+                                    {
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init;
+                                    }
+                                    else
+                                    {
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset;
+                                    }
+                                    
                                 }
                             }
                         }
@@ -15753,9 +15768,17 @@ namespace QMC.Common.Modules
                     else
                     {
                         TickCount_Start((int)TickType.TICK_MAIN);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                        if (false)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init;
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                        }
+
                     }
-                    
+
                     break;
 
                 case (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset_Check:
@@ -15766,7 +15789,15 @@ namespace QMC.Common.Modules
                         scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
                         m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
 
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                        if(false)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init;
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                        }
+                            
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
                     {
@@ -15783,18 +15814,20 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Step_StageXY_Init:
 
-                    m_nStageXY_HomeStep = (int)StageXY_HomeStep.Start;
-                    _currentHomeMode = (int)WorkStage.HomeMode.StageXYOnly;
-                    m_btimer_Motion_Home_Stop = false;
-                    timer_Motion_Home.Enabled = true;
-                    m_MotionHome_Start = true;
-                    m_bStageXYComp = false;
+                    //m_nStageXY_HomeStep = (int)StageXY_HomeStep.Start;
+                    //_currentHomeMode = (int)WorkStage.HomeMode.StageXYOnly;
+                    //m_btimer_Motion_Home_Stop = false;
+                    //timer_Motion_Home.Enabled = true;
+                    //m_MotionHome_Start = true;
+                    //m_bStageXYComp = false;
 
-                    rtc.CtlReset(); // RTC 초기화
-                    rtc.ListBegin(laser, ListType.Auto);
-                    rtc.ListJump(Vector2.Zero);
-                    rtc.ListEnd();
-                    rtc.ListExecute();
+                    Equipment.ScannerMode_Change_byUser = Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                    Equipment._InitDeviceStatus.Scanner = false;
+                    //rtc.CtlReset(); // RTC 초기화
+                    //rtc.ListBegin(laser, ListType.Auto);
+                    //rtc.ListJump(Vector2.Zero);
+                    //rtc.ListEnd();
+                    //rtc.ListExecute();
 
                     TickCount_Start((int)TickType.TICK_MAIN);
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init_Check;
@@ -15802,28 +15835,39 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Step_StageXY_Init_Check:
 
-                    if (m_bStageXYComp)
+                    if (Equipment._InitDeviceStatus.Scanner)
                     {
-                        m_MotionHome_Start = false;
-                        m_btimer_Motion_Home_Stop = true;
-                        timer_Motion_Home.Enabled = false;
-                        _currentHomeMode = (int)WorkStage.HomeMode.None;
-                        m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
-
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 5)
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
                     {
-                        m_MotionHome_Start = false;
-                        m_btimer_Motion_Home_Stop = true;
-                        timer_Motion_Home.Enabled = false;
-                        _currentHomeMode = (int)WorkStage.HomeMode.None;
-                        m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
-
                         m_strTemp = "Step_StageXY_Init 실패.";
-                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_StageXY_Init_Check", m_strTemp);
+                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::RTC6_Init_Check-Fail", m_strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                     }
+                    //stageXY 초기화 - CO2 불필요.
+                    //if (m_bStageXYComp)
+                    //{
+                    //    m_MotionHome_Start = false;
+                    //    m_btimer_Motion_Home_Stop = true;
+                    //    timer_Motion_Home.Enabled = false;
+                    //    _currentHomeMode = (int)WorkStage.HomeMode.None;
+                    //    m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                    //}
+                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 5)
+                    //{
+                    //    m_MotionHome_Start = false;
+                    //    m_btimer_Motion_Home_Stop = true;
+                    //    timer_Motion_Home.Enabled = false;
+                    //    _currentHomeMode = (int)WorkStage.HomeMode.None;
+                    //    m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+
+                    //    m_strTemp = "Step_StageXY_Init 실패.";
+                    //    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_StageXY_Init_Check", m_strTemp);
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                    //}
                     break;
 
 
@@ -22059,6 +22103,14 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Laser Idle Check");
 
+                        //스케너 초기화 하자. 여기서!
+                        if(Equipment.Machine_LaserType_CO2)
+                        {
+                            _InitDeviceStatus.Scanner = false;
+                            Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                        }
+
+
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos;
                     }
                     //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
@@ -26081,7 +26133,6 @@ namespace QMC.Common.Modules
             m_ptPreAlign = null;
             m_ptFiducial = null;
 
-
             if (Equipment.GetEqpSiriusViewerDocument()== null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
@@ -26097,7 +26148,6 @@ namespace QMC.Common.Modules
             {
                 m_nLayerCount++;
             }
-
             if (m_nLayerCount == 0)
             {
                 MessageBox.Show("Layer 개수가 0 입니다.", "Information!!");
@@ -36212,29 +36262,54 @@ namespace QMC.Common.Modules
                 return;
             }
 
-            if (File.Exists(strFileName) == false)
-            {
-                MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
             //  확장자 확인
             string m_strExt = System.IO.Path.GetExtension(strFileName);
-            //  Sirius1
-            if (m_strExt.ToUpper() == ".DXF")
+            IDocument doc = null;
+            try
             {
-                //SiriusEditor.Document.New();
-                var doc = DocumentSerializer.OpenDxf(strFileName);
-                //SiriusViewer_Main.Document = doc;
-                
-                Equipment.SetEqpSiriusViewerDocument(doc);
+                if (m_strExt.ToUpper() == ".DXF")
+                {
+                    doc = DocumentSerializer.OpenDxf(strFileName);
+                    Equipment.SetEqpSiriusViewerDocument(doc);
+                }
+                else if (m_strExt.ToUpper() == ".SIRIUS")
+                {
+                    doc = DocumentSerializer.OpenSirius(strFileName);
+                    Equipment.SetEqpSiriusViewerDocument(doc);
+                }
             }
-            else if (m_strExt.ToUpper() == ".SIRIUS")
+            catch (Exception ex)
             {
-                //SiriusEditor.Document.New();
-                var doc = DocumentSerializer.OpenSirius(strFileName);
-                //SiriusViewer_Main.Document = doc;
-                Equipment.SetEqpSiriusViewerDocument(doc);
+                Log.Write(ex);
+                //MessageBox.Show("도면 파일을 불러오는 중 오류가 발생했습니다.\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            //기존 코드
+            {
+                //if (File.Exists(strFileName) == false)
+                //{
+                //    MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //    return;
+                //}
+
+                ////  확장자 확인
+                //string m_strExt = System.IO.Path.GetExtension(strFileName);
+                ////  Sirius1
+                //if (m_strExt.ToUpper() == ".DXF")
+                //{
+                //    //SiriusEditor.Document.New();
+                //    var doc = DocumentSerializer.OpenDxf(strFileName);
+                //    //SiriusViewer_Main.Document = doc;
+
+                //    Equipment.SetEqpSiriusViewerDocument(doc);
+                //}
+                //else if (m_strExt.ToUpper() == ".SIRIUS")
+                //{
+                //    //SiriusEditor.Document.New();
+                //    var doc = DocumentSerializer.OpenSirius(strFileName);
+                //    //SiriusViewer_Main.Document = doc;
+                //    Equipment.SetEqpSiriusViewerDocument(doc);
+                //}
             }
 
             //도면이 로딩되고 잠깐 대기. 밖에서 출동 발생. (구조상...)
