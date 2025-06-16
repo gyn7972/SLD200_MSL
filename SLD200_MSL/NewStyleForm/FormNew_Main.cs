@@ -4392,6 +4392,8 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            workStage.rtc.CtlReset();
+
             return;
 
             // 시작 Test
