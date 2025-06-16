@@ -15821,8 +15821,9 @@ namespace QMC.Common.Modules
                     //m_MotionHome_Start = true;
                     //m_bStageXYComp = false;
 
-                    Equipment.ScannerMode_Change_byUser = Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
-                    Equipment._InitDeviceStatus.Scanner = false;
+                    //Equipment.ScannerMode_Change_byUser = Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                    //Equipment._InitDeviceStatus.Scanner = false;
+
                     //rtc.CtlReset(); // RTC 초기화
                     //rtc.ListBegin(laser, ListType.Auto);
                     //rtc.ListJump(Vector2.Zero);
@@ -22104,11 +22105,11 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "Laser Idle Check");
 
                         //스케너 초기화 하자. 여기서!
-                        if(Equipment.Machine_LaserType_CO2)
-                        {
-                            _InitDeviceStatus.Scanner = false;
-                            Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
-                        }
+                        //if(Equipment.Machine_LaserType_CO2)
+                        //{
+                        //    _InitDeviceStatus.Scanner = false;
+                        //    Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                        //}
 
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos;

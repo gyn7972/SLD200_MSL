@@ -518,25 +518,42 @@ namespace SLD200_MSL
                 else
                     Config.LwPolylineBulgePrecision = Equipment.Machine_PolylineCurve_Resolution;
 
-                m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
-                                                                        // create document
-                                                                        // 신규 문서 생성
-                var doc = new DocumentDefault();                        //  Sirius1
-                                                                        //var doc = new DocumentBase();                         //  Sirius2             --> 나중에 수정해야함. 필요하면..
-                                                                        // assign document into editor
-                                                                        //  변수 초기화 (Laser 에서 사용)
-                if (SiriusEditor == null)
-                {
-                    SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
-                }
-                // 문서 지정
-                //this.SiriusViewer.Document = doc;
-                this.SiriusEditor.Document = doc;
-                // assign document source changed event handler
-                // 내부 데이타(IDocument) 가 변경될경우 이를 이벤트 통지를 받는 핸들러 등록
-                this.SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged1;
+                //m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
+                //                                                        // create document
+                //                                                        // 신규 문서 생성
+                //var doc = new DocumentDefault();                        //  Sirius1
+                //                                                        //var doc = new DocumentBase();                         //  Sirius2             --> 나중에 수정해야함. 필요하면..
+                //                                                        // assign document into editor
+                //                                                        //  변수 초기화 (Laser 에서 사용)
+                //if (SiriusEditor == null)
+                //{
+                //    SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
+                //}
+                //// 문서 지정
+                ////this.SiriusViewer.Document = doc;
+                //this.SiriusEditor.Document = doc;
+                //// assign document source changed event handler
+                //// 내부 데이타(IDocument) 가 변경될경우 이를 이벤트 통지를 받는 핸들러 등록
+                //this.SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged1;
             }
 
+            m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
+                                                                    // create document
+                                                                    // 신규 문서 생성
+            var doc = new DocumentDefault();                        //  Sirius1
+                                                                    //var doc = new DocumentBase();                         //  Sirius2             --> 나중에 수정해야함. 필요하면..
+                                                                    // assign document into editor
+                                                                    //  변수 초기화 (Laser 에서 사용)
+            if (SiriusEditor == null)
+            {
+                SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
+            }
+            // 문서 지정
+            //this.SiriusViewer.Document = doc;
+            this.SiriusEditor.Document = doc;
+            // assign document source changed event handler
+            // 내부 데이타(IDocument) 가 변경될경우 이를 이벤트 통지를 받는 핸들러 등록
+            this.SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged1;
 
             #region RTC 초기화
             //create Rtc for dummy (가상 RTC 카드)
@@ -979,7 +996,7 @@ namespace SLD200_MSL
             if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
             {
                 //시컨스에서 초기화 했다 안했다 할거니깐.. 죽이면 안됨.
-                //timer_RtcInit.Enabled = false;
+                timer_RtcInit.Enabled = false;
 
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
 
