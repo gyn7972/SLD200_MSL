@@ -979,7 +979,7 @@ namespace SLD200_MSL
             if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
             {
                 //시컨스에서 초기화 했다 안했다 할거니깐.. 죽이면 안됨.
-                //timer_RtcInit.Enabled = false;
+                timer_RtcInit.Enabled = false;
 
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
 
