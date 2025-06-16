@@ -2039,7 +2039,6 @@ namespace QMC.Common.Modules
         public RtcVirtual rtcVirtual { set; get; }
         //public Rtc6SyncAxis rtcSyncAxis { set; get; }
         public Rtc6 rtc { set; get; }
-
         public LaserVirtual laser { set; get; }
         //public SpectraPhysicsTalon laser { set; get; }
 
@@ -17364,7 +17363,7 @@ namespace QMC.Common.Modules
                         //Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
 
                         //  Custom Marker 창으로 가공하려면 여기에서 분기해야 한다.
-                        if (Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use)
+                        if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingData_SiriusTemplate_Use)
                         {
                             //  도면에 올라가 있는 Entity 위치에 Barcode, QR code 등을 가공할 경우
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_DataSet;
@@ -17796,14 +17795,13 @@ namespace QMC.Common.Modules
                         //  Recipe 에 설정된 가공 데이터를 세팅
                         EType eType = EType.Text;                   //  default : Text
 
-                        //Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Type
+                        //Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Type
                         //  0 : Text
                         //  1 : Sirius Text
                         //  2 : 1D Barcode
                         //  3 : Data Matrix
                         //  4 : QR Code
-
-                        switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_DataType)
+                        switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_DataType)
                         {
                             case 0: eType = EType.Text;                 break;          //  Text
                             case 1: eType = EType.SiriusText;           break;          //  Sirius Text
@@ -17814,19 +17812,19 @@ namespace QMC.Common.Modules
 
                         //  가공 데이터 생성
                         string m_strMarkingData = "";
-                        int m_nStartNumber = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber < 0 ? 0 : Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber;
-                        int m_nDigits = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits < 0 ? 1 : Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits;
-                        int m_nIncreaseStep = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep;
-                        if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
+                        int m_nStartNumber = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber < 0 ? 0 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber;
+                        int m_nDigits = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits < 0 ? 1 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits;
+                        int m_nIncreaseStep = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_IncreaseStep;
+                        if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
                         {
-                            //m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+                            //m_strMarkingData = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
                         }
                         else                                                                            //  Serial Number Data
                         {
                             //  Prefix 있으면 붙이고
-                            if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData.Length > 0)
+                            if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData.Length > 0)
                             {
-                                //m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+                                //m_strMarkingData = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
                             }
 
                             //  중요!!
@@ -17838,7 +17836,7 @@ namespace QMC.Common.Modules
                             //  가공 조건 2 : 모듈이 바뀌면 시리얼 넘버를 초기화하고 다시 증가시키는 경우
                             //                - 모듈이 바뀔 때마다 시리얼 넘버가 1부터 다시 시작하는 경우
                             //
-                            //  Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType
+                            //  Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType
                             //  0 : 모듈별로 1 Increase Step 씩 증가
                             //  1 : 소켓별로 1 Increase Step 씩 증가 (모듈이 바뀌면 초기화)
                             //  2 : 소켓별로 1 Increase Step 씩 증가 (모듈이 바뀌어도 초기화 안함)
@@ -17850,9 +17848,9 @@ namespace QMC.Common.Modules
                             Equipment.m_nSerialNumberMarkingCount += m_nIncreaseStep;
 
                             //  Suffix 있으면 붙이고
-                            if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData.Length > 0)
+                            if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData.Length > 0)
                             {
-                                m_strMarkingData += Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
+                                m_strMarkingData += Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData;
                             }
                         }
 
@@ -25851,10 +25849,10 @@ namespace QMC.Common.Modules
             m_AlignMode = AlignMode.Socket;
 
             //  시리얼 넘버 마킹 시 모듈이 바뀔 때 소켓 시리얼넘버를 초기화 하는 경우
-            if ((!Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType) &&                                                                     //  마킹이 고정 Text 가 아닌 Serial Number 마킹인 경우
-                (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SerialNumberIncreaseType == (int)nSerialNumber_IncreaseType.forEachSocket))       //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
+            if ((!Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType) &&                                                                     //  마킹이 고정 Text 가 아닌 Serial Number 마킹인 경우
+                (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType == (int)nSerialNumber_IncreaseType.forEachSocket))       //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
             {
-                Equipment.m_nSerialNumberMarkingCount = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber;
+                Equipment.m_nSerialNumberMarkingCount = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber;
             }
 
 
@@ -29666,9 +29664,9 @@ namespace QMC.Common.Modules
                     markingText = new SpiralLab.Sirius.Text(m_strEntityData);
                     markingText.IsMarkerable = true;
                     markingText.FontName = trueType_fontName;// trueType_fontName;
-                    markingText.IsHatchable = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use;
-                    //markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
-                    markingText.Hatch(HatchMode.Line, HatchOrder.Ascending, false, 0,0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
+                    markingText.IsHatchable = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Use;
+                    //markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
+                    markingText.Hatch(HatchMode.Line, HatchOrder.Ascending, false, 0,0, (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
 
                     markingText.Width = (float)m_nEntityWidth;                                  //  Text 는 Width 값이 있어도 Cap-Height 값에 의해 Width 가 가변된다.
                     markingText.CapHeight = (float)m_nEntityHeight;
@@ -29953,219 +29951,219 @@ namespace QMC.Common.Modules
             // 주석.
             {
 
-            //if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].ProcessPriority_P2P) &&                   //  P2P Mode
-            //                                (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance > 0.0))
-            //{
-            //    int m_nSDC_Count = 0;
+                //if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].ProcessPriority_P2P) &&                   //  P2P Mode
+                //                                (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance > 0.0))
+                //{
+                //    int m_nSDC_Count = 0;
 
-            //    do
-            //    {
-            //        //  Spot Distance Control
-            //        var alc = rtc as IRtcAutoLaserControl;
+                //    do
+                //    {
+                //        //  Spot Distance Control
+                //        var alc = rtc as IRtcAutoLaserControl;
 
-            //        m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
-            //            (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance,                              //  Percentage100
-            //            (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 0.8),                      //  Min
-            //            (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 1.2));                     //  Max
+                //        m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
+                //            (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance,                              //  Percentage100
+                //            (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 0.8),                      //  Min
+                //            (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 1.2));                     //  Max
 
-            //        if (!m_bScannerLib_Success)
-            //        {
-            //            m_strTemp = string.Format("Custom Marking 가공 Loop, Spot Distance Control 파라미터 적용 실패, ({0}/3)", m_nSDC_Count + 1);
+                //        if (!m_bScannerLib_Success)
+                //        {
+                //            m_strTemp = string.Format("Custom Marking 가공 Loop, Spot Distance Control 파라미터 적용 실패, ({0}/3)", m_nSDC_Count + 1);
 
-            //            Log.Write("SLD-200", "Auto Run", m_strTemp);
-            //        }
-            //        else
-            //        {
-            //            m_strTemp = string.Format("Custom Marking 가공 Loop, Spot Distance Control 파라미터 적용 성공, ({0}/3)", m_nSDC_Count + 1);
-            //            Log.Write("SLD-200", "Auto Run", m_strTemp);
-            //        }
+                //            Log.Write("SLD-200", "Auto Run", m_strTemp);
+                //        }
+                //        else
+                //        {
+                //            m_strTemp = string.Format("Custom Marking 가공 Loop, Spot Distance Control 파라미터 적용 성공, ({0}/3)", m_nSDC_Count + 1);
+                //            Log.Write("SLD-200", "Auto Run", m_strTemp);
+                //        }
 
-            //        m_nSDC_Count++;
-            //    } while (!m_bScannerLib_Success && (m_nSDC_Count < 3));
-            //}
+                //        m_nSDC_Count++;
+                //    } while (!m_bScannerLib_Success && (m_nSDC_Count < 3));
+                //}
 
-            ////  Frequency, Pulse Width 값이 있으면 적용
-            //if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency > 0.0)
-            //{
-            //    double m_dLaserParam_PulseWidth = 0.0;
+                ////  Frequency, Pulse Width 값이 있으면 적용
+                //if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency > 0.0)
+                //{
+                //    double m_dLaserParam_PulseWidth = 0.0;
 
-            //    //  Laser Type 이 CO2 일 경우, 여기에서 Duty Cycle 을 Pulse Width 로 계산해서 Power 를 변경할 수 있도록 한다.
-            //    if (Equipment.Machine_LaserType_CO2)
-            //    {
-            //        if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_DutyCycle > 0.0)
-            //        {
-            //            m_dLaserParam_PulseWidth = Calc_PulseWidth(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
-            //                                                        Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_DutyCycle);
+                //    //  Laser Type 이 CO2 일 경우, 여기에서 Duty Cycle 을 Pulse Width 로 계산해서 Power 를 변경할 수 있도록 한다.
+                //    if (Equipment.Machine_LaserType_CO2)
+                //    {
+                //        if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_DutyCycle > 0.0)
+                //        {
+                //            m_dLaserParam_PulseWidth = Calc_PulseWidth(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                //                                                        Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_DutyCycle);
 
-            //            m_strTemp = string.Format("Custom Marking 가공 Loop, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
-            //                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
-            //                                    m_dLaserParam_PulseWidth);
-            //        }
-            //        else
-            //        {
-            //            m_dLaserParam_PulseWidth = 1.0;
+                //            m_strTemp = string.Format("Custom Marking 가공 Loop, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                //                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                //                                    m_dLaserParam_PulseWidth);
+                //        }
+                //        else
+                //        {
+                //            m_dLaserParam_PulseWidth = 1.0;
 
-            //            m_strTemp = string.Format("Custom Marking 가공 Loop, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
-            //                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
-            //                                    m_dLaserParam_PulseWidth);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth > 0.0)
-            //        {
-            //            m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth;
+                //            m_strTemp = string.Format("Custom Marking 가공 Loop, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                //                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                //                                    m_dLaserParam_PulseWidth);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth > 0.0)
+                //        {
+                //            m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth;
 
-            //            m_strTemp = string.Format("Custom Marking 가공 Loop, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
-            //                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
-            //                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth);
-            //        }
-            //        else
-            //        {
-            //            m_dLaserParam_PulseWidth = 1.0;
+                //            m_strTemp = string.Format("Custom Marking 가공 Loop, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                //                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                //                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth);
+                //        }
+                //        else
+                //        {
+                //            m_dLaserParam_PulseWidth = 1.0;
 
-            //            m_strTemp = string.Format("Custom Marking 가공 Loop, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
-            //                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
-            //                                    m_dLaserParam_PulseWidth);
-            //        }
-            //    }
+                //            m_strTemp = string.Format("Custom Marking 가공 Loop, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                //                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                //                                    m_dLaserParam_PulseWidth);
+                //        }
+                //    }
 
-            //    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                //    Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-            //    m_bScannerLib_Success = rtc.CtlFrequency((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
-            //                                                (float)m_dLaserParam_PulseWidth);
+                //    m_bScannerLib_Success = rtc.CtlFrequency((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                //                                                (float)m_dLaserParam_PulseWidth);
 
-            //    if (!m_bScannerLib_Success)
-            //    {
-            //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Frequency 파라미터 적용 실패");
-            //    }
-            //    else
-            //    {
-            //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Frequency 파라미터 적용 성공");
-            //    }
-            //}
+                //    if (!m_bScannerLib_Success)
+                //    {
+                //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Frequency 파라미터 적용 실패");
+                //    }
+                //    else
+                //    {
+                //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Frequency 파라미터 적용 성공");
+                //    }
+                //}
 
-            //m_bScannerLib_Success &= rtc.CtlDelay((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_LaserOnDelay,
-            //                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_LaserOffDelay,
-            //                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_JumpDelay,
-            //                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_MarkDelay,
-            //                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_PolygonDelay);
-
-
-            //m_bScannerLib_Success &= rtc.CtlSpeed((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerJumpSpeed, (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerDrillingSpeed);
+                //m_bScannerLib_Success &= rtc.CtlDelay((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_LaserOnDelay,
+                //                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_LaserOffDelay,
+                //                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_JumpDelay,
+                //                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_MarkDelay,
+                //                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_PolygonDelay);
 
 
-            //var markerArg = new MarkerArgDefault()
-            //{
-            //    Document = Equipment.GetEqpSiriusViewerDocument(),
-            //    Rtc = rtc,
-            //    Laser = laser,
-            //    IsEnablePens = false,       //  Marking Layer 에서 세팅한 가공 파라미터를 사용하기 위해서 false 로 설정. (true : 내부에서 생성된 Pen 의 Default 파라미터로 가공)
-            //};
+                //m_bScannerLib_Success &= rtc.CtlSpeed((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerJumpSpeed, (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerDrillingSpeed);
 
-            ////  데이터를 Marker Arg. 를 이용해서 Marking 한다.
-            //switch (m_nEntityType)
-            //{
-            //    case EType.Text:
-            //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, TrueType Text 가공 Start");
 
-            //        SpiralLab.Sirius.Text markingText = new SpiralLab.Sirius.Text(m_strEntityData);
-            //        //markingText = new SpiralLab.Sirius.Text(m_strEntityData);
+                //var markerArg = new MarkerArgDefault()
+                //{
+                //    Document = Equipment.GetEqpSiriusViewerDocument(),
+                //    Rtc = rtc,
+                //    Laser = laser,
+                //    IsEnablePens = false,       //  Marking Layer 에서 세팅한 가공 파라미터를 사용하기 위해서 false 로 설정. (true : 내부에서 생성된 Pen 의 Default 파라미터로 가공)
+                //};
 
-            //        markingText.IsMarkerable = true;
-            //        markingText.IsHatchable = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use;
-            //        markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
+                ////  데이터를 Marker Arg. 를 이용해서 Marking 한다.
+                //switch (m_nEntityType)
+                //{
+                //    case EType.Text:
+                //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, TrueType Text 가공 Start");
 
-            //        markingText.Width = (float)m_nEntityWidth;
-            //        markingText.CapHeight = (float)m_nEntityHeight;
-            //        markingText.Location = new Vector2((markingText.BoundRect.Width / (float)2.0), -(markingText.BoundRect.Height / (float)2.0));
-            //        markingText.Rotate((float)(90.0 + m_dRotateAngle));
-            //        //markingText.Location = new Vector2((markingText.BoundRect.Width / (float)2.0), -(markingText.BoundRect.Height / (float)2.0));
+                //        SpiralLab.Sirius.Text markingText = new SpiralLab.Sirius.Text(m_strEntityData);
+                //        //markingText = new SpiralLab.Sirius.Text(m_strEntityData);
 
-            //        var markerArg1 = new MarkerArgDefault()
-            //        {
-            //            Document = Equipment.GetEqpSiriusViewerDocument(),
-            //            Rtc = rtc,
-            //            Laser = laser,
-            //            IsEnablePens = false,       //  Marking Layer 에서 세팅한 가공 파라미터를 사용하기 위해서 false 로 설정. (true : 내부에서 생성된 Pen 의 Default 파라미터로 가공)
-            //        };
+                //        markingText.IsMarkerable = true;
+                //        markingText.IsHatchable = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Use;
+                //        markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);        //  Hatch 는 Line 타입, 간격만 준다. 다른 파라미터는 기본으로 해도 무방할 듯
 
-            //        m_bScannerLib_Success &= markingText.Mark(markerArg1);
-            //        Thread.Sleep(500);
-            //        break;
+                //        markingText.Width = (float)m_nEntityWidth;
+                //        markingText.CapHeight = (float)m_nEntityHeight;
+                //        markingText.Location = new Vector2((markingText.BoundRect.Width / (float)2.0), -(markingText.BoundRect.Height / (float)2.0));
+                //        markingText.Rotate((float)(90.0 + m_dRotateAngle));
+                //        //markingText.Location = new Vector2((markingText.BoundRect.Width / (float)2.0), -(markingText.BoundRect.Height / (float)2.0));
 
-            //    case EType.SiriusText:
-            //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Sirius Text 가공 Start");
+                //        var markerArg1 = new MarkerArgDefault()
+                //        {
+                //            Document = Equipment.GetEqpSiriusViewerDocument(),
+                //            Rtc = rtc,
+                //            Laser = laser,
+                //            IsEnablePens = false,       //  Marking Layer 에서 세팅한 가공 파라미터를 사용하기 위해서 false 로 설정. (true : 내부에서 생성된 Pen 의 Default 파라미터로 가공)
+                //        };
 
-            //        markingSiriusText = new SpiralLab.Sirius.SiriusText(m_strEntityData);
-            //        markingSiriusText.Width = (float)m_nEntityWidth;
-            //        markingSiriusText.CapHeight = (float)m_nEntityHeight;
-            //        markingSiriusText.Rotate((float)(90.0 + m_dRotateAngle));
-            //        markingSiriusText.Location = new Vector2((markingSiriusText.BoundRect.Width / (float)2.0), -(markingSiriusText.BoundRect.Height / (float)2.0));
+                //        m_bScannerLib_Success &= markingText.Mark(markerArg1);
+                //        Thread.Sleep(500);
+                //        break;
 
-            //        m_bScannerLib_Success &= markingSiriusText.Mark(markerArg);
-            //        break;
+                //    case EType.SiriusText:
+                //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Sirius Text 가공 Start");
 
-            //    case EType.Barcode1D:
-            //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, 1D Barcode 가공 Start");
+                //        markingSiriusText = new SpiralLab.Sirius.SiriusText(m_strEntityData);
+                //        markingSiriusText.Width = (float)m_nEntityWidth;
+                //        markingSiriusText.CapHeight = (float)m_nEntityHeight;
+                //        markingSiriusText.Rotate((float)(90.0 + m_dRotateAngle));
+                //        markingSiriusText.Location = new Vector2((markingSiriusText.BoundRect.Width / (float)2.0), -(markingSiriusText.BoundRect.Height / (float)2.0));
 
-            //        markingBarcode1D = new SpiralLab.Sirius.Barcode1D(m_strEntityData);
-            //        markingBarcode1D.Width = (float)m_nEntityWidth;
-            //        markingBarcode1D.Height = (float)m_nEntityHeight;
-            //        markingBarcode1D.Rotate((float)(90.0 + m_dRotateAngle));
-            //        markingBarcode1D.Location = new Vector2((markingBarcode1D.BoundRect.Width / (float)2.0), -(markingBarcode1D.BoundRect.Height / (float)2.0));
+                //        m_bScannerLib_Success &= markingSiriusText.Mark(markerArg);
+                //        break;
 
-            //        m_bScannerLib_Success &= markingBarcode1D.Mark(markerArg);
-            //        break;
+                //    case EType.Barcode1D:
+                //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, 1D Barcode 가공 Start");
 
-            //    case EType.BarcodeDataMatrix:
-            //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix 가공 Start");
+                //        markingBarcode1D = new SpiralLab.Sirius.Barcode1D(m_strEntityData);
+                //        markingBarcode1D.Width = (float)m_nEntityWidth;
+                //        markingBarcode1D.Height = (float)m_nEntityHeight;
+                //        markingBarcode1D.Rotate((float)(90.0 + m_dRotateAngle));
+                //        markingBarcode1D.Location = new Vector2((markingBarcode1D.BoundRect.Width / (float)2.0), -(markingBarcode1D.BoundRect.Height / (float)2.0));
 
-            //        markingBarcodeDataMatrix = new SpiralLab.Sirius.BarcodeDataMatrix(m_strEntityData);
-            //        markingBarcodeDataMatrix.Width = (float)m_nEntityWidth;
-            //        markingBarcodeDataMatrix.Height = (float)m_nEntityHeight;
-            //        markingBarcodeDataMatrix.Rotate((float)(90.0 + m_dRotateAngle));
-            //        markingBarcodeDataMatrix.Location = new Vector2((markingBarcodeDataMatrix.BoundRect.Width / (float)2.0), -(markingBarcodeDataMatrix.BoundRect.Height / (float)2.0));
+                //        m_bScannerLib_Success &= markingBarcode1D.Mark(markerArg);
+                //        break;
 
-            //        m_bScannerLib_Success &= markingBarcodeDataMatrix.Mark(markerArg);
-            //        break;
+                //    case EType.BarcodeDataMatrix:
+                //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix 가공 Start");
 
-            //    case EType.BarcodeDataMatrix2:
-            //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix2 가공 Start");
+                //        markingBarcodeDataMatrix = new SpiralLab.Sirius.BarcodeDataMatrix(m_strEntityData);
+                //        markingBarcodeDataMatrix.Width = (float)m_nEntityWidth;
+                //        markingBarcodeDataMatrix.Height = (float)m_nEntityHeight;
+                //        markingBarcodeDataMatrix.Rotate((float)(90.0 + m_dRotateAngle));
+                //        markingBarcodeDataMatrix.Location = new Vector2((markingBarcodeDataMatrix.BoundRect.Width / (float)2.0), -(markingBarcodeDataMatrix.BoundRect.Height / (float)2.0));
 
-            //        markingBarcodeDataMatrix2 = new SpiralLab.Sirius.BarcodeDataMatrix2(m_strEntityData);
-            //        markingBarcodeDataMatrix2.Width = (float)m_nEntityWidth;
-            //        markingBarcodeDataMatrix2.Height = (float)m_nEntityHeight;
-            //        markingBarcodeDataMatrix2.Rotate((float)(90.0 + m_dRotateAngle));
-            //        markingBarcodeDataMatrix2.Location = new Vector2((markingBarcodeDataMatrix2.BoundRect.Width / (float)2.0), -(markingBarcodeDataMatrix2.BoundRect.Height / (float)2.0));
+                //        m_bScannerLib_Success &= markingBarcodeDataMatrix.Mark(markerArg);
+                //        break;
 
-            //        m_bScannerLib_Success &= markingBarcodeDataMatrix2.Mark(markerArg);
-            //        break;
+                //    case EType.BarcodeDataMatrix2:
+                //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix2 가공 Start");
 
-            //    case EType.BarcodeQRCode:
-            //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code 가공 Start");
+                //        markingBarcodeDataMatrix2 = new SpiralLab.Sirius.BarcodeDataMatrix2(m_strEntityData);
+                //        markingBarcodeDataMatrix2.Width = (float)m_nEntityWidth;
+                //        markingBarcodeDataMatrix2.Height = (float)m_nEntityHeight;
+                //        markingBarcodeDataMatrix2.Rotate((float)(90.0 + m_dRotateAngle));
+                //        markingBarcodeDataMatrix2.Location = new Vector2((markingBarcodeDataMatrix2.BoundRect.Width / (float)2.0), -(markingBarcodeDataMatrix2.BoundRect.Height / (float)2.0));
 
-            //        markingBarcodeQR = new SpiralLab.Sirius.BarcodeQR(m_strEntityData);
-            //        markingBarcodeQR.Width = (float)m_nEntityWidth;
-            //        markingBarcodeQR.Height = (float)m_nEntityHeight;
-            //        markingBarcodeQR.Rotate((float)(90.0 + m_dRotateAngle));
-            //        markingBarcodeQR.Location = new Vector2((markingBarcodeQR.BoundRect.Width / (float)2.0), -(markingBarcodeQR.BoundRect.Height / (float)2.0));
+                //        m_bScannerLib_Success &= markingBarcodeDataMatrix2.Mark(markerArg);
+                //        break;
 
-            //        m_bScannerLib_Success &= markingBarcodeQR.Mark(markerArg);
-            //        break;
+                //    case EType.BarcodeQRCode:
+                //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code 가공 Start");
 
-            //    case EType.BarcodeQRCode2:
-            //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code2 가공 Start");
+                //        markingBarcodeQR = new SpiralLab.Sirius.BarcodeQR(m_strEntityData);
+                //        markingBarcodeQR.Width = (float)m_nEntityWidth;
+                //        markingBarcodeQR.Height = (float)m_nEntityHeight;
+                //        markingBarcodeQR.Rotate((float)(90.0 + m_dRotateAngle));
+                //        markingBarcodeQR.Location = new Vector2((markingBarcodeQR.BoundRect.Width / (float)2.0), -(markingBarcodeQR.BoundRect.Height / (float)2.0));
 
-            //        markingBarcodeQR2 = new SpiralLab.Sirius.BarcodeQR2(m_strEntityData);
-            //        markingBarcodeQR2.Width = (float)m_nEntityWidth;
-            //        markingBarcodeQR2.Height = (float)m_nEntityHeight;
-            //        markingBarcodeQR2.Rotate((float)(90.0 + m_dRotateAngle));
-            //        markingBarcodeQR2.Location = new Vector2((markingBarcodeQR2.BoundRect.Width / (float)2.0), -(markingBarcodeQR2.BoundRect.Height / (float)2.0));
+                //        m_bScannerLib_Success &= markingBarcodeQR.Mark(markerArg);
+                //        break;
 
-            //        m_bScannerLib_Success &= markingBarcodeQR2.Mark(markerArg);
-            //        break;
-            //}
+                //    case EType.BarcodeQRCode2:
+                //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code2 가공 Start");
+
+                //        markingBarcodeQR2 = new SpiralLab.Sirius.BarcodeQR2(m_strEntityData);
+                //        markingBarcodeQR2.Width = (float)m_nEntityWidth;
+                //        markingBarcodeQR2.Height = (float)m_nEntityHeight;
+                //        markingBarcodeQR2.Rotate((float)(90.0 + m_dRotateAngle));
+                //        markingBarcodeQR2.Location = new Vector2((markingBarcodeQR2.BoundRect.Width / (float)2.0), -(markingBarcodeQR2.BoundRect.Height / (float)2.0));
+
+                //        m_bScannerLib_Success &= markingBarcodeQR2.Mark(markerArg);
+                //        break;
+                //}
             }
 
             return success;

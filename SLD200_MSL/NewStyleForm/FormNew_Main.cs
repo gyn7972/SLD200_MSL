@@ -3581,7 +3581,7 @@ namespace SLD200_MSL
             workStage.m_bForceEjectRequest = true;  // 강제 배출 요청. NG로 빼기 위한 변수.
             Equipment.ManualRunStatus = true;
 
-            
+
             //Test code
             //baseTextBox_SocketCountPerModule.Text = "12";
             //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
@@ -3625,14 +3625,14 @@ namespace SLD200_MSL
             ////  Recipe 에 설정된 가공 데이터를 세팅
             //EType eType = EType.Text;                   //  default : Text
 
-            ////Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Type
+            ////Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Type
             ////  0 : Text
             ////  1 : Sirius Text
             ////  2 : 1D Barcode
             ////  3 : Data Matrix
             ////  4 : QR Code
 
-            //switch (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_DataType)
+            //switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_DataType)
             //{
             //    case 0: eType = EType.Text; break;          //  Text
             //    case 1: eType = EType.SiriusText; break;          //  Sirius Text
@@ -3645,29 +3645,29 @@ namespace SLD200_MSL
             //string m_strMarkingData = "";
             //double m_dRotateAngle = 0.5;
 
-            //int m_nStartNumber = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber < 0 ? 0 : Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber;
-            //int m_nDigits = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits < 0 ? 1 : Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits;
-            //int m_nIncreaseStep = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep;
+            //int m_nStartNumber = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber < 0 ? 0 : Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber;
+            //int m_nDigits = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits < 0 ? 1 : Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits;
+            //int m_nIncreaseStep = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_IncreaseStep;
 
-            //if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
+            //if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
             //{
-            //    m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+            //    m_strMarkingData = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
             //}
             //else                                                                            //  Serial Number Data
             //{
             //    //  Prefix 있으면 붙이고
-            //    if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData.Length > 0)
+            //    if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData.Length > 0)
             //    {
-            //        m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+            //        m_strMarkingData = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
             //    }
 
             //    //  Serial Number 계산해서 만들고
             //    m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", m_nStartNumber + (Equipment.m_nSerialNumberMarkingCount * m_nIncreaseStep));
 
             //    //  Suffix 있으면 붙이고
-            //    if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData.Length > 0)
+            //    if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData.Length > 0)
             //    {
-            //        m_strMarkingData += Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
+            //        m_strMarkingData += Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData;
             //    }
             //}
 
@@ -3707,11 +3707,11 @@ namespace SLD200_MSL
 
             //        markingText = new SpiralLab.Sirius.Text(m_strMarkingData);
 
-            //        markingText.IsHatchable = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use;
-            //        markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);
+            //        markingText.IsHatchable = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Use;
+            //        markingText.Hatch(HatchMode.Line, false, 0, 0, (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Spacing, 0, 0);
 
-            //        markingText.Width = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width;
-            //        markingText.CapHeight = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height;
+            //        markingText.Width = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width;
+            //        markingText.CapHeight = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height;
             //        markingText.Rotate((float)(90.0 + m_dRotateAngle));
 
             //        doc.Action.ActEntityAdd(markingText);
@@ -3724,8 +3724,8 @@ namespace SLD200_MSL
             //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, Sirius Text 가공 Start");
 
             //        markingSiriusText = new SpiralLab.Sirius.SiriusText(m_strMarkingData);
-            //        markingSiriusText.Width = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width;
-            //        markingSiriusText.CapHeight = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height;
+            //        markingSiriusText.Width = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width;
+            //        markingSiriusText.CapHeight = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height;
             //        markingSiriusText.Rotate((float)(90.0 + m_dRotateAngle));
 
             //        doc.Action.ActEntityAdd(markingSiriusText);
@@ -3738,8 +3738,8 @@ namespace SLD200_MSL
             //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, 1D Barcode 가공 Start");
 
             //        markingBarcode1D = new SpiralLab.Sirius.Barcode1D(m_strMarkingData);
-            //        markingBarcode1D.Width = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width;
-            //        markingBarcode1D.Height = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height;
+            //        markingBarcode1D.Width = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width;
+            //        markingBarcode1D.Height = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height;
             //        markingBarcode1D.Rotate((float)(90.0 + m_dRotateAngle));
 
             //        doc.Action.ActEntityAdd(markingBarcode1D);
@@ -3752,8 +3752,8 @@ namespace SLD200_MSL
             //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix 가공 Start");
 
             //        markingBarcodeDataMatrix = new SpiralLab.Sirius.BarcodeDataMatrix(m_strMarkingData);
-            //        markingBarcodeDataMatrix.Width = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width;
-            //        markingBarcodeDataMatrix.Height = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height;
+            //        markingBarcodeDataMatrix.Width = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width;
+            //        markingBarcodeDataMatrix.Height = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height;
             //        markingBarcodeDataMatrix.Rotate((float)(90.0 + m_dRotateAngle));
 
             //        doc.Action.ActEntityAdd(markingBarcodeDataMatrix);
@@ -3766,8 +3766,8 @@ namespace SLD200_MSL
             //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, DataMatrix2 가공 Start");
 
             //        markingBarcodeDataMatrix2 = new SpiralLab.Sirius.BarcodeDataMatrix2(m_strMarkingData);
-            //        markingBarcodeDataMatrix2.Width = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width;
-            //        markingBarcodeDataMatrix2.Height = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height;
+            //        markingBarcodeDataMatrix2.Width = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width;
+            //        markingBarcodeDataMatrix2.Height = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height;
             //        markingBarcodeDataMatrix2.Rotate((float)(90.0 + m_dRotateAngle));
 
             //        doc.Action.ActEntityAdd(markingBarcodeDataMatrix2);
@@ -3780,8 +3780,8 @@ namespace SLD200_MSL
             //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code 가공 Start");
 
             //        markingBarcodeQR = new SpiralLab.Sirius.BarcodeQR(m_strMarkingData);
-            //        markingBarcodeQR.Width = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width;
-            //        markingBarcodeQR.Height = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height;
+            //        markingBarcodeQR.Width = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width;
+            //        markingBarcodeQR.Height = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height;
             //        markingBarcodeQR.Rotate((float)(90.0 + m_dRotateAngle));
 
             //        doc.Action.ActEntityAdd(markingBarcodeQR);
@@ -3794,8 +3794,8 @@ namespace SLD200_MSL
             //        Log.Write("SLD-200", "Auto Run", "Custom Marking 가공 Loop, QR Code2 가공 Start");
 
             //        markingBarcodeQR2 = new SpiralLab.Sirius.BarcodeQR2(m_strMarkingData);
-            //        markingBarcodeQR2.Width = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width;
-            //        markingBarcodeQR2.Height = (float)Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height;
+            //        markingBarcodeQR2.Width = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width;
+            //        markingBarcodeQR2.Height = (float)Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height;
             //        markingBarcodeQR2.Rotate((float)(90.0 + m_dRotateAngle));
 
             //        doc.Action.ActEntityAdd(markingBarcodeQR2);
@@ -3815,29 +3815,29 @@ namespace SLD200_MSL
             ////  가공 데이터 생성
             //string m_strMarkingData = "";
 
-            //int m_nStartNumber = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber < 0 ? 0 : Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber;
-            //int m_nDigits = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits < 0 ? 1 : Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits;
-            //int m_nIncreaseStep = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep;
+            //int m_nStartNumber = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber < 0 ? 0 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber;
+            //int m_nDigits = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits < 0 ? 1 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits;
+            //int m_nIncreaseStep = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_IncreaseStep;
 
-            //if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
+            //if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
             //{
-            //    m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+            //    m_strMarkingData = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
             //}
             //else                                                                            //  Serial Number Data
             //{
             //    //  Prefix 있으면 붙이고
-            //    if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData.Length > 0)
+            //    if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData.Length > 0)
             //    {
-            //        m_strMarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
+            //        m_strMarkingData = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
             //    }
 
             //    //  Serial Number 계산해서 만들고
             //    m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", m_nStartNumber + (n_Count * m_nIncreaseStep));
 
             //    //  Suffix 있으면 붙이고
-            //    if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData.Length > 0)
+            //    if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData.Length > 0)
             //    {
-            //        m_strMarkingData += Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
+            //        m_strMarkingData += Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData;
             //    }
             //}
 
@@ -4392,7 +4392,7 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            workStage.rtc.CtlReset();
+            Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
 
             return;
 
