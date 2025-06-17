@@ -4392,10 +4392,26 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+            return;
+            try
+            {
+                var moduleUI = new FormNewSub_SemiAuto();
+                //moduleUI.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
+                //moduleUI.Text = "모듈 상태 확인";
+                //moduleUI.StartPosition = FormStartPosition.CenterParent;
+                moduleUI.Show();  // 모달리스
+                Log.Write("UI", "FormNewSub_SemiAuto 창이 열렸습니다.");
+            }
+            catch (Exception ex)
+            {
+                Log.Write("UI", $"FormNewSub_SemiAuto 창 열기 실패: {ex.Message}");
+                MessageBox.Show("모듈 상태 창 열기 실패:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             return;
 
+
+            Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
             // 시작 Test
             workStage.timer_Motion_Home.Enabled = true;
             workStage.m_btimer_Motion_Home_Stop = false;

@@ -381,7 +381,7 @@ namespace SLD200_MSL
             //siriusEditor.Document = doc;
             if (File.Exists(strFileName) == false)
             {
-                //MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (SiriusEditor.Document == null)
                     SiriusEditor.Document = new DocumentDefault();
 

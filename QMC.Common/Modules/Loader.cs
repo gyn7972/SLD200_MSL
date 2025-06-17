@@ -981,7 +981,6 @@ namespace QMC.Common.Modules
         public bool m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete { set; get; }               //  M-Aligner 에 Module Put Down 완료 여부
         public bool m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete { set; get; }              //  Work Stage 에 Module Put Down 완료 여부
 
-
         public int m_nLoader_Transfer_Step { set; get; }                    //  Transfer Step
         public int m_nLoader_Transfer_Step_Recovery { set; get; }           //  Transfer Step (복구용)
         public int m_nLoaderTransferMoveType { set; get; }                  //  Transfer Move Type
@@ -993,14 +992,11 @@ namespace QMC.Common.Modules
 
         public int m_nLoader_Transfer_Vibration_Count { set; get; } = 0;                  //  Module 털기 횟수
 
-
         public int m_nStacker0_StepUp_Count { set; get; } = 0;          //  max 10mm
         public int m_nStacker1_StepUp_Count { set; get; } = 0;          //  max 10mm
 
-
         public int m_nStacker0_Retry_Count { set; get; } = 0;                                               //  Pick Up 실패시 Retry
         public int m_nStacker1_Retry_Count { set; get; } = 0;                                               //  Pick Up 실패시 Retry
-
 
         public int m_nStacker_Priority { set; get; } = (int)LoaderParameter.StackerTable.Stacker_0 ;        //  동작하는 Stacker 의 우선순위 부여 (0 : Stacker0, 1 : Stacker1)
         public bool m_bStacker0_PickUp_Failed { set; get; } = false;                                               //  Stacker0 Pick Up 실패 여부
@@ -1295,9 +1291,8 @@ namespace QMC.Common.Modules
 
             ParamConfig = new LoaderParameterConfig();
             Config = new LoaderConfig();
-            //SetDispenserWork((int)DispenserWorkStatus.WORK_NONE);
 
-            //ModuleCollection m_collectionModules;
+            //SetDispenserWork((int)DispenserWorkStatus.WORK_NONE);
             //m_collectionModules = Equipment.Modules;
 
             //foreach (Module module in m_collectionModules)
@@ -1325,10 +1320,9 @@ namespace QMC.Common.Modules
 
             //WorkStageIndex = -1;
             //m_bLaserGetStatus_Run = false;
-
             //Cepheus_laser = new MyCepheusLaser();
-
             //m_nHomeStep = (int)Home_Step.None;
+
             m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type
             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
             m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
@@ -1354,7 +1348,6 @@ namespace QMC.Common.Modules
             m_bInCycleMoving_SafetySensor_Detected = false;
 
             //  타이머를 쓰레드로 변경 --> 다시 타이머 사용하기로...
-
             //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
            
             //  Loader Work 타이머
@@ -1912,7 +1905,7 @@ namespace QMC.Common.Modules
 
         #region Stacker Move Function (Module PickUp & PutDown 높이로 이동 -> 이건 Loader Unloader 에서 하도록 해야 할듯???)
 
-        int  Run_Stacker0Module_PickupWaitingPos_Func()
+        public int  Run_Stacker0Module_PickupWaitingPos_Func()
         {
             int ret = 0;
             bool m_bRet = false;
@@ -2007,30 +2000,6 @@ namespace QMC.Common.Modules
                 Equipment.Loader_RPort_Empty = true;
             }
 
-            //기존 코드
-            {
-            //    if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
-            //    {
-            //        if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
-            //        {
-            //            Equipment.Loader_RPort_Pause = true;
-            //        }
-            //        else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && 
-            //                (TickCount_Elapsed((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT) > 
-            //                (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000)))
-            //        {
-            //            Equipment.Loader_RPort_Pause = true;
-            //        }
-
-            //        Equipment.Loader_RPort_Empty = true;    // 자재 없음 알림.
-            //    }
-            //    else
-            //    {
-            //        TickCount_Start((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT);
-            //        Equipment.Loader_RPort_Empty = false;    // 자재 있음 알림.
-            //    }
-            }
-
             //  Stacker0 이 Pause 되는 시점에 Stacker0 을 아래로 내림
             if (Equipment.Loader_RPort_Pause && !Equipment.Loader_RPort_Pause_Before)// &&
 
@@ -2101,35 +2070,23 @@ namespace QMC.Common.Modules
                     }
                 }
             }
-
             StackerModulePickupWaitingPos_Step currentStep = (StackerModulePickupWaitingPos_Step)m_nStacker0_ModulePickupWaitingPos_Step;
 
             switch (m_nStacker0_ModulePickupWaitingPos_Step)
             {
                 case (int)StackerModulePickupWaitingPos_Step.Start:
+
                     Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "시작");
 
-                    Equipment.MachineStop_byAlarm = false;
-
                     //  Laoder Stacker Z 축 모터 전체 Stop
-                    MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
+                    MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000); // 왜 Stop을 하는거지?
+
                     m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.Process_Condition_Check;
                     break;
 
 
                 case (int)StackerModulePickupWaitingPos_Step.Process_Condition_Check:
                     Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "동작 조건 확인");
-
-                    //ret = StackerModulePickupWaitingPos_StepProcess_Condition_Check();
-                    //if (ret == 0)
-                    //{
-                    //    m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType1_FastDown;
-                    //}
-                    //else
-                    //{
-                    //    Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "동작 조건 확인 실패");
-                    //    // 내부에서 알람 발생.
-                    //}
 
                     if (m_nLoader_Transfer_Step > (int)Loader_Transfer_Step.None)                                                       //  Transfer Cycle 이 동작중
                     {
@@ -2187,16 +2144,10 @@ namespace QMC.Common.Modules
                     else
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Stacker Module Exist 센서 감지 안됨");
-
                         // 자재가 없으면 시컨스 위에서 없다고 알림.
                         // 여기서는 자재가 있다고 가정하고 진행함.
                         // 따라서 여기서 감지가 안되면 Error 발생 해야함.
-
                         return AlarmPost(AlarmKey.LD_Stacker0_ModulePickup_ConditionCheck_Stacker0ModuleNotExist);
-
-                        //Equipment.Loader_RPort_Empty = true;    // 자재 없음 알림.
-                        //m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
-                        //MessageBox.Show("LD Stacker0 에 Module 이 감지되지 않음.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
                     break;
@@ -2912,7 +2863,7 @@ namespace QMC.Common.Modules
 
 
         private bool m_bStackerZ1_DownWhenEmpty = false; // Stacker Z1이 자재가 없을 때 하강했는지 여부를 확인하는 플래그
-        int Run_Stacker1Module_PickupWaitingPos_Func()
+        public int Run_Stacker1Module_PickupWaitingPos_Func()
         {
             int ret = 0;
             bool m_bRet = false;
@@ -4013,7 +3964,7 @@ namespace QMC.Common.Modules
         #region Transfer Cycle Function (Module PickUp & PutDown 위치로 이동)
 
         bool m_bMLoader_LogOnce = false;
-        int Run_Transfer_Cycle_Func()
+        public int Run_Transfer_Cycle_Func()
         {
             int ret = 0;
             bool m_bRet = false;
@@ -8432,7 +8383,7 @@ namespace QMC.Common.Modules
         #region M-Align Cycle Function
 
         bool m_bMAlign_LogOnce = false;
-        int  Run_MAlign_Cycle_Func()
+        public int Run_MAlign_Cycle_Func()
         {
             int ret = 0;
             int nNextStep = 0;
@@ -9185,16 +9136,6 @@ namespace QMC.Common.Modules
                     return;
                 }
 
-                // MAlign 두 번 태우는건가??
-                // 버그 코드 -> 막자.
-                // 자동운전 시, M-Align 동작 조건 : TR Cycle (None), M-Aligner Module Exist, M-Aligner Cycle (None)
-                //ret = Run_MAlign_Cycle_Func();
-                //if (ret != 0)
-                //{
-                //    SetRecoveryMAlign_Cycle(m_nMAlign_Step);
-                //    return;
-                //}
-
                 //// 자동운전 시, M-Aligner 에서 Module Pick-Up 조건 : 
                 //// M-Aligner Cycle (None), TR Cycle (None), M-Aligner Module Exist, M-Aligner Complete
                 //m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_MAligner_PickUp;
@@ -9214,6 +9155,7 @@ namespace QMC.Common.Modules
                 _isLoaderWorkRunning = false; // 플래그 해제
             }
         }
+
         public void SetRecovery()
         {
             SetRecoveryStaker0(m_nStacker0_ModulePickupWaitingPos_Step);

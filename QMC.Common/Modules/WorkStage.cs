@@ -22105,11 +22105,11 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "Laser Idle Check");
 
                         //스케너 초기화 하자. 여기서!
-                        if (Equipment.Machine_LaserType_CO2)
-                        {
-                            //_InitDeviceStatus.Scanner = false;
-                            Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
-                        }
+                        //if (Equipment.Machine_LaserType_CO2)
+                        //{
+                        //    //_InitDeviceStatus.Scanner = false;
+                        //    Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                        //}
 
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos;
@@ -40654,6 +40654,19 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
                             $"축 위치 이동 실패 [축: {failedAxisString}]. 재시도 {retryCount}/{maxRetry}");
 
+                    Log.Write("StageScannerPos", Equipment.User_Name, "Auto Run",
+                            $"축 위치 이동 실패 [축: {failedAxisString}]. 재시도 {retryCount}/{maxRetry}");
+
+                    double dPoscurX = 0.0;
+                    double dPoscurY = 0.0;
+                    dPoscurX = MC_Func.MC_GetEncPos((int)nAxis.X);
+                    dPoscurY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+                    Log.Write("StageScannerPos",
+                                "Socket NO : " + m_nDrillingWork_Group_Count.ToString() +
+                                "  FieldSize NO : " + m_nDividedRegion_Region_CurrentIndex_forZigZag.ToString() +
+                                "  Interpolated Target Pos (X: " + dPoscurX.ToString("F3") +
+                                ", Y: " + dPoscurY.ToString("F3") + ")");
+
                     SeqStep = jumpBackStep;
                     TickCount_Start((int)TickType.TICK_MAIN);
                 }
@@ -40661,6 +40674,19 @@ namespace QMC.Common.Modules
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
                             $"축 위치 이동 실패 [축: {failedAxisString}]. 재시도 초과 ({maxRetry})");
+
+                    Log.Write("StageScannerPos", Equipment.User_Name, "Auto Run",
+                            $"축 위치 이동 실패 [축: {failedAxisString}]. 재시도 {retryCount}/{maxRetry}");
+
+                    double dPoscurX = 0.0;
+                    double dPoscurY = 0.0;
+                    dPoscurX = MC_Func.MC_GetEncPos((int)nAxis.X);
+                    dPoscurY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+                    Log.Write("StageScannerPos",
+                                "Socket NO : " + m_nDrillingWork_Group_Count.ToString() +
+                                "  FieldSize NO : " + m_nDividedRegion_Region_CurrentIndex_forZigZag.ToString() +
+                                "  Interpolated Target Pos (X: " + dPoscurX.ToString("F3") +
+                                ", Y: " + dPoscurY.ToString("F3") + ")");
 
                     retryCount = 0;
                     SeqStep = jumpBackStep;
