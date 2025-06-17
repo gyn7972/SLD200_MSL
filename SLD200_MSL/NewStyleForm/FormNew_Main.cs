@@ -4392,7 +4392,7 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            return;
+            //return;
             try
             {
                 var moduleUI = new FormNewSub_SemiAuto();

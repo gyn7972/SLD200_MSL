@@ -3379,5 +3379,8 @@ namespace QMC.Common
             //MessageBox.Show("Scanner 와 Fine Camera 간 Offset 데이터를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+
+
+        public static bool m_bCheckAxesMotionDoneWithRetry = false;
     }
 }

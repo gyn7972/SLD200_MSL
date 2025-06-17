@@ -74,7 +74,6 @@ namespace QMC.Common.Motion.Ajin.Motions
 
             double dCurrentY = 0;
             if (Equipment.MapDataStatus_Activate && (workStage.Stage.Interpolator != null))
-
             {
                 AXM.GetActualPosition(nAxis, ref dPos);
                 string str = this.GetType().ToString();
@@ -90,6 +89,11 @@ namespace QMC.Common.Motion.Ajin.Motions
                         //originPosition.Y = MC_GetEncPos((int)WorkStage.nAxis.Y);
                         AXM.GetActualPosition((int)WorkStage.nAxis.X, ref dCurrentX);
                         AXM.GetActualPosition((int)WorkStage.nAxis.Y, ref dCurrentY);
+                        if(Equipment.m_bCheckAxesMotionDoneWithRetry)
+                        {
+                            Log.Write("StageScannerPos", "MC_GetEncPos",
+                            $"XAxis:Original Pos:[X: {dCurrentX}],[Y: {dCurrentY}].");
+                        }
 
                         dest.X = dCurrentX;
                         dest.Y = dCurrentY;
@@ -97,8 +101,12 @@ namespace QMC.Common.Motion.Ajin.Motions
                         {
                             return ret;
                         }
-
                         dPos = source.X;
+                        if (Equipment.m_bCheckAxesMotionDoneWithRetry)
+                        {
+                            Log.Write("StageScannerPos", "MC_GetEncPos",
+                            $"XAxis:Interpolator Pos:[X: {dPos}].");
+                        }
                     }
                     else
                     {
@@ -111,6 +119,11 @@ namespace QMC.Common.Motion.Ajin.Motions
                     {
                         AXM.GetActualPosition((int)WorkStage.nAxis.X, ref dCurrentX);
                         AXM.GetActualPosition((int)WorkStage.nAxis.Y, ref dCurrentY);
+                        if (Equipment.m_bCheckAxesMotionDoneWithRetry)
+                        {
+                            Log.Write("StageScannerPos", "MC_GetEncPos",
+                            $"YAxis:Original Pos:[X: {dCurrentX}],[Y: {dCurrentY}].");
+                        }
 
                         dest.X = dCurrentX;
                         dest.Y = dCurrentY;
@@ -120,6 +133,11 @@ namespace QMC.Common.Motion.Ajin.Motions
                         }
 
                         dPos = source.Y;
+                        if (Equipment.m_bCheckAxesMotionDoneWithRetry)
+                        {
+                            Log.Write("StageScannerPos", "MC_GetEncPos",
+                            $"YAxis:Interpolator Pos:[Y: {dPos}].");
+                        }
                     }
                     else
                     {

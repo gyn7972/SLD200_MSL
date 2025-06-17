@@ -1563,6 +1563,9 @@
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_Vision.resx">
       <DependentUpon>FormNewSub_Recipe_Vision.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_SemiAuto.resx">
+      <DependentUpon>FormNewSub_SemiAuto.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NormalDataConfigControl.resx">
       <DependentUpon>NormalDataConfigControl.cs</DependentUpon>
     </EmbeddedResource>
