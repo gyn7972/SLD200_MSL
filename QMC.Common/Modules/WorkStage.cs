@@ -15242,19 +15242,25 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                nCenterX = (int)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
-                                nOffsetX = nCenterX - Camera_HighRes.Resolution.Width / 2;
+                                if (Fiducial_circlesResult.Count > 0)
+                                {
+                                    nCenterX = (int)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
+                                    nOffsetX = nCenterX - Camera_HighRes.Resolution.Width / 2;
 
-                                nCenterY = (int)(Fiducial_circlesResult[0].Y + Fiducial_circlesResult[0].Height / 2);
-                                nOffsetY = nCenterY - Camera_HighRes.Resolution.Height / 2;
+                                    nCenterY = (int)(Fiducial_circlesResult[0].Y + Fiducial_circlesResult[0].Height / 2);
+                                    nOffsetY = nCenterY - Camera_HighRes.Resolution.Height / 2;
 
-                                dXoffset = nOffsetX * this.Config.ParamConfig.UpperVision_Scale_X;
-                                dYoffset = nOffsetY * this.Config.ParamConfig.UpperVision_Scale_Y;
+                                    dXoffset = nOffsetX * this.Config.ParamConfig.UpperVision_Scale_X;
+                                    dYoffset = nOffsetY * this.Config.ParamConfig.UpperVision_Scale_Y;
 
-                                currentPosition.X -= dXoffset;
-                                currentPosition.Y += dYoffset;
-                                bFound = true;
-
+                                    currentPosition.X -= dXoffset;
+                                    currentPosition.Y += dYoffset;
+                                    bFound = true;
+                                }
+                                else
+                                {
+                                    bFound = true;
+                                }
                             }
                         }
 
@@ -20038,8 +20044,15 @@ namespace QMC.Common.Modules
                                 {
                                     // Hole은 가공 안하는데...
                                     // Group_Count 를 증가 시키면 Hole은 넘기고 Drilling 하지 않을까?
-                                    m_nDrillingWork_Group_Count++;// = m_nSelectedSocket_Index;
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                                    if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                                    {
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                                    }
+                                    else
+                                    {
+                                        //m_nDrillingWork_Group_Count++;// = m_nSelectedSocket_Index;
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                                    }
                                 }
                                 else
                                 {

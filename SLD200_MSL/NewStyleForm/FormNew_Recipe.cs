@@ -3029,7 +3029,6 @@ namespace SLD200_MSL
             radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Enabled = true;
             button_Marking_SerialNumber_CountReset.Enabled = true;
 
-
             switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType)
             {
                 case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
@@ -3044,6 +3043,18 @@ namespace SLD200_MSL
                     radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
                     break;
             }
+
+            if(radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Checked)
+            {
+                int nIncrease = 0;
+                nIncrease = Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text);
+                if (nIncrease <= 0)
+                {
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = "1";
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Refresh();
+                }
+            }
+            
         }
         private void comboBox_Recipe_TabRecipe_CustomMarking_DataType_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -3252,6 +3263,14 @@ namespace SLD200_MSL
                     }
                 }
                 label_Recipe_Marking_SerialNumber_Current.Text = m_strMarkingData;
+
+                int nIncrease = 0;
+                nIncrease = Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text);
+                if (nIncrease <= 0)
+                {
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = "1";
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Refresh();
+                }
             }
         }
 
