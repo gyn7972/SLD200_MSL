@@ -4242,7 +4242,6 @@ namespace SLD200_MSL
         private void button_Test_LDTransfer_PickupRPortPos_Cyc_Click(object sender, EventArgs e)
         {
             //  LDTransfer, Module Pickup from R Port Position Cycle
-
             if (!Equipment.AjinBoard_Opened)
             {
                 var mb1 = new MessageBoxOk();
