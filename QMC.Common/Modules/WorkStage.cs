@@ -40677,7 +40677,7 @@ namespace QMC.Common.Modules
                     Log.Write("StageScannerPos",
                                 "Socket NO : " + m_nDrillingWork_Group_Count.ToString() +
                                 "  FieldSize NO : " + m_nDividedRegion_Region_CurrentIndex_forZigZag.ToString() +
-                                "  Interpolated Target Pos (X: " + dPoscurX.ToString("F3") +
+                                "  Fail Pos (X: " + dPoscurX.ToString("F3") +
                                 ", Y: " + dPoscurY.ToString("F3") + ")");
 
                     SeqStep = jumpBackStep;
