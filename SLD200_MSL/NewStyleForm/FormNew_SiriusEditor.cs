@@ -986,7 +986,7 @@ namespace SLD200_MSL
                 //우선 안되니깐 죽이자.
                 //timer_RtcInit.Enabled = false;
 
-                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+                //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
 
                 Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
 
@@ -1004,6 +1004,8 @@ namespace SLD200_MSL
                         Equipment._InitDeviceStatus.Scanner = false;
                         MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
+
+                    Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - Retry");
                 }
                 else
                 {
@@ -1015,8 +1017,12 @@ namespace SLD200_MSL
                     {
                         Equipment._InitDeviceStatus.Scanner = false;
                         MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                        Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - First");
                     }
                 }
+
+                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
             }
         }
 
