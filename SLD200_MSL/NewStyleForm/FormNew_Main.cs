@@ -4392,7 +4392,20 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
+            try
+            {
+                var moduleUI = new FormNewSub_SemiAuto();
+                moduleUI.Owner = this;  // 부모 폼 설정
+                moduleUI.Show();  // 모달리스
+                //Log.Write("UI", "FormNewSub_SemiAuto 창이 열렸습니다.");
+            }
+            catch (Exception ex)
+            {
+                //Log.Write("UI", $"FormNewSub_SemiAuto 창 열기 실패: {ex.Message}");
+                MessageBox.Show("모듈 상태 창 열기 실패:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            //loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
 
             //Equipment.m_bCheckAxesMotionDoneWithRetry = true;
             //double dPoscurX = 0.0;

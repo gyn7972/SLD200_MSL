@@ -518,23 +518,26 @@ namespace SLD200_MSL
                 else
                     Config.LwPolylineBulgePrecision = Equipment.Machine_PolylineCurve_Resolution;
 
-                m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
-                                                                        // create document
-                                                                        // 신규 문서 생성
-                var doc = new DocumentDefault();                        //  Sirius1
-                                                                        //var doc = new DocumentBase();                         //  Sirius2             --> 나중에 수정해야함. 필요하면..
-                                                                        // assign document into editor
-                                                                        //  변수 초기화 (Laser 에서 사용)
                 if (SiriusEditor == null)
                 {
                     SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
                 }
-                // 문서 지정
-                //this.SiriusViewer.Document = doc;
+
+                var doc = new DocumentDefault();                        //  Sirius1
+                                                                        //var doc = new DocumentBase();                         //  Sirius2             --> 나중에 수정해야함. 필요하면..
+                                                                        // assign document into editor
+                                                                        //  변수 초기화 (Laser 에서 사용)
+                                                                        // 문서 지정
+                                                                        //this.SiriusViewer.Document = doc;
                 this.SiriusEditor.Document = doc;
                 // assign document source changed event handler
                 // 내부 데이타(IDocument) 가 변경될경우 이를 이벤트 통지를 받는 핸들러 등록
                 this.SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged1;
+
+                //true / false가 아니라 팅겨 나와 버린다.
+                m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
+                                                                        // create document
+                                                                        // 신규 문서 생성
             }
 
             #region RTC 초기화
@@ -990,7 +993,10 @@ namespace SLD200_MSL
 
                 Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
 
-                if(workStage.rtc != null && Equipment._InitDeviceStatus.Scanner)
+                // sirius 팅겨나와서 이거 여기다 둬야 하네...
+                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+
+                if (workStage.rtc != null && Equipment._InitDeviceStatus.Scanner)
                 {
                     //  이미 RTC 가 초기화 되어 있다면 Rtc 객체를 닫고 다시 초기화 한다.
                     Rtc_Close();
@@ -1021,8 +1027,7 @@ namespace SLD200_MSL
                         Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - First");
                     }
                 }
-
-                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+                //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
             }
         }
 

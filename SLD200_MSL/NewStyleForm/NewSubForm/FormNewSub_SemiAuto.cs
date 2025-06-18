@@ -46,11 +46,16 @@ namespace SLD200.NewStyleForm.NewSubForm
             timerSemiAuto.Tick += TimerSemiAuto_Tick;
             timerSemiAuto.Start();
 
-            cboSemiAutoStep.Items.AddRange(Enum.GetNames(typeof(Loader.SemiAutoStep)));
-            cboSemiAutoStep.SelectedIndex = 0;
+            cboSemiAutoStep_Loader.Items.AddRange(Enum.GetNames(typeof(Loader.SemiAutoStep)));
+            cboSemiAutoStep_Loader.SelectedIndex = 0;
 
-            cboStackerStep.Items.AddRange(Enum.GetNames(typeof(StackerModulePickupWaitingPos_Step)));
-            cboStackerStep.SelectedIndex = 0;
+            cboDetailStep_Loader.Items.AddRange(Enum.GetNames(typeof(StackerModulePickupWaitingPos_Step)));
+            cboDetailStep_Loader.SelectedIndex = 0;
+        }
+
+        private void FormNewSub_SemiAuto_Load(object sender, EventArgs e)
+        {
+
         }
 
         private void TimerSemiAuto_Tick(object sender, EventArgs e)
@@ -58,54 +63,128 @@ namespace SLD200.NewStyleForm.NewSubForm
             Timer_SemiAutoRun();
         }
 
-        private void btnSemiAutoStart_Click(object sender, EventArgs e)
-        {
-            if (loader == null) return;
-
-            Loader.SemiAutoStep selectedStep = (Loader.SemiAutoStep)cboSemiAutoStep.SelectedIndex;
-            loader.SetSemiAutoRequest((Loader.SemiAutoStep)selectedStep);
-            lblCurrentStep.Text = $"[SemiAuto] Start: {selectedStep}";
-        }
-
-        private void btnSemiAutoNext_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void btnSemiAutoStop_Click(object sender, EventArgs e)
-        {
-            if (loader == null) return;
-
-            loader.ClearSemiAutoRequest();
-            lblCurrentStep.Text = "[SemiAuto] Stop";
-        }
-
-        private void ChkDetailAuto_CheckedChanged(object sender, EventArgs e)
-        {
-            
-        }
-
         public void Timer_SemiAutoRun()
         {
             if (loader == null) return;
 
-            lblCurrentStep.Text = $"Current: {loader.m_nStacker0_ModulePickupWaitingPos_Step}, SemiAutoMode: {loader._isSemiAutoMode}";
+            Loader.SemiAutoStep selectedStep = (Loader.SemiAutoStep)cboSemiAutoStep_Loader.SelectedIndex;
+            switch(selectedStep)
+            {
+                case Loader.SemiAutoStep.None:
+                    break;
+                case Loader.SemiAutoStep.Stacker0:
+                    lblCurrentStep_Loader.Text = $"Current: {loader.m_nStacker0_ModulePickupWaitingPos_Step} " +
+                      $"({Enum.GetName(typeof(StackerModulePickupWaitingPos_Step), loader.m_nStacker0_ModulePickupWaitingPos_Step)}), " +
+                      $"Step: {loader._semiAutoRequest}, " +
+                      $"DetailMode: {loader._isSemiAutoDetailMode}, " +
+                      $"StepReq: {loader._semiAutoDetailStepRequest}";
+                    break;
+                case Loader.SemiAutoStep.Stacker1:
+                    lblCurrentStep_Loader.Text = $"Current: {loader.m_nStacker1_ModulePickupWaitingPos_Step} " +
+                      $"({Enum.GetName(typeof(StackerModulePickupWaitingPos_Step), loader.m_nStacker1_ModulePickupWaitingPos_Step)}), " +
+                      $"Step: {loader._semiAutoRequest}, " +
+                      $"DetailMode: {loader._isSemiAutoDetailMode}, " +
+                      $"StepReq: {loader._semiAutoDetailStepRequest}";
+                    break;
+                case Loader.SemiAutoStep.MAlign:
+                    lblCurrentStep_Loader.Text = $"Current: {loader.m_nMAlign_Step} " +
+                      $"({Enum.GetName(typeof(MAlign_Step), loader.m_nMAlign_Step)}), " +
+                      $"Step: {loader._semiAutoRequest}, " +
+                      $"DetailMode: {loader._isSemiAutoDetailMode}, " +
+                      $"StepReq: {loader._semiAutoDetailStepRequest}";
+                    break;
+                case Loader.SemiAutoStep.Transfer:
+                    lblCurrentStep_Loader.Text = $"Current: {loader.m_nLoader_Transfer_Step} " +
+                      $"({Enum.GetName(typeof(Loader_Transfer_Step), loader.m_nLoader_Transfer_Step)}), " +
+                      $"Step: {loader._semiAutoRequest}, " +
+                      $"DetailMode: {loader._isSemiAutoDetailMode}, " +
+                      $"StepReq: {loader._semiAutoDetailStepRequest}";
+                    break;
+                default: 
+                    break;
+            }
         }
 
-        private void btnRunStackerStep_Click(object sender, EventArgs e)
+        private void btnSemiAutoStart_Loader_Click(object sender, EventArgs e)
         {
-            if ((Loader.SemiAutoStep)cboSemiAutoStep.SelectedIndex != Loader.SemiAutoStep.Stacker0)
+            if (loader == null) return;
+
+            //세미오토 조건 확인 필.!
+            loader._isSemiAutoMode = true;
+
+            Loader.SemiAutoStep selectedStep = (Loader.SemiAutoStep)cboSemiAutoStep_Loader.SelectedIndex;
+            loader.SetSemiAutoRequest(selectedStep);
+
+            loader._isSemiAutoDetailMode = chkDetailAuto_Loader.Checked;
+            loader._semiAutoDetailStepRequest = !chkDetailAuto_Loader.Checked; // 디테일모드가 아닐 때는 바로 실행
+
+            lblCurrentStep_Loader.Text = $"[SemiAuto] Start: {selectedStep} (DetailMode: {loader._isSemiAutoDetailMode})";
+        }
+
+        private void btnSemiAutoNext_Loader_Click(object sender, EventArgs e)
+        {
+            if (loader == null || !loader._isSemiAutoMode || !loader._isSemiAutoDetailMode) return;
+
+            loader._semiAutoDetailStepRequest = true;
+        }
+
+        private void btnSemiAutoStop_Loader_Click(object sender, EventArgs e)
+        {
+            if (loader == null) return;
+
+            loader.ClearSemiAutoRequest();
+            lblCurrentStep_Loader.Text = "[SemiAuto] Stop";
+        }
+
+        private void ChkDetailAuto_Loader_CheckedChanged(object sender, EventArgs e)
+        {
+            if (loader == null) return;
+
+            loader._isSemiAutoDetailMode = chkDetailAuto_Loader.Checked;
+        }
+
+        private void btnRunStackerStep_Loader_Click(object sender, EventArgs e)
+        {
+            if ((Loader.SemiAutoStep)cboSemiAutoStep_Loader.SelectedIndex != Loader.SemiAutoStep.Stacker0)
             {
                 MessageBox.Show("현재 Stacker0 모드에서만 사용 가능합니다.");
                 return;
             }
 
-            var selectedStep = (StackerModulePickupWaitingPos_Step)Enum.Parse(
-                typeof(StackerModulePickupWaitingPos_Step), cboStackerStep.SelectedItem.ToString());
+            if (loader._isSemiAutoMode && loader._isSemiAutoDetailMode)
+            {
+                loader._semiAutoDetailStepRequest = true;
+            }
+        }
 
-            loader.m_nStacker0_ModulePickupWaitingPos_Step = (int)selectedStep;
-            int result = loader.Run_Stacker0Module_PickupWaitingPos_Func();
-            lblCurrentStep.Text = $"Run Step: {selectedStep} → Result: {(result == 0 ? "OK" : "NG")}";
+        private void cboSemiAutoStep_Loader_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Loader.SemiAutoStep selectedStep = (Loader.SemiAutoStep)cboSemiAutoStep_Loader.SelectedIndex;
+            cboDetailStep_Loader.Items.Clear();
+            switch (selectedStep)
+            {
+                case Loader.SemiAutoStep.None:
+                    break;
+                case Loader.SemiAutoStep.Stacker0:
+                    
+                    cboDetailStep_Loader.Items.AddRange(Enum.GetNames(typeof(StackerModulePickupWaitingPos_Step)));
+                    cboDetailStep_Loader.SelectedIndex = 0;
+                    break;
+                case Loader.SemiAutoStep.Stacker1:
+                    cboDetailStep_Loader.Items.AddRange(Enum.GetNames(typeof(StackerModulePickupWaitingPos_Step)));
+                    cboDetailStep_Loader.SelectedIndex = 0;
+                    break;
+                case Loader.SemiAutoStep.MAlign:
+                    cboDetailStep_Loader.Items.AddRange(Enum.GetNames(typeof(MAlign_Step)));
+                    cboDetailStep_Loader.SelectedIndex = 0;
+                    break;
+                case Loader.SemiAutoStep.Transfer:
+                    cboDetailStep_Loader.Items.AddRange(Enum.GetNames(typeof(Loader_Transfer_Step)));
+                    cboDetailStep_Loader.SelectedIndex = 0;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
