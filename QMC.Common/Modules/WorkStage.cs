@@ -32209,78 +32209,78 @@ namespace QMC.Common.Modules
                                                 }
 
                                                 // Todo: Test 후 적용. - Scan영역 분할 후 hole 영역이 가공영역의 중심이 되어 drilling 하는 기능 : 검증 필요.
-                                                {
-                                                    //if (group.GetType().Name == "Circle" ||
-                                                    //    group.GetType().Name == "Arc")
-                                                    //{
-                                                    //    Log.Write("DivideRegion", "DivideRegion", $"[Group={m_nGroupCount}] Circle/Arc 기반 중심 좌표 보정 시작");
+                                                //{
+                                                //    //if (group.GetType().Name == "Circle" ||
+                                                //    //    group.GetType().Name == "Arc")
+                                                //    {
+                                                //        Log.Write("DivideRegion", "DivideRegion", $"[Group={m_nGroupCount}] Circle/Arc 기반 중심 좌표 보정 시작");
 
-                                                    //    //// Hole 면적을 구하고 Divided 영역의 센터를 Hole 센터로 옮겨야함.
-                                                    //    for (int m_Y = 0; m_Y < m_nGroupIndex_TotalY; m_Y++)
-                                                    //    {
-                                                    //        for (int m_X = 0; m_X < m_nGroupIndex_TotalX; m_X++)
-                                                    //        {
-                                                    //            int regionIndex = (m_Y * m_nGroupIndex_TotalX) + m_X;
-                                                    //            var region = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex];
+                                                //        //// Hole 면적을 구하고 Divided 영역의 센터를 Hole 센터로 옮겨야함.
+                                                //        for (int m_Y = 0; m_Y < m_nGroupIndex_TotalY; m_Y++)
+                                                //        {
+                                                //            for (int m_X = 0; m_X < m_nGroupIndex_TotalX; m_X++)
+                                                //            {
+                                                //                int regionIndex = (m_Y * m_nGroupIndex_TotalX) + m_X;
+                                                //                var region = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex];
 
-                                                    //            double sumX = 0.0;
-                                                    //            double sumY = 0.0;
-                                                    //            int holeCount = 0;
+                                                //                double sumX = 0.0;
+                                                //                double sumY = 0.0;
+                                                //                int holeCount = 0;
 
-                                                    //            int nTotalObject = region.nRegion_ObjectTotalNum;
-                                                    //            for (int pt = 0; pt < nTotalObject; pt++)
-                                                    //            {
-                                                    //                var obj = region.m_stDividedRegion_ObjectData[pt];
-                                                    //                {
-                                                    //                    double centerX = 0.0;
-                                                    //                    double centerY = 0.0;
-                                                    //                    centerX += obj.dEdgePoint[0].X; //dEdgePoint[0]: center, dEdgePoint[1] : radius 
-                                                    //                    centerY += obj.dEdgePoint[0].Y;
+                                                //                int nTotalObject = region.nRegion_ObjectTotalNum;
+                                                //                for (int pt = 0; pt < nTotalObject; pt++)
+                                                //                {
+                                                //                    var obj = region.m_stDividedRegion_ObjectData[pt];
+                                                //                    {
+                                                //                        double centerX = 0.0;
+                                                //                        double centerY = 0.0;
+                                                //                        centerX += obj.dEdgePoint[0].X; //dEdgePoint[0]: center, dEdgePoint[1] : radius 
+                                                //                        centerY += obj.dEdgePoint[0].Y;
 
-                                                    //                    sumX += centerX;
-                                                    //                    sumY += centerY;
-                                                    //                    holeCount++;
-                                                    //                }
-                                                    //            }
+                                                //                        sumX += centerX;
+                                                //                        sumY += centerY;
+                                                //                        holeCount++;
+                                                //                    }
+                                                //                }
 
-                                                    //            if (holeCount > 0)
-                                                    //            {
-                                                    //                double centerX = sumX / holeCount;
-                                                    //                double centerY = sumY / holeCount;
-                                                    //                region.dRegionCenter.X = centerX;
-                                                    //                region.dRegionCenter.Y = centerY;
-                                                    //                Log.Write("SLD-200", "DivideRegion",
-                                                    //                            $"[Region {regionIndex}] Hole 기반 → Center = ({centerX:F3}, {centerY:F3}), Count = {holeCount}");
+                                                //                if (holeCount > 0)
+                                                //                {
+                                                //                    double centerX = sumX / holeCount;
+                                                //                    double centerY = sumY / holeCount;
+                                                //                    region.dRegionCenter.X = centerX;
+                                                //                    region.dRegionCenter.Y = centerY;
+                                                //                    Log.Write("SLD-200", "DivideRegion",
+                                                //                                $"[Region {regionIndex}] Hole 기반 → Center = ({centerX:F3}, {centerY:F3}), Count = {holeCount}");
 
-                                                    //                double centerXOld = m_dGroupStartPos_X + (m_dDrilling_FOV_Width * m_X) + (m_dDrilling_FOV_Width / 2.0);
-                                                    //                double centerYOld = m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * m_Y) - (m_dDrilling_FOV_Height / 2.0);
-                                                    //                Log.Write("SLD-200", "DivideRegion",
-                                                    //                            $"[Region {regionIndex}] 기존 → Default Center = ({centerXOld:F3}, {centerYOld:F3})");
+                                                //                    double centerXOld = m_dGroupStartPos_X + (m_dDrilling_FOV_Width * m_X) + (m_dDrilling_FOV_Width / 2.0);
+                                                //                    double centerYOld = m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * m_Y) - (m_dDrilling_FOV_Height / 2.0);
+                                                //                    Log.Write("SLD-200", "DivideRegion",
+                                                //                                $"[Region {regionIndex}] 기존 → Default Center = ({centerXOld:F3}, {centerYOld:F3})");
 
-                                                    //                // 반드시 struct 복사
-                                                    //                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex] = region;
-                                                    //            }
-                                                    //            else // else 기존 중심 그대로 유지
-                                                    //            {
-                                                    //                //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.X =
-                                                    //                //m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
-                                                    //                //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.Y =
-                                                    //                //m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
-                                                    //                region.dRegionCenter.X =
-                                                    //                    m_dGroupStartPos_X + (m_dDrilling_FOV_Width * m_X) + (m_dDrilling_FOV_Width / 2.0);
-                                                    //                region.dRegionCenter.Y =
-                                                    //                    m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * m_Y) - (m_dDrilling_FOV_Height / 2.0);
+                                                //                    // 반드시 struct 복사
+                                                //                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex] = region;
+                                                //                }
+                                                //                else // else 기존 중심 그대로 유지
+                                                //                {
+                                                //                    //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.X =
+                                                //                    //m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
+                                                //                    //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.Y =
+                                                //                    //m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
+                                                //                    region.dRegionCenter.X =
+                                                //                        m_dGroupStartPos_X + (m_dDrilling_FOV_Width * m_X) + (m_dDrilling_FOV_Width / 2.0);
+                                                //                    region.dRegionCenter.Y =
+                                                //                        m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * m_Y) - (m_dDrilling_FOV_Height / 2.0);
 
-                                                    //                Log.Write("SLD-200", "DivideRegion",
-                                                    //                            $"[Region {regionIndex}] Hole 없음 → Default Center = ({region.dRegionCenter.X:F3}, {region.dRegionCenter.Y:F3})");
+                                                //                    Log.Write("SLD-200", "DivideRegion",
+                                                //                                $"[Region {regionIndex}] Hole 없음 → Default Center = ({region.dRegionCenter.X:F3}, {region.dRegionCenter.Y:F3})");
 
-                                                    //                // 반드시 struct 복사
-                                                    //                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex] = region;
-                                                    //            }
-                                                    //        }
-                                                    //    }
-                                                    //}
-                                                }
+                                                //                    // 반드시 struct 복사
+                                                //                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex] = region;
+                                                //                }
+                                                //            }
+                                                //        }
+                                                //    }
+                                                //}
 
                                                 //  Divided 영역 개수
                                                 m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[0].nRegion_Num = m_nGroupIndex_TotalX * m_nGroupIndex_TotalY;
@@ -32903,6 +32903,81 @@ namespace QMC.Common.Modules
                                                         {
                                                             m_nLineData_Count_forDrillHole = 0;
                                                             m_nGroupData_Count++;
+                                                        }
+                                                    }
+                                                }
+
+
+                                                //여기서 해야 하는건가? 
+                                                {
+                                                    //if (group.GetType().Name == "Circle" ||
+                                                    //    group.GetType().Name == "Arc")
+                                                    {
+                                                        Log.Write("DivideRegion", "DivideRegion", $"[Group={m_nGroupCount}] Circle/Arc 기반 중심 좌표 보정 시작");
+
+                                                        //// Hole 면적을 구하고 Divided 영역의 센터를 Hole 센터로 옮겨야함.
+                                                        for (int m_Y = 0; m_Y < m_nGroupIndex_TotalY; m_Y++)
+                                                        {
+                                                            for (int m_X = 0; m_X < m_nGroupIndex_TotalX; m_X++)
+                                                            {
+                                                                int regionIndex = (m_Y * m_nGroupIndex_TotalX) + m_X;
+                                                                var region = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex];
+
+                                                                double sumX = 0.0;
+                                                                double sumY = 0.0;
+                                                                int holeCount = 0;
+
+                                                                int nTotalObject = region.nRegion_ObjectTotalNum;
+                                                                for (int pt = 0; pt < nTotalObject; pt++)
+                                                                {
+                                                                    var obj = region.m_stDividedRegion_ObjectData[pt];
+                                                                    {
+                                                                        double centerX = 0.0;
+                                                                        double centerY = 0.0;
+                                                                        centerX += obj.dEdgePoint[0].X; //dEdgePoint[0]: center, dEdgePoint[1] : radius 
+                                                                        centerY += obj.dEdgePoint[0].Y;
+
+                                                                        sumX += centerX;
+                                                                        sumY += centerY;
+                                                                        holeCount++;
+                                                                    }
+                                                                }
+
+                                                                if (holeCount > 0)
+                                                                {
+                                                                    double centerX = sumX / holeCount;
+                                                                    double centerY = sumY / holeCount;
+                                                                    region.dRegionCenter.X = centerX;
+                                                                    region.dRegionCenter.Y = centerY;
+                                                                    Log.Write("DivideRegion", "DivideRegion",
+                                                                                $"[Region {regionIndex}] Hole 기반 → Center = ({centerX:F3}, {centerY:F3}), Count = {holeCount}");
+
+                                                                    double centerXOld = m_dGroupStartPos_X + (m_dDrilling_FOV_Width * m_X) + (m_dDrilling_FOV_Width / 2.0);
+                                                                    double centerYOld = m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * m_Y) - (m_dDrilling_FOV_Height / 2.0);
+                                                                    Log.Write("DivideRegion", "DivideRegion",
+                                                                                $"[Region {regionIndex}] 기존 → Default Center = ({centerXOld:F3}, {centerYOld:F3})");
+
+                                                                    // 반드시 struct 복사
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex] = region;
+                                                                }
+                                                                else // else 기존 중심 그대로 유지
+                                                                {
+                                                                    //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.X =
+                                                                    //m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
+                                                                    //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.Y =
+                                                                    //m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
+                                                                    region.dRegionCenter.X =
+                                                                        m_dGroupStartPos_X + (m_dDrilling_FOV_Width * m_X) + (m_dDrilling_FOV_Width / 2.0);
+                                                                    region.dRegionCenter.Y =
+                                                                        m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * m_Y) - (m_dDrilling_FOV_Height / 2.0);
+
+                                                                    Log.Write("DivideRegion", "DivideRegion",
+                                                                                $"[Region {regionIndex}] Hole 없음 → Default Center = ({region.dRegionCenter.X:F3}, {region.dRegionCenter.Y:F3})");
+
+                                                                    // 반드시 struct 복사
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[regionIndex] = region;
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
