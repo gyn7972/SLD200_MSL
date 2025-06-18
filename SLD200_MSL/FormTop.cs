@@ -249,6 +249,9 @@ namespace SLD200_MSL
         private Color _defaultAlarmTextColor;
         private Color _defaultAlarmBackColor;
         private bool _isColorInitialized = false;
+        private bool _isAlarmButtonColorInitialized = false;
+        private Color _defaultAlarmButtonBackColor;
+        private Color _defaultAlarmButtonForeColor;
 
         private void UpdateUI()
         {
@@ -354,6 +357,30 @@ namespace SLD200_MSL
                 {
                     label_Title_AlarmMessage.ForeColor = _defaultAlarmTextColor;
                     label_Title_AlarmMessage.BackColor = _defaultAlarmBackColor;
+                }
+            }
+
+            if (AlarmManager.Instance.Alarms.Count > 0)
+            {
+                // 버튼 색상 최초 저장
+                if (!_isAlarmButtonColorInitialized)
+                {
+                    _defaultAlarmButtonBackColor = buttonAlarmClear.BackColor;
+                    _defaultAlarmButtonForeColor = buttonAlarmClear.ForeColor;
+                    _isAlarmButtonColorInitialized = true;
+                }
+
+                // 알람 있을 때 버튼 색상 강조
+                buttonAlarmClear.BackColor = Color.Red;
+                buttonAlarmClear.ForeColor = Color.White;
+            }
+            else
+            {
+                // 알람 없으면 버튼 색상 원래대로 복원
+                if (_isAlarmButtonColorInitialized)
+                {
+                    buttonAlarmClear.BackColor = _defaultAlarmButtonBackColor;
+                    buttonAlarmClear.ForeColor = _defaultAlarmButtonForeColor;
                 }
             }
         }
