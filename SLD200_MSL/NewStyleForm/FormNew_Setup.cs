@@ -1730,7 +1730,6 @@ namespace SLD200_MSL
             string strFIle = "";
             StringBuilder temp = new StringBuilder(255);
 
-
             //  체크 포인트
             if (((Equipment.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Text) != 0.0) || (Equipment.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Text) != 0.0)) &&
                 ((Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text) != 0.0) || (Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text) != 0.0)))

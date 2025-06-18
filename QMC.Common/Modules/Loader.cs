@@ -9489,9 +9489,18 @@ namespace QMC.Common.Modules
 
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Stacker0_Top");
 
+
+            //Machine_MAligner_WidenDistance <- 벌어지는 거리.
+            double dPosX = m_dMAlign_CalculatedModuleSize_ALN_X + Equipment.Machine_MAligner_WidenDistance;
+            double dPosY = m_dMAlign_CalculatedModuleSize_ALN_Y + Equipment.Machine_MAligner_WidenDistance;
             //  Target Position 변경 : 입력한 자재 크기로 변경
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = m_dMAlign_CalculatedModuleSize_ALN_X;
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = m_dMAlign_CalculatedModuleSize_ALN_Y;
+            //loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = m_dMAlign_CalculatedModuleSize_ALN_X;
+            //loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = m_dMAlign_CalculatedModuleSize_ALN_Y;
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = dPosX;
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = dPosY;
+
+            Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", $"MAlignerX-TargetPos: " +
+                $"{dPosX:F3} mm" + $"MAlignerY-TargetPos: " + $"{dPosY:F3} mm");
 
             //  속도
             m_dSpeed_Align_MoreSlow = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Speed_Fine / 2.0;
@@ -9606,29 +9615,39 @@ namespace QMC.Common.Modules
         //protected int AlarmPost(AlarmKey AlarmCode)
         public int AlarmPost(AlarmKey AlarmCode)
         {
-            Alarm alarm = GetAlarm((int)AlarmCode);
-
-            // 알람 정보 로그 기록
-            Log.Write("AlarmPost", $"[ALARM 발생] Code: {(int)AlarmCode}, Grade: {alarm.Grade}, Cause: {alarm.Cause}");
-
-            string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AlarmLog");
-            string logFile = Path.Combine(logFolder, $"AlarmLog_{DateTime.Now:yyyyMMdd}.csv");
-            Directory.CreateDirectory(logFolder);
-
-            // UTF-8 with BOM로 저장
-            using (var writer = new StreamWriter(logFile, true, new UTF8Encoding(true))) // true → BOM 포함
+            try
             {
-                string logLine = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss},{alarm.Title},{alarm.Grade},{alarm.Source},{alarm.Cause},{(int)AlarmCode}";
-                writer.WriteLine(logLine);
+                Alarm alarm = GetAlarm((int)AlarmCode);
+                alarm.GeneratedTime = DateTime.Now;
+
+                // 알람 정보 로그 기록
+                Log.Write("AlarmPost", $"[ALARM 발생] Code: {(int)AlarmCode}, Grade: {alarm.Grade}, Cause: {alarm.Cause}");
+
+                string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AlarmLog");
+                string logFile = Path.Combine(logFolder, $"AlarmLog_{DateTime.Now:yyyyMMdd}.csv");
+                Directory.CreateDirectory(logFolder);
+
+                // UTF-8 with BOM로 저장
+                using (var writer = new StreamWriter(logFile, true, new UTF8Encoding(true))) // true → BOM 포함
+                {
+                    string logLine = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss},{alarm.Title},{alarm.Grade},{alarm.Source},{alarm.Cause},{(int)AlarmCode}";
+                    writer.WriteLine(logLine);
+                }
+
+                if (alarm.Grade.Equals("Error"))
+                {
+                    this.m_LoaderWork_Start = false;
+                }
+                //MessageBox.Show(alarm.Cause);
+                AlarmManager.Instance.ShowAlarm(alarm);
+                //return alarm.Code;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
             }
 
-            if (alarm.Grade.Equals("Error"))
-            {
-                this.m_LoaderWork_Start = false;
-            }
-            //MessageBox.Show(alarm.Cause);
-            AlarmManager.Instance.ShowAlarm(alarm);
-            return alarm.Code;
+            return (int)AlarmCode;
         }
 
         private void MAlign_Step_MAligner_MoveXY_Widely(out double m_dSpeed_Align_Fast, out double m_dSpeedMag_forAccDec)

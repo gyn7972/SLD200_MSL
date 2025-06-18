@@ -130,8 +130,14 @@ namespace SLD200_MSL
         {
             BeginInvoke(new Action(() =>
             {
-                this.FormNew_Alarm.Alarms = AlarmManager.Instance.Alarms;                
-                this.ShowAlarmForm(FormNew_Alarm);
+                // 1. 알람 리스트 갱신
+                this.FormNew_Alarm.Alarms = AlarmManager.Instance.Alarms;
+
+                // 2. 내용 강제 갱신
+                this.FormNew_Alarm.RefreshAlarmView();
+
+                // 3. 알람 다이얼로그는 열지 않고 알람만 발생 시킨다.
+                //this.ShowAlarmForm(FormNew_Alarm);
             }));
         }
 

@@ -211,13 +211,14 @@ namespace SLD200_MSL
         }
         private void baseDataGridViewAlarm_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-
             Alarm = baseDataGridViewAlarm.Rows[0].DataBoundItem as Alarm;
             baseTextBoxAlarmTitle.Text = Alarm.Title;
             baseTextBoxCause.Text = Alarm.Cause;
             baseTextBoxCode.Text = Alarm.Code.ToString();
             baseTextBoxGrade.Text = Alarm.Grade.ToString();//이넘?
             baseTextBoxSource.Text = Alarm.Source.ToString();
+
+            this.Refresh();
         }
 
         private void baseDataGridViewAlarm_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
