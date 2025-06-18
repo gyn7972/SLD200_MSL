@@ -22146,13 +22146,15 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "Laser Idle Check");
 
                         //스케너 초기화 하자. 여기서!
-                        //if (Equipment.Machine_LaserType_CO2)
-                        //{
-                        //    //_InitDeviceStatus.Scanner = false;
-                        //    Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
-                        //}
+                        if (Equipment.Machine_LaserType_CO2)
+                        {
+                            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+                            {
+                                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                            }
+                        }
 
-
+                        TickCount_Start((int)TickType.TICK_MAIN);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos;
                     }
                     //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
@@ -22167,9 +22169,21 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.StageXY_MoveUnloadingPos:                              //  XY 축 Unloading 위치로 이동
 
-                    LaserDrilling_StepStageXY_MoveUnloadingPos(out lfVelocity, out lfAccDec);
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+                        {
+                            LaserDrilling_StepStageXY_MoveUnloadingPos(out lfVelocity, out lfAccDec);
 
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck;
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 3000)
+                    {
+                        LaserDrilling_StepStageXY_MoveUnloadingPos(out lfVelocity, out lfAccDec);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck;
+                    }
                     break;
 
 

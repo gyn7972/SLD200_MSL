@@ -466,8 +466,11 @@ namespace QMC.Common.Modules
                             // 1초 안됨. 한 번 들어왔다가 가공 후 부터 안됨.
                             // 업체 측 -> 20초로 수정 요청하여 수정.
                             // 똑같음.
-                            spiralLabScanner.IsOverTemperatureWarning();
-                            
+                            if(Equipment.Machine_LaserType_CO2)
+                            {
+                                spiralLabScanner.IsOverTemperatureWarning();
+                            }
+
                             //double dPosX = 0.0, dPosY = 0.0;
                             //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
 
