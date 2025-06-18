@@ -4392,7 +4392,49 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            //return;
+            Equipment.m_bCheckAxesMotionDoneWithRetry = true;
+            double dPoscurX = 0.0;
+            double dPoscurY = 0.0;
+            //dPoscurX = MC_Func.MC_GetEncPos((int)nAxis.X);
+            //dPoscurY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+            dPoscurX = -234.854353;
+            dPoscurY = 100.125245734673567;
+            Log.Write("StageScannerPos",
+                        "Socket NO : " + dPoscurX.ToString() +
+                        "  FieldSize NO : " + dPoscurX.ToString() +
+                        "  Fail Pos (X: " + dPoscurX.ToString("F3") +
+                        ", Y: " + dPoscurY.ToString("F3") + ")");
+
+            if (Equipment.m_bCheckAxesMotionDoneWithRetry)
+            {
+                if (double.IsNaN(dPoscurX) || double.IsInfinity(dPoscurX) || Math.Abs(dPoscurX) > 9999) // 범위는 상황에 맞게 조정
+                {
+                    Log.Write("StageScannerPos", "MC_GetEncPos", $"[경고] 보정된 위치가 비정상적입니다 → X: {dPoscurX}");
+                }
+                else
+                {
+                    Log.Write("StageScannerPos", "MC_GetEncPos", $"XAxis:Interpolator Pos:[X: {dPoscurX:F3}].");
+                }
+
+                Equipment.m_bCheckAxesMotionDoneWithRetry = false;
+            }
+            //Machine_MAligner_WidenDistance <- 벌어지는 거리.
+            //double dPosX = 100 + Equipment.Machine_MAligner_WidenDistance;
+            //double dPosY = 100 + Equipment.Machine_MAligner_WidenDistance;
+            //  Target Position 변경 : 입력한 자재 크기로 변경
+            //loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = m_dMAlign_CalculatedModuleSize_ALN_X;
+            //loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = m_dMAlign_CalculatedModuleSize_ALN_Y;
+            //loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = dPosX;
+            //loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = dPosY;
+
+            //Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", $"MAlignerX-TargetPos: " +
+            //    $"{dPosX:F3} mm" + $"MAlignerY-TargetPos: " + $"{dPosY:F3} mm");
+
+            //loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
+            //unloader.AlarmPost(Unloader.AlarmKey.UL_Transfer_Picker_Module_NotExist);
+            //workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);
+
+            return;
             try
             {
                 var moduleUI = new FormNewSub_SemiAuto();

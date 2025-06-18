@@ -25730,7 +25730,8 @@ namespace QMC.Common.Modules
                 //Log 남기자.
 
                 AlarmManager.Instance.ShowAlarm(alarm);
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 Log.Write(ex);
             }

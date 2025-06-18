@@ -215,6 +215,9 @@ namespace SLD200_MSL
                 baseButton.Click += ButtonComfirm_Click;
 
                 this.panelComfirm.Controls.Add(baseButton);
+
+                //20250618-Add
+                this.Refresh();
             }
         }
 
@@ -277,6 +280,51 @@ namespace SLD200_MSL
         {
             //CommonModule.Instance.TowerLamp.Buzzer_Off();
             CommonModule.Instance.TowerLamp_BuzzerStop = true;
+        }
+
+        private void FormNew_Alarm_Activated(object sender, EventArgs e)
+        {
+            int a = 0;
+            a = 0;
+        }
+
+        public void RefreshAlarmView()
+        {
+            if (Alarms == null || Alarms.Count == 0)
+                return;
+
+            baseDataGridViewAlarm.DataSource = null;
+            baseDataGridViewAlarm.DataSource = Alarms;
+
+            // 이미지 갱신
+            for (int i = 0; i < Alarms.Count; i++)
+            {
+                if (Alarms[i].Grade == Alarm.AlarmType.Inform.ToString())
+                {
+                    Image img = SLD200.Properties.Resources.AlarmInform;
+                    Alarms[i].StateImage = FormMaintDigitalIO.resizeImage(new Bitmap(img), m_imagesize);
+                }
+                else if (Alarms[i].Grade == Alarm.AlarmType.Error.ToString())
+                {
+                    Image img = SLD200.Properties.Resources.AlarmError;
+                    Alarms[i].StateImage = FormMaintDigitalIO.resizeImage(new Bitmap(img), m_imagesize);
+                }
+            }
+
+            // 첫 항목 자동 선택 및 상세 표시
+            if (Alarms.Count > 0)
+            {
+                baseDataGridViewAlarm.Rows[0].Selected = true;
+                Alarm = Alarms[0];
+
+                baseTextBoxAlarmTitle.Text = Alarm.Title;
+                baseTextBoxCause.Text = Alarm.Cause;
+                baseTextBoxCode.Text = Alarm.Code.ToString();
+                baseTextBoxGrade.Text = Alarm.Grade.ToString();
+                baseTextBoxSource.Text = Alarm.Source.ToString();
+            }
+
+            this.Refresh(); // 강제 리렌더링
         }
     }
 }

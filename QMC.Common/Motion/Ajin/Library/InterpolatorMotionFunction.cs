@@ -92,7 +92,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                         if(Equipment.m_bCheckAxesMotionDoneWithRetry)
                         {
                             Log.Write("StageScannerPos", "MC_GetEncPos",
-                            $"XAxis:Original Pos:[X: {dCurrentX}],[Y: {dCurrentY}].");
+                            $"XAxis:Original Pos:[X: {dCurrentX:F3}],[Y: {dCurrentY:F3}].");
                         }
 
                         dest.X = dCurrentX;
@@ -102,10 +102,17 @@ namespace QMC.Common.Motion.Ajin.Motions
                             return ret;
                         }
                         dPos = source.X;
+
                         if (Equipment.m_bCheckAxesMotionDoneWithRetry)
                         {
-                            Log.Write("StageScannerPos", "MC_GetEncPos",
-                            $"XAxis:Interpolator Pos:[X: {dPos}].");
+                            if (double.IsNaN(dPos) || double.IsInfinity(dPos) || Math.Abs(dPos) > 9999) // 범위는 상황에 맞게 조정
+                            {
+                                Log.Write("StageScannerPos", "MC_GetEncPos", $"[경고] 보정된 위치가 비정상적입니다 → X: {dPos}");
+                            }
+                            else
+                            {
+                                Log.Write("StageScannerPos", "MC_GetEncPos", $"XAxis:Interpolator Pos:[X: {dPos:F3}].");
+                            }
                         }
                     }
                     else
@@ -122,7 +129,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                         if (Equipment.m_bCheckAxesMotionDoneWithRetry)
                         {
                             Log.Write("StageScannerPos", "MC_GetEncPos",
-                            $"YAxis:Original Pos:[X: {dCurrentX}],[Y: {dCurrentY}].");
+                            $"YAxis:Original Pos:[X: {dCurrentX:F3}],[Y: {dCurrentY:F3}].");
                         }
 
                         dest.X = dCurrentX;
@@ -135,8 +142,16 @@ namespace QMC.Common.Motion.Ajin.Motions
                         dPos = source.Y;
                         if (Equipment.m_bCheckAxesMotionDoneWithRetry)
                         {
-                            Log.Write("StageScannerPos", "MC_GetEncPos",
-                            $"YAxis:Interpolator Pos:[Y: {dPos}].");
+                            if (double.IsNaN(dPos) || double.IsInfinity(dPos) || Math.Abs(dPos) > 9999) // 범위는 상황에 맞게 조정
+                            {
+                                Log.Write("StageScannerPos", "MC_GetEncPos", $"[경고] 보정된 위치가 비정상적입니다 → Y: {dPos}");
+                            }
+                            else
+                            {
+                                Log.Write("StageScannerPos", "MC_GetEncPos", $"YAxis:Interpolator Pos:[Y: {dPos:F3}].");
+                            }
+
+                            Equipment.m_bCheckAxesMotionDoneWithRetry = false;
                         }
                     }
                     else
