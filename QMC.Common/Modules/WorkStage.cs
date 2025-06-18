@@ -25712,6 +25712,13 @@ namespace QMC.Common.Modules
                 Alarm alarm = GetAlarm((int)AlarmCode);
                 alarm.GeneratedTime = DateTime.Now;
 
+                // 중복 알람 방지 인터락
+                if (AlarmManager.Instance.Alarms.Any(a => a.Code == alarm.Code))
+                {
+                    //Log.Write("AlarmPost", $"[ALARM 무시 - 중복] Code: {(int)AlarmCode}, 이미 발생 중인 알람입니다.");
+                    return (int)AlarmCode;
+                }
+
                 // 알람 정보 로그 기록
                 Log.Write("AlarmPost", $"[ALARM 발생] Code: {(int)AlarmCode}, Grade: {alarm.Grade}, Cause: {alarm.Cause}");
 
