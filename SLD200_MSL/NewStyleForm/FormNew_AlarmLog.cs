@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QMC.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -79,7 +80,8 @@ namespace SLD200_MSL
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("DataGridView에 값 넣기 실패: " + ex.Message);
+                        Log.Write(ex);
+                        //Console.WriteLine("DataGridView에 값 넣기 실패: " + ex.Message);
                     }
                 }
             }
