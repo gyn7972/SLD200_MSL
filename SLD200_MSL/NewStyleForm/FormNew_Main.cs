@@ -4392,32 +4392,34 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            Equipment.m_bCheckAxesMotionDoneWithRetry = true;
-            double dPoscurX = 0.0;
-            double dPoscurY = 0.0;
-            //dPoscurX = MC_Func.MC_GetEncPos((int)nAxis.X);
-            //dPoscurY = MC_Func.MC_GetEncPos((int)nAxis.Y);
-            dPoscurX = -234.854353;
-            dPoscurY = 100.125245734673567;
-            Log.Write("StageScannerPos",
-                        "Socket NO : " + dPoscurX.ToString() +
-                        "  FieldSize NO : " + dPoscurX.ToString() +
-                        "  Fail Pos (X: " + dPoscurX.ToString("F3") +
-                        ", Y: " + dPoscurY.ToString("F3") + ")");
+            loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
 
-            if (Equipment.m_bCheckAxesMotionDoneWithRetry)
-            {
-                if (double.IsNaN(dPoscurX) || double.IsInfinity(dPoscurX) || Math.Abs(dPoscurX) > 9999) // 범위는 상황에 맞게 조정
-                {
-                    Log.Write("StageScannerPos", "MC_GetEncPos", $"[경고] 보정된 위치가 비정상적입니다 → X: {dPoscurX}");
-                }
-                else
-                {
-                    Log.Write("StageScannerPos", "MC_GetEncPos", $"XAxis:Interpolator Pos:[X: {dPoscurX:F3}].");
-                }
+            //Equipment.m_bCheckAxesMotionDoneWithRetry = true;
+            //double dPoscurX = 0.0;
+            //double dPoscurY = 0.0;
+            ////dPoscurX = MC_Func.MC_GetEncPos((int)nAxis.X);
+            ////dPoscurY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+            //dPoscurX = -234.854353;
+            //dPoscurY = 100.125245734673567;
+            //Log.Write("StageScannerPos",
+            //            "Socket NO : " + dPoscurX.ToString() +
+            //            "  FieldSize NO : " + dPoscurX.ToString() +
+            //            "  Fail Pos (X: " + dPoscurX.ToString("F3") +
+            //            ", Y: " + dPoscurY.ToString("F3") + ")");
 
-                Equipment.m_bCheckAxesMotionDoneWithRetry = false;
-            }
+            //if (Equipment.m_bCheckAxesMotionDoneWithRetry)
+            //{
+            //    if (double.IsNaN(dPoscurX) || double.IsInfinity(dPoscurX) || Math.Abs(dPoscurX) > 9999) // 범위는 상황에 맞게 조정
+            //    {
+            //        Log.Write("StageScannerPos", "MC_GetEncPos", $"[경고] 보정된 위치가 비정상적입니다 → X: {dPoscurX}");
+            //    }
+            //    else
+            //    {
+            //        Log.Write("StageScannerPos", "MC_GetEncPos", $"XAxis:Interpolator Pos:[X: {dPoscurX:F3}].");
+            //    }
+
+            //    Equipment.m_bCheckAxesMotionDoneWithRetry = false;
+            //}
             //Machine_MAligner_WidenDistance <- 벌어지는 거리.
             //double dPosX = 100 + Equipment.Machine_MAligner_WidenDistance;
             //double dPosY = 100 + Equipment.Machine_MAligner_WidenDistance;

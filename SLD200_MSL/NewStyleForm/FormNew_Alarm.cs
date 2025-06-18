@@ -139,7 +139,6 @@ namespace SLD200_MSL
 
         private void ButtonComfirm_Click(object sender, EventArgs e)
         {
-
             if (Alarms != null && Alarms.Count > 0)
             {
                 if (baseDataGridViewAlarm.SelectedCells != null)
@@ -173,7 +172,6 @@ namespace SLD200_MSL
 
         private void FormNew_Alarm_VisibleChanged(object sender, EventArgs e)
         {
-            //InitDataGridViewColumn();
             Alarms = AlarmManager.Instance.Alarms;
             if (Alarms != null && Alarms.Count > 0)
             {
@@ -181,7 +179,6 @@ namespace SLD200_MSL
                 baseDataGridViewAlarm.DataSource = Alarms;
                 for (int i = 0; i < Alarms.Count; i++)
                 {
-
                     if (Alarms[i].Grade == Alarm.AlarmType.Inform.ToString())
                     {
                         Image img = SLD200.Properties.Resources.AlarmInform;
@@ -325,6 +322,27 @@ namespace SLD200_MSL
             }
 
             this.Refresh(); // 강제 리렌더링
+        }
+
+        /// <summary>
+        /// 지정된 알람을 Alarms 리스트에서 제거합니다.
+        /// </summary>
+        /// <param name="alarm">제거할 알람 객체</param>
+        public void ClearAlarm(Alarm alarm)
+        {
+            if (alarm == null || Alarms == null)
+                return;
+
+            try
+            {
+                // 완전 일치하는 항목 제거
+                //Alarms.RemoveAll(a => a == alarm);
+                Alarms.Remove(alarm);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
     }
 }

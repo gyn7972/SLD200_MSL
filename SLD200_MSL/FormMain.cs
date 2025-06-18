@@ -136,7 +136,8 @@ namespace SLD200_MSL
                 // 2. 내용 강제 갱신
                 this.FormNew_Alarm.RefreshAlarmView();
 
-                this.ShowAlarmForm(FormNew_Alarm);
+                // 3. 알람 다이얼로그는 열지 않고 알람만 발생 시킨다.
+                //this.ShowAlarmForm(FormNew_Alarm);
             }));
         }
 

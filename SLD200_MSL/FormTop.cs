@@ -17,6 +17,7 @@ using static QMC.Common.Equipment;
 using QMC.Common.Parts;
 using SLD200.NewStyleForm;
 using QMC.Common.Global;
+using System.Security.Claims;
 
 namespace SLD200_MSL
 {
@@ -244,6 +245,11 @@ namespace SLD200_MSL
             m_Timer.Start();
         }
 
+        // 클래스 내부에 원래 색상 저장용 필드 추가
+        private Color _defaultAlarmTextColor;
+        private Color _defaultAlarmBackColor;
+        private bool _isColorInitialized = false;
+
         private void UpdateUI()
         {
             //  Blink
@@ -326,13 +332,29 @@ namespace SLD200_MSL
             //  Alarm
             if (AlarmManager.Instance.Alarms.Count > 0)
             {
+                // 최초 한 번만 원래 색 저장
+                if (!_isColorInitialized)
+                {
+                    _defaultAlarmTextColor = label_Title_AlarmMessage.ForeColor;
+                    _defaultAlarmBackColor = label_Title_AlarmMessage.BackColor;
+                    _isColorInitialized = true;
+                }
+
                 Alarm lastAlarm = AlarmManager.Instance.Alarms[0];
 
                 label_Title_AlarmMessage.Text = lastAlarm.Cause;
+                label_Title_AlarmMessage.Text = lastAlarm.Cause;
+                label_Title_AlarmMessage.ForeColor = Color.White;
+                label_Title_AlarmMessage.BackColor = Color.Red;
             }
             else
             {
                 label_Title_AlarmMessage.Text = "";
+                if (_isColorInitialized)
+                {
+                    label_Title_AlarmMessage.ForeColor = _defaultAlarmTextColor;
+                    label_Title_AlarmMessage.BackColor = _defaultAlarmBackColor;
+                }
             }
         }
 
@@ -377,9 +399,24 @@ namespace SLD200_MSL
 
         private void buttonAlarmClear_Click(object sender, EventArgs e)
         {
-            if(TopButtonClick != null)
+            if(true)
             {
-                TopButtonClick (TopButtons.Alarm);
+                var alarms = AlarmManager.Instance.Alarms;
+                if (alarms != null && alarms.Count > 0)
+                {
+                    AlarmManager.Instance.ClearAllAlarms();
+                    CommonModule.Instance.TowerLamp_BuzzerStop = true;
+
+                    // UI 갱신이나 로그 기록
+                    Log.Write("SLD-200", "Alarm", "모든 알람이 수동으로 해제되었습니다.");
+                }
+            }
+            else
+            {
+                if (TopButtonClick != null)
+                {
+                    TopButtonClick(TopButtons.Alarm);
+                }
             }
         }
 
@@ -437,6 +474,11 @@ namespace SLD200_MSL
                 default:
                     return false;
             }
+        }
+
+        private void button_Mute_buzzer_Click(object sender, EventArgs e)
+        {
+            CommonModule.Instance.TowerLamp_BuzzerStop = true;
         }
     }
 }
