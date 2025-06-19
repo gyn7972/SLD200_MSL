@@ -1422,6 +1422,8 @@ namespace SLD200_MSL
             checkBox_Setup_Option_Hole02_50_Wait_Enable.Checked = Equipment.Machine_Hole02_50_Wait_Enable;
             textBox_Setup_Option_Hole02_50_Wait_Time.Text =  Equipment.Machine_Hole02_50_Wait_Time.ToString();
 
+            checkBox_HoleCenterEnable.Checked = Equipment.Machine_HoleCenter_Enable;
+
             if (Equipment.Machine_FiducialImageSave_Always)
             {
                 radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
@@ -1879,6 +1881,9 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "Hole02_50_Wait_Enable", checkBox_Setup_Option_Hole02_50_Wait_Enable.Checked.ToString(), strFIle);
             Equipment.Machine_Hole02_50_Wait_Time = Equipment.ToInt(textBox_Setup_Option_Hole02_50_Wait_Time.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "Hole02_50_Wait_Time", textBox_Setup_Option_Hole02_50_Wait_Time.Text.ToString(), strFIle);
+
+            Equipment.Machine_HoleCenter_Enable = checkBox_HoleCenterEnable.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "HoleCenter_Enable", checkBox_HoleCenterEnable.Checked.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2465,6 +2470,15 @@ namespace SLD200_MSL
             {
                 checkBox_Setup_Option_Hole02_50_Wait_Enable.Checked = false;
                 textBox_Setup_Option_Hole02_50_Wait_Time.Enabled = false;
+            }
+
+            if (Equipment.Machine_HoleCenter_Enable)
+            {
+                checkBox_HoleCenterEnable.Checked = true;
+            }
+            else
+            {
+                checkBox_HoleCenterEnable.Checked = false;
             }
 
         }

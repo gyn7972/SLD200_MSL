@@ -642,6 +642,8 @@ namespace QMC.Common
         public static bool Machine_Hole02_50_Wait_Enable { set; get; } = false;
         public static int Machine_Hole02_50_Wait_Time { set; get; } = 0;                     //  Hole 02 50 Wait Time (ms)
 
+        public static bool Machine_HoleCenter_Enable { set; get; } = false;                     //  Thruhole Use (true: Use, false: Not Use)
+
         //  Offset Distance
         public struct stOffsetDistanceParameter
         {
@@ -3082,6 +3084,8 @@ namespace QMC.Common
             Equipment.Machine_Hole02_50_Wait_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "Hole02_50_Wait_Time", "5000", temp, 255, strFIle);
             Equipment.Machine_Hole02_50_Wait_Time = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HoleCenter_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_HoleCenter_Enable = temp.ToString() == "False" ? false : true;
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);
