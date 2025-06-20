@@ -37004,7 +37004,8 @@ namespace QMC.Common.Modules
                     double dOffsetX = dSumOffsetX / nSumCount;
                     double dOffsetY = dSumOffsetY / nSumCount;
                     m_st4PointAlign_Result.dCenterOffsetX = dOffsetX * 1;
-                    m_st4PointAlign_Result.dCenterOffsetY = dOffsetY * -1;
+                    //m_st4PointAlign_Result.dCenterOffsetY = dOffsetY * -1;
+                    m_st4PointAlign_Result.dCenterOffsetY = dOffsetY * 1;   //CO2 Test시에 부호 반대.
                     m_st4PointAlign_Result.dRotationAngle = 0;
                 }
                 else
