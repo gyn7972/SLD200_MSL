@@ -1153,9 +1153,11 @@ namespace QMC.Common.Hmi
                             this.InputImage.Load(openFileDialog.FileName, selectedFilter.Value);
                         }
 
+                        Simulated = true;
+
                         StartUpdateTask();
 
-                        Simulated = true;
+                        
                         Display();
                         Refresh();
                     }
@@ -2112,6 +2114,43 @@ namespace QMC.Common.Hmi
                                 //this.Invalidate();
                                 //this.Refresh();
                             }
+                        }
+                        else if(Simulated)
+                        {
+                            if (this.m_InputImage != Camera.LatestImage)
+                            {
+                                if (this.m_InputImage != null && Camera.LatestImage != null)
+                                {
+                                    if (this.m_InputImage.Header.Width != Camera.LatestImage.Header.Width)
+                                    {
+
+                                        //Scale.Scale.Y = this.Height/ Camera.LatestImage.Header.Height;
+                                        Scale.SetMousePoint(new Point(Camera.LatestImage.Header.Width / 2, Camera.LatestImage.Header.Height / 2));
+                                    }
+                                }
+                                if (this.m_InputImage != null && Camera.LatestImage != null)
+                                {
+                                    if (this.m_InputImage.Header.Width != Camera.LatestImage.Header.Width)
+                                    {
+                                        int nX = Camera.LatestImage.Header.Width;
+                                        int nY = Camera.LatestImage.Header.Height;
+
+                                        m_HorizentalLine.StartLocation = new Point(0, nY / 2);
+                                        m_HorizentalLine.EndLocation = new Point(nX, nY / 2);
+
+                                        m_VerticalLine.StartLocation = new Point(nX / 2, 0);
+                                        m_VerticalLine.EndLocation = new Point(nX / 2, nY);
+                                    }
+                                }
+                                //this.Scale = new ImageScale(this.Width / this.m_InputImage.Header.Width, this.Height / this.m_InputImage.Header.Height);
+                            }
+
+                            //this.m_InputImage = Camera.LatestImage;
+
+                            this.m_IsChanged = true;
+                            UpdateOverlay(false);
+                            this.DrawToBuffer(this.m_Graphics);
+                            this.RenderForDisplay(this.m_Graphics);
                         }
                     }
 

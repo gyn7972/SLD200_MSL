@@ -273,6 +273,10 @@ namespace SLD200_MSL
 
         private void FormNew_Main_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //  Form 이 닫히는 경우
+            var moduleUI = new FormNewSub_Main_SemiAuto();
+            moduleUI.DisposeSemiAutoResources();  // 부모 폼 설정
+
             this.IsClosedForm = true;
         }
 
@@ -1367,7 +1371,7 @@ namespace SLD200_MSL
             }
 
             //button_Main_ManualStart
-            if (Equipment.ManualRunStatus)
+            if (Equipment.SelectRunEnable)
             {
                 SetColor(button_Main_ManualStart, Color.Lime, Color.Black);
             }
@@ -1376,7 +1380,7 @@ namespace SLD200_MSL
                 SetColor(button_Main_ManualStart, System.Drawing.SystemColors.Control, Color.Black);
             }
 
-            if (Equipment.AutoRunStatus || Equipment.ManualRunStatus)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable)
             {
                 SetEnable(button_Main_Reset, false);
             }
@@ -1465,6 +1469,9 @@ namespace SLD200_MSL
                 unloader.timer_UnloaderWork.Stop();
                 unloader.timer_UnloaderWork.Enabled = false;
                 unloader.m_UnloaderWork_Start = false;
+
+                loader.ClearSemiAutoRequest();
+
                 //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
 
                 //  Product Align 타이머
@@ -1718,7 +1725,10 @@ namespace SLD200_MSL
             {
                 // null 이면 가공할 것이 없음    
             }
-            //  여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
+
+            // 여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
+            // 확인을.. 왜..흠.. 정지 후 시작은 정보를 그대로 전부 가지고 있을텐데..
+            // Reset 여부가 중요할꺼 같은데..
             if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_PreAlign_Start)
             {
                 //  Pre Align 중이었으니 그대로 시작
@@ -1819,7 +1829,7 @@ namespace SLD200_MSL
                         else
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "하부 집진기 사용. 집진기 Off");
-                            if(!Equipment.ManualRunStatus)
+                            if(!Equipment.SelectRunEnable)
                             {
                                 workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                                 Thread.Sleep(200);
@@ -2005,32 +2015,7 @@ namespace SLD200_MSL
             {
                 Log.Write("SLD-200", Equipment.User_Name, "StartButton_Click", "시컨스 처음 부터 시작.");
 
-                //if (!workStage.IsProcessing)
-                //{
-                //    //  가공할 것이 없음.
-                //    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 완료 상태. 진행할 Socket 없음.");
-
-                //    //  강제배출처럼 배출할 때는 집진기도 꺼준다.
-                //    if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
-                //    {
-                //        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
-
-                //        // workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-                //        // workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
-                //    }
-
-                //    workStage.m_bLaserDrilling_Complete = true;
-                //    workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
-                //    workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
-                //}
-                //else
-                //{
-                //    //  가공은 이미 끝난 상태에서는 여기에 들어오지 않아야 함..
-
-                //    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공은 이미 끝난 상태에서는 여기에 들어오지 않아야 함.");
-                //}    
             }
-
 
             //  강제 배출이면 Laser Drilling Step 을 다시 None 으로 바꿔준다. (Thruhole 가공 중에 강제 배출을 했는데, Thruhole 이 계속 진행되어서...)
             if (workStage.m_bForceEjectRequest)
@@ -2058,7 +2043,7 @@ namespace SLD200_MSL
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 하부 집진기 사용. 집진기 Off");
 
-                        if (!Equipment.ManualRunStatus)
+                        if (!Equipment.SelectRunEnable)
                         {
                             workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                             Thread.Sleep(200);
@@ -2105,7 +2090,6 @@ namespace SLD200_MSL
                 }
             }
 
-
             //  Loader Stacker 의 Pause 상태에 따라 사용 우선순위 Port 결정
             //  Pause 상태가 아닌 Port 에 우선순위 부여. (둘 다 Pause 상태이면, User 가 Pause 상태를 해제하는 Port 에 우선권 부여)
             //  우선권이 부여된 Port 의 자재가 소진될 때 까지 바뀌지 않음. (Pick Up Fail 시에만 바뀜)
@@ -2122,6 +2106,8 @@ namespace SLD200_MSL
                 loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.None;
             }
 
+            Equipment.SemiAutoEnable = false;
+            Equipment.SelectRunEnable = false;
 
             Equipment.AutoRunStatus = true;
             workStage.SetRunStatus(RunStatus.Run);
@@ -2529,6 +2515,7 @@ namespace SLD200_MSL
             workStage.m_bSensorRequestPending = false;   // 요청 보냄
             workStage.m_bSensorResponseReady = false;    // 응답 받음
 
+            loader.ClearSemiAutoRequest();
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
@@ -2879,7 +2866,7 @@ namespace SLD200_MSL
 
             //  가공이 완료되었으므로, Align 변수 false 로
             workStage.m_bAlignCompleted = false;
-            Equipment.ManualRunStatus = false;
+            Equipment.SelectRunEnable = false;
             workStage.m_bForceEjectRequest = false;
 
 
@@ -3333,7 +3320,7 @@ namespace SLD200_MSL
                         workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Fail;
                         workStage.m_LaserDrillingWork_Start = true;
 
-                        Equipment.ManualRunStatus = true; //  수동 가공 시작
+                        Equipment.SelectRunEnable = true; //  수동 가공 시작
                     }
                     else
                     {
@@ -3393,7 +3380,7 @@ namespace SLD200_MSL
                     workStage.m_ProductAlign_Start = true;
                     WorkStartTick = Environment.TickCount;
 
-                    Equipment.ManualRunStatus = true; //  수동 가공 시작
+                    Equipment.SelectRunEnable = true; //  수동 가공 시작
                 }
             }
             else
@@ -3428,7 +3415,7 @@ namespace SLD200_MSL
                 Thread.Sleep(2000);
                 workStage.laser.Rtc.CtlReset();             //  에러 해제
 
-                Equipment.ManualRunStatus = false; //  수동 가공 시작
+                Equipment.SelectRunEnable = false; //  수동 가공 시작
             }
         }
 
@@ -3437,8 +3424,6 @@ namespace SLD200_MSL
             //  강제로 false
             Equipment.LaserDrillingCycleEnable_Manual = false;
             checkBox_Test_LaserDrillingCycle.Checked = false;
-
-
 
             if (checkBox_Main_AutoRun.Checked)
             {
@@ -3579,7 +3564,7 @@ namespace SLD200_MSL
             workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
 
             workStage.m_bForceEjectRequest = true;  // 강제 배출 요청. NG로 빼기 위한 변수.
-            Equipment.ManualRunStatus = true;
+            Equipment.SelectRunEnable = true;
 
 
             //Test code
@@ -4394,7 +4379,7 @@ namespace SLD200_MSL
         {
             try
             {
-                var moduleUI = new FormNewSub_SemiAuto();
+                var moduleUI = new FormNewSub_Main_SemiAuto();
                 moduleUI.Owner = this;  // 부모 폼 설정
                 moduleUI.Show();  // 모달리스
                 //Log.Write("UI", "FormNewSub_SemiAuto 창이 열렸습니다.");

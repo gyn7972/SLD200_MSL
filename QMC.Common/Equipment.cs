@@ -803,16 +803,27 @@ namespace QMC.Common
         //  Auto/Manual 상태 확인
         // 현재 장비의 준비 상태를 관리 할것.! " Auto인 경우에만 시컨스와 같은 동작 가능 하도록 "
         // Auto : 자동 운전 모드, Manual : 수동 운전 모드
-        public static bool AutoManualStatus { set; get; }
+        public static bool AutoManualStatus { set; get; } = false;
 
         // 장비 구동 유/무 변수 : 장비 시컨스 구동 유/무 변수 :: 실제로 장비 구동 확인 
         // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
         // 위와 같이 구분하여 장비 관리 할것!
         public static bool AutoRunStatus { set; get; } = false;
-        public static bool ManualRunStatus { set; get; } = false;
+        public static bool SelectRunEnable { set; get; } = false;
+        public static bool SemiAutoEnable { set; get; } = false;
+
         //  Cycle Stop
         public static bool CycleModuleStop { set; get; } = false;
         public static bool CycleSocketStop { set; get; } = false;
+
+        public enum SelectedSocketStartModeList : int
+        {
+            All = 0,
+            SelectedSocketOnly,
+            SelectedSocketContinue,
+        }
+        public static int SelectedSocketStartMode { set; get; } = (int)SelectedSocketStartModeList.All;                //  소켓 가공 시작 모드 (0:None, 1:단일 선택 가공,  2:선택 이후 나머지 가공)
+
 
         // Drilling Cycle Stop 예약 변수 : 장비 Stop 시 가공중이던 부분은 완료 되고 Stop 하도록 하기 위함
         // true : Stop 예약
@@ -820,13 +831,6 @@ namespace QMC.Common
         public static bool LaserDrillingCycStop_Reservation { set; get; } // 장비 Stop 예약
 
         public static double DrillModuleDelaySeconds = 0.0; // 예: 60초 (1분)
-
-
-
-
-
-
-
 
 
         //  Loading 에 사용하던 Port 를 기억하기 위한 변수
@@ -838,13 +842,6 @@ namespace QMC.Common
 
         public static bool SocketDrilling_Skip { set; get; } = false;            //  Socket Drilling Skip (true: Skip, false: Not Skip)
 
-        public enum SelectedSocketStartModeList : int
-        {
-            All = 0,
-            SelectedSocketOnly,
-            SelectedSocketContinue,
-        }
-        public static int SelectedSocketStartMode { set; get; } = (int)SelectedSocketStartModeList.All;                //  소켓 가공 시작 모드 (0:None, 1:단일 선택 가공,  2:선택 이후 나머지 가공)
         
 
         public enum LoaderPortList : int
@@ -1363,7 +1360,7 @@ namespace QMC.Common
 
             //  자동운전 상태 확인
             AutoRunStatus = false;
-            ManualRunStatus = false;
+            SelectRunEnable = false;
 
             m_bVisionFormOpenMode_ScannerFineCamOffsetChange = false;
 
@@ -3382,8 +3379,6 @@ namespace QMC.Common
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_Y", Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString(), strFIle);
             //MessageBox.Show("Scanner 와 Fine Camera 간 Offset 데이터를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-
 
         public static bool m_bCheckAxesMotionDoneWithRetry = false;
     }

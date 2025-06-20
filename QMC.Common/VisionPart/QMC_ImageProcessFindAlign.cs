@@ -1,4 +1,4 @@
-
+ï»¿
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -36,9 +36,9 @@ namespace QMC.Common.VisionPart
         {
             List<RectangleF> circles = new List<RectangleF>();
             List<RectangleF> circlesResult = new List<RectangleF>();
-            // BitmapÀ» byte ¹è¿­·Î º¯È¯
+            // Bitmapì„ byte ë°°ì—´ë¡œ ë³€í™˜
             byte[] pixelData = ConvertBitmapToByteArray(bitmap);
-            // È÷½ºÅä±×·¥ ÆòÈ°È­
+            // íˆìŠ¤í† ê·¸ë¨ í‰í™œí™”
 
 
             int w = bitmap.Width;
@@ -49,7 +49,7 @@ namespace QMC.Common.VisionPart
                 260, 0.05, ref m_bFindCircle, 0, 0, false);
 
             //var v = MatchCoordinates(listMetal, 3);
-            // vÀÇ ÁÂÇ¥¸¦ ¿øÁ¡À¸·Î ÇÏ°í listMetalÀÇ w,h ¸¦ °¡Áö´Â List < RectangleF > result¸¦  »ı¼º
+            // vì˜ ì¢Œí‘œë¥¼ ì›ì ìœ¼ë¡œ í•˜ê³  listMetalì˜ w,h ë¥¼ ê°€ì§€ëŠ” List < RectangleF > resultë¥¼  ìƒì„±
             //circlesResult = new List<RectangleF>();
             //for (int i = 0; i < v.Count; i++)
             //{
@@ -61,19 +61,19 @@ namespace QMC.Common.VisionPart
         }
         public static List<PointF> MatchCoordinates(List<RectangleF> listMetal, int cols)
         {
-            // 1. rows °è»ê
+            // 1. rows ê³„ì‚°
             int rows = CalculateRows(listMetal, cols);
 
-            // 2. È¸Àü °¢µµ °è»ê
+            // 2. íšŒì „ ê°ë„ ê³„ì‚°
             double rotationAngle = CalculateRotationAngle(listMetal);
 
-            // 3. listMetal ÁÂÇ¥ È¸Àü
+            // 3. listMetal ì¢Œí‘œ íšŒì „
             List<PointF> rotatedMetalCenters = RotateCoordinates(listMetal, rotationAngle);
 
-            // 4. ÀÌ»óÀûÀÎ °İÀÚ »ı¼º
+            // 4. ì´ìƒì ì¸ ê²©ì ìƒì„±
             List<PointF> idealPoints = GenerateIdealGrid(rows, cols, rotatedMetalCenters);
 
-            // 5. °Å¸® ±â¹İ ¸ÅÄª
+            // 5. ê±°ë¦¬ ê¸°ë°˜ ë§¤ì¹­
             List<PointF> matchedPoints = new List<PointF>();
             HashSet<int> usedIndices = new HashSet<int>();
 
@@ -101,7 +101,7 @@ namespace QMC.Common.VisionPart
                 }
             }
 
-            // 6. ¸ÅÄªµÈ ÁÂÇ¥¸¦ ¿ø·¡ °¢µµ·Î µÇµ¹¸²
+            // 6. ë§¤ì¹­ëœ ì¢Œí‘œë¥¼ ì›ë˜ ê°ë„ë¡œ ë˜ëŒë¦¼
             return RotateCoordinatesBack(matchedPoints, -rotationAngle);
         }
         private static double GetDistance(PointF p1, PointF p2)
@@ -113,15 +113,15 @@ namespace QMC.Common.VisionPart
 
         private static List<PointF> GenerateIdealGrid(int rows, int cols, List<PointF> rotatedMetalCenters)
         {
-            // 1. Áß½É ÁÂÇ¥ °è»ê
+            // 1. ì¤‘ì‹¬ ì¢Œí‘œ ê³„ì‚°
             float avgX = rotatedMetalCenters.Average(p => p.X);
             float avgY = rotatedMetalCenters.Average(p => p.Y);
 
-            // 2. °İÀÚ °£°İ °è»ê
+            // 2. ê²©ì ê°„ê²© ê³„ì‚°
             float spacingX = (rotatedMetalCenters.Max(p => p.X) - rotatedMetalCenters.Min(p => p.X)) / (cols - 1);
             float spacingY = (rotatedMetalCenters.Max(p => p.Y) - rotatedMetalCenters.Min(p => p.Y)) / (rows - 1);
 
-            // 3. ÀÌ»óÀûÀÎ °İÀÚ »ı¼º
+            // 3. ì´ìƒì ì¸ ê²©ì ìƒì„±
             List<PointF> grid = new List<PointF>();
             for (int row = 0; row < rows; row++)
             {
@@ -146,42 +146,42 @@ namespace QMC.Common.VisionPart
 
             }
             return 1;
-            // YÃà ¹üÀ§¸¦ ±âÁØÀ¸·Î rows °è»ê
+            // Yì¶• ë²”ìœ„ë¥¼ ê¸°ì¤€ìœ¼ë¡œ rows ê³„ì‚°
 
 
         }
 
         private static double CalculateRotationAngle(List<RectangleF> listMetal)
         {
-            // 1. Áß½É ÁÂÇ¥ °è»ê
+            // 1. ì¤‘ì‹¬ ì¢Œí‘œ ê³„ì‚°
             var centers = listMetal.Select(rect => new PointF(rect.X + rect.Width / 2, rect.Y + rect.Height / 2)).ToList();
 
-            // 2. X ÁÂÇ¥¸¦ ±âÁØÀ¸·Î ±×·ìÈ­ (°°Àº ¿­¿¡ ÀÖ´Â Á¡µé Ã£±â)
-            var groupedByColumn = centers.GroupBy(p => Math.Floor(p.X / 100)) // X ÁÂÇ¥¸¦ 100ÇÈ¼¿ ´ÜÀ§·Î ±×·ìÈ­
-                              .OrderBy(g => g.Key) // X ÁÂÇ¥ ±âÁØÀ¸·Î Á¤·Ä
+            // 2. X ì¢Œí‘œë¥¼ ê¸°ì¤€ìœ¼ë¡œ ê·¸ë£¹í™” (ê°™ì€ ì—´ì— ìˆëŠ” ì ë“¤ ì°¾ê¸°)
+            var groupedByColumn = centers.GroupBy(p => Math.Floor(p.X / 100)) // X ì¢Œí‘œë¥¼ 100í”½ì…€ ë‹¨ìœ„ë¡œ ê·¸ë£¹í™”
+                              .OrderBy(g => g.Key) // X ì¢Œí‘œ ê¸°ì¤€ìœ¼ë¡œ ì •ë ¬
                               .ToList();
 
             if (groupedByColumn.Count < 2)
             {
-                throw new InvalidOperationException("¿­ÀÌ µÎ °³ ÀÌ»ó ÇÊ¿äÇÕ´Ï´Ù.");
+                throw new InvalidOperationException("ì—´ì´ ë‘ ê°œ ì´ìƒ í•„ìš”í•©ë‹ˆë‹¤.");
             }
 
-            // 3. °¡Àå ¿ŞÂÊ ¿­°ú °¡Àå ¿À¸¥ÂÊ ¿­ ¼±ÅÃ
+            // 3. ê°€ì¥ ì™¼ìª½ ì—´ê³¼ ê°€ì¥ ì˜¤ë¥¸ìª½ ì—´ ì„ íƒ
             var leftColumn = groupedByColumn.First().ToList();
             var rightColumn = groupedByColumn.Last().ToList();
 
-            // 4. °¢ ¿­ÀÇ Æò±Õ ÁÂÇ¥ °è»ê (°áÃø µ¥ÀÌÅÍ °¨¾È)
+            // 4. ê° ì—´ì˜ í‰ê·  ì¢Œí‘œ ê³„ì‚° (ê²°ì¸¡ ë°ì´í„° ê°ì•ˆ)
             var leftCenter = new PointF(
                 leftColumn.Average(p => p.X),
-                leftColumn.Any() ? leftColumn.Average(p => p.Y) : 0 // µ¥ÀÌÅÍ°¡ ¾øÀ¸¸é Y ÁÂÇ¥¸¦ 0À¸·Î ¼³Á¤
+                leftColumn.Any() ? leftColumn.Average(p => p.Y) : 0 // ë°ì´í„°ê°€ ì—†ìœ¼ë©´ Y ì¢Œí‘œë¥¼ 0ìœ¼ë¡œ ì„¤ì •
             );
 
             var rightCenter = new PointF(
                 rightColumn.Average(p => p.X),
-                rightColumn.Any() ? rightColumn.Average(p => p.Y) : 0 // µ¥ÀÌÅÍ°¡ ¾øÀ¸¸é Y ÁÂÇ¥¸¦ 0À¸·Î ¼³Á¤
+                rightColumn.Any() ? rightColumn.Average(p => p.Y) : 0 // ë°ì´í„°ê°€ ì—†ìœ¼ë©´ Y ì¢Œí‘œë¥¼ 0ìœ¼ë¡œ ì„¤ì •
             );
 
-            // 5. µÎ Á¡ »çÀÌÀÇ ±â¿ï±â¸¦ ÀÌ¿ëÇØ È¸Àü °¢µµ °è»ê
+            // 5. ë‘ ì  ì‚¬ì´ì˜ ê¸°ìš¸ê¸°ë¥¼ ì´ìš©í•´ íšŒì „ ê°ë„ ê³„ì‚°
             double angle = Math.Atan2(rightCenter.Y - leftCenter.Y, rightCenter.X - leftCenter.X);
             return 0;
         }
@@ -226,8 +226,8 @@ namespace QMC.Common.VisionPart
             byte[] images = new byte[w * h];
             foreach (var point in outline)
             {
-                //pointÀÇ ÁÂÇ¥¿¡ 255¸¦ ³Ö¾îÁÜ
-                //pointÀÇ ÁÂÇ¥ Á¤ÇÕ¼ºÀ» Ã¼Å© ÇÑ´Ù.
+                //pointì˜ ì¢Œí‘œì— 255ë¥¼ ë„£ì–´ì¤Œ
+                //pointì˜ ì¢Œí‘œ ì •í•©ì„±ì„ ì²´í¬ í•œë‹¤.
                 if (point.X >= 0 && point.X < w && point.Y >= 0 && point.Y < h)
                 {
                     int cx = (int)point.X;
@@ -248,13 +248,13 @@ namespace QMC.Common.VisionPart
             //string strFileName = "d:\\TempGoldpowder\\AlignGoldPowder" + DateTime.Now.Ticks.ToString() + ".bmp";
             //IsImageSave = true;
             //SaveImage(pixelData, w, h, strFileName);
-            // 1. Æú´õ »ı¼º (³¯Â¥ ±âÁØ)
+            // 1. í´ë” ìƒì„± (ë‚ ì§œ ê¸°ì¤€)
             string dateFolder = DateTime.Now.ToString("yyyyMMdd");
             string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
             if (!Directory.Exists(baseDir))
                 Directory.CreateDirectory(baseDir);
 
-            // 2. ÃÊ±â ¿øº» ÀÌ¹ÌÁö ÀúÀå
+            // 2. ì´ˆê¸° ì›ë³¸ ì´ë¯¸ì§€ ì €ì¥
             //string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
             string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
@@ -279,7 +279,7 @@ namespace QMC.Common.VisionPart
             float cx = 0;
             float cy = 0;
             double dErrorRatio = 0.2;
-            int direction = 0; // 0: ¿À¸¥ÂÊ, 1: À§, 2: ¿ŞÂÊ, 3: ¾Æ·¡
+            int direction = 0; // 0: ì˜¤ë¥¸ìª½, 1: ìœ„, 2: ì™¼ìª½, 3: ì•„ë˜
             int stepsInCurrentDirection = 1;
             int stepsTaken = 0;
             int directionChangeCount = 0;
@@ -362,7 +362,7 @@ namespace QMC.Common.VisionPart
 
                         if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.05)
                         {
-                            //Çã»óÀ» Ã£¾Æ´ÂÁö °Ë»ç ÇÑ´Ù.
+                            //í—ˆìƒì„ ì°¾ì•„ëŠ”ì§€ ê²€ì‚¬ í•œë‹¤.
                             double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
                             if (dScoreCheck > 0.8)
                             {
@@ -374,16 +374,16 @@ namespace QMC.Common.VisionPart
                     }
                     switch (direction)
                     {
-                        case 0: // ¿À¸¥ÂÊ
+                        case 0: // ì˜¤ë¥¸ìª½
                             currentPosition.X += nStepX;
                             break;
-                        case 1: // À§
+                        case 1: // ìœ„
                             currentPosition.Y += nStepX;
                             break;
-                        case 2: // ¿ŞÂÊ
+                        case 2: // ì™¼ìª½
                             currentPosition.X -= nStepX;
                             break;
-                        case 3: // ¾Æ·¡
+                        case 3: // ì•„ë˜
                             currentPosition.Y -= nStepX;
                             break;
                     }
@@ -392,19 +392,19 @@ namespace QMC.Common.VisionPart
                     if (stepsTaken == stepsInCurrentDirection)
                     {
                         stepsTaken = 0;
-                        direction = (direction + 1) % 4; // ¹æÇâ ÀüÈ¯
+                        direction = (direction + 1) % 4; // ë°©í–¥ ì „í™˜
                         directionChangeCount++;
 
                         if (directionChangeCount % 2 == 0)
                         {
-                            stepsInCurrentDirection++; // µÎ ¹ø ¹æÇâ ÀüÈ¯ ÈÄ ÀÌµ¿ °Å¸® Áõ°¡
+                            stepsInCurrentDirection++; // ë‘ ë²ˆ ë°©í–¥ ì „í™˜ í›„ ì´ë™ ê±°ë¦¬ ì¦ê°€
                         }
                     }
                 }
 
             }
 
-            //  ¿øÀ» Ã£¾Ò´ÂÁö ¿©ºÎ Ref.
+            //  ì›ì„ ì°¾ì•˜ëŠ”ì§€ ì—¬ë¶€ Ref.
             circleFound = bFindCircle;
 
             if (bFindCircle == false)
@@ -440,7 +440,7 @@ namespace QMC.Common.VisionPart
                 result.Circles.Add(resultCircle);
                 result.ScoreCollection.Add(dScore);
 
-                // ÃÖÁ¾ °á°ú ÀÌ¹ÌÁö ÀúÀå (¿À¹ö·¹ÀÌ Æ÷ÇÔ)
+                // ìµœì¢… ê²°ê³¼ ì´ë¯¸ì§€ ì €ì¥ (ì˜¤ë²„ë ˆì´ í¬í•¨)
                 //string overlayPath = Path.Combine(baseDir, $"AlignSuccess_{DateTime.Now.Ticks}.bmp");
                 timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
                 rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
@@ -473,8 +473,6 @@ namespace QMC.Common.VisionPart
             return dScore;
         }
 
-
-
         public List<Circle> FindGoldPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound, int Threshold = 75, double dScore = 0.7, int radius = 0, double dSpec = 0.1)
         {
             List<RectangleF> circlesResultLocal = new List<RectangleF>();
@@ -486,7 +484,7 @@ namespace QMC.Common.VisionPart
             double dErrorRatio = 0.3;
             List<List<Point>> blobs = new List<List<Point>>();
 
-            List<List<Point>> list = FindBrightBlobs(pixelData, w, h, w, Threshold); // ¿µ»ó ¹à±â ¹Ù²î¸é 70 ÀÌ°Ô ¾²·¹½º È¦µå ÀÔ´Ï´Ù. ÀÌ°Å º¯°æ ÇØ¾ß µË´Ï´Ù.
+            List<List<Point>> list = FindBrightBlobs(pixelData, w, h, w, Threshold); // ì˜ìƒ ë°ê¸° ë°”ë€Œë©´ 70 ì´ê²Œ ì“°ë ˆìŠ¤ í™€ë“œ ì…ë‹ˆë‹¤. ì´ê±° ë³€ê²½ í•´ì•¼ ë©ë‹ˆë‹¤.
             int MinArea = (int)(radius * radius * Math.PI * (1 - 0.5));
             int MaxArea = (int)(radius * radius * Math.PI * (1 + 0.5));
             blobs.AddRange(list.Where(t => t.Count() > MinArea && t.Count() < MaxArea).ToList());
@@ -497,18 +495,18 @@ namespace QMC.Common.VisionPart
                 if (point.Count == 0)
                     continue;
 
-                // Width¿Í Height °è»ê
+                // Widthì™€ Height ê³„ì‚°
                 int width = point.Max(p => p.X) - point.Min(p => p.X);
                 int height = point.Max(p => p.Y) - point.Min(p => p.Y);
 
-                // Width¿Í HeightÀÇ ºñÀ² °è»ê
+                // Widthì™€ Heightì˜ ë¹„ìœ¨ ê³„ì‚°
                 float ratio = (float)width / height;
                 float filter = 0.2f;
-                // ºñÀ²ÀÌ 0.9~1.1 »çÀÌÀÎ °æ¿ì¸¸ Ã³¸®
+                // ë¹„ìœ¨ì´ 0.9~1.1 ì‚¬ì´ì¸ ê²½ìš°ë§Œ ì²˜ë¦¬
                 if (ratio >= 1 - filter && ratio <= 1 + filter)
                 {
 
-                    // circlesResult¿¡ Ãß°¡
+                    // circlesResultì— ì¶”ê°€
                     list.Add(point);
                 }
             }
@@ -517,15 +515,15 @@ namespace QMC.Common.VisionPart
 
             double medianWidth = 0;
             double medianHeight = 0;
-            // blobs ÀÇ Width ¿Í HightÀÇ Áß°£°ªÀ» µµÃâ ÇÑ´Ù.
-            // blobs ÀÇ Width ¿Í HeightÀÇ Áß°£°ª(Æò±Õ)À» µµÃâÇÑ´Ù.
+            // blobs ì˜ Width ì™€ Hightì˜ ì¤‘ê°„ê°’ì„ ë„ì¶œ í•œë‹¤.
+            // blobs ì˜ Width ì™€ Heightì˜ ì¤‘ê°„ê°’(í‰ê· )ì„ ë„ì¶œí•œë‹¤.
             if (blobs.Count > 0)
             {
-                // °¢ ºí¶øÀÇ Width¿Í Height¸¦ °è»ê
+                // ê° ë¸”ëì˜ Widthì™€ Heightë¥¼ ê³„ì‚°
                 var widths = blobs.Select(blob => blob.Max(p => p.X) - blob.Min(p => p.X)).OrderBy(t => t).ToList();
                 var heights = blobs.Select(blob => blob.Max(p => p.Y) - blob.Min(p => p.Y)).OrderBy(t => t).ToList();
 
-                // Áß°£°ª °è»ê
+                // ì¤‘ê°„ê°’ ê³„ì‚°
                 medianWidth = widths.Count % 2 == 0
                     ? (widths[widths.Count / 2 - 1] + widths[widths.Count / 2]) / 2.0
                     : widths[widths.Count / 2];
@@ -540,20 +538,19 @@ namespace QMC.Common.VisionPart
             {
                 Console.WriteLine("No blobs found.");
 
-                //  ¿øÀ» Ã£¾Ò´ÂÁö ¿©ºÎ Ref.
+                //  ì›ì„ ì°¾ì•˜ëŠ”ì§€ ì—¬ë¶€ Ref.
                 circleFound = false;
 
                 circlesResult.Clear();
                 return circles;
             }
 
-
             foreach (List<Point> point in blobs)
             {
                 if (point.Count == 0)
                     continue;
 
-                // Center °è»ê (¸ğµç PointÀÇ Æò±Õ)
+                // Center ê³„ì‚° (ëª¨ë“  Pointì˜ í‰ê· )
                 float centerX = (float)point.Average(p => p.X);
                 float centerY = (float)point.Average(p => p.Y);
                 int nTotalCount = point.Count;
@@ -571,18 +568,19 @@ namespace QMC.Common.VisionPart
                     continue;
                 centerX = (float)point.Average(p => p.X);
                 centerY = (float)point.Average(p => p.Y);
-                // medianWidth¿Í medianHeight¸¦ »ç¿ëÇÏ¿© RectangleF »ı¼º
+                // medianWidthì™€ medianHeightë¥¼ ì‚¬ìš©í•˜ì—¬ RectangleF ìƒì„±
                 RectangleF rectangle = new RectangleF(
                     centerX - (float)medianWidth / 2,
                     centerY - (float)medianHeight / 2,
                     (float)medianWidth,
                     (float)medianHeight
                 );
+
                 if (radius * (1 - dSpec) < Myradius && Myradius < radius * (1 + dSpec))
                 {
                     circles.Add(new Circle(centerX, centerY, Myradius, (float)dMyScore));
                     //FindBestCircle()
-                    // circlesResult¿¡ Ãß°¡
+                    // circlesResultì— ì¶”ê°€
                     circlesResult.Add(rectangle);
                 }
             }
@@ -593,7 +591,7 @@ namespace QMC.Common.VisionPart
 
         private void Sobel(byte[,] image, byte[] imgForeign, int nWidth, int nHeight, int nStride, int nApertureSize)
         {
-            //sobel ¾Ë°í¸®ÁòÀ» ±¸Çö ÇÑ´Ù.
+            //sobel ì•Œê³ ë¦¬ì¦˜ì„ êµ¬í˜„ í•œë‹¤.
 
             int[,] m_nSobelX = new int[nApertureSize, nApertureSize];
             int[,] m_nSobelY = new int[nApertureSize, nApertureSize];
@@ -681,13 +679,13 @@ namespace QMC.Common.VisionPart
             object obj = new object();
             int nThresholdMax = 0;
 
-            // [1] ³¯Â¥ ±â¹İ Æú´õ »ı¼º
+            // [1] ë‚ ì§œ ê¸°ë°˜ í´ë” ìƒì„±
             string dateFolder = DateTime.Now.ToString("yyyyMMdd");
             string baseDir = Path.Combine("d:\\TempGoldpowder", dateFolder);
             if (!Directory.Exists(baseDir))
                 Directory.CreateDirectory(baseDir);
 
-            // [2] ÃÊ±â ¿øº» ÀÌ¹ÌÁö ÀúÀå
+            // [2] ì´ˆê¸° ì›ë³¸ ì´ë¯¸ì§€ ì €ì¥
             //string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
             string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
@@ -746,14 +744,14 @@ namespace QMC.Common.VisionPart
             }
             //result.Circles.AddRange(BestCircle);
 
-            // [4] ¼º°ø/½ÇÆĞ ¿©ºÎ ÆÇ´Ü ¹× ÀúÀå
+            // [4] ì„±ê³µ/ì‹¤íŒ¨ ì—¬ë¶€ íŒë‹¨ ë° ì €ì¥
             timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
             string fileName = (result.Circles.Count > 0)
                 ? $"AlignSuccess_{timestamp}.bmp"
                 : $"AlignFail_{timestamp}.bmp";
             string fullPath = Path.Combine(baseDir, fileName);
 
-            //¿©±â ´Ù½Ã È®ÀÎÇÏÀÚ.
+            //ì—¬ê¸° ë‹¤ì‹œ í™•ì¸í•˜ì.
             //SaveImageWithOverlay(pixelData, w, h, BestCircle, fullPath);
 
             return result;
@@ -865,7 +863,7 @@ namespace QMC.Common.VisionPart
         {
             List<PointF> boundaryPoints = new List<PointF>();
 
-            if (pixelData == null) //pixelData°¡ nullÀÎ °æ¿ì ÇÁ·Î±×·¥ ´Ù¿î.
+            if (pixelData == null) //pixelDataê°€ nullì¸ ê²½ìš° í”„ë¡œê·¸ë¨ ë‹¤ìš´.
                 return boundaryPoints;
 
 
@@ -884,7 +882,7 @@ namespace QMC.Common.VisionPart
                 PointF boundaryPointD = new PointF(cx, cy);
 
 
-                // º´·Ä Ã³¸®
+                // ë³‘ë ¬ ì²˜ë¦¬
                 object lockObject = new object();
                 Parallel.For((int)initialRadius, (int)maxRadius, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, r =>
                 {
@@ -1037,14 +1035,14 @@ namespace QMC.Common.VisionPart
             }
             try
             {
-                // µğ·ºÅä¸® ¾øÀ¸¸é »ı¼º
+                // ë””ë ‰í† ë¦¬ ì—†ìœ¼ë©´ ìƒì„±
                 string dir = Path.GetDirectoryName(fileName);
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
 
                 Bitmap bitmap = new Bitmap(w, h, PixelFormat.Format8bppIndexed);
                 BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
-                //ºñÆ®¸Ê 8ibt Gray ÆÄ·¹Æ® Ãß°¡
+                //ë¹„íŠ¸ë§µ 8ibt Gray íŒŒë ˆíŠ¸ ì¶”ê°€
                 ColorPalette grayPalette = bitmap.Palette;
                 for (int i = 0; i < 256; i++)
                 {
@@ -1115,7 +1113,7 @@ namespace QMC.Common.VisionPart
                 }
             }
 
-            //imageHighPass¸¦ image·Î º¹»ç
+            //imageHighPassë¥¼ imageë¡œ ë³µì‚¬
             return imageHighPass;
         }
         private byte[] LowpassFilterHolizontal(byte[] image, int w, int h, int cx, int cy)
@@ -1144,10 +1142,10 @@ namespace QMC.Common.VisionPart
                     PrevValue = dLowpassValue;
                 }
             }
-            //imageLowPass¸¦ image·Î º¹»ç
+            //imageLowPassë¥¼ imageë¡œ ë³µì‚¬
             return imageLowPass;
         }
-        //¹öÆ¼ÄÃ ·ÎÆĞ½º ÇÊÅÍ¸¦ ¸¸µç´Ù.
+        //ë²„í‹°ì»¬ ë¡œíŒ¨ìŠ¤ í•„í„°ë¥¼ ë§Œë“ ë‹¤.
 
         private byte[] LowpassFilterVertical(byte[] image, int w, int h, int cx, int cy)
         {
@@ -1174,11 +1172,11 @@ namespace QMC.Common.VisionPart
                     PrevValue = dLowpassValue;
                 }
             }
-            //imageLowPass¸¦ image·Î º¹»ç
+            //imageLowPassë¥¼ imageë¡œ ë³µì‚¬
             return imageLowPass;
         }
 
-        //¹öÆ¼ÄÃ ÇÏÀÌÆĞ½º ÇÊÅÍ¸¦ ¸¸µç´Ù.
+        //ë²„í‹°ì»¬ í•˜ì´íŒ¨ìŠ¤ í•„í„°ë¥¼ ë§Œë“ ë‹¤.
 
         private byte[] HighpassFilterVertical(byte[] image, int w, int h, int cx, int cy)
         {
@@ -1234,21 +1232,21 @@ namespace QMC.Common.VisionPart
                     imageHighPass[y * w + x] = (byte)dHighpassValue;
                 }
             }
-            //imageHighPass¸¦ image·Î º¹»ç
+            //imageHighPassë¥¼ imageë¡œ ë³µì‚¬
             return imageHighPass;
         }
 
         private void blob(byte[] pixelData, int w, int h, QMC_ImageProcessFindAlignRecipe recipe, List<RectangleF> circles)
         {
 
-            // ¾îµÎ¿î ºÎºĞÀÇ ºí¶øÀ» Ã£À½
+            // ì–´ë‘ìš´ ë¶€ë¶„ì˜ ë¸”ëì„ ì°¾ìŒ
             List<List<Point>> blobs = FindDarkBlobs(pixelData, w, h, w, recipe.Threshold);
             FindCircleRule(recipe, circles, blobs);
         }
 
         private void FindCircleRule(QMC_ImageProcessFindAlignRecipe recipe, List<RectangleF> circles, List<List<Point>> blobs)
         {
-            // °¡Àå Å« ºí¶øÀ» ¼±ÅÃ
+            // ê°€ì¥ í° ë¸”ëì„ ì„ íƒ
             var outline = GetOutLine(blobs);
             double radius = 0;
             FindCircleRule(recipe, circles, outline, out radius);
@@ -1261,7 +1259,7 @@ namespace QMC.Common.VisionPart
             if (blobs.Count() >= 2)
             {
                 var v = blobs.OrderByDescending(t => t.Count()).Take(2);
-                // °¡·Î ¼¼·Î ºí¶øÀÇ ºñÀ²ÀÌ 1:1¿¡ °¡±î¿î ºí¶øÀ» ¼±ÅÃ
+                // ê°€ë¡œ ì„¸ë¡œ ë¸”ëì˜ ë¹„ìœ¨ì´ 1:1ì— ê°€ê¹Œìš´ ë¸”ëì„ ì„ íƒ
 
                 foreach (var blob in v)
                 {
@@ -1310,7 +1308,7 @@ namespace QMC.Common.VisionPart
             Point center = new Point((int)dCenterX, (int)dCenterY);
 
             radius = FindCircleRadius(center, outline);
-            //center ·Î RADIUS ¸¸Å­ÀÇ RectangleFÀ» ±¸ÇÔ
+            //center ë¡œ RADIUS ë§Œí¼ì˜ RectangleFì„ êµ¬í•¨
             RectangleF circle = new RectangleF(center.X - recipe.Radius, center.Y - recipe.Radius, 2 * recipe.Radius, 2 * recipe.Radius);
             circles.Add(circle);
         }
@@ -1318,7 +1316,7 @@ namespace QMC.Common.VisionPart
         private double FindCircleRadius(Point center, List<Point> outline)
         {
             double dRadius = 0;
-            //distance¸¦ int·Î ÇØ¼­ °¡Àå ¸¹Àº ºóµµ¼ö°¡ ³ª¿À´Â r¸¦ ¼±ÅÃ
+            //distanceë¥¼ intë¡œ í•´ì„œ ê°€ì¥ ë§ì€ ë¹ˆë„ìˆ˜ê°€ ë‚˜ì˜¤ëŠ” rë¥¼ ì„ íƒ
             int nMultiple = 4;
             List<int> distances = new List<int>();
             foreach (var point in outline)
@@ -1349,7 +1347,7 @@ namespace QMC.Common.VisionPart
             dCenterY = points.Average(t => t.Y);
             Point center = new Point((int)dCenterX, (int)dCenterY);
 
-            //center ·Î RADIUS ¸¸Å­ÀÇ RectangleFÀ» ±¸ÇÔ
+            //center ë¡œ RADIUS ë§Œí¼ì˜ RectangleFì„ êµ¬í•¨
             RectangleF circle = new RectangleF(center.X - recipe.Radius, center.Y - recipe.Radius, 2 * recipe.Radius, 2 * recipe.Radius);
             //circles.Clear();
             circles.Add(circle);
@@ -1430,14 +1428,14 @@ namespace QMC.Common.VisionPart
 
             Circle fittedCircle = RansacCircleFitter.FitCircle(points, iter, threshold, r, dSpec);
             radius = fittedCircle.Radius;
-            //center ·Î RADIUS ¸¸Å­ÀÇ RectangleFÀ» ±¸ÇÔ
+            //center ë¡œ RADIUS ë§Œí¼ì˜ RectangleFì„ êµ¬í•¨
             RectangleF circle = new RectangleF((float)(fittedCircle.CenterX - radius), (float)(fittedCircle.CenterY - radius), (float)(2 * radius), (float)(2 * radius));
 
             circles.Add(circle);
             return fittedCircle;
         }
 
-        //ÁÖ¼®Á» ´Ş¾ÆÁà¶ó.
+        //ì£¼ì„ì¢€ ë‹¬ì•„ì¤˜ë¼.
         private void Hough(byte[] image, int w, int h, int threshold, List<Point> points, double cx, double cy)
         {
             int rmax = 370;
@@ -1530,11 +1528,11 @@ namespace QMC.Common.VisionPart
 
         bool IsInCircle(int x, int y, int center_x, int center_y, int r)
         {
-            //pointsCircleÀ» ÀÌ¿ëÇÏ¿© ¿øÀÇ ³»ºÎ¿¡ ÀÖ´ÂÁö ÆÇ´Ü
+            //pointsCircleì„ ì´ìš©í•˜ì—¬ ì›ì˜ ë‚´ë¶€ì— ìˆëŠ”ì§€ íŒë‹¨
             var v = pointsCircle.Where(t => t.X == x);
             if (v.Count() > 0)
             {
-                // vÀÇ ÃÖ´ë Y °ª°ú ÃÖ¼ÒY °ª »çÀÌ¿¡ Y°¡ ÀÖÀ¸¸é true
+                // vì˜ ìµœëŒ€ Y ê°’ê³¼ ìµœì†ŒY ê°’ ì‚¬ì´ì— Yê°€ ìˆìœ¼ë©´ true
                 if (v.Max(t => t.Y) > y && v.Min(t => t.Y) < y)
                 {
                     return true;
@@ -1550,9 +1548,9 @@ namespace QMC.Common.VisionPart
         {
             List<Point> outline = new List<Point>();
             {
-                //blobÀÇ °æ°è¸¦ Ã£À½
-                //blobÀ» GroupbyX ÈÄ MaxY¿Í MinYÀÇ 2Æ÷ÀÎÆ®¸¦ outline ³Ö´Â´Ù.
-                //blobÀ» GroupbyY ÈÄ MaxX¿Í MinXÀÇ 2Æ÷ÀÎÆ®¸¦ outline ³Ö´Â´Ù.
+                //blobì˜ ê²½ê³„ë¥¼ ì°¾ìŒ
+                //blobì„ GroupbyX í›„ MaxYì™€ MinYì˜ 2í¬ì¸íŠ¸ë¥¼ outline ë„£ëŠ”ë‹¤.
+                //blobì„ GroupbyY í›„ MaxXì™€ MinXì˜ 2í¬ì¸íŠ¸ë¥¼ outline ë„£ëŠ”ë‹¤.
 
                 var groupByX = blob.GroupBy(t => t.X).Select(t => new { X = t.Key, MaxY = t.Max(p => p.Y), MinY = t.Min(p => p.Y) });
                 var groupByY = blob.GroupBy(t => t.Y).Select(t => new { Y = t.Key, MaxX = t.Max(p => p.X), MinX = t.Min(p => p.X) });
@@ -1568,7 +1566,7 @@ namespace QMC.Common.VisionPart
 
         private Point FindCircleCenter(List<Point> points, int r, int index)
         {
-            //pointsÀÇ ·£´ıÇÑ 3Á¡À» ¼±ÅÃÇÏ¿© 3Á¡À¸·Î ¿øÀÇ ÁßÁ¡À» Ã£´Â´Ù.
+            //pointsì˜ ëœë¤í•œ 3ì ì„ ì„ íƒí•˜ì—¬ 3ì ìœ¼ë¡œ ì›ì˜ ì¤‘ì ì„ ì°¾ëŠ”ë‹¤.
 
             List<Point> selectedPoints = new List<Point>();
             //int index = random.Next(points.Count / 3);
@@ -1579,7 +1577,7 @@ namespace QMC.Common.VisionPart
             }
 
             Point center = FindCircleCenter(selectedPoints[0], selectedPoints[1], selectedPoints[2]);
-            //center·Î selectedPoints[0]ÀÇ °Å¸®¿Í rÀÇ Â÷°¡ rÀÇ 5% ÀÌ³»ÀÌ¸é center¸¦ ¹İÈ¯
+            //centerë¡œ selectedPoints[0]ì˜ ê±°ë¦¬ì™€ rì˜ ì°¨ê°€ rì˜ 5% ì´ë‚´ì´ë©´ centerë¥¼ ë°˜í™˜
 
             double dDistance = Math.Sqrt(Math.Pow(selectedPoints[0].X - center.X, 2) + Math.Pow(selectedPoints[0].Y - center.Y, 2));
             return center;
@@ -1595,7 +1593,7 @@ namespace QMC.Common.VisionPart
 
         private Point FindCircleCenter(Point point1, Point point2, Point point3)
         {
-            // point1, point2, point3À» ÀÌ¿ëÇÏ¿© ¿øÀÇ Áß½ÉÀ» Ã£´Â´Ù.
+            // point1, point2, point3ì„ ì´ìš©í•˜ì—¬ ì›ì˜ ì¤‘ì‹¬ì„ ì°¾ëŠ”ë‹¤.
             double x1 = point1.X, y1 = point1.Y;
             double x2 = point2.X, y2 = point2.Y;
             double x3 = point3.X, y3 = point3.Y;
@@ -1639,10 +1637,10 @@ namespace QMC.Common.VisionPart
                 return RectangleF.Empty;
             }
 
-            // °¡Àå Å« ¸®½ºÆ®ÀÇ ¿øÀÇ Áß½ÉÀ» ±¸ÇÔ
+            // ê°€ì¥ í° ë¦¬ìŠ¤íŠ¸ì˜ ì›ì˜ ì¤‘ì‹¬ì„ êµ¬í•¨
             Point center = GetCircleCenter(circlePoints);
 
-            // ¿øÀÇ Áß½ÉÀ» ±âÁØÀ¸·Î °æ°è »ç°¢ÇüÀ» ¹İÈ¯
+            // ì›ì˜ ì¤‘ì‹¬ì„ ê¸°ì¤€ìœ¼ë¡œ ê²½ê³„ ì‚¬ê°í˜•ì„ ë°˜í™˜
             return new RectangleF(center.X - radius, center.Y - radius, 2 * radius, 2 * radius);
         }
 
@@ -1673,12 +1671,12 @@ namespace QMC.Common.VisionPart
             {
                 for (int x = 0; x < width; x++)
                 {
-                    int index = y * stride + x; // ÇÈ¼¿ µ¥ÀÌÅÍ ÀÎµ¦½º °è»ê (8ºñÆ® ±×·¹ÀÌ½ºÄÉÀÏ Çü½Ä)
+                    int index = y * stride + x; // í”½ì…€ ë°ì´í„° ì¸ë±ìŠ¤ ê³„ì‚° (8ë¹„íŠ¸ ê·¸ë ˆì´ìŠ¤ì¼€ì¼ í˜•ì‹)
                     byte pixelValue = pixelData[index];
 
                     if (pixelValue < threshold && !visited[x, y])
                     {
-                        // »õ·Î¿î ºí¶øÀ» Ã£À½
+                        // ìƒˆë¡œìš´ ë¸”ëì„ ì°¾ìŒ
                         List<Point> blob = FindBlob(pixelData, width, height, stride, x, y, threshold, visited, true);
                         blobs.Add(blob);
                     }
@@ -1698,12 +1696,12 @@ namespace QMC.Common.VisionPart
             {
                 for (int x = 0; x < width; x++)
                 {
-                    int index = y * stride + x; // ÇÈ¼¿ µ¥ÀÌÅÍ ÀÎµ¦½º °è»ê (8ºñÆ® ±×·¹ÀÌ½ºÄÉÀÏ Çü½Ä)
+                    int index = y * stride + x; // í”½ì…€ ë°ì´í„° ì¸ë±ìŠ¤ ê³„ì‚° (8ë¹„íŠ¸ ê·¸ë ˆì´ìŠ¤ì¼€ì¼ í˜•ì‹)
                     byte pixelValue = pixelData[index];
 
                     if (pixelValue >= threshold && !visited[x, y])
                     {
-                        // »õ·Î¿î ºí¶øÀ» Ã£À½
+                        // ìƒˆë¡œìš´ ë¸”ëì„ ì°¾ìŒ
                         List<Point> blob = FindBlob(pixelData, width, height, stride, x, y, threshold, visited, false);
                         blobs.Add(blob);
                     }
@@ -1751,7 +1749,7 @@ namespace QMC.Common.VisionPart
             if (points == null || points.Count == 0)
                 return new List<Point>();
 
-            // ÄÁÅõ¾î¸¦ Ã£±â À§ÇØ Graham's scan ¾Ë°í¸®ÁòÀ» »ç¿ë
+            // ì»¨íˆ¬ì–´ë¥¼ ì°¾ê¸° ìœ„í•´ Graham's scan ì•Œê³ ë¦¬ì¦˜ì„ ì‚¬ìš©
             points.Sort((p1, p2) => p1.X == p2.X ? p1.Y.CompareTo(p2.Y) : p1.X.CompareTo(p2.X));
             Point pivot = points[0];
             points.RemoveAt(0);
@@ -1816,7 +1814,7 @@ namespace QMC.Common.VisionPart
         {
             if (bitmap.PixelFormat != PixelFormat.Format8bppIndexed)
             {
-                throw new ArgumentException("8ºñÆ® ±×·¹ÀÌ½ºÄÉÀÏ ÀÌ¹ÌÁö¸¸ Áö¿øµË´Ï´Ù.");
+                throw new ArgumentException("8ë¹„íŠ¸ ê·¸ë ˆì´ìŠ¤ì¼€ì¼ ì´ë¯¸ì§€ë§Œ ì§€ì›ë©ë‹ˆë‹¤.");
             }
 
             BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
@@ -1832,12 +1830,12 @@ namespace QMC.Common.VisionPart
         {
             using (Bitmap bmp = new Bitmap(w, h, PixelFormat.Format8bppIndexed))
             {
-                // ±×·¹ÀÌ½ºÄÉÀÏ ÆÈ·¹Æ® Àû¿ë
+                // ê·¸ë ˆì´ìŠ¤ì¼€ì¼ íŒ”ë ˆíŠ¸ ì ìš©
                 ColorPalette pal = bmp.Palette;
                 for (int i = 0; i < 256; i++) pal.Entries[i] = Color.FromArgb(i, i, i);
                 bmp.Palette = pal;
 
-                // ÀÌ¹ÌÁö µ¥ÀÌÅÍ º¹»ç
+                // ì´ë¯¸ì§€ ë°ì´í„° ë³µì‚¬
                 BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, bmp.PixelFormat);
                 int stride = bmpData.Stride;
                 for (int y = 0; y < h; y++)
@@ -1848,18 +1846,18 @@ namespace QMC.Common.VisionPart
 
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
-                    // Polygon ¿Ü°û¼±
+                    // Polygon ì™¸ê³½ì„ 
                     if (polygon != null && polygon.Count > 1)
                     {
                         using (Pen pen = new Pen(Color.Lime, 1))
                         {
                             for (int i = 0; i < polygon.Count - 1; i++)
                                 g.DrawLine(pen, polygon[i], polygon[i + 1]);
-                            g.DrawLine(pen, polygon[polygon.Count - 1], polygon[0]); // ´İ±â
+                            g.DrawLine(pen, polygon[polygon.Count - 1], polygon[0]); // ë‹«ê¸°
                         }
                     }
 
-                    // ¿ø Áß½É ¹× ¹İÁö¸§
+                    // ì› ì¤‘ì‹¬ ë° ë°˜ì§€ë¦„
                     if (circle != null)
                     {
                         using (Pen pen = new Pen(Color.Red, 2))
@@ -1868,7 +1866,7 @@ namespace QMC.Common.VisionPart
                             float cy = circle.Value.CenterY;
                             float r = circle.Value.Radius;
                             g.DrawEllipse(pen, cx - r, cy - r, r * 2, r * 2);
-                            g.DrawEllipse(Pens.Yellow, cx - 2, cy - 2, 4, 4); // Áß½ÉÁ¡ Ç¥½Ã
+                            g.DrawEllipse(Pens.Yellow, cx - 2, cy - 2, 4, 4); // ì¤‘ì‹¬ì  í‘œì‹œ
                         }
                     }
                 }
@@ -1881,7 +1879,7 @@ namespace QMC.Common.VisionPart
         {
             using (Bitmap bmp = new Bitmap(w, h, PixelFormat.Format8bppIndexed))
             {
-                // ±×·¹ÀÌ½ºÄÉÀÏ ÆÈ·¹Æ® ¼³Á¤
+                // ê·¸ë ˆì´ìŠ¤ì¼€ì¼ íŒ”ë ˆíŠ¸ ì„¤ì •
                 ColorPalette pal = bmp.Palette;
                 for (int i = 0; i < 256; i++)
                     pal.Entries[i] = Color.FromArgb(i, i, i);
@@ -1905,12 +1903,278 @@ namespace QMC.Common.VisionPart
                             float cy = circle.CenterY;
                             float r = circle.Radius;
                             g.DrawEllipse(pen, cx - r, cy - r, r * 2, r * 2);
-                            g.DrawEllipse(Pens.Yellow, cx - 2, cy - 2, 4, 4); // Áß½ÉÁ¡
+                            g.DrawEllipse(Pens.Yellow, cx - 2, cy - 2, 4, 4); // ì¤‘ì‹¬ì 
                         }
                     }
                 }
 
                 bmp.Save(filename, ImageFormat.Bmp);
+            }
+        }
+
+
+        public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundaryMultipleCircles(
+                                                 List<RectangleF> circlesResult,
+                                                 byte[] pixelData, int w, int h, int radius, double dSpec,
+                                                 int maxCircleCount = 20,
+                                                 bool bIsDarkCircleSearch = true,
+                                                 double scoreThreshold = 0.7,
+                                                 bool bSpiralSearch = true)
+        {
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
+            string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+            string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
+            if (!Directory.Exists(baseDir))
+                Directory.CreateDirectory(baseDir);
+
+            string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
+            SaveImage(pixelData, w, h, rawImagePath);
+
+            List<PointF> polygon = new List<PointF>();
+            List<PointF> points = new List<PointF>();
+            int step = (int)(radius * 0.8);  // ê²¹ì¹˜ì§€ ì•Šê³  ì˜ ì°¾ë„ë¡ ìŠ¤í… ì„¤ì •
+            circlesResult.Clear();
+            int foundCount = 0;
+
+            for (int y = radius; y < h - radius; y += step)
+            {
+                for (int x = radius; x < w - radius; x += step)
+                {
+                    if (foundCount >= maxCircleCount)
+                        break;
+
+                    int nCx = x;
+                    int nCy = y;
+
+                    int nMaxCircle = (int)(radius * (1 + dSpec));
+                    int nMinCircle = (int)(radius * (1 - dSpec));
+
+                    double dFirstSpec = Math.Min(dSpec * 3, 0.5);
+                    int nMaxCircleFirst = Math.Min((int)(radius * 2), 2000);
+                    int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
+
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius / 2), nMaxCircleFirst, 2, 10, bIsDarkCircleSearch);
+                    points = polygon;
+
+                    double dRadius1 = 0;
+                    List<RectangleF> tempCircleList = new List<RectangleF>();
+                    FindCircleFitter(tempCircleList, points, out dRadius1, 5, radius, dSpec);
+
+                    if (dRadius1 < nMaxCircle && dRadius1 > nMinCircle)
+                    {
+                        float cx = tempCircleList[0].X + tempCircleList[0].Width / 2;
+                        float cy = tempCircleList[0].Y + tempCircleList[0].Height / 2;
+                        double dErrorRatio = Math.Max(dSpec * 2, 0.2);
+
+                        polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius1 * (1 - dErrorRatio)), (int)(dRadius1 * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
+                        points = polygon;
+
+                        double dRadius2 = 0;
+                        Circle finalCircle = FindCircleFitter(tempCircleList, points, out dRadius2, 2, radius, dSpec);
+
+                        if (Math.Abs((dRadius1 - dRadius2) / dRadius2) < 0.05)
+                        {
+                            double dScore = IsRealCircle(finalCircle, dRadius2, points, dSpec);
+                            if (dScore >= scoreThreshold)
+                            {
+                                circlesResult.Add(new RectangleF(finalCircle.CenterX - (float)dRadius2, finalCircle.CenterY - (float)dRadius2, (float)dRadius2 * 2, (float)dRadius2 * 2));
+                                result.Circles.Add(finalCircle);
+                                result.ScoreCollection.Add(dScore);
+                                foundCount++;
+
+                                if (foundCount >= maxCircleCount)
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ì¤‘ë³µ ì œê±° + ì ìˆ˜ ê¸°ì¤€ í•„í„°ë§
+            double minCenterDistance = radius * 0.75;
+            List<Circle> filteredCircles = new List<Circle>();
+            List<double> filteredScores = new List<double>();
+
+            for (int i = 0; i < result.Circles.Count; i++)
+            {
+                var circleA = result.Circles[i];
+                var scoreA = result.ScoreCollection[i];
+                PointF centerA = new PointF(circleA.CenterX, circleA.CenterY);
+
+                bool isOverlapping = false;
+                foreach (var circleB in filteredCircles)
+                {
+                    PointF centerB = new PointF(circleB.CenterX, circleB.CenterY);
+                    double dist = Math.Sqrt(Math.Pow(centerA.X - centerB.X, 2) + Math.Pow(centerA.Y - centerB.Y, 2));
+                    if (dist < minCenterDistance)
+                    {
+                        isOverlapping = true;
+                        break;
+                    }
+                }
+
+                if (!isOverlapping && scoreA >= scoreThreshold)
+                {
+                    filteredCircles.Add(circleA);
+                    filteredScores.Add(scoreA);
+                }
+            }
+
+            // ê²°ê³¼ ë°˜ì˜
+            result.Circles = filteredCircles;
+            result.ScoreCollection = filteredScores;
+            circlesResult.Clear();
+            for (int i = 0; i < filteredCircles.Count; i++)
+            {
+                var c = filteredCircles[i];
+                var r = (float)c.Radius;
+                circlesResult.Add(new RectangleF(c.CenterX - r, c.CenterY - r, r * 2, r * 2));
+            }
+
+            return result;
+
+            //ê¸°ì¡´ ì½”ë“œ
+            {
+                //    QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+                //    string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
+                //    string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+                //    string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
+                //    if (!Directory.Exists(baseDir))
+                //        Directory.CreateDirectory(baseDir);
+
+                //    string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
+                //    SaveImage(pixelData, w, h, rawImagePath);
+
+                //    List<PointF> polygon = new List<PointF>();
+                //    List<PointF> points = new List<PointF>();
+                //    int nDivideCount = (int)(w / radius);
+                //    int nStepX = (int)(radius / 2);
+                //    int nStepY = (int)(radius / 2);
+                //    int direction = 0, stepsInCurrentDirection = 1, stepsTaken = 0, directionChangeCount = 0;
+                //    PointF currentPosition = new PointF(w / 2, h / 2);
+
+                //    if (!bSpiralSearch) nDivideCount = 3;
+
+                //    circlesResult.Clear();
+                //    int foundCount = 0;
+
+                //    for (int y = 0; y < nDivideCount; y++)
+                //    {
+                //        if (foundCount >= maxCircleCount)
+                //            break;
+
+                //        for (int x = 0; x < nDivideCount; x++)
+                //        {
+                //            int nCx = (int)currentPosition.X;
+                //            int nCy = (int)currentPosition.Y;
+
+                //            int nMaxCircle = (int)(radius * (1 + dSpec));
+                //            int nMinCircle = (int)(radius * (1 - dSpec));
+
+                //            double dFirstSpec = Math.Min(dSpec * 3, 0.5);
+                //            int nMaxCircleFirst = Math.Min((int)(radius * 2), 2000);
+                //            int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
+
+                //            polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius / 2), nMaxCircleFirst, 2, 10, bIsDarkCircleSearch);
+                //            points = polygon;
+
+                //            double dRadius1 = 0;
+                //            List<RectangleF> tempCircleList = new List<RectangleF>();
+                //            FindCircleFitter(tempCircleList, points, out dRadius1, 5, radius, dSpec);
+
+                //            if (dRadius1 < nMaxCircle && dRadius1 > nMinCircle)
+                //            {
+                //                float cx = tempCircleList[0].X + tempCircleList[0].Width / 2;
+                //                float cy = tempCircleList[0].Y + tempCircleList[0].Height / 2;
+                //                double dErrorRatio = Math.Max(dSpec * 2, 0.2);
+
+                //                polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius1 * (1 - dErrorRatio)), (int)(dRadius1 * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
+                //                points = polygon;
+
+                //                double dRadius2 = 0;
+                //                Circle finalCircle = FindCircleFitter(tempCircleList, points, out dRadius2, 2, radius, dSpec);
+
+                //                if (Math.Abs((dRadius1 - dRadius2) / dRadius2) < 0.05)
+                //                {
+                //                    double dScore = IsRealCircle(finalCircle, dRadius2, points, dSpec);
+                //                    if (dScore >= scoreThreshold)
+                //                    {
+                //                        circlesResult.Add(new RectangleF(finalCircle.CenterX - (float)dRadius2, finalCircle.CenterY - (float)dRadius2, (float)dRadius2 * 2, (float)dRadius2 * 2));
+                //                        result.Circles.Add(finalCircle);
+                //                        result.ScoreCollection.Add(dScore);
+                //                        foundCount++;
+
+                //                        if (foundCount >= maxCircleCount)
+                //                            break;
+                //                    }
+                //                }
+                //            }
+
+                //            switch (direction)
+                //            {
+                //                case 0: currentPosition.X += nStepX; break; // right
+                //                case 1: currentPosition.Y -= nStepY; break; // up
+                //                case 2: currentPosition.X -= nStepX; break; // left
+                //                case 3: currentPosition.Y += nStepY; break; // down
+                //            }
+
+                //            stepsTaken++;
+                //            if (stepsTaken == stepsInCurrentDirection)
+                //            {
+                //                stepsTaken = 0;
+                //                direction = (direction + 1) % 4;
+                //                directionChangeCount++;
+                //                if (directionChangeCount % 2 == 0)
+                //                    stepsInCurrentDirection++;
+                //            }
+                //        }
+                //    }
+
+                //    // ì¤‘ë³µ ì› ì œê±° + ì ìˆ˜ ê¸°ì¤€ í•„í„°ë§
+                //    double minCenterDistance = radius * 0.75; // ìµœì†Œ ê°„ê²© í—ˆìš© ê±°ë¦¬
+                //    List<Circle> filteredCircles = new List<Circle>();
+                //    List<double> filteredScores = new List<double>();
+
+                //    for (int i = 0; i < result.Circles.Count; i++)
+                //    {
+                //        var circleA = result.Circles[i];
+                //        var scoreA = result.ScoreCollection[i];
+                //        PointF centerA = new PointF(circleA.CenterX, circleA.CenterY);
+
+                //        bool isOverlapping = false;
+                //        foreach (var circleB in filteredCircles)
+                //        {
+                //            PointF centerB = new PointF(circleB.CenterX, circleB.CenterY);
+                //            double dist = Math.Sqrt(Math.Pow(centerA.X - centerB.X, 2) + Math.Pow(centerA.Y - centerB.Y, 2));
+                //            if (dist < minCenterDistance)
+                //            {
+                //                isOverlapping = true;
+                //                break;
+                //            }
+                //        }
+
+                //        if (!isOverlapping && scoreA >= scoreThreshold)
+                //        {
+                //            filteredCircles.Add(circleA);
+                //            filteredScores.Add(scoreA);
+                //        }
+                //    }
+
+                //    // ê²°ê³¼ë¥¼ í•„í„°ë§ëœ ê°’ìœ¼ë¡œ êµì²´
+                //    result.Circles = filteredCircles;
+                //    result.ScoreCollection = filteredScores;
+
+                //    // RectangleF ê²°ê³¼ë„ ë™ê¸°í™”
+                //    circlesResult.Clear();
+                //    for (int i = 0; i < filteredCircles.Count; i++)
+                //    {
+                //        var c = filteredCircles[i];
+                //        var r = (float)c.Radius;
+                //        circlesResult.Add(new RectangleF(c.CenterX - r, c.CenterY - r, r * 2, r * 2));
+                //    }
+
+                //    return result;
             }
         }
 
