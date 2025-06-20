@@ -20122,26 +20122,34 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                //선택 가공시 조건
-                                if (Equipment.SelectRunEnable && Equipment.SelectRunEnable && m_nSelectedSocket_Index >= 0)
+                                if (m_bCO2_MultyMode)
                                 {
-                                    // Hole은 가공 안하는데...
-                                    // Group_Count 를 증가 시키면 Hole은 넘기고 Drilling 하지 않을까?
-                                    if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
-                                    {
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
-                                    }
-                                    else
-                                    {
-                                        //m_nDrillingWork_Group_Count++;
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
-                                    }
+                                    //  소켓 가공 정상 진행
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
                                 }
                                 else
                                 {
-                                    // 여기서 증가하면 안된다.
-                                    //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    //선택 가공시 조건
+                                    if (Equipment.SelectRunEnable && Equipment.SelectRunEnable && m_nSelectedSocket_Index >= 0)
+                                    {
+                                        // Hole은 가공 안하는데...
+                                        // Group_Count 를 증가 시키면 Hole은 넘기고 Drilling 하지 않을까?
+                                        if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                                        {
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                                        }
+                                        else
+                                        {
+                                            //m_nDrillingWork_Group_Count++;
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // 여기서 증가하면 안된다.
+                                        //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    }
                                 }
                             }
                         }
@@ -20194,19 +20202,27 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            //선택 가공시 조건
-                            if (Equipment.SelectRunEnable && m_nSelectedSocket_Index >= 0)
+                            if(m_bCO2_MultyMode)
                             {
-                                // Hole은 가공 안하는데...
-                                // Group_Count 를 증가 시키면 Hole은 넘기고 Drilling 하지 않을까?
-                                m_nDrillingWork_Group_Count++;// = m_nSelectedSocket_Index;
+                                //  소켓 가공 정상 진행
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
                             }
                             else
                             {
-                                // Hole은 가공 안하니깐.
-                                m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                //선택 가공시 조건
+                                if (Equipment.SelectRunEnable && m_nSelectedSocket_Index >= 0)
+                                {
+                                    // Hole은 가공 안하는데...
+                                    // Group_Count 를 증가 시키면 Hole은 넘기고 Drilling 하지 않을까?
+                                    m_nDrillingWork_Group_Count++;// = m_nSelectedSocket_Index;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                                }
+                                else
+                                {
+                                    // Hole은 가공 안하니깐.
+                                    m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                }
                             }
                         }
                     }
