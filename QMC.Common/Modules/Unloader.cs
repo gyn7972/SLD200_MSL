@@ -2675,7 +2675,6 @@ namespace QMC.Common.Modules
             //2. Stacker0 에 Module Put Down Cycle
             //3. Stacker1 에 Module Put Down Cycle
             //4. NG-Port 에 Module Drop Cycle
-
             if (Equipment.AutoRunStatus &&
                 !Equipment.SocketStopped &&                                             //  Socket Stop 시 동작 안되도록
                 !Equipment.CycleStopped_UnloaderTransfer &&                             //  Cycle Stop 시 동작 안되도록
@@ -2782,6 +2781,8 @@ namespace QMC.Common.Modules
                     //  Unlaoder Transfer XZ 축 모터 전체 Stop
                     MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.TR_X, 2000);
                     MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.TR_Z, 2000);
+
+                    SetUnloaderComplete(false);
 
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Process_Type_Check;
                     break;
@@ -4731,7 +4732,7 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Ready Position 이동 완료");
 
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = false;
-
+                            
                             //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
                             if (Equipment.CycleModuleStop)
                             {
@@ -4749,9 +4750,7 @@ namespace QMC.Common.Modules
 
                             loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                                                //  Unloader 에서 Work Stage 의 Module 을 가져갔으므로 false 로 만들어 줌. 
                             m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = true;
-
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = false;
-
                             workStage.m_bMainWorkCycle_Complete = false;
                             break;
 
@@ -4765,7 +4764,7 @@ namespace QMC.Common.Modules
                             m_bStacker0_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
 
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 Stacker0 에 Module 을 내려놓았으므로 true 로 만들어 줌.
-
+                            SetUnloaderComplete(true);
                             ////  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
                             //if (Equipment.CycleStop)
                             //{
@@ -4788,6 +4787,7 @@ namespace QMC.Common.Modules
                             m_bStacker1_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
 
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 Stacker1 에 Module 을 내려놓았으므로 true 로 만들어 줌.
+                            SetUnloaderComplete(true);
 
                             ////  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
                             //if (Equipment.CycleStop)
@@ -4810,6 +4810,7 @@ namespace QMC.Common.Modules
                             workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
 
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 NG-Port 에 Module 을 내려놓았으므로 true 로 만들어 줌.
+                            SetUnloaderComplete(true);
 
                             ////  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
                             //if (Equipment.CycleStop)
@@ -4827,12 +4828,19 @@ namespace QMC.Common.Modules
                             m_strTemp = "동작 타입 목록에 없음";
                             Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Transfer_Error);
-
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "동작 타입 목록에 없음");
-                            break;
                     }
 
-                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
+                    // SemiAuto Mode 일 경우. 여기서 연속으로 진행하면 안됨.
+                    if (!Equipment.AutoRunStatus && Equipment.SemiAutoEnable)
+                    {
+                        Equipment.SemiAutoEnable = false;
+                        m_UnloaderWork_Start = false;
+                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
+                    }
+                    else
+                    {
+                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
+                    }
                     break;
             }
 
@@ -7567,5 +7575,55 @@ namespace QMC.Common.Modules
             });
         }
 
+        //SemiAuto 변수.
+        public enum SemiAutoStep
+        {
+            None = 0,
+            Stacker0,
+            Stacker1,
+            Transfer
+        }
+
+        public SemiAutoStep _semiAutoRequest = SemiAutoStep.None;
+        public bool _isSemiAutoMode = false;
+        public bool _isSemiAutoDetailMode = false;
+        public bool _semiAutoDetailStepRequest = false;
+
+        public void SetSemiAutoRequest(SemiAutoStep step)
+        {
+            switch (step)
+            {
+                case SemiAutoStep.Stacker0:
+                    m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
+                    break;
+                case SemiAutoStep.Stacker1:
+                    m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
+                    break;
+                case SemiAutoStep.Transfer:
+                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                    break;
+                default:
+                    break;
+            }
+
+            _semiAutoRequest = step;
+            _isSemiAutoMode = true;
+        }
+
+        public void ClearSemiAutoRequest()
+        {
+            _semiAutoRequest = SemiAutoStep.None;
+            _isSemiAutoMode = false;
+        }
+
+        private bool m_bUnloaderComplete = false;
+        private void SetUnloaderComplete(bool bRtn)
+        {
+            m_bUnloaderComplete = bRtn;
+        }
+        public bool IsUnloaderComplete()
+        {
+            return m_bUnloaderComplete;
+        }
     }
 }

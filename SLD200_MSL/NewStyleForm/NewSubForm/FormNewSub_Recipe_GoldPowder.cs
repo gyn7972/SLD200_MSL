@@ -459,7 +459,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.Camera_HighRes.LatestImage = ImageViewer_Recipe_GoldPowder_highs.InputImage;
             }
 
-
             dSpec = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text); //  Fiducial 마크 Spec
             dTargetSize_Radius = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text); //  Fiducial 마크 크기
             dScore = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text); //  Fiducial 마크 Score
@@ -477,9 +476,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             QMC_ImageProcessFindAlign aligner = new QMC_ImageProcessFindAlign();
-
-            bool bCO2_RepairMode = true;
-
+            
             List<RectangleF> circlesResult = new List<RectangleF>();
             {
                 int w = workStage.Camera_HighRes.Resolution.Width;
@@ -489,21 +486,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 double m_dradius = 0.0;
                 m_dradius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
 
-                if(bCO2_RepairMode)
+                if(workStage.m_bCO2_repairMode)
                 {
-                    //result = aligner.FindCircleForFR4(workStage.Camera_HighRes.LatestImage.RawData,
-                    //                                  w,
-                    //                                  h,
-                    //                                  (int)m_dradius,
-                    //                                  dSpec,
-                    //                                  dScore);
-                    //circlesResult.Clear();
-                    //foreach (var circle in result.Circles)
-                    //{
-                    //    circlesResult.Add(circle.GetBoundery());
-                    //    bFindCircle = true;
-                    //}
-
                     result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData,
                                                     w, h, (int)m_dradius, dSpec,
@@ -513,9 +497,26 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
                 else
                 {
-                    result = aligner.FindGoldPowderForAutoTreshold(circlesResult,
-                                                        workStage.Camera_HighRes.LatestImage.RawData,
-                                                        w, h, (int)m_dradius, dScore, dSpec);
+                    if(workStage.m_bCO2_MultyMode)
+                    {
+                        result = aligner.FindCirclesWidthCircleBoundaryMultipleCircles(
+                                        circlesResult,
+                                        workStage.Camera_HighRes.LatestImage.RawData,
+                                        w, h,
+                                        (int)m_dradius,
+                                        dSpec,
+                                        20,                     // 최대 20개 원 탐색
+                                        true,                  // 검은 원
+                                        Equipment.stVisionRecipeSet.dGoldPowderCircleMarkScore
+                                    );
+                    }
+                    else
+                    {
+                        result = aligner.FindGoldPowderForAutoTreshold(circlesResult,
+                                                            workStage.Camera_HighRes.LatestImage.RawData,
+                                                            w, h, (int)m_dradius, dScore, dSpec);
+                    }
+                        
                     if (circlesResult.Count > 3)
                     {
                         bFindCircle = true;
@@ -564,5 +565,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
             }
         }
+
     }
 }

@@ -698,6 +698,12 @@
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.Designer.cs">
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_MotorMove.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_MotorMove.Designer.cs">
+      <DependentUpon>FormNewSub_Main_MotorMove.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ModuleStatus.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -721,6 +727,12 @@
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_SemiAuto.Designer.cs">
       <DependentUpon>FormNewSub_SemiAuto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_SemiAuto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_SemiAuto.Designer.cs">
+      <DependentUpon>FormNewSub_Main_SemiAuto.cs</DependentUpon>
     </Compile>
     <Compile Include="NormalDataConfigControl.cs">
       <SubType>UserControl</SubType>
@@ -1554,6 +1566,9 @@
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.resx">
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Main_MotorMove.resx">
+      <DependentUpon>FormNewSub_Main_MotorMove.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_ModuleStatus.resx">
       <DependentUpon>FormNewSub_ModuleStatus.cs</DependentUpon>
     </EmbeddedResource>
@@ -1565,6 +1580,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_SemiAuto.resx">
       <DependentUpon>FormNewSub_SemiAuto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Main_SemiAuto.resx">
+      <DependentUpon>FormNewSub_Main_SemiAuto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NormalDataConfigControl.resx">
       <DependentUpon>NormalDataConfigControl.cs</DependentUpon>
