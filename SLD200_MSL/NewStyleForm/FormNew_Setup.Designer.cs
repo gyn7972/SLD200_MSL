@@ -436,6 +436,7 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.checkBox_HoleCenterEnable = new System.Windows.Forms.CheckBox();
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable = new System.Windows.Forms.CheckBox();
             this.textBox_Setup_Option_Hole02_50_Wait_Time = new System.Windows.Forms.TextBox();
             this.checkBox_Setup_Option_LaserHeight_Retry_Enable = new System.Windows.Forms.CheckBox();
@@ -573,7 +574,6 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.checkBox_HoleCenterEnable = new System.Windows.Forms.CheckBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -5764,6 +5764,15 @@
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
             // 
+            // checkBox_HoleCenterEnable
+            // 
+            this.checkBox_HoleCenterEnable.Location = new System.Drawing.Point(1024, 157);
+            this.checkBox_HoleCenterEnable.Name = "checkBox_HoleCenterEnable";
+            this.checkBox_HoleCenterEnable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_HoleCenterEnable.TabIndex = 126;
+            this.checkBox_HoleCenterEnable.Text = "Hole Center Enable";
+            this.checkBox_HoleCenterEnable.UseVisualStyleBackColor = true;
+            // 
             // checkBox_Setup_Option_Hole02_50_Wait_Enable
             // 
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Location = new System.Drawing.Point(1024, 113);
@@ -5772,6 +5781,7 @@
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.TabIndex = 125;
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Text = "Hole2~50 WaitTime(ms) :";
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_Hole02_50_Wait_Enable_CheckedChanged);
             // 
             // textBox_Setup_Option_Hole02_50_Wait_Time
             // 
@@ -7308,15 +7318,6 @@
             this.label96.TabIndex = 77;
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // checkBox_HoleCenterEnable
-            // 
-            this.checkBox_HoleCenterEnable.Location = new System.Drawing.Point(1024, 157);
-            this.checkBox_HoleCenterEnable.Name = "checkBox_HoleCenterEnable";
-            this.checkBox_HoleCenterEnable.Size = new System.Drawing.Size(221, 20);
-            this.checkBox_HoleCenterEnable.TabIndex = 126;
-            this.checkBox_HoleCenterEnable.Text = "Hole Center Enable";
-            this.checkBox_HoleCenterEnable.UseVisualStyleBackColor = true;
             // 
             // FormNew_Setup
             // 

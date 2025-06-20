@@ -4368,5 +4368,19 @@ namespace SLD200_MSL
                 textBox_Setup_Option_LaserHeight_Retry_Count.Enabled = false;
             }
         }
+
+        private void checkBox_Setup_Option_Hole02_50_Wait_Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_Hole02_50_Wait_Enable.Checked)
+            {
+                Equipment.Machine_Hole02_50_Wait_Enable = true;
+                textBox_Setup_Option_Hole02_50_Wait_Time.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_Hole02_50_Wait_Enable = false;
+                textBox_Setup_Option_Hole02_50_Wait_Time.Enabled = false;
+            }
+        }
     }
 }
