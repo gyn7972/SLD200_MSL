@@ -2738,10 +2738,18 @@ namespace SLD200_MSL
             var mb1 = new MessageBoxOk();
             mb1.ShowDialog("Reset", "모터 초기화 (대기위치 이동) 후 시작 바랍니다.");
 
-            // 가공 Data 초기화
-            ProcessManager.Reset();
-            //  Layer Info List 초기화
-            ProcessManager.Init();
+            try
+            {
+                // 가공 Data 초기화
+                ProcessManager.Reset();
+                //  Layer Info List 초기화
+                ProcessManager.Init();
+            }
+            catch(Exception ex)
+            {
+                Log.Write(ex);
+            }
+           
 
             //  가공 Sequence Index 초기화 (Loading 부터 시작)
             Equipment.m_bMainProcessStatus_LD_LPort_Complete = false;                       //  Loader LPort 투입 완료
@@ -2873,9 +2881,16 @@ namespace SLD200_MSL
 
             workStage.m_bPassedSocket_Exist = false; //  Pass Socket 존재 여부
 
-            // workstage LaserOff2 case문에서 초기화 하는 변수 전부 같이 Reset
-            workStage.GlobalSocketStatus_Init();            //위에서 하고 있는거 같지만.
-            workStage.GetDrillingData_ProcessingFlagCheck();
+            try
+            {
+                // workstage LaserOff2 case문에서 초기화 하는 변수 전부 같이 Reset
+                workStage.GlobalSocketStatus_Init();            //위에서 하고 있는거 같지만.
+                workStage.GetDrillingData_ProcessingFlagCheck();
+            }
+            catch(Exception ex)
+            {
+                Log.Write(ex);
+            }
 
             //  가공이 완료되었으므로, Align 변수 false 로
             workStage.m_bAlignCompleted = false;
@@ -2897,12 +2912,18 @@ namespace SLD200_MSL
             unloader.ResetRecovery();
             loader.ResetRecovery();
 
-            //도면을 현재 recipe로 불러온다.
-            if(Equipment.RecipeOpen_DrawingFilePath != null && Equipment.RecipeOpen_DrawingFilePath != "")
+            try
             {
-                workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                //도면을 현재 recipe로 불러온다.
+                if (Equipment.RecipeOpen_DrawingFilePath != null && Equipment.RecipeOpen_DrawingFilePath != "")
+                {
+                    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                }
             }
-
+            catch(Exception ex)
+            {
+                Log.Write(ex);
+            }
 
             //I/O - Off
             if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
@@ -2940,6 +2961,8 @@ namespace SLD200_MSL
                 mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Reset", "Unloader Picker - 자재 확인 및 버큠 Off 바랍니다.");
             }
+
+
         }
             
 

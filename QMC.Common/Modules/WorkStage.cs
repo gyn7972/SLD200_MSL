@@ -15690,7 +15690,10 @@ namespace QMC.Common.Modules
                         }
 
                         //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
-                        ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
+                        // 설정값보다 +5만 더한다. 설정값보다 값이 높아야 진공 잡았다고 판단 하기 때문에
+                        // 설정을 좀 더 하자.
+                        double dVacuumRegulator = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel + 5;
+                        ElectroPneumaticRegulatorComm_Pressure_Set(dVacuumRegulator);
                         Thread.Sleep(100);
                     }
 
@@ -15910,7 +15913,11 @@ namespace QMC.Common.Modules
                             workStageParameter.DO_Stage_Vacuum(true);
                             // Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
                             // 여기는 -60 <- 파라미터로 빼야함.
-                            ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
+                            //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
+                            // 설정값보다 +5만 더한다. 설정값보다 값이 높아야 진공 잡았다고 판단 하기 때문에
+                            // 설정을 좀 더 하자.
+                            double dVacuumRegulator = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel + 5;
+                            ElectroPneumaticRegulatorComm_Pressure_Set(dVacuumRegulator);
                             Thread.Sleep(100);
                         }
                     }
@@ -30368,9 +30375,13 @@ namespace QMC.Common.Modules
                             // 예시: Area 0~4번 추가 (5개 영역)
                             // 실제 필요한 area 개수가 있다면 해당 로직으로 대체
                             var layer = socket.GetLayer(layerName);
-                            for (int area = 0; area < m_stDividedRegion_GroupData[i].m_stDividedRegion_RegionData[0].nRegion_Num; area++)
+
+                            if(m_stDividedRegion_GroupData[i].m_stDividedRegion_RegionData.Length > 0)
                             {
-                                layer.AddArea(area);
+                                for (int area = 0; area < m_stDividedRegion_GroupData[i].m_stDividedRegion_RegionData[0].nRegion_Num; area++)
+                                {
+                                    layer.AddArea(area);
+                                }
                             }
                         }
                         else if ((layerName == "Thruhole") || (layerName == "Outline") || (layerName == "Marking"))

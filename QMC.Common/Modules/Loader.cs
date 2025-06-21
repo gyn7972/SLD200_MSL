@@ -7132,6 +7132,8 @@ namespace QMC.Common.Modules
                             workStage.workStageParameter.DO_Stage_Vacuum(true);
                             // Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
                             // 여기는 -60 <- 파라미터로 빼야함..
+                            //double dVacuumRegulator = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel + 5;
+                            //workStage.ElectroPneumaticRegulatorComm_Pressure_Set(dVacuumRegulator);
                             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
                             Thread.Sleep(100);
                         }
@@ -8745,6 +8747,9 @@ namespace QMC.Common.Modules
                                 m_dSpeed,
                                 m_dAccDec,
                                 m_dAccDec);
+
+            //Stacker는 조금 더 기다렸다가 내리자.
+            Thread.Sleep(1000);
 
             MC_Func.MC_MovePosition((int)nAxis.Z1,
                                 loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1],
