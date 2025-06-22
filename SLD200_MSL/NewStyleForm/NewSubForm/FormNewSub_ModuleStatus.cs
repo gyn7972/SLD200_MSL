@@ -1,5 +1,6 @@
 ﻿using QMC.Common;
 using QMC.Common.Global;
+using QMC.Common.Modules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,9 +19,100 @@ namespace SLD200.NewStyleForm.NewSubForm
         private DrillingProcessManager drillingProcessManager;
         private LayerProcessData selectedLayer;
         private ToolTip socketToolTip = new ToolTip();
+
+        static WorkStage workStage;
+        static Loader loader;
+        static Unloader unloader;
+        static Vision vision;
+        static Bds bds;
+
+        private System.Windows.Forms.Timer timerModuleStatus;
+        private bool _isRunning_ModuleStatus = false;
+
+        private int selectedSocketRow = -1;
+        private int selectedSocketColumn = -1;
+
+        private Label label_SocketInfoSummary;
+        private ListView listView_LayerDetails;
+
+        private Timer timerStatusUpdate;
+
         public FormNewSub_ModuleStatus()
         {
             InitializeComponent();
+            this.AutoScaleMode = AutoScaleMode.None;
+            this.DoubleBuffered = true;
+
+            ModuleCollection m_collectionModules;
+            m_collectionModules = Equipment.Modules;
+            foreach (Module module in m_collectionModules)
+            {
+                if (module.Name == "WorkStage") workStage = module as WorkStage;
+                if (module.Name == "Loader") loader = module as Loader;
+                if (module.Name == "Unloader") unloader = module as Unloader;
+                if (module.Name == "Vision") vision = module as Vision;
+                if (module.Name == "BDS") bds = module as Bds;
+            }
+
+            timerModuleStatus = new System.Windows.Forms.Timer();
+            timerModuleStatus.Interval = 100;
+            timerModuleStatus.Tick += TimerModuleStatus_Tick;
+            timerModuleStatus.Start();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                // 사용자가 닫기(X 버튼) 누른 경우 → 숨기기만 하고 종료 안 함
+                e.Cancel = true;
+                this.Hide();
+                return;
+            }
+
+            // 그 외 종료 (Application.Exit 등) → 정식 해제
+            base.OnFormClosing(e);
+        }
+
+        public void DisposeSemiAutoResources()
+        {
+            if (timerModuleStatus != null)
+            {
+                timerModuleStatus.Stop();
+                timerModuleStatus.Tick -= TimerModuleStatus_Tick;
+                timerModuleStatus.Dispose();
+                timerModuleStatus = null;
+            }
+
+            // 필요 시 다른 모듈 정리도 여기에
+        }
+
+        private void TimerModuleStatus_Tick(object sender, EventArgs e)
+        {
+            if (_isRunning_ModuleStatus)
+                return;
+
+            try
+            {
+                _isRunning_ModuleStatus = true;
+                Timer_ModuleStatusRun();
+            }
+            catch (Exception ex)
+            {
+                // 로그 남기기
+                Log.Write(ex);
+                _isRunning_ModuleStatus = false;
+            }
+            finally
+            {
+                _isRunning_ModuleStatus = false;
+            }
+        }
+
+        private void Timer_ModuleStatusRun()
+        {
+            // 실행할 작업들을 여기에 구현.
+
         }
 
         public void LoadDrillingManager(DrillingProcessManager manager)

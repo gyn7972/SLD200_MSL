@@ -10755,47 +10755,6 @@ namespace QMC.Common.Modules
                             }
                         }
                         bRtn = true;
-
-                        //if (bSynchronous)
-                        //{
-                        //    bool bTimeout = false;
-                        //    DateTime StartTime = DateTime.Now;
-                        //    TimeSpan ProcessTime;
-                        //    while (true)
-                        //    {
-                        //        if (IsLoader_TeachingPositionsTransferX(nTeachingPos))
-                        //            break;
-
-                        //        //Config.TimeOut
-                        //        if (100000 > 0) // 2000 정도면 10초?
-                        //        {
-                        //            ProcessTime = DateTime.Now - StartTime;
-                        //            if (ProcessTime.TotalMilliseconds >= 100000)
-                        //            {
-                        //                bTimeout = true;
-                        //                break;
-                        //            }
-                        //        }
-                        //        Thread.Sleep(1);
-                        //    }
-
-                        //    if (bTimeout)
-                        //    {
-                        //        strTemp = string.Format("MovetoLoader_TeachingPositionsTransferX [Fail]: LoaderTransferX Axis이 이동 실패.");
-                        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
-
-                        //        Alarm alarm = new Alarm();
-                        //        alarm.Title = "Loader TransferX Timeout";
-                        //        alarm.Code = -100;
-                        //        alarm.Grade = "Stop";
-                        //        alarm.Source = this.Name;
-                        //        alarm.Cause = "Loader TransferX Timeout이 발생했습니다. Loader TransferX을 확인해주세요.";
-                        //        //AlarmPost(AlarmKey.LoaderTransferZTimeout);
-
-                        //        return bRtn = false;
-                        //    }
-                        //}
-                        //bRtn = true;
                     }
                 }
                 else
@@ -11149,6 +11108,7 @@ namespace QMC.Common.Modules
         public enum SemiAutoStep
         {
             None = 0,
+            Start,
             Stacker0,
             Stacker1,
             MAlign,
@@ -11164,17 +11124,8 @@ namespace QMC.Common.Modules
         {
             switch(step)
             {
-                case SemiAutoStep.Stacker0:
-                    m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.Start;
-                    break;
-                case SemiAutoStep.Stacker1:
-                    m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.Start;
-                    break;
-                case SemiAutoStep.MAlign:
-                    m_nMAlign_Step = (int)MAlign_Step.Start;
-                    break;
-                case SemiAutoStep.Transfer:
-                    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Start;
+                case SemiAutoStep.Start:
+                    m_LoaderWork_Start = true;
                     break;
                 default:
                     break;
@@ -11186,6 +11137,7 @@ namespace QMC.Common.Modules
 
         public void ClearSemiAutoRequest()
         {
+            Equipment.SemiAutoEnable = false;
             _semiAutoRequest = SemiAutoStep.None;
             _isSemiAutoMode = false;
         }
