@@ -20841,7 +20841,8 @@ namespace QMC.Common.Modules
 
                 //  각 Hole 별로 Drilling 완성
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck:                                  //  List Buffer Open                    
-                    if (m_nLaserDrilling_InGroup_HoleCount < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum)
+                    if (m_nLaserDrilling_InGroup_HoleCount < 
+                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum)
                     {
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, Hole 단위 본 가공, 가공할 Region Object 가 남아 있음");
 
@@ -22374,7 +22375,6 @@ namespace QMC.Common.Modules
                     }
 
                     TickCount_Start((int)TickType.TICK_MAIN);
-
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionLaserBusyCheck;     //   EntireDrilling_ScannerOnly_GroupListData_ExecuteCheck;
                     break;
 
@@ -22441,8 +22441,6 @@ namespace QMC.Common.Modules
 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
                         }
-
-                        
                     }
                     break;
                 /// <summary>
@@ -23627,7 +23625,6 @@ namespace QMC.Common.Modules
 
                 var rtcMode = rtc as IRtc;                                  //  RTC6
 
-
                 m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
                 Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List Open");
@@ -23641,7 +23638,6 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                     int m_nSDC_Count = 0;
-
                     do
                     {
                         //  Spot Distance Control

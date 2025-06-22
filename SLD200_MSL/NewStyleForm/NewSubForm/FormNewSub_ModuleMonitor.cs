@@ -192,17 +192,17 @@ namespace SLD200.NewStyleForm.NewSubForm
                 if (totalSockets == 0)
                     return;
 
-                // ▶ 패널 내부 전체 크기 기준
+                // 패널 내부 전체 크기 기준
                 int panelWidth = this.ClientSize.Width;
                 int panelHeight = this.ClientSize.Height;
                 int margin = 5;
                 int spacing = 5;
 
-                // ▶ 그리드 개수 계산 (최대한 정사각형에 가깝게)
+                // 그리드 개수 계산 (최대한 정사각형에 가깝게)
                 int columnCount = (int)Math.Ceiling(Math.Sqrt(totalSockets));
                 int rowCount = (int)Math.Ceiling(totalSockets / (double)columnCount);
 
-                // ▶ 소켓 크기 계산 (전체 공간 내에서 spacing 포함하여 자동 조절)
+                // 소켓 크기 계산 (전체 공간 내에서 spacing 포함하여 자동 조절)
                 int totalSpacingX = (columnCount - 1) * spacing + 2 * margin;
                 int totalSpacingY = (rowCount - 1) * spacing + 2 * margin;
                 int socketSize = Math.Min(
@@ -210,7 +210,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     (panelHeight - totalSpacingY) / rowCount
                 );
 
-                // ▶ 그리기 시작 위치
+                // 그리기 시작 위치
                 int x = margin;
                 int y = margin;
 
@@ -291,7 +291,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void DrawSocketIndex(Graphics g, Rectangle rect, int socketNumber)
         {
             string text = socketNumber.ToString();
-            using (Font font = new Font("Arial", rect.Height / 5f, FontStyle.Bold))
+            using (Font font = new Font("Tahoma", rect.Height / 5f, FontStyle.Bold))
             using (StringFormat format = new StringFormat()
             {
                 Alignment = StringAlignment.Center,

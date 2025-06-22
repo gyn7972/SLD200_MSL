@@ -3592,7 +3592,7 @@ namespace SLD200_MSL
             await Task.Delay(500);
 
             // DRILLING 타입의 모든 Layer에서 socket 0~4 순차적으로 가공 상태로 설정
-            for (int socketIndex = 0; socketIndex < 9; socketIndex++)
+            for (int socketIndex = 0; socketIndex < 30; socketIndex++)
             {
                 foreach (var layer in workStage.DrillingManager.LayerList)
                 {
