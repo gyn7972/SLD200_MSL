@@ -17534,7 +17534,9 @@ namespace QMC.Common.Modules
                                     //  Spot Distance Control
                                     var alc = rtc as IRtcAutoLaserControl;
 
-                                    m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
+                                    //
+                                    //m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
+                                    m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityAndEncoderSpeed,
                                         (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance,                              //  Percentage100
                                         (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 0.8),                      //  Min
                                         (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 1.2));                     //  Max
@@ -23266,10 +23268,21 @@ namespace QMC.Common.Modules
                 m_bDivRegionList_Success = true;
                 m_bScannerLib_Success = true;
 
-                var rtcMode = rtc as IRtc;                                  //  RTC6
+                //var rtcMode = rtc as IRtc;                                  //  RTC6
+                //rtc.ListBegin(laser, ListType.Auto);
+                //rtc.ListEnd();
+                //rtc.ListExecute();
+                //Thread.Sleep(100);
 
+                //rtc.CtlDelay((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_LaserOnDelay,
+                //                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_LaserOffDelay,
+                //                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_JumpDelay,
+                //                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_MarkDelay,
+                //                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_PolygonDelay);
 
-                m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+                //m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+                m_bDivRegionList_Success &= rtc.ListBegin(laser, ListType.Auto);
+                //m_bDivRegionList_Success &= rtc.ListBegin(laser, ListType.Single);
 
                 Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List Open");
 

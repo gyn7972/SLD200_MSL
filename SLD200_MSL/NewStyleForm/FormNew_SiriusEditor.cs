@@ -606,6 +606,7 @@ namespace SLD200_MSL
             ScannerOffset.Y = (float)Equipment.Scanner_HeadOffset_Y;
             ScannerOffset.Z = (float)Equipment.Scanner_HeadOffset_Angle;
             workStage.rtc.PrimaryHeadBaseOffset = ScannerOffset;
+
             #endregion
 
             #region 레이저 소스 초기화
