@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -124,11 +125,24 @@ namespace QMC.Common.Global
         public int CycleTimer_NGSocketCount { get; set; } = 0;
         //  workStage 가공시간 계산을 위해 사용되는 변수
         public CycleTimer CycleTimer_LaserDrilling { get; set; } = new CycleTimer();
-    
+
+        private bool _hasChanged = false;
+
         public void ResetAll()
         {
+            //foreach (var layer in LayerList)
+            //    layer.Reset();
+
+            //MarkAsChanged();
             foreach (var layer in LayerList)
-                layer.Reset();
+            {
+                foreach (var socket in layer.SocketList)
+                {
+                    socket.IsDrilled = false;
+                    socket.IsSuccess = false;
+                }
+            }
+            MarkAsChanged();
         }
 
         public LayerProcessData GetLayer(string layerName)
@@ -274,8 +288,10 @@ namespace QMC.Common.Global
                                 GoldOffsetX = baseSocket.GoldOffsetX,
                                 GoldOffsetY = baseSocket.GoldOffsetY,
                                 GoldTheta = baseSocket.GoldTheta,
-                                IsDrilled = baseSocket.IsDrilled,
-                                IsSuccess = baseSocket.IsSuccess,
+                                //IsDrilled = baseSocket.IsDrilled,
+                                //IsSuccess = baseSocket.IsSuccess,
+                                IsDrilled = false,
+                                IsSuccess = false,
                                 IsUsedInThisLayer = baseSocket.IsUsedInThisLayer
                             });
                         }
@@ -297,6 +313,8 @@ namespace QMC.Common.Global
                 LayerList.Add(layer);
                 Log.Write("DrillStatus", $"Layer 추가됨: {layer.LayerName} (Enum={layerEnum}, Type={layerType}) - 소켓 {layer.SocketList.Count}개");
             }
+
+            MarkAsChanged();
         }
 
         private int ParseLayerNumber(string layerName)
@@ -319,6 +337,53 @@ namespace QMC.Common.Global
             }
         }
 
+        /// <summary>
+        /// 모든 Layer에 존재하는 소켓 수의 총합을 반환
+        /// IsUsedInThisLayer == true 인 경우만 포함하려면 filter 파라미터 활용
+        /// </summary>
+        public int GetTotalSocketCount(bool onlyUsedSockets = false)
+        {
+            int count = 0;
+
+            foreach (var layer in LayerList)
+            {
+                if (onlyUsedSockets)
+                    count += layer.SocketList.Count(s => s.IsUsedInThisLayer);
+                else
+                    count += layer.SocketList.Count;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// 모든 Layer 중 가장 많은 소켓 개수를 가진 Layer의 소켓 수를 반환
+        /// onlyUsedSockets == true 인 경우 IsUsedInThisLayer == true 인 소켓만 계산
+        /// </summary>
+        public int GetMaxSocketCountPerLayer(bool onlyUsedSockets = false)
+        {
+            int maxCount = 0;
+
+            foreach (var layer in LayerList)
+            {
+                // 필요한 레이어만 필터링
+                if (layer.LayerType != Equipment.LayerType.LAYER_DRILLING &&
+                    layer.LayerType != Equipment.LayerType.LAYER_THRUHOLE &&
+                    layer.LayerType != Equipment.LayerType.LAYER_OUTLINE &&
+                    layer.LayerType != Equipment.LayerType.LAYER_MARKING)
+                    continue;
+
+                int count = onlyUsedSockets
+                    ? layer.SocketList.Count(s => s.IsUsedInThisLayer)
+                    : layer.SocketList.Count;
+
+                if (count > maxCount)
+                    maxCount = count;
+            }
+
+            return maxCount;
+        }
+
         public LayerDrillingStatus GetLayerDrillingStatus(Equipment.LayerList layerEnum)
         {
             var layer = GetLayer(layerEnum);
@@ -338,5 +403,74 @@ namespace QMC.Common.Global
 
             return status;
         }
+
+        public void MarkAsChanged()
+        {
+            _hasChanged = true;
+        }
+
+        public bool HasChanged()
+        {
+            if (_hasChanged)
+            {
+                _hasChanged = false; // 자동 리셋
+                return true;
+            }
+            return false;
+        }
+
+
+        public void SaveLotLog()
+        {
+            string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LotLog");
+            if (!Directory.Exists(logFolder))
+                Directory.CreateDirectory(logFolder);
+
+            string logFile = Path.Combine(logFolder, $"LotLog_{DateTime.Now:yyyyMMdd}.csv");
+
+            string startTime = CycleTimer_LaserDrilling.ProcessStartTime.ToString("yyyy-MM-dd HH:mm:ss");
+            string endTime = CycleTimer_LaserDrilling.ProcessEndTime.ToString("yyyy-MM-dd HH:mm:ss");
+            string recipeName = System.IO.Path.GetFileName(Equipment.Current_Recipe);
+            string drawingName = System.IO.Path.GetFileName(Equipment.Current_DrawingFileName);
+            int count = CycleTimer_DoneModuleCount;
+
+            List<string> lines = new List<string>();
+            if (File.Exists(logFile))
+                lines = File.ReadAllLines(logFile, Encoding.UTF8).ToList();
+
+            bool isUpdated = false;
+
+            // 마지막 줄 기준 레시피 동일 시 업데이트
+            if (lines.Count > 0)
+            {
+                string lastLine = lines.Last();
+                var parts = lastLine.Split(',');
+                if (parts.Length >= 5 && parts[2] == recipeName)
+                {
+                    string updatedLine = $"{parts[0]},{endTime},{recipeName},{drawingName},{count}";
+                    lines[lines.Count - 1] = updatedLine;
+                    isUpdated = true;
+                }
+            }
+
+            // 새 레시피면 새로운 라인 추가
+            if (!isUpdated)
+            {
+                string newLine = $"{startTime},{endTime},{recipeName},{drawingName},{count}";
+                lines.Add(newLine);
+            }
+
+            try
+            {
+                File.WriteAllLines(logFile, lines, new UTF8Encoding(true));
+                Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={count}");
+            }
+            catch (Exception ex)
+            {
+                Log.Write("DrillStatus", $"LOT 로그 저장 실패: {ex.Message}");
+            }
+        }
+
+
     }
 }

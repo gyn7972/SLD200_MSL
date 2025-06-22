@@ -7579,6 +7579,7 @@ namespace QMC.Common.Modules
         public enum SemiAutoStep
         {
             None = 0,
+            Start,
             Stacker0,
             Stacker1,
             Transfer
@@ -7593,14 +7594,8 @@ namespace QMC.Common.Modules
         {
             switch (step)
             {
-                case SemiAutoStep.Stacker0:
-                    m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
-                    break;
-                case SemiAutoStep.Stacker1:
-                    m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
-                    break;
-                case SemiAutoStep.Transfer:
-                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                case SemiAutoStep.Start:
+                    m_UnloaderWork_Start = true;
                     break;
                 default:
                     break;
@@ -7612,6 +7607,7 @@ namespace QMC.Common.Modules
 
         public void ClearSemiAutoRequest()
         {
+            Equipment.SemiAutoEnable = false;
             _semiAutoRequest = SemiAutoStep.None;
             _isSemiAutoMode = false;
         }

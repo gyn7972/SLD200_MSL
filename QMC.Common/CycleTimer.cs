@@ -104,6 +104,9 @@ namespace QMC.Common
         private CycleTimeCollection m_CycleTimes;
         private DateTime StartTime;
 
+        public DateTime ProcessStartTime { get; private set; } = DateTime.MinValue;
+        public DateTime ProcessEndTime { get; private set; } = DateTime.MinValue;
+
         public delegate void CycleTimerAddEventHandler(CycleTime cycleTime);
         #endregion
 
@@ -266,6 +269,7 @@ namespace QMC.Common
         public void Start()
         {
             this.StartTime = DateTime.Now;
+            this.ProcessStartTime = DateTime.Now;  // 전체 작업 시작 시간 기록
         }
 
         /// <summary>
@@ -287,7 +291,9 @@ namespace QMC.Common
             // 새로운 cycle time를 생성한다.
             cycleTime = new CycleTime(this.StartTime, DateTime.Now);
             // 허용 범위의 cycle time인지 여부를 확인한다.
-            if (this.AvailableRange.Minimum != this.AvailableRange.Maximum && this.AvailableRange.Contains(cycleTime.Interval.TotalMilliseconds) == false) return;
+            if (this.AvailableRange.Minimum != this.AvailableRange.Maximum && 
+                this.AvailableRange.Contains(cycleTime.Interval.TotalMilliseconds) == false) 
+                return;
 
             // cycle time을 추가한다.
             this.AddCycleTime(cycleTime);
@@ -295,6 +301,8 @@ namespace QMC.Common
             this.StartTime = DateTime.MaxValue;
             // 총 소요 시간을 갱신한다.
             TotalElapsed += cycleTime.Interval;
+
+            this.ProcessEndTime = DateTime.Now; // 전체 작업 종료 시간 기록
 
             // 로그를 기록한다.
             Console.WriteLine(string.Format("[Cycle Time] Interval: {0} msec, Start: {1}, End: {2}", cycleTime.Interval.TotalMilliseconds, cycleTime.Start.ToString("yyyy-MM-dd HH:mm:ss.fff"), cycleTime.End.ToString("yyyy-MM-dd HH:mm:ss.fff")));
@@ -324,7 +332,6 @@ namespace QMC.Common
         //public TimeSpan TotalElapsed { get; private set; }  // End() 내부에서 누적 갱신
         public TimeSpan TotalElapsed { get;  set; }  // 
 
-
         public bool SaveToIni(string section, string path)
         {
             try
@@ -334,6 +341,11 @@ namespace QMC.Common
 
                 NativeMethods.WritePrivateProfileString(section, "TotalRunningTime", totalTime.TotalMilliseconds.ToString(), path);
                 NativeMethods.WritePrivateProfileString(section, "CycleCount", this.CycleTimes.Count.ToString(), path);
+
+                // [추가] 전체 공정 시작/종료 시간 저장
+                NativeMethods.WritePrivateProfileString(section, "ProcessStartTime", ProcessStartTime.ToString("yyyy-MM-dd HH:mm:ss"), path);
+                NativeMethods.WritePrivateProfileString(section, "ProcessEndTime", ProcessEndTime.ToString("yyyy-MM-dd HH:mm:ss"), path);
+
                 return true;
             }
             catch (Exception ex)
@@ -353,6 +365,15 @@ namespace QMC.Common
 
                 NativeMethods.GetPrivateProfileString(section, "CycleCount", "0", sb, sb.Capacity, path);
                 int count = int.Parse(sb.ToString());
+
+                // [추가] 전체 공정 시작/종료 시간 로드
+                NativeMethods.GetPrivateProfileString(section, "ProcessStartTime", "", sb, sb.Capacity, path);
+                if (DateTime.TryParse(sb.ToString(), out var parsedStart))
+                    this.ProcessStartTime = parsedStart;
+
+                NativeMethods.GetPrivateProfileString(section, "ProcessEndTime", "", sb, sb.Capacity, path);
+                if (DateTime.TryParse(sb.ToString(), out var parsedEnd))
+                    this.ProcessEndTime = parsedEnd;
 
                 if (totalMs > 0 && count > 0)
                 {

@@ -146,6 +146,23 @@
             this.groupBoxModuleStatus.ResumeLayout(false);
             this.ResumeLayout(false);
 
+            this.label_SocketInfoSummary = new System.Windows.Forms.Label();
+            this.label_SocketInfoSummary.Location = new System.Drawing.Point(20, 410);
+            this.label_SocketInfoSummary.Size = new System.Drawing.Size(760, 25);
+            this.label_SocketInfoSummary.Text = "Socket 정보 요약";
+            this.Controls.Add(this.label_SocketInfoSummary);
+
+            this.listView_LayerDetails = new System.Windows.Forms.ListView();
+            this.listView_LayerDetails.Location = new System.Drawing.Point(20, 440);
+            this.listView_LayerDetails.Size = new System.Drawing.Size(760, 120);
+            this.listView_LayerDetails.View = System.Windows.Forms.View.Details;
+            this.listView_LayerDetails.Columns.Add("Layer", 100);
+            this.listView_LayerDetails.Columns.Add("Status", 100);
+            this.listView_LayerDetails.Columns.Add("Alignment Score", 150);
+            this.listView_LayerDetails.Columns.Add("Z Offset", 100);
+            this.listView_LayerDetails.Columns.Add("측정값", 100);
+            this.Controls.Add(this.listView_LayerDetails);
+
         }
 
         #endregion
