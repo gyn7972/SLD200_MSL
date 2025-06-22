@@ -22409,7 +22409,7 @@ namespace QMC.Common.Modules
                                 m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
                                 m_nDrillingWork_RepeatBundle_Count = 0;
                                 m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
-                                //  재시도 회수 리셋
+                                                //  재시도 회수 리셋
                                 m_nListBeginRetry_Count = 0;
 
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListOpen;
@@ -23963,7 +23963,7 @@ namespace QMC.Common.Modules
                     m_nDividedRegion_Region_CurrentIndex_forZigZag = m_nDividedRegion_Region_CurrentIndex;
                 }
 
-                //  가공 데이터가 없는 Region 이 있을 수 있다. 데이터가 없을 때는 m_nDividedRegion_Region_CurrentIndex++ 후에 이 위치 다시 체크.
+                        //  가공 데이터가 없는 Region 이 있을 수 있다. 데이터가 없을 때는 m_nDividedRegion_Region_CurrentIndex++ 후에 이 위치 다시 체크.
                 if (m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum > 0)
                 {
                     Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역에 가공 위치 데이터가 있음");
@@ -23984,11 +23984,11 @@ namespace QMC.Common.Modules
             }
             else                                                                                    //  회수 초과 (Shutter 닫으러)
             {
-                //여긴막자. 50번 찍힌다.
-                //Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, " +
-                //    "가공할 영역이 남아 있지 않음. 다음 Hole Layer 가 있는지 확인하고, 없으면 다음 소켓 확인하러 이동.");
+                        //여긴막자. 50번 찍힌다.
+                        //Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, " +
+                        //    "가공할 영역이 남아 있지 않음. 다음 Hole Layer 가 있는지 확인하고, 없으면 다음 소켓 확인하러 이동.");
 
-                // Hole2 ~ Hole4 Layer 가 있을 경우, 해당 Parameter 로 Hole1 가공을 다시  진행한다.
+                        // Hole2 ~ Hole4 Layer 가 있을 경우, 해당 Parameter 로 Hole1 가공을 다시  진행한다.
                 m_nHoleLayer_ProcessIndex_Count++;
                 bool m_bLayerExist = false;
 
@@ -24006,7 +24006,7 @@ namespace QMC.Common.Modules
                     if (m_bLayerExist)                  //  Hole2 ~ Hole4 Layer 가 있으면? 해당 Layer Parameter 로 Hole1 데이터 재가공
                     {
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, " +
-                            "가공할 영역이 남아 있지 않음. 다음 Hole Layer 가 있음. 파라미터 변경하여 가공하러 이동");
+                                                    "가공할 영역이 남아 있지 않음. 다음 Hole Layer 가 있음. 파라미터 변경하여 가공하러 이동");
 
                         m_nHoleLayer_ProcessIndex = m_nHoleLayer_ProcessIndex_Count;
 
@@ -24022,7 +24022,7 @@ namespace QMC.Common.Modules
                 else                                                                //  Hole Layer 가 없을 경우, 다음 소켓으로 이동
                 {
                     //if (m_nSelectedSocket_Index >= 0)                                                                       //  선택 가공이면? 마지막 Layer Index 로 변경하고 종료하러 go
-                    //if (m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
+                                //if (m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                     if (Equipment.SelectRunEnable &&
                         (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) && 
                         (m_nSocketAlign_StartIndex >= 0))
@@ -24030,12 +24030,24 @@ namespace QMC.Common.Modules
                         string m_strTemp = string.Format("Hole Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                                    // 공통 자동 완료 마킹
+                        {
+                            var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            var layer = DrillingManager.GetLayer(layerEnum);
+                            var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (layer != null && socket != null)
+                            {
+                                SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
+                        }
+
                         m_nLaserDrilling_LayerCount++;
                         nNextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                     }
                     else                                                                                                    //  전체 가공이면? 다음 소켓으로 이동
                     {
-                        // 공통 자동 완료 마킹
+                                    // 공통 자동 완료 마킹
                         {
                             var layerEnum = GetCurrentLayerEnum(m_LayerType);
                             var layer = DrillingManager.GetLayer(layerEnum);

@@ -278,8 +278,10 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             if (!socket.IsDrilled)
                 return Brushes.LightGray;
+
             if (!socket.IsSuccess)
                 return Brushes.Gold;
+
             return Brushes.LightGreen;
         }
 

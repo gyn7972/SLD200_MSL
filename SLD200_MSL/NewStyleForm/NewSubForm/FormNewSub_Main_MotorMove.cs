@@ -693,13 +693,21 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_MotorMove_Stage_Vacuum_Click");
 
-            if(workStage.workStageParameter.DI_Stage_Vacuum_Check() && 
-                workStage.m_dEPRO_Value < -12.0)
+            if(workStage.workStageParameter.DI_Stage_Vacuum_Check())
             {
+                workStage.workStageParameter.DO_Stage_Blow(true);
+                workStage.workStageParameter.DO_Stage_Vacuum(false);
+                workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
+                Thread.Sleep(1000); // 1초 대기
+                workStage.workStageParameter.DO_Stage_Blow(false);
+            }
+            else
+            {
+                
                 workStage.workStageParameter.DO_Stage_Blow(false);
                 workStage.workStageParameter.DO_Stage_Vacuum(true);
 
-                if(Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel <= 0.0)
+                if (Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel <= 0.0)
                 {
                     workStage.ElectroPneumaticRegulatorComm_Pressure_Set(Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel);
                 }
@@ -707,14 +715,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);
                 }
-            }
-            else
-            {
-                workStage.workStageParameter.DO_Stage_Blow(true);
-                workStage.workStageParameter.DO_Stage_Vacuum(false);
-                workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
-                Thread.Sleep(1000); // 1초 대기
-                workStage.workStageParameter.DO_Stage_Blow(false);
             }
         }
 
