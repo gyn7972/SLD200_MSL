@@ -15238,11 +15238,14 @@ namespace QMC.Common.Modules
 
                                 if (!Fiducial_circleFound)
                                 {
+                                    double dSpec = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec;
+                                    dSpec *= 1.5;
+
                                     result = Fiducial_aligner.FindCircleForFR4(bm_AlignRawData,
                                                                             Camera_HighRes.Resolution.Width,
                                                                             Camera_HighRes.Resolution.Height,
                                                                             nWidthImageCount,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
+                                                                            dSpec,
                                                                             Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
                                     Fiducial_circlesResult.Clear();
                                     foreach (var circle in result.Circles)
