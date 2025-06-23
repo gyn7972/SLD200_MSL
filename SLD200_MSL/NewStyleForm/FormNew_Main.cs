@@ -115,8 +115,8 @@ namespace SLD200_MSL
             set { m_formMotorMove = value; }
         }
 
-        FormNewSub_ModuleStatus m_formModuleStatus;
-        public FormNewSub_ModuleStatus FormModuleStatus
+        FormNewSub_SelectProcess m_formModuleStatus;
+        public FormNewSub_SelectProcess FormModuleStatus
         {
             get { return m_formModuleStatus; }
             set { m_formModuleStatus = value; }
@@ -304,7 +304,7 @@ namespace SLD200_MSL
             //m_formMotorMove.Owner = this;
             ShowMotorMoveControl();
 
-            m_formModuleStatus = new FormNewSub_ModuleStatus();
+            m_formModuleStatus = new FormNewSub_SelectProcess();
             m_formModuleStatus.Owner = this;
 
             //m_formModuleMonitor = new FormNewSub_ModuleMonitor();
@@ -3588,6 +3588,8 @@ namespace SLD200_MSL
         
         private async  void button_TEST12_Click(object sender, EventArgs e)
         {
+            Equipment.AutoRunStatus = true;
+
             // 전체 초기화
             workStage.DrillingManager.ResetAll();
             workStage.DrillingManager.MarkAsChanged();
@@ -3621,7 +3623,7 @@ namespace SLD200_MSL
 
             try
             {
-                var moduleUI = new FormNewSub_ModuleStatus();
+                var moduleUI = new FormNewSub_SelectProcess();
                 moduleUI.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
                 moduleUI.Text = "모듈 상태 확인";
                 moduleUI.StartPosition = FormStartPosition.CenterParent;

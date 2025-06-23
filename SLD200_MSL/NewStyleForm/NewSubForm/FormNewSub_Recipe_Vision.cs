@@ -120,6 +120,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             InitializeJogButtons();
             Temp_Position_Load();
 
+            InitSocketMarkCombo();
+
             m_bInitialized = true;
         }
 
@@ -924,51 +926,104 @@ namespace SLD200.NewStyleForm.NewSubForm
             bool bRtn = false;
 
             //Socket
-            if (this.radioButton_Fiducial_Pattern.Checked)
+            int selectedIndex = comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex;
+            if (selectedIndex < 0)
             {
-                Equipment.stVisionRecipeSet.nSocketAlignType = (int)VisionAlgorithmType.PatternMatching;
-            }
-            else if (this.radioButton_Fiducial_Circle.Checked)
-            {
-                Equipment.stVisionRecipeSet.nSocketAlignType = (int)VisionAlgorithmType.CircleDetection;
+                MessageBox.Show("선택된 마크가 없습니다.", "저장 오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            if (this.radioButton_Fiducial_Type_GoldPowder.Checked)
+            // 선택된 인덱스의 마크 가져오기 (부족하면 자동 생성)
+            while (Equipment.stVisionRecipeSet.SocketMarkList.Count <= selectedIndex)
             {
-                Equipment.stVisionRecipeSet.nSocketMarkType = (int)MarkTypeList.GoldPowder;
-            }
-            else if (this.radioButton_Fiducial_Type_Circle.Checked)
-            {
-                Equipment.stVisionRecipeSet.nSocketMarkType = (int)MarkTypeList.Circle;
+                Equipment.stVisionRecipeSet.SocketMarkList.Add(new SocketMarkInfo());
             }
 
+            var mark = Equipment.stVisionRecipeSet.SocketMarkList[selectedIndex];
+
+            // 정렬 알고리즘 종류 선택
+            if (radioButton_Fiducial_Pattern.Checked)
+                mark.AlignType = (int)VisionAlgorithmType.PatternMatching;
+            else if (radioButton_Fiducial_Circle.Checked)
+                mark.AlignType = (int)VisionAlgorithmType.CircleDetection;
+
+            // 마크 타입 선택
+            if (radioButton_Fiducial_Type_GoldPowder.Checked)
+                mark.MarkType = (int)MarkTypeList.GoldPowder;
+            else if (radioButton_Fiducial_Type_Circle.Checked)
+                mark.MarkType = (int)MarkTypeList.Circle;
+
+            // 마크 색상 선택
             if (radioButton_Fiducial_Black.Checked)
-            {
-                Equipment.stVisionRecipeSet.nSocketCircleColor = 0;
-            }
+                mark.MarkColor = 0;
             else if (radioButton_Fiducial_White.Checked)
-            {
-                Equipment.stVisionRecipeSet.nSocketCircleColor = 1;
-            }
+                mark.MarkColor = 1;
             else if (radioButton_Fiducial_Ignor.Checked)
-            {
-                Equipment.stVisionRecipeSet.nSocketCircleColor = 2;
-
-            }
+                mark.MarkColor = 2;
             else
-            {
-                Equipment.stVisionRecipeSet.nSocketCircleColor = 0;
-            }
-            
-            
-            Equipment.stVisionRecipeSet.dSocketCircleMarkRadius = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
-            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
-            Equipment.stVisionRecipeSet.dSocketCircleMarkScore = Convert.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
+                mark.MarkColor = 0;
 
-            Equipment.stVisionRecipeSet.bSocketIlluminationRedUse = checkBox_RecipeVision_Illuminator_Red.Checked;
-            Equipment.stVisionRecipeSet.bSocketIlluminationIRUse = checkBox_RecipeVision_Illuminator_IR.Checked;
-            Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime = Convert.ToDouble(textBox_RecipeVision_Camera_ExposureTime_High.Text);
-            Equipment.stVisionRecipeSet.dSocketAxisZ_Offset = Convert.ToDouble(textBox_RecipeVision_AxisZ_Setting.Text);
+            // 마크 속성 설정
+            mark.MarkRadius = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
+            mark.MarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
+            mark.MarkScore = Convert.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
+
+            // 조명 설정
+            mark.UseRed = checkBox_RecipeVision_Illuminator_Red.Checked;
+            mark.UseIR = checkBox_RecipeVision_Illuminator_IR.Checked;
+            mark.ExposureTime = Convert.ToDouble(textBox_RecipeVision_Camera_ExposureTime_High.Text);
+            mark.AxisZOffset = Convert.ToDouble(textBox_RecipeVision_AxisZ_Setting.Text);
+            mark.IllumRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);
+            mark.IllumIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);
+
+            SaveSocketMarkFromUI();  // 이 함수 내부에서도 SelectedIndex를 사용해야 일관성 있음
+
+            //기존 코드
+            //if (this.radioButton_Fiducial_Pattern.Checked)
+            //{
+            //    Equipment.stVisionRecipeSet.nSocketAlignType = (int)VisionAlgorithmType.PatternMatching;
+            //}
+            //else if (this.radioButton_Fiducial_Circle.Checked)
+            //{
+            //    Equipment.stVisionRecipeSet.nSocketAlignType = (int)VisionAlgorithmType.CircleDetection;
+            //}
+
+            //if (this.radioButton_Fiducial_Type_GoldPowder.Checked)
+            //{
+            //    Equipment.stVisionRecipeSet.nSocketMarkType = (int)MarkTypeList.GoldPowder;
+            //}
+            //else if (this.radioButton_Fiducial_Type_Circle.Checked)
+            //{
+            //    Equipment.stVisionRecipeSet.nSocketMarkType = (int)MarkTypeList.Circle;
+            //}
+
+            //if (radioButton_Fiducial_Black.Checked)
+            //{
+            //    Equipment.stVisionRecipeSet.nSocketCircleColor = 0;
+            //}
+            //else if (radioButton_Fiducial_White.Checked)
+            //{
+            //    Equipment.stVisionRecipeSet.nSocketCircleColor = 1;
+            //}
+            //else if (radioButton_Fiducial_Ignor.Checked)
+            //{
+            //    Equipment.stVisionRecipeSet.nSocketCircleColor = 2;
+
+            //}
+            //else
+            //{
+            //    Equipment.stVisionRecipeSet.nSocketCircleColor = 0;
+            //}
+            //Equipment.stVisionRecipeSet.dSocketCircleMarkRadius = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
+            //Equipment.stVisionRecipeSet.dSocketCircleMarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
+            //Equipment.stVisionRecipeSet.dSocketCircleMarkScore = Convert.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
+            //Equipment.stVisionRecipeSet.bSocketIlluminationRedUse = checkBox_RecipeVision_Illuminator_Red.Checked;
+            //Equipment.stVisionRecipeSet.bSocketIlluminationIRUse = checkBox_RecipeVision_Illuminator_IR.Checked;
+            //Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime = Convert.ToDouble(textBox_RecipeVision_Camera_ExposureTime_High.Text);
+            //Equipment.stVisionRecipeSet.dSocketAxisZ_Offset = Convert.ToDouble(textBox_RecipeVision_AxisZ_Setting.Text);
+            //Equipment.stVisionRecipeSet.nSocketIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);// workStage.Config.ListIlluminationChannel[0].Value;
+            //Equipment.stVisionRecipeSet.nSocketIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);//workStage.Config.ListIlluminationChannel[1].Value;
+
 
 
             //PreAlign
@@ -1015,13 +1070,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Equipment.stVisionRecipeSet.nPreCircleColor = 0;
             }
 
-
             Equipment.stVisionRecipeSet.dPreCircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
             Equipment.stVisionRecipeSet.dPreCircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
             Equipment.stVisionRecipeSet.dPreCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
-
-            Equipment.stVisionRecipeSet.nSocketIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);// workStage.Config.ListIlluminationChannel[0].Value;
-            Equipment.stVisionRecipeSet.nSocketIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);//workStage.Config.ListIlluminationChannel[1].Value;
             Equipment.stVisionRecipeSet.nPreIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text);//workStage.Config.ListIlluminationChannel[2].Value;
             Equipment.stVisionRecipeSet.nPreIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text);//workStage.Config.ListIlluminationChannel[2].Value;
 
@@ -1597,6 +1648,168 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 workStage.jigAligner_LowRes.Camera.SetExposureTime(dExposureTime);
             }
+        }
+
+        //comboBox_Recipe_Fiducial_MarkIndex
+        private void InitSocketMarkCombo()
+        {
+            // 리스트가 비어 있다면 기존 호환용 마크 자동 등록
+            if (Equipment.stVisionRecipeSet.SocketMarkList.Count == 0)
+            {
+                var defaultMark = new SocketMarkInfo();
+
+                // 기존 필드 → 마이그레이션
+                defaultMark.AlignType = Equipment.stVisionRecipeSet.nSocketAlignType;
+                defaultMark.MarkType = Equipment.stVisionRecipeSet.nSocketMarkType;
+                defaultMark.MarkColor = Equipment.stVisionRecipeSet.nSocketCircleColor;
+                defaultMark.MarkRadius = Equipment.stVisionRecipeSet.dSocketCircleMarkRadius;
+                defaultMark.MarkSpec = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec;
+                defaultMark.MarkScore = Equipment.stVisionRecipeSet.dSocketCircleMarkScore;
+                defaultMark.UseIR = Equipment.stVisionRecipeSet.bSocketIlluminationIRUse;
+                defaultMark.UseRed = Equipment.stVisionRecipeSet.bSocketIlluminationRedUse;
+                defaultMark.ExposureTime = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
+                defaultMark.AxisZOffset = Equipment.stVisionRecipeSet.dSocketAxisZ_Offset;
+                defaultMark.IllumIR = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
+                defaultMark.IllumRed = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
+
+                Equipment.stVisionRecipeSet.SocketMarkList.Add(defaultMark);
+            }
+
+            // 콤보박스 채우기
+            comboBox_Recipe_Fiducial_MarkIndex.Items.Clear();
+
+            for (int i = 0; i < Equipment.stVisionRecipeSet.SocketMarkList.Count; i++)
+                comboBox_Recipe_Fiducial_MarkIndex.Items.Add($"Mark {i + 1}");
+
+            if (comboBox_Recipe_Fiducial_MarkIndex.Items.Count > 0)
+                comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex = 0;
+        }
+
+        private void comboBox_SocketMarkIndex_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ApplySocketMarkToUI();
+        }
+
+        private void ApplySocketMarkToUI()
+        {
+            int idx = comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex;
+            if (idx < 0 || idx >= Equipment.stVisionRecipeSet.SocketMarkList.Count)
+                return;
+
+            var mark = Equipment.stVisionRecipeSet.SocketMarkList[idx];
+
+            radioButton_Fiducial_Circle.Checked = mark.AlignType == 0;
+            radioButton_Fiducial_Pattern.Checked = mark.AlignType == 2;
+
+            radioButton_Fiducial_Type_Circle.Checked = mark.MarkType == 0;
+            radioButton_Fiducial_Type_GoldPowder.Checked = mark.MarkType == 1;
+
+            radioButton_Fiducial_White.Checked = mark.MarkColor == 0;
+            radioButton_Fiducial_Black.Checked = mark.MarkColor == 1;
+            radioButton_Fiducial_Ignor.Checked = mark.MarkColor == 2;
+
+            textBox_Recipe_Fiducial_CircleSize.Text = mark.MarkRadius.ToString("F3");
+            textBox_Recipe_Fiducial_CircleSpec.Text = mark.MarkSpec.ToString("F3");
+            textBox_Recipe_Fiducial_CircleScore.Text = mark.MarkScore.ToString("F3");
+
+            checkBox_RecipeVision_Illuminator_Red.Checked = mark.UseRed;
+            checkBox_RecipeVision_Illuminator_IR.Checked = mark.UseIR;
+            textBox_RecipeVision_Camera_ExposureTime_High.Text = mark.ExposureTime.ToString("F2");
+            textBox_RecipeVision_AxisZ_Setting.Text = mark.AxisZOffset.ToString("F3");
+
+            textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text = mark.IllumRed.ToString();
+            textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text = mark.IllumIR.ToString();
+
+            this.Refresh();
+        }
+
+        private void SaveSocketMarkFromUI()
+        {
+            int idx = comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex;
+            if (idx < 0 || idx >= Equipment.stVisionRecipeSet.SocketMarkList.Count)
+                return;
+
+            var mark = Equipment.stVisionRecipeSet.SocketMarkList[idx];
+
+            mark.AlignType = radioButton_Fiducial_Pattern.Checked ? 2 : 0;
+            mark.MarkType = radioButton_Fiducial_Type_GoldPowder.Checked ? 1 : 0;
+
+            if (radioButton_Fiducial_White.Checked)
+                mark.MarkColor = 0;
+            else if (radioButton_Fiducial_Black.Checked)
+                mark.MarkColor = 1;
+            else
+                mark.MarkColor = 2;
+
+            mark.MarkRadius = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
+            mark.MarkSpec = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
+            mark.MarkScore = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
+
+            mark.UseRed = checkBox_RecipeVision_Illuminator_Red.Checked;
+            mark.UseIR = checkBox_RecipeVision_Illuminator_IR.Checked;
+            mark.ExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_High.Text);
+            mark.AxisZOffset = Equipment.ToDouble(textBox_RecipeVision_AxisZ_Setting.Text);
+
+            mark.IllumRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);
+            mark.IllumIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);
+        }
+
+        private void button_Recipe_Fiducial_Mark_Add_Click(object sender, EventArgs e)
+        {
+            AddSocketMark();
+        }
+
+        private void button_Recipe_Fiducial_Mark_Delete_Click(object sender, EventArgs e)
+        {
+            int idx = comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex;
+            if (idx < 0)
+            {
+                MessageBox.Show("삭제할 마크가 선택되지 않았습니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 인덱스는 1부터 표시 (사용자용)
+            string msg = $"마크 {idx + 1}번을 삭제 하시겠습니까?";
+            var mb1 = new QMC.Core.MessageBoxYesNo();
+            if (DialogResult.Yes != mb1.ShowDialog("삭제 확인", msg))
+                return;
+
+            DeleteSocketMark();
+        }
+
+        private void AddSocketMark()
+        {
+            var newMark = new SocketMarkInfo();
+
+            // 기본값 복사 (현재 마크 기준 or 초기값)
+            if (comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex >= 0)
+            {
+                var current = Equipment.stVisionRecipeSet.SocketMarkList[comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex];
+                newMark = current.Clone(); // ※ Clone() 구현되어 있어야 함
+            }
+
+            Equipment.stVisionRecipeSet.SocketMarkList.Add(newMark);
+            InitSocketMarkCombo();
+            comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex = Equipment.stVisionRecipeSet.SocketMarkList.Count - 1;
+        }
+
+        private void DeleteSocketMark()
+        {
+            if (Equipment.stVisionRecipeSet.SocketMarkList.Count <= 1)
+            {
+                MessageBox.Show("최소 1개의 마크는 유지되어야 합니다.", "삭제 불가", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int idx = comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex;
+            if (idx < 0 || idx >= Equipment.stVisionRecipeSet.SocketMarkList.Count)
+                return;
+
+            Equipment.stVisionRecipeSet.SocketMarkList.RemoveAt(idx);
+
+            // 삭제 후 인덱스 조정
+            InitSocketMarkCombo();
+            comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex = Math.Max(0, idx - 1);
         }
     }
 }

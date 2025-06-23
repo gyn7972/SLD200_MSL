@@ -14,7 +14,7 @@ using static QMC.Common.Equipment;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
-    public partial class FormNewSub_ModuleStatus : Form
+    public partial class FormNewSub_SelectProcess : Form
     {
         private DrillingProcessManager drillingProcessManager;
         private LayerProcessData selectedLayer;
@@ -37,7 +37,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private Timer timerStatusUpdate;
 
-        public FormNewSub_ModuleStatus()
+        public FormNewSub_SelectProcess()
         {
             InitializeComponent();
             this.AutoScaleMode = AutoScaleMode.None;
@@ -115,6 +115,12 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void Timer_ModuleStatusRun()
         {
             // 실행할 작업들을 여기에 구현.
+            if (drillingProcessManager != null && drillingProcessManager.HasChanged())
+            {
+                this.Invalidate(); // 화면 다시 그리기
+                this.Refresh();
+                //this.Update();
+            }
 
         }
 
@@ -317,14 +323,27 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void ButtonProcessSelected_Click(object sender, EventArgs e)
         {
-            if (selectedLayer == null)
+            var selectedSocketNumbers = drillingProcessManager.LayerList
+                                     .SelectMany(layer => layer.SocketList)
+                                     .Where(socket => socket.IsSelected)
+                                     .Select(socket => socket.SocketNumber)
+                                     .Distinct()
+                                     .ToList();
+
+            if (selectedSocketNumbers.Count == 0)
             {
-                MessageBox.Show("레이어를 먼저 선택해주세요.", "선택 가공 실패", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("선택된 소켓이 없습니다.", "선택 가공 실패", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            Log.Write("ModuleStatus", $"선택 가공 준비 완료 - Layer: {selectedLayer.LayerName}");
-            MessageBox.Show($"[{selectedLayer.LayerName}] 레이어의 선택된 소켓만 가공됩니다.\n장비를 시작하면 해당 소켓만 실행됩니다.", "선택 가공 준비 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string socketList = string.Join(", ", selectedSocketNumbers.OrderBy(n => n));
+            Log.Write("ModuleStatus", $"선택 가공 준비 완료 - 소켓 {socketList}");
+
+            string msg = $"총 {selectedSocketNumbers.Count}개의 소켓이 선택되었습니다.\n" +
+                         $"선택된 소켓은 모든 레이어(H, T, O, M)에서 가공됩니다.\n" +
+                         $"가공 대상 소켓 번호: {socketList}";
+
+            MessageBox.Show(msg, "선택 가공 준비 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         public void ProcessSelectedSockets()
@@ -423,16 +442,15 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private Brush GetBrushBySocketStatus(SocketProcessData socket)
         {
-            if (socket.IsDrilled && socket.IsSuccess)
-                return Brushes.LightBlue;
-            else if (socket.IsDrilled && !socket.IsSuccess)
-                return Brushes.IndianRed;
-            else if (socket.IsSelected)
+            //if (socket.IsDrilled && socket.IsSuccess)
+            //    return Brushes.LightBlue;
+            //else if (socket.IsDrilled && !socket.IsSuccess)
+            //    return Brushes.IndianRed;
+            
+            if (socket.IsSelected)
                 return Brushes.LightGreen;
             else
                 return Brushes.LightGray;
         }
-
-
     }
 }

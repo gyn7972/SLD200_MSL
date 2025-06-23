@@ -7893,7 +7893,7 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Main Tick, Loader Transfer, WorkStage 로 Loading 중 가공 데이터 Parsing 성공");
 
-                            ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
+                            //ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
 
                             //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
                             GlobalSocketStatus_Init();
@@ -15121,46 +15121,6 @@ namespace QMC.Common.Modules
                         continue;
                     }
 
-                    //우선 주석 - 필요하면 적용 하자.
-                    {
-                        bool bUseRed = false;
-                        bool bUseIR = false;
-                        int redVolume = 0;
-                        int irVolume = 0;
-                        double exposureTime = 0.0;
-
-                        // 여기서 조명을 해야 제대로 먹는 느낌적인 느낌?
-                        SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
-                        SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
-
-                        Thread.Sleep(100);
-                        if (alignMode == AlignMode.Socket)
-                        {
-                            bUseRed = Equipment.stVisionRecipeSet.bSocketIlluminationRedUse;
-                            bUseIR = Equipment.stVisionRecipeSet.bSocketIlluminationIRUse;
-                            redVolume = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
-                            irVolume = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
-                            exposureTime = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
-                        }
-                        else if (alignMode == AlignMode.GoldPowder)
-                        {
-                            bUseRed = Equipment.stVisionRecipeSet.bGoldPowderIlluminationRedUse;
-                            bUseIR = Equipment.stVisionRecipeSet.bGoldPowderIlluminationIRUse;
-                            redVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed; // TODO: 전용 Red 값 분리 가능
-                            irVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR;   // TODO: 전용 IR 값 분리 가능
-                            exposureTime = Equipment.stVisionRecipeSet.dGoldPowderIlluminationExposureTime;
-                        }
-
-                        // Fine Cam Red 조명
-                        if (bUseRed)
-                            SetLightingByChannel(LightingChannel.FineCamRed, redVolume, bUseRed);
-                        if (bUseIR)
-                            SetLightingByChannel(LightingChannel.FineCamIR, irVolume, bUseIR);
-
-                        // 카메라 노출 설정
-                        jigAligner_HighRes.Camera.SetExposureTime(exposureTime);
-                    }
-
                     //  마크 검출 형식 (Circle, Gold Powder)
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     if (alignMode == AlignMode.GoldPowder &&
@@ -15220,53 +15180,51 @@ namespace QMC.Common.Modules
                     }
                     else
                     {
-                        if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.Circle)
+                        Fiducial_circleFound = false;
+                        Fiducial_circlesResult.Clear();
+                        int markIndex = 0;
+
+                        foreach (var mark in Equipment.stVisionRecipeSet.SocketMarkList)
                         {
-                            if (stVisionRecipeSet.nSocketCircleColor <= 1)
+                            Log.Write("SLD-200", "SpiralSearch", $"Try Mark {markIndex}");
+
+                            if (mark.MarkType != (int)MarkTypeList.Circle)
+                                continue;
+
+                            // ---------------- 조명 및 노출 세팅 ----------------
+                            SetLightingByChannel(LightingChannel.FineCamRed, mark.IllumRed, mark.UseRed);
+                            SetLightingByChannel(LightingChannel.FineCamIR, mark.IllumIR, mark.UseIR);
+                            jigAligner_HighRes.Camera.SetExposureTime(mark.ExposureTime);
+                            Thread.Sleep(100); // 100ms 대기
+                            // --------------------------------------------------
+
+                            // Circle Color 0: White, 1: Black
+                            if (mark.MarkColor <= 1)
                             {
-                                result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
-                                                                            bm_AlignRawData,
-                                                                            Camera_HighRes.Resolution.Width,
-                                                                            Camera_HighRes.Resolution.Height,
-                                                                            nWidthImageCount,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
-                                                                            ref Fiducial_circleFound,
-                                                                            0, 0,
-                                                                            (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
-                                                                            false);
-
-                                if (!Fiducial_circleFound)
-                                {
-                                    double dSpec = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec;
-                                    dSpec *= 1.5;
-
-                                    result = Fiducial_aligner.FindCircleForFR4(bm_AlignRawData,
-                                                                            Camera_HighRes.Resolution.Width,
-                                                                            Camera_HighRes.Resolution.Height,
-                                                                            nWidthImageCount,
-                                                                            dSpec,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
-                                    Fiducial_circlesResult.Clear();
-                                    foreach (var circle in result.Circles)
-                                    {
-                                        Fiducial_circleFound = true;
-                                        Fiducial_circlesResult.Add(circle.GetBoundery());
-                                    }
-
-                                    if (Fiducial_circlesResult.Count == 0)
-                                        Fiducial_circleFound = false; // 다시 false로
-                                }
-
+                                result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
+                                    Fiducial_circlesResult,
+                                    bm_AlignRawData,
+                                    Camera_HighRes.Resolution.Width,
+                                    Camera_HighRes.Resolution.Height,
+                                    nWidthImageCount,
+                                    mark.MarkSpec,
+                                    ref Fiducial_circleFound,
+                                    0, 0,
+                                    (mark.MarkType == 0), // GoldPowder 여부?
+                                    mark.MarkScore,
+                                    false);
                             }
-                            else if (stVisionRecipeSet.nSocketCircleColor == 2)
+                            // Circle Color 2: Ignore
+                            else if (mark.MarkColor == 2)
                             {
-                                result = Fiducial_aligner.FindCircleForFR4(bm_AlignRawData,
-                                                                            Camera_HighRes.Resolution.Width,
-                                                                            Camera_HighRes.Resolution.Height,
-                                                                            nWidthImageCount,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
+                                result = Fiducial_aligner.FindCircleForFR4(
+                                    bm_AlignRawData,
+                                    Camera_HighRes.Resolution.Width,
+                                    Camera_HighRes.Resolution.Height,
+                                    nWidthImageCount,
+                                    mark.MarkSpec,
+                                    mark.MarkScore);
+
                                 Fiducial_circlesResult.Clear();
                                 foreach (var circle in result.Circles)
                                 {
@@ -15275,38 +15233,105 @@ namespace QMC.Common.Modules
                                 }
 
                                 if (Fiducial_circlesResult.Count == 0)
-                                    Fiducial_circleFound = false; // 다시 false로
+                                    Fiducial_circleFound = false;
+                            }
 
-                                if (!Fiducial_circleFound)
-                                {
-                                    result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
-                                                                            bm_AlignRawData,
-                                                                            Camera_HighRes.Resolution.Width,
-                                                                            Camera_HighRes.Resolution.Height,
-                                                                            nWidthImageCount,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
-                                                                            ref Fiducial_circleFound,
-                                                                            0, 0,
-                                                                            (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
-                                                                            false);
-                                }
-                            }
+                            // 하나라도 찾았으면 반복 종료
+                            if (Fiducial_circleFound)
+                                break;
+
+                            markIndex++;
                         }
-                        //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
-                        else if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.GoldPowder)
+                        //기존 코드
                         {
-                            result = Fiducial_aligner.FindGoldPowderForAutoTreshold(Fiducial_circlesResult,
-                                                            bm_AlignRawData,
-                                                            Camera_HighRes.Resolution.Width,
-                                                            Camera_HighRes.Resolution.Height,
-                                                            nWidthImageCount,
-                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
-                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
-                            if (result.Circles.Count > 3)
-                            {
-                                Fiducial_circleFound = true;
-                            }
+                            //if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.Circle)
+                            //{
+                            //    if (stVisionRecipeSet.nSocketCircleColor <= 1)
+                            //    {
+                            //        result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                            //                                                    bm_AlignRawData,
+                            //                                                    Camera_HighRes.Resolution.Width,
+                            //                                                    Camera_HighRes.Resolution.Height,
+                            //                                                    nWidthImageCount,
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
+                            //                                                    ref Fiducial_circleFound,
+                            //                                                    0, 0,
+                            //                                                    (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                            //                                                    false);
+
+                            //        if (!Fiducial_circleFound)
+                            //        {
+                            //            double dSpec = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec;
+                            //            dSpec *= 1.5;
+
+                            //            result = Fiducial_aligner.FindCircleForFR4(bm_AlignRawData,
+                            //                                                    Camera_HighRes.Resolution.Width,
+                            //                                                    Camera_HighRes.Resolution.Height,
+                            //                                                    nWidthImageCount,
+                            //                                                    dSpec,
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
+                            //            Fiducial_circlesResult.Clear();
+                            //            foreach (var circle in result.Circles)
+                            //            {
+                            //                Fiducial_circleFound = true;
+                            //                Fiducial_circlesResult.Add(circle.GetBoundery());
+                            //            }
+
+                            //            if (Fiducial_circlesResult.Count == 0)
+                            //                Fiducial_circleFound = false; // 다시 false로
+                            //        }
+
+                            //    }
+                            //    else if (stVisionRecipeSet.nSocketCircleColor == 2)
+                            //    {
+                            //        result = Fiducial_aligner.FindCircleForFR4(bm_AlignRawData,
+                            //                                                    Camera_HighRes.Resolution.Width,
+                            //                                                    Camera_HighRes.Resolution.Height,
+                            //                                                    nWidthImageCount,
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
+                            //        Fiducial_circlesResult.Clear();
+                            //        foreach (var circle in result.Circles)
+                            //        {
+                            //            Fiducial_circleFound = true;
+                            //            Fiducial_circlesResult.Add(circle.GetBoundery());
+                            //        }
+
+                            //        if (Fiducial_circlesResult.Count == 0)
+                            //            Fiducial_circleFound = false; // 다시 false로
+
+                            //        if (!Fiducial_circleFound)
+                            //        {
+                            //            result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                            //                                                    bm_AlignRawData,
+                            //                                                    Camera_HighRes.Resolution.Width,
+                            //                                                    Camera_HighRes.Resolution.Height,
+                            //                                                    nWidthImageCount,
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
+                            //                                                    ref Fiducial_circleFound,
+                            //                                                    0, 0,
+                            //                                                    (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                            //                                                    false);
+                            //        }
+                            //    }
+                            //}
+                            ////else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
+                            //else if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.GoldPowder)
+                            //{
+                            //    result = Fiducial_aligner.FindGoldPowderForAutoTreshold(Fiducial_circlesResult,
+                            //                                    bm_AlignRawData,
+                            //                                    Camera_HighRes.Resolution.Width,
+                            //                                    Camera_HighRes.Resolution.Height,
+                            //                                    nWidthImageCount,
+                            //                                    Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                            //                                    Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
+                            //    if (result.Circles.Count > 3)
+                            //    {
+                            //        Fiducial_circleFound = true;
+                            //    }
+                            //}
                         }
                     }
 
@@ -15805,15 +15830,15 @@ namespace QMC.Common.Modules
                         if (GetDrillingData(true) == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 시, WorkStage에서 가공 데이터 Parsing 성공");
-                            ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
-                            ActionDrillingProcessManagerSelectedUpdated?.Invoke(DrillingManager);
+                            //ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
+                            //ActionDrillingProcessManagerSelectedUpdated?.Invoke(DrillingManager);
                         }
                         else
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 시, WorkStage에서 가공 데이터 Parsing 실패");
                             // 실패해도 던져는 줘야할듯. Reset 개념으로.
-                            ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
-                            ActionDrillingProcessManagerSelectedUpdated?.Invoke(DrillingManager);
+                            //ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
+                            //ActionDrillingProcessManagerSelectedUpdated?.Invoke(DrillingManager);
                         }
 
                         workStageParameter.DO_Stage_Vacuum(true);
@@ -36553,6 +36578,7 @@ namespace QMC.Common.Modules
                     Log.Write("DrillStatus", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
 
                     ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
+                    ActionDrillingProcessManagerSelectedUpdated?.Invoke(DrillingManager);
                 }
             }
             
