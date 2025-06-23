@@ -103,10 +103,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             // Semi Auto 모드에서 실행할 작업들을 여기에 구현.
             UpdateButtonStatusByState(button_SemiAuto_Loading, loader.m_LoaderWork_Start, loader.IsLoaderComplete());
 
-            //UpdateButtonStatusByState(button_SemiAuto_HeightSensor, workStage.m_LaserDrillingWork_Start, workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight));
-            //UpdateButtonStatusByState(button_SemiAuto_PreAlign, workStage.m_LaserDrillingWork_Start, workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign));
-            //UpdateButtonStatusByState(button_SemiAuto_FiducialAlign, workStage.m_LaserDrillingWork_Start, workStage.IsStageComplete(WorkStage.SemiAutoStep.FiducialAlign));
-            //UpdateButtonStatusByState(button_SemiAuto_LaserDrilling, workStage.m_LaserDrillingWork_Start, workStage.IsStageComplete(WorkStage.SemiAutoStep.Drilling));
             UpdateButtonStatusByState(
                 button_SemiAuto_HeightSensor,
                 workStage._semiAutoRequest == WorkStage.SemiAutoStep.MeasureHeight,

@@ -7629,7 +7629,6 @@ namespace QMC.Common.Modules
                             {
                                 Equipment.SemiAutoEnable = false;
                                 m_LoaderWork_Start = false;
-                                m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_None;
                             }
                             else
                             {
@@ -9855,7 +9854,6 @@ namespace QMC.Common.Modules
                 if (ret != 0)
                 {
                     SetRecoveryStaker1(m_nStacker1_ModulePickupWaitingPos_Step);
-                    
                     return;
                 }
 

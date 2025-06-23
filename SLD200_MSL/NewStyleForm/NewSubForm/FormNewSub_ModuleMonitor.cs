@@ -4,6 +4,7 @@ using QMC.Common.Modules;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using static QMC.Common.Equipment;
 
@@ -45,7 +46,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             timerModuleMonitor.Tick += TimerModuleStatus_Tick;
             timerModuleMonitor.Start();
 
-            //this.Paint += FormNewSub_ModuleMonitor_Paint;
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -107,6 +107,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                     DrawLayerQuadInSocket(g, socketRect, i);
                     DrawSocketIndex(g, socketRect, i + 1);
 
+                    // 사각형 내부 각 분할영역 글자 출력 (H, T, O, M)
+                    DrawQuadLabels(g, socketRect);
+
                     x += socketSize + spacing;
                     if ((i + 1) % columnCount == 0)
                     {
@@ -123,11 +126,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 _isDrawing = false;
             }
-            //for (int i = 0; i < drillingProcessManager.GetMaxSocketCountPerLayer(); i++)
-            //{
-            //    Rectangle socketRect = GetSocketRect(i); // 좌표 생성
-            //    DrawLayerQuadInSocket(e.Graphics, socketRect, i);
-            //}
         }
 
         public void DisposeSemiAutoResources()
@@ -176,72 +174,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             this.drillingProcessManager = manager;
         }
 
-        private void FormNewSub_ModuleMonitor_Paint(object sender, PaintEventArgs e)
-        {
-            if (_isDrawing || drillingProcessManager == null || drillingProcessManager.LayerList == null)
-                return;
-
-            _isDrawing = true;
-
-            try
-            {
-                Graphics g = e.Graphics;
-                g.Clear(Color.White);
-
-                int totalSockets = drillingProcessManager.GetMaxSocketCountPerLayer(true);
-                if (totalSockets == 0)
-                    return;
-
-                // 패널 내부 전체 크기 기준
-                int panelWidth = this.ClientSize.Width;
-                int panelHeight = this.ClientSize.Height;
-                int margin = 5;
-                int spacing = 5;
-
-                // 그리드 개수 계산 (최대한 정사각형에 가깝게)
-                int columnCount = (int)Math.Ceiling(Math.Sqrt(totalSockets));
-                int rowCount = (int)Math.Ceiling(totalSockets / (double)columnCount);
-
-                // 소켓 크기 계산 (전체 공간 내에서 spacing 포함하여 자동 조절)
-                int totalSpacingX = (columnCount - 1) * spacing + 2 * margin;
-                int totalSpacingY = (rowCount - 1) * spacing + 2 * margin;
-                int socketSize = Math.Min(
-                    (panelWidth - totalSpacingX) / columnCount,
-                    (panelHeight - totalSpacingY) / rowCount
-                );
-
-                // 그리기 시작 위치
-                int x = margin;
-                int y = margin;
-
-                for (int i = 0; i < totalSockets; i++)
-                {
-                    Rectangle socketRect = new Rectangle(x, y, socketSize, socketSize);
-                    g.DrawRectangle(Pens.Black, socketRect);
-
-                    DrawLayerQuadInSocket(g, socketRect, i);
-                    DrawSocketIndex(g, socketRect, i + 1);
-
-                    x += socketSize + spacing;
-                    if ((i + 1) % columnCount == 0)
-                    {
-                        x = margin;
-                        y += socketSize + spacing;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Write("ModuleMonitor", $"그리기 중 예외: {ex.Message}");
-            }
-            finally
-            {
-                _isDrawing = false;
-            }
-        }
-
-
-
         private void DrawLayerQuadInSocket(Graphics g, Rectangle socketRect, int socketIndex)
         {
             try
@@ -254,19 +186,51 @@ namespace SLD200.NewStyleForm.NewSubForm
                     { LayerType.LAYER_MARKING, GetBottomRightQuad(socketRect) },
                 };
 
-                foreach (var layer in drillingProcessManager.LayerList)
+                var layerTextMap = new Dictionary<LayerType, string>
                 {
-                    if (!layerMap.ContainsKey(layer.LayerType))
-                        continue;
+                    { LayerType.LAYER_DRILLING, "H" },
+                    { LayerType.LAYER_THRUHOLE, "T" },
+                    { LayerType.LAYER_OUTLINE, "O" },
+                    { LayerType.LAYER_MARKING, "M" },
+                };
 
-                    if (socketIndex >= layer.SocketList.Count)
+                // 3. 한 번씩만 처리되도록
+                HashSet<LayerType> drawnTypes = new HashSet<LayerType>();
+                foreach (var kvp in layerMap)
+                {
+                    LayerType type = kvp.Key;
+                    Rectangle rect = kvp.Value;
+
+                    // 같은 타입을 가진 레이어 중 첫 번째만 처리
+                    var layer = drillingProcessManager.LayerList.FirstOrDefault(l => l.LayerType == type);
+                    if (layer == null || socketIndex >= layer.SocketList.Count)
                         continue;
 
                     var socket = layer.SocketList[socketIndex];
-                    var rect = layerMap[layer.LayerType];
+
+                    // 상태에 따라 색상 채우기 및 테두리
                     g.FillRectangle(GetBrushBySocketStatus(socket), rect);
                     g.DrawRectangle(Pens.Black, rect);
+
+                    // 텍스트 쓰기
+                    //if (layerTextMap.TryGetValue(type, out string label))
+                    //    DrawCenteredText(g, rect, label);
                 }
+
+                //되는거
+                //foreach (var layer in drillingProcessManager.LayerList)
+                //{
+                //    if (!layerMap.ContainsKey(layer.LayerType))
+                //        continue;
+
+                //    if (socketIndex >= layer.SocketList.Count)
+                //        continue;
+
+                //    var socket = layer.SocketList[socketIndex];
+                //    var rect = layerMap[layer.LayerType];
+                //    g.FillRectangle(GetBrushBySocketStatus(socket), rect);
+                //    g.DrawRectangle(Pens.Black, rect);
+                //}
             }
             catch (Exception ex)
             {
@@ -304,6 +268,14 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
         }
 
+        private void DrawQuadLabels(Graphics g, Rectangle socketRect)
+        {
+            DrawCenteredText(g, GetTopLeftQuad(socketRect), "H");
+            DrawCenteredText(g, GetTopRightQuad(socketRect), "T");
+            DrawCenteredText(g, GetBottomLeftQuad(socketRect), "O");
+            DrawCenteredText(g, GetBottomRightQuad(socketRect), "M");
+        }
+
         private Rectangle GetSocketRect(int index)
         {
             int totalSockets = drillingProcessManager.GetMaxSocketCountPerLayer(true);
@@ -332,7 +304,19 @@ namespace SLD200.NewStyleForm.NewSubForm
             return new Rectangle(x, y, socketSize, socketSize);
         }
 
-
+        private void DrawCenteredText(Graphics g, Rectangle rect, string text)
+        {
+            float fontSize = Math.Max(6, rect.Height / 5f); // socket index와 동일한 기준
+            using (Font font = new Font("Tahoma", fontSize, FontStyle.Bold))
+            using (StringFormat format = new StringFormat()
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            })
+            {
+                g.DrawString(text, font, Brushes.Black, rect, format);
+            }
+        }
 
 
 

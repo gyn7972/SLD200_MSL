@@ -15767,12 +15767,7 @@ namespace QMC.Common.Modules
                         break;
                     }
 
-                    if (!Equipment.AutoRunStatus &&
-                        Equipment.SemiAutoEnable &&
-                        _semiAutoRequest == SemiAutoStep.MeasureHeight)
-                    {
-                        SetStageComplete(SemiAutoStep.MeasureHeight, false);
-                    }
+                    SetStageComplete(SemiAutoStep.MeasureHeight, false);
 
                     LaserDrillingStepStart();
 
@@ -17627,7 +17622,7 @@ namespace QMC.Common.Modules
 
                                     //
                                     //m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
-                                    m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityAndEncoderSpeed,
+                                    m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
                                         (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance,                              //  Percentage100
                                         (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 0.8),                      //  Min
                                         (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 1.2));                     //  Max
@@ -18521,10 +18516,10 @@ namespace QMC.Common.Modules
                     else
                     {
                         Log.Write("SLD-200", "Auto Run", "Socket Align 진행 중, Socket Height Check 모드 : Off");
-
-                        SetStageComplete(SemiAutoStep.MeasureHeight, true);
-                        m_dZOffset_SocketHeightCheck = 0.0;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                        {
+                            m_dZOffset_SocketHeightCheck = 0.0;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                        }
                     }
                     break;
                 //  Map Data 변경 (Camera) - 끝
@@ -19017,7 +19012,11 @@ namespace QMC.Common.Modules
                         {
                             SetStageComplete(SemiAutoStep.MeasureHeight, true);
                             Equipment.SemiAutoEnable = false;
+
                             m_LaserDrillingWork_Start = false;
+                            m_MainWork_Start = false;
+                            m_SubWork_Start = false;
+                            m_ProductAlign_Start = false;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
@@ -19611,18 +19610,25 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling Pre Align 보정 완료.");
 
-                    SetStageComplete(SemiAutoStep.PreAlign, true);
                     if (!Equipment.AutoRunStatus &&
                             Equipment.SemiAutoEnable &&
                             _semiAutoRequest == SemiAutoStep.PreAlign)
                     {
+                        SetStageComplete(SemiAutoStep.PreAlign, true);
                         Equipment.SemiAutoEnable = false;
-                        m_LaserDrillingWork_Start = false;
-                    }
 
-                    m_bPreAlignCompleted = true;
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                    
+                        m_LaserDrillingWork_Start = false;
+                        m_MainWork_Start = false;
+                        m_SubWork_Start = false;
+                        m_ProductAlign_Start = false;
+
+                        m_bPreAlignCompleted = true;
+                    }
+                    else
+                    {
+                        m_bPreAlignCompleted = true;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                    }
                     break;
 
 
@@ -20106,11 +20112,16 @@ namespace QMC.Common.Modules
                         else
                         {
                             if (!Equipment.AutoRunStatus &&
-                                Equipment.SemiAutoEnable &&
-                                _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.FiducialAlign)
                             {
+                                SetStageComplete(SemiAutoStep.FiducialAlign, true);
                                 Equipment.SemiAutoEnable = false;
+
                                 m_LaserDrillingWork_Start = false;
+                                m_MainWork_Start = false;
+                                m_SubWork_Start = false;
+                                m_ProductAlign_Start = false;
                             }
                             m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
 
@@ -20123,13 +20134,17 @@ namespace QMC.Common.Modules
                     else
                     {
                         if (!Equipment.AutoRunStatus &&
-                        Equipment.SemiAutoEnable &&
-                        _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.FiducialAlign)
                         {
+                            SetStageComplete(SemiAutoStep.FiducialAlign, true);
                             Equipment.SemiAutoEnable = false;
+
                             m_LaserDrillingWork_Start = false;
+                            m_MainWork_Start = false;
+                            m_SubWork_Start = false;
+                            m_ProductAlign_Start = false;
                         }
-                        SetStageComplete(SemiAutoStep.FiducialAlign, true);
 
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
 
@@ -22683,9 +22698,13 @@ namespace QMC.Common.Modules
                             Equipment.SemiAutoEnable &&
                             _semiAutoRequest == SemiAutoStep.Drilling)
                     {
-                        Equipment.SemiAutoEnable = false;
-                        m_LaserDrillingWork_Start = false;
                         SetStageComplete(SemiAutoStep.Drilling, true);
+                        Equipment.SemiAutoEnable = false;
+
+                        m_LaserDrillingWork_Start = false;
+                        m_MainWork_Start = false;
+                        m_SubWork_Start = false;
+                        m_ProductAlign_Start = false;
                     }
 
                     m_bLaserDrilling_Complete = true;
@@ -22693,13 +22712,6 @@ namespace QMC.Common.Modules
 
                     Equipment.SelectRunEnable = false;
 
-                    if (!Equipment.AutoRunStatus)
-                    {
-                        //MessageBox.Show("가공 완료.", "Information!");
-
-                        //var mb1 = new QMC.Common.UI.MessageBoxOk();
-                        //mb1.ShowDialog("Warning !", "냉각수를 순환 시키고 작업을 진행해야 합니다.");
-                    }
                     break;
             }
 

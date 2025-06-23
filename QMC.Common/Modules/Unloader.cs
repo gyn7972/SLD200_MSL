@@ -4764,17 +4764,16 @@ namespace QMC.Common.Modules
                             m_bStacker0_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
 
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 Stacker0 에 Module 을 내려놓았으므로 true 로 만들어 줌.
-                            SetUnloaderComplete(true);
-                            ////  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
-                            //if (Equipment.CycleStop)
-                            //{
-                            //    //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
-                            //    if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
-                            //    {
-                            //        //  Unloader Transfer 돌아가지 않게
-                            //        Equipment.CycleStopped_UnloaderTransfer = true;
-                            //    }
-                            //}
+
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Start)
+                            {
+                                SetUnloaderComplete(true);
+                                Equipment.SemiAutoEnable = false;
+
+                                m_UnloaderWork_Start = false; // Unloader 작업 시작 플래그 초기화
+                            }
                             break;
 
                         case (int)UnloaderTransferMoveType.Cycle_Stacker1_PutDown:
@@ -4787,18 +4786,15 @@ namespace QMC.Common.Modules
                             m_bStacker1_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
 
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 Stacker1 에 Module 을 내려놓았으므로 true 로 만들어 줌.
-                            SetUnloaderComplete(true);
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Start)
+                            {
+                                SetUnloaderComplete(true);
+                                Equipment.SemiAutoEnable = false;
 
-                            ////  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
-                            //if (Equipment.CycleStop)
-                            //{
-                            //    //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
-                            //    if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
-                            //    {
-                            //        //  Unloader Transfer 돌아가지 않게
-                            //        Equipment.CycleStopped_UnloaderTransfer = true;
-                            //    }
-                            //}
+                                m_UnloaderWork_Start = false; // Unloader 작업 시작 플래그 초기화
+                            }
                             break;
 
                         case (int)UnloaderTransferMoveType.Cycle_NG_PutDown:
@@ -4810,18 +4806,15 @@ namespace QMC.Common.Modules
                             workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
 
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 NG-Port 에 Module 을 내려놓았으므로 true 로 만들어 줌.
-                            SetUnloaderComplete(true);
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Start)
+                            {
+                                SetUnloaderComplete(true);
+                                Equipment.SemiAutoEnable = false;
 
-                            ////  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
-                            //if (Equipment.CycleStop)
-                            //{
-                            //    //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
-                            //    if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
-                            //    {
-                            //        //  Unloader Transfer 돌아가지 않게
-                            //        Equipment.CycleStopped_UnloaderTransfer = true;
-                            //    }
-                            //}
+                                m_UnloaderWork_Start = false; // Unloader 작업 시작 플래그 초기화
+                            }
                             break;
 
                         default:            //  Error
