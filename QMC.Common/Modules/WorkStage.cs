@@ -4261,7 +4261,6 @@ namespace QMC.Common.Modules
                 Camera_LowRes.Close();
             }
 
-            // m_rapidLxLaser_Comm
             if (m_rapidLxLaser_Comm != null)
             {
                 m_rapidLxLaser_Comm.CloseComm();
