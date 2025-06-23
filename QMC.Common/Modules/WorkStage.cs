@@ -1009,6 +1009,9 @@ namespace QMC.Common.Modules
 
         // Data 관리를 위한 객체 선언.
         public DrillingProcessManager DrillingManager { get; private set; } = new DrillingProcessManager();
+        public Action<DrillingProcessManager> ActionDrillingProcessManagerUpdated;
+        public Action<DrillingProcessManager> ActionDrillingProcessManagerSelectedUpdated;
+
 
         //  다른 모듈에 접근하기 위함
         static Loader loader;
@@ -7887,10 +7890,11 @@ namespace QMC.Common.Modules
                     {
                         // 도면 로딩.
                         Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-
                         if (GetDrillingData(true) == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Main Tick, Loader Transfer, WorkStage 로 Loading 중 가공 데이터 Parsing 성공");
+
+                            ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
 
                             //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
                             GlobalSocketStatus_Init();
@@ -7902,12 +7906,10 @@ namespace QMC.Common.Modules
                             {
                                 //  메인 화면에 가공위치 표시용
                                 Main_SocketPositions = new List<PointD>();
-
                                 for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
                                 {
                                     Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
                                 }
-
                                 if (Main_SocketPositions.Count > 0)
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
@@ -15797,6 +15799,21 @@ namespace QMC.Common.Modules
                         //{
                         //    Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
                         //}
+
+                        if (GetDrillingData(true) == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 시, WorkStage에서 가공 데이터 Parsing 성공");
+                            ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
+                            ActionDrillingProcessManagerSelectedUpdated?.Invoke(DrillingManager);
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 시, WorkStage에서 가공 데이터 Parsing 실패");
+                            // 실패해도 던져는 줘야할듯. Reset 개념으로.
+                            ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
+                            ActionDrillingProcessManagerSelectedUpdated?.Invoke(DrillingManager);
+                        }
+
                         workStageParameter.DO_Stage_Vacuum(true);
                         workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
                         DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);

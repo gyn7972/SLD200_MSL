@@ -2799,9 +2799,10 @@ namespace SLD200_MSL
             loader.m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
             loader.m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
             loader.m_nMAlign_Step = (int)MAlign_Step.None;
+            loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.None;                            //  Stacker 우선권 초기화
+
             loader.m_bStacker0_Complete = false;
             loader.m_bStacker1_Complete = false;
-            loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.None;                            //  Stacker 우선권 초기화
             loader.m_bStacker0_PickUp_Failed = false;                                                       //  Stacker1 Pick Up 실패 여부 Flag 초기화
             loader.m_bStacker1_PickUp_Failed = false;                                                       //  Stacker1 Pick Up 실패 여부 Flag 초기화
 
@@ -2915,7 +2916,6 @@ namespace SLD200_MSL
             workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
             workStage.m_bSensorRequestPending = false;   // 요청 보냄
             workStage.m_bSensorResponseReady = false;    // 응답 받음
-
 
             workStage.m_bFirstAutoCrossCheckDone = false;
 
@@ -4451,14 +4451,14 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
+            //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
 
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
 
-            workStage.DrillingManager.CycleTimer_DoneModuleCount++;
-            workStage.DrillingManager.CycleTimer_LaserDrilling.End();
+            //workStage.DrillingManager.CycleTimer_DoneModuleCount++;
+            //workStage.DrillingManager.CycleTimer_LaserDrilling.End();
 
-            workStage.DrillingManager.SaveLotLog();                     // 최신 로그 저장
+            //workStage.DrillingManager.SaveLotLog();                     // 최신 로그 저장
             
 
             try

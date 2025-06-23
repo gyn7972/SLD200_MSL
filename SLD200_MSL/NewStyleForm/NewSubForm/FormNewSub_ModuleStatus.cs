@@ -58,6 +58,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             timerModuleStatus.Interval = 100;
             timerModuleStatus.Tick += TimerModuleStatus_Tick;
             timerModuleStatus.Start();
+
+
+            workStage.ActionDrillingProcessManagerSelectedUpdated += OnDrillingDataUpdated;
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -113,6 +116,16 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             // 실행할 작업들을 여기에 구현.
 
+        }
+
+        private void OnDrillingDataUpdated(DrillingProcessManager manager)
+        {
+            if (drillingProcessManager == null)
+                return;
+
+            LoadDrillingManager(manager);
+            this.Invalidate(); // 화면 다시 그리기
+            this.Refresh();
         }
 
         public void LoadDrillingManager(DrillingProcessManager manager)

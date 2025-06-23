@@ -1,4 +1,5 @@
 ﻿using QMC.Common;
+using QMC.Common.Global;
 using QMC.Common.Modules;
 using QMC.Core;
 using SLD200_MSL;
