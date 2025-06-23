@@ -185,6 +185,13 @@ namespace SLD200.NewStyleForm.NewSubForm
             this.ImageViewer_RecipeVision_Lows.StartUpdateTask();
 
             this.RecipeVisionTimer.Start();
+
+            // === 현재 Recipe의 Vision 데이터 UI 반영 ===
+            // 콤보 초기화 및 선택
+            InitSocketMarkCombo();
+
+            // 콤보에서 선택된 SocketMark를 UI에 표시
+            this.ApplySocketMarkToUI();
         }
 
         public void OnHide()
@@ -1451,12 +1458,26 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void radioButton_RecipeVision_CameraSelection_HighMag_CheckedChanged(object sender, EventArgs e)
         {
+            if (!radioButton_RecipeVision_CameraSelection_HighMag.Checked)
+                return;
+
+            // 현재 선택된 마크 인덱스 가져오기
+            int idx = comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex;
+            if (idx < 0 || idx >= Equipment.stVisionRecipeSet.SocketMarkList.Count)
+                return;
+
+            var mark = Equipment.stVisionRecipeSet.SocketMarkList[idx];
+
+            // 기존 조명 OFF
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
             Thread.Sleep(100);
-            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, Equipment.stVisionRecipeSet.nSocketIlluminationRed);
-            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, Equipment.stVisionRecipeSet.nSocketIlluminationIR);
 
+            // 선택된 마크의 조명 값으로 설정
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, mark.IllumRed);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, mark.IllumIR);
+
+            // 조명 관련 컨트롤 Enable
             hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
             textBox_RecipeVision_IlluminationValue_IR.Enabled = true;
             button_RecipeVision_Illumin_value_IR.Enabled = true;
@@ -1476,11 +1497,13 @@ namespace SLD200.NewStyleForm.NewSubForm
             textBox_RecipeVision_Camera_ExposureTime_High.Enabled = true;
             textBox_RecipeVision_AxisZ_Setting.Enabled = true;
 
-            hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
-            hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
+            // 조명 슬라이더 값도 마크 기반으로 반영
+            hScrollBar_RecipeVision_Illuminator_IR.Value = mark.IllumIR;
+            hScrollBar_RecipeVision_Illuminator_Red.Value = mark.IllumRed;
 
             SetScroll();
         }
+
 
         private void button_Recipe_Fiducial_Search_Click(object sender, EventArgs e)
         {
@@ -1719,6 +1742,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text = mark.IllumRed.ToString();
             textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text = mark.IllumIR.ToString();
+
+
+            radioButton_RecipeVision_CameraSelection_HighMag_CheckedChanged(null, null); // HighMag 카메라 설정 적용
 
             this.Refresh();
         }
