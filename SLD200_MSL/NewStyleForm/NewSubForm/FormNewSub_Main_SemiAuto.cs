@@ -15,7 +15,7 @@ using static QMC.Common.Modules.Loader;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
-    public partial class FormNewSub_Main_SemiAuto : Form
+    public partial class FormNewSub_Main_SemiAuto : UserControl
     {
         static WorkStage workStage;
         static Loader loader;
@@ -49,19 +49,19 @@ namespace SLD200.NewStyleForm.NewSubForm
             timerSemiAuto.Start();
 
         }
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                // 사용자가 닫기(X 버튼) 누른 경우 → 숨기기만 하고 종료 안 함
-                e.Cancel = true;
-                this.Hide();
-                return;
-            }
+        //protected override void OnFormClosing(FormClosingEventArgs e)
+        //{
+        //    if (e.CloseReason == CloseReason.UserClosing)
+        //    {
+        //        // 사용자가 닫기(X 버튼) 누른 경우 → 숨기기만 하고 종료 안 함
+        //        e.Cancel = true;
+        //        this.Hide();
+        //        return;
+        //    }
 
-            // 그 외 종료 (Application.Exit 등) → 정식 해제
-            base.OnFormClosing(e);
-        }
+        //    // 그 외 종료 (Application.Exit 등) → 정식 해제
+        //    base.OnFormClosing(e);
+        //}
 
         public void DisposeSemiAutoResources()
         {
@@ -101,7 +101,29 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void Timer_SemiAutoRun()
         {
             // Semi Auto 모드에서 실행할 작업들을 여기에 구현.
-            UpdateButtonStatusByState(button_SemiAuto_Loading, loader.m_LoaderWork_Start, loader.IsLoaderComplete());
+            if(Equipment.AutoRunStatus)
+            {
+                button_SemiAuto_Unloading.Enabled = false;
+                button_SemiAuto_HeightSensor.Enabled = false;
+                button_SemiAuto_PreAlign.Enabled = false;
+                button_SemiAuto_FiducialAlign.Enabled = false;
+                button_SemiAuto_LaserDrilling.Enabled = false;
+                button_SemiAuto_Loading.Enabled = false;
+            }
+            else
+            {
+                button_SemiAuto_Unloading.Enabled = true;
+                button_SemiAuto_HeightSensor.Enabled = true;
+                button_SemiAuto_PreAlign.Enabled = true;
+                button_SemiAuto_FiducialAlign.Enabled = true;
+                button_SemiAuto_LaserDrilling.Enabled = true;
+                button_SemiAuto_Loading.Enabled = true;
+            }
+
+
+
+
+                UpdateButtonStatusByState(button_SemiAuto_Loading, loader.m_LoaderWork_Start, loader.IsLoaderComplete());
 
             UpdateButtonStatusByState(
                 button_SemiAuto_HeightSensor,
@@ -132,7 +154,11 @@ namespace SLD200.NewStyleForm.NewSubForm
             Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_SemiAuto_Loading_Click");
             string strTemp = "";
 
-            bool bTest = false;
+            var mb1 = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
+                return;
+
+            bool bTest = true;
             if (bTest)
             {
                 if (Equipment.AutoRunStatus)
@@ -213,7 +239,11 @@ namespace SLD200.NewStyleForm.NewSubForm
             Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_SemiAuto_Unloading_Click");
             string strTemp = "";
 
-            bool bTest = false;
+            var mb1 = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
+                return;
+
+            bool bTest = true;
             if (bTest)
             {
                 if (Equipment.AutoRunStatus)
@@ -238,6 +268,11 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_SemiAuto_HeightSensor_Click");
             string strTemp = "";
+
+            var mb1 = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
+                return;
+
             if (!CheckStageinterlock())
             {
                 strTemp = string.Format("CheckStageinterlock - Fail");
@@ -266,6 +301,11 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_SemiAuto_PreAlign_Click");
             string strTemp = "";
+
+            var mb1 = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
+                return;
+
             if (!CheckStageinterlock())
             {
                 strTemp = string.Format("CheckStageinterlock - Fail");
@@ -303,6 +343,11 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_SemiAuto_FiducialAlign_Click");
             string strTemp = "";
+
+            var mb1 = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
+                return;
+
             if (!CheckStageinterlock())
             {
                 strTemp = string.Format("CheckStageinterlock - Fail");
@@ -341,7 +386,12 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_SemiAuto_LaserDrilling_Click");
             string strTemp = "";
-            if(!CheckStageinterlock())
+
+            var mb1 = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
+                return;
+
+            if (!CheckStageinterlock())
             {
                 strTemp = string.Format("CheckStageinterlock - Fail");
                 Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);

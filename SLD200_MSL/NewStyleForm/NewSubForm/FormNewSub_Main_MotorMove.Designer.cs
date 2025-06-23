@@ -51,10 +51,12 @@
             this.groupBox_MotorMove_Loader = new System.Windows.Forms.GroupBox();
             this.groupBox_MotorMove_heightSensor = new System.Windows.Forms.GroupBox();
             this.label_MotorMove_heightSensor = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox_MotorMove_Unloader.SuspendLayout();
             this.groupBox_MotorMove_MainStage.SuspendLayout();
             this.groupBox_MotorMove_Loader.SuspendLayout();
             this.groupBox_MotorMove_heightSensor.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button_MotorMove_Unloader_ToStacker
@@ -243,7 +245,7 @@
             this.groupBox_MotorMove_Unloader.Controls.Add(this.button_MotorMove_Unloader_ToStage);
             this.groupBox_MotorMove_Unloader.Controls.Add(this.button_MotorMove_Unloader_Vacuum);
             this.groupBox_MotorMove_Unloader.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_MotorMove_Unloader.Location = new System.Drawing.Point(12, 12);
+            this.groupBox_MotorMove_Unloader.Location = new System.Drawing.Point(6, 20);
             this.groupBox_MotorMove_Unloader.Name = "groupBox_MotorMove_Unloader";
             this.groupBox_MotorMove_Unloader.Size = new System.Drawing.Size(220, 101);
             this.groupBox_MotorMove_Unloader.TabIndex = 18;
@@ -263,7 +265,7 @@
             this.groupBox_MotorMove_MainStage.Controls.Add(this.button_MotorMove_Stage_Vacuum);
             this.groupBox_MotorMove_MainStage.Controls.Add(this.button_MotorMove_Stage_ToLoading);
             this.groupBox_MotorMove_MainStage.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_MotorMove_MainStage.Location = new System.Drawing.Point(12, 119);
+            this.groupBox_MotorMove_MainStage.Location = new System.Drawing.Point(6, 127);
             this.groupBox_MotorMove_MainStage.Name = "groupBox_MotorMove_MainStage";
             this.groupBox_MotorMove_MainStage.Size = new System.Drawing.Size(378, 190);
             this.groupBox_MotorMove_MainStage.TabIndex = 19;
@@ -278,7 +280,7 @@
             this.groupBox_MotorMove_Loader.Controls.Add(this.button_MotorMove_Loader_Stacker_Vacuum);
             this.groupBox_MotorMove_Loader.Controls.Add(this.button_MotorMove_Loader_MAlign_Vacuum);
             this.groupBox_MotorMove_Loader.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_MotorMove_Loader.Location = new System.Drawing.Point(238, 12);
+            this.groupBox_MotorMove_Loader.Location = new System.Drawing.Point(232, 20);
             this.groupBox_MotorMove_Loader.Name = "groupBox_MotorMove_Loader";
             this.groupBox_MotorMove_Loader.Size = new System.Drawing.Size(321, 101);
             this.groupBox_MotorMove_Loader.TabIndex = 20;
@@ -289,7 +291,7 @@
             // 
             this.groupBox_MotorMove_heightSensor.Controls.Add(this.label_MotorMove_heightSensor);
             this.groupBox_MotorMove_heightSensor.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox_MotorMove_heightSensor.Location = new System.Drawing.Point(392, 119);
+            this.groupBox_MotorMove_heightSensor.Location = new System.Drawing.Point(386, 127);
             this.groupBox_MotorMove_heightSensor.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_MotorMove_heightSensor.Name = "groupBox_MotorMove_heightSensor";
             this.groupBox_MotorMove_heightSensor.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -312,21 +314,32 @@
             this.label_MotorMove_heightSensor.Text = "0.000";
             this.label_MotorMove_heightSensor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.groupBox_MotorMove_Unloader);
+            this.groupBox1.Controls.Add(this.groupBox_MotorMove_heightSensor);
+            this.groupBox1.Controls.Add(this.groupBox_MotorMove_MainStage);
+            this.groupBox1.Controls.Add(this.groupBox_MotorMove_Loader);
+            this.groupBox1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(555, 320);
+            this.groupBox1.TabIndex = 82;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Motor Move";
+            // 
             // FormNewSub_Main_MotorMove
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(569, 316);
-            this.Controls.Add(this.groupBox_MotorMove_heightSensor);
-            this.Controls.Add(this.groupBox_MotorMove_Loader);
-            this.Controls.Add(this.groupBox_MotorMove_MainStage);
-            this.Controls.Add(this.groupBox_MotorMove_Unloader);
+            this.Controls.Add(this.groupBox1);
             this.Name = "FormNewSub_Main_MotorMove";
-            this.Text = "FormNewSub_Main_MotorMove";
+            this.Size = new System.Drawing.Size(560, 325);
             this.groupBox_MotorMove_Unloader.ResumeLayout(false);
             this.groupBox_MotorMove_MainStage.ResumeLayout(false);
             this.groupBox_MotorMove_Loader.ResumeLayout(false);
             this.groupBox_MotorMove_heightSensor.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -356,5 +369,6 @@
         private System.Windows.Forms.GroupBox groupBox_MotorMove_Loader;
         private System.Windows.Forms.GroupBox groupBox_MotorMove_heightSensor;
         private System.Windows.Forms.Label label_MotorMove_heightSensor;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }

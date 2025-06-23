@@ -120,8 +120,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void OnDrillingDataUpdated(DrillingProcessManager manager)
         {
-            if (drillingProcessManager == null)
-                return;
+            //if (drillingProcessManager == null)
+            //    return;
 
             LoadDrillingManager(manager);
             this.Invalidate(); // 화면 다시 그리기

@@ -71,8 +71,6 @@ namespace SLD200_MSL
         static Vision vision;
         static Bds bds;
 
-
-
         //  모듈 진행 상태 표시용 변수 
         private int Rows = 1; // 세로 개수 (기본값)
         private int Columns = 1; // 가로 개수 (기본값)
@@ -298,18 +296,23 @@ namespace SLD200_MSL
 
             numericUpDown_Module_WaitTime_sec.Value = 0;
 
-            m_formSemiAuto = new FormNewSub_Main_SemiAuto();
-            m_formSemiAuto.Owner = this;
+            //m_formSemiAuto = new FormNewSub_Main_SemiAuto();
+            //m_formSemiAuto.Owner = this;
+            ShowSemiAutoControl();
 
-            m_formMotorMove = new FormNewSub_Main_MotorMove();
-            m_formMotorMove.Owner = this;
+            //m_formMotorMove = new FormNewSub_Main_MotorMove();
+            //m_formMotorMove.Owner = this;
+            ShowMotorMoveControl();
 
             m_formModuleStatus = new FormNewSub_ModuleStatus();
             m_formModuleStatus.Owner = this;
 
-            m_formModuleMonitor = new FormNewSub_ModuleMonitor();
-            m_formModuleMonitor.Owner = this;
+            //m_formModuleMonitor = new FormNewSub_ModuleMonitor();
+            //m_formModuleMonitor.Owner = this;
+            ShowModuleMonitorControl();
         }
+
+        
 
         private void FormNew_Main_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -4463,14 +4466,14 @@ namespace SLD200_MSL
 
             try
             {
-                FormSemiAuto.Show();  // 모달리스
-                FormMotorMove.Show();  // 모달리스
+                //FormSemiAuto.Show();  // 모달리스
+                //FormMotorMove.Show();  // 모달리스
 
                 FormModuleStatus.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
                 FormModuleStatus.Show();
 
                 FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
-                FormModuleMonitor.Show();  // 모달리스
+                //FormModuleMonitor.Show();  // 모달리스
             }
             catch (Exception ex)
             {
@@ -4734,5 +4737,42 @@ namespace SLD200_MSL
                 return control.Text;
             }
         }
+
+
+
+        private void ShowMotorMoveControl()
+        {
+            if (FormMotorMove == null)
+                FormMotorMove = new FormNewSub_Main_MotorMove();
+
+            panel_Main_MotorMove.Controls.Clear();
+            panel_Main_MotorMove.Controls.Add(FormMotorMove);
+            FormMotorMove.Dock = DockStyle.Fill;
+            FormMotorMove.Visible = true;
+        }
+
+        private void ShowSemiAutoControl()
+        {
+            if (FormSemiAuto == null)
+                FormSemiAuto = new FormNewSub_Main_SemiAuto();
+
+            panel_Main_SemiAuto.Controls.Clear();
+            panel_Main_SemiAuto.Controls.Add(FormSemiAuto);
+            FormSemiAuto.Dock = DockStyle.Fill;
+            FormSemiAuto.Visible = true;
+        }
+
+        //
+        private void ShowModuleMonitorControl()
+        {
+            if (FormModuleMonitor == null)
+                FormModuleMonitor = new FormNewSub_ModuleMonitor();
+
+            panel_Main_ModuleStatus.Controls.Clear();
+            panel_Main_ModuleStatus.Controls.Add(FormModuleMonitor);
+            FormModuleMonitor.Dock = DockStyle.Fill;
+            FormModuleMonitor.Visible = true;
+        }
+
     }
 }

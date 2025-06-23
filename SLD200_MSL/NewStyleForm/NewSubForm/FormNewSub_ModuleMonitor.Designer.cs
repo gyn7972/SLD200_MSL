@@ -32,10 +32,9 @@
             // 
             // FormNewSub_ModuleMonitor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(493, 509);
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.ClientSize = new System.Drawing.Size(314, 291);
             this.Name = "FormNewSub_ModuleMonitor";
             this.Text = "FormNewSub_ModuleMonitor";
             this.ResumeLayout(false);

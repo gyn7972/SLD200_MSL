@@ -699,13 +699,13 @@
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_MotorMove.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_MotorMove.Designer.cs">
       <DependentUpon>FormNewSub_Main_MotorMove.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ModuleMonitor.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ModuleMonitor.Designer.cs">
       <DependentUpon>FormNewSub_ModuleMonitor.cs</DependentUpon>
@@ -735,7 +735,7 @@
       <DependentUpon>FormNewSub_SemiAuto.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_SemiAuto.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_SemiAuto.Designer.cs">
       <DependentUpon>FormNewSub_Main_SemiAuto.cs</DependentUpon>

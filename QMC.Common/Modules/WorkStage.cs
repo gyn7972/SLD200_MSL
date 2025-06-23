@@ -36548,6 +36548,8 @@ namespace QMC.Common.Modules
                 {
                     DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
                     Log.Write("DrillStatus", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
+
+                    ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
                 }
             }
             

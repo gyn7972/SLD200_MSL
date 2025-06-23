@@ -18,7 +18,7 @@ using static QMC.Common.Modules.WorkStage;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
-    public partial class FormNewSub_Main_MotorMove : Form
+    public partial class FormNewSub_Main_MotorMove : UserControl
     {
         static WorkStage workStage;
         static Loader loader;
@@ -61,19 +61,19 @@ namespace SLD200.NewStyleForm.NewSubForm
             _originalBackColors[button_MotorMove_Unloader_Vacuum] = button_MotorMove_Unloader_Vacuum.BackColor;//
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                // 사용자가 닫기(X 버튼) 누른 경우 → 숨기기만 하고 종료 안 함
-                e.Cancel = true;
-                this.Hide();
-                return;
-            }
+        //protected override void OnFormClosing(FormClosingEventArgs e)
+        //{
+        //    if (e.CloseReason == CloseReason.UserClosing)
+        //    {
+        //        // 사용자가 닫기(X 버튼) 누른 경우 → 숨기기만 하고 종료 안 함
+        //        e.Cancel = true;
+        //        this.Hide();
+        //        return;
+        //    }
 
-            // 그 외 종료 (Application.Exit 등) → 정식 해제
-            base.OnFormClosing(e);
-        }
+        //    // 그 외 종료 (Application.Exit 등) → 정식 해제
+        //    base.OnFormClosing(e);
+        //}
 
         public void DisposeSemiAutoResources()
         {
@@ -113,8 +113,52 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void Timer_SemiAutoRun()
         {
             // 실행할 작업들을 여기에 구현.
-            //  Laser Height Sensor
-            double? dHeightVal = workStage.m_dLaserHeightSensorSocket_Value;
+
+            if(Equipment.AutoRunStatus)
+            {
+                button_MotorMove_Unloader_ToStacker.Enabled = false;
+                button_MotorMove_Unloader_ToStage.Enabled = false;
+                button_MotorMove_Unloader_Vacuum.Enabled = false;
+                button_MotorMove_Stage_ScannerCenter.Enabled = false;
+                button_MotorMove_Stage_ScannerFineCam.Enabled = false;
+                button_MotorMove_Stage_FineCamScanner.Enabled = false;
+                button_MotorMove_Stage_FineCamHeightSensor.Enabled = false;
+                button_MotorMove_Stage_HeightSensorFineCam.Enabled = false;
+                button_MotorMove_Stage_FineCamCoarseCam.Enabled = false;
+                button_MotorMove_Stage_CoarseCamFineCam.Enabled = false;
+                button_MotorMove_Stage_ToUnloading.Enabled = false;
+                button_MotorMove_Stage_ToLoading.Enabled = false;
+                button_MotorMove_Stage_Vacuum.Enabled = false;
+                button_MotorMove_Loader_ToStage.Enabled = false;
+                button_MotorMove_Loader_ToMAlign.Enabled = false;
+                button_MotorMove_Loader_ToStacker.Enabled = false;
+                button_MotorMove_Loader_MAlign_Vacuum.Enabled = false;
+                button_MotorMove_Loader_Stacker_Vacuum.Enabled = false;
+            }
+            else
+            {
+                button_MotorMove_Unloader_ToStacker.Enabled = true;
+                button_MotorMove_Unloader_ToStage.Enabled = true;
+                button_MotorMove_Unloader_Vacuum.Enabled = true;
+                button_MotorMove_Stage_ScannerCenter.Enabled = true;
+                button_MotorMove_Stage_ScannerFineCam.Enabled = true;
+                button_MotorMove_Stage_FineCamScanner.Enabled = true;
+                button_MotorMove_Stage_FineCamHeightSensor.Enabled = true;
+                button_MotorMove_Stage_HeightSensorFineCam.Enabled = true;
+                button_MotorMove_Stage_FineCamCoarseCam.Enabled = true;
+                button_MotorMove_Stage_CoarseCamFineCam.Enabled = true;
+                button_MotorMove_Stage_ToUnloading.Enabled = true;
+                button_MotorMove_Stage_ToLoading.Enabled = true;
+                button_MotorMove_Stage_Vacuum.Enabled = true;
+                button_MotorMove_Loader_ToStage.Enabled = true;
+                button_MotorMove_Loader_ToMAlign.Enabled = true;
+                button_MotorMove_Loader_ToStacker.Enabled = true;
+                button_MotorMove_Loader_MAlign_Vacuum.Enabled = true;
+                button_MotorMove_Loader_Stacker_Vacuum.Enabled = true;
+            }
+
+                //  Laser Height Sensor
+                double? dHeightVal = workStage.m_dLaserHeightSensorSocket_Value;
             label_MotorMove_heightSensor.Text = string.Format("{0:0.0000}", dHeightVal.HasValue ? dHeightVal.Value : 0.0f);
 
             //button_MotorMove_Stage_Vacuum

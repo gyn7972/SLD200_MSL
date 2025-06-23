@@ -10,7 +10,7 @@ using static QMC.Common.Equipment;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
-    public partial class FormNewSub_ModuleMonitor : Form
+    public partial class FormNewSub_ModuleMonitor : UserControl
     {
         private DrillingProcessManager drillingProcessManager;
         private bool _isDrawing = false;
@@ -49,16 +49,16 @@ namespace SLD200.NewStyleForm.NewSubForm
             workStage.ActionDrillingProcessManagerUpdated += OnDrillingDataUpdated;
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                e.Cancel = true;
-                this.Hide();
-                return;
-            }
-            base.OnFormClosing(e);
-        }
+        //protected override void OnFormClosing(FormClosingEventArgs e)
+        //{
+        //    if (e.CloseReason == CloseReason.UserClosing)
+        //    {
+        //        e.Cancel = true;
+        //        this.Hide();
+        //        return;
+        //    }
+        //    base.OnFormClosing(e);
+        //}
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -172,8 +172,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void OnDrillingDataUpdated(DrillingProcessManager manager)
         {
-            if (drillingProcessManager == null)
-                return;
+            //if (drillingProcessManager == null)
+            //    return;
 
             LoadDrillingManager(manager);
             this.Invalidate(); // 화면 다시 그리기
