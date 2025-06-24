@@ -31,13 +31,13 @@
             this.components = new System.ComponentModel.Container();
             this.SiriusViewer_Main = new SpiralLab.Sirius.SiriusViewerForm();
             this.groupBoxMain_ModuleProcessingStatus = new System.Windows.Forms.GroupBox();
-            this.checkBox_Main_AlignStartSocket_ContinueMode = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_AlignStartSocket_SelectMode = new System.Windows.Forms.CheckBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox_Socket_Before = new System.Windows.Forms.PictureBox();
             this.pictureBox_ModuleProcessingStatus = new System.Windows.Forms.PictureBox();
+            this.checkBox_Main_AlignStartSocket_ContinueMode = new System.Windows.Forms.CheckBox();
+            this.checkBox_Main_AlignStartSocket_SelectMode = new System.Windows.Forms.CheckBox();
             this.groupBoxMain_ProcessingStatus = new System.Windows.Forms.GroupBox();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.listView_Main_FiducialAlignData = new System.Windows.Forms.ListView();
@@ -117,8 +117,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.numericUpDown_Module_WaitTime_sec = new System.Windows.Forms.NumericUpDown();
             this.button_Module_WaitTime_sec = new System.Windows.Forms.Button();
-            this.ImageViewer_Main_Lows = new QMC.Common.Hmi.VisionImageViewer();
-            this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.pictureBox_Main_DiviceStatus_Laser = new System.Windows.Forms.PictureBox();
             this.pictureBox_Main_DiviceStatus_IO = new System.Windows.Forms.PictureBox();
             this.pictureBox_Main_DiviceStatus_Motion = new System.Windows.Forms.PictureBox();
@@ -130,15 +128,18 @@
             this.pictureBox_Main_DiviceStatus_CameraPre = new System.Windows.Forms.PictureBox();
             this.pictureBox_Main_DiviceStatus_Illuminator = new System.Windows.Forms.PictureBox();
             this.groupBox_Main_DiviceStatus = new System.Windows.Forms.GroupBox();
-            this.pictureBox_Main_DiviceStatus_DustCollector_Upper = new System.Windows.Forms.PictureBox();
-            this.pictureBox_Main_DiviceStatus_DustCollector_Lower = new System.Windows.Forms.PictureBox();
-            this.pictureBox_Main_DiviceStatus_Powermeter_bds = new System.Windows.Forms.PictureBox();
-            this.pictureBox_Main_DiviceStatus_Powermeter_Stage = new System.Windows.Forms.PictureBox();
             this.pictureBox_Main_DiviceStatus_BeamExpander = new System.Windows.Forms.PictureBox();
+            this.pictureBox_Main_DiviceStatus_Powermeter_Stage = new System.Windows.Forms.PictureBox();
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds = new System.Windows.Forms.PictureBox();
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower = new System.Windows.Forms.PictureBox();
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper = new System.Windows.Forms.PictureBox();
             this.label_Main_Title_Status = new System.Windows.Forms.Label();
             this.panel_Main_MotorMove = new System.Windows.Forms.Panel();
             this.panel_Main_SemiAuto = new System.Windows.Forms.Panel();
             this.panel_Main_ModuleStatus = new System.Windows.Forms.Panel();
+            this.groupBox_ModuleStatus = new System.Windows.Forms.GroupBox();
+            this.ImageViewer_Main_Lows = new QMC.Common.Hmi.VisionImageViewer();
+            this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.baseLabel_Module_WaitTime_sec = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_Illuminator = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_CameraPre = new SLD200_MSL.BaseLabel();
@@ -188,7 +189,7 @@
             this.baseLabel_SocketStatus_OK = new SLD200_MSL.BaseLabel();
             this.baseLabel_SocketStatus_Processing = new SLD200_MSL.BaseLabel();
             this.baseLabel_SocketStatus_Ready = new SLD200_MSL.BaseLabel();
-            this.groupBox_ModuleStatus = new System.Windows.Forms.GroupBox();
+            this.button_Main_SelectedProcess = new System.Windows.Forms.Button();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -212,8 +213,6 @@
             this.groupBox70.SuspendLayout();
             this.groupBox_BET_Status.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_WaitTime_sec)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Laser)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_IO)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Motion)).BeginInit();
@@ -225,15 +224,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_CameraPre)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Illuminator)).BeginInit();
             this.groupBox_Main_DiviceStatus.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Upper)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Lower)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Powermeter_bds)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Powermeter_Stage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_BeamExpander)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Powermeter_Stage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Powermeter_bds)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Lower)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Upper)).BeginInit();
+            this.groupBox_ModuleStatus.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.baseGroupBox_Progress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).BeginInit();
             this.baseGroupBox_WorkingTime.SuspendLayout();
-            this.groupBox_ModuleStatus.SuspendLayout();
             this.SuspendLayout();
             // 
             // SiriusViewer_Main
@@ -271,36 +272,6 @@
             this.groupBoxMain_ModuleProcessingStatus.TabStop = false;
             this.groupBoxMain_ModuleProcessingStatus.Text = " Module Status ";
             this.groupBoxMain_ModuleProcessingStatus.Visible = false;
-            // 
-            // checkBox_Main_AlignStartSocket_ContinueMode
-            // 
-            this.checkBox_Main_AlignStartSocket_ContinueMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_AlignStartSocket_ContinueMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Location = new System.Drawing.Point(1454, 598);
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Name = "checkBox_Main_AlignStartSocket_ContinueMode";
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Size = new System.Drawing.Size(97, 44);
-            this.checkBox_Main_AlignStartSocket_ContinueMode.TabIndex = 149;
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Text = "연속 가공\r\n시작 소켓";
-            this.checkBox_Main_AlignStartSocket_ContinueMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_AlignStartSocket_ContinueMode.UseVisualStyleBackColor = false;
-            this.checkBox_Main_AlignStartSocket_ContinueMode.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkBox_Main_AlignStartSocket_ContinueMode_MouseClick);
-            // 
-            // checkBox_Main_AlignStartSocket_SelectMode
-            // 
-            this.checkBox_Main_AlignStartSocket_SelectMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_AlignStartSocket_SelectMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.checkBox_Main_AlignStartSocket_SelectMode.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_AlignStartSocket_SelectMode.Location = new System.Drawing.Point(1454, 548);
-            this.checkBox_Main_AlignStartSocket_SelectMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_AlignStartSocket_SelectMode.Name = "checkBox_Main_AlignStartSocket_SelectMode";
-            this.checkBox_Main_AlignStartSocket_SelectMode.Size = new System.Drawing.Size(97, 44);
-            this.checkBox_Main_AlignStartSocket_SelectMode.TabIndex = 148;
-            this.checkBox_Main_AlignStartSocket_SelectMode.Text = "단일 가공\r\n소켓 선택";
-            this.checkBox_Main_AlignStartSocket_SelectMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_AlignStartSocket_SelectMode.UseVisualStyleBackColor = false;
-            this.checkBox_Main_AlignStartSocket_SelectMode.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkBox_Main_AlignStartSocket_SelectMode_MouseClick);
             // 
             // pictureBox3
             // 
@@ -351,6 +322,36 @@
             this.pictureBox_ModuleProcessingStatus.TabIndex = 0;
             this.pictureBox_ModuleProcessingStatus.TabStop = false;
             this.pictureBox_ModuleProcessingStatus.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PictureBox_ModuleProcessingStatus_MouseClick);
+            // 
+            // checkBox_Main_AlignStartSocket_ContinueMode
+            // 
+            this.checkBox_Main_AlignStartSocket_ContinueMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBox_Main_AlignStartSocket_ContinueMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Bold);
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Location = new System.Drawing.Point(1454, 598);
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Name = "checkBox_Main_AlignStartSocket_ContinueMode";
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Size = new System.Drawing.Size(97, 44);
+            this.checkBox_Main_AlignStartSocket_ContinueMode.TabIndex = 149;
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Text = "연속 가공\r\n시작 소켓";
+            this.checkBox_Main_AlignStartSocket_ContinueMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Main_AlignStartSocket_ContinueMode.UseVisualStyleBackColor = false;
+            this.checkBox_Main_AlignStartSocket_ContinueMode.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkBox_Main_AlignStartSocket_ContinueMode_MouseClick);
+            // 
+            // checkBox_Main_AlignStartSocket_SelectMode
+            // 
+            this.checkBox_Main_AlignStartSocket_SelectMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBox_Main_AlignStartSocket_SelectMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.checkBox_Main_AlignStartSocket_SelectMode.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Bold);
+            this.checkBox_Main_AlignStartSocket_SelectMode.Location = new System.Drawing.Point(1454, 548);
+            this.checkBox_Main_AlignStartSocket_SelectMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_Main_AlignStartSocket_SelectMode.Name = "checkBox_Main_AlignStartSocket_SelectMode";
+            this.checkBox_Main_AlignStartSocket_SelectMode.Size = new System.Drawing.Size(97, 44);
+            this.checkBox_Main_AlignStartSocket_SelectMode.TabIndex = 148;
+            this.checkBox_Main_AlignStartSocket_SelectMode.Text = "단일 가공\r\n소켓 선택";
+            this.checkBox_Main_AlignStartSocket_SelectMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Main_AlignStartSocket_SelectMode.UseVisualStyleBackColor = false;
+            this.checkBox_Main_AlignStartSocket_SelectMode.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkBox_Main_AlignStartSocket_SelectMode_MouseClick);
             // 
             // groupBoxMain_ProcessingStatus
             // 
@@ -1431,46 +1432,6 @@
             this.button_Module_WaitTime_sec.UseVisualStyleBackColor = false;
             this.button_Module_WaitTime_sec.Click += new System.EventHandler(this.button_Module_WaitTime_sec_Click);
             // 
-            // ImageViewer_Main_Lows
-            // 
-            this.ImageViewer_Main_Lows.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_Lows.Camera = null;
-            this.ImageViewer_Main_Lows.CameraSwitch = null;
-            this.ImageViewer_Main_Lows.FrameRate = 1D;
-            this.ImageViewer_Main_Lows.InputImage = null;
-            this.ImageViewer_Main_Lows.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_Lows.Location = new System.Drawing.Point(10, 28);
-            this.ImageViewer_Main_Lows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_Lows.Name = "ImageViewer_Main_Lows";
-            this.ImageViewer_Main_Lows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_Lows.Simulated = false;
-            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(263, 220);
-            this.ImageViewer_Main_Lows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Main_Lows.TabIndex = 190;
-            this.ImageViewer_Main_Lows.TabStop = false;
-            this.ImageViewer_Main_Lows.UpdateDelayTime = 160;
-            this.ImageViewer_Main_Lows.VisibleCrossLine = true;
-            // 
-            // ImageViewer_Main_highs
-            // 
-            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_highs.Camera = null;
-            this.ImageViewer_Main_highs.CameraSwitch = null;
-            this.ImageViewer_Main_highs.FrameRate = 1D;
-            this.ImageViewer_Main_highs.InputImage = null;
-            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(10, 28);
-            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
-            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_highs.Simulated = false;
-            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(263, 220);
-            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.ImageViewer_Main_highs.TabIndex = 189;
-            this.ImageViewer_Main_highs.TabStop = false;
-            this.ImageViewer_Main_highs.UpdateDelayTime = 200;
-            this.ImageViewer_Main_highs.VisibleCrossLine = true;
-            // 
             // pictureBox_Main_DiviceStatus_Laser
             // 
             this.pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
@@ -1611,35 +1572,15 @@
             this.groupBox_Main_DiviceStatus.TabStop = false;
             this.groupBox_Main_DiviceStatus.Text = " Device Status ";
             // 
-            // pictureBox_Main_DiviceStatus_DustCollector_Upper
+            // pictureBox_Main_DiviceStatus_BeamExpander
             // 
-            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Location = new System.Drawing.Point(115, 22);
-            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Name = "pictureBox_Main_DiviceStatus_DustCollector_Upper";
-            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Size = new System.Drawing.Size(13, 13);
-            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.TabIndex = 220;
-            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.TabStop = false;
-            // 
-            // pictureBox_Main_DiviceStatus_DustCollector_Lower
-            // 
-            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Location = new System.Drawing.Point(115, 42);
-            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Name = "pictureBox_Main_DiviceStatus_DustCollector_Lower";
-            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Size = new System.Drawing.Size(13, 13);
-            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.TabIndex = 222;
-            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.TabStop = false;
-            // 
-            // pictureBox_Main_DiviceStatus_Powermeter_bds
-            // 
-            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Location = new System.Drawing.Point(115, 62);
-            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Name = "pictureBox_Main_DiviceStatus_Powermeter_bds";
-            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Size = new System.Drawing.Size(13, 13);
-            this.pictureBox_Main_DiviceStatus_Powermeter_bds.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox_Main_DiviceStatus_Powermeter_bds.TabIndex = 224;
-            this.pictureBox_Main_DiviceStatus_Powermeter_bds.TabStop = false;
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Location = new System.Drawing.Point(115, 102);
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Name = "pictureBox_Main_DiviceStatus_BeamExpander";
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Size = new System.Drawing.Size(13, 13);
+            this.pictureBox_Main_DiviceStatus_BeamExpander.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_BeamExpander.TabIndex = 230;
+            this.pictureBox_Main_DiviceStatus_BeamExpander.TabStop = false;
             // 
             // pictureBox_Main_DiviceStatus_Powermeter_Stage
             // 
@@ -1651,15 +1592,35 @@
             this.pictureBox_Main_DiviceStatus_Powermeter_Stage.TabIndex = 226;
             this.pictureBox_Main_DiviceStatus_Powermeter_Stage.TabStop = false;
             // 
-            // pictureBox_Main_DiviceStatus_BeamExpander
+            // pictureBox_Main_DiviceStatus_Powermeter_bds
             // 
-            this.pictureBox_Main_DiviceStatus_BeamExpander.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_BeamExpander.Location = new System.Drawing.Point(115, 102);
-            this.pictureBox_Main_DiviceStatus_BeamExpander.Name = "pictureBox_Main_DiviceStatus_BeamExpander";
-            this.pictureBox_Main_DiviceStatus_BeamExpander.Size = new System.Drawing.Size(13, 13);
-            this.pictureBox_Main_DiviceStatus_BeamExpander.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox_Main_DiviceStatus_BeamExpander.TabIndex = 230;
-            this.pictureBox_Main_DiviceStatus_BeamExpander.TabStop = false;
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Location = new System.Drawing.Point(115, 62);
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Name = "pictureBox_Main_DiviceStatus_Powermeter_bds";
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Size = new System.Drawing.Size(13, 13);
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.TabIndex = 224;
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_DustCollector_Lower
+            // 
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Location = new System.Drawing.Point(115, 42);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Name = "pictureBox_Main_DiviceStatus_DustCollector_Lower";
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Size = new System.Drawing.Size(13, 13);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.TabIndex = 222;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_DustCollector_Upper
+            // 
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Location = new System.Drawing.Point(115, 22);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Name = "pictureBox_Main_DiviceStatus_DustCollector_Upper";
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Size = new System.Drawing.Size(13, 13);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.TabIndex = 220;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.TabStop = false;
             // 
             // label_Main_Title_Status
             // 
@@ -1695,6 +1656,57 @@
             this.panel_Main_ModuleStatus.Name = "panel_Main_ModuleStatus";
             this.panel_Main_ModuleStatus.Size = new System.Drawing.Size(333, 226);
             this.panel_Main_ModuleStatus.TabIndex = 218;
+            // 
+            // groupBox_ModuleStatus
+            // 
+            this.groupBox_ModuleStatus.Controls.Add(this.panel_Main_ModuleStatus);
+            this.groupBox_ModuleStatus.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox_ModuleStatus.Location = new System.Drawing.Point(12, 9);
+            this.groupBox_ModuleStatus.Name = "groupBox_ModuleStatus";
+            this.groupBox_ModuleStatus.Size = new System.Drawing.Size(345, 250);
+            this.groupBox_ModuleStatus.TabIndex = 219;
+            this.groupBox_ModuleStatus.TabStop = false;
+            this.groupBox_ModuleStatus.Text = "Module Status";
+            // 
+            // ImageViewer_Main_Lows
+            // 
+            this.ImageViewer_Main_Lows.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_Lows.Camera = null;
+            this.ImageViewer_Main_Lows.CameraSwitch = null;
+            this.ImageViewer_Main_Lows.FrameRate = 1D;
+            this.ImageViewer_Main_Lows.InputImage = null;
+            this.ImageViewer_Main_Lows.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_Lows.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_Lows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_Lows.Name = "ImageViewer_Main_Lows";
+            this.ImageViewer_Main_Lows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_Lows.Simulated = false;
+            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(263, 220);
+            this.ImageViewer_Main_Lows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_Lows.TabIndex = 190;
+            this.ImageViewer_Main_Lows.TabStop = false;
+            this.ImageViewer_Main_Lows.UpdateDelayTime = 160;
+            this.ImageViewer_Main_Lows.VisibleCrossLine = true;
+            // 
+            // ImageViewer_Main_highs
+            // 
+            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_highs.Camera = null;
+            this.ImageViewer_Main_highs.CameraSwitch = null;
+            this.ImageViewer_Main_highs.FrameRate = 1D;
+            this.ImageViewer_Main_highs.InputImage = null;
+            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
+            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_highs.Simulated = false;
+            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(263, 220);
+            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.ImageViewer_Main_highs.TabIndex = 189;
+            this.ImageViewer_Main_highs.TabStop = false;
+            this.ImageViewer_Main_highs.UpdateDelayTime = 200;
+            this.ImageViewer_Main_highs.VisibleCrossLine = true;
             // 
             // baseLabel_Module_WaitTime_sec
             // 
@@ -2341,16 +2353,19 @@
             this.baseLabel_SocketStatus_Ready.Text = "Ready";
             this.baseLabel_SocketStatus_Ready.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // groupBox_ModuleStatus
+            // button_Main_SelectedProcess
             // 
-            this.groupBox_ModuleStatus.Controls.Add(this.panel_Main_ModuleStatus);
-            this.groupBox_ModuleStatus.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_ModuleStatus.Location = new System.Drawing.Point(12, 9);
-            this.groupBox_ModuleStatus.Name = "groupBox_ModuleStatus";
-            this.groupBox_ModuleStatus.Size = new System.Drawing.Size(345, 250);
-            this.groupBox_ModuleStatus.TabIndex = 219;
-            this.groupBox_ModuleStatus.TabStop = false;
-            this.groupBox_ModuleStatus.Text = "Module Status";
+            this.button_Main_SelectedProcess.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_SelectedProcess.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_SelectedProcess.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Main_SelectedProcess.Location = new System.Drawing.Point(1450, 646);
+            this.button_Main_SelectedProcess.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_SelectedProcess.Name = "button_Main_SelectedProcess";
+            this.button_Main_SelectedProcess.Size = new System.Drawing.Size(101, 59);
+            this.button_Main_SelectedProcess.TabIndex = 220;
+            this.button_Main_SelectedProcess.Text = "Selected Process";
+            this.button_Main_SelectedProcess.UseVisualStyleBackColor = false;
+            this.button_Main_SelectedProcess.Click += new System.EventHandler(this.button_Main_SelectedProcess_Click);
             // 
             // FormNew_Main
             // 
@@ -2358,6 +2373,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 875);
             this.ControlBox = false;
+            this.Controls.Add(this.button_Main_SelectedProcess);
             this.Controls.Add(this.groupBox_ModuleStatus);
             this.Controls.Add(this.checkBox_Main_AlignStartSocket_ContinueMode);
             this.Controls.Add(this.panel_Main_SemiAuto);
@@ -2436,8 +2452,6 @@
             this.groupBox70.ResumeLayout(false);
             this.groupBox_BET_Status.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_WaitTime_sec)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Laser)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_IO)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Motion)).EndInit();
@@ -2450,17 +2464,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Illuminator)).EndInit();
             this.groupBox_Main_DiviceStatus.ResumeLayout(false);
             this.groupBox_Main_DiviceStatus.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Upper)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Lower)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Powermeter_bds)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Powermeter_Stage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_BeamExpander)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Powermeter_Stage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Powermeter_bds)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Lower)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Upper)).EndInit();
+            this.groupBox_ModuleStatus.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.baseGroupBox_Progress.ResumeLayout(false);
             this.baseGroupBox_Progress.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).EndInit();
             this.baseGroupBox_WorkingTime.ResumeLayout(false);
             this.baseGroupBox_WorkingTime.PerformLayout();
-            this.groupBox_ModuleStatus.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2628,5 +2644,6 @@
         private System.Windows.Forms.Panel panel_Main_SemiAuto;
         private System.Windows.Forms.Panel panel_Main_ModuleStatus;
         private System.Windows.Forms.GroupBox groupBox_ModuleStatus;
+        private System.Windows.Forms.Button button_Main_SelectedProcess;
     }
 }

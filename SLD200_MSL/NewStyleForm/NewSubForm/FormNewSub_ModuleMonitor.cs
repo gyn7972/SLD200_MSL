@@ -197,35 +197,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                     { LayerType.LAYER_MARKING, GetBottomRightQuad(socketRect) },
                 };
 
-                var layerTextMap = new Dictionary<LayerType, string>
-                {
-                    { LayerType.LAYER_DRILLING, "H" },
-                    { LayerType.LAYER_THRUHOLE, "T" },
-                    { LayerType.LAYER_OUTLINE, "O" },
-                    { LayerType.LAYER_MARKING, "M" },
-                };
-
-                // 3. 한 번씩만 처리되도록
-                HashSet<LayerType> drawnTypes = new HashSet<LayerType>();
                 foreach (var kvp in layerMap)
                 {
                     LayerType type = kvp.Key;
                     Rectangle rect = kvp.Value;
 
-                    // 같은 타입을 가진 레이어 중 첫 번째만 처리
-                    var layer = drillingProcessManager.LayerList.FirstOrDefault(l => l.LayerType == type);
-                    if (layer == null || socketIndex >= layer.SocketList.Count)
+                    var layer = drillingProcessManager.LayerList
+                        .FirstOrDefault(l => l.LayerType == type && socketIndex < l.SocketList.Count);
+
+                    if (layer == null)
                         continue;
 
                     var socket = layer.SocketList[socketIndex];
 
-                    // 상태에 따라 색상 채우기 및 테두리
                     g.FillRectangle(GetBrushBySocketStatus(socket), rect);
                     g.DrawRectangle(Pens.Black, rect);
 
-                    // 텍스트 쓰기
-                    //if (layerTextMap.TryGetValue(type, out string label))
-                    //    DrawCenteredText(g, rect, label);
+                    DrawCenteredText(g, rect, GetLayerShortName(type));  // ← 텍스트 여기서 출력
                 }
 
                 //되는거
@@ -246,6 +234,18 @@ namespace SLD200.NewStyleForm.NewSubForm
             catch (Exception ex)
             {
                 Log.Write("ModuleMonitor", $"DrawLayerQuadInSocket 예외: {ex.Message}");
+            }
+        }
+
+        private string GetLayerShortName(LayerType type)
+        {
+            switch (type)
+            {
+                case LayerType.LAYER_DRILLING: return "H";
+                case LayerType.LAYER_THRUHOLE: return "T";
+                case LayerType.LAYER_OUTLINE: return "O";
+                case LayerType.LAYER_MARKING: return "M";
+                default: return "";
             }
         }
 

@@ -48,11 +48,13 @@
             this.buttonProcessSelected = new System.Windows.Forms.Button();
             this.label_SocketInfoSummary = new System.Windows.Forms.Label();
             this.listView_LayerDetails = new System.Windows.Forms.ListView();
+            this.buttonProcessStop = new System.Windows.Forms.Button();
             this.groupBoxModuleStatus.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxModuleStatus
             // 
+            this.groupBoxModuleStatus.Controls.Add(this.buttonProcessStop);
             this.groupBoxModuleStatus.Controls.Add(this.tableLayoutPanelSockets);
             this.groupBoxModuleStatus.Controls.Add(this.listViewLayers);
             this.groupBoxModuleStatus.Controls.Add(this.buttonProcessAll);
@@ -156,6 +158,16 @@
             this.listView_LayerDetails.UseCompatibleStateImageBehavior = false;
             this.listView_LayerDetails.View = System.Windows.Forms.View.Details;
             // 
+            // buttonProcessStop
+            // 
+            this.buttonProcessStop.Location = new System.Drawing.Point(240, 250);
+            this.buttonProcessStop.Name = "buttonProcessStop";
+            this.buttonProcessStop.Size = new System.Drawing.Size(90, 30);
+            this.buttonProcessStop.TabIndex = 4;
+            this.buttonProcessStop.Text = "정지";
+            this.buttonProcessStop.UseVisualStyleBackColor = true;
+            this.buttonProcessStop.Click += new System.EventHandler(this.buttonProcessStop_Click);
+            // 
             // FormNewSub_SelectProcess
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -171,5 +183,7 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.Button buttonProcessStop;
     }
 }

@@ -206,7 +206,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                         return;
                     }
                 }
-                if (Equipment.AutoRunStatus || Equipment.SelectRunEnable)
+                if (Equipment.AutoRunStatus || Equipment.SelectRunEnable || Equipment.SelectRunEnable_New)
                 {
                     var mb = new MessageBoxOk();
                     mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");
@@ -445,7 +445,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                         return;
                     }
                 }
-                if (Equipment.AutoRunStatus || Equipment.SelectRunEnable)
+                if (Equipment.AutoRunStatus || Equipment.SelectRunEnable || Equipment.SelectRunEnable_New)
                 {
                     var mb = new MessageBoxOk();
                     mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");
@@ -715,7 +715,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                         return;
                     }
                 }
-                if (Equipment.AutoRunStatus || Equipment.SelectRunEnable)
+                if (Equipment.AutoRunStatus || Equipment.SelectRunEnable || Equipment.SelectRunEnable_New)
                 {
                     var mb = new MessageBoxOk();
                     mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");

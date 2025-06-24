@@ -809,7 +809,11 @@ namespace QMC.Common
         // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
         // 위와 같이 구분하여 장비 관리 할것!
         public static bool AutoRunStatus { set; get; } = false;
-        public static bool SelectRunEnable { set; get; } = false;
+        public static bool SelectRunEnable { set; get; } = false;   // 기존 사용 변수
+
+        // 신규 사용 변수 - 기존꺼가 너무 여러곳에 되어있어서 새로 작성하여 진행.
+        public static bool SelectRunEnable_New { set; get; } = false;   
+
         public static bool SemiAutoEnable { set; get; } = false;
 
         //  Cycle Stop
@@ -1361,6 +1365,7 @@ namespace QMC.Common
             //  자동운전 상태 확인
             AutoRunStatus = false;
             SelectRunEnable = false;
+            SelectRunEnable_New = false;
 
             m_bVisionFormOpenMode_ScannerFineCamOffsetChange = false;
 

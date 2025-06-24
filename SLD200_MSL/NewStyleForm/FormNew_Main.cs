@@ -1312,9 +1312,6 @@ namespace SLD200_MSL
             Color foreColor = workStage.GetLaserBusyStatus() ? Color.White : Color.Lime;
             SetColor(label_Main_LaserStatus, backcolor, foreColor);
 
-            strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
-            SetValue(label_Main_LaserStatus, strText);
-
             // 상태 표시 CheckBox
             //checkBox_Main_Loader_Transfer_Pause.Checked = Equipment.Loader_Transfer_Pause;
             SetValue(checkBox_Main_Loader_LPort_Pause, Equipment.Loader_LPort_Pause);
@@ -1410,7 +1407,7 @@ namespace SLD200_MSL
                 SetColor(button_Main_ManualStart, System.Drawing.SystemColors.Control, Color.Black);
             }
 
-            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable || Equipment.SelectRunEnable_New)
             {
                 SetEnable(button_Main_Reset, false);
             }
@@ -1428,6 +1425,9 @@ namespace SLD200_MSL
         private void button_Main_Home_Click(object sender, EventArgs e)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "장비 초기화");
+
+            if (Equipment.AutoRunStatus)
+                return;
 
             if (!Equipment.AjinBoard_Opened)
             {
@@ -2082,8 +2082,9 @@ namespace SLD200_MSL
                 }
             }
 
-
             Equipment.SemiAutoEnable = false;
+            Equipment.SelectRunEnable_New = false;
+
             Equipment.SelectRunEnable = false;
             workStage.m_nSelectedSocket_Index = -1;            //  선택한 소켓 인덱스 초기화
 
@@ -2145,6 +2146,7 @@ namespace SLD200_MSL
             FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);
 
             Equipment.SemiAutoEnable = false;
+            Equipment.SelectRunEnable_New = false;
             Equipment.SelectRunEnable = false;
 
             Equipment.AutoRunStatus = true;
@@ -2155,10 +2157,8 @@ namespace SLD200_MSL
 
         private void button_Main_RtcInit_Click(object sender, EventArgs e)
         {
-            //if (!workStage.Rtc_Init())
-            //{
-            //    MessageBox.Show("RTC 초기화 실패");
-            //}
+            if (Equipment.AutoRunStatus)
+                return;
 
             workStage.Module_Allocation();
             unloader.Module_Allocation();
@@ -2190,6 +2190,8 @@ namespace SLD200_MSL
             //int a = 0;
             //workStage.DrillingData_RotationOffset_Move(0, 0, 15, 1, -1);
             //return;
+            if (Equipment.AutoRunStatus)
+                return;
 
             string fileName;
 
@@ -2911,6 +2913,7 @@ namespace SLD200_MSL
             workStage.m_bForceEjectRequest = false;
 
             Equipment.SemiAutoEnable = false;
+            Equipment.SelectRunEnable_New = false; 
 
 
             // 장비 정지 시 그냥 정지 시킨다.
@@ -2984,6 +2987,9 @@ namespace SLD200_MSL
 
         private void button_Main_CameraInit_Click(object sender, EventArgs e)
         {
+            if (Equipment.AutoRunStatus)
+                return;
+
             //  카메라 초기화
             Task<int> task = Task.Factory.StartNew<int>(() =>
             {
@@ -3211,6 +3217,9 @@ namespace SLD200_MSL
 
         private void button_Main_ManualStart_Click(object sender, EventArgs e)
         {
+            if (Equipment.AutoRunStatus)
+                return;
+
             //  Main Work Start
             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "선택 가공 버튼");
 
@@ -3324,8 +3333,6 @@ namespace SLD200_MSL
                     Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
                     workStage.m_nSocketAlign_StartIndex = -1;
                 }
-
-
 
                 FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);
 
@@ -4456,6 +4463,37 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            int nSocket = 0;
+            nSocket = 0;
+
+            m_LayerType = LayerType.LAYER_MARKING;
+
+            if (Equipment.SelectRunEnable_New)
+            {
+                // 선택된 소켓 중에서 Hole1 Layer에 해당하는 소켓이 있는지 확인
+                if (!workStage.IsCurrentSocketSelected(LayerType.LAYER_DRILLING, nSocket))
+                {
+                    Log.Write("선택 가공", $"소켓 {nSocket + 1} 은 선택되지 않음 → SKIP");
+                    nSocket++;
+                    return;
+                }
+            }
+
+
+            if (Equipment.SelectRunEnable_New)
+            {
+                var layerEnum = workStage.GetCurrentLayerEnum(m_LayerType);
+                var socket = workStage.DrillingManager.GetSocket(layerEnum, nSocket);
+
+                if (socket == null || !socket.IsSelected)
+                {
+                    // 선택되지 않은 소켓이면 건너뜀
+                    nSocket++;
+                    return;
+                }
+            }
+
+            return;
             //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
 
             //Thread.Sleep(1000);
@@ -4728,6 +4766,15 @@ namespace SLD200_MSL
                 return control.Text;
             }
         }
+
+        private void button_Main_SelectedProcess_Click(object sender, EventArgs e)
+        {
+            if (Equipment.AutoRunStatus)
+                return;
+
+            FormModuleStatus.Show();
+        }
+
         private string GetValue(System.Windows.Forms.Label control)
         {
             if (control.InvokeRequired)
