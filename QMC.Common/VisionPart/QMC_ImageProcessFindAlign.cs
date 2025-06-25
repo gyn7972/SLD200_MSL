@@ -1913,15 +1913,141 @@ namespace QMC.Common.VisionPart
         }
 
 
+        //public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundaryMultipleCircles(
+        //                                         List<RectangleF> circlesResult,
+        //                                         byte[] pixelData, int w, int h, int radius, double dSpec,
+        //                                         int maxCircleCount = 20,
+        //                                         bool bIsDarkCircleSearch = true,
+        //                                         double scoreThreshold = 0.7,
+        //                                         bool bSpiralSearch = true)
+        //{
+        //    QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+        //    string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
+        //    string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+        //    string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
+        //    if (!Directory.Exists(baseDir))
+        //        Directory.CreateDirectory(baseDir);
+
+        //    string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
+        //    SaveImage(pixelData, w, h, rawImagePath);
+
+        //    List<PointF> polygon = new List<PointF>();
+        //    List<PointF> points = new List<PointF>();
+        //    int step = (int)(radius * 0.8);  // 겹치지 않고 잘 찾도록 스텝 설정
+        //    circlesResult.Clear();
+        //    int foundCount = 0;
+
+        //    for (int y = radius; y < h - radius; y += step)
+        //    {
+        //        for (int x = radius; x < w - radius; x += step)
+        //        {
+        //            if (foundCount >= maxCircleCount)
+        //                break;
+
+        //            int nCx = x;
+        //            int nCy = y;
+
+        //            int nMaxCircle = (int)(radius * (1 + dSpec));
+        //            int nMinCircle = (int)(radius * (1 - dSpec));
+
+        //            double dFirstSpec = Math.Min(dSpec * 3, 0.5);
+        //            int nMaxCircleFirst = Math.Min((int)(radius * 2), 2000);
+        //            int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
+
+        //            polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius / 2), nMaxCircleFirst, 2, 10, bIsDarkCircleSearch);
+        //            points = polygon;
+
+        //            double dRadius1 = 0;
+        //            List<RectangleF> tempCircleList = new List<RectangleF>();
+        //            FindCircleFitter(tempCircleList, points, out dRadius1, 5, radius, dSpec);
+
+        //            if (dRadius1 < nMaxCircle && dRadius1 > nMinCircle)
+        //            {
+        //                float cx = tempCircleList[0].X + tempCircleList[0].Width / 2;
+        //                float cy = tempCircleList[0].Y + tempCircleList[0].Height / 2;
+        //                double dErrorRatio = Math.Max(dSpec * 2, 0.2);
+
+        //                polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius1 * (1 - dErrorRatio)), (int)(dRadius1 * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
+        //                points = polygon;
+
+        //                double dRadius2 = 0;
+        //                Circle finalCircle = FindCircleFitter(tempCircleList, points, out dRadius2, 2, radius, dSpec);
+
+        //                if (Math.Abs((dRadius1 - dRadius2) / dRadius2) < 0.05)
+        //                {
+        //                    double dScore = IsRealCircle(finalCircle, dRadius2, points, dSpec);
+        //                    if (dScore >= scoreThreshold)
+        //                    {
+        //                        circlesResult.Add(new RectangleF(finalCircle.CenterX - (float)dRadius2, finalCircle.CenterY - (float)dRadius2, (float)dRadius2 * 2, (float)dRadius2 * 2));
+        //                        result.Circles.Add(finalCircle);
+        //                        result.ScoreCollection.Add(dScore);
+        //                        foundCount++;
+
+        //                        if (foundCount >= maxCircleCount)
+        //                            break;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    // 중복 제거 + 점수 기준 필터링
+        //    double minCenterDistance = radius * 0.75;
+        //    List<Circle> filteredCircles = new List<Circle>();
+        //    List<double> filteredScores = new List<double>();
+
+        //    for (int i = 0; i < result.Circles.Count; i++)
+        //    {
+        //        var circleA = result.Circles[i];
+        //        var scoreA = result.ScoreCollection[i];
+        //        PointF centerA = new PointF(circleA.CenterX, circleA.CenterY);
+
+        //        bool isOverlapping = false;
+        //        foreach (var circleB in filteredCircles)
+        //        {
+        //            PointF centerB = new PointF(circleB.CenterX, circleB.CenterY);
+        //            double dist = Math.Sqrt(Math.Pow(centerA.X - centerB.X, 2) + Math.Pow(centerA.Y - centerB.Y, 2));
+        //            if (dist < minCenterDistance)
+        //            {
+        //                isOverlapping = true;
+        //                break;
+        //            }
+        //        }
+
+        //        if (!isOverlapping && scoreA >= scoreThreshold)
+        //        {
+        //            filteredCircles.Add(circleA);
+        //            filteredScores.Add(scoreA);
+        //        }
+        //    }
+
+        //    // 결과 반영
+        //    result.Circles = filteredCircles;
+        //    result.ScoreCollection = filteredScores;
+        //    circlesResult.Clear();
+        //    for (int i = 0; i < filteredCircles.Count; i++)
+        //    {
+        //        var c = filteredCircles[i];
+        //        var r = (float)c.Radius;
+        //        circlesResult.Add(new RectangleF(c.CenterX - r, c.CenterY - r, r * 2, r * 2));
+        //    }
+
+        //    return result;
+
+        //}
+
         public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundaryMultipleCircles(
-                                                 List<RectangleF> circlesResult,
-                                                 byte[] pixelData, int w, int h, int radius, double dSpec,
-                                                 int maxCircleCount = 20,
-                                                 bool bIsDarkCircleSearch = true,
-                                                 double scoreThreshold = 0.7,
-                                                 bool bSpiralSearch = true)
+        List<RectangleF> circlesResult,
+        byte[] pixelData, int w, int h, int radius, double dSpec,
+        int maxCircleCount = 20,
+        bool bIsDarkCircleSearch = true,
+        double scoreThreshold = 0.7,
+        bool bSpiralSearch = true,
+        Rectangle? roiRect = null) // ROI 선택적 인자 추가
         {
             QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+
+            // 디버깅용 이미지 저장
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
             string dateFolder = DateTime.Now.ToString("yyyyMMdd");
             string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
@@ -1933,19 +2059,33 @@ namespace QMC.Common.VisionPart
 
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
-            int step = (int)(radius * 0.8);  // 겹치지 않고 잘 찾도록 스텝 설정
+            int step = (int)(radius * 0.8);
             circlesResult.Clear();
             int foundCount = 0;
 
-            for (int y = radius; y < h - radius; y += step)
+            // 🔹 ROI 보정 적용
+            //Rectangle roi = roiRect ?? new Rectangle(0, 0, w, h);
+            //int xStart = Math.Max(radius, roi.Left);
+            //int xEnd = Math.Min(w - radius, roi.Right);
+            //int yStart = Math.Max(radius, roi.Top);
+            //int yEnd = Math.Min(h - radius, roi.Bottom);
+
+            // ROI 고정 사용 (roiRect 무시)
+            Rectangle roi = new Rectangle(924, 0, 300, 2048);
+
+            // 이후 루프
+            int xStart = Math.Max(radius, roi.Left);
+            int xEnd = Math.Min(w - radius, roi.Right);
+            int yStart = Math.Max(radius, roi.Top);
+            int yEnd = Math.Min(h - radius, roi.Bottom);
+
+
+            for (int y = yStart; y < yEnd; y += step)
             {
-                for (int x = radius; x < w - radius; x += step)
+                for (int x = xStart; x < xEnd; x += step)
                 {
                     if (foundCount >= maxCircleCount)
                         break;
-
-                    int nCx = x;
-                    int nCy = y;
 
                     int nMaxCircle = (int)(radius * (1 + dSpec));
                     int nMinCircle = (int)(radius * (1 - dSpec));
@@ -1954,20 +2094,23 @@ namespace QMC.Common.VisionPart
                     int nMaxCircleFirst = Math.Min((int)(radius * 2), 2000);
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius / 2), nMaxCircleFirst, 2, 10, bIsDarkCircleSearch);
+                    polygon = FindCircleBoundary(pixelData, w, h, x, y, (int)(radius / 2), nMaxCircleFirst, 2, 10, bIsDarkCircleSearch);
                     points = polygon;
 
                     double dRadius1 = 0;
                     List<RectangleF> tempCircleList = new List<RectangleF>();
                     FindCircleFitter(tempCircleList, points, out dRadius1, 5, radius, dSpec);
 
-                    if (dRadius1 < nMaxCircle && dRadius1 > nMinCircle)
+                    if (dRadius1 > nMinCircle && dRadius1 < nMaxCircle)
                     {
                         float cx = tempCircleList[0].X + tempCircleList[0].Width / 2;
                         float cy = tempCircleList[0].Y + tempCircleList[0].Height / 2;
                         double dErrorRatio = Math.Max(dSpec * 2, 0.2);
 
-                        polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius1 * (1 - dErrorRatio)), (int)(dRadius1 * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
+                        polygon = FindCircleBoundary(pixelData, w, h, cx, cy,
+                                                     (int)(dRadius1 * (1 - dErrorRatio)),
+                                                     (int)(dRadius1 * (1 + dErrorRatio)),
+                                                     1, 2, bIsDarkCircleSearch);
                         points = polygon;
 
                         double dRadius2 = 0;
@@ -1978,7 +2121,12 @@ namespace QMC.Common.VisionPart
                             double dScore = IsRealCircle(finalCircle, dRadius2, points, dSpec);
                             if (dScore >= scoreThreshold)
                             {
-                                circlesResult.Add(new RectangleF(finalCircle.CenterX - (float)dRadius2, finalCircle.CenterY - (float)dRadius2, (float)dRadius2 * 2, (float)dRadius2 * 2));
+                                circlesResult.Add(new RectangleF(
+                                    finalCircle.CenterX - (float)dRadius2,
+                                    finalCircle.CenterY - (float)dRadius2,
+                                    (float)dRadius2 * 2,
+                                    (float)dRadius2 * 2));
+
                                 result.Circles.Add(finalCircle);
                                 result.ScoreCollection.Add(dScore);
                                 foundCount++;
@@ -2021,161 +2169,18 @@ namespace QMC.Common.VisionPart
                 }
             }
 
-            // 결과 반영
             result.Circles = filteredCircles;
             result.ScoreCollection = filteredScores;
+
+            // 🔹 결과 Rect 목록 반영
             circlesResult.Clear();
-            for (int i = 0; i < filteredCircles.Count; i++)
+            foreach (var c in filteredCircles)
             {
-                var c = filteredCircles[i];
-                var r = (float)c.Radius;
+                float r = (float)c.Radius;
                 circlesResult.Add(new RectangleF(c.CenterX - r, c.CenterY - r, r * 2, r * 2));
             }
 
             return result;
-
-            //기존 코드
-            {
-                //    QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
-                //    string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
-                //    string dateFolder = DateTime.Now.ToString("yyyyMMdd");
-                //    string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
-                //    if (!Directory.Exists(baseDir))
-                //        Directory.CreateDirectory(baseDir);
-
-                //    string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
-                //    SaveImage(pixelData, w, h, rawImagePath);
-
-                //    List<PointF> polygon = new List<PointF>();
-                //    List<PointF> points = new List<PointF>();
-                //    int nDivideCount = (int)(w / radius);
-                //    int nStepX = (int)(radius / 2);
-                //    int nStepY = (int)(radius / 2);
-                //    int direction = 0, stepsInCurrentDirection = 1, stepsTaken = 0, directionChangeCount = 0;
-                //    PointF currentPosition = new PointF(w / 2, h / 2);
-
-                //    if (!bSpiralSearch) nDivideCount = 3;
-
-                //    circlesResult.Clear();
-                //    int foundCount = 0;
-
-                //    for (int y = 0; y < nDivideCount; y++)
-                //    {
-                //        if (foundCount >= maxCircleCount)
-                //            break;
-
-                //        for (int x = 0; x < nDivideCount; x++)
-                //        {
-                //            int nCx = (int)currentPosition.X;
-                //            int nCy = (int)currentPosition.Y;
-
-                //            int nMaxCircle = (int)(radius * (1 + dSpec));
-                //            int nMinCircle = (int)(radius * (1 - dSpec));
-
-                //            double dFirstSpec = Math.Min(dSpec * 3, 0.5);
-                //            int nMaxCircleFirst = Math.Min((int)(radius * 2), 2000);
-                //            int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
-
-                //            polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius / 2), nMaxCircleFirst, 2, 10, bIsDarkCircleSearch);
-                //            points = polygon;
-
-                //            double dRadius1 = 0;
-                //            List<RectangleF> tempCircleList = new List<RectangleF>();
-                //            FindCircleFitter(tempCircleList, points, out dRadius1, 5, radius, dSpec);
-
-                //            if (dRadius1 < nMaxCircle && dRadius1 > nMinCircle)
-                //            {
-                //                float cx = tempCircleList[0].X + tempCircleList[0].Width / 2;
-                //                float cy = tempCircleList[0].Y + tempCircleList[0].Height / 2;
-                //                double dErrorRatio = Math.Max(dSpec * 2, 0.2);
-
-                //                polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius1 * (1 - dErrorRatio)), (int)(dRadius1 * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
-                //                points = polygon;
-
-                //                double dRadius2 = 0;
-                //                Circle finalCircle = FindCircleFitter(tempCircleList, points, out dRadius2, 2, radius, dSpec);
-
-                //                if (Math.Abs((dRadius1 - dRadius2) / dRadius2) < 0.05)
-                //                {
-                //                    double dScore = IsRealCircle(finalCircle, dRadius2, points, dSpec);
-                //                    if (dScore >= scoreThreshold)
-                //                    {
-                //                        circlesResult.Add(new RectangleF(finalCircle.CenterX - (float)dRadius2, finalCircle.CenterY - (float)dRadius2, (float)dRadius2 * 2, (float)dRadius2 * 2));
-                //                        result.Circles.Add(finalCircle);
-                //                        result.ScoreCollection.Add(dScore);
-                //                        foundCount++;
-
-                //                        if (foundCount >= maxCircleCount)
-                //                            break;
-                //                    }
-                //                }
-                //            }
-
-                //            switch (direction)
-                //            {
-                //                case 0: currentPosition.X += nStepX; break; // right
-                //                case 1: currentPosition.Y -= nStepY; break; // up
-                //                case 2: currentPosition.X -= nStepX; break; // left
-                //                case 3: currentPosition.Y += nStepY; break; // down
-                //            }
-
-                //            stepsTaken++;
-                //            if (stepsTaken == stepsInCurrentDirection)
-                //            {
-                //                stepsTaken = 0;
-                //                direction = (direction + 1) % 4;
-                //                directionChangeCount++;
-                //                if (directionChangeCount % 2 == 0)
-                //                    stepsInCurrentDirection++;
-                //            }
-                //        }
-                //    }
-
-                //    // 중복 원 제거 + 점수 기준 필터링
-                //    double minCenterDistance = radius * 0.75; // 최소 간격 허용 거리
-                //    List<Circle> filteredCircles = new List<Circle>();
-                //    List<double> filteredScores = new List<double>();
-
-                //    for (int i = 0; i < result.Circles.Count; i++)
-                //    {
-                //        var circleA = result.Circles[i];
-                //        var scoreA = result.ScoreCollection[i];
-                //        PointF centerA = new PointF(circleA.CenterX, circleA.CenterY);
-
-                //        bool isOverlapping = false;
-                //        foreach (var circleB in filteredCircles)
-                //        {
-                //            PointF centerB = new PointF(circleB.CenterX, circleB.CenterY);
-                //            double dist = Math.Sqrt(Math.Pow(centerA.X - centerB.X, 2) + Math.Pow(centerA.Y - centerB.Y, 2));
-                //            if (dist < minCenterDistance)
-                //            {
-                //                isOverlapping = true;
-                //                break;
-                //            }
-                //        }
-
-                //        if (!isOverlapping && scoreA >= scoreThreshold)
-                //        {
-                //            filteredCircles.Add(circleA);
-                //            filteredScores.Add(scoreA);
-                //        }
-                //    }
-
-                //    // 결과를 필터링된 값으로 교체
-                //    result.Circles = filteredCircles;
-                //    result.ScoreCollection = filteredScores;
-
-                //    // RectangleF 결과도 동기화
-                //    circlesResult.Clear();
-                //    for (int i = 0; i < filteredCircles.Count; i++)
-                //    {
-                //        var c = filteredCircles[i];
-                //        var r = (float)c.Radius;
-                //        circlesResult.Add(new RectangleF(c.CenterX - r, c.CenterY - r, r * 2, r * 2));
-                //    }
-
-                //    return result;
-            }
         }
 
 

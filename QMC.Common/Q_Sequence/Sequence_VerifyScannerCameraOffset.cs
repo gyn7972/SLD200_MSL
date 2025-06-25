@@ -152,7 +152,7 @@ namespace QMC.Common.Q_Sequence
                 }
 
                 // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
-                if (Equipment.AutoRunStatus)
+                if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New || Equipment.SelectRunEnable)
                 {
                 }
                 else
@@ -325,7 +325,7 @@ namespace QMC.Common.Q_Sequence
             bool bCalPosition = Equipment.Scanner_Calibration_Position_Enable; // true: cal판, false 중앙
             bool bCalChagne = Equipment.Scanner_Calibration_Change;    //캘리브레이션 변경 여부
             if (Equipment.AutoManualStatus &&
-               (Equipment.AutoRunStatus || Equipment.AutoManualStatus))
+               (Equipment.AutoRunStatus || Equipment.AutoManualStatus || Equipment.SemiAutoEnable))
             {
                 bCalPosition = true;    // 캘리브레이션 위치 설정 여부 : 무조건 Cal판.
                 bCalChagne = false;

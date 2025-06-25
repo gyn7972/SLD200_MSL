@@ -1426,7 +1426,7 @@ namespace SLD200_MSL
         {
             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "장비 초기화");
 
-            if (Equipment.AutoRunStatus)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New || Equipment.SelectRunEnable)
                 return;
 
             if (!Equipment.AjinBoard_Opened)
@@ -2157,7 +2157,7 @@ namespace SLD200_MSL
 
         private void button_Main_RtcInit_Click(object sender, EventArgs e)
         {
-            if (Equipment.AutoRunStatus)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New || Equipment.SelectRunEnable)
                 return;
 
             workStage.Module_Allocation();
@@ -2514,6 +2514,7 @@ namespace SLD200_MSL
             Equipment.Loader_LPort_Pause = true;        //  장비 Stop 시 Pause
             Equipment.Loader_RPort_Pause = true;        //  장비 Stop 시 Pause
 
+            Equipment.SelectRunEnable_New = false;
             Equipment.AutoRunStatus = false;        // 자동운전중
             Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
             workStage.SetRunStatus(RunStatus.Stop);
@@ -2935,7 +2936,6 @@ namespace SLD200_MSL
                 workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
             }
 
-
             //I/O - Off
             if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
             {
@@ -2987,7 +2987,7 @@ namespace SLD200_MSL
 
         private void button_Main_CameraInit_Click(object sender, EventArgs e)
         {
-            if (Equipment.AutoRunStatus)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New || Equipment.SelectRunEnable)
                 return;
 
             //  카메라 초기화
@@ -4772,6 +4772,7 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus)
                 return;
 
+            FormModuleStatus.LoadDrillingManager(workStage.DrillingManager);
             FormModuleStatus.Show();
         }
 
