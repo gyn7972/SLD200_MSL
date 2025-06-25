@@ -15223,26 +15223,30 @@ namespace QMC.Common.Modules
                         {
                             if (stVisionRecipeSet.nSocketCircleColor <= 1)
                             {
+                                double dSpec = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec;
+                                double dScore = Equipment.stVisionRecipeSet.dSocketCircleMarkScore;
                                 result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
                                                                             bm_AlignRawData,
                                                                             Camera_HighRes.Resolution.Width,
                                                                             Camera_HighRes.Resolution.Height,
                                                                             nWidthImageCount,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
+                                                                            dSpec,
                                                                             ref Fiducial_circleFound,
                                                                             0, 0,
                                                                             (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                                                                            dScore,
                                                                             false);
 
+                                // 따로 파라미터 들어가게 수정해야 한다..
+                                dSpec = 2.0;
                                 if (!Fiducial_circleFound)
                                 {
                                     result = Fiducial_aligner.FindCircleForFR4(bm_AlignRawData,
                                                                             Camera_HighRes.Resolution.Width,
                                                                             Camera_HighRes.Resolution.Height,
                                                                             nWidthImageCount,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
+                                                                            dSpec,
+                                                                            dScore);
                                     Fiducial_circlesResult.Clear();
                                     foreach (var circle in result.Circles)
                                     {
