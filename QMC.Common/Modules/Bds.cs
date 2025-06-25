@@ -480,6 +480,14 @@ namespace QMC.Common.Modules
                                 CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
                             }
                         }
+                        else if(!workStage.rtc.CtlGetStatus(RtcStatus.Busy))
+                        {
+                            workStage.m_bLaserBusy = false;
+                        }
+                        else
+                        {
+                            workStage.m_bLaserBusy = true;
+                        }
                     }
                 }
             }

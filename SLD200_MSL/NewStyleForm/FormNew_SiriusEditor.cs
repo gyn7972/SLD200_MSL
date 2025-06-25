@@ -390,9 +390,6 @@ namespace SLD200_MSL
                 return;
             }
 
-            // 여기서는 이거 사용하면 안됨. 
-            //workStage.Import_DrawingFile(strFileName);
-
             //  확장자 확인
             string m_strExt = System.IO.Path.GetExtension(strFileName);
             IDocument doc = null;
@@ -1046,9 +1043,6 @@ namespace SLD200_MSL
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                {
-                    //m_formSiriusEditor.Import_DrawingFile(m_formSiriusEditor.SiriusEditor.Document.FileName);
-                }
 
                 e.Cancel = true;
                 Hide();

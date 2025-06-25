@@ -34,12 +34,14 @@
             this.button_SemiAuto_FiducialAlign = new System.Windows.Forms.Button();
             this.button_SemiAuto_LaserDrilling = new System.Windows.Forms.Button();
             this.button_SemiAuto_Loading = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button_SemiAuto_Unloading
             // 
             this.button_SemiAuto_Unloading.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_Unloading.Location = new System.Drawing.Point(6, 12);
+            this.button_SemiAuto_Unloading.Location = new System.Drawing.Point(6, 20);
             this.button_SemiAuto_Unloading.Name = "button_SemiAuto_Unloading";
             this.button_SemiAuto_Unloading.Size = new System.Drawing.Size(115, 30);
             this.button_SemiAuto_Unloading.TabIndex = 0;
@@ -50,7 +52,7 @@
             // button_SemiAuto_HeightSensor
             // 
             this.button_SemiAuto_HeightSensor.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_HeightSensor.Location = new System.Drawing.Point(128, 12);
+            this.button_SemiAuto_HeightSensor.Location = new System.Drawing.Point(128, 20);
             this.button_SemiAuto_HeightSensor.Name = "button_SemiAuto_HeightSensor";
             this.button_SemiAuto_HeightSensor.Size = new System.Drawing.Size(115, 30);
             this.button_SemiAuto_HeightSensor.TabIndex = 1;
@@ -61,7 +63,7 @@
             // button_SemiAuto_PreAlign
             // 
             this.button_SemiAuto_PreAlign.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_PreAlign.Location = new System.Drawing.Point(128, 42);
+            this.button_SemiAuto_PreAlign.Location = new System.Drawing.Point(128, 50);
             this.button_SemiAuto_PreAlign.Name = "button_SemiAuto_PreAlign";
             this.button_SemiAuto_PreAlign.Size = new System.Drawing.Size(115, 30);
             this.button_SemiAuto_PreAlign.TabIndex = 2;
@@ -72,7 +74,7 @@
             // button_SemiAuto_FiducialAlign
             // 
             this.button_SemiAuto_FiducialAlign.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_FiducialAlign.Location = new System.Drawing.Point(128, 72);
+            this.button_SemiAuto_FiducialAlign.Location = new System.Drawing.Point(128, 80);
             this.button_SemiAuto_FiducialAlign.Name = "button_SemiAuto_FiducialAlign";
             this.button_SemiAuto_FiducialAlign.Size = new System.Drawing.Size(115, 30);
             this.button_SemiAuto_FiducialAlign.TabIndex = 3;
@@ -83,7 +85,7 @@
             // button_SemiAuto_LaserDrilling
             // 
             this.button_SemiAuto_LaserDrilling.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_LaserDrilling.Location = new System.Drawing.Point(128, 102);
+            this.button_SemiAuto_LaserDrilling.Location = new System.Drawing.Point(128, 110);
             this.button_SemiAuto_LaserDrilling.Name = "button_SemiAuto_LaserDrilling";
             this.button_SemiAuto_LaserDrilling.Size = new System.Drawing.Size(115, 30);
             this.button_SemiAuto_LaserDrilling.TabIndex = 4;
@@ -94,7 +96,7 @@
             // button_SemiAuto_Loading
             // 
             this.button_SemiAuto_Loading.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_Loading.Location = new System.Drawing.Point(250, 12);
+            this.button_SemiAuto_Loading.Location = new System.Drawing.Point(250, 20);
             this.button_SemiAuto_Loading.Name = "button_SemiAuto_Loading";
             this.button_SemiAuto_Loading.Size = new System.Drawing.Size(115, 30);
             this.button_SemiAuto_Loading.TabIndex = 5;
@@ -102,19 +104,30 @@
             this.button_SemiAuto_Loading.UseVisualStyleBackColor = true;
             this.button_SemiAuto_Loading.Click += new System.EventHandler(this.button_SemiAuto_Loading_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.button_SemiAuto_Unloading);
+            this.groupBox1.Controls.Add(this.button_SemiAuto_Loading);
+            this.groupBox1.Controls.Add(this.button_SemiAuto_HeightSensor);
+            this.groupBox1.Controls.Add(this.button_SemiAuto_LaserDrilling);
+            this.groupBox1.Controls.Add(this.button_SemiAuto_PreAlign);
+            this.groupBox1.Controls.Add(this.button_SemiAuto_FiducialAlign);
+            this.groupBox1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(375, 145);
+            this.groupBox1.TabIndex = 6;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "SemiAuto";
+            // 
             // FormNewSub_Main_SemiAuto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(376, 143);
-            this.Controls.Add(this.button_SemiAuto_Loading);
-            this.Controls.Add(this.button_SemiAuto_LaserDrilling);
-            this.Controls.Add(this.button_SemiAuto_FiducialAlign);
-            this.Controls.Add(this.button_SemiAuto_PreAlign);
-            this.Controls.Add(this.button_SemiAuto_HeightSensor);
-            this.Controls.Add(this.button_SemiAuto_Unloading);
+            this.Controls.Add(this.groupBox1);
             this.Name = "FormNewSub_Main_SemiAuto";
-            this.Text = "FormNewSub_SemiAuto_Main";
+            this.Size = new System.Drawing.Size(380, 150);
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -127,5 +140,6 @@
         private System.Windows.Forms.Button button_SemiAuto_FiducialAlign;
         private System.Windows.Forms.Button button_SemiAuto_LaserDrilling;
         private System.Windows.Forms.Button button_SemiAuto_Loading;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }

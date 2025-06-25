@@ -1009,6 +1009,9 @@ namespace QMC.Common.Modules
 
         // Data 관리를 위한 객체 선언.
         public DrillingProcessManager DrillingManager { get; private set; } = new DrillingProcessManager();
+        public Action<DrillingProcessManager> ActionDrillingProcessManagerUpdated;
+        public Action<DrillingProcessManager> ActionDrillingProcessManagerSelectedUpdated;
+
 
         //  다른 모듈에 접근하기 위함
         static Loader loader;
@@ -4258,7 +4261,6 @@ namespace QMC.Common.Modules
                 Camera_LowRes.Close();
             }
 
-            // m_rapidLxLaser_Comm
             if (m_rapidLxLaser_Comm != null)
             {
                 m_rapidLxLaser_Comm.CloseComm();
@@ -7582,7 +7584,7 @@ namespace QMC.Common.Modules
         #region Event Handler
 
 
-        private bool m_bLaserBusy = false;
+        public bool m_bLaserBusy = false;
         public bool GetLaserBusyStatus()
         {
             return m_bLaserBusy;
@@ -7887,10 +7889,11 @@ namespace QMC.Common.Modules
                     {
                         // 도면 로딩.
                         Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-
                         if (GetDrillingData(true) == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Main Tick, Loader Transfer, WorkStage 로 Loading 중 가공 데이터 Parsing 성공");
+
+                            //ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
 
                             //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
                             GlobalSocketStatus_Init();
@@ -7902,12 +7905,10 @@ namespace QMC.Common.Modules
                             {
                                 //  메인 화면에 가공위치 표시용
                                 Main_SocketPositions = new List<PointD>();
-
                                 for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
                                 {
                                     Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
                                 }
-
                                 if (Main_SocketPositions.Count > 0)
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
@@ -8217,7 +8218,18 @@ namespace QMC.Common.Modules
                 
                 Func_DryRun_Cycle();
 
-                int ret = Run_LaserDrilling_Main_Cycle();
+                int ret = 0;
+
+                //test 후에 둘 중에 하나는 지워야됨.
+                if(Equipment.SelectRunEnable_New)
+                {
+                    ret = Run_LaserDrilling_Main_Cycle_SelectMode();
+                }
+                else
+                {
+                    ret = Run_LaserDrilling_Main_Cycle();
+                }
+                    
                 if(ret !=0)
                 {
                     SetRecoveryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
@@ -15120,46 +15132,6 @@ namespace QMC.Common.Modules
                         continue;
                     }
 
-                    //우선 주석 - 필요하면 적용 하자.
-                    {
-                        bool bUseRed = false;
-                        bool bUseIR = false;
-                        int redVolume = 0;
-                        int irVolume = 0;
-                        double exposureTime = 0.0;
-
-                        // 여기서 조명을 해야 제대로 먹는 느낌적인 느낌?
-                        SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
-                        SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
-
-                        Thread.Sleep(100);
-                        if (alignMode == AlignMode.Socket)
-                        {
-                            bUseRed = Equipment.stVisionRecipeSet.bSocketIlluminationRedUse;
-                            bUseIR = Equipment.stVisionRecipeSet.bSocketIlluminationIRUse;
-                            redVolume = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
-                            irVolume = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
-                            exposureTime = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
-                        }
-                        else if (alignMode == AlignMode.GoldPowder)
-                        {
-                            bUseRed = Equipment.stVisionRecipeSet.bGoldPowderIlluminationRedUse;
-                            bUseIR = Equipment.stVisionRecipeSet.bGoldPowderIlluminationIRUse;
-                            redVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed; // TODO: 전용 Red 값 분리 가능
-                            irVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR;   // TODO: 전용 IR 값 분리 가능
-                            exposureTime = Equipment.stVisionRecipeSet.dGoldPowderIlluminationExposureTime;
-                        }
-
-                        // Fine Cam Red 조명
-                        if (bUseRed)
-                            SetLightingByChannel(LightingChannel.FineCamRed, redVolume, bUseRed);
-                        if (bUseIR)
-                            SetLightingByChannel(LightingChannel.FineCamIR, irVolume, bUseIR);
-
-                        // 카메라 노출 설정
-                        jigAligner_HighRes.Camera.SetExposureTime(exposureTime);
-                    }
-
                     //  마크 검출 형식 (Circle, Gold Powder)
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     if (alignMode == AlignMode.GoldPowder &&
@@ -15219,54 +15191,51 @@ namespace QMC.Common.Modules
                     }
                     else
                     {
-                        if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.Circle)
+                        Fiducial_circleFound = false;
+                        Fiducial_circlesResult.Clear();
+                        int markIndex = 0;
+
+                        foreach (var mark in Equipment.stVisionRecipeSet.SocketMarkList)
                         {
-                            if (stVisionRecipeSet.nSocketCircleColor <= 1)
+                            Log.Write("SLD-200", "SpiralSearch", $"Try Mark {markIndex}");
+
+                            if (mark.MarkType != (int)MarkTypeList.Circle)
+                                continue;
+
+                            // ---------------- 조명 및 노출 세팅 ----------------
+                            SetLightingByChannel(LightingChannel.FineCamRed, mark.IllumRed, mark.UseRed);
+                            SetLightingByChannel(LightingChannel.FineCamIR, mark.IllumIR, mark.UseIR);
+                            jigAligner_HighRes.Camera.SetExposureTime(mark.ExposureTime);
+                            Thread.Sleep(100); // 100ms 대기
+                            // --------------------------------------------------
+
+                            // Circle Color 0: White, 1: Black
+                            if (mark.MarkColor <= 1)
                             {
-                                double dSpec = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec;
-                                double dScore = Equipment.stVisionRecipeSet.dSocketCircleMarkScore;
-                                result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
-                                                                            bm_AlignRawData,
-                                                                            Camera_HighRes.Resolution.Width,
-                                                                            Camera_HighRes.Resolution.Height,
-                                                                            nWidthImageCount,
-                                                                            dSpec,
-                                                                            ref Fiducial_circleFound,
-                                                                            0, 0,
-                                                                            (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
-                                                                            dScore,
-                                                                            false);
-
-                                // 따로 파라미터 들어가게 수정해야 한다..
-                                dSpec = 2.0;
-                                if (!Fiducial_circleFound)
-                                {
-                                    result = Fiducial_aligner.FindCircleForFR4(bm_AlignRawData,
-                                                                            Camera_HighRes.Resolution.Width,
-                                                                            Camera_HighRes.Resolution.Height,
-                                                                            nWidthImageCount,
-                                                                            dSpec,
-                                                                            dScore);
-                                    Fiducial_circlesResult.Clear();
-                                    foreach (var circle in result.Circles)
-                                    {
-                                        Fiducial_circleFound = true;
-                                        Fiducial_circlesResult.Add(circle.GetBoundery());
-                                    }
-
-                                    if (Fiducial_circlesResult.Count == 0)
-                                        Fiducial_circleFound = false; // 다시 false로
-                                }
-
+                                result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
+                                    Fiducial_circlesResult,
+                                    bm_AlignRawData,
+                                    Camera_HighRes.Resolution.Width,
+                                    Camera_HighRes.Resolution.Height,
+                                    nWidthImageCount,
+                                    mark.MarkSpec,
+                                    ref Fiducial_circleFound,
+                                    0, 0,
+                                    (mark.MarkType == 0), // GoldPowder 여부?
+                                    mark.MarkScore,
+                                    false);
                             }
-                            else if (stVisionRecipeSet.nSocketCircleColor == 2)
+                            // Circle Color 2: Ignore
+                            else if (mark.MarkColor == 2)
                             {
-                                result = Fiducial_aligner.FindCircleForFR4(bm_AlignRawData,
-                                                                            Camera_HighRes.Resolution.Width,
-                                                                            Camera_HighRes.Resolution.Height,
-                                                                            nWidthImageCount,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
+                                result = Fiducial_aligner.FindCircleForFR4(
+                                    bm_AlignRawData,
+                                    Camera_HighRes.Resolution.Width,
+                                    Camera_HighRes.Resolution.Height,
+                                    nWidthImageCount,
+                                    mark.MarkSpec,
+                                    mark.MarkScore);
+
                                 Fiducial_circlesResult.Clear();
                                 foreach (var circle in result.Circles)
                                 {
@@ -15275,38 +15244,105 @@ namespace QMC.Common.Modules
                                 }
 
                                 if (Fiducial_circlesResult.Count == 0)
-                                    Fiducial_circleFound = false; // 다시 false로
+                                    Fiducial_circleFound = false;
+                            }
 
-                                if (!Fiducial_circleFound)
-                                {
-                                    result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
-                                                                            bm_AlignRawData,
-                                                                            Camera_HighRes.Resolution.Width,
-                                                                            Camera_HighRes.Resolution.Height,
-                                                                            nWidthImageCount,
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
-                                                                            ref Fiducial_circleFound,
-                                                                            0, 0,
-                                                                            (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
-                                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
-                                                                            false);
-                                }
-                            }
+                            // 하나라도 찾았으면 반복 종료
+                            if (Fiducial_circleFound)
+                                break;
+
+                            markIndex++;
                         }
-                        //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
-                        else if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.GoldPowder)
+                        //기존 코드
                         {
-                            result = Fiducial_aligner.FindGoldPowderForAutoTreshold(Fiducial_circlesResult,
-                                                            bm_AlignRawData,
-                                                            Camera_HighRes.Resolution.Width,
-                                                            Camera_HighRes.Resolution.Height,
-                                                            nWidthImageCount,
-                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
-                                                            Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
-                            if (result.Circles.Count > 3)
-                            {
-                                Fiducial_circleFound = true;
-                            }
+                            //if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.Circle)
+                            //{
+                            //    if (stVisionRecipeSet.nSocketCircleColor <= 1)
+                            //    {
+                            //        result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                            //                                                    bm_AlignRawData,
+                            //                                                    Camera_HighRes.Resolution.Width,
+                            //                                                    Camera_HighRes.Resolution.Height,
+                            //                                                    nWidthImageCount,
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
+                            //                                                    ref Fiducial_circleFound,
+                            //                                                    0, 0,
+                            //                                                    (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                            //                                                    false);
+
+                            //        if (!Fiducial_circleFound)
+                            //        {
+                            //            double dSpec = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec;
+                            //            dSpec *= 1.5;
+
+                            //            result = Fiducial_aligner.FindCircleForFR4(bm_AlignRawData,
+                            //                                                    Camera_HighRes.Resolution.Width,
+                            //                                                    Camera_HighRes.Resolution.Height,
+                            //                                                    nWidthImageCount,
+                            //                                                    dSpec,
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
+                            //            Fiducial_circlesResult.Clear();
+                            //            foreach (var circle in result.Circles)
+                            //            {
+                            //                Fiducial_circleFound = true;
+                            //                Fiducial_circlesResult.Add(circle.GetBoundery());
+                            //            }
+
+                            //            if (Fiducial_circlesResult.Count == 0)
+                            //                Fiducial_circleFound = false; // 다시 false로
+                            //        }
+
+                            //    }
+                            //    else if (stVisionRecipeSet.nSocketCircleColor == 2)
+                            //    {
+                            //        result = Fiducial_aligner.FindCircleForFR4(bm_AlignRawData,
+                            //                                                    Camera_HighRes.Resolution.Width,
+                            //                                                    Camera_HighRes.Resolution.Height,
+                            //                                                    nWidthImageCount,
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
+                            //        Fiducial_circlesResult.Clear();
+                            //        foreach (var circle in result.Circles)
+                            //        {
+                            //            Fiducial_circleFound = true;
+                            //            Fiducial_circlesResult.Add(circle.GetBoundery());
+                            //        }
+
+                            //        if (Fiducial_circlesResult.Count == 0)
+                            //            Fiducial_circleFound = false; // 다시 false로
+
+                            //        if (!Fiducial_circleFound)
+                            //        {
+                            //            result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                            //                                                    bm_AlignRawData,
+                            //                                                    Camera_HighRes.Resolution.Width,
+                            //                                                    Camera_HighRes.Resolution.Height,
+                            //                                                    nWidthImageCount,
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
+                            //                                                    ref Fiducial_circleFound,
+                            //                                                    0, 0,
+                            //                                                    (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
+                            //                                                    Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                            //                                                    false);
+                            //        }
+                            //    }
+                            //}
+                            ////else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
+                            //else if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.GoldPowder)
+                            //{
+                            //    result = Fiducial_aligner.FindGoldPowderForAutoTreshold(Fiducial_circlesResult,
+                            //                                    bm_AlignRawData,
+                            //                                    Camera_HighRes.Resolution.Width,
+                            //                                    Camera_HighRes.Resolution.Height,
+                            //                                    nWidthImageCount,
+                            //                                    Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                            //                                    Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
+                            //    if (result.Circles.Count > 3)
+                            //    {
+                            //        Fiducial_circleFound = true;
+                            //    }
+                            //}
                         }
                     }
 
@@ -15771,12 +15807,7 @@ namespace QMC.Common.Modules
                         break;
                     }
 
-                    if (!Equipment.AutoRunStatus &&
-                        Equipment.SemiAutoEnable &&
-                        _semiAutoRequest == SemiAutoStep.MeasureHeight)
-                    {
-                        SetStageComplete(SemiAutoStep.MeasureHeight, false);
-                    }
+                    SetStageComplete(SemiAutoStep.MeasureHeight, false);
 
                     LaserDrillingStepStart();
 
@@ -15797,20 +15828,24 @@ namespace QMC.Common.Modules
                     workStageParameter.DO_AirCurtain_Purge(true);
 
                     //  선택 가공이면? 가공해야 할 Socket 번호를 선택한 번호로 변경                    
-                    if ((m_nSocketAlign_StartIndex >= 0) &&
+                    if (Equipment.SelectRunEnable &&
+                        (m_nSocketAlign_StartIndex >= 0) &&
                         ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) ||
                         (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
                     {
-                        // 확인 필요. -> 선택 번호도 초기화 된다.
-                        //if (!m_bMainWorkCycle_DryRun)
-                        //{
-                        //    Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-                        //}
+                        if (GetDrillingData(true) == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 시, WorkStage에서 가공 데이터 Parsing 성공");
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 시, WorkStage에서 가공 데이터 Parsing 실패");
+                        }
+
                         workStageParameter.DO_Stage_Vacuum(true);
                         workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
                         DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
                         Thread.Sleep(1000);
-
                         if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "WorkStage, 하부 집진기 사용 안함.");
@@ -15823,7 +15858,7 @@ namespace QMC.Common.Modules
                         }
 
                         //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
-                        ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
+                        ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //임시로 -30 고정
                         Thread.Sleep(100);
                     }
 
@@ -16017,7 +16052,8 @@ namespace QMC.Common.Modules
                     LaserDrilling_StepLaserOff();
 
                     //  선택 가공이면? 가공해야 할 Socket 번호를 선택한 번호로 변경                    
-                    if ((m_nSocketAlign_StartIndex >= 0) &&
+                    if (Equipment.SelectRunEnable &&
+                        (m_nSocketAlign_StartIndex >= 0) &&
                         ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) ||
                         (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
                     {
@@ -17091,7 +17127,8 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck:              //  쓰루홀 Drilling 작업 완료 확인
 
                     //  선택 가공이면? 다음 Layer 체크하러 가도록 Step 변경
-                    if ((m_nSocketAlign_StartIndex >= 0) &&
+                    if (Equipment.SelectRunEnable && 
+                        (m_nSocketAlign_StartIndex >= 0) &&
                         (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly))
                     {
                         m_strTemp = string.Format("Thruhole Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
@@ -17101,8 +17138,7 @@ namespace QMC.Common.Modules
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
 
                     }
-                    //  정상 가공이면 다음 소켓 가공
-                    else
+                    else //  정상 가공이면 다음 소켓 가공
                     {
                         // 공통 자동 완료 마킹
                         {
@@ -17427,7 +17463,8 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck:              //  아웃 라인 (라우터) Drilling 작업 완료 확인
 
                     //  선택 가공이면? 다음 Layer 체크하러 이동하도록 변경
-                    if ((m_nSocketAlign_StartIndex >= 0) &&
+                    if (Equipment.SelectRunEnable && 
+                        (m_nSocketAlign_StartIndex >= 0) &&
                         (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly))
                     {
                         m_strTemp = string.Format("Outline Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
@@ -17631,7 +17668,7 @@ namespace QMC.Common.Modules
 
                                     //
                                     //m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
-                                    m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityAndEncoderSpeed,
+                                    m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
                                         (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance,                              //  Percentage100
                                         (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 0.8),                      //  Min
                                         (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 1.2));                     //  Max
@@ -17948,7 +17985,8 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Buffer List 가공 완료");
 
                         //  선택 가공이면? 다음 Layer 체크하러 가도록 Step 변경
-                        if ((m_nSocketAlign_StartIndex >= 0) &&
+                        if (Equipment.SelectRunEnable && 
+                            (m_nSocketAlign_StartIndex >= 0) &&
                             (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly))
                         {
                             m_strTemp = string.Format("Marking Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
@@ -18125,7 +18163,8 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, Custom Marker Marking Complete");
 
                         //  선택 가공이면? 다음 Layer 체크하러 가도록 Step 변경
-                        if ((m_nSocketAlign_StartIndex >= 0) &&
+                        if (Equipment.SelectRunEnable && 
+                            (m_nSocketAlign_StartIndex >= 0) &&
                             (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly))
                         {
                             m_strTemp = string.Format("Marking Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
@@ -18525,10 +18564,10 @@ namespace QMC.Common.Modules
                     else
                     {
                         Log.Write("SLD-200", "Auto Run", "Socket Align 진행 중, Socket Height Check 모드 : Off");
-
-                        SetStageComplete(SemiAutoStep.MeasureHeight, true);
-                        m_dZOffset_SocketHeightCheck = 0.0;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                        {
+                            m_dZOffset_SocketHeightCheck = 0.0;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                        }
                     }
                     break;
                 //  Map Data 변경 (Camera) - 끝
@@ -19021,7 +19060,11 @@ namespace QMC.Common.Modules
                         {
                             SetStageComplete(SemiAutoStep.MeasureHeight, true);
                             Equipment.SemiAutoEnable = false;
+
                             m_LaserDrillingWork_Start = false;
+                            m_MainWork_Start = false;
+                            m_SubWork_Start = false;
+                            m_ProductAlign_Start = false;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
@@ -19615,18 +19658,25 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling Pre Align 보정 완료.");
 
-                    SetStageComplete(SemiAutoStep.PreAlign, true);
                     if (!Equipment.AutoRunStatus &&
                             Equipment.SemiAutoEnable &&
                             _semiAutoRequest == SemiAutoStep.PreAlign)
                     {
+                        SetStageComplete(SemiAutoStep.PreAlign, true);
                         Equipment.SemiAutoEnable = false;
-                        m_LaserDrillingWork_Start = false;
-                    }
 
-                    m_bPreAlignCompleted = true;
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                    
+                        m_LaserDrillingWork_Start = false;
+                        m_MainWork_Start = false;
+                        m_SubWork_Start = false;
+                        m_ProductAlign_Start = false;
+
+                        m_bPreAlignCompleted = true;
+                    }
+                    else
+                    {
+                        m_bPreAlignCompleted = true;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                    }
                     break;
 
 
@@ -19748,7 +19798,8 @@ namespace QMC.Common.Modules
                                         GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
                                         Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
                                                                                                 //  단일 선택 가공이면, Align 실패 시 Out
-                                        if ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) && 
+                                        if (Equipment.SelectRunEnable && 
+                                            (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) && 
                                             (m_nSocketAlign_StartIndex >= 0))
                                         {
                                             m_strTemp = string.Format("단일 선택 가공 중 Socket Align Fail!!! (자재 배출)");
@@ -19843,7 +19894,8 @@ namespace QMC.Common.Modules
                                         GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
                                         Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
                                                                                                 //  단일 선택 가공이면, Align 실패 시 Out
-                                        if ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) &&
+                                        if (Equipment.SelectRunEnable && 
+                                            (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) &&
                                             (m_nSocketAlign_StartIndex >= 0))
                                         {
                                             m_strTemp = string.Format("단일 선택 가공 중 Socket Align Fail!!! (자재 배출)");
@@ -19879,7 +19931,8 @@ namespace QMC.Common.Modules
                                         GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
                                         Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
                                                                                                 //  단일 선택 가공이면, Align 실패 시 Out
-                                        if ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) &&
+                                        if (Equipment.SelectRunEnable && 
+                                            (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) &&
                                             (m_nSocketAlign_StartIndex >= 0))
                                         {
                                             m_strTemp = string.Format("단일 선택 가공 중 Socket Align Fail!!! (자재 배출)");
@@ -19914,7 +19967,8 @@ namespace QMC.Common.Modules
                                         GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
                                         Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
                                                                                                 //  단일 선택 가공이면, Align 실패 시 Out
-                                        if ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) && 
+                                        if (Equipment.SelectRunEnable && 
+                                            (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) && 
                                             (m_nSocketAlign_StartIndex >= 0))
                                         {
                                             m_strTemp = string.Format("단일 선택 가공 중 Socket Align Fail!!! (자재 배출)");
@@ -20110,11 +20164,16 @@ namespace QMC.Common.Modules
                         else
                         {
                             if (!Equipment.AutoRunStatus &&
-                                Equipment.SemiAutoEnable &&
-                                _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.FiducialAlign)
                             {
+                                SetStageComplete(SemiAutoStep.FiducialAlign, true);
                                 Equipment.SemiAutoEnable = false;
+
                                 m_LaserDrillingWork_Start = false;
+                                m_MainWork_Start = false;
+                                m_SubWork_Start = false;
+                                m_ProductAlign_Start = false;
                             }
                             m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
 
@@ -20127,13 +20186,17 @@ namespace QMC.Common.Modules
                     else
                     {
                         if (!Equipment.AutoRunStatus &&
-                        Equipment.SemiAutoEnable &&
-                        _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.FiducialAlign)
                         {
+                            SetStageComplete(SemiAutoStep.FiducialAlign, true);
                             Equipment.SemiAutoEnable = false;
+
                             m_LaserDrillingWork_Start = false;
+                            m_MainWork_Start = false;
+                            m_SubWork_Start = false;
+                            m_ProductAlign_Start = false;
                         }
-                        SetStageComplete(SemiAutoStep.FiducialAlign, true);
 
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
 
@@ -20480,9 +20543,10 @@ namespace QMC.Common.Modules
                                     }
                                     else
                                     {
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
                                         // 여기서 증가하면 안된다.
                                         //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                                     }
                                 }
                             }
@@ -20548,14 +20612,16 @@ namespace QMC.Common.Modules
                                 {
                                     // Hole은 가공 안하는데...
                                     // Group_Count 를 증가 시키면 Hole은 넘기고 Drilling 하지 않을까?
-                                    m_nDrillingWork_Group_Count++;// = m_nSelectedSocket_Index;
+                                    //m_nDrillingWork_Group_Count++;// = m_nSelectedSocket_Index;
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
                                 }
                                 else
                                 {
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+
                                     // Hole은 가공 안하니깐.
-                                    m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                                 }
                             }
                         }
@@ -20847,7 +20913,8 @@ namespace QMC.Common.Modules
 
                 //  각 Hole 별로 Drilling 완성
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck:                                  //  List Buffer Open                    
-                    if (m_nLaserDrilling_InGroup_HoleCount < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum)
+                    if (m_nLaserDrilling_InGroup_HoleCount < 
+                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum)
                     {
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, Hole 단위 본 가공, 가공할 Region Object 가 남아 있음");
 
@@ -22380,7 +22447,6 @@ namespace QMC.Common.Modules
                     }
 
                     TickCount_Start((int)TickType.TICK_MAIN);
-
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionLaserBusyCheck;     //   EntireDrilling_ScannerOnly_GroupListData_ExecuteCheck;
                     break;
 
@@ -22447,8 +22513,6 @@ namespace QMC.Common.Modules
 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
                         }
-
-                        
                     }
                     break;
                 /// <summary>
@@ -22490,8 +22554,8 @@ namespace QMC.Common.Modules
 
                     //laserDrillingParameter.DO_LaserTrigger_Change(true);
                     //  선택 가공 모드였으면, 도면 다시 로드
-                    if ((m_nSocketAlign_StartIndex >= 0) || 
-                        (Equipment.SelectedSocketStartMode != (int)SelectedSocketStartModeList.All) ||
+                    if (Equipment.SelectRunEnable || 
+                        (m_nSocketAlign_StartIndex >= 0) ||
                         Equipment.AutoRunStatus == false)
                     {
                         Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
@@ -22689,9 +22753,13 @@ namespace QMC.Common.Modules
                             Equipment.SemiAutoEnable &&
                             _semiAutoRequest == SemiAutoStep.Drilling)
                     {
-                        Equipment.SemiAutoEnable = false;
-                        m_LaserDrillingWork_Start = false;
                         SetStageComplete(SemiAutoStep.Drilling, true);
+                        Equipment.SemiAutoEnable = false;
+
+                        m_LaserDrillingWork_Start = false;
+                        m_MainWork_Start = false;
+                        m_SubWork_Start = false;
+                        m_ProductAlign_Start = false;
                     }
 
                     m_bLaserDrilling_Complete = true;
@@ -22699,13 +22767,6 @@ namespace QMC.Common.Modules
 
                     Equipment.SelectRunEnable = false;
 
-                    if (!Equipment.AutoRunStatus)
-                    {
-                        //MessageBox.Show("가공 완료.", "Information!");
-
-                        //var mb1 = new QMC.Common.UI.MessageBoxOk();
-                        //mb1.ShowDialog("Warning !", "냉각수를 순환 시키고 작업을 진행해야 합니다.");
-                    }
                     break;
             }
 
@@ -23637,12 +23698,6 @@ namespace QMC.Common.Modules
                 //rtc.ListExecute();
                 //Thread.Sleep(100);
 
-                //rtc.CtlDelay((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_LaserOnDelay,
-                //                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_LaserOffDelay,
-                //                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_JumpDelay,
-                //                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_MarkDelay,
-                //                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_PolygonDelay);
-
                 //m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
                 m_bDivRegionList_Success &= rtc.ListBegin(laser, ListType.Auto);
                 //m_bDivRegionList_Success &= rtc.ListBegin(laser, ListType.Single);
@@ -23658,7 +23713,6 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                     int m_nSDC_Count = 0;
-
                     do
                     {
                         //  Spot Distance Control
@@ -24025,8 +24079,6 @@ namespace QMC.Common.Modules
                 }
                 else                                                                //  Hole Layer 가 없을 경우, 다음 소켓으로 이동
                 {
-                    //if (m_nSelectedSocket_Index >= 0)                                                                       //  선택 가공이면? 마지막 Layer Index 로 변경하고 종료하러 go
-                                //if (m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                     if (Equipment.SelectRunEnable &&
                         (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) && 
                         (m_nSocketAlign_StartIndex >= 0))
@@ -24034,7 +24086,7 @@ namespace QMC.Common.Modules
                         string m_strTemp = string.Format("Hole Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
-                                    // 공통 자동 완료 마킹
+                        // 공통 자동 완료 마킹
                         {
                             var layerEnum = GetCurrentLayerEnum(m_LayerType);
                             var layer = DrillingManager.GetLayer(layerEnum);
@@ -24051,7 +24103,7 @@ namespace QMC.Common.Modules
                     }
                     else                                                                                                    //  전체 가공이면? 다음 소켓으로 이동
                     {
-                                    // 공통 자동 완료 마킹
+                        // 공통 자동 완료 마킹
                         {
                             var layerEnum = GetCurrentLayerEnum(m_LayerType);
                             var layer = DrillingManager.GetLayer(layerEnum);
@@ -26031,7 +26083,8 @@ namespace QMC.Common.Modules
 
                     m_bDrillingWork_Hole1_Exist = true;
                     //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
-                    if ((m_nSocketAlign_StartIndex >= 0) &&
+                    if (Equipment.SelectRunEnable && 
+                        (m_nSocketAlign_StartIndex >= 0) &&
                         ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) ||
                          (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
                     {
@@ -26097,7 +26150,8 @@ namespace QMC.Common.Modules
                     m_bDrillingWork_Outline_Exist = true;
 
                     //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
-                    if ((m_nSocketAlign_StartIndex >= 0) &&
+                    if (Equipment.SelectRunEnable && 
+                        (m_nSocketAlign_StartIndex >= 0) &&
                         ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) ||
                          (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
                     {
@@ -26129,7 +26183,8 @@ namespace QMC.Common.Modules
                     m_bDrillingWork_Thruhole_Exist = true;
 
                     //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
-                    if ((m_nSocketAlign_StartIndex >= 0) &&
+                    if (Equipment.SelectRunEnable && 
+                        (m_nSocketAlign_StartIndex >= 0) &&
                         ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) ||
                          (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
                     {
@@ -26158,7 +26213,8 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Marking");
 
                     //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
-                    if ((m_nSocketAlign_StartIndex >= 0) &&
+                    if (Equipment.SelectRunEnable && 
+                        (m_nSocketAlign_StartIndex >= 0) &&
                         ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) ||
                          (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
                     {
@@ -29569,7 +29625,8 @@ namespace QMC.Common.Modules
                     {
                         if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == false)
                         {
-                            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                            if (Equipment.SelectRunEnable && 
+                                Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
                             {
                                 if (i >= m_nSocketAlign_StartIndex)
                                 {
@@ -29595,7 +29652,8 @@ namespace QMC.Common.Modules
                     {
                         if (m_stOutLine_SocketData_ProcessingFlag[i].bProcessing == false)
                         {
-                            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                            if (Equipment.SelectRunEnable && 
+                                Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
                             {
                                 if (i >= m_nSocketAlign_StartIndex)
                                 {
@@ -29792,7 +29850,8 @@ namespace QMC.Common.Modules
 
                                     if (m_stOutLine_SocketData_ProcessingFlag[m_nOutline_ObjectCount].bProcessing == false)
                                     {
-                                        if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                                        if (Equipment.SelectRunEnable && 
+                                            Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
                                         {
                                             if (m_nOutline_ObjectCount >= m_nSocketAlign_StartIndex)
                                             {
@@ -29862,7 +29921,8 @@ namespace QMC.Common.Modules
 
                                     if (m_stThruHole_SocketData_ProcessingFlag[m_nThruhole_ObjectCount].bProcessing == false)
                                     {
-                                        if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                                        if (Equipment.SelectRunEnable && 
+                                            Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
                                         {
                                             if (m_nThruhole_ObjectCount >= m_nSocketAlign_StartIndex)
                                             {
@@ -36533,6 +36593,9 @@ namespace QMC.Common.Modules
                 {
                     DrillingManager.InitDrillingManagerFromDrawing(layerSocketCounts);
                     Log.Write("DrillStatus", $"[DrillingManager] 초기화 완료 - Layer {layerSocketCounts.Count}개");
+
+                    ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
+                    ActionDrillingProcessManagerSelectedUpdated?.Invoke(DrillingManager);
                 }
             }
             
@@ -41345,5 +41408,7829 @@ namespace QMC.Common.Modules
         {
             _stageCompleteMap.Clear();
         }
+
+
+
+        // 기존꺼가 양산 중이라 따로 만들어서 Test
+        private int Run_LaserDrilling_Main_Cycle_SelectMode()
+        {
+            m_nLaserDrilling_MainStep_Recovery = -1;
+            string strTemp = "";
+            double lfVelocity = 0.0f;
+            double lfAccDec = 0.0f;
+            bool m_bRightAngle = false;                 //  직각인지?
+            int m_nZigZag_CurrentRow = 0;               //  현재 Index 가 몇 번째 Row 인지 계산
+            int m_nZigZag_CurRow_FirstIndex = 0;        //  현재 Row 의 첫번째 Index 계산
+            int m_nZigZag_CurRow_CurIndex = 0;          //  현재 Row 에서 몇번째 Index 인지 계산
+            int m_nZigZag_CurRow_LastIndex = 0;         //  현재 Row 의 마지막 Index 계산
+
+            if (TickCount_MainCycle_Start == 0)
+            {
+                TickCount_MainCycle_Start = Environment.TickCount;
+            }
+            else
+            {
+                TickCount_MainCycle_Current = Environment.TickCount;
+                TickCount_MainCycle_Interval = TickCount_MainCycle_Current - TickCount_MainCycle_Start;
+                TickCount_MainCycle_Start = TickCount_MainCycle_Current;
+            }
+
+            //  Stop 할 때 바로 Stop 하지 않고, 가공중이던 분할영역이 있을 경우 Laser 가공이 끝나고 난 후 Stop 하도록 한다.
+            if (Equipment.LaserDrillingCycStop_Reservation)
+            {
+                //  Stop 예약일 경우, 가공이 완료되었으면 false 로 변경
+                if (!((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck) && 
+                    (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionLaserBusyCheck)) &&
+                    
+                    !((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck) && 
+                    (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_ScannerOnly_LaserBusyCheck)) &&
+                    
+                    !((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck) && 
+                    (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck)))
+                {
+                    m_LaserDrillingWork_Start = false;
+                    return 0;
+                }
+            }
+
+            // 자동운전 중 Socket Stop 처리
+            // 이게 맞아? 이건 아닌거 같은데. 그냥 멈추잖아. 다시 확인하자.
+            //if (Equipment.SocketStopped)
+            //{
+            //    return 0;
+            //}
+
+            // Todo : Action으로 Enum값 전달.
+            ActionLaserDrillingStep?.Invoke((LaserDrilling_Step)m_nLaserDrilling_MainStep);
+            // 현재 LayerEnum, Layer, Socket 객체 미리 선언
+            Equipment.LayerList layerEnum;  
+            LayerProcessData layer;         
+            SocketProcessData socket;       
+            LaserDrilling_Step currentStep = (LaserDrilling_Step)m_nLaserDrilling_MainStep;
+            switch (m_nLaserDrilling_MainStep)
+            {
+                case (int)LaserDrilling_Step.Start:
+
+                    // 모듈받고 CycleStop 상태이면 정지한다.
+                    if (Equipment.CycleModuleStop)
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Start;  // 반복 진입
+                        break;
+                    }
+
+                    // 다음 모듈을 진행하기 전에 얼마 동안 대기 하기 위한 구문.
+                    if (ShouldDelayNextModule())
+                    {
+                        if (!m_bWorkStage_LogOnce)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Start", "다음 모듈 가공 대기 중...");
+                            m_bWorkStage_LogOnce = true;
+                        }
+
+                        // 장비를 정지하면? 밖에서 정지한다.
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Start;  // 반복 진입
+                        break;
+                    }
+                    m_bWorkStage_LogOnce = false;
+
+                    // 변수 초기화.
+                    SetStageComplete(SemiAutoStep.MeasureHeight, false);
+                    LaserDrillingStepStart();
+
+                    // 다음 모듈 가공 시작 //Cycle Time
+                    DrillingManager.CycleTimer_LaserDrilling.Start();
+                    workStageParameter.DO_AirCurtain_Purge(true);
+                    
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                        if (GetDrillingData(true) == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 시, WorkStage에서 가공 데이터 Parsing 성공");
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 시, WorkStage에서 가공 데이터 Parsing 실패");
+                        }
+
+                        workStageParameter.DO_Stage_Vacuum(true);
+                        workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
+                        DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
+                        Thread.Sleep(1000);
+                        if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "WorkStage, 하부 집진기 사용 안함.");
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "WorkStage, 하부 집진기 사용. 집진기 On");
+
+                            DustCollector_On((int)nDustCollector.DustCollector_Lower);
+                        }
+
+                        //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
+                        ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //임시로 -30 고정
+                        Thread.Sleep(100);
+                    }
+
+                    //Loaser에서 Stage로 제품 이송시 vacuum 안잡히면 Ng로 그냥 뺀다.
+                    if (m_bworkStageVacuumFail)
+                    {
+                        strTemp = "Work Stage Vacuum On 실패.";
+                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Start", strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    else
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        if (false)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init;
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                        }
+                    }
+
+                    // VerifyScannerCameraOffset 시작 시.
+                    if (Equipment.Machine_AutoCrossCheck_Enable)
+                    {
+                        if (m_ScannerCameraOffsetSequence != null)
+                        {
+                            bool bNeedToCheck = false;
+
+                            // 1. 처음엔 무조건 실행
+                            if (!m_bFirstAutoCrossCheckDone)
+                            {
+                                bNeedToCheck = true;
+                                m_bFirstAutoCrossCheckDone = true;
+                            }
+                            // 2. 이후엔 Count 간격마다 실행
+                            else if (Equipment.Machine_AutoCrossCheck_Count > 0 &&
+                                     DrillingManager.CycleTimer_DoneModuleCount % Equipment.Machine_AutoCrossCheck_Count == 0)
+                            {
+                                bNeedToCheck = true;
+                            }
+
+                            if (bNeedToCheck)
+                            {
+                                if (m_ScannerCameraOffsetSequence != null)
+                                {
+                                    m_ScannerCameraOffsetSequence.m_bVerifyScannerCameraOffset_Complete = false;
+                                    if (false)
+                                    {
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init;
+                                    }
+                                    else
+                                    {
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+
+                case (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset:
+
+                    // m_ScannerCameraOffsetSequence.m_bVerifyScannerCameraOffset_Complete 이 신호가 
+                    // 무조건 false 여야 정상임.
+                    if (m_ScannerCameraOffsetSequence.m_bVerifyScannerCameraOffset_Complete == false)
+                    {
+                        m_ScannerCameraOffsetSequence.Reset();
+                        m_ScannerCameraOffsetSequence.Start();
+                        scannerCompensator.SetRunStatus(Part.RunStatus.Run);
+                        m_ScannerCameraOffsetSequence.m_MainTick_Start = true;
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset_Check;
+                    }
+                    else
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        if (false)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init;
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                        }
+
+                    }
+
+                    break;
+
+                case (int)LaserDrilling_Step.Step_VerifyScannerCameraOffset_Check:
+
+                    if (m_ScannerCameraOffsetSequence.m_bVerifyScannerCameraOffset_Complete)
+                    {
+                        m_ScannerCameraOffsetSequence.Reset();
+                        scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+                        m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+
+                        if (false)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init;
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                        }
+
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        m_ScannerCameraOffsetSequence.Reset();
+                        scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+                        m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+
+                        strTemp = "ScannerCameraOffsetSequence 실패.";
+                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_VerifyScannerCameraOffset_Check", strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                    }
+
+                    break;
+
+                case (int)LaserDrilling_Step.Step_StageXY_Init:
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_StageXY_Init_Check;
+                    break;
+
+                case (int)LaserDrilling_Step.Step_StageXY_Init_Check:
+
+                    if (Equipment._InitDeviceStatus.Scanner)
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        strTemp = "Step_StageXY_Init 실패.";
+                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::RTC6_Init_Check-Fail", strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    //stageXY 초기화 - CO2 불필요.
+                    //if (m_bStageXYComp)
+                    //{
+                    //    m_MotionHome_Start = false;
+                    //    m_btimer_Motion_Home_Stop = true;
+                    //    timer_Motion_Home.Enabled = false;
+                    //    _currentHomeMode = (int)WorkStage.HomeMode.None;
+                    //    m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                    //}
+                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 5)
+                    //{
+                    //    m_MotionHome_Start = false;
+                    //    m_btimer_Motion_Home_Stop = true;
+                    //    timer_Motion_Home.Enabled = false;
+                    //    _currentHomeMode = (int)WorkStage.HomeMode.None;
+                    //    m_nStageXY_HomeStep = (int)StageXY_HomeStep.None;
+
+                    //    m_strTemp = "Step_StageXY_Init 실패.";
+                    //    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_StageXY_Init_Check", m_strTemp);
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                    //}
+                    break;
+
+                case (int)LaserDrilling_Step.LaserOff:
+
+                    Log.Write("SLD-200", "Auto Run", "가공 시작");
+                    LaserDrilling_StepLaserOff();
+                   
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        if (workStageParameter.DI_Stage_Vacuum_Check() &&
+                          (m_dEPRO_Value < Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
+                        {
+                            m_bworkStageVacuumFail = false;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                        {
+                            if (true)
+                            {
+                                strTemp = "Work Stage Vacuum On 실패.";
+                                Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Start", strTemp);
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                            }
+                        }
+                        else
+                        {
+                            //이 부분에서 자주 발생. 
+                            workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
+                            Thread.Sleep(100);
+                            workStageParameter.DO_Stage_Vacuum(true);
+                            // Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
+                            // 여기는 -60 <- 파라미터로 빼야함.
+                            ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
+                            Thread.Sleep(100);
+                        }
+                    }
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff_Check;
+                    break;
+
+                case (int)LaserDrilling_Step.LaserOff_Check:                                         //  레이저 Off 확인
+                    if (rtc.CtlGetStatus(RtcStatus.NotBusy))
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_On;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        return AlarmPost(AlarmKey.eRTC_FAIL);
+
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DustCollector_On:                                      //  집진기 On
+                    //laserDrillingParameter.DO_DustCollector_OnOff(true);                          //  집진기 동작은 On/Off 스위치로 동작
+
+                    if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, 집진기 On");
+
+                        DustCollector_On((int)nDustCollector.DustCollector_Upper);
+
+                        if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+                        {
+                            Log.Write("SLD-200", "Auto Run", "하부 집진기 사용 안함");
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", "Auto Run", "하부 집진기 사용. 집진기 On");
+
+                            DustCollector_On((int)nDustCollector.DustCollector_Lower);
+                        }
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_Frequency_Set;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", "Auto Run", "집진기 Local Mode");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.WaterLine_Open;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DustCollector_Frequency_Set:
+                    if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 500)
+                    {
+                        strTemp = LaserDrillingStepDustCollectorFrequenceSet();
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_On_Check;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DustCollector_On_Check:                                //  집진기 On 확인
+                    if ((workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) &&
+
+                        (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable ||
+                        (!Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable &&
+                        workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)))) ||
+
+                        (TickCount_Elapsed((int)TickType.TICK_MAIN) > DustCollector_TurnOn_AfterStableTime))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "집진기 On 확인");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserShutter_Open;
+                    }
+                    else if (workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) ||
+                        workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
+                    {
+                        //timer_Motion_Home.Enabled = false;
+
+                        //MessageBox.Show("Alarm", "Dust Collector 점검 요망\r\n\r\n[Fault Signal 확인]");
+
+                        return AlarmPost(AlarmKey.eDustCollectorFail);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 120000)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "집진기 On 실패");
+
+
+                        return AlarmPost(AlarmKey.eDustCollectorFail);
+
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Dust Collector On 실패", "Error");
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.LaserShutter_Open:                                     //  레이저 Shutter Open
+                    workStageParameter.DO_BDS_PowerMeter_BW(true);
+                    workStageParameter.DO_BDS_PowerMeter_FW(false);
+
+                    Log.Write("SLD-200", "Auto Run", "출사구 셔터 Open");
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserShutter_Open_Check;
+                    break;
+
+                case (int)LaserDrilling_Step.LaserShutter_Open_Check:                               //  레이저 Shutter Open 확인
+                    if (workStageParameter.DI_BDS_PowerMeter_BW_Check() && !workStageParameter.DI_BDS_PowerMeter_FW_Check())
+                    {
+                        Log.Write("SLD-200", "Auto Run", "출사구 셔터 Open 확인");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.WaterLine_Open;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "출사구 셔터 Open 실패");
+
+                        return AlarmPost(AlarmKey.eBeamShutterOpenFail);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Laser Shutter Open 실패", "Error");
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.WaterLine_Open:                                        //  Water Line Open (이건 상시 Open)                                        
+                    workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
+                    workStageParameter.DO_Scanner_Coolant_Supply(true);                     //  Scanner Cooling Valve Open
+
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        workStageParameter.DO_Mask_Coolant_Supply(true);                    //  Beam Mask 
+                        workStageParameter.DO_VarioScan_Coolant_Supply(true);
+                    }
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.WaterLine_Open_Check;
+                    break;
+
+                case (int)LaserDrilling_Step.WaterLine_Open_Check:                                  //  Water Line Open 확인
+                    if (workStageParameter.IsDO_BeamDump_Coolant_Supply() && workStageParameter.IsDO_Scanner_Coolant_Supply() &&
+                        (!Equipment.Machine_LaserType_CO2 ||
+                        Equipment.Machine_LaserType_CO2 && workStageParameter.IsDO_Mask_Coolant_Supply() && workStageParameter.IsDO_VarioScan_Coolant_Supply()))
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_Chiller_Status_Check;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Water Supply Line Open 실패");
+                        return AlarmPost(AlarmKey.eBeamShutterOpenFail);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Water Supply Line Open 실패", "Error");
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DustCollector_Chiller_Status_Check:                      //  집진기, Chiller 상태 확인 (Alarm Check)
+
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "설비 타입 : CO2, Mask 위치 세팅 시작");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Mask_Change;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "설비 타입 : UV, Mask 없음");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.Mask_Change:                                      //  Mask Change (CO2 용, UV 는 Mask 없음)
+                    LaserDrillingStepMaskChange(out lfVelocity, out lfAccDec);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Mask_Change_Check;
+                    break;
+
+                case (int)LaserDrilling_Step.Mask_Change_Check:                            //  Mask Change 확인
+
+                    if (MC_Func.MC_GetDone((int)Bds.nAxis.MASK_Y) &&
+                        MC_Func.MC_PosTolerance((int)Bds.nAxis.MASK_Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Mask Y 축, Hole1 Layer 의 Mask 로 이동 완료.");
+
+                        m_nBETChange_RetryCount = 0;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Mask Y 축, Hole1 Layer 의 Mask 로 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Mask Y 축, Hole1 Layer 의 Mask 로 이동", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.BET_Change:                                      //  BET Change (CO2 용, UV 는 Mask 없음)                    
+
+                    int m_nBETIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
+                    if (m_nBETIndex < 0 || m_nBETIndex >= 5)                                    //  BET 배율은 총4개로 고정되어 있음.
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "지정되지 않은 BET Index 입니다. (0 ~ 4)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                        return AlarmPost(AlarmKey.eBETIndexFail);
+                    }
+                    else
+                    {
+                        LaserDrillingStepBETChange(m_nBETIndex);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change_Check;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.BET_Change_Check:                            //  Mask Change 확인
+
+                    if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 500)
+                    {
+                        m_nBETIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
+
+                        double m_dBET_Zoom = 0.0;
+                        double m_dBET_Mrad = 0.0;
+
+                        //  BET Zoom, Mrad 변경
+                        switch (m_nBETIndex)
+                        {
+                            case 0:         //  0.8x
+                                m_dBET_Zoom = 0.8;
+                                m_dBET_Mrad = Equipment.BET_0_8X_Mrad;
+                                break;
+
+                            case 1:         //  0.9x
+                                m_dBET_Zoom = 0.9;
+                                m_dBET_Mrad = Equipment.BET_0_9X_Mrad;
+                                break;
+
+                            case 2:         //  1.0x
+                                m_dBET_Zoom = 1.0;
+                                m_dBET_Mrad = Equipment.BET_1_0X_Mrad;
+                                break;
+
+                            case 3:         //  1.1x
+                                m_dBET_Zoom = 1.1;
+                                m_dBET_Mrad = Equipment.BET_1_1X_Mrad;
+                                break;
+
+                            case 4:         //  1.2x
+                                m_dBET_Zoom = 1.2;
+                                m_dBET_Mrad = Equipment.BET_1_2X_Mrad;
+                                break;
+                        }
+
+                        if (((m_dBET_ZoomValue > (m_dBET_Zoom - 0.005)) && (m_dBET_ZoomValue < (m_dBET_Zoom + 0.005))) &&
+                            ((m_dBET_MradValue > (m_dBET_Mrad - 0.005)) && (m_dBET_MradValue < (m_dBET_Mrad + 0.005))))
+                        {
+                            strTemp = string.Format("BET Zoom ({0} / {1}), Mrad ({2} / {3}) 변경 성공", m_dBET_ZoomValue, m_dBET_Zoom, m_dBET_MradValue, m_dBET_Mrad);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
+                        }
+                        else
+                        {
+                            if (m_nBETChange_RetryCount++ < 3)
+                            {
+                                strTemp = string.Format("BET Zoom ({0} / {1}), Mrad ({2} / {3}) 변경 실패. 재시도 ({4}/{5})", m_dBET_ZoomValue, m_dBET_Zoom, m_dBET_MradValue, m_dBET_Mrad, m_nBETChange_RetryCount, 3);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.BET_Change;
+
+                                Thread.Sleep(200);
+                            }
+                            else
+                            {
+                                //  알람 정지 (LED Bar - Red Blink)
+                                Equipment.MachineStop_byAlarm = true;
+
+                                //timer_LaserDrillingWork.Enabled = false;
+                                //m_btimer_Motion_Home_Stop = true;
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                                return AlarmPost(AlarmKey.eBETChangeFail);
+                            }
+                        }
+                    }
+                    break;
+
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  Map Data 변경 (Scanner) - 시작
+                case (int)LaserDrilling_Step.MapDataChange_ScannerMap:                                      //  Scanner 위치 Map Data 로 변경
+
+                    MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap;
+                    break;
+
+                case (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap:                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveCenterPos;
+                    
+                    break;
+                //  Map Data 변경 (Scanner) - 끝
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                case (int)LaserDrilling_Step.StageXY_MoveCenterPos:                              //  XY 축, Stage Center 위치로 이동
+
+                    LaserDrillingStepStageXYMoveCenterPosition(out lfVelocity, out lfAccDec);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveCenterPos_DoneCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.StageXY_MoveCenterPos_DoneCheck:                 //  XY 축, Stage Center 위치로 이동 완료 체크           
+
+                    int tempStep = m_nLaserDrilling_MainStep;
+                    if (CheckAxesMotionDoneWithRetry(
+                        stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,     /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,     /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        ref tempStep,
+                        (int)LaserDrilling_Step.StageXY_MoveCenterPos))                                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
+                    {
+                        strTemp = "Stage XY 축, Stage Center 위치로 이동 완료 확인";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageZ_MoveProcessingPos;
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = tempStep;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.StageZ_MoveProcessingPos:                                      //  Z 축, 가공 위치로 이동
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 가공 위치로 이동 시작");
+
+                    //  속도 설정 (스트로크 짧은 Z축은 느리게)
+                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+
+                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z,
+                                          lfVelocity, lfAccDec, lfAccDec);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageZ_MoveProcessingPos_DoneCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.StageZ_MoveProcessingPos_DoneCheck:                            //  Z 축, 가공 위치로 이동 완료 체크
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 가공 위치로 이동 완료 확인");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Load;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 가공 위치로 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+                        return AlarmPost(AlarmKey.eStageMoveFail);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Stage Z 축, 가공 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_Load:                                    //  Drilling 데이터 가져오기
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Parsing;
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_Parsing:                                  //  Drilling 데이터 Parsing
+
+                    //  Get Data
+                    int m_nReturn = (int)WorkStage.nGetDataResult.GETDATA_FAIL;
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 데이터 Parsing 시작");
+
+                    m_nReturn = GetDrillingData();
+                    switch (m_nReturn)
+                    {
+                        case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 데이터 Parsing 성공");
+                            {
+                                m_nLaserDrilling_LayerCount = 0;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingWork_Start;                 //  단일 Job File 작업일 경우
+                            }
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터가 정상적으로 로드 되지 않았습니다.");
+
+                            return AlarmPost(AlarmKey.eGetDataFaile);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터가 Group 이 아닙니다.");
+
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_not_group);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터를 Group 해제 해야 합니다.");
+
+                            return AlarmPost(AlarmKey.eGetdata_Ungroup);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.");
+
+                            return AlarmPost(AlarmKey.eGetdata_Layername_ng);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.");
+
+                            return AlarmPost(AlarmKey.eGetdata_Motiontype_ng);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 중 Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지로만 구성되어야 합니다.");
+
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_ng);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 중 Drilling Data 의 Line 데이터 개수가 4의 배수가 아닙니다.");
+
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_linecnt);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 중 Drilling Data 의 Line 이 닫힌 도형이 아닙니다.");
+
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_not_closed);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
+                            Log.Write("SLD-200", "Auto Run", "RTC 보드가 초기화 되지 않았습니다.");
+
+                            return AlarmPost(AlarmKey.eGetdata_Rtcinit);
+                        //
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_GROUP:
+                            Log.Write("SLD-200", "Auto Run", "Layer Group이 없습니다.");
+
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_No_group);
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingWork_Start:                                    //  Drilling 작업 시작                    
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 Process 시작");
+
+                    m_nDrillingData_SocketAlign_NGCount = 0;
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                    break;
+
+                //////////////////////////////////////////////////
+                ///                                            ///
+                ///            Layer 가공 - 시작               ///
+                ///                                            ///
+                //////////////////////////////////////////////////
+                // 무조건 여기가 처음이고, 여기서 Layer 구분 해서 가공 할수있어.
+                /// <summary>
+                /// Layer 가공 시작
+                /// </summary>
+                /// 
+                case (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck:                       //  가공 할 Layer 가 남아있는지 체크
+
+                    // 여기에서 진행하고자 하는 Layer가 없으면 안하고 넘어 갈 수 있다.
+                    // 그런데 hole1 Recipe에 공통 파라미터가 있어서 Hole1이 무조건 필요한 상태이다.
+                    // SelectMode인 경우 처리 방안.
+                    if (m_nLaserDrilling_LayerCount < m_stLayerType.m_nLayerCount)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Layer 가 남아 있음");
+
+                        // 무조건.. 여기가 맨 처음 시작이다. 
+                        // Hole1 ~ 50까지 존재. Data는 Hole1번.
+                        if ((m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_DRILLING) &&
+                                (m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount] == (int)LayerList.Hole1))
+                        {
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                // 선택된 소켓 중에서 Hole1 Layer에 해당하는 소켓이 있는지 확인
+                                if (!IsCurrentSocketSelected(LayerType.LAYER_DRILLING, m_nDrillingWork_Group_Count))
+                                {
+                                    Log.Write("선택 가공", $"소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
+                                    m_nDrillingWork_Group_Count++;
+                                    break;
+                                }
+                            }
+
+                            m_LayerType = LayerType.LAYER_DRILLING;
+                            strTemp = LaserDrillingStepSetDrillingParam_SelectMode();
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;                       //  Drilling 가공 Layer 파라미터로 변경 시작
+                        }
+                        else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_THRUHOLE)
+                        {
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                // 선택된 소켓 중에서 Hole1 Layer에 해당하는 소켓이 있는지 확인
+                                if (!IsCurrentSocketSelected(LayerType.LAYER_DRILLING, m_nDrillingWork_Group_Count))
+                                {
+                                    Log.Write("선택 가공", $"소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
+                                    m_nDrillingWork_Group_Count++;
+                                    break;
+                                }
+                            }
+
+                            // 소켓 얼라인이 하나도 안되는 경우가 있으면... --> (Layer 가공하지 않도록 다음 Layer 체크)
+                            // 소켓 얼라인이 안되도 해야하고.. 갯수가 안맞아도 되어야 하는데..
+                            if ((m_nDrillingData_SocketAlign_NGCount >= m_stThruHole_SocketData.Length) &&
+                                (m_stThruHole_SocketData.Length != 1)) // 한개인 경우가 있음.
+                            {
+                                // 조건이 안맞으니깐 우선 넘긴다라..
+                                m_nLaserDrilling_LayerCount++;
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_nDrillingData_SocketAlign_NGCount >= m_stThruHole_SocketData.Length");
+                            }
+                            else
+                            {
+                                m_LayerType = LayerType.LAYER_THRUHOLE;
+                                //  성부장 작업
+                                strTemp = LaserDrillingStepSetDrillingParam_SelectMode();
+
+                                // 무조건 Hole1이 있는 상태임...
+                                if (m_nLaserDrilling_LayerCount > 0 &&
+                                    m_bDrillingWork_Hole1_Exist)
+                                {
+                                    // 조건: 앞에서 다른 Layer 가공 후.
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;
+                                }
+                                else
+                                {
+                                    // 조건: Only THRUHOLE 있을때..가 아직 있을수없다. hole1 <- 무조건 있어야 한다.
+                                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_DrillingWork_Start;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;                       //  Drilling 가공 Layer 파라미터로 변경 시작
+                                }
+                                // 조건: 무조건 태워야 하는 코드
+                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;
+                            }
+                        }
+                        else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_OUTLINE)
+                        {
+                            // 소켓 얼라인이 안되도 해야하고.. 갯수가 안맞아도 되어야 하는데..
+                            if ((m_nDrillingData_SocketAlign_NGCount >= m_stOutLine_SocketData.Length) &&
+                                (m_stOutLine_SocketData.Length != 1)) // 한개인 경우가 있음.
+                            {
+                                // 조건이 안맞으니깐 우선 넘긴다라..
+                                m_nLaserDrilling_LayerCount++;
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_nDrillingData_SocketAlign_NGCount >= m_stOutLine_SocketData.Length");
+                            }
+                            else
+                            {
+                                m_LayerType = LayerType.LAYER_OUTLINE;
+                                //  성부장 작업
+                                strTemp = LaserDrillingStepSetDrillingParam_SelectMode();
+
+                                if (m_nLaserDrilling_LayerCount > 0 &&
+                                    m_bDrillingWork_Hole1_Exist)
+                                {
+                                    // 조건: 앞에서 다른 Layer 가공 후.
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;
+                                }
+                                else
+                                {
+                                    // 조건: Only THRUHOLE 있을때..가 아직 있을수없다. hole1 <- 무조건 있어야 한다.
+                                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_DrillingWork_Start;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;                       //  Drilling 가공 Layer 파라미터로 변경 시작
+                                }
+                                // 조건: 무조건 태워야 하는 코드
+                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;
+                            }
+                        }
+                        else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_MARKING)
+                        {
+                            //  소켓 얼라인이 하나도 안되는 경우가 있으면... --> (Layer 가공하지 않도록 다음 Layer 체크)
+                            //
+                            //  체크1 : Hole 소켓은 여러개이고, 마킹 소켓은 1개인 경우. (마킹 소켓이 1개인 경우는, 모듈 한쪽 구석에 한번만 마킹하는 경우)
+                            //  체크2 : ex) Hole 소켓이 4개, 마킹소켓이 1개인데, Hole 소켓 얼라인을 2번 실패했다고 하면 아래 조건이 충족되어 마킹 가공 없이 다음 Layer 체크하러 가버린다.
+                            //  체크3 : Hole 소켓 개수와 마킹 소켓 개수가 동일하다면, 전체 다 가공하게 될 것임.
+                            //  체크4 : 마킹 소켓이 1개인 경우는, 소켓 얼라인 실패 회수와 관계 없이 무조건 마킹 하도록 하는 것이 맞는 듯 싶다. (why? 모듈 구분을 위한 마킹이기 때문에)
+                            if ((m_nDrillingData_SocketAlign_NGCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length) &&
+                                (m_stMarking_SocketData.m_stMarking_ObjectData.Length != 1))
+                            {
+                                m_nLaserDrilling_LayerCount++;
+                            }
+                            else
+                            {
+                                m_LayerType = LayerType.LAYER_MARKING;
+                                //LaserDrillingStepSetMarkingParam();
+                                strTemp = LaserDrillingStepSetDrillingParam_SelectMode();
+
+                                if (m_nLaserDrilling_LayerCount > 0 &&
+                                    m_bDrillingWork_Hole1_Exist)
+                                {
+                                    // 조건: 앞에서 다른 Layer 가공 후.
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;
+                                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_DrillingWork_Start;
+                                }
+                                else
+                                {
+                                    // 조건: Only marking만 있을때.
+                                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_DrillingWork_Start;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;                       //  Drilling 가공 Layer 파라미터로 변경 시작
+                                }
+                            }
+                        }
+                        else                                                                                                                //  가공 Layer 가 아닌 경우는 Skip
+                        {
+                            m_nLaserDrilling_LayerCount++;
+
+                            // m_nLaserDrilling_LayerCount가 증가할때 그룹 카운트는 초기화 한다.
+                            // 선택 가공할때만 우선 이렇게 하자.
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Layer 가 남아 있지 않음. 종료하러 이동");
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+                    }
+                    break;
+
+                #region 쓰루홀 가공
+                case (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move:                              //  ThruHole 가공 Layer 파라미터, Z Offset 이동
+
+                    LaserDrillingStepSetThruHoleLayerParameterZOffsetMove(out lfVelocity, out lfAccDec);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck:                 //  ThruHole 가공 Layer 파라미터, Z Offset 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 완료 확인");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
+                        //  가공할 차례의 Socket 위치에 왔으니 Object 카운트 변수를 초기화 한다. 
+                        m_nThruHole_ObjectDataCount = 0;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+                        return AlarmPost(AlarmKey.eZAxisFail);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Stage Z 축, Thruhole Layer Z Offset 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck:
+
+                    if (m_nThruHole_ObjectDataCount < m_stThruHole_SocketData[m_nThruHole_SocketCount].nRegion_ObjectTotalNum)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 가 남아있음");
+
+                        m_nDrillingWork_Repeat_Count = 0;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 가 남아있지 않음");
+                        // 공통 자동 완료 마킹
+                        {
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            layer = DrillingManager.GetLayer(layerEnum);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (layer != null && socket != null)
+                            {
+                                SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
+                        }
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_RepeatComplete;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos:                              //  가공 할 Object Center 위치로 이동
+
+                    NewMethodLaserDrillingStepThruHole_ScannerOnlyStageXYMoveObjectCenterPos(out lfVelocity, out lfAccDec);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck:                    //  다음 가공 영역 Group Center 위치로 이동 완료 확인
+
+                    tempStep = m_nLaserDrilling_MainStep;
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        ref tempStep,
+                        (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos))              /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
+                    {
+                        strTemp = "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime;
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = tempStep;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:       //  다음 가공 영역 Group Center 위치로 이동 후 안정화 시간
+
+                    if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
+                    {
+                        //Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ListOpen;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_ListOpen:                                  //  List Buffer Open
+                    if (!rtc.CtlGetStatus(RtcStatus.Busy))
+                    {
+                        strTemp = LaserDrillingStepThruHoleScannerOnlyListOpen(strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ListData_Add;
+
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_ListData_Add:                                  //  List 에 데이터 추가
+                    //for (int nObject = 0; nObject < m_stThruHole_LayerData.nRegion_ObjectTotalNum; nObject++)
+                    for (m_nDrillingWork_Repeat_Count = 0; m_nDrillingWork_Repeat_Count < m_nDrillingWork_Repeat_Count_Total; m_nDrillingWork_Repeat_Count++)
+                    {
+                        switch (m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].nObjectType)
+                        {
+                            case (int)ObjectType.OBJECT_POLY:
+                                LaserDrillingStepListDataAddPoli();
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_CIR:
+
+                                LaserDrillingStepListDataAddCircle();
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_RECT:
+                                //  첫 번째 Edge Point 로 Jump 이동
+                                LaserDrillingStepListDataAddRect();
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_LINE:
+                                //  첫 번째 Edge Point 로 Jump 이동 (Start)
+                                LaserDrillingStepListDataAddLine();
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_ARC:
+                                //  Center 위치에서 Start Angle 만큼 회전한 위치로 Jump 이동
+                                LaserDrillingStepListDataAddArc();
+                                break;
+                        }
+
+                        //  데이터가 정상적으로 추가 되었는지 로그
+                        if (m_bThruHoleList_Success)
+                        {
+                            strTemp = "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nThruHole_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 성공";
+                        }
+                        else
+                        {
+                            strTemp = "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nThruHole_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 실패";
+                        }
+
+                        //Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+
+                    m_bThruHoleList_Success &= rtc.ListEnd();
+                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
+
+                    if (m_bThruHoleList_Success)
+                    {
+                        strTemp = "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가 완료, 성공";
+                    }
+                    else
+                    {
+                        strTemp = "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가 완료, 실패";
+                    }
+
+                    Log.Write("SLD-200", "Auto Run", strTemp);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ListData_Execute;
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_ListData_Execute:                              //  List 실행
+
+                    m_bDivRegionList_Success &= rtc.ListExecute(Config.ParamConfig.BusyWait_MarkingComplete);
+
+                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
+
+                    GlobalSocketStatus_Set("Thruhole", m_nThruHole_ObjectDataCount, 0, "Thruhole 가공 시작");
+
+                    Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                    Thread.Sleep(200);
+
+                    socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nDrillingWork_Group_Count);
+                    if (socket != null)
+                    {
+                        socket.IsDrilled = true;
+                        DrillingManager.MarkAsChanged();
+                        Log.Write("DrillStatus", $"[ThruHole] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 시작됨.");
+                    }
+
+                    // 여기서만 증가??? 왜? 여기서?? 레이져 쏘고 증가 하던가???
+                    // 이거 한 소켓에서 몇번 쏘는 건지에 대한 카운터다.
+                    m_nThruHole_ObjectDataCount++;
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_LaserBusyCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_ListData_ExecuteCheck:                                //  List 실행 되었는지 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 1000) &&
+                        ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6) && rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_LaserBusyCheck;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_LaserBusyCheck:                                //  가공 완료되었는지 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 300) &&
+                        (!rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 가공 완료");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_RepeatComplete:                          //  ScannerOny Mode 쓰루홀 가공 완료
+
+                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, Thruhole 반복 가공 완료, 가공할 소켓이 남아 있는지 확인");
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
+
+                    break;
+
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change:                        //  Outline 가공이 없을 경우 Hole1 의 Laser Power 로 변경 
+
+                    double m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+
+                    if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
+                    {
+                        if (m_rapidLxLaser_Comm.IsOpen)
+                        {
+                            strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_nHoleLayer_ProcessIndex + 1, m_dLaserPower);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck;
+                        }
+                        else
+                        {
+                            strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)", m_nHoleLayer_ProcessIndex + 1);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                            return AlarmPost(AlarmKey.eLaserComm_NotOpen);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
+                        }
+                    }
+                    else
+                    {
+                        strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)", m_nHoleLayer_ProcessIndex + 1);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck:                     //  Outline 가공이 없을 경우 Hole1 의 Laser Power 로 변경 확인 완료
+
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    {
+                        strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                    {
+                        strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck:              //  쓰루홀 Drilling 작업 완료 확인
+
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        strTemp = string.Format("Thruhole Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        // 공통 자동 완료 마킹
+                        {
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            layer = DrillingManager.GetLayer(layerEnum);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (layer != null && socket != null)
+                            {
+                                SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
+                        }
+
+                        //m_nLaserDrilling_LayerCount++; //이거는.. 한개의 소켓만 한다는거니깐..
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                    }
+                    else //  정상 가공이면 다음 소켓 가공
+                    {
+                        // 공통 자동 완료 마킹
+                        {
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            layer = DrillingManager.GetLayer(layerEnum);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (layer != null && socket != null)
+                            {
+                                SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
+                        }
+
+                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                    }
+                    break;
+
+                #endregion
+
+                #region 아웃 라인 가공
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move:                              //  Outline 가공 Layer 파라미터, Z Offset 이동
+
+                    LaserDrillingStepSetOutlineLayerParameterZOffsetMove(out lfVelocity, out lfAccDec);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move_DoneCheck:                 //  Outline 가공 Layer 파라미터, Z Offset 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline Layer Z Offset 이동 완료 확인");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
+                        //  가공할 차례의 Socket 위치에 왔으니 Object 카운트 변수를 초기화 한다. 
+                        m_nOutLine_ObjectDataCount = 0;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline Layer Z Offset 이동 실패. (Timeout)");
+                        return AlarmPost(AlarmKey.eZAxisFail);
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck:
+                    if (m_nOutLine_ObjectDataCount < m_stOutLine_SocketData[m_nOutLine_SocketCount].nRegion_ObjectTotalNum)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 가 남아있음");
+
+                        m_nDrillingWork_Repeat_Count = 0;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 가 남아있지 않음");
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatComplete;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos:                              //  가공 할 Object Center 위치로 이동
+
+                    LaserDrillingStepOutLine_ScannerOnly_StageXY_MoveObjectCenterPos(out lfVelocity, out lfAccDec);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck:                    //  다음 가공 영역 Group Center 위치로 이동 완료 확인
+                    tempStep = m_nLaserDrilling_MainStep;
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        ref tempStep,
+                        (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos))               /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        strTemp = "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime;
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = tempStep;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:       //  다음 가공 영역 Group Center 위치로 이동 후 안정화 시간
+
+                    if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
+                    {
+                        //Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ListOpen;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_ListOpen:                                  //  List Buffer Open
+                    if (!rtc.CtlGetStatus(RtcStatus.Busy))
+                    {
+                        strTemp = LaserDrillingStepOutLine_ScannerOnly_ListOpen(strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ListData_Add;
+
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_ListData_Add:                                  //  List 에 데이터 추가
+                    //for (int nObject = 0; nObject < m_stOutLine_LayerData.nRegion_ObjectTotalNum; nObject++)
+                    for (m_nDrillingWork_Repeat_Count = 0; m_nDrillingWork_Repeat_Count < m_nDrillingWork_Repeat_Count_Total; m_nDrillingWork_Repeat_Count++)
+                    {
+                        switch (m_stOutLine_SocketData[m_nOutLine_SocketCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].nObjectType)
+                        {
+                            case (int)ObjectType.OBJECT_POLY:
+                                LaserDrillingStepOutLine_ScannerOnly_ListData_AddPoli();
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_CIR:
+                                LaserDrillingStepOutLine_ScannerOnly_ListData_AddCircle();
+
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_RECT:
+                                LaserDrillingStepOutLine_ScannerOnly_ListData_AddRect();
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_LINE:
+                                LaserDrillingStepOutLine_ScannerOnly_ListData_AddLine();
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_ARC:
+                                LaserDrillingStepOutLine_ScannerOnly_ListData_AddArc();
+                                break;
+                        }
+
+                        //  데이터가 정상적으로 추가 되었는지 로그
+                        if (m_bOutLineList_Success)
+                        {
+                            strTemp = "Outline 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nOutLine_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 성공";
+                        }
+                        else
+                        {
+                            strTemp = "Outline 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nOutLine_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 실패";
+                        }
+
+                        //Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+
+                    m_bOutLineList_Success &= rtc.ListEnd();
+                    Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List End");
+
+                    if (m_bOutLineList_Success)
+                    {
+                        strTemp = "Outline 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가 완료, 성공";
+                    }
+                    else
+                    {
+                        strTemp = "Outline 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가 완료, 실패";
+                    }
+
+                    Log.Write("SLD-200", "Auto Run", strTemp);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ListData_Execute;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_ListData_Execute:                              //  List 실행
+
+                    m_bDivRegionList_Success &= rtc.ListExecute(Config.ParamConfig.BusyWait_MarkingComplete);
+
+                    Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
+
+                    GlobalSocketStatus_Set("Outline", m_nOutLine_ObjectDataCount, 0, "Outline 가공 시작");
+
+                    Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                    Thread.Sleep(200);
+
+                    socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nDrillingWork_Group_Count);
+                    if (socket != null)
+                    {
+                        socket.IsDrilled = true;
+                        DrillingManager.MarkAsChanged();
+                        Log.Write("DrillStatus", $"[OutLine] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 시작됨.");
+                    }
+
+                    // 여기서만 증가??? 왜? 여기서?? 레이져 쏘고 증가 하던가???
+                    // 이거 한 소켓에서 몇번 쏘는 건지에 대한 카운터다.
+                    m_nOutLine_ObjectDataCount++;
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_ListData_ExecuteCheck:                                //  List 실행 되었는지 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 1000) &&
+                        ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6) && rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck:                                //  가공 완료되었는지 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 300) &&
+                        (!rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List 가공 완료");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatComplete:                          //  ScannerOny Mode 아웃 라인 (라우터) 가공 완료
+
+                    Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, Outline 반복 가공 완료, 가공할 소켓이 남아 있는지 확인");
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
+
+
+                    //Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
+                    ////Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
+                    //GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "Outline 가공 완료");
+
+                    //Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
+                    //Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                    //Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
+                    ////Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+
+                    //Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                    //Thread.Sleep(200);
+
+                    ////  이건가?
+                    //m_nHoleLayer_ProcessIndex = 0;
+                    //m_nHoleLayer_ProcessIndex_Count = 0;
+
+                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change:                        //  다음 가공이 없을 경우 Hole1 의 Laser Power 로 변경 
+
+                    m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+
+                    if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
+                    {
+                        if (m_rapidLxLaser_Comm.IsOpen)
+                        {
+                            strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_nHoleLayer_ProcessIndex + 1, m_dLaserPower);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change_DoneCheck;
+                        }
+                        else
+                        {
+                            strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)", m_nHoleLayer_ProcessIndex + 1);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                            return AlarmPost(AlarmKey.eLaserComm_NotOpen);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
+                        }
+                    }
+                    else
+                    {
+                        strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)", m_nHoleLayer_ProcessIndex + 1);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change_DoneCheck:                     //  Outline 가공이 없을 경우 Hole1 의 Laser Power 로 변경 확인 완료
+
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    {
+                        strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                    {
+                        strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck:              //  아웃 라인 (라우터) Drilling 작업 완료 확인
+
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        strTemp = string.Format("Outline Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        // 공통 자동 완료 마킹
+                        {
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            layer = DrillingManager.GetLayer(layerEnum);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (layer != null && socket != null)
+                            {
+                                SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
+                        }
+
+                        //m_nLaserDrilling_LayerCount++;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                    }
+                    //  정상 가공이면 다음 소켓 가공
+                    else
+                    {
+                        // 공통 자동 완료 마킹
+                        {
+                            layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            layer = DrillingManager.GetLayer(layerEnum);
+                            socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (layer != null && socket != null)
+                            {
+                                SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
+                        }
+
+                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                    }
+                    break;
+
+                #endregion
+
+                #region 마킹 가공
+                case (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move:                              //  Marking 가공 Layer 파라미터, Z Offset 이동
+
+                    LaserDrillingStepSetMarkingLayerParameterZOffsetMove(out lfVelocity, out lfAccDec);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move_DoneCheck:                 //  Marking 가공 Layer 파라미터, Z Offset 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Marking Layer Z Offset 이동 완료 확인");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Marking Layer Z Offset 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+                        return AlarmPost(AlarmKey.eZAxisFail);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Stage Z 축, Marking Layer Z Offset 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos:                              //  가공 할 Object Center 위치로 이동
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 시작");
+
+                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                    //  좌표계 (기존)
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
+
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = -m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.X;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.Y;
+
+                    //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+
+                    //  속도 설정
+                    if (true)
+                    {
+                        lfVelocity = m_pProcessConfigData.nSpeedAxisX;
+                        lfAccDec = m_pProcessConfigData.nAccelAxisX;
+                    }
+                    else
+                    {
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                    }
+
+                    xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                    xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos_DoneCheck:                    //  다음 가공 영역 Group Center 위치로 이동 완료 확인
+
+                    tempStep = m_nLaserDrilling_MainStep;
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        ref tempStep,
+                        (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos))                           /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        strTemp = "Marking 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos_StableTime;
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = tempStep;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos_StableTime:       //  다음 가공 영역 Group Center 위치로 이동 후 안정화 시간
+
+                    if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
+                    {
+                        //Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
+
+                        //  Custom Marker 창으로 가공하려면 여기에서 분기해야 한다.
+                        if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingData_SiriusTemplate_Use)
+                        {
+                            //  도면에 올라가 있는 Entity 위치에 Barcode, QR code 등을 가공할 경우
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_DataSet;
+                        }
+                        else
+                        {
+                            //  도면에 올라가 있는 Entity 를 가공할 경우 (기존)
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_ListOpen;
+                        }
+                    }
+                    break;
+
+
+
+                /// <summary>
+                /// 마킹 Buffer 에 데이터를 직접 넣어서 가공 - 시작
+                /// 
+                case (int)LaserDrilling_Step.Marking_ListOpen:                                  //  List Buffer Open
+                    if (!rtc.CtlGetStatus(RtcStatus.Busy))
+                    {
+                        //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                        {
+                            m_bMarkingList_Success = true;
+                            m_bScannerLib_Success = true;
+
+                            var rtcMode = rtc as IRtc;                                  //  RTC6
+
+                            //Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
+
+                            m_bMarkingList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+                            Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Buffer List Open");
+
+                            //if (!m_bMarkingList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)
+                            //{
+                            //    timer_LaserDrillingWork.Enabled = false;
+
+                            //    MessageBox.Show($"DividedRegion ScannerOnly Drilling, ListBegin 실패");
+
+                            //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                            //    break;
+                            //}
+
+                            if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].ProcessPriority_P2P) &&                   //  P2P Mode
+                                (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance > 0.0))
+                            {
+                                strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, Spot Distance Control 파라미터 적용, Spot Distance ({0:0.0000})",
+                                                        Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance);
+
+                                Log.Write("SLD-200", "Auto Run", strTemp);
+
+                                int m_nSDC_Count = 0;
+
+                                do
+                                {
+                                    //  Spot Distance Control
+                                    var alc = rtc as IRtcAutoLaserControl;
+
+                                    //
+                                    //m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
+                                    m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
+                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance,                              //  Percentage100
+                                        (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 0.8),                      //  Min
+                                        (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 1.2));                     //  Max
+
+                                    if (!m_bScannerLib_Success)
+                                    {
+                                        strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, Spot Distance Control 파라미터 적용 실패, ({0}/3)", m_nSDC_Count + 1);
+
+                                        Log.Write("SLD-200", "Auto Run", strTemp);
+                                    }
+                                    else
+                                    {
+                                        strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, Spot Distance Control 파라미터 적용 성공, ({0}/3)", m_nSDC_Count + 1);
+                                        Log.Write("SLD-200", "Auto Run", strTemp);
+                                    }
+
+                                    m_nSDC_Count++;
+                                } while (!m_bScannerLib_Success && (m_nSDC_Count < 3));
+                            }
+
+                            //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+                            //{
+
+                            //  Frequency, Pulse Width 값이 있으면 적용
+                            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency > 0.0)
+                            {
+                                double m_dLaserParam_PulseWidth = 0.0;
+
+                                //  Laser Type 이 CO2 일 경우, 여기에서 Duty Cycle 을 Pulse Width 로 계산해서 Power 를 변경할 수 있도록 한다.
+                                if (Equipment.Machine_LaserType_CO2)
+                                {
+                                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_DutyCycle > 0.0)
+                                    {
+                                        m_dLaserParam_PulseWidth = Calc_PulseWidth(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_DutyCycle);
+
+                                        strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                                m_dLaserParam_PulseWidth);
+                                    }
+                                    else
+                                    {
+                                        m_dLaserParam_PulseWidth = 1.0;
+
+                                        strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                                m_dLaserParam_PulseWidth);
+                                    }
+                                }
+                                else
+                                {
+                                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth > 0.0)
+                                    {
+                                        m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth;
+
+                                        strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                                                            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth);
+                                    }
+                                    else
+                                    {
+                                        m_dLaserParam_PulseWidth = 1.0;
+
+                                        strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                                m_dLaserParam_PulseWidth);
+                                    }
+                                }
+
+                                Log.Write("SLD-200", "Auto Run", strTemp);
+
+                                m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                                            (float)m_dLaserParam_PulseWidth);
+
+                                if (!m_bScannerLib_Success)
+                                {
+                                    Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Frequency 파라미터 적용 실패");
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Frequency 파라미터 적용 성공");
+                                }
+                            }
+
+                            //m_bMarkingList_Success &= rtc.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+                            //                                                        (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+                            m_bMarkingList_Success &= rtc.ListDelay((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_LaserOnDelay,
+                                                                    (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_LaserOffDelay,
+                                                                    (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_JumpDelay,
+                                                                    (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_MarkDelay,
+                                                                    (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_PolygonDelay);
+
+                            //if (!m_bMarkingList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)
+                            //{
+                            //    timer_LaserDrillingWork.Enabled = false;
+
+                            //    MessageBox.Show($"DividedRegion ScannerOnly Drilling, ListDelay 실패");
+
+                            //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                            //    break;
+                            //}
+
+                            //m_bMarkingList_Success &= rtc.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+                            m_bMarkingList_Success &= rtc.ListSpeed((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerJumpSpeed,
+                                                                    (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerDrillingSpeed);
+
+                            //if (!m_bMarkingList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)
+                            //{
+                            //    timer_LaserDrillingWork.Enabled = false;
+
+                            //    MessageBox.Show($"DividedRegion ScannerOnly Drilling, ListSpeed 실패");
+
+                            //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                            //    break;
+                            //}
+                        }
+
+                        //if (!m_bMarkingList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)                      //  ListBegin 이나, ListDelay 나 ListSpeed 가 실패일 경우
+                        //{
+                        //    m_nMarkerFunc_RetryCount = Config.ParamConfig.Marker_ListBegin_Retry <= 0 ? 10 : Config.ParamConfig.Marker_ListBegin_Retry;
+                        //    if (m_nListBeginRetry_Count++ < m_nMarkerFunc_RetryCount)
+                        //    {
+                        //        rtcSyncAxis.CtlAbort();
+                        //        Thread.Sleep(2000);
+                        //        rtcSyncAxis.CtlReset();
+                        //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListOpen;
+                        //    }
+                        //    else
+                        //    {
+                        //        timer_LaserDrillingWork.Enabled = false;
+                        //        m_bExit = true;
+                        //        MessageBox.Show($"DividedRegion ScannerOnly Drilling, ListBegin or ListDelay or ListSpeed 실패\r\n\r\n[재시도 회수 초과]");
+
+                        //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                        //    }
+                        //}
+                        //else
+                        {
+                            Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Buffer List 에 데이터 추가");
+
+                            m_nListBeginRetry_Count = 0;                    //  데이터 추가할 때도 안되는 경우가 있는 듯 하여, 데이터 집어넣기 재시도 Count 용 변수로 사용
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_ListData_Add;
+                        }
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_ListData_Add:                                  //  List 에 데이터 추가
+
+                    //  Hatch 가 있으면 Hatch 데이터 넣기 (Hatch 데이터는 전부 LINE)
+
+                    //  소켓 (단어 단위)
+                    if (m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stHatchData != null)
+                    {
+                        if (m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stHatchData.Length > 0)
+                        {
+                            //  반복 가공
+                            for (m_nDrillingWork_Repeat_Count = 0; m_nDrillingWork_Repeat_Count < m_nDrillingWork_Repeat_Count_Total; m_nDrillingWork_Repeat_Count++)
+                            {
+                                //  글자 단위
+                                for (m_nDrillingWork_Text_Count = 0; m_nDrillingWork_Text_Count < m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].nTextNum; m_nDrillingWork_Text_Count++)
+                                {
+                                    //  Element 단위 (Hatch 는 모두 LINE 으로만 구성)
+                                    for (m_nDrillingWork_Element_Count = 0; m_nDrillingWork_Element_Count < m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stHatchData[m_nDrillingWork_Text_Count].nTextElementNum; m_nDrillingWork_Element_Count++)
+                                    {
+                                        //  무조건 LINE 이니 Switch 조건 무시 --> 나중에 혹시 다른 Object Type 이 추가되면...   
+                                        //switch (m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stHatchData[m_nDrillingWork_Text_Count].nObjectType)
+                                        {
+                                            //case (int)ObjectType.OBJECT_LINE:
+
+                                            //  첫 번째 Edge Point 로 Jump 이동 (Start)
+                                            entity_Position.X = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stHatchData[m_nDrillingWork_Text_Count].stTextElement[m_nDrillingWork_Element_Count].elLine.ptStart.X -
+                                                                m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.X;
+                                            entity_Position.Y = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stHatchData[m_nDrillingWork_Text_Count].stTextElement[m_nDrillingWork_Element_Count].elLine.ptStart.Y -
+                                                                m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.Y;
+
+                                            //  사각형 돌릴 때 쓰던거
+                                            entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                            m_bMarkingList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+
+                                            //  이어서 오는 Edge Point 로 Mark 이동 (End)
+                                            entity_Position.X = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stHatchData[m_nDrillingWork_Text_Count].stTextElement[m_nDrillingWork_Element_Count].elLine.ptEnd.X -
+                                                                m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.X;
+                                            entity_Position.Y = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stHatchData[m_nDrillingWork_Text_Count].stTextElement[m_nDrillingWork_Element_Count].elLine.ptEnd.Y -
+                                                                m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.Y;
+
+                                            //  사각형 돌릴 때 쓰던거
+                                            entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                            m_bMarkingList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                            break;
+                                        }
+                                    }
+
+                                    //  데이터가 정상적으로 추가 되었는지 로그
+                                    if (m_bMarkingList_Success)
+                                    {
+                                        strTemp = "Marking 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nMarking_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 성공";
+                                    }
+                                    else
+                                    {
+                                        strTemp = "Marking 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nMarking_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 실패";
+                                    }
+
+                                    //Log.Write("SLD-200", "Auto Run", m_strTemp);
+                                }
+                            }
+                        }
+                    }
+
+                    //  Text 데이터 데이터 넣기
+                    if (m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData != null)
+                    {
+                        if (m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData.Length > 0)
+                        {
+                            //  반복 가공
+                            for (m_nDrillingWork_Repeat_Count = 0; m_nDrillingWork_Repeat_Count < m_nDrillingWork_Repeat_Count_Total; m_nDrillingWork_Repeat_Count++)
+                            {
+                                //  글자 단위
+                                for (m_nDrillingWork_Text_Count = 0; m_nDrillingWork_Text_Count < m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].nTextNum; m_nDrillingWork_Text_Count++)
+                                {
+                                    // 마킹 갯수만큼 하도록 하기.
+                                    // 마킹 갯수만큼 하기. hole1 있을때랑.
+                                    // hole1 그룹 갯수 있을때랑. 마킹이 달라야 한다. 
+                                    // stTextData[m_nDrillingWork_Text_Count] <- 여기에 마킹 정보가 있지만. Hole1 Group 갯수에 따라서 마킹 가능 유/무가 달라진다....
+
+                                    //  Element 단위 (TrueType Font 의 Text 데이터는 모두 PolyLine 으로만 구성)
+                                    for (m_nDrillingWork_Element_Count = 0; m_nDrillingWork_Element_Count < m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData[m_nDrillingWork_Text_Count].nTextElementNum; m_nDrillingWork_Element_Count++)
+                                    {
+                                        //  무조건 PolyLine 이니 Switch 조건 무시 --> 나중에 혹시 다른 Object Type 이 추가되면...  
+                                        //switch (m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stHatchData[m_nDrillingWork_Text_Count].nObjectType)
+                                        {
+                                            //case (int)ObjectType.OBJECT_POLYLINE:
+                                            //  첫 번째 Edge Point 로 Jump 이동
+                                            entity_Position.X = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData[m_nDrillingWork_Text_Count].stTextElement[0].elPolyline[0].X -
+                                                                m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.X;
+                                            entity_Position.Y = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData[m_nDrillingWork_Text_Count].stTextElement[0].elPolyline[0].Y -
+                                                                m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.Y;
+
+                                            //  사각형 돌릴 때 쓰던거
+                                            entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                            m_bOutLineList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+
+                                            //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Polyline 완성
+                                            for (int nEntity = 1; nEntity < m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData[m_nDrillingWork_Text_Count].stTextElement[0].elPolylineNum; nEntity++)
+                                            {
+                                                entity_Position.X = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData[m_nDrillingWork_Text_Count].stTextElement[0].elPolyline[nEntity].X -
+                                                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.X;
+                                                entity_Position.Y = m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].stTextData[m_nDrillingWork_Text_Count].stTextElement[0].elPolyline[nEntity].Y -
+                                                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.Y;
+
+                                                //  사각형 돌릴 때 쓰던거
+                                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                                m_bOutLineList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                            }
+                                            break;
+                                        }
+                                    }
+
+                                    //  데이터가 정상적으로 추가 되었는지 로그
+                                    if (m_bMarkingList_Success)
+                                    {
+                                        strTemp = "Marking 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nMarking_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 성공";
+                                    }
+                                    else
+                                    {
+                                        strTemp = "Marking 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nMarking_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 실패";
+                                    }
+
+                                    //Log.Write("SLD-200", "Auto Run", m_strTemp);
+                                }
+                            }
+                        }
+                    }
+
+
+                    m_bMarkingList_Success &= rtc.ListEnd();
+                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
+
+                    if (m_bMarkingList_Success)
+                    {
+                        strTemp = "Marking 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가 완료, 성공";
+                    }
+                    else
+                    {
+                        strTemp = "Marking 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가 완료, 실패";
+                    }
+
+                    Log.Write("SLD-200", "Auto Run", strTemp);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_ListData_Execute;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_ListData_Execute:                              //  List 실행
+
+                    m_bDivRegionList_Success &= rtc.ListExecute(Config.ParamConfig.BusyWait_MarkingComplete);
+                    Thread.Sleep(200);
+
+                    Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LaserBusyCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.Marking_LaserBusyCheck:                                //  가공 완료되었는지 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 300) &&
+                        (!rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Buffer List 가공 완료");
+
+                        //  선택 가공이면? 다음 Layer 체크하러 가도록 Step 변경
+                        if (Equipment.SelectRunEnable_New)
+                        {
+                            strTemp = string.Format("Marking Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                            // 공통 자동 완료 마킹
+                            {
+                                layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                layer = DrillingManager.GetLayer(layerEnum);
+                                socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                                if (layer != null && socket != null)
+                                {
+                                    SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                }
+                            }
+
+                            //m_nLaserDrilling_LayerCount++;
+                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        }
+                        else //  정상 가공이면 다음 소켓 가공
+                        {
+                            // 공통 자동 완료 마킹
+                            {
+                                layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                layer = DrillingManager.GetLayer(layerEnum);
+                                socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                                if (layer != null && socket != null)
+                                {
+                                    SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                }
+                            }
+                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        }
+                    }
+                    break;
+                /// 
+                /// 마킹 Buffer 에 데이터를 직접 넣어서 가공 - 완료
+                /// <summary>
+
+
+
+                /// <summary>
+                /// Custom Marker 에 마킹 도면과 데이터를 세팅하여 Marker 의 가공 함수를 호출하여 가공 - 시작
+                /// 
+                case (int)LaserDrilling_Step.Marking_CustomMarker_DataSet:                                  //  Marker 에 도면 데이터 전송
+
+                    if (!rtc.CtlGetStatus(RtcStatus.Busy))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, Custom Marker 에 데이터 세팅, 마킹 시작");
+
+                        //  Recipe 에 설정된 가공 데이터를 세팅
+                        EType eType = EType.Text;                   //  default : Text
+
+                        //Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Type
+                        //  0 : Text
+                        //  1 : Sirius Text
+                        //  2 : 1D Barcode
+                        //  3 : Data Matrix
+                        //  4 : QR Code
+                        switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_DataType)
+                        {
+                            case 0: eType = EType.Text; break;          //  Text
+                            case 1: eType = EType.SiriusText; break;          //  Sirius Text
+                            case 2: eType = EType.Barcode1D; break;          //  1D Barcode
+                            case 3: eType = EType.BarcodeDataMatrix2; break;          //  Data Matrix
+                            case 4: eType = EType.BarcodeQRCode2; break;          //  QR Code
+                        }
+
+                        //  가공 데이터 생성
+                        string m_strMarkingData = "";
+                        int m_nStartNumber = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber < 0 ? 0 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber;
+                        int m_nDigits = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits < 0 ? 1 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits;
+                        int m_nIncreaseStep = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_IncreaseStep;
+                        if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
+                        {
+                            //m_strMarkingData = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
+                        }
+                        else                                                                            //  Serial Number Data
+                        {
+                            //  Prefix 있으면 붙이고
+                            if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData.Length > 0)
+                            {
+                                //m_strMarkingData = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
+                            }
+
+                            //  중요!!
+                            //
+                            //  가공 조건 1 : 시리얼 넘버를 계속 Increase Step 만큼 증가시키면서 가공하면 되는 경우
+                            //                - 모듈별로 1번만 가공하는 경우
+                            //                - 모듈이 바뀌더라도 소켓별로 시리얼 넘버를 계속 증가시키면서 가공하는 경우
+                            //
+                            //  가공 조건 2 : 모듈이 바뀌면 시리얼 넘버를 초기화하고 다시 증가시키는 경우
+                            //                - 모듈이 바뀔 때마다 시리얼 넘버가 1부터 다시 시작하는 경우
+                            //
+                            //  Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType
+                            //  0 : 모듈별로 1 Increase Step 씩 증가
+                            //  1 : 소켓별로 1 Increase Step 씩 증가 (모듈이 바뀌면 초기화)
+                            //  2 : 소켓별로 1 Increase Step 씩 증가 (모듈이 바뀌어도 초기화 안함)
+                            //
+                            //  1 의 경우는 LaserDrilling Cyc. 의 LaserDrillingStepStart() 함수에서 Start Number 로 초기화 해줌
+
+                            //  Serial Number 계산해서 만들고                            
+                            m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", Equipment.m_nSerialNumberMarkingCount);
+                            Equipment.m_nSerialNumberMarkingCount += m_nIncreaseStep;
+
+                            //  Suffix 있으면 붙이고
+                            if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData.Length > 0)
+                            {
+                                m_strMarkingData += Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData;
+                            }
+                        }
+
+                        //  Marking 용 Entity 만들어서 가공 Start
+                        CustomEntity_Marking(eType,
+                            m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectWidth,             //  1D 바코드의 Width 에만 사용됨. 다른 Type 들은 Height 값을 Width 값으로 사용한다.
+                            m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectHeight,            //  Text, SiriusText, Barcode - Matrix - QR 등에 사용되는 크기값.
+                            m_strMarkingData,
+                            m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectRotateAngle);
+
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_LaserBusyCheck;            //  CustomEntity_Marking 함수에서 Marking Start 되므로 완료 체크하러 이동
+
+                    }
+                    else
+                    {
+                        //  
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_CustomMarker_DataSet_DoneCheck:                                  //  Marker 에 도면 데이터 전송 완료 확인
+
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500) &&
+                        (!rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, Custom Marker 에 데이터 세팅 완료 확인 (Delay 500ms)");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_Execute;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_CustomMarker_Execute:                              //  Marker 가공 시작
+
+                    m_bDivRegionList_Success &= marker.Start();
+
+                    Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, Custom Marker Marking Start (Execute)");
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_LaserBusyCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_CustomMarker_ExecuteCheck:                                //  Marker 가공 시작 완료 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 1000) &&
+                        ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6) && rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_LaserBusyCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_CustomMarker_LaserBusyCheck:                                //  Marker 가공 완료되었는지 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 300) &&
+                        (!rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, Custom Marker Marking Complete");
+
+                        if (Equipment.SelectRunEnable_New)
+                        {
+                            strTemp = string.Format("Marking Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                            // 공통 자동 완료 마킹
+                            {
+                                layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                layer = DrillingManager.GetLayer(layerEnum);
+                                socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                                if (layer != null && socket != null)
+                                {
+                                    SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                }
+                            }
+
+                            //m_nLaserDrilling_LayerCount++;
+                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        }
+                        else  //  정상 가공이면 다음 소켓 가공
+                        { 
+                            // 공통 자동 완료 마킹
+                            {
+                                layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                layer = DrillingManager.GetLayer(layerEnum);
+                                socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                                if (layer != null && socket != null)
+                                {
+                                    SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                }
+                            }
+                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        }
+                    }
+                    break;
+                /// 
+                /// Custom Marker 에 마킹 도면과 데이터를 세팅하여 Marker 의 가공 함수를 호출하여 가공 - 완료
+                /// <summary>
+                /// 
+                #endregion
+
+                #region 드릴링 가공
+                ///////////////////////////////////////
+                ///                                 ///
+                ///      Hole1~50 가공 (드릴링)     ///
+                ///                                 ///
+                ///////////////////////////////////////
+                /// 
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  드릴링 Layer 가공 파라미터 변경 - 시작
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start:             //  Drilling 가공 Layer 파라미터로 변경 시작
+                    {
+                        {
+                            Log.Write("SLD-200", "Auto Run", "가공 Layer 파라미터 변경 시작");
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                // 여기서 이거 안해도 될듯.
+                                //m_nDrillingWork_Group_Count = m_nSelectedSocket_Index;
+                            }
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move;
+                        }
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move:                              //  Drilling 가공 Layer 파라미터, Z Offset 이동
+
+                    double m_dOffset = 0.0;
+                    LaserDrillingStepDrilling_LayerParameter_ZOffset_Move(out lfVelocity, out lfAccDec, out m_dOffset);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move_DoneCheck:                 //  Drilling 가공 Layer 파라미터, Z Offset 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Layer Z Offset 이동 완료 확인");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
+                        if (Equipment.Machine_LaserType_CO2)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Set;                 //  CO2 일 경우
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Set;                  //  UV 일 경우
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Layer Z Offset 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        return AlarmPost(AlarmKey.eZAxisFail);
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Set:                  //  Drilling 가공 Layer 파라미터, CO2 용 세팅값 설정
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Check;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Check:                 //  Drilling 가공 Layer 파라미터, CO2 용 세팅값 확인
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Complete;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Set:                  //  Drilling 가공 Layer 파라미터, UV 용 세팅값 설정
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change:                        //  Drilling 가공 Laser Power 변경 (Hole1) 
+
+                    if (m_rapidLxLaser_Comm == null)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Hole1 Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)");
+                        return AlarmPost(AlarmKey.eLaserComm_NotOpen);
+
+                    }
+                    if (!m_rapidLxLaser_Comm.IsOpen)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Hole1 Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)");
+                        return AlarmPost(AlarmKey.eLaserComm_NotOpen);
+                    }
+
+                    //Todo: 추가 필요 - 여기서 Laser Power Table 작성 후 변경 하고 시작. 
+                    switch (m_LayerType)
+                    {
+                        case LayerType.LAYER_DRILLING:
+                            m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+                            if (m_dLaserPower > 0.0)
+                            {
+                                strTemp = string.Format("Hole{0} Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_nHoleLayer_ProcessIndex + 1, m_dLaserPower);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                TickCount_Start((int)TickType.TICK_MAIN);
+
+                                RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Hole1 Layer Laser Power 변경 실패. (변경 출력이 0)");
+                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                            }
+                            break;
+
+                        case LayerType.LAYER_OUTLINE:
+
+                            //  성부장 작업
+                            m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power;
+                            if (m_dLaserPower > 0.0)
+                            {
+                                strTemp = string.Format("Outline Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                TickCount_Start((int)TickType.TICK_MAIN);
+
+                                RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Outline Layer Laser Power 변경 실패. (변경 출력이 0)");
+                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                            }
+                            break;
+
+                        case LayerType.LAYER_THRUHOLE:
+                            m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power;
+                            if (m_dLaserPower > 0.0)
+                            {
+                                strTemp = string.Format("Thruhole Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                TickCount_Start((int)TickType.TICK_MAIN);
+
+                                RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Thruhole Layer Laser Power 변경 실패. (변경 출력이 0)");
+                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                            }
+                            break;
+
+                        case LayerType.LAYER_MARKING:
+                            m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power;
+                            if (m_dLaserPower > 0.0)
+                            {
+                                strTemp = string.Format("Marking Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                TickCount_Start((int)TickType.TICK_MAIN);
+
+                                RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Marking Layer Laser Power 변경 실패. (변경 출력이 0)");
+                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                            }
+                            break;
+
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck:                     //  Drilling 가공 Laser Power 변경 완료 확인
+
+                    switch (m_LayerType)
+                    {
+                        case LayerType.LAYER_DRILLING:
+                            if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
+                                (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                            {
+                                strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                            {
+                                strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                            }
+                            break;
+
+                        case LayerType.LAYER_OUTLINE:
+
+                            //  성부장 작업
+                            if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power - 0.5)) &&
+                                (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power + 0.5)))
+                            {
+                                strTemp = string.Format("Socket 가공 중 Outline Layer Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                            {
+                                strTemp = string.Format("Socket 가공 중 Outline Layer Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                            }
+                            break;
+
+                        case LayerType.LAYER_THRUHOLE:
+
+                            //  성부장 작업
+                            if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power - 0.5)) &&
+                                (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power + 0.5)))
+                            {
+                                strTemp = string.Format("Socket 가공 중 Thruhole Layer Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                            {
+                                strTemp = string.Format("Socket 가공 중 Thruhole Layer Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                            }
+                            break;
+
+                        case LayerType.LAYER_MARKING:
+                            if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power - 0.5)) &&
+                                (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power + 0.5)))
+                            {
+                                strTemp = string.Format("Socket 가공 중 Marking Layer Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                            {
+                                strTemp = string.Format("Socket 가공 중 Marking Layer Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                            }
+                            break;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check:                 //  Drilling 가공 Layer 파라미터, UV 용 세팅값 확인
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Complete;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Complete:              //  Drilling 가공 Layer 파라미터로 변경 완료
+
+                    Log.Write("SLD-200", "Auto Run", "가공 Layer 파라미터 변경 완료");
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                    break;
+                //  드릴링 Layer 가공 파라미터 변경 - 종료
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                /// <summary>
+                /// 소켓 가공 시작
+                /// </summary>
+                /// 
+                case (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck:                      //  가공 할 Group (Socket) 이 남아있는지 체크
+                    //if (m_nDrillingData_SocketCount < m_nDrillingData_SocketTotal)
+                    {
+                        // 소켓 완료 후 
+                        if (Equipment.CycleSocketStop)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            int nextStep = 0;
+                            nextStep = LaserDrilling_StepDrillingData_SocketRemainedCheck_SelectMode();
+                            m_nLaserDrilling_MainStep = nextStep;
+                        }
+                    }
+                    break;
+
+                /// <summary>
+                /// 소켓 얼라인 시작
+                /// </summary>
+                /// 
+                case (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Start:                      //  Socket Align 프로세스 시작
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 시작.");
+
+                    //  임시 주석 
+                    m_nDrillingData_SocketAlign_Count++;
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_FineCamMap;            //  Socket Align 함수에서 맵데이터를 변경하므로, 여기에서는 변경할 필요 없다.
+
+                    break;
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  Map Data 변경 (Camera) - 시작
+                case (int)LaserDrilling_Step.MapDataChange_FineCamMap:                                      //  Fine Camera 위치 Map Data 로 변경
+
+                    //MapData_Change((int)MapDataType.MAPDATASTATUS_SCANNER);
+                    MapData_Apply((int)nMapData_Type.MapData_Stage_FineCam);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_FineCamMap;
+                    break;
+
+
+                case (int)LaserDrilling_Step.MapDataFlagCheck_FineCamMap:                                   //  Fine Camera 위치 Map Data 로 변경되었는지 확인
+
+                    if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Socket Align 진행 중, Socket Height Check 모드 : On");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Socket Align 진행 중, Socket Height Check 모드 : Off");
+                        {
+                            m_dZOffset_SocketHeightCheck = 0.0;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                        }
+                    }
+                    break;
+                //  Map Data 변경 (Camera) - 끝
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                /// 소켓 높이 측정 시작
+                /// 
+                case (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start:                      //  Socket 높이 측정 프로세스 시작
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 높이 측정 Process 시작.");
+
+                    m_dZOffset_SocketHeightCheck = 0.0;
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos;
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos:                     //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동
+
+                    LaserDrilling_StepDrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos(out lfVelocity, out lfAccDec);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck;
+
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck:           //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z축, Laser Height Check 높이로 이동 완료.");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos;                 //  Hole2 ~ Hole4 Layer 의 Defocusing 이동 완료하였으므로 다시 현재 Socket 가공 시작 (Hole1 데이터 가공)
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z축, Laser Height Check 높이로 이동 실패. (Timeout)");
+                        return AlarmPost(AlarmKey.eStageMoveFail);
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos:                 //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동
+
+                    LaserDrilling_StepDrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos(m_LayerType);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck:                            //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
+
+                    tempStep = m_nLaserDrilling_MainStep;
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        ref tempStep,
+                        (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos))  /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        strTemp = "Stage XY축, Laser Height Check 위치로 이동 완료.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = tempStep;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime:                                     //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 후 안정화 시간 대기
+
+                    if (Equipment.Machine_LaserHeightCheckStableTime_Enable)
+                    {
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > Equipment.Machine_LaserHeightCheckStableTime)
+                        {
+
+                            m_bSensorRequestPending = true;
+                            m_bSensorResponseReady = false;
+                            Thread.Sleep(100);
+                            TickCount_Start((int)TickType.TICK_MAIN);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
+                        }
+                    }
+                    else //Enable ; false 시에 안정화 시간 없이 값 읽어옴.
+                    {
+                        m_bSensorRequestPending = true;
+                        m_bSensorResponseReady = false;
+                        Thread.Sleep(100);
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get:                                                    //  Laser Height Sensor 값 읽기
+
+                    double retryOffset = 0.0;
+
+                    // 응답이 아직 안 왔으면 기다림
+                    if (!m_bSensorResponseReady)
+                    {
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 1000)
+                        {
+                            Log.Write("SLD-200", "Align", $"센서 응답 Timeout (1000ms)");
+                            //AlarmPost(AlarmKey.eSensor_Height_Timeout);
+
+                            // 강제 fallback 진입: 센서 응답 없는 상태로 시뮬레이션 강제 진행
+                            m_bSensorResponseReady = true;
+                        }
+                        break;
+                    }
+
+                    if (m_bSensorResponseReady)
+                    {
+                        //if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 100)
+                        {
+                            m_nSensorRetryCount++;
+
+                            // 정상 범위 측정값만 리스트에 저장
+                            if ((m_dLaserHeightSensorSocket_Value < -4.5) ||
+                                    (m_dLaserHeightSensorSocket_Value > 5.5) ||
+                                    (m_dLaserHeightSensorSocket_Value < -99.9))
+                            {
+                                Log.Write("SLD-200", "Align", $"센서 이상값 감지: {m_dLaserHeightSensorSocket_Value:F4}, 값 무시됨");
+                                retryOffset = 0.0;
+                            }
+                            else
+                            {
+                                m_listSensorRetryValues.Add(m_dLaserHeightSensorSocket_Value);
+                                retryOffset = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                                m_listSensorRetryOffsets.Add(retryOffset);
+                            }
+
+                            //if (m_nSensorRetryCount <= MAX_SENSOR_RETRY)
+                            if (m_nSensorRetryCount <= Equipment.Machine_HeightSensorRetry_Count)
+                            {
+                                retryOffset = 0.0;
+                                if ((m_dLaserHeightSensorSocket_Value < -4.5) ||
+                                    (m_dLaserHeightSensorSocket_Value > 5.5) ||
+                                    (m_dLaserHeightSensorSocket_Value < -99.9))
+                                {
+                                    retryOffset = 0.0;
+                                }
+                                else
+                                {
+                                    retryOffset = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                                }
+
+                                LaserHeightSensorValue_Save(Equipment.Current_Recipe,
+                                                             m_nDrillingWork_Group_Count,
+                                                             Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition,
+                                                             m_dLaserHeightSensorSocket_Value,
+                                                             retryOffset);
+
+                                Log.Write("SLD-200", $"센서 응답 - 리트라이 {m_nSensorRetryCount}/{Equipment.Machine_HeightSensorRetry_Count}");
+                                TickCount_Start((int)TickType.TICK_MAIN);
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
+                                break;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", $"센서 응답 - 리트라이 완료");
+                                //m_bSensorResponseReady = false; // 응답 소비 완료
+                                //m_nSensorRetryCount = 0;
+                            }
+                        }
+                        //break;
+                    }
+                    m_bSensorResponseReady = false;
+                    m_nSensorRetryCount = 0;
+
+                    // 최종 보정값 계산 (평균 기반)
+                    double avgSensorValue = 0.0;
+                    double avgRetryOffset = 0.0;
+
+                    if (m_listSensorRetryValues.Count > 2)
+                    {
+                        // 센서값 기준 Min/Max 제거 후 평균 계산
+                        var filteredValues = m_listSensorRetryValues.OrderBy(x => x).Skip(1).Take(m_listSensorRetryValues.Count - 2).ToList();
+                        avgSensorValue = filteredValues.Average();
+
+                        var filteredOffsets = m_listSensorRetryOffsets.OrderBy(x => x).Skip(1).Take(m_listSensorRetryOffsets.Count - 2).ToList();
+                        avgRetryOffset = filteredOffsets.Average();
+                    }
+                    else if (m_listSensorRetryValues.Count > 0)
+                    {
+                        avgSensorValue = m_listSensorRetryValues.Average();
+                        avgRetryOffset = m_listSensorRetryOffsets.Average();
+                    }
+                    else
+                    {
+                        avgSensorValue = m_dLaserHeightSensorSocket_Value;
+                        avgRetryOffset = (m_dLaserHeightSensorSocket_Value > -4.5 && m_dLaserHeightSensorSocket_Value < 5.5)
+                                         ? m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition
+                                         : 0.0;
+                    }
+
+                    if (m_listSensorRetryValues.Count == 0)
+                    {
+                        Log.Write("SLD-200", "Align", $"센서 유효 측정값 없음. 최종 보정값 fallback 적용: {m_dLaserHeightSensorSocket_Value:F4}");
+
+                        avgSensorValue = m_dLaserHeightSensorSocket_Value;
+                        avgRetryOffset = (m_dLaserHeightSensorSocket_Value > -4.5 && m_dLaserHeightSensorSocket_Value < 5.5)
+                                         ? m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition
+                                         : 0.0;
+                    }
+
+                    m_listSensorRetryValues.Clear();
+                    m_listSensorRetryOffsets.Clear();
+
+                    // Laser Focus 위치에서 Laser Height 값과의 차이만큼 보정
+                    if ((avgSensorValue < -4.5) ||
+                        (avgSensorValue > 5.5) ||
+                        (avgSensorValue < -99.9))
+                    {
+                        m_dZOffset_SocketHeightCheck = 0.0;
+                    }
+                    else
+                    {
+                        m_dZOffset_SocketHeightCheck = avgRetryOffset;
+                    }
+
+                    // Laser Height Sensor 값을 파일로 저장
+                    LaserHeightSensorValue_Save(Equipment.Current_Recipe, m_nDrillingWork_Group_Count,
+                        Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, avgSensorValue, m_dZOffset_SocketHeightCheck, true);
+
+                    // Layer별 소켓 데이터에 저장
+                    switch (m_LayerType)
+                    {
+                        case LayerType.LAYER_DRILLING:
+                            break;
+
+                        case LayerType.LAYER_OUTLINE:
+                            if (m_stOutLine_SocketData != null)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 일치");
+                                m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                            }
+                            break;
+
+                        case LayerType.LAYER_THRUHOLE:
+                            if (m_stThruHole_SocketData != null)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
+                                m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                            }
+                            break;
+
+                        case LayerType.LAYER_MARKING:
+                            if (m_stMarking_SocketData.m_stMarking_ObjectData != null)
+                            {
+                                if (m_nDrillingWork_Group_Count < m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 일치");
+                                    m_stMarking_SocketData.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                                }
+                            }
+                            break;
+                    }
+
+                    // DrillingManager 저장
+                    {
+                        var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
+                        int socketIndex = m_nDrillingWork_Group_Count;
+
+                        socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                        if (socket != null)
+                        {
+                            socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                            DrillingManager.MarkAsChanged();
+                            Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                        }
+                    }
+
+                    // 소켓 얼라인 여부에 따라 분기
+                    if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move;
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                    }
+
+                    //기존 코드.
+                    {
+                        //if (m_bSensorResponseReady)
+                        //{
+                        //    // 아직 응답 안옴 → 대기 or 타임아웃 처리
+                        //    if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 500)   //500ms만 기다리자.
+                        //    {
+                        //        m_nSensorRetryCount++;
+
+                        //        if (m_nSensorRetryCount <= MAX_SENSOR_RETRY)
+                        //        {
+                        //            // 리트라이 전에도 저장 (단, 비정상값은 0.0 보정)
+                        //            double retryOffset = 0.0;
+                        //            if ((m_dLaserHeightSensorSocket_Value < -4.5) ||
+                        //                (m_dLaserHeightSensorSocket_Value > 5.5) ||
+                        //                (m_dLaserHeightSensorSocket_Value < -99.9))
+                        //            {
+                        //                retryOffset = 0.0;
+                        //            }
+                        //            else
+                        //            {
+                        //                retryOffset = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                        //            }
+
+                        //            LaserHeightSensorValue_Save( Equipment.Current_Recipe,
+                        //                                         m_nDrillingWork_Group_Count,
+                        //                                         Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition,
+                        //                                         m_dLaserHeightSensorSocket_Value,
+                        //                                         retryOffset
+                        //                                         );
+
+                        //            Log.Write("SLD-200", $"센서 응답 지연 - 리트라이 {m_nSensorRetryCount}/{MAX_SENSOR_RETRY}");
+                        //            TickCount_Start((int)TickType.TICK_MAIN);
+                        //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_MovetoLaserHeightSensorPos_StableTime;
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            //Log.Write("SLD-200", "센서 응답 실패. 보정 없이 진행");
+                        //            Log.Write("SLD-200", $"센서 응답 지연 - 리트라이 완료");
+                        //            //보정 완료임.
+                        //            //m_dZOffset_SocketHeightCheck = 0.0;
+
+                        //            m_bSensorResponseReady = false; // 응답 소비 완료
+                        //            m_nSensorRetryCount = 0;
+                        //        }
+                        //    }
+                        //    break;
+                        //}
+                        //m_bSensorResponseReady = false; // 응답 소비 완료
+                        //m_nSensorRetryCount = 0;
+
+                        ////  Laser Focus 위치에서 Laser Height 값과, 현재 Laser Height Sensor 값의 차이만큼 가공 높이 보정
+                        ////m_dZOffset_SocketHeightCheck = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition - m_dLaserHeightSensorSocket_Value;
+                        ////  Laser Height Sensor 값은, 제품이 두꺼워질 수록 값이 커지고, 얇아질 수록 값이 작아짐.
+                        //// Limit값 파라미터로 빼야함.
+                        //if ((m_dLaserHeightSensorSocket_Value < -4.5) || 
+                        //    (m_dLaserHeightSensorSocket_Value > 5.5) || 
+                        //    (m_dLaserHeightSensorSocket_Value < -99.9))
+                        //{
+                        //    m_dZOffset_SocketHeightCheck = 0.0;
+                        //}
+                        //else
+                        //{
+                        //    m_dZOffset_SocketHeightCheck = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                        //    //m_dZOffset_SocketHeightCheck *= -1; // 변위센서는 상부가 원점이다. Z축모터도 상부가 원점이다.
+                        //    // 변위센서 값이 - 부호에서 - 부호를 빼면 Z축이 위로 올라가야 하므로 부호가 반대로 먹어야 한다.
+                        //}
+
+                        ////  Laser Height Sensor 값을 파일로 저장
+                        ////  레시피 명, 소켓 번호, 소켓 높이값(기준값 대비 차이값)
+                        //LaserHeightSensorValue_Save(Equipment.Current_Recipe, m_nDrillingWork_Group_Count, 
+                        //    Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck);
+
+                        ////  여기서 측정한 소켓 높이값을 Thruhole, Outline 등에서 사용하도록 한다.
+                        //switch (m_LayerType)
+                        //{
+                        //    case LayerType.LAYER_DRILLING:
+                        //        break;
+                        //    case LayerType.LAYER_OUTLINE:
+                        //        if (m_stOutLine_SocketData != null)
+                        //        {
+                        //            //if (m_stOutLine_SocketData.Length == m_stDividedRegion_GroupData.Length)
+                        //            {
+                        //                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 일치");
+                        //                m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                        //            }
+
+                        //        }
+                        //        break;
+                        //    case LayerType.LAYER_THRUHOLE:
+                        //        if (m_stThruHole_SocketData != null)
+                        //        {
+                        //            // 여기 왜함?
+                        //            //if (m_stThruHole_SocketData.Length == m_stDividedRegion_GroupData.Length)
+                        //            {
+                        //                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
+                        //                m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                        //            }
+
+                        //        }
+                        //        break;
+                        //    case LayerType.LAYER_MARKING:
+                        //        if (m_stMarking_SocketData.m_stMarking_ObjectData != null)
+                        //        {
+                        //            //if (m_stMarking_SocketData.m_stMarking_ObjectData.Length == m_stDividedRegion_GroupData.Length)
+
+                        //            //  Marking 은 소켓 개수보다 적을 수 있기 때문에, 소켓의 Group Count 만큼 계속 채워넣으면 안된다. 넣을 수 있는 만큼만 넣도록 한다.
+                        //            if (m_nDrillingWork_Group_Count < m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                        //            {
+                        //                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 일치");
+                        //                m_stMarking_SocketData.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                        //            }
+                        //        }
+                        //        break;
+                        //}
+                        //// === DrillingManager 저장 (공통 처리) ===
+                        //{
+                        //    var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);  // LayerList.Hole12 등
+                        //    int socketIndex = m_nDrillingWork_Group_Count;
+
+                        //    socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                        //    if (socket != null)
+                        //    {
+                        //        socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                        //        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                        //    }
+                        //}
+
+                        ////  소켓 얼라인을 하지 않을 경우, 여기서 바로 가공 높이로 보정 이동.
+                        //if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+                        //{
+                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move;
+                        //}
+                        //else
+                        //{
+                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                        //}
+                        //break;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move:                                 //  Socket 가공 높이 보정 이동
+
+                    LaserDrilling_StepDrillingData_SocketDrillingHeight_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move_DoneCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move_DoneCheck:           //  Socket 가공 높이 보정 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Socket 가공 Focus 조정 완료.");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
+                        //  소켓 얼라인을 하지 않으므로 바로 가공하러 이동
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Complete;
+                        switch (m_LayerType)
+                        {
+                            case LayerType.LAYER_DRILLING:
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;
+                                break;
+
+                            case LayerType.LAYER_OUTLINE:
+                                //  성부장 작업
+
+                                //  가공할 차례의 Socket 위치로 가는 것이니 Object 카운트 변수를 초기화 한다. 
+                                m_nOutLine_ObjectDataCount = 0;
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;
+                                break;
+
+                            case LayerType.LAYER_THRUHOLE:
+                                //  성부장 작업
+
+                                //  가공할 차례의 Socket 위치로 가는 것이니 Object 카운트 변수를 초기화 한다. 
+                                m_nThruHole_ObjectDataCount = 0;
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
+                                break;
+
+                            case LayerType.LAYER_MARKING:
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
+
+                                break;
+                        }
+
+                        if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.MeasureHeight)
+                        {
+                            SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                            Equipment.SemiAutoEnable = false;
+
+                            m_LaserDrillingWork_Start = false;
+                            m_MainWork_Start = false;
+                            m_SubWork_Start = false;
+                            m_ProductAlign_Start = false;
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Socket 가공 Focus 조정 실패. (Timeout)");
+
+                        if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.MeasureHeight)
+                        {
+                            Equipment.SemiAutoEnable = false;
+                            m_LaserDrillingWork_Start = false;
+                        }
+
+                        return AlarmPost(AlarmKey.eZAxisFail);
+                    }
+                    break;
+
+                //case (int)LaserDrilling_Step.DrillingData_StageXY_SocketCorner_MovetoLaserHeightSensorPos:
+                //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCorner_MovetoLaserHeightSensorPos_DoneCheck;
+                //    break;
+                //case (int)LaserDrilling_Step.DrillingData_StageXY_SocketCorner_MovetoLaserHeightSensorPos_DoneCheck:
+                //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCorner_StableTime;
+                //    break;
+                //case (int)LaserDrilling_Step.DrillingData_StageXY_SocketCorner_StableTime:
+                //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketCornerHeightValue_Get;
+                //    break;
+                //case (int)LaserDrilling_Step.DrillingData_SocketCornerHeightValue_Get:
+                //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                //    break;
+
+                //
+                //  소켓 높이 측정 종료
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+                case (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move:                                 //  Socket 의 실리콘 층 두께를 반영하여 높이 보정 이동 (실리콘층 아래에 Fiducial 마크가 있음)
+
+                    LaserDrilling_StepDrillingData_Socket_AlignHeight_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
+
+                    SetStageComplete(SemiAutoStep.PreAlign, false);
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move_DoneCheck:           // Socket 의 실리콘 층 두께를 반영하여 높이 보정 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 완료.");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
+                        if (m_bPreAlignCompleted)
+                        {
+                            m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+
+                        }
+                        else
+                        {
+                            m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                        }
+
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 실패. (Timeout)");
+
+                        if (!Equipment.AutoRunStatus &&
+                                        Equipment.SemiAutoEnable &&
+                                        _semiAutoRequest == SemiAutoStep.PreAlign)
+                        {
+                            Equipment.SemiAutoEnable = false;
+                            m_LaserDrillingWork_Start = false;
+                        }
+
+                        return AlarmPost(AlarmKey.eZAxisFail);
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_Change_Calibration_Cal_File:
+                    {
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm;
+                        var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
+                        if (nearest != null)
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 시작, Offset(mm):{0}, File:{1})",
+                                nearest.OffsetZ_mm.ToString(), nearest.CalFilePath);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                        }
+                        else
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 실패, Offset(mm):{0}, File:{없음})",
+                                nearest.OffsetZ_mm.ToString());
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                        }
+
+                        //tableIndex 0 으로 고정.
+                        bool bRtn = LoadCorrectionData(0, nearest.CalFilePath);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Change_Calibration_Cal_File_DoneCheck;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_Change_Calibration_Cal_File_DoneCheck:
+                    {
+                        //넘겨야 하는 부분으로 아래 구문 수정할 것.
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Change_Calibration_Cal_File_DoneCheck;
+                    }
+                    break;
+
+                // Todo : PreAlign 
+                case (int)LaserDrilling_Step.DrillingData_PreAlign_Start:                      //  가공 할 Socket Align 시작
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align Cycle 시작.");
+
+                    // 카메라 노출 설정
+                    jigAligner_LowRes.Camera.SetExposureTime(Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime);
+                    SetLightingByChannel(LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
+                    SetLightingByChannel(LightingChannel.CoarseCamRed, Equipment.stVisionRecipeSet.nPreIlluminationRed);
+                    Thread.Sleep(100);
+                    SetLightingByChannel(LightingChannel.FineCamRed, 4000, true);
+                    SetLightingByChannel(LightingChannel.FineCamIR, 0, false);
+
+                    try
+                    {
+                        switch (m_LayerType)
+                        {
+                            case LayerType.LAYER_DRILLING:
+                                if (m_stDividedRegion_GroupData != null)
+                                {
+                                    stPreAlignList.Clear();
+
+                                    //m_nSocketNum_forAlign <- 이게 소켓넘버
+                                    m_nPreAlignMarkNumMax = m_stDividedRegion_GroupData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
+
+                                    double dFiducialPosX = 0.0;
+                                    double dFiducialPosY = 0.0;
+                                    double dFiducialWidth = 0.0;
+                                    double dFiducialHeight = 0.0;
+                                    for (int i = 0; i < m_nPreAlignMarkNumMax; i++)
+                                    {
+                                        dFiducialPosX = m_stDividedRegion_GroupData[0].dPreAlignPos[i].X;
+                                        dFiducialPosY = m_stDividedRegion_GroupData[0].dPreAlignPos[i].Y;
+                                        dFiducialWidth = m_stDividedRegion_GroupData[0].dPreAlignWidth[i];
+                                        dFiducialHeight = m_stDividedRegion_GroupData[0].dPreAlignHeight[i];
+
+                                        stPreAlignList.Add(new Equipment.PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
+                                    }
+
+                                    // 처음에는 여기서 0, 1번으로 진행 하자.
+                                    jigAligner_LowRes.m_AlignPositions[0].X = stPreAlignList[0].cX;
+                                    jigAligner_LowRes.m_AlignPositions[0].Y = stPreAlignList[0].cY;
+                                    jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1].cX;
+                                    jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1].cY;
+
+                                    jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0].Width;// / 2;
+                                    jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1].Width;// / 2;
+
+                                    m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
+                                    m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
+                                    m_bFindAlignMark_Complete = false;
+
+                                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
+                                }
+                                else
+                                {
+                                    strTemp = string.Format("DrillingData_PreAlign_Start :: Drilling Parsing 된 데이터가 없음.");
+                                    Log.Write("SLD-200", Equipment.User_Name, "PreAlign", strTemp);
+
+                                    if (!Equipment.AutoRunStatus &&
+                                        Equipment.SemiAutoEnable &&
+                                        _semiAutoRequest == SemiAutoStep.PreAlign)
+                                    {
+                                        Equipment.SemiAutoEnable = false;
+                                        m_LaserDrillingWork_Start = false;
+                                    }
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+
+                                    m_bFindLowerAlignMark_OK = false;
+                                    m_bPreAlignCompleted = false;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                    return AlarmPost(AlarmKey.DataNotValidation);
+                                }
+                                break;
+
+                            case LayerType.LAYER_OUTLINE:
+
+                                //  성부장 작업
+                                if (m_stOutLine_SocketData != null)
+                                {
+                                    stPreAlignList.Clear();
+                                    //m_nSocketNum_forAlign <- 이게 소켓넘버
+                                    m_nPreAlignMarkNumMax = m_stOutLine_SocketData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
+
+                                    double dFiducialPosX = 0.0;
+                                    double dFiducialPosY = 0.0;
+                                    double dFiducialWidth = 0.0;
+                                    double dFiducialHeight = 0.0;
+                                    for (int i = 0; i < m_nPreAlignMarkNumMax; i++)
+                                    {
+                                        dFiducialPosX = m_stOutLine_SocketData[0].dPreAlignPos[i].X;
+                                        dFiducialPosY = m_stOutLine_SocketData[0].dPreAlignPos[i].Y;
+                                        dFiducialWidth = m_stOutLine_SocketData[0].dPreAlignWidth[i];
+                                        dFiducialHeight = m_stOutLine_SocketData[0].dPreAlignHeight[i];
+
+                                        stPreAlignList.Add(new Equipment.PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
+                                    }
+
+                                    // 처음에는 여기서 0, 1번으로 진행 하자.
+                                    jigAligner_LowRes.m_AlignPositions[0].X = stPreAlignList[0].cX;
+                                    jigAligner_LowRes.m_AlignPositions[0].Y = stPreAlignList[0].cY;
+                                    jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1].cX;
+                                    jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1].cY;
+
+                                    jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0].Width;// / 2;
+                                    jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1].Width;// / 2;
+
+                                    m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
+                                    m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
+                                    m_bFindAlignMark_Complete = false;
+
+                                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
+                                }
+                                else
+                                {
+                                    strTemp = string.Format("DrillingData_PreAlign_Start :: Outline Parsing 된 데이터가 없음.");
+                                    Log.Write("SLD-200", Equipment.User_Name, "PreAlign", strTemp);
+
+                                    if (!Equipment.AutoRunStatus &&
+                                        Equipment.SemiAutoEnable &&
+                                        _semiAutoRequest == SemiAutoStep.PreAlign)
+                                    {
+                                        Equipment.SemiAutoEnable = false;
+                                        m_LaserDrillingWork_Start = false;
+                                    }
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+
+                                    m_bFindLowerAlignMark_OK = false;
+                                    m_bPreAlignCompleted = false;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                    return AlarmPost(AlarmKey.DataNotValidation);
+                                }
+                                break;
+
+                            case LayerType.LAYER_THRUHOLE:
+
+                                //  성부장 작업
+                                if (m_stThruHole_SocketData != null)
+                                {
+                                    stPreAlignList.Clear();
+                                    //m_nSocketNum_forAlign <- 이게 소켓넘버
+                                    m_nPreAlignMarkNumMax = m_stThruHole_SocketData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
+
+                                    double dFiducialPosX = 0.0;
+                                    double dFiducialPosY = 0.0;
+                                    double dFiducialWidth = 0.0;
+                                    double dFiducialHeight = 0.0;
+                                    for (int i = 0; i < m_nPreAlignMarkNumMax; i++)
+                                    {
+                                        dFiducialPosX = m_stThruHole_SocketData[0].dPreAlignPos[i].X;
+                                        dFiducialPosY = m_stThruHole_SocketData[0].dPreAlignPos[i].Y;
+                                        dFiducialWidth = m_stThruHole_SocketData[0].dPreAlignWidth[i];
+                                        dFiducialHeight = m_stThruHole_SocketData[0].dPreAlignHeight[i];
+
+                                        stPreAlignList.Add(new Equipment.PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
+                                    }
+
+                                    // 처음에는 여기서 0, 1번으로 진행 하자.
+                                    jigAligner_LowRes.m_AlignPositions[0].X = stPreAlignList[0].cX;
+                                    jigAligner_LowRes.m_AlignPositions[0].Y = stPreAlignList[0].cY;
+                                    jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1].cX;
+                                    jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1].cY;
+
+                                    jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0].Width;// / 2;
+                                    jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1].Width;// / 2;
+
+                                    m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
+                                    m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
+                                    m_bFindAlignMark_Complete = false;
+
+                                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
+                                }
+                                else
+                                {
+                                    strTemp = string.Format("DrillingData_PreAlign_Start :: Thruhole Parsing 된 데이터가 없음.");
+                                    Log.Write("SLD-200", Equipment.User_Name, "PreAlign", strTemp);
+
+                                    if (!Equipment.AutoRunStatus &&
+                                        Equipment.SemiAutoEnable &&
+                                        _semiAutoRequest == SemiAutoStep.PreAlign)
+                                    {
+                                        Equipment.SemiAutoEnable = false;
+                                        m_LaserDrillingWork_Start = false;
+                                    }
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+
+                                    m_bFindLowerAlignMark_OK = false;
+                                    m_bPreAlignCompleted = false;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                    return AlarmPost(AlarmKey.DataNotValidation);
+                                }
+                                break;
+
+                            case LayerType.LAYER_MARKING:
+                                if (m_stMarking_SocketData.m_stMarking_ObjectData != null)
+                                {
+                                    stPreAlignList.Clear();
+                                    //m_nSocketNum_forAlign <- 이게 소켓넘버
+                                    m_nPreAlignMarkNumMax = m_stMarking_SocketData.m_stMarking_ObjectData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
+
+                                    double dFiducialPosX = 0.0;
+                                    double dFiducialPosY = 0.0;
+                                    double dFiducialWidth = 0.0;
+                                    double dFiducialHeight = 0.0;
+                                    for (int i = 0; i < m_nPreAlignMarkNumMax; i++)
+                                    {
+                                        dFiducialPosX = m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignPos[i].X;
+                                        dFiducialPosY = m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignPos[i].Y;
+                                        dFiducialWidth = m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignWidth[i];
+                                        dFiducialHeight = m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignHeight[i];
+
+                                        stPreAlignList.Add(new Equipment.PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
+                                    }
+
+                                    // 처음에는 여기서 0, 1번으로 진행 하자.
+                                    jigAligner_LowRes.m_AlignPositions[0].X = stPreAlignList[0].cX;
+                                    jigAligner_LowRes.m_AlignPositions[0].Y = stPreAlignList[0].cY;
+                                    jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1].cX;
+                                    jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1].cY;
+
+                                    jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0].Width;// / 2;
+                                    jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1].Width;// / 2;
+
+                                    m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
+                                    m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
+                                    m_bFindAlignMark_Complete = false;
+
+                                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
+                                }
+                                else
+                                {
+                                    strTemp = string.Format("DrillingData_PreAlign_Start :: Parsing 된 데이터가 없음.");
+                                    Log.Write("SLD-200", Equipment.User_Name, "PreAlign", strTemp);
+
+                                    if (!Equipment.AutoRunStatus &&
+                                        Equipment.SemiAutoEnable &&
+                                        _semiAutoRequest == SemiAutoStep.PreAlign)
+                                    {
+                                        Equipment.SemiAutoEnable = false;
+                                        m_LaserDrillingWork_Start = false;
+                                    }
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+
+                                    m_bFindLowerAlignMark_OK = false;
+                                    m_bPreAlignCompleted = false;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                    return AlarmPost(AlarmKey.DataNotValidation);
+                                }
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write(ex);
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_PreAlign_Retry:              //  가공 할 PreAlign 재시도
+
+                    if (m_nPreAlignRetryCount < m_nPreAlignMarkNumMax - 1)
+                    {
+                        //Retry 시에는 1번씩 증가 시키자.
+                        jigAligner_LowRes.m_AlignPositions[0].X = stPreAlignList[0 + m_nPreAlignRetryCount].cX;
+                        jigAligner_LowRes.m_AlignPositions[0].Y = stPreAlignList[0 + m_nPreAlignRetryCount].cY;
+                        jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1 + m_nPreAlignRetryCount].cX;
+                        jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1 + m_nPreAlignRetryCount].cY;
+
+                        jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0 + m_nPreAlignRetryCount].Width; // / 2;
+                        jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1 + m_nPreAlignRetryCount].Width;// / 2;
+
+                        m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
+                        m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
+                        m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
+                        m_bFindAlignMark_Complete = false;
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                        break;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck:              //  가공 할 PreAlign 완료 확인
+
+                    if (m_bFindAlignMark_Complete && (m_nFindAlignMark_Step == (int)SocketAlign_Step.None))
+                    {
+                        if (m_bFindLowerAlignMark_OK)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 완료");
+
+                            double dfx = jigAligner_LowRes.FirstPosition.X;
+                            double dfy = jigAligner_LowRes.FirstPosition.Y;
+                            double dft = jigAligner_LowRes.GetJigAlignResult();
+                            dft = dft / 180 * Math.PI;
+
+                            double dPositionX = stPreAlignList[0].cX;
+                            double dPositionY = stPreAlignList[0].cY;
+
+                            XyzCoordinate positionFirst = new XyzCoordinate(jigAligner_LowRes.m_AlignPositions[0].X, jigAligner_LowRes.m_AlignPositions[0].Y, 0.0);
+                            positionFirst = this.ConvertPointFineCam(positionFirst);
+
+                            strTemp = string.Format("PreAlign좌표1, X : {0:0.000}, Y : {1:0.000}", positionFirst.X, positionFirst.Y);
+                            Log.Write("SLD-200", Equipment.User_Name, "PreAlign", strTemp);
+
+                            xyCoordinateAlignPositionOrgLast = new XyCoordinate(positionFirst.X, positionFirst.Y);
+                            xyCoordinateGoldpowderAlignPositionOrgLast = new XyCoordinate(positionFirst.X, positionFirst.Y);
+
+                            //무조건 +,-
+                            positionFirst.X += dfx;
+                            positionFirst.Y -= dfy;
+
+                            xyCoordinateAlignPositionLast = new XyCoordinate(positionFirst.X, positionFirst.Y);
+                            xyCoordinateGoldpowderAlignPositionLast = new XyCoordinate(positionFirst.X, positionFirst.Y);
+                            m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
+                            m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle = dft;
+                            //Log Data 남기자.
+                            //m_strTemp = string.Format("");
+                            strTemp = string.Format("PreAlign좌표2, X : {0:0.000}, Y : {1:0.000}", positionFirst.X, positionFirst.Y);
+                            Log.Write("SLD-200", Equipment.User_Name, "PreAlign", strTemp);
+
+
+                            double offsetX = xyCoordinateAlignPositionLast.X;
+                            double offsetY = xyCoordinateAlignPositionLast.Y;
+                            double theta = dft;
+                            layer = DrillingManager.GetLayer(GetCurrentLayerEnum(m_LayerType));
+                            if (layer != null)
+                            {
+                                layer.PreAlignRotationCenterX = 0;
+                                layer.PreAlignRotationCenterY = 0;
+                                layer.PreAlignOffsetX = offsetX;
+                                layer.PreAlignOffsetY = offsetY;
+                                layer.PreAlignTheta = theta;
+                                layer.IsPreAligned = true;
+
+                                DrillingManager.MarkAsChanged();
+                                Log.Write("DrillStatus", $"[Layer:{layer.LayerName}] PreAlign 완료: X={offsetX:F3}, Y={offsetY:F3}, T={theta:F3}");
+                            }
+
+                            // 보정값이 기준 이상이면 NG 처리
+                            double dInterlockOffsetX = 7.0;
+                            double dInterlockOffsetY = 7.0;
+                            //double dInterlockOffsetT = 8.0; // 각도 값으로 입력하여 라디안으로 계산.
+                            if (Math.Abs(dfx) > dInterlockOffsetX ||
+                                Math.Abs(dfy) > dInterlockOffsetY)//|| 
+                                                                  //Math.Abs(dft) > (dInterlockOffsetT * Math.PI / 180.0))
+                            {
+                                //Retry 돌렸다가 빼자.
+                                m_nPreAlignRetryCount++;
+                                if (m_nPreAlignRetryCount < m_nPreAlignMarkNumMax) // 카운트 
+                                {
+                                    m_bPreAlignCompleted = false;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Retry;
+                                }
+                                else
+                                {
+                                    strTemp = string.Format("PreAlign Retry Fail!!!");
+                                    Log.Write("SLD-200", Equipment.User_Name, "PreAlign", strTemp);
+                                    m_bFindLowerAlignMark_OK = false;
+                                    m_bPreAlignCompleted = false;
+
+                                    // 추가: 전체 소켓 NG 처리
+                                    foreach (var layerList in DrillingManager.LayerList)
+                                    {
+                                        foreach (var socketList in layer.SocketList)
+                                        {
+                                            if (!socketList.IsDrilled)
+                                                SetDrillResult(layerList.LayerName, socketList.SocketNumber, false);
+                                        }
+                                    }
+
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                }
+                            }
+                            else
+                            {
+                                m_nPreAlignRetryCount = 0; // 성공 시 리트라이 카운트 초기화
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
+                            }
+                        }
+                        else
+                        {
+                            m_nPreAlignRetryCount++;
+                            if (m_nPreAlignRetryCount < 3)
+                            {
+                                m_bPreAlignCompleted = false;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Retry;
+                            }
+                            else
+                            {
+                                strTemp = string.Format("PreAlign Retry Fail!!!");
+                                Log.Write("SLD-200", Equipment.User_Name, "PreAlign", strTemp);
+                                m_bFindLowerAlignMark_OK = false;
+                                m_bPreAlignCompleted = false;
+
+                                // 추가: 전체 소켓 NG 처리
+                                layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                layer = DrillingManager.GetLayer(layerEnum);
+                                foreach (var layerList in DrillingManager.LayerList)
+                                {
+                                    foreach (var socketList in layer.SocketList)
+                                    {
+                                        if (!socketList.IsDrilled)
+                                            SetDrillResult(layerList.LayerName, socketList.SocketNumber, false);
+                                    }
+                                }
+
+                                if (!Equipment.AutoRunStatus &&
+                                    Equipment.SemiAutoEnable &&
+                                    _semiAutoRequest == SemiAutoStep.PreAlign)
+                                {
+                                    Equipment.SemiAutoEnable = false;
+                                    m_LaserDrillingWork_Start = false;
+
+                                    m_bFindLowerAlignMark_OK = false;
+                                    m_bPreAlignCompleted = false;
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                                }
+                                else
+                                {
+                                    m_bFindLowerAlignMark_OK = false;
+                                    m_bPreAlignCompleted = false;
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                }
+                            }
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > (60000 * 5))               //  60 sec * 5
+                    {
+                        strTemp = string.Format("Pre Align 시간 초과.");
+                        Log.Write("SLD-200", Equipment.User_Name, "PreAlign", strTemp);
+
+                        if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.PreAlign)
+                        {
+                            Equipment.SemiAutoEnable = false;
+                            m_LaserDrillingWork_Start = false;
+                        }
+
+                        m_bFindLowerAlignMark_OK = false;
+                        m_bPreAlignCompleted = false;
+                        m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        //return AlarmPost(AlarmKey.PreAlignFail);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_PreAlign_Correction:                      //  가공 할 Socket Align 시작
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 시작.");
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction_Complete;
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_PreAlign_Correction_Complete:                      //  가공 할 Socket Align 시작
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling Pre Align 보정 완료.");
+
+                    if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.PreAlign)
+                    {
+                        SetStageComplete(SemiAutoStep.PreAlign, true);
+                        Equipment.SemiAutoEnable = false;
+
+                        m_LaserDrillingWork_Start = false;
+                        m_MainWork_Start = false;
+                        m_SubWork_Start = false;
+                        m_ProductAlign_Start = false;
+
+                        m_bPreAlignCompleted = true;
+                    }
+                    else
+                    {
+                        m_bPreAlignCompleted = true;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_SocketAlign_Start:                      //  가공 할 Socket Align 시작
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Cycle 시작.");
+
+                    m_bFindFirstAlignMarkOnly = false;
+                    m_bSocketAlign_OK = false;
+                    m_bAlignCompleted = false;
+
+                    //  성부장 작업
+                    //  소켓 얼라인 Fail 시 재 얼라인은 Drilling Layer 에서만 하면 됨. (Outline, Thruhole, Marking Layer 에서는 안타도록 변경해야하나...)
+
+                    //  얼라인 하려는 소켓 번호
+                    if (m_bPassedSocket_Exist)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "m_bPassedSocket_Exist");
+                        //Thruhole 가공 시 - 소켓 실패시 마지막 소켓 번호로 재 시도 후 가공 얼라인 적용 용. 
+                        m_nSocketNum_forAlign = m_nSocketNum_forFailedSocket_Align;
+                    }
+                    else
+                    {
+                        m_nSocketNum_forAlign = m_nDrillingWork_Group_Count;  //  Group 이 Socket 이다. (Group 번호가 Socket 번호)
+                    }
+
+                    switch (m_LayerType)
+                    {
+                        case LayerType.LAYER_DRILLING:
+                            m_LayerType = LayerType.LAYER_DRILLING;
+                            break;
+
+                        case LayerType.LAYER_OUTLINE:
+
+                            //  성부장 작업
+                            m_LayerType = LayerType.LAYER_OUTLINE;
+                            break;
+
+                        case LayerType.LAYER_THRUHOLE:
+
+                            //  성부장 작업
+                            m_LayerType = LayerType.LAYER_THRUHOLE;
+                            break;
+
+                        case LayerType.LAYER_MARKING:
+                            m_LayerType = LayerType.LAYER_MARKING;
+                            break;
+                    }
+
+                    SetStageComplete(SemiAutoStep.FiducialAlign, false);
+
+                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.Start;
+                    TickCount_Start((int)TickType.TICK_MAIN);
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck:              //  가공 할 Socket Align 완료 확인
+                    if (m_bAlignCompleted)
+                    {
+                        if ((m_nSocketAlign_MainStep == (int)SocketAlign_Step.None))
+                        {
+                            if (m_bSocketAlign_OK)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료");
+
+                                //  Align 후 계산된 데이터 가져오기
+                                m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
+                                m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
+                                m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
+                                m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
+                                m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle;
+                                {
+                                    socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nDrillingWork_Group_Count);
+                                    if (socket != null)
+                                    {
+                                        switch (m_AlignMode)
+                                        {
+                                            case AlignMode.Socket:
+                                                socket.SocketRotationCenterX = m_dALIGN_FACTOR_RotationCenter_X;
+                                                socket.SocketRotationCenterY = m_dALIGN_FACTOR_RotationCenter_Y;
+                                                socket.SocketOffsetX = m_dALIGN_FACTOR_Offset_X;
+                                                socket.SocketOffsetY = m_dALIGN_FACTOR_Offset_Y;
+                                                socket.SocketTheta = m_dALIGN_FACTOR_Theta;
+                                                socket.IsSocketAligned = m_bSocketAlign_OK;
+
+                                                Log.Write("DrillStatus", $"[Socket] [{GetCurrentLayerEnum(m_LayerType)}][{m_nDrillingWork_Group_Count}] " +
+                                                    $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
+                                                break;
+
+                                            case AlignMode.GoldPowder:
+                                                socket.GoldRotationCenterX = m_dALIGN_FACTOR_RotationCenter_X;
+                                                socket.GoldRotationCenterY = m_dALIGN_FACTOR_RotationCenter_Y;
+                                                socket.GoldOffsetX = m_dALIGN_FACTOR_Offset_X;
+                                                socket.GoldOffsetY = m_dALIGN_FACTOR_Offset_Y;
+                                                socket.GoldTheta = m_dALIGN_FACTOR_Theta;
+                                                socket.IsGoldPowderAligned = m_bSocketAlign_OK;
+
+                                                Log.Write("DrillStatus", $"[Gold] [{GetCurrentLayerEnum(m_LayerType)}][{m_nDrillingWork_Group_Count}] " +
+                                                    $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
+                                                break;
+                                        }
+                                        DrillingManager.MarkAsChanged();
+
+                                    }
+                                }
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketData_RotAndOffset_Move;
+                            }
+                            else
+                            {
+                                m_bSocketAlign_OK = false;
+                                //  소켓 얼라인 실패했으니 화면 갱신해야 한다.
+                                m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
+                                switch (m_LayerType)
+                                {
+                                    case LayerType.LAYER_DRILLING:
+                                        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                        Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+                                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                                                                                //  단일 선택 가공이면, Align 실패 시 Out
+                                        //if (Equipment.SelectRunEnable_New)
+                                        //{
+                                        //    strTemp = string.Format("단일 선택 가공 중 Socket Align Fail!!! (자재 배출)");
+                                        //    Log.Write("SLD-200", Equipment.User_Name, "Selected Socket, Align", strTemp);
+
+                                        //    if (!Equipment.AutoRunStatus &&
+                                        //        Equipment.SemiAutoEnable &&
+                                        //        _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                                        //    {
+                                        //        Equipment.SemiAutoEnable = false;
+                                        //        m_LaserDrillingWork_Start = false;
+                                        //    }
+                                        //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+
+                                        //    m_bSocketAlign_OK = false;
+                                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                        //}
+                                        //else
+                                        {
+                                            //  Thruhole Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                            if (m_stThruHole_SocketData_ProcessingFlag != null)
+                                            {
+                                                if (m_AlignMode == AlignMode.Socket)
+                                                {
+                                                    if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stDividedRegion_GroupData.Length)
+                                                    {
+                                                        m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                    }
+                                                    else
+                                                    {
+                                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 과 Hole1 의 Socket 개수가 다릅니다.");
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Processing Skip Flag 저장 변수가 Null 입니다.");
+                                            }
+
+                                            //  Outline Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                            if (m_stOutLine_SocketData_ProcessingFlag != null)
+                                            {
+                                                if (m_AlignMode == AlignMode.Socket)
+                                                {
+                                                    if (m_stOutLine_SocketData_ProcessingFlag.Length == m_stDividedRegion_GroupData.Length)
+                                                    {
+                                                        m_stOutLine_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                    }
+                                                    else
+                                                    {
+                                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 과 Hole1 의 Socket 개수가 다릅니다.");
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline Processing Skip Flag 저장 변수가 Null 입니다.");
+                                            }
+
+                                            //  Marking Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                            if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData != null)
+                                            {
+                                                if (m_AlignMode == AlignMode.Socket)
+                                                {
+                                                    if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length == m_stDividedRegion_GroupData.Length)
+                                                    {
+                                                        m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                    }
+                                                    else
+                                                    {
+                                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 과 Hole1 의 Socket 개수가 다릅니다.");
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking Processing Skip Flag 저장 변수가 Null 입니다.");
+                                            }
+
+                                            m_AlignMode = AlignMode.Socket;
+
+                                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                        }
+                                        break;
+
+                                    case LayerType.LAYER_OUTLINE:
+
+                                        //  성부장 작업
+                                        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                        Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                        GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+                                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                                                                                //  단일 선택 가공이면, Align 실패 시 Out
+                                        //if (Equipment.SelectRunEnable_New)
+                                        //{
+                                        //    strTemp = string.Format("단일 선택 가공 중 Socket Align Fail!!! (자재 배출)");
+                                        //    Log.Write("SLD-200", Equipment.User_Name, "Selected Socket, Align", strTemp);
+
+                                        //    m_bSocketAlign_OK = false;
+
+                                        //    if (!Equipment.AutoRunStatus &&
+                                        //        Equipment.SemiAutoEnable &&
+                                        //        _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                                        //    {
+                                        //        Equipment.SemiAutoEnable = false;
+                                        //        m_LaserDrillingWork_Start = false;
+                                        //    }
+                                        //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+
+                                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                        //}
+                                        //else
+                                        {
+                                            m_AlignMode = AlignMode.Socket;
+
+                                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                        }
+                                        break;
+
+                                    case LayerType.LAYER_THRUHOLE:
+
+                                        //  성부장 작업
+                                        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                        Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+                                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                                                                                //  단일 선택 가공이면, Align 실패 시 Out
+                                        //if (Equipment.SelectRunEnable_New)
+                                        //{
+                                        //    strTemp = string.Format("단일 선택 가공 중 Socket Align Fail!!! (자재 배출)");
+                                        //    Log.Write("SLD-200", Equipment.User_Name, "Selected Socket, Align", strTemp);
+
+                                        //    if (!Equipment.AutoRunStatus &&
+                                        //        Equipment.SemiAutoEnable &&
+                                        //        _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                                        //    {
+                                        //        Equipment.SemiAutoEnable = false;
+                                        //        m_LaserDrillingWork_Start = false;
+                                        //    }
+                                        //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+
+                                        //    m_bSocketAlign_OK = false;
+                                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                        //}
+                                        //else
+                                        {
+                                            m_AlignMode = AlignMode.Socket;
+
+                                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+
+                                            //  Thruhole 은 기본적으로 전부 가공한다고는 했는데, 단독으로 Thruhole 가공하는 제품도 그렇게 해야 하는지는 확인이 필요
+                                        }
+                                        break;
+
+                                    case LayerType.LAYER_MARKING:
+                                        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                        Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+                                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                                                                                //  단일 선택 가공이면, Align 실패 시 Out
+                                        //if (Equipment.SelectRunEnable_New)
+                                        //{
+                                        //    strTemp = string.Format("단일 선택 가공 중 Socket Align Fail!!! (자재 배출)");
+                                        //    Log.Write("SLD-200", Equipment.User_Name, "Selected Socket, Align", strTemp);
+
+                                        //    if (!Equipment.AutoRunStatus &&
+                                        //        Equipment.SemiAutoEnable &&
+                                        //        _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                                        //    {
+                                        //        Equipment.SemiAutoEnable = false;
+                                        //        m_LaserDrillingWork_Start = false;
+                                        //    }
+                                        //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+
+                                        //    m_bSocketAlign_OK = false;
+                                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                        //}
+                                        //else
+                                        {
+                                            m_AlignMode = AlignMode.Socket;
+
+                                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //  Socket Align NG 이면, 다음 Socket 으로 이동
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 실패, 다음 Socket Align 해야함.");
+
+                            //  소켓 얼라인 실패했으니 화면 갱신해야 한다.
+                            m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
+
+                            Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                            Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+
+                            GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+
+                            Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                            Thread.Sleep(200);
+
+                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        }
+                    }
+                    else if (m_nSocketAlign_MainStep == (int)SocketAlign_Step.None)
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "XXX - 들어오면 안되는 구간인데..");
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 5)               //  60 sec * 5
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 시간 초과.");
+
+                        if (!Equipment.AutoRunStatus &&
+                                Equipment.SemiAutoEnable &&
+                                _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                        {
+                            Equipment.SemiAutoEnable = false;
+                            m_LaserDrillingWork_Start = false;
+                        }
+                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+
+                        m_bSocketAlign_OK = false;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                        //AlarmPost(AlarmKey.SocketAlignMovePositionCalcFail);
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_SocketData_RotAndOffset_Move:                                         //  가공 데이터 회전 및 Offset 이동
+
+                    if (m_AlignMode == AlignMode.Socket)
+                    {
+                        //  Align 후 계산된 데이터 가져오기
+                        m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  전체 가공 도면 회전 중심 X
+                        m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  전체 가공 도면 회전 중심 Y
+                        m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  전체 가공 도면 이동 Offset X
+                        m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;
+                        if (m_st4PointAlign_Result.dRotationAngle != 0)
+                        {
+                            m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                         //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+                        }
+                        else
+                        {
+                            m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle = 0;
+                        }
+                    }
+                    else if (m_AlignMode == AlignMode.GoldPowder)
+                    {
+                        //  Align 후 계산된 데이터 가져오기                                                                         //  얼라인 된 소켓 회전 중심 X
+                        m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;
+                        m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
+                        m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
+                        m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
+                        if (m_st4PointAlign_Result.dRotationAngle != 0)
+                        {
+                            m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                         //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+                        }
+                        else
+                        {
+                            m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle = 0;
+                        }
+                    }
+
+                    switch (m_LayerType)
+                    {
+                        case LayerType.LAYER_DRILLING:
+                            if (m_bPassedSocket_Exist)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "m_bPassedSocket_Exist");
+                                AlignedDrillingData_FailedSocket_Select_and_OffsetMove(m_dALIGN_FACTOR_RotationCenter_X,
+                                                                                m_dALIGN_FACTOR_RotationCenter_Y,
+                                                                                m_dALIGN_FACTOR_Offset_X,
+                                                                                m_dALIGN_FACTOR_Offset_Y,
+                                                                                m_dALIGN_FACTOR_Theta);
+                            }
+                            else
+                            {
+                                AlignedDrillingData_Select_and_OffsetMove(m_nSocketNum_forAlign,
+                                                                        m_dALIGN_FACTOR_RotationCenter_X,
+                                                                        m_dALIGN_FACTOR_RotationCenter_Y,
+                                                                        m_dALIGN_FACTOR_Offset_X,
+                                                                        m_dALIGN_FACTOR_Offset_Y,
+                                                                        m_dALIGN_FACTOR_Theta);
+                            }
+
+                            strTemp = "Scanner - Align Data 전달 완료.\r\n\r\n" +
+                                        "- m_dALIGN_FACTOR_RotationCenter_X: " + m_dALIGN_FACTOR_RotationCenter_X.ToString() + "\r\n" +
+                                        "- m_dALIGN_FACTOR_RotationCenter_Y: " + m_dALIGN_FACTOR_RotationCenter_Y.ToString() + "\r\n" +
+                                        "- m_dALIGN_FACTOR_Offset_X: " + m_dALIGN_FACTOR_Offset_X.ToString() + "\r\n" +
+                                        "- m_dALIGN_FACTOR_Offset_Y: " + m_dALIGN_FACTOR_Offset_Y.ToString() + "\r\n" +
+                                        "- m_dALIGN_FACTOR_Theta: " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                            Log.Write("SLD-200", Equipment.User_Name, "Align Data 전달 완료", strTemp);
+
+                            // Todo: goldpowder - 검출 해야 하면 다시 한 번 얼라인 시컨스 돌리고 보정 하자.
+                            if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use &&
+                               m_AlignMode == AlignMode.Socket)
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Complete;
+                            }
+                            else
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move;
+                            }
+
+                            break;
+                        case LayerType.LAYER_OUTLINE:
+                            AlignedOutlineData_Select_and_OffsetMove(m_nSocketNum_forAlign,
+                                                                    m_dALIGN_FACTOR_RotationCenter_X,
+                                                                    m_dALIGN_FACTOR_RotationCenter_Y,
+                                                                    m_dALIGN_FACTOR_Offset_X,
+                                                                    m_dALIGN_FACTOR_Offset_Y,
+                                                                    m_dALIGN_FACTOR_Theta);
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move;
+                            break;
+                        case LayerType.LAYER_THRUHOLE:
+                            AlignedThruholeData_Select_and_OffsetMove(m_nSocketNum_forAlign,
+                                                                    m_dALIGN_FACTOR_RotationCenter_X,
+                                                                    m_dALIGN_FACTOR_RotationCenter_Y,
+                                                                    m_dALIGN_FACTOR_Offset_X,
+                                                                    m_dALIGN_FACTOR_Offset_Y,
+                                                                    m_dALIGN_FACTOR_Theta);
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move;
+                            break;
+                        case LayerType.LAYER_MARKING:
+                            AlignedMarkingData_Select_and_OffsetMove(m_nSocketNum_forAlign,
+                                                                    m_dALIGN_FACTOR_RotationCenter_X,
+                                                                    m_dALIGN_FACTOR_RotationCenter_Y,
+                                                                    m_dALIGN_FACTOR_Offset_X,
+                                                                    m_dALIGN_FACTOR_Offset_Y,
+                                                                    m_dALIGN_FACTOR_Theta);
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move;
+                            break;
+                    }
+
+                    if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                    {
+                        if (AlignMode.Socket == m_AlignMode)
+                        {
+                            m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+
+                            //  메인 화면의 뷰어 갱신
+                            m_bMain_SiriusViewer_Refresh = true;
+                            ActionSiriusViewerRefresy?.Invoke(m_bMain_SiriusViewer_Refresh);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 데이터 적용");
+                        }
+                        else
+                        {
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                            {
+                                SetStageComplete(SemiAutoStep.FiducialAlign, true);
+                                Equipment.SemiAutoEnable = false;
+
+                                m_LaserDrillingWork_Start = false;
+                                m_MainWork_Start = false;
+                                m_SubWork_Start = false;
+                                m_ProductAlign_Start = false;
+                            }
+                            m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+
+                            //  메인 화면의 뷰어 갱신
+                            m_bMain_SiriusViewer_Refresh = true;
+                            ActionSiriusViewerRefresy?.Invoke(m_bMain_SiriusViewer_Refresh);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Goldpowder Align 보정 데이터 적용");
+                        }
+                    }
+                    else
+                    {
+                        if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                        {
+                            SetStageComplete(SemiAutoStep.FiducialAlign, true);
+                            Equipment.SemiAutoEnable = false;
+
+                            m_LaserDrillingWork_Start = false;
+                            m_MainWork_Start = false;
+                            m_SubWork_Start = false;
+                            m_ProductAlign_Start = false;
+                        }
+
+                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+
+                        //  메인 화면의 뷰어 갱신
+                        m_bMain_SiriusViewer_Refresh = true;
+                        ActionSiriusViewerRefresy?.Invoke(m_bMain_SiriusViewer_Refresh);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 데이터 적용");
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move:                                           //  Socket 가공 높이로 보정 이동
+
+                    //  가공 높이로 보정 이동
+                    LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
+
+                    SetStageComplete(SemiAutoStep.Drilling, false);
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move_DoneCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move_DoneCheck:           //  Socket 가공 높이로 보정 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 가공 높이로 조정 완료.");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Complete;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 가공 높이로 조정 실패. (Timeout)");
+
+                        if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                        {
+                            Equipment.SemiAutoEnable = false;
+                            m_LaserDrillingWork_Start = false;
+                        }
+
+                        return AlarmPost(AlarmKey.eZAxisFail);
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Complete:                                  //  가공 데이터 회전 및 Offset 이동
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 완료");
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Reload;
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_Reload:                                  //  Drilling 데이터 다시 불러오기
+
+                    //  Get Data
+                    m_nReturn = (int)WorkStage.nGetDataResult.GETDATA_FAIL;
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Align 후 가공 데이터 다시 Parsing 시작");
+
+                    m_nReturn = GetDrillingData();
+                    switch (m_nReturn)
+                    {
+                        case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
+                            {
+                                Log.Write("SLD-200", "Auto Run", "가공 데이터 Parsing 성공");
+                            }
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터가 정상적으로 로드 되지 않았습니다.");
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                            {
+                                Equipment.SemiAutoEnable = false;
+                                m_LaserDrillingWork_Start = false;
+                            }
+                            return AlarmPost(AlarmKey.eGetDataFaile);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터가 Group 이 아닙니다.");
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                            {
+                                Equipment.SemiAutoEnable = false;
+                                m_LaserDrillingWork_Start = false;
+                            }
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_not_group);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터를 Group 해제 해야 합니다.");
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                            {
+                                Equipment.SemiAutoEnable = false;
+                                m_LaserDrillingWork_Start = false;
+                            }
+                            return AlarmPost(AlarmKey.eGetdata_Ungroup);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.");
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                            {
+                                Equipment.SemiAutoEnable = false;
+                                m_LaserDrillingWork_Start = false;
+                            }
+                            return AlarmPost(AlarmKey.eGetdata_Layername_ng);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.");
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                            {
+                                Equipment.SemiAutoEnable = false;
+                                m_LaserDrillingWork_Start = false;
+                            }
+                            return AlarmPost(AlarmKey.eGetdata_Motiontype_ng);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 중 Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지로만 구성되어야 합니다.");
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                            {
+                                Equipment.SemiAutoEnable = false;
+                                m_LaserDrillingWork_Start = false;
+                            }
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_ng);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 중 Drilling Data 의 Line 데이터 개수가 4의 배수가 아닙니다.");
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                            {
+                                Equipment.SemiAutoEnable = false;
+                                m_LaserDrillingWork_Start = false;
+                            }
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_linecnt);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 중 Drilling Data 의 Line 이 닫힌 도형이 아닙니다.");
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                            {
+                                Equipment.SemiAutoEnable = false;
+                                m_LaserDrillingWork_Start = false;
+                            }
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_not_closed);
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
+                            Log.Write("SLD-200", "Auto Run", "RTC 보드가 초기화 되지 않았습니다.");
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                            {
+                                Equipment.SemiAutoEnable = false;
+                                m_LaserDrillingWork_Start = false;
+                            }
+                            return AlarmPost(AlarmKey.eGetdata_Rtcinit);
+                    }
+
+                    if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use &&
+                       m_AlignMode == AlignMode.Socket)
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.GoldPowderAlign_start;
+                    }
+                    else if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use &&
+                       m_AlignMode == AlignMode.GoldPowder)
+                    {
+                        m_AlignMode = AlignMode.Socket;
+                        if (m_bPassedSocket_Exist)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "m_bPassedSocket_Exist");
+                            m_nLaserDrilling_LayerCount++;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                        else
+                        {
+                            switch (m_LayerType)
+                            {
+                                case LayerType.LAYER_DRILLING:
+                                    // 정상 Hole 가공.
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DividedRegion_DrillingWork_Start");
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                       //  분할 영역 Drilling 작업 시작
+                                    break;
+
+                                case LayerType.LAYER_OUTLINE:
+
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "OutLine_LayerParameter_ZOffset_Move");
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;
+                                    break;
+
+                                case LayerType.LAYER_THRUHOLE:
+
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "ThruHole_LayerParameter_ZOffset_Move");
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
+                                    break;
+
+                                case LayerType.LAYER_MARKING:
+
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "Marking_LayerParameter_ZOffset_Move");
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (m_bPassedSocket_Exist)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "m_bPassedSocket_Exist");
+                            m_nLaserDrilling_LayerCount++;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                        else
+                        {
+                            switch (m_LayerType)
+                            {
+                                case LayerType.LAYER_DRILLING:
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DividedRegion_DrillingWork_Start");
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                       //  분할 영역 Drilling 작업 시작
+                                    break;
+
+                                case LayerType.LAYER_OUTLINE:
+
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "OutLine_LayerParameter_ZOffset_Move");
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;
+                                    break;
+
+                                case LayerType.LAYER_THRUHOLE:
+
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "ThruHole_LayerParameter_ZOffset_Move");
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
+                                    break;
+
+                                case LayerType.LAYER_MARKING:
+
+                                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "Marking_LayerParameter_ZOffset_Move");
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.GoldPowderAlign_start:
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "GoldPowderAlign_start");
+
+                        m_AlignMode = AlignMode.GoldPowder;
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        //여기서 변위센서 위치로 보낸다.
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.GoldPowderAlign_CompleteCheck:
+                    {
+                        // Test시 사용 시컨스 
+                        // 우선은 막고 -> Hole 가공 완료 하는 부분으로 보내면 될듯.
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.GoldPowderAlign_CompleteCheck;
+                    }
+                    break;
+                /// 
+                /// <summary>
+                /// 소켓 얼라인 완료
+                /// </summary>
+
+
+                // Hole 가공
+                //////////////////////////////////////////////////////////////////////////////////////////////
+                ///                                                                                        ///
+                ///     Divide Drilling Loop (Group (소켓) 영역을 분할하여 Scanner Only 방식으로 가공)     ///
+                ///                                                                                        ///
+                //////////////////////////////////////////////////////////////////////////////////////////////
+                /// 
+                case (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start:                      //  분할 영역 Drilling 작업 시작
+
+                    // 여기서 일정 시간 기다렸다가 수행한다.
+                    // 조건이 아래인 경우.
+                    if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) &&
+                        (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole50))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Group, (Hole2 ~ Hole50) 일정시간 대기.");
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_HoleLayer_DelayWait;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Group, ScannerOnly Mode, 반복 가공 시작");
+                        m_nDividedRegion_Region_CurrentIndex = 0;
+                        m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+
+                        //  모듈의 소켓 가공은 모두 건너뛰고 다른 가공만 진행해야 할 경우, 여기서 소켓 가공을 넘긴다.
+                        if (Equipment.SocketDrilling_Skip)
+                        {
+                            //  소켓 가공 건너뛰기. (현재 소켓 얼라인을 완료했으므로 다음 소켓이 남아있는지 확인하러 이동)
+                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                                                        // 여기가서 기존 공통 얼라인 Data 확인하고 다음 가공하는지 확인 필요하다.
+                                                                        // Hol 가공 끝나고나서 얼라인 정보를 다른 Layer에 넘기는게 아닌지 확인 필요.
+                                                                        // 정상 가공일때는 다른 Layer는 얼라인 재수행 안하고 가공 중.
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        }
+                        else if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                        {
+                            if (m_bCO2_repairMode)
+                            {
+                                //  소켓 가공 정상 진행
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                            }
+                            else
+                            {
+                                if (m_bCO2_MultyMode)
+                                {
+                                    //  소켓 가공 정상 진행
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                                }
+                                else
+                                {
+                                    if (Equipment.SelectRunEnable_New)
+                                    {
+                                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                                    }
+                                    else
+                                    {
+                                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //  소켓 가공 정상 진행
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                        }
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DividedRegion_DrillingWork_HoleLayer_DelayWait:
+
+                    if (Equipment.Machine_Hole02_50_Wait_Enable)
+                    {
+                        if (TickCount_Elapsed((int)TickType.TICK_MAIN) > Equipment.Machine_Hole02_50_Wait_Time) // 원하는 시간 동안. Delay
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_HoleLayer_DelayWait_Check;
+                        }
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_HoleLayer_DelayWait_Check;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_DrillingWork_HoleLayer_DelayWait_Check:
+
+                    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Group, ScannerOnly Mode, 반복 가공 시작");
+                    m_nDividedRegion_Region_CurrentIndex = 0;
+                    m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+
+                    //  모듈의 소켓 가공은 모두 건너뛰고 다른 가공만 진행해야 할 경우, 여기서 소켓 가공을 넘긴다.
+                    if (Equipment.SocketDrilling_Skip)
+                    {
+                        //  소켓 가공 건너뛰기. (현재 소켓 얼라인을 완료했으므로 다음 소켓이 남아있는지 확인하러 이동)
+                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                                                    // 여기가서 기존 공통 얼라인 Data 확인하고 다음 가공하는지 확인 필요하다.
+                                                                    // Hol 가공 끝나고나서 얼라인 정보를 다른 Layer에 넘기는게 아닌지 확인 필요.
+                                                                    // 정상 가공일때는 다른 Layer는 얼라인 재수행 안하고 가공 중.
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                    }
+                    else if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                    {
+                        if (m_bCO2_repairMode)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                        }
+                        else
+                        {
+                            if (m_bCO2_MultyMode)
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                            }
+                            else
+                            {
+                                //선택 가공시 조건
+                                if (Equipment.SelectRunEnable_New)
+                                {
+                                    // Hole은 가공 안하는데...
+                                    // Group_Count 를 증가 시키면 Hole은 넘기고 Drilling 하지 않을까?
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                                }
+                                else
+                                {
+                                    // Hole은 가공 안하니깐.
+                                    m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //  소켓 가공 정상 진행
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
+                    }
+                    break;
+
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  Map Data 변경 (Scanner) - 시작
+                case (int)LaserDrilling_Step.MapDataChange_ScannerMap2:                                      //  Scanner 위치 Map Data 로 변경
+
+                    //MapData_Change((int)MapDataType.MAPDATASTATUS_SCANNER);
+                    MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap2;
+                    break;
+
+
+                case (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap2:                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRepeatStart;
+                    break;
+                //  Map Data 변경 (Scanner) - 끝
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////
+                ///                                                                                         ///
+                ///     Divide Drilling Loop (Group (소켓) 영역을 분할, Scanner Only)                       ///
+                ///                                                                                         ///
+                ///     Drilling Loop (Drilling Hole 의 본 도면 가공) - syncAxis or RTC6 - ScannerOnly      ///
+                ///                                                                                         ///
+                ///////////////////////////////////////////////////////////////////////////////////////////////
+                /// 
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRepeatStart:                               //  가공 반복 시작
+
+                    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 반복 가공 시작");
+
+                    m_nDividedRegion_Region_CurrentIndex = 0;
+
+                    m_nDrillingWork_Repeat_Count = 0;
+                    m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+                    m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                    m_nLaserDrilling_OneSideOfADrillingSquare_StartCornerIndex = 0;
+                    m_nLaserDrilling_InGroup_HoleCount = 0;         //  Hole 가공 시 1개의 Hole 단위로 가공하기 위해서. Index 누적 Count 용 변수. (몇 번째 Hole 인지)
+                    m_nUnfollow_TryCount = 0;
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck:
+                    {
+                        //Hole 가공 함수 및 시컨스. 
+                        //  가공 할 Region 영역이 남아 있는지 체크 - 영역 확인
+                        m_nLaserDrilling_MainStep = LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck_Selectmode(
+                            ref m_nZigZag_CurrentRow, ref m_nZigZag_CurRow_FirstIndex, ref m_nZigZag_CurRow_CurIndex, ref m_nZigZag_CurRow_LastIndex);
+                    }
+                    break;
+
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ///
+                ///     Hole2 ~ Hole4 Layer 가공 중 Hole2 ~ Hole4 Layer 파라미터 변경 - 시작
+                ///     
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Start:                     //  Socket 가공 중 Hole2 ~ Hole4 Layer 파라미터 변경 시작
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move;
+                    break;
+
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move:                     //  Socket 가공 중 Z Offset 이동 (Hole2 ~ Hole4의 경우) 
+
+                    LaserDrilling_StepDividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move_DoneCheck:           //  Socket 가공 중 Z Offset 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Layer Z Offset 이동 완료 확인");
+
+                        double targetZ = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z];
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                            $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
+
+                        //  UV Laser 일 경우만
+                        if (Equipment.Machine_LaserType_CO2)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Complete;
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_LaserPower_Change;
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Layer Z Offset 이동 실패. (Timeout)");
+
+                        if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                        {
+                            Equipment.SemiAutoEnable = false;
+                            m_LaserDrillingWork_Start = false;
+                        }
+                        return AlarmPost(AlarmKey.eZAxisFail);
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_LaserPower_Change:                        //  Socket 가공 중 Laser Power 변경 (Hole2 ~ Hole4의 경우) 
+
+                    m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+
+                    if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
+                    {
+                        if (m_rapidLxLaser_Comm.IsOpen)
+                        {
+                            strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_nHoleLayer_ProcessIndex + 1, m_dLaserPower);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_LaserPower_Change_DoneCheck;
+                        }
+                        else
+                        {
+                            strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)", m_nHoleLayer_ProcessIndex + 1);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                            if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                            {
+                                Equipment.SemiAutoEnable = false;
+                                m_LaserDrillingWork_Start = false;
+                            }
+
+                            return AlarmPost(AlarmKey.eLaserComm_NotOpen);
+                        }
+                    }
+                    else
+                    {
+                        strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)", m_nHoleLayer_ProcessIndex + 1);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                        {
+                            Equipment.SemiAutoEnable = false;
+                            m_LaserDrillingWork_Start = false;
+                        }
+
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_LaserPower_Change_DoneCheck:                     //  Socket 가공 중 Laser Power 변경 완료 확인
+
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    {
+                        strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Complete;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                    {
+                        strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                        {
+                            Equipment.SemiAutoEnable = false;
+                            m_LaserDrillingWork_Start = false;
+                        }
+
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Complete:                     //  Socket 가공 중 Hole2 ~ Hole4 Layer 파라미터 변경 완료
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;                 //  Hole2 ~ Hole4 Layer 의 Defocusing 이동 완료하였으므로 다시 현재 Socket 가공 시작 (Hole1 데이터 가공)
+                    break;
+                ///
+                ///     Hole2 ~ Hole4 Layer 가공 중 Hole2 ~ Hole4 Layer 파라미터 변경 - 끝
+                ///     
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ////////////////////////////////////////////////////////////////////////////////////////
+                ///                                                                                  ///
+                ///     DividedRegion Drilling Loop (하나의 Group 을 영역 분할해서, ScannerOnly)     ///
+                ///                                                                                  ///
+                ///     Drilling Loop (Drilling Hole 의 본 도면 가공) - syncAxis - ScannerOnly       ///
+                ///                                                                                  ///
+                ///     Region Center 로 이동해서 Region 별로 가공                                   ///
+                ///                                                                                  ///
+                ////////////////////////////////////////////////////////////////////////////////////////
+                /// 
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos:                 //  가공 할 Region Center 위치로 이동
+
+                    double dPoscurX = 0.0;
+                    double dPoscurY = 0.0;
+                    dPoscurX = MC_Func.MC_GetEncPos((int)nAxis.X);
+                    dPoscurY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+                    Log.Write("StageScannerPos",
+                                "Socket NO : " + m_nDrillingWork_Group_Count.ToString() +
+                                "  FieldSize NO : " + m_nDividedRegion_Region_CurrentIndex_forZigZag.ToString() +
+                                "  StageXY_MoveRegionCenterPos Before Pos (X: " + dPoscurX.ToString("F3") +
+                                ", Y: " + dPoscurY.ToString("F3") + ")");
+
+                    LaserDrilling_StepDividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos(out lfVelocity, out lfAccDec);
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck:                 //  가공 할 Region Center 위치로 이동 완료 확인
+
+                    // 2025.06.01 // <- Check 구문 전부 이렇게 변경 필요.
+                    tempStep = m_nLaserDrilling_MainStep;
+                    if (CheckAxesMotionDoneWithRetry(
+                            xyInterpolatedCoordinate.X,
+                            xyInterpolatedCoordinate.Y,
+                            null,               // Z 없음
+                            60000,
+                            ref m_nStage_RetryCount,
+                            3,
+                            ref tempStep,
+                            (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 완료 확인");
+
+                        dPoscurX = 0.0;
+                        dPoscurY = 0.0;
+                        dPoscurX = MC_Func.MC_GetEncPos((int)nAxis.X);
+                        dPoscurY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+                        Log.Write("StageScannerPos",
+                                    "Socket NO : " + m_nDrillingWork_Group_Count.ToString() +
+                                    "  FieldSize NO : " + m_nDividedRegion_Region_CurrentIndex_forZigZag.ToString() +
+                                    "  Interpolated Target Pos (X: " + dPoscurX.ToString("F3") +
+                                    ", Y: " + dPoscurY.ToString("F3") + ")");
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime;
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = tempStep;  // 다시 반영
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:
+                    {
+                        if (Equipment.Machine_LaserType_CO2)
+                        {
+                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500) //안전화 타임.
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+                            }
+                        }
+                        else
+                        {
+                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 100) //안전화 타임.
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+                            }
+                        }
+
+                    }
+                    break;
+
+                //  각 Hole 별로 Drilling 완성
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck:                                  //  List Buffer Open                    
+                    if (m_nLaserDrilling_InGroup_HoleCount <
+                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, Hole 단위 본 가공, 가공할 Region Object 가 남아 있음");
+
+                        m_nDrillingWork_Repeat_Count = 0;
+
+                        //  재시도 회수 리셋
+                        m_nListBeginRetry_Count = 0;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListOpen;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Step1_PowerChange;                   //  모든 Hole 의 같은 변을 1번씩 가공하여 전체 완성                            
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, Hole 단위 본 가공, 가공할 Region Object 가 남아 있지 않음");
+
+                        m_nLaserDrilling_InGroup_HoleCount = 0;
+                        m_nLaserDrilling_ScannerOnly_GroupCount++;
+
+                        m_nUnfollow_TryCount = 0;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
+                    }
+                    break;
+
+                /// <summary>
+                /// 미세홀 본 가공 (기존 방법) - 시작
+                /// </summary>
+                /// 
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListOpen:                                  //  List Buffer Open
+                    if (!rtc.CtlGetStatus(RtcStatus.Busy))
+                    {
+                        strTemp = LaserDrilling_StepDividedRegion_ScannerOnly_RegionListOpen(strTemp);
+                        {
+                            Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List 에 데이터 추가");
+
+                            m_nListBeginRetry_Count = 0;                    //  데이터 추가할 때도 안되는 경우가 있는 듯 하여, 데이터 집어넣기 재시도 Count 용 변수로 사용
+
+                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add;
+                            if (Config.ParamConfig.bDrilling_WorkUnit_Hole)
+                            {
+                                m_nLaserDrilling_InGroup_HoleCount_Backup = m_nLaserDrilling_InGroup_HoleCount;
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole;         //  1개의 Hole 을 가공하고 난 후 다음 Hole 가공
+                            }
+                            else
+                            {
+                                m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
+                                m_nDrillingWork_RepeatBundle_Count_Backup = m_nDrillingWork_RepeatBundle_Count;
+
+                                //  특정 Distance 거리로 Hole 데이터를 정렬할 경우
+                                if (Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use)
+                                {
+                                    stDividedRegion_RegionData data = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag];
+                                    List<stDividedRegion_ObjectData> listObj = data.m_stDividedRegion_ObjectData.ToList();
+
+                                    double m_dSortingDistance = 0.5;
+                                    m_dSortingDistance = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance > 0 ? Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance : 0.5;           //  정렬 거리
+
+                                    strTemp = string.Format("Socket 가공 중 Hole Data 순서 정렬. (Hole 간 기준 거리 : {0:0.000}mm)", m_dSortingDistance);
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                                    var sortedObj = SortByDistance(listObj, m_dSortingDistance);
+
+                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData = sortedObj.ToArray();
+                                    sortedObj.Clear();
+                                    sortedObj = null;
+                                }
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;        //  모든 Hole 을 1번씩 가공해서 전체 가공
+                            }
+                        }
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole:                                  //  List 에 데이터 추가
+
+                    //Scanner 0,0 으로 보내고 실행.
+                    rtc.ListJump(Vector2.Zero);
+                    for (m_nDrillingWork_Repeat_Count = 0; m_nDrillingWork_Repeat_Count < /*Config.ParamConfig.Drilling_Repeat_Count*/m_nDrillingWork_Repeat_Count_Total; m_nDrillingWork_Repeat_Count++)
+                    {
+                        switch (m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[m_nLaserDrilling_InGroup_HoleCount].nObjectType)
+                        {
+                            case (int)ObjectType.OBJECT_POLY:
+                                m_bRightAngle = LaserDrilling_StepDividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_HolePoli();
+                                break;
+
+                            case (int)ObjectType.OBJECT_CIR:
+                                LaserDrilling_StepDividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_HoleCircle();
+                                break;
+
+                            case (int)ObjectType.OBJECT_ARC:
+                                LaserDrilling_StepDividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_HoleArc();
+                                break;
+
+                            case (int)ObjectType.OBJECT_RECT:
+                                LaserDrilling_StepDividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_HoleRect();
+                                break;
+
+                            case (int)ObjectType.OBJECT_LINE:
+                                LaserDrilling_StepDividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_HoleLine();
+                                break;
+                        }
+                    }
+
+                    //  면 우선 작업 모드일 경우 (4개 면 가공 데이터 리스트에 추가 --> 반복)
+                    if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst &&
+                        ((m_nDrillingData_Type == (int)ObjectType.OBJECT_POLY) || (m_nDrillingData_Type == (int)ObjectType.OBJECT_LINE)))
+                    {
+                        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount++;
+                        if (m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount < 4)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole;
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_InGroup_HoleCount++;
+                            if (m_nLaserDrilling_InGroup_HoleCount < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum)
+                            {
+                                m_nDrillingWork_RepeatBundle_Count++;
+                                //if (m_nDrillingWork_RepeatBundle_Count < Config.ParamConfig.RepetitionsBundle)
+                                if (m_nDrillingWork_RepeatBundle_Count < m_nRepetation_Bundle)
+                                {
+                                    m_nDrillingWork_Repeat_Count = 0;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole;
+                                }
+                                else
+                                {
+                                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                    {
+                                        m_bDivRegionList_Success &= rtc.ListEnd();
+                                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List End");
+                                    }
+
+                                    //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
+                                    //if (!m_bDivRegionList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)                      //  ListBegin 이나, ListDelay 나 ListSpeed 가 실패일 경우
+                                    //{
+                                    //    m_nMarkerFunc_RetryCount = Config.ParamConfig.Marker_ListBegin_Retry <= 0 ? 10 : Config.ParamConfig.Marker_ListBegin_Retry;
+                                    //    if (m_nListBeginRetry_Count++ < m_nMarkerFunc_RetryCount)
+                                    //    {
+                                    //        //  묶음 개수 줄이기
+                                    //        //if (m_nRepetation_Bundle > 25)
+                                    //        //{
+                                    //        //    m_nRepetation_Bundle -= 3;
+                                    //        //}
+                                    //        //else if (m_nRepetation_Bundle > 15)
+                                    //        //{
+                                    //        //    m_nRepetation_Bundle -= 2;
+                                    //        //}
+                                    //        //else if (m_nRepetation_Bundle > 5)
+                                    //        //{
+                                    //        //    m_nRepetation_Bundle -= 1;
+                                    //        //}
+
+                                    //        //  10% 씩 줄이기로 변경
+                                    //        m_nRepetation_Bundle -= (int)((double)m_nRepetation_Bundle / (double)10.0);
+
+                                    //        rtcSyncAxis.CtlAbort();
+                                    //        Thread.Sleep(2000);
+                                    //        rtcSyncAxis.CtlReset();
+
+                                    //        m_bDivRegionList_Success = true;
+                                    //        var rtcMode = rtcSyncAxis as IRtcSyncAxis;                                  //  syncAxis
+                                    //        Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
+                                    //        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, MotionType.ScannerOnly);               //  주의 : syncAxis 에서 드릴링으로 가공하는 데이터는 무조건 "StageAndScanner" 로 가공해야 한다.
+
+                                    //        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer 데이터 추가 실패로 List Re-Open");
+
+                                    //        //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+                                    //        //{
+                                    //        //    m_bDivRegionList_Success &= rtcSyncAxis.ListFrequency((float)Config.ParamConfig.Drilling_Frequency, (float)Config.ParamConfig.Drilling_PulseWidth);
+                                    //        //}
+
+                                    //        m_bDivRegionList_Success &= rtcSyncAxis.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+                                    //                                                                (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+                                    //        m_bDivRegionList_Success &= rtcSyncAxis.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+
+                                    //        //m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                    //        //m_nDrillingWork_RepeatBundle_Count = m_nDrillingWork_RepeatBundle_Count_Backup <= 0 ? 0 : m_nDrillingWork_RepeatBundle_Count_Backup - 1;
+                                    //        m_nLaserDrilling_InGroup_HoleCount = m_nLaserDrilling_InGroup_HoleCount_Backup <= 0 ? 0 : m_nLaserDrilling_InGroup_HoleCount_Backup - 1;
+                                    //        m_nDrillingWork_Repeat_Count = 0;
+                                    //        m_nDrillingWork_RepeatBundle_Count = 0;         //  이건 무조건 0 이다.
+
+                                    //        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+
+                                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole;
+                                    //        break;
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        timer_LaserDrillingWork.Enabled = false;
+                                    //        m_bExit = true;
+                                    //        MessageBox.Show($"DividedRegion ScannerOnly Drilling, List Buffer 데이터 추가 실패\r\n\r\n[재시도 회수 초과]");
+
+                                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                                    //    }
+                                    //}
+                                    //else        //  기존 코드 (맨 아래 2줄)
+                                    {
+                                        m_nLaserDrilling_InGroup_HoleCount_Backup = m_nLaserDrilling_InGroup_HoleCount;
+                                        m_nListBeginRetry_Count = 0;
+
+                                        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                {
+                                    m_bDivRegionList_Success &= rtc.ListEnd();
+                                    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List End");
+                                }
+
+                                //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
+                                //if (!m_bDivRegionList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)                      //  ListBegin 이나, ListDelay 나 ListSpeed 가 실패일 경우
+                                //{
+                                //    m_nMarkerFunc_RetryCount = Config.ParamConfig.Marker_ListBegin_Retry <= 0 ? 10 : Config.ParamConfig.Marker_ListBegin_Retry;
+                                //    if (m_nListBeginRetry_Count++ < m_nMarkerFunc_RetryCount)
+                                //    {
+                                //        //  묶음 개수 줄이기
+                                //        //if (m_nRepetation_Bundle > 25)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 3;
+                                //        //}
+                                //        //else if (m_nRepetation_Bundle > 15)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 2;
+                                //        //}
+                                //        //else if (m_nRepetation_Bundle > 5)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 1;
+                                //        //}
+
+                                //        //  10% 씩 줄이기로 변경
+                                //        m_nRepetation_Bundle -= (int)((double)m_nRepetation_Bundle / (double)10.0);
+
+                                //        rtcSyncAxis.CtlAbort();
+                                //        Thread.Sleep(2000);
+                                //        rtcSyncAxis.CtlReset();
+
+                                //        m_bDivRegionList_Success = true;
+                                //        var rtcMode = rtcSyncAxis as IRtcSyncAxis;                                  //  syncAxis
+                                //        Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
+                                //        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, MotionType.ScannerOnly);               //  주의 : syncAxis 에서 드릴링으로 가공하는 데이터는 무조건 "StageAndScanner" 로 가공해야 한다.
+
+                                //        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer 데이터 추가 실패로 List Re-Open");
+
+                                //        //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+                                //        //{
+                                //        //    m_bDivRegionList_Success &= rtcSyncAxis.ListFrequency((float)Config.ParamConfig.Drilling_Frequency, (float)Config.ParamConfig.Drilling_PulseWidth);
+                                //        //}
+
+                                //        m_bDivRegionList_Success &= rtcSyncAxis.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+                                //                                                                (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+                                //        m_bDivRegionList_Success &= rtcSyncAxis.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+
+                                //        //m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                //        //m_nDrillingWork_RepeatBundle_Count = m_nDrillingWork_RepeatBundle_Count_Backup <= 0 ? 0 : m_nDrillingWork_RepeatBundle_Count_Backup - 1;
+                                //        m_nLaserDrilling_InGroup_HoleCount = m_nLaserDrilling_InGroup_HoleCount_Backup <= 0 ? 0 : m_nLaserDrilling_InGroup_HoleCount_Backup - 1;
+                                //        m_nDrillingWork_Repeat_Count = 0;
+                                //        m_nDrillingWork_RepeatBundle_Count = 0;         //  이건 무조건 0 이다.
+
+                                //        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+
+                                //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole;
+                                //        break;
+                                //    }
+                                //    else
+                                //    {
+                                //        timer_LaserDrillingWork.Enabled = false;
+                                //        m_bExit = true;
+                                //        MessageBox.Show($"DividedRegion ScannerOnly Drilling, List Buffer 데이터 추가 실패\r\n\r\n[재시도 회수 초과]");
+
+                                //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                                //    }
+                                //}
+                                //else        //  기존 코드 (맨 아래 2줄)
+                                {
+                                    //m_nLaserDrilling_InGroup_HoleCount = 0;
+                                    m_nLaserDrilling_InGroup_HoleCount_Backup = m_nLaserDrilling_InGroup_HoleCount;
+                                    m_nListBeginRetry_Count = 0;
+
+                                    m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //  Circle Drilling 일 경우, 시작 각도 분할일 경우 각도 증가 (0 -> 1 -> 2 -> ... -> max -> 0 -> 1 -> ...)
+                        if ((m_nDrillingData_Type == (int)ObjectType.OBJECT_CIR) || (m_nDrillingData_Type == (int)ObjectType.OBJECT_ARC))
+                        {
+                            //if (Config.ParamConfig.CircleStartPosDiv != 0)
+                            if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision != 0)
+                            {
+                                m_nCircleDrilling_CurrentRotStep++;
+
+                                //if (m_nCircleDrilling_CurrentRotStep >= Config.ParamConfig.CircleStartPosDiv)
+                                if (m_nCircleDrilling_CurrentRotStep >= Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision)
+                                {
+                                    m_nCircleDrilling_CurrentRotStep = 0;
+                                }
+                            }
+                        }
+
+                        m_nLaserDrilling_InGroup_HoleCount++;
+                        if (m_nLaserDrilling_InGroup_HoleCount < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum)
+                        {
+                            m_nDrillingWork_RepeatBundle_Count++;
+                            //if (m_nDrillingWork_RepeatBundle_Count < Config.ParamConfig.RepetitionsBundle)
+                            if (m_nDrillingWork_RepeatBundle_Count < m_nRepetation_Bundle)
+                            {
+                                m_nDrillingWork_Repeat_Count = 0;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole;
+                            }
+                            else
+                            {
+                                //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                {
+                                    m_bDivRegionList_Success &= rtc.ListEnd();
+                                    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List End");
+                                }
+
+                                //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
+                                //if (!m_bDivRegionList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)                      //  ListBegin 이나, ListDelay 나 ListSpeed 가 실패일 경우
+                                //{
+                                //    m_nMarkerFunc_RetryCount = Config.ParamConfig.Marker_ListBegin_Retry <= 0 ? 10 : Config.ParamConfig.Marker_ListBegin_Retry;
+                                //    if (m_nListBeginRetry_Count++ < m_nMarkerFunc_RetryCount)
+                                //    {
+                                //        //  묶음 개수 줄이기
+                                //        //if (m_nRepetation_Bundle > 25)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 3;
+                                //        //}
+                                //        //else if (m_nRepetation_Bundle > 15)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 2;
+                                //        //}
+                                //        //else if (m_nRepetation_Bundle > 5)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 1;
+                                //        //}
+
+                                //        //  10% 씩 줄이기로 변경
+                                //        m_nRepetation_Bundle -= (int)((double)m_nRepetation_Bundle / (double)10.0);
+
+                                //        rtcSyncAxis.CtlAbort();
+                                //        Thread.Sleep(2000);
+                                //        rtcSyncAxis.CtlReset();
+
+                                //        m_bDivRegionList_Success = true;
+                                //        var rtcMode = rtcSyncAxis as IRtcSyncAxis;                                  //  syncAxis
+                                //        Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
+                                //        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, MotionType.ScannerOnly);               //  주의 : syncAxis 에서 드릴링으로 가공하는 데이터는 무조건 "StageAndScanner" 로 가공해야 한다.
+
+                                //        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer 데이터 추가 실패로 List Re-Open");
+
+                                //        //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+                                //        //{
+                                //        //    m_bDivRegionList_Success &= rtcSyncAxis.ListFrequency((float)Config.ParamConfig.Drilling_Frequency, (float)Config.ParamConfig.Drilling_PulseWidth);
+                                //        //}
+
+                                //        m_bDivRegionList_Success &= rtcSyncAxis.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+                                //                                                                (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+                                //        m_bDivRegionList_Success &= rtcSyncAxis.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+
+                                //        //m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                //        //m_nDrillingWork_RepeatBundle_Count = m_nDrillingWork_RepeatBundle_Count_Backup <= 0 ? 0 : m_nDrillingWork_RepeatBundle_Count_Backup - 1;
+                                //        m_nLaserDrilling_InGroup_HoleCount = m_nLaserDrilling_InGroup_HoleCount_Backup <= 0 ? 0 : m_nLaserDrilling_InGroup_HoleCount_Backup - 1;
+                                //        m_nDrillingWork_Repeat_Count = 0;
+                                //        m_nDrillingWork_RepeatBundle_Count = 0;         //  이건 무조건 0 이다.
+
+                                //        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+
+                                //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole;
+                                //        break;
+                                //    }
+                                //    else
+                                //    {
+                                //        timer_LaserDrillingWork.Enabled = false;
+                                //        m_bExit = true;
+                                //        MessageBox.Show($"DividedRegion ScannerOnly Drilling, List Buffer 데이터 추가 실패\r\n\r\n[재시도 회수 초과]");
+
+                                //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                                //    }
+                                //}
+                                //else        //  기존 코드 (맨 아래 2줄)
+                                {
+                                    m_nLaserDrilling_InGroup_HoleCount_Backup = m_nLaserDrilling_InGroup_HoleCount;
+
+                                    m_nListBeginRetry_Count = 0;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
+                                }
+                            }
+                        }
+                        else
+                        //m_nDrillingWork_Repeat_Count++;
+                        //if (m_nDrillingWork_Repeat_Count < Config.ParamConfig.Drilling_Repeat_Count)                            //  Drilling 반복 회수 이내이면? --> 다시 Drilling
+                        //{
+                        //    m_nDrillingWork_RepeatBundle_Count++;
+                        //    if (m_nDrillingWork_RepeatBundle_Count < Config.ParamConfig.RepetitionsBundle)
+                        //    {
+                        //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole;
+                        //    }
+                        //    else
+                        //    {
+                        //        if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                        //        {
+                        //            m_bDivRegionList_Success &= rtcSyncAxis.ListEnd();
+                        //        }
+
+                        //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
+                        //    }
+                        //}
+                        //else
+                        {
+                            //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                            {
+                                m_bDivRegionList_Success &= rtc.ListEnd();
+                                Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List End");
+                            }
+
+                            //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
+                            //if (!m_bDivRegionList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)                      //  ListBegin 이나, ListDelay 나 ListSpeed 가 실패일 경우
+                            //{
+                            //    m_nMarkerFunc_RetryCount = Config.ParamConfig.Marker_ListBegin_Retry <= 0 ? 10 : Config.ParamConfig.Marker_ListBegin_Retry;
+                            //    if (m_nListBeginRetry_Count++ < m_nMarkerFunc_RetryCount)
+                            //    {
+                            //        //  묶음 개수 줄이기
+                            //        //if (m_nRepetation_Bundle > 25)
+                            //        //{
+                            //        //    m_nRepetation_Bundle -= 3;
+                            //        //}
+                            //        //else if (m_nRepetation_Bundle > 15)
+                            //        //{
+                            //        //    m_nRepetation_Bundle -= 2;
+                            //        //}
+                            //        //else if (m_nRepetation_Bundle > 5)
+                            //        //{
+                            //        //    m_nRepetation_Bundle -= 1;
+                            //        //}
+
+                            //        //  10% 씩 줄이기로 변경
+                            //        m_nRepetation_Bundle -= (int)((double)m_nRepetation_Bundle / (double)10.0);
+
+                            //        rtcSyncAxis.CtlAbort();
+                            //        Thread.Sleep(2000);
+                            //        rtcSyncAxis.CtlReset();
+
+                            //        m_bDivRegionList_Success = true;
+                            //        var rtcMode = rtcSyncAxis as IRtcSyncAxis;                                  //  syncAxis
+                            //        Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
+                            //        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, MotionType.ScannerOnly);               //  주의 : syncAxis 에서 드릴링으로 가공하는 데이터는 무조건 "StageAndScanner" 로 가공해야 한다.
+
+                            //        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer 데이터 추가 실패로 List Re-Open");
+
+                            //        //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+                            //        //{
+                            //        //    m_bDivRegionList_Success &= rtcSyncAxis.ListFrequency((float)Config.ParamConfig.Drilling_Frequency, (float)Config.ParamConfig.Drilling_PulseWidth);
+                            //        //}
+
+                            //        m_bDivRegionList_Success &= rtcSyncAxis.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+                            //                                                                (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+                            //        m_bDivRegionList_Success &= rtcSyncAxis.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+
+                            //        //m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                            //        //m_nDrillingWork_RepeatBundle_Count = m_nDrillingWork_RepeatBundle_Count_Backup <= 0 ? 0 : m_nDrillingWork_RepeatBundle_Count_Backup - 1;
+                            //        m_nLaserDrilling_InGroup_HoleCount = m_nLaserDrilling_InGroup_HoleCount_Backup <= 0 ? 0 : m_nLaserDrilling_InGroup_HoleCount_Backup - 1;
+                            //        m_nDrillingWork_Repeat_Count = 0;
+                            //        m_nDrillingWork_RepeatBundle_Count = 0;         //  이건 무조건 0 이다.
+
+                            //        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+
+                            //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_Hole;
+                            //        break;
+                            //    }
+                            //    else
+                            //    {
+                            //        timer_LaserDrillingWork.Enabled = false;
+                            //        m_bExit = true;
+                            //        MessageBox.Show($"DividedRegion ScannerOnly Drilling, List Buffer 데이터 추가 실패\r\n\r\n[재시도 회수 초과]");
+
+                            //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                            //    }
+                            //}
+                            //else        //  기존 코드 (맨 아래 2줄)
+                            {
+                                //m_nLaserDrilling_InGroup_HoleCount = 0;
+                                m_nLaserDrilling_InGroup_HoleCount_Backup = m_nLaserDrilling_InGroup_HoleCount;
+
+                                m_nListBeginRetry_Count = 0;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
+                            }
+                        }
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect:                                  //  List 에 데이터 추가
+                    //todo : 김영남 속도 개선중 
+
+                    //Scanner 0,0 으로 보내고 실행.
+                    rtc.ListJump(Vector2.Zero);
+                    for (int nObject = 0; nObject < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum; nObject++)
+                    {
+                        switch (m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nObjectType)
+                        {
+                            case (int)ObjectType.OBJECT_POLY:
+
+                                //  Polyline 도형이 직각사각형인지 마름모꼴인지 확인
+                                //  직각사각형 판정 기준 : 0번째 좌표와 1번째 좌표를 비교하여 X 좌표와 Y 좌표가 동일한 값이 있으면 직각사각형으로 본다. (직각사각형이라는 용어가 있나... -_-? 암튼...)
+                                var Data = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint;
+                                PointD[] rData = ResizePoliLine(Data, m_dHoleLayer_Resizing);
+
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling = rData;
+                                //  Rectangle 이고, 가공 사이즈 줄이기 옵션이 활성화 되어 있는 경우, Edge Point 를 줄여서 가공
+
+                                //  첫 번째 Edge Point 로 Jump 이동
+                                entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X -
+                                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y -
+                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+
+                                //  가공 데이터 Center 계산을 위해
+                                entity_Pos_Min.X = double.MaxValue;
+                                entity_Pos_Min.Y = double.MaxValue;
+                                entity_Pos_Max.X = double.MinValue;
+                                entity_Pos_Max.Y = double.MinValue;
+
+                                //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Polyline 완성
+                                for (int nEntity = 1; nEntity < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nEdgePointNum; nEntity++)
+                                {
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                    m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                }
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_CIR:
+                                //  Center 좌표
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X =
+                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X;
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y =
+                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y;
+
+                                //  Circle 이지만, Spiral 가공 옵션이 활성화 되어 있는 경우, Spiral 데이터로 변환하여 가공
+                                //  Hole : Circle 타입으로 가공 (기존 가공 컨셉)
+                                if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Circle)
+                                {
+                                    //if (Config.ParamConfig.bDrillingSizeReduce_Enable)
+                                    //if (Math.Abs(Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_Resizing) > 0.0)
+                                    if (Math.Abs(m_dHoleLayer_Resizing) > 0.0)
+                                    {
+                                        //  반지름에서 Reduce Size 만큼 줄임
+                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].X =
+                                            m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + (/*Config.ParamConfig.Drilling_ReduceSize*/m_dHoleLayer_Resizing / 2.0);
+                                    }
+                                    else
+                                    {
+                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].X =
+                                            m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X;
+                                    }
+
+                                    //  첫 번째 Edge Point 로 Jump 이동. (원 모양이므로 반지름 만큼 왼쪽으로)
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X +
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].X;           //  반지름 값
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    //  Circle 1회 가공일 경우, Circle 그리기 시작하는 위치의 각도를 입력하면 각도에 맞게 이동한다.
+                                    if ((Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetition == 1) &&
+                                        (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time != 0.0))
+                                    {
+                                        //m_strTemp = string.Format("Circle 원 가공 반복 회수 1회, Start Angle : {0:0.000}", Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time);
+                                        //Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                                        entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                        entity_Position_Center.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                        entity_Position_Rot = RotatePoint(entity_Position_Center, entity_Position, DegreeToRadian((double)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time));
+                                        //entity_Position_Rot = RotatePoint_CurPos(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));                                    
+
+                                        entity_Position = entity_Position_Rot;
+                                    }
+                                    else
+                                    {
+                                        //  시작 위치 각도 분할을 사용할 경우 (매번 분할 각도만큼 이동하여 시작)
+                                        if (m_nCircleDrilling_CurrentRotStep >= 1)
+                                        {
+                                            //m_strTemp = string.Format("Circle 원 가공 반복 회수 n회, 계산된 Start Angle : {0:0.000}", (double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree);
+                                            //Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                                            entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                            entity_Position_Center.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                            entity_Position_Rot = RotatePoint(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));
+                                            //entity_Position_Rot = RotatePoint_CurPos(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));                                    
+
+                                            entity_Position = entity_Position_Rot;
+                                        }
+                                    }
+                                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                    //{
+                                    //    m_bDivRegionList_Success &= rtcSyncAxis.ListJump(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
+                                    //}
+                                    //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
+                                    {
+                                        //  원래 꺼
+                                        //entity_Position_Rot = RotatePoint_CurPos(m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter, entity_Position, Math.PI / 2.0);
+
+                                        //  사각형 돌릴 때 쓰던거
+                                        entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                        m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                        //Log.Write("Circle Center", "Arc StatPos X : " + entity_Position_Rot.X.ToString() + ", Y : " + entity_Position_Rot.Y);
+                                    }
+
+                                    //  Arc 구동 
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                    //{
+                                    //    m_bDivRegionList_Success &= rtcSyncAxis.ListArc(new Vector2((float)entity_Position.X, (float)entity_Position.Y), 360.0f);
+                                    //}
+                                    //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
+                                    {
+                                        //  원래 꺼
+                                        //entity_Position_Rot = RotatePoint_CurPos(m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter, entity_Position, Math.PI / 2.0);        //  없던거 추가됨. (원래 있어야 할거 같은데...)
+
+                                        //  사각형 돌릴 때 쓰던거
+                                        entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                        //m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+                                        m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y),
+                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
+                                        //(float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc
+
+
+                                        //Log.Write("Circle Center", "Arc CenterPso X : " + entity_Position_Rot.X.ToString() + ", Y : " + entity_Position_Rot.Y);
+
+                                        //  Test
+                                        //m_strTemp = string.Format("Circle 원 Center 좌표, X : {0:0.000}, Y : {1:0.000}", entity_Position_Rot.X, entity_Position_Rot.Y);
+                                        //Log.Write("SLD_200_CIRCLE", "Auto Run", m_strTemp);
+                                    }
+                                }
+                                //  Hole : Spiral Polyline 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Polyline)
+                                {
+                                    //  Hole 데이터를 이용하여 Spiral 데이터 생성
+                                    LwPolyline lwPolyLineSpiral = new LwPolyline();
+
+                                    //  Spiral 데이터
+                                    //double m_dTemp_OuterDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + 
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameterResizing / 2.0);
+                                    //double m_dTemp_InnerDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X +
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameterResizing / 2.0);
+                                    double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
+                                    double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
+                                    double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
+                                    double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
+
+                                    //  Hole Center
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral Polyline 데이터로 변환 생성 시작");
+
+                                    //if (m_dTemp_AngleFactor < 18)
+                                    //{
+                                    //    m_dTemp_AngleFactor = 18;
+                                    //}
+
+                                    //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
+                                    lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral Polyline 데이터로 변환 생성 완료");
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral Polyline 데이터 List 추가 시작");
+
+                                    //  객체 Edge 좌표 데이터 저장
+                                    var spiralData = lwPolyLineSpiral.Items;
+                                    for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
+                                    {
+                                        if (n_pl == 0)          //  처음에 Jump 이동
+                                        {
+                                            m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
+                                        }
+                                        else                    //  두번째부터 Mark 이동
+                                        {
+                                            m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
+                                        }
+                                    }
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral Polyline 데이터 List 추가 완료");
+
+                                }
+                                //  Hole : Spiral Arc 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Arc)
+                                {
+
+                                    double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
+                                    double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
+                                    double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
+                                    double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
+
+                                    //  Hole Center
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
+
+                                    MarkSpiralArc(m_dTemp_InnerDiameter, m_dTemp_OuterDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
+
+                                }
+                                //  Hole : Spiral Circle 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Circle)
+                                {
+                                    //  Spiral 데이터
+                                    //double m_dTemp_OuterDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + 
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameterResizing / 2.0);
+                                    //double m_dTemp_InnerDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X +
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameterResizing / 2.0);
+                                    double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
+                                    double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
+                                    double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
+                                    double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
+
+                                    //  Hole Center
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+
+                                    //TEST 완료. 이정도면 충분하다.
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
+
+                                    MarkSpiralCircle(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+
+                                    //TEST 완료. 이정도면 충분하다.
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
+
+                                }
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_ARC:
+                                //  Center 좌표
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X =
+                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X;
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y =
+                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y;
+
+                                //  Circle 이지만, Spiral 가공 옵션이 활성화 되어 있는 경우, Spiral 데이터로 변환하여 가공
+
+                                //  Hole : Circle 타입으로 가공 (기존 가공 컨셉)
+                                if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Circle)
+                                {
+                                    //if (Config.ParamConfig.bDrillingSizeReduce_Enable)
+                                    //if (Math.Abs(Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_Resizing) > 0.0)
+                                    if (Math.Abs(m_dHoleLayer_Resizing) > 0.0)
+                                    {
+                                        //  반지름에서 Reduce Size 만큼 줄임
+                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].X =
+                                            m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + (/*Config.ParamConfig.Drilling_ReduceSize*/m_dHoleLayer_Resizing / 2.0);
+                                    }
+                                    else
+                                    {
+                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].X =
+                                            m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X;
+                                    }
+
+                                    //  첫 번째 Edge Point 로 Jump 이동. (원 모양이므로 반지름 만큼 왼쪽으로)
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X +
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].X;           //  반지름 값
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    //  Circle 1회 가공일 경우, Circle 그리기 시작하는 위치의 각도를 입력하면 각도에 맞게 이동한다.
+                                    if ((Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetition == 1) &&
+                                        (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time != 0.0))
+                                    {
+                                        //m_strTemp = string.Format("Arc 원 가공 반복 회수 1회, Start Angle : {0:0.000}", Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time);
+                                        //Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                                        entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                        entity_Position_Center.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                        entity_Position_Rot = RotatePoint(entity_Position_Center, entity_Position, DegreeToRadian((double)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time));
+                                        //entity_Position_Rot = RotatePoint_CurPos(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));                                    
+
+                                        entity_Position = entity_Position_Rot;
+                                    }
+                                    else
+                                    {
+                                        //  시작 위치 각도 분할을 사용할 경우 (매번 분할 각도만큼 이동하여 시작)
+                                        if (m_nCircleDrilling_CurrentRotStep >= 1)
+                                        {
+                                            //m_strTemp = string.Format("Arc 원 가공 반복 회수 n회, 계산된 Start Angle : {0:0.000}", (double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree);
+                                            //Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                                            entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                            entity_Position_Center.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                            entity_Position_Rot = RotatePoint(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));
+                                            //entity_Position_Rot = RotatePoint_CurPos(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));                                    
+
+                                            entity_Position = entity_Position_Rot;
+                                        }
+                                    }
+
+                                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                    //{
+                                    //    m_bDivRegionList_Success &= rtcSyncAxis.ListJump(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
+                                    //}
+                                    //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
+                                    {
+                                        //  원래 꺼
+                                        //entity_Position_Rot = RotatePoint_CurPos(m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter, entity_Position, Math.PI / 2.0);
+
+                                        //  사각형 돌릴 때 쓰던거
+                                        entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                        m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                    }
+
+                                    //  Arc 구동 
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                    //{
+                                    //    m_bDivRegionList_Success &= rtcSyncAxis.ListArc(new Vector2((float)entity_Position.X, (float)entity_Position.Y), 360.0f);
+                                    //}
+                                    //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
+                                    {
+                                        //  원래 꺼
+                                        //entity_Position_Rot = RotatePoint_CurPos(m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter, entity_Position, Math.PI / 2.0);        //  없던거 추가됨. (원래 있어야 할거 같은데...)
+
+                                        //  사각형 돌릴 때 쓰던거
+                                        entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                        //m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+                                        m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y),
+                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
+                                    }
+                                }
+                                //  Hole : Spiral Polyline 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Polyline)
+                                {
+                                    //  Hole 데이터를 이용하여 Spiral 데이터 생성
+                                    LwPolyline lwPolyLineSpiral = new LwPolyline();
+
+                                    //  Spiral 데이터
+                                    double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
+                                    double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
+                                    double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
+                                    double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
+
+                                    //  Hole Center
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Arc 원 데이터를 Spiral 데이터로 변환 생성 시작");
+
+                                    //todo : 김영남 속도 개선중 
+                                    //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
+                                    bool bIsPolyLine = true;
+                                    if (bIsPolyLine)
+                                    {
+                                        lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
+
+                                        Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral 데이터로 변환 생성 완료");
+
+
+                                        Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 시작");
+
+                                        ////  객체 Edge 좌표 데이터 저장
+                                        for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
+                                        {
+                                            if (n_pl == 0)          //  처음에 Jump 이동
+                                            {
+                                                m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
+                                            }
+                                            else                    //  두번째부터 Mark 이동
+                                            {
+                                                m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var spiralData = lwPolyLineSpiral.Items;
+                                        MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+
+                                    }
+                                }
+                                //  Hole : Spiral Arc 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Arc)
+                                {
+                                    //  Spiral 데이터
+                                    //double m_dTemp_OuterDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + 
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameterResizing / 2.0);
+                                    //double m_dTemp_InnerDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X +
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameterResizing / 2.0);
+                                    double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
+                                    double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
+                                    double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
+                                    double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
+
+                                    //  Hole Center
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
+
+                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
+
+                                    ////  데이터 검증용 코드
+                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
+                                    //{
+                                    //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
+                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
+                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
+                                    //}
+                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
+                                    //{
+                                    //    //  Scanner 가공 영역을 넘어가면 저장
+                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize /
+                                }
+                                //  Hole : Spiral Circle 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Circle)
+                                {
+                                    //  Spiral 데이터
+                                    //double m_dTemp_OuterDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + 
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameterResizing / 2.0);
+                                    //double m_dTemp_InnerDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X +
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameterResizing / 2.0);
+                                    double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
+                                    double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
+                                    double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
+                                    double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
+
+                                    //  Hole Center
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
+
+                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
+
+                                    ////  데이터 검증용 코드
+                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
+                                    //{
+                                    //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
+                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
+                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
+                                    //}
+                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
+                                    //{
+                                    //    //  Scanner 가공 영역을 넘어가면 저장
+                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize /
+                                }
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_RECT:
+                                //  첫 번째 Edge Point 로 Jump 이동
+                                entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                //{
+                                //    m_bDivRegionList_Success &= rtcSyncAxis.ListJump(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
+                                //}
+                                //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
+                                {
+                                    entity_Position_Rot = RotatePoint_CurPos(m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter, entity_Position, Math.PI / 2.0);
+
+                                    m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                }
+
+                                //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Rectangle 완성
+                                for (int nEntity = 1; nEntity < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nEdgePointNum; nEntity++)
+                                {
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nEntity].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nEntity].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                    //{
+                                    //    m_bDivRegionList_Success &= rtcSyncAxis.ListMark(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
+                                    //}
+                                    //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
+                                    {
+                                        entity_Position_Rot = RotatePoint_CurPos(m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter, entity_Position, Math.PI / 2.0);
+
+                                        m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                    }
+                                }
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_LINE:
+                                //  첫 번째 Edge Point 로 Jump 이동 (Start)
+                                entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                //{
+                                //    m_bDivRegionList_Success &= rtcSyncAxis.ListJump(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
+                                //}
+                                //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
+                                {
+                                    entity_Position_Rot = RotatePoint_CurPos(m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter, entity_Position, Math.PI / 2.0);
+
+                                    m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                }
+
+                                //  이어서 오는 Edge Point 로 Mark 이동 (End)
+                                entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X -
+                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].Y -
+                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                //{
+                                //    m_bDivRegionList_Success &= rtcSyncAxis.ListMark(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
+                                //}
+                                //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
+                                {
+                                    entity_Position_Rot = RotatePoint_CurPos(m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter, entity_Position, Math.PI / 2.0);
+
+                                    m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                }
+                                break;
+                        }
+                    }
+
+                    //  면 우선 작업 모드일 경우 (4개 면 가공 데이터 리스트에 추가 --> 반복)
+                    if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst &&
+                        ((m_nDrillingData_Type == (int)ObjectType.OBJECT_POLY) || (m_nDrillingData_Type == (int)ObjectType.OBJECT_LINE) ||  //))            //  미세홀 모양이 Polyline, Line 일 경우 (사각형)
+                        (m_nDrillingData_Type == (int)ObjectType.OBJECT_RECT)))                                                                             //  RECT 추가
+                    {
+                        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount++;
+                        if (m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount < 4)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;
+                        }
+                        else
+                        {
+                            m_nDrillingWork_Repeat_Count++;
+                            if (m_nDrillingWork_Repeat_Count < /*Config.ParamConfig.Drilling_Repeat_Count*/m_nDrillingWork_Repeat_Count_Total)                            //  Drilling 반복 회수 이내이면? --> 다시 Drilling
+                            {
+                                //  기존 코드
+                                //m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.EntireDrilling_ScannerOnly_GroupListData_Add;
+
+                                //  묶음 단위로 하기 위해
+                                m_nDrillingWork_RepeatBundle_Count++;
+                                //if (m_nDrillingWork_RepeatBundle_Count < Config.ParamConfig.RepetitionsBundle)
+                                if (m_nDrillingWork_RepeatBundle_Count < m_nRepetation_Bundle)
+                                {
+                                    if (Config.ParamConfig.Drilling_ReverseUse_When_Repeating)         //  반복 가공 시 역방향 모드를 사용할 경우
+                                    {
+                                        m_bDrillingDirection_FwdRev = !m_bDrillingDirection_FwdRev;
+                                    }
+
+                                    m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;
+                                }
+                                else
+                                {
+                                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                    {
+                                        m_bDivRegionList_Success &= rtc.ListEnd();
+                                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List End");
+                                    }
+
+                                    //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
+                                    //if (!m_bDivRegionList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)                      //  ListBegin 이나, ListDelay 나 ListSpeed 가 실패일 경우
+                                    //{
+                                    //    m_nMarkerFunc_RetryCount = Config.ParamConfig.Marker_ListBegin_Retry <= 0 ? 10 : Config.ParamConfig.Marker_ListBegin_Retry;
+                                    //    if (m_nListBeginRetry_Count++ < m_nMarkerFunc_RetryCount)
+                                    //    {
+                                    //        //  묶음 개수 줄이기
+                                    //        //if (m_nRepetation_Bundle > 25)
+                                    //        //{
+                                    //        //    m_nRepetation_Bundle -= 3;
+                                    //        //}
+                                    //        //else if (m_nRepetation_Bundle > 15)
+                                    //        //{
+                                    //        //    m_nRepetation_Bundle -= 2;
+                                    //        //}
+                                    //        //else if (m_nRepetation_Bundle > 5)
+                                    //        //{
+                                    //        //    m_nRepetation_Bundle -= 1;
+                                    //        //}
+
+                                    //        //  10% 씩 줄이기로 변경
+                                    //        m_nRepetation_Bundle -= (int)((double)m_nRepetation_Bundle / (double)10.0);
+
+                                    //        rtcSyncAxis.CtlAbort();
+                                    //        Thread.Sleep(2000);
+                                    //        rtcSyncAxis.CtlReset();
+
+                                    //        m_bDivRegionList_Success = true;
+                                    //        var rtcMode = rtcSyncAxis as IRtcSyncAxis;                                  //  syncAxis
+                                    //        Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
+                                    //        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, MotionType.ScannerOnly);               //  주의 : syncAxis 에서 드릴링으로 가공하는 데이터는 무조건 "StageAndScanner" 로 가공해야 한다.
+
+                                    //        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer 데이터 추가 실패로 List Re-Open");
+
+                                    //        //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+                                    //        //{
+                                    //        //    m_bDivRegionList_Success &= rtcSyncAxis.ListFrequency((float)Config.ParamConfig.Drilling_Frequency, (float)Config.ParamConfig.Drilling_PulseWidth);
+                                    //        //}
+
+                                    //        m_bDivRegionList_Success &= rtcSyncAxis.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+                                    //                                                                (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+                                    //        m_bDivRegionList_Success &= rtcSyncAxis.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+
+                                    //        //m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                    //        //m_nDrillingWork_RepeatBundle_Count = m_nDrillingWork_RepeatBundle_Count_Backup <= 0 ? 0 : m_nDrillingWork_RepeatBundle_Count_Backup - 1;
+                                    //        m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                    //        m_nDrillingWork_RepeatBundle_Count = 0;         //  이건 무조건 0 이다.
+
+                                    //        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;
+                                    //        break;
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        timer_LaserDrillingWork.Enabled = false;
+                                    //        m_bExit = true;
+                                    //        MessageBox.Show($"DividedRegion ScannerOnly Drilling, List Buffer 데이터 추가 실패\r\n\r\n[재시도 회수 초과]");
+
+                                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                                    //    }
+                                    //}
+                                    //else        //  기존 코드 (맨 아래 2줄)
+                                    {
+                                        m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
+                                        m_nListBeginRetry_Count = 0;
+
+                                        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
+                                    }
+                                }
+                            }
+                            else                                                                                                                        //  반복 회수 초과
+                            {
+                                //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                {
+                                    m_bDivRegionList_Success &= rtc.ListEnd();
+                                    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List End");
+                                }
+
+                                //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
+                                //if (!m_bDivRegionList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)                      //  ListBegin 이나, ListDelay 나 ListSpeed 가 실패일 경우
+                                //{
+                                //    m_nMarkerFunc_RetryCount = Config.ParamConfig.Marker_ListBegin_Retry <= 0 ? 10 : Config.ParamConfig.Marker_ListBegin_Retry;
+                                //    if (m_nListBeginRetry_Count++ < m_nMarkerFunc_RetryCount)
+                                //    {
+                                //        //  묶음 개수 줄이기
+                                //        //if (m_nRepetation_Bundle > 25)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 3;
+                                //        //}
+                                //        //else if (m_nRepetation_Bundle > 15)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 2;
+                                //        //}
+                                //        //else if (m_nRepetation_Bundle > 5)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 1;
+                                //        //}
+
+                                //        //  10% 씩 줄이기로 변경
+                                //        m_nRepetation_Bundle -= (int)((double)m_nRepetation_Bundle / (double)10.0);
+
+                                //        rtcSyncAxis.CtlAbort();
+                                //        Thread.Sleep(2000);
+                                //        rtcSyncAxis.CtlReset();
+
+                                //        m_bDivRegionList_Success = true;
+                                //        var rtcMode = rtcSyncAxis as IRtcSyncAxis;                                  //  syncAxis
+                                //        Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
+                                //        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, MotionType.ScannerOnly);               //  주의 : syncAxis 에서 드릴링으로 가공하는 데이터는 무조건 "StageAndScanner" 로 가공해야 한다.
+
+                                //        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer 데이터 추가 실패로 List Re-Open");
+
+                                //        //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+                                //        //{
+                                //        //    m_bDivRegionList_Success &= rtcSyncAxis.ListFrequency((float)Config.ParamConfig.Drilling_Frequency, (float)Config.ParamConfig.Drilling_PulseWidth);
+                                //        //}
+
+                                //        m_bDivRegionList_Success &= rtcSyncAxis.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+                                //                                                                (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+                                //        m_bDivRegionList_Success &= rtcSyncAxis.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+
+                                //        //m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                //        //m_nDrillingWork_RepeatBundle_Count = m_nDrillingWork_RepeatBundle_Count_Backup <= 0 ? 0 : m_nDrillingWork_RepeatBundle_Count_Backup - 1;
+                                //        m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                //        m_nDrillingWork_RepeatBundle_Count = 0;         //  이건 무조건 0 이다.
+
+                                //        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;
+                                //        break;
+                                //    }
+                                //    else
+                                //    {
+                                //        timer_LaserDrillingWork.Enabled = false;
+                                //        m_bExit = true;
+                                //        MessageBox.Show($"DividedRegion ScannerOnly Drilling, List Buffer 데이터 추가 실패\r\n\r\n[재시도 회수 초과]");
+
+                                //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                                //    }
+                                //}
+                                //else        //  기존 코드 (맨 아래 2줄)
+                                {
+                                    //m_nDrillingWork_Repeat_Count = 0;
+                                    m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
+                                    m_nListBeginRetry_Count = 0;
+
+                                    m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
+                                }
+                            }
+                        }
+                    }
+                    else                                                                                                                            //  미세홀 모양이 Circle 일 경우 (원형)
+                    {
+                        //  Circle 이지만, Spiral 가공 옵션이 활성화 되어 있는 경우, Spiral 데이터로 변환하여 가공 (위에서 모든 데이터 처리하여 반복  처리할 필요 없음)
+
+                        //  Hole : Circle 타입으로 가공 (기존 가공 컨셉)
+                        if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Circle)
+                        {
+                            //  Circle Drilling 일 경우, 시작 각도 분할일 경우 각도 증가 (0 -> 1 -> 2 -> ... -> max -> 0 -> 1 -> ...)
+                            if ((m_nDrillingData_Type == (int)ObjectType.OBJECT_CIR) || (m_nDrillingData_Type == (int)ObjectType.OBJECT_ARC))
+                            {
+                                //if (Config.ParamConfig.CircleStartPosDiv != 0)
+                                if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision != 0)
+                                {
+                                    m_nCircleDrilling_CurrentRotStep++;
+
+                                    //if (m_nCircleDrilling_CurrentRotStep >= Config.ParamConfig.CircleStartPosDiv)
+                                    if (m_nCircleDrilling_CurrentRotStep >= Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision)
+                                    {
+                                        m_nCircleDrilling_CurrentRotStep = 0;
+                                    }
+                                }
+                            }
+
+                            m_nDrillingWork_Repeat_Count++;
+                            if (m_nDrillingWork_Repeat_Count < /*Config.ParamConfig.Drilling_Repeat_Count*/m_nDrillingWork_Repeat_Count_Total)                            //  Drilling 반복 회수 이내이면? --> 다시 Drilling
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Hole 반복 회수 이내");
+
+                                m_nDrillingWork_RepeatBundle_Count++;
+                                //if (m_nDrillingWork_RepeatBundle_Count < Config.ParamConfig.RepetitionsBundle)
+                                if (m_nDrillingWork_RepeatBundle_Count < m_nRepetation_Bundle)
+                                {
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;
+                                }
+                                else
+                                {
+                                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                    {
+                                        m_bDivRegionList_Success &= rtc.ListEnd();
+                                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List End");
+                                    }
+
+                                    //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
+                                    //if (!m_bDivRegionList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)                      //  ListBegin 이나, ListDelay 나 ListSpeed 가 실패일 경우
+                                    //{
+                                    //    m_nMarkerFunc_RetryCount = Config.ParamConfig.Marker_ListBegin_Retry <= 0 ? 10 : Config.ParamConfig.Marker_ListBegin_Retry;
+                                    //    if (m_nListBeginRetry_Count++ < m_nMarkerFunc_RetryCount)
+                                    //    {
+                                    //        //  묶음 개수 줄이기
+                                    //        //if (m_nRepetation_Bundle > 25)
+                                    //        //{
+                                    //        //    m_nRepetation_Bundle -= 3;
+                                    //        //}
+                                    //        //else if (m_nRepetation_Bundle > 15)
+                                    //        //{
+                                    //        //    m_nRepetation_Bundle -= 2;
+                                    //        //}
+                                    //        //else if (m_nRepetation_Bundle > 5)
+                                    //        //{
+                                    //        //    m_nRepetation_Bundle -= 1;
+                                    //        //}
+
+                                    //        //  10% 씩 줄이기로 변경
+                                    //        m_nRepetation_Bundle -= (int)((double)m_nRepetation_Bundle / (double)10.0);
+
+                                    //        rtcSyncAxis.CtlAbort();
+                                    //        Thread.Sleep(2000);
+                                    //        rtcSyncAxis.CtlReset();
+
+                                    //        m_bDivRegionList_Success = true;
+                                    //        var rtcMode = rtcSyncAxis as IRtcSyncAxis;                                  //  syncAxis
+
+                                    //        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, MotionType.ScannerOnly);               //  주의 : syncAxis 에서 드릴링으로 가공하는 데이터는 무조건 "StageAndScanner" 로 가공해야 한다.
+
+                                    //        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer 데이터 추가 실패로 List Re-Open");
+
+                                    //        //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+                                    //        //{
+                                    //        //    m_bDivRegionList_Success &= rtcSyncAxis.ListFrequency((float)Config.ParamConfig.Drilling_Frequency, (float)Config.ParamConfig.Drilling_PulseWidth);
+                                    //        //}
+
+                                    //        m_bDivRegionList_Success &= rtcSyncAxis.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+                                    //                                                                (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+                                    //        m_bDivRegionList_Success &= rtcSyncAxis.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+
+                                    //        //m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                    //        //m_nDrillingWork_RepeatBundle_Count = m_nDrillingWork_RepeatBundle_Count_Backup <= 0 ? 0 : m_nDrillingWork_RepeatBundle_Count_Backup - 1;
+                                    //        m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                    //        m_nDrillingWork_RepeatBundle_Count = 0;         //  이건 무조건 0 이다.
+
+                                    //        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;
+                                    //        break;
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        timer_LaserDrillingWork.Enabled = false;
+                                    //        m_bExit = true;
+                                    //        MessageBox.Show($"DividedRegion ScannerOnly Drilling, List Buffer 데이터 추가 실패\r\n\r\n[재시도 회수 초과]");
+
+                                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                                    //    }
+                                    //}
+                                    //else        //  기존 코드 (맨 아래 2줄)
+                                    {
+                                        m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
+                                        m_nListBeginRetry_Count = 0;
+                                        //todo : 김영남 속도 개선중 
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
+                                    }
+                                }
+                            }
+                            else                                                                                                                        //  반복 회수 초과
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Hole 반복 회수 초과");
+
+                                //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                {
+                                    m_bDivRegionList_Success &= rtc.ListEnd();
+                                    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List End");
+                                }
+
+                                //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
+                                //if (!m_bDivRegionList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)                      //  ListBegin 이나, ListDelay 나 ListSpeed 가 실패일 경우
+                                //{
+                                //    m_nMarkerFunc_RetryCount = Config.ParamConfig.Marker_ListBegin_Retry <= 0 ? 10 : Config.ParamConfig.Marker_ListBegin_Retry;
+                                //    if (m_nListBeginRetry_Count++ < m_nMarkerFunc_RetryCount)
+                                //    {
+                                //        //  묶음 개수 줄이기
+                                //        //if (m_nRepetation_Bundle > 25)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 3;
+                                //        //}
+                                //        //else if (m_nRepetation_Bundle > 15)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 2;
+                                //        //}
+                                //        //else if (m_nRepetation_Bundle > 5)
+                                //        //{
+                                //        //    m_nRepetation_Bundle -= 1;
+                                //        //}
+
+                                //        //  10% 씩 줄이기로 변경
+                                //        m_nRepetation_Bundle -= (int)((double)m_nRepetation_Bundle / (double)10.0);
+
+                                //        rtcSyncAxis.CtlAbort();
+                                //        Thread.Sleep(2000);
+                                //        rtcSyncAxis.CtlReset();
+
+                                //        m_bDivRegionList_Success = true;
+                                //        var rtcMode = rtcSyncAxis as IRtcSyncAxis;                                  //  syncAxis
+
+                                //        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, MotionType.ScannerOnly);               //  주의 : syncAxis 에서 드릴링으로 가공하는 데이터는 무조건 "StageAndScanner" 로 가공해야 한다.
+
+                                //        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer 데이터 추가 실패로 List Re-Open");
+
+                                //        //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+                                //        //{
+                                //        //    m_bDivRegionList_Success &= rtcSyncAxis.ListFrequency((float)Config.ParamConfig.Drilling_Frequency, (float)Config.ParamConfig.Drilling_PulseWidth);
+                                //        //}
+
+                                //        m_bDivRegionList_Success &= rtcSyncAxis.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+                                //                                                                (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+                                //        m_bDivRegionList_Success &= rtcSyncAxis.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+
+                                //        //m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                //        //m_nDrillingWork_RepeatBundle_Count = m_nDrillingWork_RepeatBundle_Count_Backup <= 0 ? 0 : m_nDrillingWork_RepeatBundle_Count_Backup - 1;
+                                //        m_nDrillingWork_Repeat_Count = m_nDrillingWork_Repeat_Count_Backup <= 0 ? 0 : m_nDrillingWork_Repeat_Count_Backup - 1;
+                                //        m_nDrillingWork_RepeatBundle_Count = 0;         //  이건 무조건 0 이다.
+
+                                //        m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;
+                                //        break;
+                                //    }
+                                //    else
+                                //    {
+                                //        timer_LaserDrillingWork.Enabled = false;
+                                //        m_bExit = true;
+                                //        MessageBox.Show($"DividedRegion ScannerOnly Drilling, List Buffer 데이터 추가 실패\r\n\r\n[재시도 회수 초과]");
+
+                                //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                                //    }
+                                //}
+                                //else        //  기존 코드 (맨 아래 2줄)
+                                {
+                                    //m_nDrillingWork_Repeat_Count = 0;
+                                    m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
+                                    m_nListBeginRetry_Count = 0;
+                                    //m_nDrillingWork_Repeat_Count = 0;
+
+                                    //todo : 김영남 속도 개선중 
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
+                                }
+                            }
+                        }
+                        //  Hole : Spiral 타입으로 가공
+                        else if ((Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Polyline) ||
+                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Arc) ||
+                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Circle))
+                        {
+                            //  Spiral 은 Revolution 만큼 데이터를 집어넣기 때문에 반복 회수를 사용하지 않는다.
+                            //  위에서 데이터를 다 넣었으므로 바로 Execute
+
+                            m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
+                            m_nListBeginRetry_Count = 0;
+
+                            m_bDivRegionList_Success &= rtc.ListEnd();
+
+                            //todo : 김영남 속도 개선중 
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
+                        }
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute:                              //  List 실행
+
+                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                    {
+                        m_bDivRegionList_Success &= rtc.ListExecute(Config.ParamConfig.BusyWait_MarkingComplete);
+
+                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List 실행 (Execute)");
+                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 시작");
+                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+
+                        socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nDrillingWork_Group_Count);
+                        if (socket != null)
+                        {
+                            socket.IsDrilled = true;
+                            DrillingManager.MarkAsChanged();
+                            Log.Write("DrillStatus", $"[Start] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 시작됨.");
+                        }
+
+                        Thread.Sleep(200);
+                    }
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionLaserBusyCheck;     //   EntireDrilling_ScannerOnly_GroupListData_ExecuteCheck;
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_ExecuteCheck:                                //  List 실행 되었는지 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 100) && (rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionLaserBusyCheck;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionLaserBusyCheck:                                //  가공 완료되었는지 확인
+
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 300) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) &&
+                        !rtc.CtlGetStatus(RtcStatus.Busy))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List 가공 완료");
+
+                        //m_nLaserDrilling_ScannerOnly_GroupCount++;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.EntireDrilling_ScannerOnly_GroupRemainedCheck;
+                        //  Circle 가공을 Spiral 데이터로 변환하여 가공할 경우 반복 하지 않는다.
+                        //  Hole : Circle 로 가공할 경우 (기존 방법))
+                        if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Circle)
+                        {
+                            if (m_nDrillingWork_Repeat_Count < /*Config.ParamConfig.Drilling_Repeat_Count*/m_nDrillingWork_Repeat_Count_Total)                            //  Drilling 반복 회수 이내이면? --> 다시 Drilling
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 반복 회수 이내, List Open");
+                                m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
+                                m_nDrillingWork_RepeatBundle_Count = 0;
+                                m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
+                                //  재시도 회수 리셋
+                                m_nListBeginRetry_Count = 0;
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListOpen;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 반복 회수 도달");
+
+                                //m_nLaserDrilling_ScannerOnly_GroupCount++;
+                                m_nDividedRegion_Region_CurrentIndex++;
+
+                                m_nDrillingWork_RepeatBundle_Count = 0;
+
+                                m_nDrillingWork_Repeat_Count_Backup = 0;
+                                m_nDrillingWork_Repeat_Count = 0;
+                                m_nUnfollow_TryCount = 0;
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
+                            }
+                        }
+                        //  Hole : Spiral 로 가공할 경우
+                        else
+                        {
+                            Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Spiral 가공, 반복 회수 도달");
+
+                            //m_nLaserDrilling_ScannerOnly_GroupCount++;
+                            m_nDividedRegion_Region_CurrentIndex++;
+
+                            m_nDrillingWork_Repeat_Count_Backup = 0;
+                            m_nUnfollow_TryCount = 0;
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
+                        }
+                    }
+                    break;
+                /// <summary>
+                /// 미세홀 본 가공 (기존 방법) - 끝
+                /// </summary>                    
+                //////////////////////////
+
+                case (int)LaserDrilling_Step.DrillingWork_CompleteCheck:            //  Drilling 작업 완료 확인                    
+
+                    Log.Write("SLD-200", "Auto Run", "Layer 가공 완료. 가공할 Layer 가 남아있는지 체크하러 이동.");
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                    break;
+
+
+
+
+
+                // 상 위 시컨스 동작 중 NG 발생 시 아래 fail 조건부터 시컨스 진행함.
+                case (int)LaserDrilling_Step.Fail:
+
+                    layer = DrillingManager.GetLayer(GetCurrentLayerEnum(m_LayerType));
+                    if (layer != null)
+                    {
+                        foreach (var socketNum in layer.SocketList)
+                        {
+                            if (!socketNum.IsDrilled)
+                            {
+                                SetDrillResult(layer.LayerName, socketNum.SocketNumber, false);
+                            }
+                        }
+                    }
+
+                    Log.Write("DrillStatus", "[Fail] 레이저 가공 시퀀스 실패 종료");
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+                    break;
+
+                case (int)LaserDrilling_Step.LaserOff2:                                              //  레이저 Off
+
+                    m_bAlignCompleted = false;                                                      //  가공이 완료되었으므로, Align 변수 false 로
+                    TickCount_Start((int)TickType.TICK_MAIN);
+                    m_nUnfollow_TryCount = 0;
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2_Check;
+                    break;
+
+
+                case (int)LaserDrilling_Step.LaserOff2_Check:                                        //  레이저 Off 확인
+                    if (rtc.CtlGetStatus(RtcStatus.NotBusy))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Laser Idle Check");
+
+                        //스케너 초기화 하자. 여기서!
+                        if (Equipment.Machine_LaserType_CO2)
+                        {
+                            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+                            {
+                                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                            }
+                        }
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos;
+                    }
+                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
+                    //{
+                    //    timer_LaserDrillingWork.Enabled = false;
+
+                    //    MessageBox.Show("Error", "Laser Off 실패");
+
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                    //}
+                    break;
+
+                case (int)LaserDrilling_Step.StageXY_MoveUnloadingPos:                              //  XY 축 Unloading 위치로 이동
+
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+                        {
+                            LaserDrilling_StepStageXY_MoveUnloadingPos(out lfVelocity, out lfAccDec);
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck;
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 3000)
+                    {
+                        LaserDrilling_StepStageXY_MoveUnloadingPos(out lfVelocity, out lfAccDec);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck:                 //  XY 축 Unloading 위치로 이동 완료 체크
+
+                    tempStep = m_nLaserDrilling_MainStep;
+                    if (CheckAxesMotionDoneWithRetry(
+                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                        ref tempStep,
+                        (int)LaserDrilling_Step.StageXY_MoveUnloadingPos))                                      /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
+                    {
+                        strTemp = "Stage XY축, Unloading 위치로 이동 완료";
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_Off;
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = tempStep;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DustCollector_Off:                                     //  집진기 Off
+
+                    //workStageParameter.DO_DustCollector_OnOff(false);
+
+                    Log.Write("SLD-200", "Auto Run", "Unloading 위치 이동과 동시에 집진기 Off 시도");
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_Off_Check;
+                    break;
+
+
+                case (int)LaserDrilling_Step.DustCollector_Off_Check:                               //  집진기 Off 확인
+                                                                                                    //if (!laserDrillingParameter.DI_DustCollector_On() && laserDrillingParameter.DI_DustCollector_Off())
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Complete;
+
+                    break;
+
+                case (int)LaserDrilling_Step.Complete:
+
+                    strTemp = string.Format("전체 가공 완료");
+                    Log.Write("SLD-200", "Auto Run", strTemp);
+
+                    // 시점 변경 필요함.
+                    //Equipment.m_nSerialNumberMarkingCount++;
+
+                    //Cycle Time
+                    DrillingManager.CycleTimer_DoneModuleCount++;
+                    DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
+
+                    DrillingManager.SaveLotLog();                     // 최신 로그 저장
+
+                    strTemp = string.Format("LaserDrillingOneCycle Time: {0:0.000} sec", DrillingManager.CycleTimer_LaserDrilling.Latest.Interval.TotalSeconds);
+                    Log.Write("SLD-200", "Auto Run", strTemp);
+
+                    workStageParameter.DO_AirCurtain_Purge(false);
+
+                    if (!Equipment.AutoRunStatus &&
+                            Equipment.SemiAutoEnable &&
+                            _semiAutoRequest == SemiAutoStep.Drilling)
+                    {
+                        SetStageComplete(SemiAutoStep.Drilling, true);
+                        Equipment.SemiAutoEnable = false;
+
+                        m_LaserDrillingWork_Start = false;
+                        m_MainWork_Start = false;
+                        m_SubWork_Start = false;
+                        m_ProductAlign_Start = false;
+                    }
+
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        Equipment.SelectRunEnable_New = false; // 선택 가공 모드 종료
+                    }
+
+                    m_bLaserDrilling_Complete = true;
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                    break;
+            }
+
+            if (currentStep != m_prevLaserDrillingStep)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}");
+                Log.Write("Seq_Step", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}");
+                m_prevLaserDrillingStep = currentStep;
+            }
+            return 0;
+        }
+
+        private int LaserDrilling_StepDrillingData_SocketRemainedCheck_SelectMode()
+        {
+            // Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use 수행 시
+            // Hole 가공 ( socket 가공) 은 하지 않는다! 
+            int nextStep = 0;
+            switch (m_LayerType)
+            {
+                case LayerType.LAYER_DRILLING:
+
+                    if (m_nDrillingWork_Group_Count < m_stDividedRegion_GroupData[0].nGroup_Num)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
+
+                        if (Equipment.SelectRunEnable_New)
+                        {
+                            var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+
+                            if (socket == null || !socket.IsSelected)
+                            {
+                                // 선택되지 않은 소켓이면 건너뜀
+                                m_nDrillingWork_Group_Count++;
+
+                                nextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                return (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                            }
+                        }
+
+                        m_bDrillingWork_Thruhole_Exist = false;
+                        m_bDrillingWork_Outline_Exist = false;
+
+                        //  가공중인 소켓 좌표 (메인 화면 표시용)
+                        Main_SocketPositions_CurrentSocketPosition.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.X;
+                        Main_SocketPositions_CurrentSocketPosition.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.Y;
+                        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
+                        Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  진행중인 소켓 번호
+                        Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
+                        {
+                            if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && 
+                                (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole50))
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Hole Layer 2 ~ 50 은 Socket Align 이나 Height Check 를 다시 하지 않음.");
+                                nextStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;
+                            }
+                            else
+                            {
+                                if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+                                {
+                                    Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : On");
+
+                                    //  Fiducial Mark 가 있는지? 없으면 Socket Align 할 필요 없지
+                                    int m_nFiducial_Num = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dFiducialPos.Length;
+                                    bool m_bFiducial_Exist = false;
+                                    if (m_nFiducial_Num > 0)
+                                    {
+                                        for (int i = 0; i < m_nFiducial_Num; i++)
+                                        {
+                                            if ((m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dFiducialPos[i].X != 0.0) ||
+                                                (m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dFiducialPos[i].Y != 0.0))
+                                            {
+                                                m_bFiducial_Exist = true;
+                                            }
+                                        }
+
+                                        if (m_bFiducial_Exist)
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 존재하므로 Socket Align 진행.");
+
+                                            nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Start;
+                                        }
+                                        else
+                                        {
+                                            if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                            {
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드 On");
+
+                                                nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                            }
+                                            else
+                                            {
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+
+                                                SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                                m_dZOffset_SocketHeightCheck = 0.0;
+                                                nextStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                 //  분할 영역 Drilling 작업 시작
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드 On");
+
+                                            nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                        }
+                                        else
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+
+                                            SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                            m_dZOffset_SocketHeightCheck = 0.0;
+                                            nextStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                 //  분할 영역 Drilling 작업 시작
+                                        }
+                                    }
+                                }
+                                else if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                {
+                                    Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : On");
+                                    nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : Off");
+
+                                    SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                    m_dZOffset_SocketHeightCheck = 0.0;
+                                    nextStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                 //  분할 영역 Drilling 작업 시작
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+
+                        //  Thruhole, Outline, Marking 등의 Layer 가 있는지 체크. 
+                        //  Socket Align 에 실패하여 가공하지 않고 건너 뛴 Socket 의 Thruhole 데이터도
+                        //  무조건 가공해야 하기 때문에 얼라인 보정이 필요하다. (Press 합착을 위한 가이드 Pin 위치이기 때문에)
+                        //
+                        //  !!!체크 필요!!!!
+                        //  Thruhole 은 기구 가이드 Pin 자리이기 때문에 무조건 뚫어야 하지만, Outline 이나 Marking 의 경우는????  
+                        //  Hole1 Layer 와 Thruhole Layer 조합일 때 진행해야 하는 부분인데, Thruhole Layer 대신 Outline 이나 Marking Layer 로 이루어진 조합이라면??? 
+                        //  일단 Hole1 과 Thruhole Layer 가 포함된 경우에만 실패한 소켓들 전부 얼라인 하는 것으로 하자.
+                        //
+
+                        if (m_AlignMode == AlignMode.GoldPowder)
+                        {
+                            if (m_bCO2_repairMode)
+                            {
+                                m_bPassedSocket_Exist = false;
+                                m_nSocketNum_forFailedSocket_Align = -1;
+                                if (m_stThruHole_SocketData_ProcessingFlag != null)
+                                {
+                                    if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
+                                    {
+                                        //  가장 마지막에 Align 성공한 Socket 위치에서 얼라인을 한다.
+                                        for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag.Length; i++)
+                                        {
+                                            if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == true)
+                                            {
+                                                m_nSocketNum_forFailedSocket_Align = i;
+                                            }
+                                            else
+                                            {
+                                                m_bPassedSocket_Exist = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // goldPowder 실패시에는 그냥 소켓 얼라인 정보로 수행.
+                                m_bPassedSocket_Exist = false;
+                                m_nSocketNum_forFailedSocket_Align = -1;
+                            }
+                        }
+                        else
+                        {
+                            m_bPassedSocket_Exist = false;
+                            m_nSocketNum_forFailedSocket_Align = -1;
+                            if (m_stThruHole_SocketData_ProcessingFlag != null)
+                            {
+                                if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
+                                {
+                                    //  가장 마지막에 Align 성공한 Socket 위치에서 얼라인을 한다.
+                                    for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag.Length; i++)
+                                    {
+                                        if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == true)
+                                        {
+                                            m_nSocketNum_forFailedSocket_Align = i;
+                                        }
+                                        else
+                                        {
+                                            m_bPassedSocket_Exist = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (m_bPassedSocket_Exist && (m_nSocketNum_forFailedSocket_Align != -1))            //  가공을 건너 뛴 Socket 이 있고, 건너 뛴 Socket 보정을 위한 Align Socket 위치 번호가 있을 경우
+                        {
+                            string m_strTemp = string.Format("Socket Align 실패한 Socket 이 있음. Align 재시도를 위한 Socket 번호 : {0}", m_nSocketNum_forFailedSocket_Align);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            //nextStep = (int)LaserDrilling_Step.DrillingData_FailedSocket_Start;
+                            nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;                 //  분할 영역 Drilling 작업 시작
+                        }
+                        else                                                                                //  가공을 건너 뛴 Socket 이 없거나, Socket 보정을 위한 Align 성공한 Socket 번호가 없을 경우, 다음 Layer 확인하러...
+                        {
+                            string m_strTemp = string.Format("Socket Align 실패한 Socket 없음. 다음 Layer 확인.");
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            // 공통 자동 완료 마킹
+                            {
+                                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                var layer = DrillingManager.GetLayer(layerEnum);
+                                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                                if (layer != null && socket != null)
+                                {
+                                    SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                }
+                            }
+
+                            m_nLaserDrilling_LayerCount++;
+                            nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                    }
+                    break;
+
+                case LayerType.LAYER_OUTLINE:
+
+                    if (m_bDrillingWork_Hole1_Exist)
+                    {
+                        if (m_nDrillingWork_Group_Count < m_stOutLine_SocketData[0].nSocket_Num)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 가공할 Socket 이 남아 있음");
+
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+
+                                if (socket == null || !socket.IsSelected)
+                                {
+                                    // 선택되지 않은 소켓이면 건너뜀
+                                    m_nDrillingWork_Group_Count++;
+
+                                    nextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    return (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                }
+                            }
+
+                            m_nDrillingWork_Repeat_Count = 0;
+                            m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+
+                            m_nOutLine_ObjectDataCount = 0;
+
+                            m_nOutLine_SocketCount = m_nDrillingWork_Group_Count;
+
+                            //  Hole1 Layer 가 있는 경우는, Hole1 Align 시 해당 Socket 의 모든 Layer 데이터가 Align 적용 되기 때문에 바로 가공 진행하도록 한다.
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Hole1 Layer 가 있음. 이미 Align 이 완료된 상태이므로 가공 진행.");
+                            nextStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Marking Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+
+                            m_nLaserDrilling_LayerCount++;
+                            nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                    }
+                    else
+                    {
+                        if (m_nDrillingWork_Group_Count < m_stOutLine_SocketData[0].nSocket_Num)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
+
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+
+                                if (socket == null || !socket.IsSelected)
+                                {
+                                    // 선택되지 않은 소켓이면 건너뜀
+                                    m_nDrillingWork_Group_Count++;
+
+                                    nextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    return (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                }
+                            }
+
+                            m_nDrillingWork_Repeat_Count = 0;
+                            m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+
+                            m_nOutLine_ObjectDataCount = 0;
+
+                            m_nOutLine_SocketCount = m_nDrillingWork_Group_Count;
+
+                            if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : On");
+
+                                int m_nFiducial_Num = m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dFiducialPos.Length; //Fiducial 개수를 뜻함.
+                                bool m_bFiducial_Exist = false;
+                                if (m_nFiducial_Num > 0)
+                                {
+                                    for (int i = 0; i < m_nFiducial_Num; i++)
+                                    {
+                                        if ((m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dFiducialPos[i].X != 0.0) ||
+                                            (m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dFiducialPos[i].Y != 0.0))
+                                        {
+                                            m_bFiducial_Exist = true;
+                                        }
+                                    }
+
+                                    if (m_bFiducial_Exist)
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 존재하므로 Socket Align 진행.");
+
+                                        nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Start;
+                                    }
+                                    else
+                                    {
+                                        if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드 On");
+
+                                            nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                        }
+                                        else
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+
+                                            SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                            m_dZOffset_SocketHeightCheck = 0.0;
+                                            nextStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드 On");
+
+                                        nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                    }
+                                    else
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+
+                                        SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                        m_dZOffset_SocketHeightCheck = 0.0;
+                                        nextStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
+                                    }
+                                }
+                            }
+                            else if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : On");
+                                nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : Off");
+
+                                SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                m_dZOffset_SocketHeightCheck = 0.0;
+                                nextStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
+                            }
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+                            m_nLaserDrilling_LayerCount++;
+                            nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                    }
+                    break;
+
+                case LayerType.LAYER_THRUHOLE:
+                    
+                    if (m_bDrillingWork_Hole1_Exist)
+                    {
+                        if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[0].nSocket_Num)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 가공할 Socket 이 남아 있음");
+
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+
+                                if (socket == null || !socket.IsSelected)
+                                {
+                                    // 선택되지 않은 소켓이면 건너뜀
+                                    m_nDrillingWork_Group_Count++;
+
+                                    nextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    return (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                }
+                            }
+
+                            m_nDrillingWork_Repeat_Count = 0;
+                            m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+                            m_nThruHole_ObjectDataCount = 0;
+                            m_nThruHole_SocketCount = m_nDrillingWork_Group_Count;
+
+                            //  Hole1 Layer 가 있는 경우는, Hole1 Align 시 해당 Socket 의 모든 Layer 데이터가 Align 적용 되기 때문에 바로 가공 진행하도록 한다.
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Hole1 Layer 가 있음. 이미 Align 이 완료된 상태이므로 가공 진행.");
+                            nextStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Marking Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+
+                            m_nLaserDrilling_LayerCount++;
+                            nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                    }
+                    else
+                    {
+                        if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[0].nSocket_Num)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
+
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+
+                                if (socket == null || !socket.IsSelected)
+                                {
+                                    // 선택되지 않은 소켓이면 건너뜀
+                                    m_nDrillingWork_Group_Count++;
+
+                                    nextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    return (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                }
+                            }
+
+                            m_nDrillingWork_Repeat_Count = 0;
+                            m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+                            m_nThruHole_ObjectDataCount = 0;
+                            m_nThruHole_SocketCount = m_nDrillingWork_Group_Count;
+
+                            if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : On");
+
+                                int m_nFiducial_Num = m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dFiducialPos.Length; //Fiducial 개수를 뜻함.
+                                bool m_bFiducial_Exist = false;
+                                if (m_nFiducial_Num > 0)
+                                {
+                                    for (int i = 0; i < m_nFiducial_Num; i++)
+                                    {
+                                        if ((m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dFiducialPos[i].X != 0.0) ||
+                                            (m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dFiducialPos[i].Y != 0.0))
+                                        {
+                                            m_bFiducial_Exist = true;
+                                        }
+                                    }
+
+                                    if (m_bFiducial_Exist)
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 존재하므로 Socket Align 진행.");
+
+                                        nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Start;
+                                    }
+                                    else
+                                    {
+                                        if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드 On");
+
+                                            nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                        }
+                                        else
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+
+                                            SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                            m_dZOffset_SocketHeightCheck = 0.0;
+                                            nextStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드 On");
+
+                                        nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                    }
+                                    else
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+
+                                        SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                        m_dZOffset_SocketHeightCheck = 0.0;
+                                        nextStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
+                                    }
+                                }
+                            }
+                            else if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : On");
+                                nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : Off");
+
+                                SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                m_dZOffset_SocketHeightCheck = 0.0;
+                                nextStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
+                            }
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+                            m_nLaserDrilling_LayerCount++;
+                            nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                    }
+                    break;
+
+                case LayerType.LAYER_MARKING:
+
+                    if (m_bDrillingWork_Hole1_Exist ||
+                        m_bDrillingWork_Thruhole_Exist ||
+                        m_bDrillingWork_Outline_Exist)
+                    {
+                        if (m_nDrillingWork_Group_Count < m_stMarking_SocketData.nRegion_ObjectTotalNum)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 가공할 Socket 이 남아 있음");
+
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+
+                                if (socket == null || !socket.IsSelected)
+                                {
+                                    // 선택되지 않은 소켓이면 건너뜀
+                                    m_nDrillingWork_Group_Count++;
+
+                                    nextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    return (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                }
+                            }
+
+                            m_nDrillingWork_Repeat_Count = 0;
+                            m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+                            m_nDrillingWork_Text_Count = 0;                 //  마킹 글자 Count
+                            m_nDrillingWork_Element_Count = 0;              //  마킹 글자 별 Element Count
+                            m_nMarking_ObjectDataCount = 0;
+                            m_nMarking_SocketCount = m_nDrillingWork_Group_Count;
+
+                            //  Hole1 Layer 가 있는 경우는, Hole1 Align 시 해당 Socket 의 모든 Layer 데이터가 Align 적용 되기 때문에 바로 가공 진행하도록 한다.
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Hole1 Layer 가 있음. 이미 Align 이 완료된 상태이므로 가공 진행.");
+                            nextStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Marking Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+
+                            m_nLaserDrilling_LayerCount++;
+                            nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                    }
+                    else
+                    {
+                        //if (m_nDrillingWork_Group_Count < m_stMarking_SocketData.nRegion_ObjectCount)
+                        if (m_nDrillingWork_Group_Count < m_stMarking_SocketData.nRegion_ObjectTotalNum)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
+
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+
+                                if (socket == null || !socket.IsSelected)
+                                {
+                                    // 선택되지 않은 소켓이면 건너뜀
+                                    m_nDrillingWork_Group_Count++;
+
+                                    nextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    return (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                }
+                            }
+
+                            m_nDrillingWork_Repeat_Count = 0;
+                            m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+                            m_nDrillingWork_Text_Count = 0;                 //  마킹 글자 Count
+                            m_nDrillingWork_Element_Count = 0;              //  마킹 글자 별 Element Count
+                            m_nMarking_ObjectDataCount = 0;
+                            m_nMarking_SocketCount = m_nDrillingWork_Group_Count;
+ 
+                            if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : On");
+                                int m_nFiducial_Num = m_stMarking_SocketData.m_stMarking_ObjectData[0].dFiducialPos.Length; //Fiducial 개수를 뜻함.
+                                bool m_bFiducial_Exist = false;
+                                if (m_nFiducial_Num > 0)
+                                {
+                                    for (int i = 0; i < m_nFiducial_Num; i++)
+                                    {
+                                        if ((m_stMarking_SocketData.m_stMarking_ObjectData[0].dFiducialPos[i].X != 0.0) ||
+                                            (m_stMarking_SocketData.m_stMarking_ObjectData[0].dFiducialPos[i].Y != 0.0))
+                                        {
+                                            m_bFiducial_Exist = true;
+                                        }
+                                    }
+                                    if (m_bFiducial_Exist)
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 존재하므로 Socket Align 진행.");
+                                        nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Start;
+                                    }
+                                    else
+                                    {
+                                        if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드 On");
+                                            nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                        }
+                                        else
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+                                            SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                            m_dZOffset_SocketHeightCheck = 0.0;
+                                            nextStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드 On");
+                                        nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                    }
+                                    else
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+
+                                        SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                        m_dZOffset_SocketHeightCheck = 0.0;
+                                        nextStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
+                                    }
+                                }
+                            }
+                            else if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : On");
+                                nextStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : Off");
+
+                                SetStageComplete(SemiAutoStep.MeasureHeight, true);
+                                m_dZOffset_SocketHeightCheck = 0.0;
+                                nextStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
+                            }
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+                            m_nLaserDrilling_LayerCount++;
+                            nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        }
+                    }
+
+                    break;
+            }
+
+            return nextStep;
+        }
+
+        public bool IsCurrentSocketSelected(LayerType layerType, int socketIndex)
+        {
+            var targetLayer = DrillingManager.LayerList
+                .FirstOrDefault(layer => layer.LayerType == layerType);
+
+            if (targetLayer == null)
+                return false;
+
+            if (socketIndex < 0 || socketIndex >= targetLayer.SocketList.Count)
+                return false;
+
+            return targetLayer.SocketList[socketIndex].IsSelected;
+        }
+
+        private string LaserDrillingStepSetDrillingParam_SelectMode()
+        {
+            string m_strTemp = "";
+
+            switch (m_LayerType)
+            {
+                case LayerType.LAYER_DRILLING:
+
+                    Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Drilling (Hole1)");
+
+                    m_strTemp = string.Format("Layer Count : {0}, Layer Index : {1}",
+                    m_nLaserDrilling_LayerCount, m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]);
+                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                    m_bDrillingWork_Hole1_Exist = true;
+                    //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        m_strTemp = string.Format("선택 가공. 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+                    else
+                    {
+                        m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
+                        m_strTemp = string.Format("전체 가공. 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+
+                    m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+                    m_nHoleLayer_ProcessIndex = 0;
+                    m_nHoleLayer_ProcessIndex_Count = 0;                  //  Hole Layer Process Index (0 부터 시작해서 최대 3까지)
+                                                                          //  m_nHoleLayer_ProcessIndex : 0 (Hole1)
+                                                                          //  m_nHoleLayer_ProcessIndex : 1 (Hole2)
+                                                                          //  m_nHoleLayer_ProcessIndex : 2 (Hole3)
+                                                                          //  m_nHoleLayer_ProcessIndex : 3 (Hole4)
+                                                                          //  ~~
+                                                                          //  m_nHoleLayer_ProcessIndex : 10 (Hole10)
+
+                    m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
+                    m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
+                    m_dZOffset_SocketHeightCheck = 0.0;
+
+                    // 현재 설정된 묶음 개수 가져오기 (작업 파일을 Open 할 때마다 묶음 개수를 원래대로)
+                    // m_nRepetation_Bundle = Config.ParamConfig.RepetitionsBundle;
+                    // Equipment.WorkStartTick_Drilling = Environment.TickCount;                   //  Drilling Tick Start
+
+                    //  Layer 별로 다르게 해야 하는 파라미터
+                    m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetition;            //  총 반복 회수
+                    m_nRepetation_Bundle = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+
+                    //  Layer 별로 다르게 해야 하는 파라미터
+                    if ((Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 2) ||
+                        (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 3) ||
+                        (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 4) ||
+                        (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 5) ||
+                        (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 6) ||
+                        (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 8) ||
+                        (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 9) ||
+                        (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 10) ||
+                        (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 12))
+                    {
+                        //m_dCircleDrilling_RotDegree = (double)(360.0 / (double)Config.ParamConfig.CircleStartPosDiv);                                     //  Circle 반복 가공 시, 시작 위치를 돌아가면서 가공할 경우
+                        m_dCircleDrilling_RotDegree = (double)(360.0 / (double)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision);          //  Circle 반복 가공 시, 시작 위치를 돌아가면서 가공할 경우
+                    }
+                    else
+                    {
+                        m_dCircleDrilling_RotDegree = 0.0;                                                                                                  //  Circle 반복 가공 시, 시작 위치를 고정해서 가공할 경우
+                    }
+                    m_nCircleDrilling_CurrentRotStep = 0;
+                    break;
+
+                case LayerType.LAYER_OUTLINE:
+                    //  성부장 작업
+                    Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Outline");
+
+                    m_bDrillingWork_Outline_Exist = true;
+
+                    //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        m_strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+                    else
+                    {
+                        m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
+                        m_strTemp = string.Format("전체 가공. 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+
+                    m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+
+                    m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
+                    m_dOutlineLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
+
+                    //  Layer 별로 다르게 해야 하는 파라미터
+                    m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition;            //  총 반복 회수
+                    m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+                    break;
+
+                case LayerType.LAYER_THRUHOLE:
+                    //  성부장 작업
+                    Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Thruhole");
+
+                    m_bDrillingWork_Thruhole_Exist = true;
+
+                    //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        m_strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+                    else
+                    {
+                        m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
+                        m_strTemp = string.Format("전체 가공. 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+
+                    m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+
+                    m_dThruholeLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance;
+                    m_dThruholeLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_Resizing;
+                    //  Layer 별로 다르게 해야 하는 파라미터
+                    m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
+                    m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+                    break;
+
+                case LayerType.LAYER_MARKING:
+
+                    Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Marking");
+
+                    //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        m_strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+                    else
+                    {
+                        m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
+                        m_strTemp = string.Format("전체 가공. 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+
+                    m_nMarkingLayer_SerialNumber_Count = 0;         //  마킹 데이터가 시리얼넘버이면, 증가하는 카운트를 초기화 한다. (여기는 Marking Layer 의 맨 처음)
+                    m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+
+                    m_dMarkingLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_DefocusingDistance;
+                    m_dMarkingLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_Resizing;
+
+                    //  Layer 별로 다르게 해야 하는 파라미터
+                    m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
+                    m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+
+                    break;
+            }
+
+            return m_strTemp;
+        }
+
+        private int LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck_Selectmode(ref int m_nZigZag_CurrentRow, ref int m_nZigZag_CurRow_FirstIndex, ref int m_nZigZag_CurRow_CurIndex, ref int m_nZigZag_CurRow_LastIndex)
+        {
+            //m_nDividedRegion_Region_CurrentIndex <- 홀 소켓의 분할 영역 인덱스
+            int nNextStep;
+            if (m_nDividedRegion_Region_CurrentIndex <
+                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[0].nRegion_Num)
+            {
+                Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역이 남아 있음");
+                m_nLaserDrilling_OneSideOfADrillingSquare_StartCornerIndex = 0;                                     //  미세홀 시작 모서리 Rotation 모드일 경우, 시작 모서리 Index 초기화
+
+                //m_nLaserDrilling_ScannerOnly_GroupCount++;         //  가공이 끝난 후에 ++ 시켜주도록 한다.
+                //  지그재그 가공 사용 시 Index 변경 (짝수열에서 반대방향 가공. 첫 영역은 무조건 좌->우 가공이다)
+                if (Config.ParamConfig.bDrilling_StageMoveDirection_ZigZag && (m_nDividedRegion_Region_CurrentIndex != 0))
+                {
+                    //  현재 Index 가 몇 번째 Row 인지 계산
+                    m_nZigZag_CurrentRow = m_nDividedRegion_Region_CurrentIndex / m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[0].nRegion_Num_X;
+
+                    if ((m_nZigZag_CurrentRow % 2) == 0)                                                                        //  홀수 Row (좌 -> 우 가공)
+                    {
+                        m_nDividedRegion_Region_CurrentIndex_forZigZag = m_nDividedRegion_Region_CurrentIndex;
+                    }
+                    else                                                                                                        //  짝수 Row (우 -> 좌 가공)
+                    {
+                        //  현재 Row 의 첫번째 Index 계산
+                        m_nZigZag_CurRow_FirstIndex = m_nZigZag_CurrentRow * m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[0].nRegion_Num_X;
+
+                        //  현재 Row 에서 몇번째 Index 인지 계산
+                        m_nZigZag_CurRow_CurIndex = m_nDividedRegion_Region_CurrentIndex - m_nZigZag_CurRow_FirstIndex;
+
+                        //  현재 Row 의 마지막 Index 계산
+                        m_nZigZag_CurRow_LastIndex = m_nZigZag_CurRow_FirstIndex + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[0].nRegion_Num_X - 1;
+
+                        //  Flip 된 Index
+                        m_nDividedRegion_Region_CurrentIndex_forZigZag = m_nZigZag_CurRow_LastIndex - m_nZigZag_CurRow_CurIndex;
+                    }
+                }
+                else
+                {
+                    m_nDividedRegion_Region_CurrentIndex_forZigZag = m_nDividedRegion_Region_CurrentIndex;
+                }
+
+                //  가공 데이터가 없는 Region 이 있을 수 있다. 데이터가 없을 때는 m_nDividedRegion_Region_CurrentIndex++ 후에 이 위치 다시 체크.
+                if (m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum > 0)
+                {
+                    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역에 가공 위치 데이터가 있음");
+
+                    m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+                    nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos;
+                }
+                else
+                {
+                    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역에 가공 위치 데이터가 없음. 다음 영역 체크.");
+                    m_nDividedRegion_Region_CurrentIndex++;
+                    m_nDrillingWork_Repeat_Count_Backup = 0;
+                    m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
+                    m_nUnfollow_TryCount = 0;
+
+                    nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
+                }
+            }
+            else                                                                                    //  회수 초과 (Shutter 닫으러)
+            {
+                //여긴막자. 50번 찍힌다.
+                //Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, " +
+                //    "가공할 영역이 남아 있지 않음. 다음 Hole Layer 가 있는지 확인하고, 없으면 다음 소켓 확인하러 이동.");
+
+                // Hole2 ~ Hole4 Layer 가 있을 경우, 해당 Parameter 로 Hole1 가공을 다시  진행한다.
+                m_nHoleLayer_ProcessIndex_Count++;
+                bool m_bLayerExist = false;
+
+                if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole50))
+                {
+                    for (int i = 0; i < m_stLayerType.m_nLayerIndex.Length; i++)
+                    {
+                        if (m_stLayerType.m_nLayerIndex[i] == m_nHoleLayer_ProcessIndex_Count)
+                        {
+                            m_bLayerExist = true;
+                            i = m_stLayerType.m_nLayerIndex.Length;
+                        }
+                    }
+
+                    if (m_bLayerExist)                  //  Hole2 ~ Hole4 Layer 가 있으면? 해당 Layer Parameter 로 Hole1 데이터 재가공
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, " +
+                                                    "가공할 영역이 남아 있지 않음. 다음 Hole Layer 가 있음. 파라미터 변경하여 가공하러 이동");
+
+                        m_nHoleLayer_ProcessIndex = m_nHoleLayer_ProcessIndex_Count;
+
+                        //  Group 카운트 증가 없이 그대로 재가공 (파라미터는 변경해야 함. Defocusing, Resizing 등)
+                        //nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Start;              //  Defocusing
+                    }
+                    else                                //  없으면? Hole Index++ 하여 재검색
+                    {
+                        nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
+                    }
+                }
+                else                                                                //  Hole Layer 가 없을 경우, 다음 소켓으로 이동
+                {
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        string m_strTemp = string.Format("Hole Layer 선택가공이 완료되었으므로 다음 Layer 확인.");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        // 공통 자동 완료 마킹
+                        {
+                            var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            var layer = DrillingManager.GetLayer(layerEnum);
+                            var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (layer != null && socket != null)
+                            {
+                                SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
+                        }
+
+                        //m_nLaserDrilling_LayerCount++;
+                        //nNextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                        nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                    }
+                    else                                                                                                    //  전체 가공이면? 다음 소켓으로 이동
+                    {
+                        // 공통 자동 완료 마킹
+                        {
+                            var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            var layer = DrillingManager.GetLayer(layerEnum);
+                            var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                            if (layer != null && socket != null)
+                            {
+                                SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                            }
+                        }
+                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+
+                        m_nHoleLayer_ProcessIndex_Count = 0;        //  소켓이 바뀌면 Hole layer 1 부터 다시 시작
+                        m_nHoleLayer_ProcessIndex = 0;
+
+                        nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Start;              //  Defocusing (Socket 이 바뀌면 다시 Hole1 Layer 의 Defocusing 위치로 이동해야 하기 때문에)
+                    }
+                }
+            }
+
+            return nNextStep;
+        }
+
     }
 }
+#endregion

@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.ServiceModel.Syndication;
 using static QMC.Common.Equipment;
+using QMC.Common.Global;
 
 namespace QMC.Common.Parts
 {

@@ -340,7 +340,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             textBox_Recipe_GoldPowder_AxisZ_Setting.Text = m_recipe.dGoldPowderAxisZ_Offset.ToString("F3");
 
             // 조명 세기
-            Equipment.stVisionRecipeSet.nSocketIlluminationRed = m_recipe.nGoldPowderIlluminationRed;
+            Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed = m_recipe.nGoldPowderIlluminationRed;
             Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR = m_recipe.nGoldPowderIlluminationIR;
             textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text = m_recipe.nGoldPowderIlluminationRed.ToString();
             textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = m_recipe.nGoldPowderIlluminationIR.ToString();
