@@ -301,7 +301,7 @@ namespace QMC.Common.Recipe
                 {
                     SocketMarkInfo mark = new SocketMarkInfo();
 
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "AlignType", "0", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "0", sb, sb.Capacity, path);
                     mark.AlignType = Equipment.ToInt(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkType", "0", sb, sb.Capacity, path);
@@ -310,7 +310,7 @@ namespace QMC.Common.Recipe
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "0", sb, sb.Capacity, path);
                     mark.MarkColor = Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkRadius", "0.0", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSize", "0.0", sb, sb.Capacity, path);
                     mark.MarkRadius = Equipment.ToDouble(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.0", sb, sb.Capacity, path);
@@ -319,22 +319,22 @@ namespace QMC.Common.Recipe
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkScore", "0.0", sb, sb.Capacity, path);
                     mark.MarkScore = Equipment.ToDouble(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "IllumRed", "0", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "0", sb, sb.Capacity, path);
                     mark.IllumRed = Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "IllumIR", "0", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "0", sb, sb.Capacity, path);
                     mark.IllumIR = Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "UseRed", "False", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "RedUse", "False", sb, sb.Capacity, path);
                     mark.UseRed = Equipment.ToBoolean(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "UseIR", "False", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "IRUse", "False", sb, sb.Capacity, path);
                     mark.UseIR = Equipment.ToBoolean(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("SocketAlign", "ExposureTime", "0.0", sb, sb.Capacity, path);
                     mark.ExposureTime = Equipment.ToDouble(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "AxisZOffset", "0.0", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "AxisZ_Offset", "0.0", sb, sb.Capacity, path);
                     mark.AxisZOffset = Equipment.ToDouble(sb.ToString());
 
                     data.SocketMarkList.Add(mark);

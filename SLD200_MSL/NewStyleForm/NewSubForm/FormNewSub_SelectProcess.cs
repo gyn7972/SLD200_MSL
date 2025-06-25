@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static QMC.Common.Equipment;
+using static QMC.Common.Part;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
@@ -127,9 +128,15 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void OnDrillingDataUpdated(DrillingProcessManager manager)
         {
-            //if (drillingProcessManager == null)
-            //    return;
+            return;
 
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action(() => OnDrillingDataUpdated(manager)));
+                return;
+            }
+
+            // UI 스레드에서 안전하게 실행
             LoadDrillingManager(manager);
             this.Invalidate(); // 화면 다시 그리기
             this.Refresh();
@@ -367,9 +374,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                     foreach (var socket in layer.SocketList)
                         socket.IsSelected = true;
                 }
-
-                //CreateSocketButtons(GetMaxSocketCount());
-                //LoadLayerList();
                 this.Refresh();
 
                 Log.Write("ModuleStatus", "전체 소켓이 선택됨.");
@@ -380,9 +384,37 @@ namespace SLD200.NewStyleForm.NewSubForm
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information!", msg);
 
+                if (Equipment.AutoRunStatus)
+                    return;
 
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "선택 가공 버튼");
 
-                SelectRunEnable_New = true;
+                if (workStage.CheckAllInterlock(out msg) == false)
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Error", msg);
+                    return;
+                }
+
+                if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
+                {
+                    Equipment.LaserDrillingCycStop_Reservation = false;
+                    workStage.m_bLaserDrilling_SocketStopped = false;
+                    Equipment.SocketStopped = false;
+
+                    SelectRunEnable_New = true;
+                    workStage.m_nDrillingWork_Group_Count = 0;
+                    workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
+                    workStage.m_LaserDrillingWork_Start = true;
+                    workStage.m_ProductAlign_Start = true;
+                    WorkStartTick = Environment.TickCount;
+                }
+                else
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Error", "Reset 후 실행 바랍니다.");
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -449,12 +481,13 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.m_bLaserDrilling_SocketStopped = false;
                 Equipment.SocketStopped = false;
 
+                SelectRunEnable_New = true;
+                workStage.m_nDrillingWork_Group_Count = 0;
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
                 workStage.m_LaserDrillingWork_Start = true;
                 workStage.m_ProductAlign_Start = true;
                 WorkStartTick = Environment.TickCount;
 
-                SelectRunEnable_New = true;
             }
             else
             {
@@ -636,6 +669,93 @@ namespace SLD200.NewStyleForm.NewSubForm
             workStage.laser.Rtc.CtlReset();             //  에러 해제
 
             Equipment.SelectRunEnable_New = false; //  수동 가공 시작
+
+            //Main 정지 버튼
+            {
+                Equipment.Loader_LPort_Pause = true;        //  장비 Stop 시 Pause
+                Equipment.Loader_RPort_Pause = true;        //  장비 Stop 시 Pause
+
+                Equipment.SelectRunEnable_New = false;
+                Equipment.AutoRunStatus = false;        // 자동운전중
+                Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                workStage.SetRunStatus(RunStatus.Stop);
+
+                Equipment.ProcessingData_Parsing_byLoader = false;
+
+                workStage.m_nSelectedSocket_Index = -1;
+                workStage.m_nSocketAlign_StartIndex = -1;
+                Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
+                
+                workStage._isMainWorkRunning = false;
+                workStage._isLaserDrillingWorkRunning = false;
+                loader._isLoaderWorkRunning = false;
+                unloader._isUnloaderWorkRunning = false;
+
+                // 아래 변수가 자동운전 Tick 돌리는 변수임.
+                workStage.m_MainWork_Start = false;
+                //workStage.m_LaserDrillingWork_Start = false;              //  Laser Drilling Cycle 은 바로 Stop 하지 않고, 가공중이던 영역이 완료되면 Stop 하도록 예약을 걸어둔다.
+                Equipment.LaserDrillingCycStop_Reservation = true;          //  Stop 예약
+                workStage.m_ProductAlign_Start = false;
+                workStage.m_SubWork_Start = false;
+                loader.m_LoaderWork_Start = false;
+                unloader.m_UnloaderWork_Start = false;
+
+                // 장비 정지 시 그냥 정지 시킨다.
+                workStage.m_ScannerCameraOffsetSequence.Reset();
+                workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+                workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+
+                workStage.m_bSensorRequestPending = false;   // 요청 보냄
+                workStage.m_bSensorResponseReady = false;    // 응답 받음
+
+                loader.ClearSemiAutoRequest();
+                workStage.ClearSemiAutoRequest();
+                unloader.ClearSemiAutoRequest();
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //
+                //  장비 운전 정지 시점의 모든 상태 데이터 저장
+                //
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                //  Loader 상태
+                loader.m_nLD_RESTORE_Transfer_Step = loader.m_nLoader_Transfer_Step;
+                loader.m_nLD_RESTORE_Transfer_MoveType = loader.m_nLoaderTransferMoveType;
+                loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete;               //  Work Stage 에 Module Put Down 완료 여부
+                loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = loader.m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete;               //  Stacker0 에서 Module Pick Up 완료 여부
+                loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = loader.m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete;               //  Stacker1 에서 Module Pick Up 완료 여부
+                loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = loader.m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete;               //  M-Aligner 에서 Module Pick Up 완료 여부
+                loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete;                 //  M-Aligner 에 Module Put Down 완료 여부
+                loader.m_nLD_RESTORE_MainWork_Cycle_Step = workStage.m_nMainWork_Step;                                                                                              //  Main Work Cycle Step
+                loader.m_nLD_RESTORE_DryRun_Cycle_Step = workStage.m_nDryRun_Step;                                                                                                  //  Dry Run Cycle Step
+                loader.m_nLD_RESTORE_LaserDrilling_Cycle_Step = workStage.m_nLaserDrilling_MainStep;                                                                                //  Laser Drilling Cycle Step
+                loader.m_bLD_RESTORE_MainWork_Cycle_Complete = workStage.m_bMainWorkCycle_Complete;                                                                                 //  Main Work Cycle 완료 여부
+                loader.m_bLD_RESTORE_Transfer_fromStacker0_Module_PickUp_Complete_Flag = loader.m_bLD_Transfer_fromStacker0_Module_PickUp_Complete_Flag;                            //  Stacker0 에서 Module Pick Up 완료 여부
+                loader.m_bLD_RESTORE_Transfer_fromStacker1_Module_PickUp_Complete_Flag = loader.m_bLD_Transfer_fromStacker1_Module_PickUp_Complete_Flag;                            //  Stacker1 에서 Module Pick Up 완료 여부
+                loader.m_bLD_RESTORE_Transfer_fromMAligner_Module_PickUp_Complete_Flag = loader.m_bLD_Transfer_fromMAligner_Module_PickUp_Complete_Flag;                            //  M-Aligner 에서 Module Pick Up 완료 여부
+                loader.m_bLD_RESTORE_Transfer_toMAligner_Module_PutDown_Complete_Flag = loader.m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag;                              //  M-Aligner 에 Module Put Down 완료 여부
+                loader.m_bLD_RESTORE_Transfer_toWorkStage_Module_PutDown_Complete_Flag = loader.m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag;                            //  Work Stage 에 Module Put Down 완료 여부
+
+                //  Unloader 상태
+                unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = unloader.m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;     //  Work Stage 에서 Module Pick Up 완료 여부
+                unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete;         //  Stacker0 에 Module Put Down 완료 여부
+                unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete;         //  Stacker1 에 Module Put Down 완료 여부
+                unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete;                     //  NG-Port 에 Module Put Down 완료 여부        
+                unloader.m_nUL_RESTORE_Transfer_Step = unloader.m_nUnloader_Transfer_Step;                                                                                          //  Unloader Transfer Step
+                unloader.m_nUL_RESTORE_Transfer_MoveType = unloader.m_nUnloaderTransferMoveType;                                                                                    //  Unloader Transfer Move Type
+                unloader.m_bUL_RESTORE_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = unloader.m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag;                      //  Unloader 가 Work Stage 에서 Module Pick Up 완료 여부
+                unloader.m_bUL_RESTORE_LD_Transfer_toWorkStage_Module_PutDown_Complete = loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete;                       //  Loader 가 Work Stage 에 Module Put Down 완료 여부
+                unloader.m_nUL_RESTORE_MainWork_Cycle_Step = workStage.m_nMainWork_Step;                                                                                            //  Main Work Cycle Step
+                unloader.m_nUL_RESTORE_DryRun_Cycle_Step = workStage.m_nDryRun_Step;                                                                                                //  Dry Run Cycle Step
+                unloader.m_nUL_RESTORE_LaserDrilling_Cycle_Step = workStage.m_nLaserDrilling_MainStep;                                                                              //  Laser Drilling Cycle Step
+                unloader.m_bUL_RESTORE_MainWork_Cycle_Complete = workStage.m_bMainWorkCycle_Complete;                                                                               //  Main Work Cycle 완료 여부
+                unloader.m_nUL_RESTORE_MainWork_Cycle_ResultOKNG = workStage.m_nMainWorkCycle_ResultOKNG;                                                                           //  Main Work Cycle 결과 (OK, NG) : OK 인 경우에만 R-Port 로 가져감
+                unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = workStage.m_bMainWorkCycle_ResultOK_toRPort;
+
+                workStage.DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 정지 : 정지 버튼 눌렀을때도 정지하고 다시 해야지.
+                string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
+                workStage.DrillingManager.CycleTimer_LaserDrilling.SaveToIni("LaserDrilling", strPath);
+            }
         }
     }
 }

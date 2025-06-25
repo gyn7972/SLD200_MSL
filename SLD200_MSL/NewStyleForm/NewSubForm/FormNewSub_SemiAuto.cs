@@ -166,7 +166,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (loader == null) return;
 
             // 장비 구동 시 인터락 조건 확인.
-            if(false)
+            if(true)
             {
                 if (!workStage.m_bHomeOK)
                 {
@@ -405,7 +405,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (unloader == null) return;
 
             // 장비 구동 시 인터락 조건 확인.
-            if (false)
+            if (true)
             {
                 if (!workStage.m_bHomeOK)
                 {
@@ -675,7 +675,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (workStage == null) return;
 
             // 장비 구동 시 인터락 조건 확인.
-            if (false)
+            if (true)
             {
                 if (!workStage.m_bHomeOK)
                 {

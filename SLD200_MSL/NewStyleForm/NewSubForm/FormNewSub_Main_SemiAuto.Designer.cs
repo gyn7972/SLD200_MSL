@@ -35,6 +35,9 @@
             this.button_SemiAuto_LaserDrilling = new System.Windows.Forms.Button();
             this.button_SemiAuto_Loading = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button_SemiAuto_Unload_Reset = new System.Windows.Forms.Button();
+            this.button_SemiAuto_Load_Reset = new System.Windows.Forms.Button();
+            this.button_SemiAuto_Stage_Reset = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +66,7 @@
             // button_SemiAuto_PreAlign
             // 
             this.button_SemiAuto_PreAlign.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_PreAlign.Location = new System.Drawing.Point(128, 50);
+            this.button_SemiAuto_PreAlign.Location = new System.Drawing.Point(128, 51);
             this.button_SemiAuto_PreAlign.Name = "button_SemiAuto_PreAlign";
             this.button_SemiAuto_PreAlign.Size = new System.Drawing.Size(115, 30);
             this.button_SemiAuto_PreAlign.TabIndex = 2;
@@ -74,7 +77,7 @@
             // button_SemiAuto_FiducialAlign
             // 
             this.button_SemiAuto_FiducialAlign.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_FiducialAlign.Location = new System.Drawing.Point(128, 80);
+            this.button_SemiAuto_FiducialAlign.Location = new System.Drawing.Point(128, 82);
             this.button_SemiAuto_FiducialAlign.Name = "button_SemiAuto_FiducialAlign";
             this.button_SemiAuto_FiducialAlign.Size = new System.Drawing.Size(115, 30);
             this.button_SemiAuto_FiducialAlign.TabIndex = 3;
@@ -84,13 +87,15 @@
             // 
             // button_SemiAuto_LaserDrilling
             // 
+            this.button_SemiAuto_LaserDrilling.Enabled = false;
             this.button_SemiAuto_LaserDrilling.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_LaserDrilling.Location = new System.Drawing.Point(128, 110);
+            this.button_SemiAuto_LaserDrilling.Location = new System.Drawing.Point(7, 109);
             this.button_SemiAuto_LaserDrilling.Name = "button_SemiAuto_LaserDrilling";
             this.button_SemiAuto_LaserDrilling.Size = new System.Drawing.Size(115, 30);
             this.button_SemiAuto_LaserDrilling.TabIndex = 4;
             this.button_SemiAuto_LaserDrilling.Text = "Laser Drilling";
             this.button_SemiAuto_LaserDrilling.UseVisualStyleBackColor = true;
+            this.button_SemiAuto_LaserDrilling.Visible = false;
             this.button_SemiAuto_LaserDrilling.Click += new System.EventHandler(this.button_SemiAuto_LaserDrilling_Click);
             // 
             // button_SemiAuto_Loading
@@ -106,6 +111,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button_SemiAuto_Stage_Reset);
+            this.groupBox1.Controls.Add(this.button_SemiAuto_Load_Reset);
+            this.groupBox1.Controls.Add(this.button_SemiAuto_Unload_Reset);
             this.groupBox1.Controls.Add(this.button_SemiAuto_Unloading);
             this.groupBox1.Controls.Add(this.button_SemiAuto_Loading);
             this.groupBox1.Controls.Add(this.button_SemiAuto_HeightSensor);
@@ -115,10 +123,43 @@
             this.groupBox1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(375, 145);
+            this.groupBox1.Size = new System.Drawing.Size(390, 150);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "SemiAuto";
+            // 
+            // button_SemiAuto_Unload_Reset
+            // 
+            this.button_SemiAuto_Unload_Reset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_SemiAuto_Unload_Reset.Location = new System.Drawing.Point(7, 51);
+            this.button_SemiAuto_Unload_Reset.Name = "button_SemiAuto_Unload_Reset";
+            this.button_SemiAuto_Unload_Reset.Size = new System.Drawing.Size(115, 30);
+            this.button_SemiAuto_Unload_Reset.TabIndex = 6;
+            this.button_SemiAuto_Unload_Reset.Text = "Unload Reset";
+            this.button_SemiAuto_Unload_Reset.UseVisualStyleBackColor = true;
+            this.button_SemiAuto_Unload_Reset.Click += new System.EventHandler(this.button_SemiAuto_Unload_Reset_Click);
+            // 
+            // button_SemiAuto_Load_Reset
+            // 
+            this.button_SemiAuto_Load_Reset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_SemiAuto_Load_Reset.Location = new System.Drawing.Point(249, 51);
+            this.button_SemiAuto_Load_Reset.Name = "button_SemiAuto_Load_Reset";
+            this.button_SemiAuto_Load_Reset.Size = new System.Drawing.Size(115, 30);
+            this.button_SemiAuto_Load_Reset.TabIndex = 7;
+            this.button_SemiAuto_Load_Reset.Text = "Load Reset";
+            this.button_SemiAuto_Load_Reset.UseVisualStyleBackColor = true;
+            this.button_SemiAuto_Load_Reset.Click += new System.EventHandler(this.button_SemiAuto_Load_Reset_Click);
+            // 
+            // button_SemiAuto_Stage_Reset
+            // 
+            this.button_SemiAuto_Stage_Reset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_SemiAuto_Stage_Reset.Location = new System.Drawing.Point(128, 113);
+            this.button_SemiAuto_Stage_Reset.Name = "button_SemiAuto_Stage_Reset";
+            this.button_SemiAuto_Stage_Reset.Size = new System.Drawing.Size(115, 30);
+            this.button_SemiAuto_Stage_Reset.TabIndex = 8;
+            this.button_SemiAuto_Stage_Reset.Text = "Stage Reset";
+            this.button_SemiAuto_Stage_Reset.UseVisualStyleBackColor = true;
+            this.button_SemiAuto_Stage_Reset.Click += new System.EventHandler(this.button_SemiAuto_Stage_Reset_Click);
             // 
             // FormNewSub_Main_SemiAuto
             // 
@@ -126,7 +167,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox1);
             this.Name = "FormNewSub_Main_SemiAuto";
-            this.Size = new System.Drawing.Size(380, 150);
+            this.Size = new System.Drawing.Size(400, 160);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -141,5 +182,8 @@
         private System.Windows.Forms.Button button_SemiAuto_LaserDrilling;
         private System.Windows.Forms.Button button_SemiAuto_Loading;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button button_SemiAuto_Stage_Reset;
+        private System.Windows.Forms.Button button_SemiAuto_Load_Reset;
+        private System.Windows.Forms.Button button_SemiAuto_Unload_Reset;
     }
 }

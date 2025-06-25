@@ -703,17 +703,36 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else if (radioButton_RecipeVision_CameraSelection_HighMag.Checked)
             {
+                // 현재 선택된 마크 인덱스 가져오기
+                int idx = comboBox_Recipe_Fiducial_MarkIndex.SelectedIndex;
+                if (idx < 0 || idx >= Equipment.stVisionRecipeSet.SocketMarkList.Count)
+                    return;
+
+                var mark = Equipment.stVisionRecipeSet.SocketMarkList[idx];
+
                 hScrollBar_RecipeVision_Illuminator_Red.Minimum = (int)workStage.Config.ListIlluminationChannel[0].Min;
                 hScrollBar_RecipeVision_Illuminator_Red.Maximum = (int)workStage.Config.ListIlluminationChannel[0].Max;
-                hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
+                hScrollBar_RecipeVision_Illuminator_Red.Value = mark.IllumRed;
                 baseLabel_RecipeVision_Min_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Minimum.ToString();
                 baseLabel_RecipeVision_Max_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Maximum.ToString();
 
                 hScrollBar_RecipeVision_Illuminator_IR.Minimum = (int)workStage.Config.ListIlluminationChannel[1].Min;
                 hScrollBar_RecipeVision_Illuminator_IR.Maximum = (int)workStage.Config.ListIlluminationChannel[1].Max;
-                hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
+                hScrollBar_RecipeVision_Illuminator_IR.Value = mark.IllumIR;
                 baseLabel_RecipeVision_Min_IR.Text = hScrollBar_RecipeVision_Illuminator_IR.Minimum.ToString();
                 baseLabel_RecipeVision_Max_IR.Text = hScrollBar_RecipeVision_Illuminator_IR.Maximum.ToString();
+
+                //hScrollBar_RecipeVision_Illuminator_Red.Minimum = (int)workStage.Config.ListIlluminationChannel[0].Min;
+                //hScrollBar_RecipeVision_Illuminator_Red.Maximum = (int)workStage.Config.ListIlluminationChannel[0].Max;
+                //hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
+                //baseLabel_RecipeVision_Min_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Minimum.ToString();
+                //baseLabel_RecipeVision_Max_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Maximum.ToString();
+
+                //hScrollBar_RecipeVision_Illuminator_IR.Minimum = (int)workStage.Config.ListIlluminationChannel[1].Min;
+                //hScrollBar_RecipeVision_Illuminator_IR.Maximum = (int)workStage.Config.ListIlluminationChannel[1].Max;
+                //hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
+                //baseLabel_RecipeVision_Min_IR.Text = hScrollBar_RecipeVision_Illuminator_IR.Minimum.ToString();
+                //baseLabel_RecipeVision_Max_IR.Text = hScrollBar_RecipeVision_Illuminator_IR.Maximum.ToString();
             }
             else
             {

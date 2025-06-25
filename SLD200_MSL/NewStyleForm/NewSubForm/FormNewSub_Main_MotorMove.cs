@@ -114,7 +114,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             // 실행할 작업들을 여기에 구현.
 
-            if(Equipment.AutoRunStatus)
+            if(Equipment.AutoRunStatus || Equipment.SelectRunEnable_New || Equipment.SelectRunEnable)
             {
                 button_MotorMove_Unloader_ToStacker.Enabled = false;
                 button_MotorMove_Unloader_ToStage.Enabled = false;

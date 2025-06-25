@@ -1282,6 +1282,15 @@ namespace QMC.Common.Modules
             {
                 m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
             }
+            else if(Equipment.SemiAutoEnable &&
+
+                m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None &&
+                m_nStacker0_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None &&
+
+                !m_bStacker0_Complete)                                                //  Stacker0 동작 완료되지 않은 상태 (TR 이 Module 을 내려놓은 후 false 로 변경됨)
+            {
+                m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
+            }
 
 
             StackerModulePutdownWaitingPos_Step currentStep = (StackerModulePutdownWaitingPos_Step)m_nStacker0_ModulePutdownWaitingPos_Step;
@@ -2005,6 +2014,15 @@ namespace QMC.Common.Modules
             {
                 m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
             }
+            else if (Equipment.SemiAutoEnable &&
+
+                m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None &&
+                m_nStacker1_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None &&
+
+                !m_bStacker1_Complete)                                                //  Stacker1 동작 완료되지 않은 상태 (TR 이 Module 을 내려놓은 후 false 로 변경됨)
+            {
+                m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
+            }
 
             StackerModulePutdownWaitingPos_Step currentStep = (StackerModulePutdownWaitingPos_Step)m_nStacker1_ModulePutdownWaitingPos_Step;
             switch (m_nStacker1_ModulePutdownWaitingPos_Step)
@@ -2676,6 +2694,100 @@ namespace QMC.Common.Modules
             //3. Stacker1 에 Module Put Down Cycle
             //4. NG-Port 에 Module Drop Cycle
             if (Equipment.AutoRunStatus &&
+                !Equipment.SocketStopped &&                                             //  Socket Stop 시 동작 안되도록
+                !Equipment.CycleStopped_UnloaderTransfer &&                             //  Cycle Stop 시 동작 안되도록
+                !Equipment.MachineStop_byTimeout_Unloader &&                            //  Unloader 가 Time out 으로 멈추면 동작 안되도록
+                m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None)
+            {
+                //  Work Stage 에서 Module 을 Pick Up 하기 위한 조건
+                if (!m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
+                    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&
+                    (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
+                    loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
+                    workStage.m_bMainWorkCycle_Complete)                                                //  Laser Drilling Main Cycle 이 완료되었을 경우
+                {
+                    m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp;            //  Work Stage 에서 Module Pick Up Cycle
+                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                }
+                //  Stacker0 에 Module 을 Put Down 하기 위한 조건
+                else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
+                    (m_nStacker0_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None) &&
+                    (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.OK) &&
+                    workStage.m_bMainWorkCycle_ResultOK_toRPort &&
+                    m_bStacker0_Complete)
+                {
+                    //  우측 Port (Stacker0) 에 내려놔야 하는데 Full 상태이면? 좌측 Port 에 내려놓도록
+                    if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 이 Full 상태이므로 Stacker1 에 Put Down 시도합니다.");
+
+                        if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0, Stacker1 모두 Full 상태이므로 알람.");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
+                        }
+                        else
+                        {
+                            workStage.m_bMainWorkCycle_ResultOK_toRPort = false;
+                        }
+                    }
+                    else
+                    {
+                        m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_Stacker0_PutDown;            //  Stacker0 에 Module Put Down Cycle
+                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                    }
+                }
+                //  Stacker1 에 Module 을 Put Down 하기 위한 조건
+                else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
+                    (m_nStacker1_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None) &&
+                    (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.OK) &&
+                    !workStage.m_bMainWorkCycle_ResultOK_toRPort &&
+                    m_bStacker1_Complete)
+                {
+                    //  좌측 Port (Stacker1) 에 내려놔야 하는데 Full 상태이면? 우측 Port 에 내려놓도록
+                    if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 이 Full 상태이므로 Stacker0 에 Put Down 시도합니다.");
+
+                        if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0, Stacker1 모두 Full 상태이므로 알람.");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            return AlarmPost(AlarmKey.UL_Staker1_Too_Many_Module);
+                        }
+                        else
+                        {
+                            workStage.m_bMainWorkCycle_ResultOK_toRPort = true;
+                        }
+                    }
+                    else
+                    {
+                        m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_Stacker1_PutDown;            //  Stacker1 에 Module Put Down Cycle
+                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                    }
+                }
+                //  NG-Port 에 Module 을 Drop 하기 위한 조건
+                else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
+                        (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.NG))  ////!workStage.m_bMainWorkCycle_ResultOK)
+                {
+                    m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_NG_PutDown;            //  NG-Port 에 Module Drop Cycle
+                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                }
+                //  대기 위치로 보내기 위한 조건 (Module Unloading 후 다음 Module 을 빠르게 Unloading 하기 위한 대기 위치)
+                else if (m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete)
+                {
+                    m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_Transfer_ReadyPos;            //  Transfer 대기 위치로 이동
+                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                }
+            }
+            else if (Equipment.SemiAutoEnable &&
                 !Equipment.SocketStopped &&                                             //  Socket Stop 시 동작 안되도록
                 !Equipment.CycleStopped_UnloaderTransfer &&                             //  Cycle Stop 시 동작 안되도록
                 !Equipment.MachineStop_byTimeout_Unloader &&                            //  Unloader 가 Time out 으로 멈추면 동작 안되도록
@@ -4765,11 +4877,12 @@ namespace QMC.Common.Modules
 
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 Stacker0 에 Module 을 내려놓았으므로 true 로 만들어 줌.
 
+                            SetUnloaderComplete(true);
                             if (!Equipment.AutoRunStatus &&
                             Equipment.SemiAutoEnable &&
                             _semiAutoRequest == SemiAutoStep.Start)
                             {
-                                SetUnloaderComplete(true);
+                                
                                 Equipment.SemiAutoEnable = false;
 
                                 m_UnloaderWork_Start = false; // Unloader 작업 시작 플래그 초기화
@@ -4786,11 +4899,13 @@ namespace QMC.Common.Modules
                             m_bStacker1_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
 
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 Stacker1 에 Module 을 내려놓았으므로 true 로 만들어 줌.
+
+                            SetUnloaderComplete(true);
                             if (!Equipment.AutoRunStatus &&
                             Equipment.SemiAutoEnable &&
                             _semiAutoRequest == SemiAutoStep.Start)
                             {
-                                SetUnloaderComplete(true);
+                                
                                 Equipment.SemiAutoEnable = false;
 
                                 m_UnloaderWork_Start = false; // Unloader 작업 시작 플래그 초기화
@@ -4806,11 +4921,12 @@ namespace QMC.Common.Modules
                             workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
 
                             m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 NG-Port 에 Module 을 내려놓았으므로 true 로 만들어 줌.
+
+                            SetUnloaderComplete(true);
                             if (!Equipment.AutoRunStatus &&
                             Equipment.SemiAutoEnable &&
                             _semiAutoRequest == SemiAutoStep.Start)
                             {
-                                SetUnloaderComplete(true);
                                 Equipment.SemiAutoEnable = false;
 
                                 m_UnloaderWork_Start = false; // Unloader 작업 시작 플래그 초기화
@@ -4824,13 +4940,13 @@ namespace QMC.Common.Modules
                     }
 
                     // SemiAuto Mode 일 경우. 여기서 연속으로 진행하면 안됨.
-                    if (!Equipment.AutoRunStatus && Equipment.SemiAutoEnable)
-                    {
-                        Equipment.SemiAutoEnable = false;
-                        m_UnloaderWork_Start = false;
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-                    }
-                    else
+                    //if (!Equipment.AutoRunStatus && Equipment.SemiAutoEnable)
+                    //{
+                    //    Equipment.SemiAutoEnable = false;
+                    //    m_UnloaderWork_Start = false;
+                    //    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
+                    //}
+                    //else
                     {
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
@@ -7589,6 +7705,7 @@ namespace QMC.Common.Modules
             {
                 case SemiAutoStep.Start:
                     m_UnloaderWork_Start = true;
+                    workStage.m_SubWork_Start = true;
                     break;
                 default:
                     break;
@@ -7600,6 +7717,8 @@ namespace QMC.Common.Modules
 
         public void ClearSemiAutoRequest()
         {
+            m_UnloaderWork_Start = false;
+            workStage.m_SubWork_Start = false;
             Equipment.SemiAutoEnable = false;
             _semiAutoRequest = SemiAutoStep.None;
             _isSemiAutoMode = false;
@@ -7609,6 +7728,11 @@ namespace QMC.Common.Modules
         private void SetUnloaderComplete(bool bRtn)
         {
             m_bUnloaderComplete = bRtn;
+            if(bRtn)
+            {
+                m_UnloaderWork_Start = false;
+                workStage.m_SubWork_Start = false;
+            }
         }
         public bool IsUnloaderComplete()
         {

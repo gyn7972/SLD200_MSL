@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using static QMC.Common.Equipment;
+using static QMC.Common.Modules.WorkStage;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
@@ -172,9 +173,13 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void OnDrillingDataUpdated(DrillingProcessManager manager)
         {
-            //if (drillingProcessManager == null)
-            //    return;
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action(() => OnDrillingDataUpdated(manager)));
+                return;
+            }
 
+            // UI 스레드에서 안전하게 실행
             LoadDrillingManager(manager);
             this.Invalidate(); // 화면 다시 그리기
             this.Refresh();
@@ -209,27 +214,51 @@ namespace SLD200.NewStyleForm.NewSubForm
                         continue;
 
                     var socket = layer.SocketList[socketIndex];
+                    Brush brush;
 
-                    g.FillRectangle(GetBrushBySocketStatus(socket), rect);
+                    if (type == LayerType.LAYER_DRILLING)
+                    {
+                        // 전체 레이어 중 현재 socketIndex에 해당하는 drilling layer 찾기
+                        var drillingLayer = drillingProcessManager.LayerList
+                            .FirstOrDefault(l => l.LayerType == LayerType.LAYER_DRILLING);
+
+                        if (drillingLayer != null && socketIndex < drillingLayer.SocketList.Count)
+                        {
+                            // Hole1~Hole50 레이어 중 마지막 가공 여부 확인
+                            var holeLayers = drillingProcessManager.LayerList
+                                .Where(l => l.LayerEnum.ToString().StartsWith("Hole") &&
+                                            socketIndex < l.SocketList.Count)
+                                .OrderBy(l => l.LayerEnum.ToString()) // Hole1 ~ Hole50 순 정렬
+                                .ToList();
+
+                            var lastHoleLayer = holeLayers.LastOrDefault();
+                            bool isLastHoleDrilled = false;
+
+                            if (lastHoleLayer != null)
+                            {
+                                var lastHoleSocket = lastHoleLayer.SocketList[socketIndex];
+                                if (lastHoleSocket != null && lastHoleSocket.IsDrilled)
+                                    isLastHoleDrilled = true;
+                            }
+
+                            brush = isLastHoleDrilled ? Brushes.LightGreen : Brushes.LightGray;
+                        }
+                        else
+                        {
+                            brush = GetBrushBySocketStatus(socket);
+                        }
+                    }
+                    else
+                    {
+                        // 나머지 레이어는 기존 색상 처리
+                        brush = GetBrushBySocketStatus(socket);
+                    }
+
+                    g.FillRectangle(brush, rect);
                     g.DrawRectangle(Pens.Black, rect);
 
-                    DrawCenteredText(g, rect, GetLayerShortName(type));  // ← 텍스트 여기서 출력
+                    DrawCenteredText(g, rect, GetLayerShortName(type));
                 }
-
-                //되는거
-                //foreach (var layer in drillingProcessManager.LayerList)
-                //{
-                //    if (!layerMap.ContainsKey(layer.LayerType))
-                //        continue;
-
-                //    if (socketIndex >= layer.SocketList.Count)
-                //        continue;
-
-                //    var socket = layer.SocketList[socketIndex];
-                //    var rect = layerMap[layer.LayerType];
-                //    g.FillRectangle(GetBrushBySocketStatus(socket), rect);
-                //    g.DrawRectangle(Pens.Black, rect);
-                //}
             }
             catch (Exception ex)
             {
