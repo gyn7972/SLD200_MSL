@@ -505,9 +505,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                                         w, h,
                                         (int)m_dradius,
                                         dSpec,
-                                        20,                     // 최대 20개 원 탐색
+                                        nMaxInstance,                     // 최대 20개 원 탐색
                                         true,                  // 검은 원
-                                        Equipment.stVisionRecipeSet.dGoldPowderCircleMarkScore
+                                        dScore
                                     );
                     }
                     else
