@@ -7728,11 +7728,6 @@ namespace QMC.Common.Modules
         private void SetUnloaderComplete(bool bRtn)
         {
             m_bUnloaderComplete = bRtn;
-            if(bRtn)
-            {
-                m_UnloaderWork_Start = false;
-                workStage.m_SubWork_Start = false;
-            }
         }
         public bool IsUnloaderComplete()
         {

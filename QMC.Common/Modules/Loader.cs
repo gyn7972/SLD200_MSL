@@ -10525,11 +10525,6 @@ namespace QMC.Common.Modules
         private void SetLoaderComplete(bool bRtn)
         {
             m_bLoaderComplete = bRtn;
-            if(bRtn)
-            {
-                m_LoaderWork_Start = false;
-                workStage.m_SubWork_Start = false;
-            }
         }
         public bool IsLoaderComplete()
         {

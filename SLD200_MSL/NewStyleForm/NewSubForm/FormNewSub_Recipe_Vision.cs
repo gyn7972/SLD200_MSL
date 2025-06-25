@@ -1517,8 +1517,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             textBox_RecipeVision_AxisZ_Setting.Enabled = true;
 
             // 조명 슬라이더 값도 마크 기반으로 반영
-            hScrollBar_RecipeVision_Illuminator_IR.Value = mark.IllumIR;
-            hScrollBar_RecipeVision_Illuminator_Red.Value = mark.IllumRed;
+            // 이거 죽는디?
+            //hScrollBar_RecipeVision_Illuminator_IR.Value = mark.IllumIR;
+            //hScrollBar_RecipeVision_Illuminator_Red.Value = mark.IllumRed;
 
             SetScroll();
         }
