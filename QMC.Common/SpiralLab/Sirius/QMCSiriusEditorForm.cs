@@ -338,7 +338,8 @@ namespace SpiralLab.Sirius
                 AutoDivideByLayer(selectedLayer.Name, dSplitW, dSplitH); // 원하는 mm 단위 셀 크기 설정
                 UnGroupAllDividedGroupsInSelectedLayer();
 
-                RegroupEntitiesByLastDividedRects(selectedLayer.Name);
+                //Group는 우석 막고. 
+                //RegroupEntitiesByLastDividedRects(selectedLayer.Name);
 
             }
         }

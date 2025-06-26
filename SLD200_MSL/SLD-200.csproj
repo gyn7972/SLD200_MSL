@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -46,7 +46,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>5</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -698,11 +698,23 @@
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.Designer.cs">
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
     </Compile>
-    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ModuleStatus.cs">
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_MotorMove.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_MotorMove.Designer.cs">
+      <DependentUpon>FormNewSub_Main_MotorMove.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ModuleMonitor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ModuleMonitor.Designer.cs">
+      <DependentUpon>FormNewSub_ModuleMonitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_SelectProcess.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ModuleStatus.Designer.cs">
-      <DependentUpon>FormNewSub_ModuleStatus.cs</DependentUpon>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_SelectProcess.Designer.cs">
+      <DependentUpon>FormNewSub_SelectProcess.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_GoldPowder.cs">
       <SubType>UserControl</SubType>
@@ -721,6 +733,12 @@
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_SemiAuto.Designer.cs">
       <DependentUpon>FormNewSub_SemiAuto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_SemiAuto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_SemiAuto.Designer.cs">
+      <DependentUpon>FormNewSub_Main_SemiAuto.cs</DependentUpon>
     </Compile>
     <Compile Include="NormalDataConfigControl.cs">
       <SubType>UserControl</SubType>
@@ -1554,8 +1572,14 @@
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.resx">
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_ModuleStatus.resx">
-      <DependentUpon>FormNewSub_ModuleStatus.cs</DependentUpon>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Main_MotorMove.resx">
+      <DependentUpon>FormNewSub_Main_MotorMove.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_ModuleMonitor.resx">
+      <DependentUpon>FormNewSub_ModuleMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_SelectProcess.resx">
+      <DependentUpon>FormNewSub_SelectProcess.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_GoldPowder.resx">
       <DependentUpon>FormNewSub_Recipe_GoldPowder.cs</DependentUpon>
@@ -1565,6 +1589,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_SemiAuto.resx">
       <DependentUpon>FormNewSub_SemiAuto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Main_SemiAuto.resx">
+      <DependentUpon>FormNewSub_Main_SemiAuto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NormalDataConfigControl.resx">
       <DependentUpon>NormalDataConfigControl.cs</DependentUpon>

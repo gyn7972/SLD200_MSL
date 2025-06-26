@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -252,6 +252,8 @@
             this.groupBox_Setup_ScannerCal_Illumination = new System.Windows.Forms.GroupBox();
             this.radioButton_Setup_ScannerCal_Light_Red = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_ScannerCal_Light_IR = new System.Windows.Forms.RadioButton();
+            this.baseLabel_Setup_ScannerCal_Max = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Setup_ScannerCal_Min = new SLD200_MSL.BaseLabel();
             this.hScrollBar_Setup_ScannerCal_Illuminator = new System.Windows.Forms.HScrollBar();
             this.button_Setup_ScannerCal_Illumin_value = new System.Windows.Forms.Button();
             this.textBox_Setup_ScannerCal_IlluminationValue = new System.Windows.Forms.TextBox();
@@ -335,6 +337,32 @@
             this.textBox_ScannerCal_LaserFrequency = new System.Windows.Forms.Panel();
             this.button_Setup_ScannerCal_RE_TEST = new System.Windows.Forms.Button();
             this.button_Setup_ScannerCal_Test = new System.Windows.Forms.Button();
+            this.Box_Setup_ScannerCal_ImageViewer = new QMC.Common.Hmi.VisionImageViewer();
+            this.groupBox_Setup_ScannerCal_SearchResult = new SLD200_MSL.WATGroupBox();
+            this.tabControl_Setup_ScannerCal_SearchResult = new System.Windows.Forms.TabControl();
+            this.Parameter = new System.Windows.Forms.TabPage();
+            this.basetextBox_Setup_ScannerCal_MinScore = new SLD200_MSL.BaseTextBox();
+            this.baseLabel_Setup_ScannerCal_AngleTolerance = new SLD200_MSL.BaseLabel();
+            this.basetextBox_Setup_ScannerCal_MaxInstance = new SLD200_MSL.BaseTextBox();
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck = new SLD200_MSL.BaseToggleButton();
+            this.basetextBox_Setup_ScannerCal_AngleTolerance = new SLD200_MSL.BaseTextBox();
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage = new SLD200_MSL.BaseToggleButton();
+            this.baseLabel_Setup_ScannerCal_MinScore = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Setup_ScannerCal_MaxInstance = new SLD200_MSL.BaseLabel();
+            this.Result = new System.Windows.Forms.TabPage();
+            this.button_Setup_ScannerCal_Search = new System.Windows.Forms.Button();
+            this.radioButton_Setup_ScannerCal_mm = new System.Windows.Forms.RadioButton();
+            this.radioButton_Setup_ScannerCal_Pixel = new System.Windows.Forms.RadioButton();
+            this.baseTextBox_Setup_ScannerCal_PositionT = new SLD200_MSL.BaseTextBox();
+            this.baseTextBox_Setup_ScannerCal_PositionY = new SLD200_MSL.BaseTextBox();
+            this.baseLabel_Setup_ScannerCal_PositionT = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Setup_ScannerCal_PositionY = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Setup_ScannerCal_PositionX = new SLD200_MSL.BaseLabel();
+            this.baseTextBox_Setup_ScannerCal_PositionX = new SLD200_MSL.BaseTextBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.groupBox_Setup_ScannerCal_TrainImage = new SLD200_MSL.WATGroupBox();
+            this.pictureBox_Setup_ScannerCal_TrainImage = new System.Windows.Forms.PictureBox();
+            this.button_Setup_ScannerCal_Train_Set = new SLD200_MSL.BaseButton();
             this.tabPage_Setup_FlatnessMeasurement = new System.Windows.Forms.TabPage();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.button_Setup_Flatness_MeasurementPosition_Stop = new System.Windows.Forms.Button();
@@ -408,6 +436,9 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.checkBox_HoleCenterEnable = new System.Windows.Forms.CheckBox();
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable = new System.Windows.Forms.CheckBox();
+            this.textBox_Setup_Option_Hole02_50_Wait_Time = new System.Windows.Forms.TextBox();
             this.checkBox_Setup_Option_LaserHeight_Retry_Enable = new System.Windows.Forms.CheckBox();
             this.textBox_Setup_Option_LaserHeight_Retry_Count = new System.Windows.Forms.TextBox();
             this.checkBox_Setup_Option_AutoCrossCheck = new System.Windows.Forms.CheckBox();
@@ -543,36 +574,6 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.baseLabel_Setup_ScannerCal_Max = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Setup_ScannerCal_Min = new SLD200_MSL.BaseLabel();
-            this.Box_Setup_ScannerCal_ImageViewer = new QMC.Common.Hmi.VisionImageViewer();
-            this.groupBox_Setup_ScannerCal_SearchResult = new SLD200_MSL.WATGroupBox();
-            this.tabControl_Setup_ScannerCal_SearchResult = new System.Windows.Forms.TabControl();
-            this.Parameter = new System.Windows.Forms.TabPage();
-            this.basetextBox_Setup_ScannerCal_MinScore = new SLD200_MSL.BaseTextBox();
-            this.baseLabel_Setup_ScannerCal_AngleTolerance = new SLD200_MSL.BaseLabel();
-            this.basetextBox_Setup_ScannerCal_MaxInstance = new SLD200_MSL.BaseTextBox();
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck = new SLD200_MSL.BaseToggleButton();
-            this.basetextBox_Setup_ScannerCal_AngleTolerance = new SLD200_MSL.BaseTextBox();
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage = new SLD200_MSL.BaseToggleButton();
-            this.baseLabel_Setup_ScannerCal_MinScore = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Setup_ScannerCal_MaxInstance = new SLD200_MSL.BaseLabel();
-            this.Result = new System.Windows.Forms.TabPage();
-            this.button_Setup_ScannerCal_Search = new System.Windows.Forms.Button();
-            this.radioButton_Setup_ScannerCal_mm = new System.Windows.Forms.RadioButton();
-            this.radioButton_Setup_ScannerCal_Pixel = new System.Windows.Forms.RadioButton();
-            this.baseTextBox_Setup_ScannerCal_PositionT = new SLD200_MSL.BaseTextBox();
-            this.baseTextBox_Setup_ScannerCal_PositionY = new SLD200_MSL.BaseTextBox();
-            this.baseLabel_Setup_ScannerCal_PositionT = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Setup_ScannerCal_PositionY = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Setup_ScannerCal_PositionX = new SLD200_MSL.BaseLabel();
-            this.baseTextBox_Setup_ScannerCal_PositionX = new SLD200_MSL.BaseTextBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.groupBox_Setup_ScannerCal_TrainImage = new SLD200_MSL.WATGroupBox();
-            this.pictureBox_Setup_ScannerCal_TrainImage = new System.Windows.Forms.PictureBox();
-            this.button_Setup_ScannerCal_Train_Set = new SLD200_MSL.BaseButton();
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable = new System.Windows.Forms.CheckBox();
-            this.textBox_Setup_Option_Hole02_50_Wait_Time = new System.Windows.Forms.TextBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -616,6 +617,13 @@
             this.groupBox_Setup_ScannerCal_MarkType.SuspendLayout();
             this.groupBox_Setup_ScannerCal_Cross_Check.SuspendLayout();
             this.groupBox15.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Box_Setup_ScannerCal_ImageViewer)).BeginInit();
+            this.groupBox_Setup_ScannerCal_SearchResult.SuspendLayout();
+            this.tabControl_Setup_ScannerCal_SearchResult.SuspendLayout();
+            this.Parameter.SuspendLayout();
+            this.Result.SuspendLayout();
+            this.groupBox_Setup_ScannerCal_TrainImage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Setup_ScannerCal_TrainImage)).BeginInit();
             this.tabPage_Setup_FlatnessMeasurement.SuspendLayout();
             this.groupBox18.SuspendLayout();
             this.tabPage_Setup_Option.SuspendLayout();
@@ -630,13 +638,6 @@
             this.groupBox17.SuspendLayout();
             this.groupBox_Offset.SuspendLayout();
             this.groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Box_Setup_ScannerCal_ImageViewer)).BeginInit();
-            this.groupBox_Setup_ScannerCal_SearchResult.SuspendLayout();
-            this.tabControl_Setup_ScannerCal_SearchResult.SuspendLayout();
-            this.Parameter.SuspendLayout();
-            this.Result.SuspendLayout();
-            this.groupBox_Setup_ScannerCal_TrainImage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Setup_ScannerCal_TrainImage)).BeginInit();
             this.SuspendLayout();
             // 
             // tabPage_Setup_Communication
@@ -1247,14 +1248,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1307,14 +1308,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -3450,6 +3451,27 @@
             this.radioButton_Setup_ScannerCal_Light_IR.UseVisualStyleBackColor = true;
             this.radioButton_Setup_ScannerCal_Light_IR.CheckedChanged += new System.EventHandler(this.radioButton_Setup_ScannerCal_Light_IR_CheckedChanged);
             // 
+            // baseLabel_Setup_ScannerCal_Max
+            // 
+            this.baseLabel_Setup_ScannerCal_Max.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Setup_ScannerCal_Max.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Setup_ScannerCal_Max.Location = new System.Drawing.Point(224, 67);
+            this.baseLabel_Setup_ScannerCal_Max.Name = "baseLabel_Setup_ScannerCal_Max";
+            this.baseLabel_Setup_ScannerCal_Max.Size = new System.Drawing.Size(55, 23);
+            this.baseLabel_Setup_ScannerCal_Max.TabIndex = 32;
+            this.baseLabel_Setup_ScannerCal_Max.Text = "255";
+            this.baseLabel_Setup_ScannerCal_Max.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel_Setup_ScannerCal_Min
+            // 
+            this.baseLabel_Setup_ScannerCal_Min.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Setup_ScannerCal_Min.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Setup_ScannerCal_Min.Location = new System.Drawing.Point(16, 67);
+            this.baseLabel_Setup_ScannerCal_Min.Name = "baseLabel_Setup_ScannerCal_Min";
+            this.baseLabel_Setup_ScannerCal_Min.Size = new System.Drawing.Size(22, 23);
+            this.baseLabel_Setup_ScannerCal_Min.TabIndex = 31;
+            this.baseLabel_Setup_ScannerCal_Min.Text = "0";
+            // 
             // hScrollBar_Setup_ScannerCal_Illuminator
             // 
             this.hScrollBar_Setup_ScannerCal_Illuminator.Location = new System.Drawing.Point(47, 63);
@@ -4434,6 +4456,342 @@
             this.button_Setup_ScannerCal_Test.Visible = false;
             this.button_Setup_ScannerCal_Test.Click += new System.EventHandler(this.button15_Click);
             // 
+            // Box_Setup_ScannerCal_ImageViewer
+            // 
+            this.Box_Setup_ScannerCal_ImageViewer.BackColor = System.Drawing.Color.Black;
+            this.Box_Setup_ScannerCal_ImageViewer.Camera = null;
+            this.Box_Setup_ScannerCal_ImageViewer.CameraSwitch = null;
+            this.Box_Setup_ScannerCal_ImageViewer.FrameRate = 1D;
+            this.Box_Setup_ScannerCal_ImageViewer.InputImage = null;
+            this.Box_Setup_ScannerCal_ImageViewer.IsViewCustomizedImage = false;
+            this.Box_Setup_ScannerCal_ImageViewer.Location = new System.Drawing.Point(4, 527);
+            this.Box_Setup_ScannerCal_ImageViewer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.Box_Setup_ScannerCal_ImageViewer.Name = "Box_Setup_ScannerCal_ImageViewer";
+            this.Box_Setup_ScannerCal_ImageViewer.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.Box_Setup_ScannerCal_ImageViewer.Simulated = false;
+            this.Box_Setup_ScannerCal_ImageViewer.Size = new System.Drawing.Size(279, 267);
+            this.Box_Setup_ScannerCal_ImageViewer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Box_Setup_ScannerCal_ImageViewer.TabIndex = 159;
+            this.Box_Setup_ScannerCal_ImageViewer.TabStop = false;
+            this.Box_Setup_ScannerCal_ImageViewer.UpdateDelayTime = 160;
+            this.Box_Setup_ScannerCal_ImageViewer.VisibleCrossLine = true;
+            // 
+            // groupBox_Setup_ScannerCal_SearchResult
+            // 
+            this.groupBox_Setup_ScannerCal_SearchResult.BorderColor = System.Drawing.Color.Black;
+            this.groupBox_Setup_ScannerCal_SearchResult.Controls.Add(this.tabControl_Setup_ScannerCal_SearchResult);
+            this.groupBox_Setup_ScannerCal_SearchResult.Controls.Add(this.tabControl1);
+            this.groupBox_Setup_ScannerCal_SearchResult.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.groupBox_Setup_ScannerCal_SearchResult.ForeColor = System.Drawing.Color.Black;
+            this.groupBox_Setup_ScannerCal_SearchResult.Location = new System.Drawing.Point(714, 642);
+            this.groupBox_Setup_ScannerCal_SearchResult.Name = "groupBox_Setup_ScannerCal_SearchResult";
+            this.groupBox_Setup_ScannerCal_SearchResult.Size = new System.Drawing.Size(306, 153);
+            this.groupBox_Setup_ScannerCal_SearchResult.TabIndex = 165;
+            this.groupBox_Setup_ScannerCal_SearchResult.TabStop = false;
+            this.groupBox_Setup_ScannerCal_SearchResult.Text = " Search Result ";
+            // 
+            // tabControl_Setup_ScannerCal_SearchResult
+            // 
+            this.tabControl_Setup_ScannerCal_SearchResult.Controls.Add(this.Parameter);
+            this.tabControl_Setup_ScannerCal_SearchResult.Controls.Add(this.Result);
+            this.tabControl_Setup_ScannerCal_SearchResult.Location = new System.Drawing.Point(6, 16);
+            this.tabControl_Setup_ScannerCal_SearchResult.Name = "tabControl_Setup_ScannerCal_SearchResult";
+            this.tabControl_Setup_ScannerCal_SearchResult.SelectedIndex = 0;
+            this.tabControl_Setup_ScannerCal_SearchResult.Size = new System.Drawing.Size(294, 134);
+            this.tabControl_Setup_ScannerCal_SearchResult.TabIndex = 167;
+            // 
+            // Parameter
+            // 
+            this.Parameter.Controls.Add(this.basetextBox_Setup_ScannerCal_MinScore);
+            this.Parameter.Controls.Add(this.baseLabel_Setup_ScannerCal_AngleTolerance);
+            this.Parameter.Controls.Add(this.basetextBox_Setup_ScannerCal_MaxInstance);
+            this.Parameter.Controls.Add(this.baseToggleButton_Setup_ScannerCal_DuplicateCheck);
+            this.Parameter.Controls.Add(this.basetextBox_Setup_ScannerCal_AngleTolerance);
+            this.Parameter.Controls.Add(this.baseToggleButton_Setup_ScannerCal_UseMaskImage);
+            this.Parameter.Controls.Add(this.baseLabel_Setup_ScannerCal_MinScore);
+            this.Parameter.Controls.Add(this.baseLabel_Setup_ScannerCal_MaxInstance);
+            this.Parameter.Location = new System.Drawing.Point(4, 23);
+            this.Parameter.Name = "Parameter";
+            this.Parameter.Padding = new System.Windows.Forms.Padding(3);
+            this.Parameter.Size = new System.Drawing.Size(286, 107);
+            this.Parameter.TabIndex = 0;
+            this.Parameter.Text = "Parameter";
+            this.Parameter.UseVisualStyleBackColor = true;
+            // 
+            // basetextBox_Setup_ScannerCal_MinScore
+            // 
+            this.basetextBox_Setup_ScannerCal_MinScore.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.basetextBox_Setup_ScannerCal_MinScore.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.basetextBox_Setup_ScannerCal_MinScore.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.basetextBox_Setup_ScannerCal_MinScore.ForeColor = System.Drawing.Color.White;
+            this.basetextBox_Setup_ScannerCal_MinScore.Location = new System.Drawing.Point(186, 43);
+            this.basetextBox_Setup_ScannerCal_MinScore.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.basetextBox_Setup_ScannerCal_MinScore.Name = "basetextBox_Setup_ScannerCal_MinScore";
+            this.basetextBox_Setup_ScannerCal_MinScore.Size = new System.Drawing.Size(88, 13);
+            this.basetextBox_Setup_ScannerCal_MinScore.TabIndex = 7;
+            // 
+            // baseLabel_Setup_ScannerCal_AngleTolerance
+            // 
+            this.baseLabel_Setup_ScannerCal_AngleTolerance.AutoSize = true;
+            this.baseLabel_Setup_ScannerCal_AngleTolerance.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Setup_ScannerCal_AngleTolerance.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Setup_ScannerCal_AngleTolerance.Location = new System.Drawing.Point(6, 15);
+            this.baseLabel_Setup_ScannerCal_AngleTolerance.Name = "baseLabel_Setup_ScannerCal_AngleTolerance";
+            this.baseLabel_Setup_ScannerCal_AngleTolerance.Size = new System.Drawing.Size(139, 13);
+            this.baseLabel_Setup_ScannerCal_AngleTolerance.TabIndex = 2;
+            this.baseLabel_Setup_ScannerCal_AngleTolerance.Text = "Angle Tolerance [Deg] :";
+            // 
+            // basetextBox_Setup_ScannerCal_MaxInstance
+            // 
+            this.basetextBox_Setup_ScannerCal_MaxInstance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.basetextBox_Setup_ScannerCal_MaxInstance.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.basetextBox_Setup_ScannerCal_MaxInstance.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.basetextBox_Setup_ScannerCal_MaxInstance.ForeColor = System.Drawing.Color.White;
+            this.basetextBox_Setup_ScannerCal_MaxInstance.Location = new System.Drawing.Point(186, 28);
+            this.basetextBox_Setup_ScannerCal_MaxInstance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.basetextBox_Setup_ScannerCal_MaxInstance.Name = "basetextBox_Setup_ScannerCal_MaxInstance";
+            this.basetextBox_Setup_ScannerCal_MaxInstance.Size = new System.Drawing.Size(88, 13);
+            this.basetextBox_Setup_ScannerCal_MaxInstance.TabIndex = 6;
+            // 
+            // baseToggleButton_Setup_ScannerCal_DuplicateCheck
+            // 
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.BackColor = System.Drawing.Color.White;
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.FlatAppearance.BorderColor = System.Drawing.Color.Aqua;
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.ForeColor = System.Drawing.Color.Black;
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Location = new System.Drawing.Point(84, 68);
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Name = "baseToggleButton_Setup_ScannerCal_DuplicateCheck";
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Size = new System.Drawing.Size(88, 24);
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.TabIndex = 0;
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Text = "Duplicate Check";
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.UseVisualStyleBackColor = false;
+            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Click += new System.EventHandler(this.baseToggleButton_Setup_ScannerCal_DuplicateCheck_Click);
+            // 
+            // basetextBox_Setup_ScannerCal_AngleTolerance
+            // 
+            this.basetextBox_Setup_ScannerCal_AngleTolerance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.basetextBox_Setup_ScannerCal_AngleTolerance.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.basetextBox_Setup_ScannerCal_AngleTolerance.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.basetextBox_Setup_ScannerCal_AngleTolerance.ForeColor = System.Drawing.Color.White;
+            this.basetextBox_Setup_ScannerCal_AngleTolerance.Location = new System.Drawing.Point(186, 13);
+            this.basetextBox_Setup_ScannerCal_AngleTolerance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.basetextBox_Setup_ScannerCal_AngleTolerance.Name = "basetextBox_Setup_ScannerCal_AngleTolerance";
+            this.basetextBox_Setup_ScannerCal_AngleTolerance.Size = new System.Drawing.Size(88, 13);
+            this.basetextBox_Setup_ScannerCal_AngleTolerance.TabIndex = 5;
+            // 
+            // baseToggleButton_Setup_ScannerCal_UseMaskImage
+            // 
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.BackColor = System.Drawing.Color.White;
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.FlatAppearance.BorderColor = System.Drawing.Color.Aqua;
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.ForeColor = System.Drawing.Color.Black;
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Location = new System.Drawing.Point(186, 68);
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Name = "baseToggleButton_Setup_ScannerCal_UseMaskImage";
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Size = new System.Drawing.Size(88, 24);
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.TabIndex = 1;
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Text = "Use Mask Image";
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.UseVisualStyleBackColor = false;
+            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Click += new System.EventHandler(this.baseToggleButton_Setup_ScannerCal_UseMaskImage_Click);
+            // 
+            // baseLabel_Setup_ScannerCal_MinScore
+            // 
+            this.baseLabel_Setup_ScannerCal_MinScore.AutoSize = true;
+            this.baseLabel_Setup_ScannerCal_MinScore.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Setup_ScannerCal_MinScore.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Setup_ScannerCal_MinScore.Location = new System.Drawing.Point(80, 45);
+            this.baseLabel_Setup_ScannerCal_MinScore.Name = "baseLabel_Setup_ScannerCal_MinScore";
+            this.baseLabel_Setup_ScannerCal_MinScore.Size = new System.Drawing.Size(65, 13);
+            this.baseLabel_Setup_ScannerCal_MinScore.TabIndex = 4;
+            this.baseLabel_Setup_ScannerCal_MinScore.Text = "MinScore :";
+            // 
+            // baseLabel_Setup_ScannerCal_MaxInstance
+            // 
+            this.baseLabel_Setup_ScannerCal_MaxInstance.AutoSize = true;
+            this.baseLabel_Setup_ScannerCal_MaxInstance.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Setup_ScannerCal_MaxInstance.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Setup_ScannerCal_MaxInstance.Location = new System.Drawing.Point(28, 30);
+            this.baseLabel_Setup_ScannerCal_MaxInstance.Name = "baseLabel_Setup_ScannerCal_MaxInstance";
+            this.baseLabel_Setup_ScannerCal_MaxInstance.Size = new System.Drawing.Size(117, 13);
+            this.baseLabel_Setup_ScannerCal_MaxInstance.TabIndex = 3;
+            this.baseLabel_Setup_ScannerCal_MaxInstance.Text = "Max Instance [EA] :";
+            // 
+            // Result
+            // 
+            this.Result.Controls.Add(this.button_Setup_ScannerCal_Search);
+            this.Result.Controls.Add(this.radioButton_Setup_ScannerCal_mm);
+            this.Result.Controls.Add(this.radioButton_Setup_ScannerCal_Pixel);
+            this.Result.Controls.Add(this.baseTextBox_Setup_ScannerCal_PositionT);
+            this.Result.Controls.Add(this.baseTextBox_Setup_ScannerCal_PositionY);
+            this.Result.Controls.Add(this.baseLabel_Setup_ScannerCal_PositionT);
+            this.Result.Controls.Add(this.baseLabel_Setup_ScannerCal_PositionY);
+            this.Result.Controls.Add(this.baseLabel_Setup_ScannerCal_PositionX);
+            this.Result.Controls.Add(this.baseTextBox_Setup_ScannerCal_PositionX);
+            this.Result.Location = new System.Drawing.Point(4, 23);
+            this.Result.Name = "Result";
+            this.Result.Padding = new System.Windows.Forms.Padding(3);
+            this.Result.Size = new System.Drawing.Size(286, 107);
+            this.Result.TabIndex = 1;
+            this.Result.Text = "Result";
+            this.Result.UseVisualStyleBackColor = true;
+            // 
+            // button_Setup_ScannerCal_Search
+            // 
+            this.button_Setup_ScannerCal_Search.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_ScannerCal_Search.Location = new System.Drawing.Point(164, 71);
+            this.button_Setup_ScannerCal_Search.Name = "button_Setup_ScannerCal_Search";
+            this.button_Setup_ScannerCal_Search.Size = new System.Drawing.Size(116, 30);
+            this.button_Setup_ScannerCal_Search.TabIndex = 14;
+            this.button_Setup_ScannerCal_Search.Text = "Search";
+            this.button_Setup_ScannerCal_Search.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_Search.Click += new System.EventHandler(this.button_Setup_ScannerCal_Search_Click);
+            // 
+            // radioButton_Setup_ScannerCal_mm
+            // 
+            this.radioButton_Setup_ScannerCal_mm.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.radioButton_Setup_ScannerCal_mm.Location = new System.Drawing.Point(179, 44);
+            this.radioButton_Setup_ScannerCal_mm.Margin = new System.Windows.Forms.Padding(6);
+            this.radioButton_Setup_ScannerCal_mm.Name = "radioButton_Setup_ScannerCal_mm";
+            this.radioButton_Setup_ScannerCal_mm.Size = new System.Drawing.Size(86, 27);
+            this.radioButton_Setup_ScannerCal_mm.TabIndex = 13;
+            this.radioButton_Setup_ScannerCal_mm.Text = "mm";
+            this.radioButton_Setup_ScannerCal_mm.UseVisualStyleBackColor = true;
+            this.radioButton_Setup_ScannerCal_mm.CheckedChanged += new System.EventHandler(this.radioButton_Setup_ScannerCal_mm_CheckedChanged);
+            // 
+            // radioButton_Setup_ScannerCal_Pixel
+            // 
+            this.radioButton_Setup_ScannerCal_Pixel.Checked = true;
+            this.radioButton_Setup_ScannerCal_Pixel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.radioButton_Setup_ScannerCal_Pixel.Location = new System.Drawing.Point(179, 14);
+            this.radioButton_Setup_ScannerCal_Pixel.Margin = new System.Windows.Forms.Padding(6);
+            this.radioButton_Setup_ScannerCal_Pixel.Name = "radioButton_Setup_ScannerCal_Pixel";
+            this.radioButton_Setup_ScannerCal_Pixel.Size = new System.Drawing.Size(86, 27);
+            this.radioButton_Setup_ScannerCal_Pixel.TabIndex = 12;
+            this.radioButton_Setup_ScannerCal_Pixel.TabStop = true;
+            this.radioButton_Setup_ScannerCal_Pixel.Text = "Pixel";
+            this.radioButton_Setup_ScannerCal_Pixel.UseVisualStyleBackColor = true;
+            this.radioButton_Setup_ScannerCal_Pixel.CheckedChanged += new System.EventHandler(this.radioButton_Setup_ScannerCal_Pixel_CheckedChanged);
+            // 
+            // baseTextBox_Setup_ScannerCal_PositionT
+            // 
+            this.baseTextBox_Setup_ScannerCal_PositionT.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseTextBox_Setup_ScannerCal_PositionT.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.baseTextBox_Setup_ScannerCal_PositionT.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseTextBox_Setup_ScannerCal_PositionT.ForeColor = System.Drawing.Color.White;
+            this.baseTextBox_Setup_ScannerCal_PositionT.Location = new System.Drawing.Point(77, 54);
+            this.baseTextBox_Setup_ScannerCal_PositionT.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.baseTextBox_Setup_ScannerCal_PositionT.Name = "baseTextBox_Setup_ScannerCal_PositionT";
+            this.baseTextBox_Setup_ScannerCal_PositionT.Size = new System.Drawing.Size(88, 13);
+            this.baseTextBox_Setup_ScannerCal_PositionT.TabIndex = 11;
+            // 
+            // baseTextBox_Setup_ScannerCal_PositionY
+            // 
+            this.baseTextBox_Setup_ScannerCal_PositionY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseTextBox_Setup_ScannerCal_PositionY.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.baseTextBox_Setup_ScannerCal_PositionY.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseTextBox_Setup_ScannerCal_PositionY.ForeColor = System.Drawing.Color.White;
+            this.baseTextBox_Setup_ScannerCal_PositionY.Location = new System.Drawing.Point(77, 32);
+            this.baseTextBox_Setup_ScannerCal_PositionY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.baseTextBox_Setup_ScannerCal_PositionY.Name = "baseTextBox_Setup_ScannerCal_PositionY";
+            this.baseTextBox_Setup_ScannerCal_PositionY.Size = new System.Drawing.Size(88, 13);
+            this.baseTextBox_Setup_ScannerCal_PositionY.TabIndex = 10;
+            // 
+            // baseLabel_Setup_ScannerCal_PositionT
+            // 
+            this.baseLabel_Setup_ScannerCal_PositionT.AutoSize = true;
+            this.baseLabel_Setup_ScannerCal_PositionT.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Setup_ScannerCal_PositionT.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Setup_ScannerCal_PositionT.Location = new System.Drawing.Point(6, 54);
+            this.baseLabel_Setup_ScannerCal_PositionT.Name = "baseLabel_Setup_ScannerCal_PositionT";
+            this.baseLabel_Setup_ScannerCal_PositionT.Size = new System.Drawing.Size(65, 13);
+            this.baseLabel_Setup_ScannerCal_PositionT.TabIndex = 9;
+            this.baseLabel_Setup_ScannerCal_PositionT.Text = "PositionT :";
+            // 
+            // baseLabel_Setup_ScannerCal_PositionY
+            // 
+            this.baseLabel_Setup_ScannerCal_PositionY.AutoSize = true;
+            this.baseLabel_Setup_ScannerCal_PositionY.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Setup_ScannerCal_PositionY.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Setup_ScannerCal_PositionY.Location = new System.Drawing.Point(6, 32);
+            this.baseLabel_Setup_ScannerCal_PositionY.Name = "baseLabel_Setup_ScannerCal_PositionY";
+            this.baseLabel_Setup_ScannerCal_PositionY.Size = new System.Drawing.Size(65, 13);
+            this.baseLabel_Setup_ScannerCal_PositionY.TabIndex = 8;
+            this.baseLabel_Setup_ScannerCal_PositionY.Text = "PositionY :";
+            // 
+            // baseLabel_Setup_ScannerCal_PositionX
+            // 
+            this.baseLabel_Setup_ScannerCal_PositionX.AutoSize = true;
+            this.baseLabel_Setup_ScannerCal_PositionX.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Setup_ScannerCal_PositionX.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Setup_ScannerCal_PositionX.Location = new System.Drawing.Point(6, 14);
+            this.baseLabel_Setup_ScannerCal_PositionX.Name = "baseLabel_Setup_ScannerCal_PositionX";
+            this.baseLabel_Setup_ScannerCal_PositionX.Size = new System.Drawing.Size(65, 13);
+            this.baseLabel_Setup_ScannerCal_PositionX.TabIndex = 6;
+            this.baseLabel_Setup_ScannerCal_PositionX.Text = "PositionX :";
+            // 
+            // baseTextBox_Setup_ScannerCal_PositionX
+            // 
+            this.baseTextBox_Setup_ScannerCal_PositionX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseTextBox_Setup_ScannerCal_PositionX.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.baseTextBox_Setup_ScannerCal_PositionX.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseTextBox_Setup_ScannerCal_PositionX.ForeColor = System.Drawing.Color.White;
+            this.baseTextBox_Setup_ScannerCal_PositionX.Location = new System.Drawing.Point(77, 14);
+            this.baseTextBox_Setup_ScannerCal_PositionX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.baseTextBox_Setup_ScannerCal_PositionX.Name = "baseTextBox_Setup_ScannerCal_PositionX";
+            this.baseTextBox_Setup_ScannerCal_PositionX.Size = new System.Drawing.Size(88, 13);
+            this.baseTextBox_Setup_ScannerCal_PositionX.TabIndex = 7;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Location = new System.Drawing.Point(684, 98);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(242, 326);
+            this.tabControl1.TabIndex = 18;
+            // 
+            // groupBox_Setup_ScannerCal_TrainImage
+            // 
+            this.groupBox_Setup_ScannerCal_TrainImage.BorderColor = System.Drawing.Color.Black;
+            this.groupBox_Setup_ScannerCal_TrainImage.Controls.Add(this.pictureBox_Setup_ScannerCal_TrainImage);
+            this.groupBox_Setup_ScannerCal_TrainImage.Controls.Add(this.button_Setup_ScannerCal_Train_Set);
+            this.groupBox_Setup_ScannerCal_TrainImage.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox_Setup_ScannerCal_TrainImage.ForeColor = System.Drawing.Color.Black;
+            this.groupBox_Setup_ScannerCal_TrainImage.Location = new System.Drawing.Point(493, 531);
+            this.groupBox_Setup_ScannerCal_TrainImage.Name = "groupBox_Setup_ScannerCal_TrainImage";
+            this.groupBox_Setup_ScannerCal_TrainImage.Size = new System.Drawing.Size(209, 265);
+            this.groupBox_Setup_ScannerCal_TrainImage.TabIndex = 164;
+            this.groupBox_Setup_ScannerCal_TrainImage.TabStop = false;
+            this.groupBox_Setup_ScannerCal_TrainImage.Text = " Train Image ";
+            // 
+            // pictureBox_Setup_ScannerCal_TrainImage
+            // 
+            this.pictureBox_Setup_ScannerCal_TrainImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.pictureBox_Setup_ScannerCal_TrainImage.Location = new System.Drawing.Point(10, 21);
+            this.pictureBox_Setup_ScannerCal_TrainImage.Name = "pictureBox_Setup_ScannerCal_TrainImage";
+            this.pictureBox_Setup_ScannerCal_TrainImage.Size = new System.Drawing.Size(186, 180);
+            this.pictureBox_Setup_ScannerCal_TrainImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox_Setup_ScannerCal_TrainImage.TabIndex = 1;
+            this.pictureBox_Setup_ScannerCal_TrainImage.TabStop = false;
+            // 
+            // button_Setup_ScannerCal_Train_Set
+            // 
+            this.button_Setup_ScannerCal_Train_Set.BackColor = System.Drawing.Color.White;
+            this.button_Setup_ScannerCal_Train_Set.FlatAppearance.BorderColor = System.Drawing.Color.Aqua;
+            this.button_Setup_ScannerCal_Train_Set.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_Setup_ScannerCal_Train_Set.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_ScannerCal_Train_Set.ForeColor = System.Drawing.Color.Black;
+            this.button_Setup_ScannerCal_Train_Set.Location = new System.Drawing.Point(15, 212);
+            this.button_Setup_ScannerCal_Train_Set.Name = "button_Setup_ScannerCal_Train_Set";
+            this.button_Setup_ScannerCal_Train_Set.Size = new System.Drawing.Size(180, 44);
+            this.button_Setup_ScannerCal_Train_Set.TabIndex = 0;
+            this.button_Setup_ScannerCal_Train_Set.Text = "Train";
+            this.button_Setup_ScannerCal_Train_Set.UseVisualStyleBackColor = false;
+            this.button_Setup_ScannerCal_Train_Set.Click += new System.EventHandler(this.button_Setup_ScannerCal_Train_Set_Click);
+            // 
             // tabPage_Setup_FlatnessMeasurement
             // 
             this.tabPage_Setup_FlatnessMeasurement.Controls.Add(this.groupBox18);
@@ -5332,6 +5690,7 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.checkBox_HoleCenterEnable);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_Hole02_50_Wait_Enable);
             this.groupBox13.Controls.Add(this.textBox_Setup_Option_Hole02_50_Wait_Time);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_LaserHeight_Retry_Enable);
@@ -5404,6 +5763,35 @@
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
+            // 
+            // checkBox_HoleCenterEnable
+            // 
+            this.checkBox_HoleCenterEnable.Location = new System.Drawing.Point(1024, 157);
+            this.checkBox_HoleCenterEnable.Name = "checkBox_HoleCenterEnable";
+            this.checkBox_HoleCenterEnable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_HoleCenterEnable.TabIndex = 126;
+            this.checkBox_HoleCenterEnable.Text = "Hole Center Enable";
+            this.checkBox_HoleCenterEnable.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Setup_Option_Hole02_50_Wait_Enable
+            // 
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Location = new System.Drawing.Point(1024, 113);
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Name = "checkBox_Setup_Option_Hole02_50_Wait_Enable";
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.TabIndex = 125;
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Text = "Hole2~50 WaitTime(ms) :";
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_Hole02_50_Wait_Enable_CheckedChanged);
+            // 
+            // textBox_Setup_Option_Hole02_50_Wait_Time
+            // 
+            this.textBox_Setup_Option_Hole02_50_Wait_Time.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_Hole02_50_Wait_Time.Location = new System.Drawing.Point(1246, 113);
+            this.textBox_Setup_Option_Hole02_50_Wait_Time.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_Hole02_50_Wait_Time.Name = "textBox_Setup_Option_Hole02_50_Wait_Time";
+            this.textBox_Setup_Option_Hole02_50_Wait_Time.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_Hole02_50_Wait_Time.TabIndex = 124;
+            this.textBox_Setup_Option_Hole02_50_Wait_Time.Text = "1";
             // 
             // checkBox_Setup_Option_LaserHeight_Retry_Enable
             // 
@@ -6931,382 +7319,6 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // baseLabel_Setup_ScannerCal_Max
-            // 
-            this.baseLabel_Setup_ScannerCal_Max.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Setup_ScannerCal_Max.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Setup_ScannerCal_Max.Location = new System.Drawing.Point(224, 67);
-            this.baseLabel_Setup_ScannerCal_Max.Name = "baseLabel_Setup_ScannerCal_Max";
-            this.baseLabel_Setup_ScannerCal_Max.Size = new System.Drawing.Size(55, 23);
-            this.baseLabel_Setup_ScannerCal_Max.TabIndex = 32;
-            this.baseLabel_Setup_ScannerCal_Max.Text = "255";
-            this.baseLabel_Setup_ScannerCal_Max.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // baseLabel_Setup_ScannerCal_Min
-            // 
-            this.baseLabel_Setup_ScannerCal_Min.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Setup_ScannerCal_Min.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Setup_ScannerCal_Min.Location = new System.Drawing.Point(16, 67);
-            this.baseLabel_Setup_ScannerCal_Min.Name = "baseLabel_Setup_ScannerCal_Min";
-            this.baseLabel_Setup_ScannerCal_Min.Size = new System.Drawing.Size(22, 23);
-            this.baseLabel_Setup_ScannerCal_Min.TabIndex = 31;
-            this.baseLabel_Setup_ScannerCal_Min.Text = "0";
-            // 
-            // Box_Setup_ScannerCal_ImageViewer
-            // 
-            this.Box_Setup_ScannerCal_ImageViewer.BackColor = System.Drawing.Color.Black;
-            this.Box_Setup_ScannerCal_ImageViewer.Camera = null;
-            this.Box_Setup_ScannerCal_ImageViewer.CameraSwitch = null;
-            this.Box_Setup_ScannerCal_ImageViewer.FrameRate = 1D;
-            this.Box_Setup_ScannerCal_ImageViewer.InputImage = null;
-            this.Box_Setup_ScannerCal_ImageViewer.IsViewCustomizedImage = false;
-            this.Box_Setup_ScannerCal_ImageViewer.Location = new System.Drawing.Point(4, 527);
-            this.Box_Setup_ScannerCal_ImageViewer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.Box_Setup_ScannerCal_ImageViewer.Name = "Box_Setup_ScannerCal_ImageViewer";
-            this.Box_Setup_ScannerCal_ImageViewer.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.Box_Setup_ScannerCal_ImageViewer.Simulated = false;
-            this.Box_Setup_ScannerCal_ImageViewer.Size = new System.Drawing.Size(279, 267);
-            this.Box_Setup_ScannerCal_ImageViewer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.Box_Setup_ScannerCal_ImageViewer.TabIndex = 159;
-            this.Box_Setup_ScannerCal_ImageViewer.TabStop = false;
-            this.Box_Setup_ScannerCal_ImageViewer.UpdateDelayTime = 160;
-            this.Box_Setup_ScannerCal_ImageViewer.VisibleCrossLine = true;
-            // 
-            // groupBox_Setup_ScannerCal_SearchResult
-            // 
-            this.groupBox_Setup_ScannerCal_SearchResult.BorderColor = System.Drawing.Color.Black;
-            this.groupBox_Setup_ScannerCal_SearchResult.Controls.Add(this.tabControl_Setup_ScannerCal_SearchResult);
-            this.groupBox_Setup_ScannerCal_SearchResult.Controls.Add(this.tabControl1);
-            this.groupBox_Setup_ScannerCal_SearchResult.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.groupBox_Setup_ScannerCal_SearchResult.ForeColor = System.Drawing.Color.Black;
-            this.groupBox_Setup_ScannerCal_SearchResult.Location = new System.Drawing.Point(714, 642);
-            this.groupBox_Setup_ScannerCal_SearchResult.Name = "groupBox_Setup_ScannerCal_SearchResult";
-            this.groupBox_Setup_ScannerCal_SearchResult.Size = new System.Drawing.Size(306, 153);
-            this.groupBox_Setup_ScannerCal_SearchResult.TabIndex = 165;
-            this.groupBox_Setup_ScannerCal_SearchResult.TabStop = false;
-            this.groupBox_Setup_ScannerCal_SearchResult.Text = " Search Result ";
-            // 
-            // tabControl_Setup_ScannerCal_SearchResult
-            // 
-            this.tabControl_Setup_ScannerCal_SearchResult.Controls.Add(this.Parameter);
-            this.tabControl_Setup_ScannerCal_SearchResult.Controls.Add(this.Result);
-            this.tabControl_Setup_ScannerCal_SearchResult.Location = new System.Drawing.Point(6, 16);
-            this.tabControl_Setup_ScannerCal_SearchResult.Name = "tabControl_Setup_ScannerCal_SearchResult";
-            this.tabControl_Setup_ScannerCal_SearchResult.SelectedIndex = 0;
-            this.tabControl_Setup_ScannerCal_SearchResult.Size = new System.Drawing.Size(294, 134);
-            this.tabControl_Setup_ScannerCal_SearchResult.TabIndex = 167;
-            // 
-            // Parameter
-            // 
-            this.Parameter.Controls.Add(this.basetextBox_Setup_ScannerCal_MinScore);
-            this.Parameter.Controls.Add(this.baseLabel_Setup_ScannerCal_AngleTolerance);
-            this.Parameter.Controls.Add(this.basetextBox_Setup_ScannerCal_MaxInstance);
-            this.Parameter.Controls.Add(this.baseToggleButton_Setup_ScannerCal_DuplicateCheck);
-            this.Parameter.Controls.Add(this.basetextBox_Setup_ScannerCal_AngleTolerance);
-            this.Parameter.Controls.Add(this.baseToggleButton_Setup_ScannerCal_UseMaskImage);
-            this.Parameter.Controls.Add(this.baseLabel_Setup_ScannerCal_MinScore);
-            this.Parameter.Controls.Add(this.baseLabel_Setup_ScannerCal_MaxInstance);
-            this.Parameter.Location = new System.Drawing.Point(4, 23);
-            this.Parameter.Name = "Parameter";
-            this.Parameter.Padding = new System.Windows.Forms.Padding(3);
-            this.Parameter.Size = new System.Drawing.Size(286, 107);
-            this.Parameter.TabIndex = 0;
-            this.Parameter.Text = "Parameter";
-            this.Parameter.UseVisualStyleBackColor = true;
-            // 
-            // basetextBox_Setup_ScannerCal_MinScore
-            // 
-            this.basetextBox_Setup_ScannerCal_MinScore.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            this.basetextBox_Setup_ScannerCal_MinScore.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.basetextBox_Setup_ScannerCal_MinScore.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.basetextBox_Setup_ScannerCal_MinScore.ForeColor = System.Drawing.Color.White;
-            this.basetextBox_Setup_ScannerCal_MinScore.Location = new System.Drawing.Point(186, 43);
-            this.basetextBox_Setup_ScannerCal_MinScore.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.basetextBox_Setup_ScannerCal_MinScore.Name = "basetextBox_Setup_ScannerCal_MinScore";
-            this.basetextBox_Setup_ScannerCal_MinScore.Size = new System.Drawing.Size(88, 13);
-            this.basetextBox_Setup_ScannerCal_MinScore.TabIndex = 7;
-            // 
-            // baseLabel_Setup_ScannerCal_AngleTolerance
-            // 
-            this.baseLabel_Setup_ScannerCal_AngleTolerance.AutoSize = true;
-            this.baseLabel_Setup_ScannerCal_AngleTolerance.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Setup_ScannerCal_AngleTolerance.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Setup_ScannerCal_AngleTolerance.Location = new System.Drawing.Point(6, 15);
-            this.baseLabel_Setup_ScannerCal_AngleTolerance.Name = "baseLabel_Setup_ScannerCal_AngleTolerance";
-            this.baseLabel_Setup_ScannerCal_AngleTolerance.Size = new System.Drawing.Size(139, 13);
-            this.baseLabel_Setup_ScannerCal_AngleTolerance.TabIndex = 2;
-            this.baseLabel_Setup_ScannerCal_AngleTolerance.Text = "Angle Tolerance [Deg] :";
-            // 
-            // basetextBox_Setup_ScannerCal_MaxInstance
-            // 
-            this.basetextBox_Setup_ScannerCal_MaxInstance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            this.basetextBox_Setup_ScannerCal_MaxInstance.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.basetextBox_Setup_ScannerCal_MaxInstance.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.basetextBox_Setup_ScannerCal_MaxInstance.ForeColor = System.Drawing.Color.White;
-            this.basetextBox_Setup_ScannerCal_MaxInstance.Location = new System.Drawing.Point(186, 28);
-            this.basetextBox_Setup_ScannerCal_MaxInstance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.basetextBox_Setup_ScannerCal_MaxInstance.Name = "basetextBox_Setup_ScannerCal_MaxInstance";
-            this.basetextBox_Setup_ScannerCal_MaxInstance.Size = new System.Drawing.Size(88, 13);
-            this.basetextBox_Setup_ScannerCal_MaxInstance.TabIndex = 6;
-            // 
-            // baseToggleButton_Setup_ScannerCal_DuplicateCheck
-            // 
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.BackColor = System.Drawing.Color.White;
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.FlatAppearance.BorderColor = System.Drawing.Color.Aqua;
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.ForeColor = System.Drawing.Color.Black;
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Location = new System.Drawing.Point(84, 68);
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Name = "baseToggleButton_Setup_ScannerCal_DuplicateCheck";
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Size = new System.Drawing.Size(88, 24);
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.TabIndex = 0;
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Text = "Duplicate Check";
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.UseVisualStyleBackColor = false;
-            this.baseToggleButton_Setup_ScannerCal_DuplicateCheck.Click += new System.EventHandler(this.baseToggleButton_Setup_ScannerCal_DuplicateCheck_Click);
-            // 
-            // basetextBox_Setup_ScannerCal_AngleTolerance
-            // 
-            this.basetextBox_Setup_ScannerCal_AngleTolerance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            this.basetextBox_Setup_ScannerCal_AngleTolerance.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.basetextBox_Setup_ScannerCal_AngleTolerance.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.basetextBox_Setup_ScannerCal_AngleTolerance.ForeColor = System.Drawing.Color.White;
-            this.basetextBox_Setup_ScannerCal_AngleTolerance.Location = new System.Drawing.Point(186, 13);
-            this.basetextBox_Setup_ScannerCal_AngleTolerance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.basetextBox_Setup_ScannerCal_AngleTolerance.Name = "basetextBox_Setup_ScannerCal_AngleTolerance";
-            this.basetextBox_Setup_ScannerCal_AngleTolerance.Size = new System.Drawing.Size(88, 13);
-            this.basetextBox_Setup_ScannerCal_AngleTolerance.TabIndex = 5;
-            // 
-            // baseToggleButton_Setup_ScannerCal_UseMaskImage
-            // 
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.BackColor = System.Drawing.Color.White;
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.FlatAppearance.BorderColor = System.Drawing.Color.Aqua;
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.ForeColor = System.Drawing.Color.Black;
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Location = new System.Drawing.Point(186, 68);
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Name = "baseToggleButton_Setup_ScannerCal_UseMaskImage";
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Size = new System.Drawing.Size(88, 24);
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.TabIndex = 1;
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Text = "Use Mask Image";
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.UseVisualStyleBackColor = false;
-            this.baseToggleButton_Setup_ScannerCal_UseMaskImage.Click += new System.EventHandler(this.baseToggleButton_Setup_ScannerCal_UseMaskImage_Click);
-            // 
-            // baseLabel_Setup_ScannerCal_MinScore
-            // 
-            this.baseLabel_Setup_ScannerCal_MinScore.AutoSize = true;
-            this.baseLabel_Setup_ScannerCal_MinScore.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Setup_ScannerCal_MinScore.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Setup_ScannerCal_MinScore.Location = new System.Drawing.Point(80, 45);
-            this.baseLabel_Setup_ScannerCal_MinScore.Name = "baseLabel_Setup_ScannerCal_MinScore";
-            this.baseLabel_Setup_ScannerCal_MinScore.Size = new System.Drawing.Size(65, 13);
-            this.baseLabel_Setup_ScannerCal_MinScore.TabIndex = 4;
-            this.baseLabel_Setup_ScannerCal_MinScore.Text = "MinScore :";
-            // 
-            // baseLabel_Setup_ScannerCal_MaxInstance
-            // 
-            this.baseLabel_Setup_ScannerCal_MaxInstance.AutoSize = true;
-            this.baseLabel_Setup_ScannerCal_MaxInstance.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Setup_ScannerCal_MaxInstance.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Setup_ScannerCal_MaxInstance.Location = new System.Drawing.Point(28, 30);
-            this.baseLabel_Setup_ScannerCal_MaxInstance.Name = "baseLabel_Setup_ScannerCal_MaxInstance";
-            this.baseLabel_Setup_ScannerCal_MaxInstance.Size = new System.Drawing.Size(117, 13);
-            this.baseLabel_Setup_ScannerCal_MaxInstance.TabIndex = 3;
-            this.baseLabel_Setup_ScannerCal_MaxInstance.Text = "Max Instance [EA] :";
-            // 
-            // Result
-            // 
-            this.Result.Controls.Add(this.button_Setup_ScannerCal_Search);
-            this.Result.Controls.Add(this.radioButton_Setup_ScannerCal_mm);
-            this.Result.Controls.Add(this.radioButton_Setup_ScannerCal_Pixel);
-            this.Result.Controls.Add(this.baseTextBox_Setup_ScannerCal_PositionT);
-            this.Result.Controls.Add(this.baseTextBox_Setup_ScannerCal_PositionY);
-            this.Result.Controls.Add(this.baseLabel_Setup_ScannerCal_PositionT);
-            this.Result.Controls.Add(this.baseLabel_Setup_ScannerCal_PositionY);
-            this.Result.Controls.Add(this.baseLabel_Setup_ScannerCal_PositionX);
-            this.Result.Controls.Add(this.baseTextBox_Setup_ScannerCal_PositionX);
-            this.Result.Location = new System.Drawing.Point(4, 23);
-            this.Result.Name = "Result";
-            this.Result.Padding = new System.Windows.Forms.Padding(3);
-            this.Result.Size = new System.Drawing.Size(286, 107);
-            this.Result.TabIndex = 1;
-            this.Result.Text = "Result";
-            this.Result.UseVisualStyleBackColor = true;
-            // 
-            // button_Setup_ScannerCal_Search
-            // 
-            this.button_Setup_ScannerCal_Search.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_ScannerCal_Search.Location = new System.Drawing.Point(164, 71);
-            this.button_Setup_ScannerCal_Search.Name = "button_Setup_ScannerCal_Search";
-            this.button_Setup_ScannerCal_Search.Size = new System.Drawing.Size(116, 30);
-            this.button_Setup_ScannerCal_Search.TabIndex = 14;
-            this.button_Setup_ScannerCal_Search.Text = "Search";
-            this.button_Setup_ScannerCal_Search.UseVisualStyleBackColor = true;
-            this.button_Setup_ScannerCal_Search.Click += new System.EventHandler(this.button_Setup_ScannerCal_Search_Click);
-            // 
-            // radioButton_Setup_ScannerCal_mm
-            // 
-            this.radioButton_Setup_ScannerCal_mm.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.radioButton_Setup_ScannerCal_mm.Location = new System.Drawing.Point(179, 44);
-            this.radioButton_Setup_ScannerCal_mm.Margin = new System.Windows.Forms.Padding(6);
-            this.radioButton_Setup_ScannerCal_mm.Name = "radioButton_Setup_ScannerCal_mm";
-            this.radioButton_Setup_ScannerCal_mm.Size = new System.Drawing.Size(86, 27);
-            this.radioButton_Setup_ScannerCal_mm.TabIndex = 13;
-            this.radioButton_Setup_ScannerCal_mm.Text = "mm";
-            this.radioButton_Setup_ScannerCal_mm.UseVisualStyleBackColor = true;
-            this.radioButton_Setup_ScannerCal_mm.CheckedChanged += new System.EventHandler(this.radioButton_Setup_ScannerCal_mm_CheckedChanged);
-            // 
-            // radioButton_Setup_ScannerCal_Pixel
-            // 
-            this.radioButton_Setup_ScannerCal_Pixel.Checked = true;
-            this.radioButton_Setup_ScannerCal_Pixel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.radioButton_Setup_ScannerCal_Pixel.Location = new System.Drawing.Point(179, 14);
-            this.radioButton_Setup_ScannerCal_Pixel.Margin = new System.Windows.Forms.Padding(6);
-            this.radioButton_Setup_ScannerCal_Pixel.Name = "radioButton_Setup_ScannerCal_Pixel";
-            this.radioButton_Setup_ScannerCal_Pixel.Size = new System.Drawing.Size(86, 27);
-            this.radioButton_Setup_ScannerCal_Pixel.TabIndex = 12;
-            this.radioButton_Setup_ScannerCal_Pixel.TabStop = true;
-            this.radioButton_Setup_ScannerCal_Pixel.Text = "Pixel";
-            this.radioButton_Setup_ScannerCal_Pixel.UseVisualStyleBackColor = true;
-            this.radioButton_Setup_ScannerCal_Pixel.CheckedChanged += new System.EventHandler(this.radioButton_Setup_ScannerCal_Pixel_CheckedChanged);
-            // 
-            // baseTextBox_Setup_ScannerCal_PositionT
-            // 
-            this.baseTextBox_Setup_ScannerCal_PositionT.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            this.baseTextBox_Setup_ScannerCal_PositionT.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.baseTextBox_Setup_ScannerCal_PositionT.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseTextBox_Setup_ScannerCal_PositionT.ForeColor = System.Drawing.Color.White;
-            this.baseTextBox_Setup_ScannerCal_PositionT.Location = new System.Drawing.Point(77, 54);
-            this.baseTextBox_Setup_ScannerCal_PositionT.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.baseTextBox_Setup_ScannerCal_PositionT.Name = "baseTextBox_Setup_ScannerCal_PositionT";
-            this.baseTextBox_Setup_ScannerCal_PositionT.Size = new System.Drawing.Size(88, 13);
-            this.baseTextBox_Setup_ScannerCal_PositionT.TabIndex = 11;
-            // 
-            // baseTextBox_Setup_ScannerCal_PositionY
-            // 
-            this.baseTextBox_Setup_ScannerCal_PositionY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            this.baseTextBox_Setup_ScannerCal_PositionY.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.baseTextBox_Setup_ScannerCal_PositionY.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseTextBox_Setup_ScannerCal_PositionY.ForeColor = System.Drawing.Color.White;
-            this.baseTextBox_Setup_ScannerCal_PositionY.Location = new System.Drawing.Point(77, 32);
-            this.baseTextBox_Setup_ScannerCal_PositionY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.baseTextBox_Setup_ScannerCal_PositionY.Name = "baseTextBox_Setup_ScannerCal_PositionY";
-            this.baseTextBox_Setup_ScannerCal_PositionY.Size = new System.Drawing.Size(88, 13);
-            this.baseTextBox_Setup_ScannerCal_PositionY.TabIndex = 10;
-            // 
-            // baseLabel_Setup_ScannerCal_PositionT
-            // 
-            this.baseLabel_Setup_ScannerCal_PositionT.AutoSize = true;
-            this.baseLabel_Setup_ScannerCal_PositionT.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Setup_ScannerCal_PositionT.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Setup_ScannerCal_PositionT.Location = new System.Drawing.Point(6, 54);
-            this.baseLabel_Setup_ScannerCal_PositionT.Name = "baseLabel_Setup_ScannerCal_PositionT";
-            this.baseLabel_Setup_ScannerCal_PositionT.Size = new System.Drawing.Size(65, 13);
-            this.baseLabel_Setup_ScannerCal_PositionT.TabIndex = 9;
-            this.baseLabel_Setup_ScannerCal_PositionT.Text = "PositionT :";
-            // 
-            // baseLabel_Setup_ScannerCal_PositionY
-            // 
-            this.baseLabel_Setup_ScannerCal_PositionY.AutoSize = true;
-            this.baseLabel_Setup_ScannerCal_PositionY.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Setup_ScannerCal_PositionY.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Setup_ScannerCal_PositionY.Location = new System.Drawing.Point(6, 32);
-            this.baseLabel_Setup_ScannerCal_PositionY.Name = "baseLabel_Setup_ScannerCal_PositionY";
-            this.baseLabel_Setup_ScannerCal_PositionY.Size = new System.Drawing.Size(65, 13);
-            this.baseLabel_Setup_ScannerCal_PositionY.TabIndex = 8;
-            this.baseLabel_Setup_ScannerCal_PositionY.Text = "PositionY :";
-            // 
-            // baseLabel_Setup_ScannerCal_PositionX
-            // 
-            this.baseLabel_Setup_ScannerCal_PositionX.AutoSize = true;
-            this.baseLabel_Setup_ScannerCal_PositionX.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Setup_ScannerCal_PositionX.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Setup_ScannerCal_PositionX.Location = new System.Drawing.Point(6, 14);
-            this.baseLabel_Setup_ScannerCal_PositionX.Name = "baseLabel_Setup_ScannerCal_PositionX";
-            this.baseLabel_Setup_ScannerCal_PositionX.Size = new System.Drawing.Size(65, 13);
-            this.baseLabel_Setup_ScannerCal_PositionX.TabIndex = 6;
-            this.baseLabel_Setup_ScannerCal_PositionX.Text = "PositionX :";
-            // 
-            // baseTextBox_Setup_ScannerCal_PositionX
-            // 
-            this.baseTextBox_Setup_ScannerCal_PositionX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            this.baseTextBox_Setup_ScannerCal_PositionX.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.baseTextBox_Setup_ScannerCal_PositionX.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseTextBox_Setup_ScannerCal_PositionX.ForeColor = System.Drawing.Color.White;
-            this.baseTextBox_Setup_ScannerCal_PositionX.Location = new System.Drawing.Point(77, 14);
-            this.baseTextBox_Setup_ScannerCal_PositionX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.baseTextBox_Setup_ScannerCal_PositionX.Name = "baseTextBox_Setup_ScannerCal_PositionX";
-            this.baseTextBox_Setup_ScannerCal_PositionX.Size = new System.Drawing.Size(88, 13);
-            this.baseTextBox_Setup_ScannerCal_PositionX.TabIndex = 7;
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Location = new System.Drawing.Point(684, 98);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(242, 326);
-            this.tabControl1.TabIndex = 18;
-            // 
-            // groupBox_Setup_ScannerCal_TrainImage
-            // 
-            this.groupBox_Setup_ScannerCal_TrainImage.BorderColor = System.Drawing.Color.Black;
-            this.groupBox_Setup_ScannerCal_TrainImage.Controls.Add(this.pictureBox_Setup_ScannerCal_TrainImage);
-            this.groupBox_Setup_ScannerCal_TrainImage.Controls.Add(this.button_Setup_ScannerCal_Train_Set);
-            this.groupBox_Setup_ScannerCal_TrainImage.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_Setup_ScannerCal_TrainImage.ForeColor = System.Drawing.Color.Black;
-            this.groupBox_Setup_ScannerCal_TrainImage.Location = new System.Drawing.Point(493, 531);
-            this.groupBox_Setup_ScannerCal_TrainImage.Name = "groupBox_Setup_ScannerCal_TrainImage";
-            this.groupBox_Setup_ScannerCal_TrainImage.Size = new System.Drawing.Size(209, 265);
-            this.groupBox_Setup_ScannerCal_TrainImage.TabIndex = 164;
-            this.groupBox_Setup_ScannerCal_TrainImage.TabStop = false;
-            this.groupBox_Setup_ScannerCal_TrainImage.Text = " Train Image ";
-            // 
-            // pictureBox_Setup_ScannerCal_TrainImage
-            // 
-            this.pictureBox_Setup_ScannerCal_TrainImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.pictureBox_Setup_ScannerCal_TrainImage.Location = new System.Drawing.Point(10, 21);
-            this.pictureBox_Setup_ScannerCal_TrainImage.Name = "pictureBox_Setup_ScannerCal_TrainImage";
-            this.pictureBox_Setup_ScannerCal_TrainImage.Size = new System.Drawing.Size(186, 180);
-            this.pictureBox_Setup_ScannerCal_TrainImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox_Setup_ScannerCal_TrainImage.TabIndex = 1;
-            this.pictureBox_Setup_ScannerCal_TrainImage.TabStop = false;
-            // 
-            // button_Setup_ScannerCal_Train_Set
-            // 
-            this.button_Setup_ScannerCal_Train_Set.BackColor = System.Drawing.Color.White;
-            this.button_Setup_ScannerCal_Train_Set.FlatAppearance.BorderColor = System.Drawing.Color.Aqua;
-            this.button_Setup_ScannerCal_Train_Set.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_Setup_ScannerCal_Train_Set.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_ScannerCal_Train_Set.ForeColor = System.Drawing.Color.Black;
-            this.button_Setup_ScannerCal_Train_Set.Location = new System.Drawing.Point(15, 212);
-            this.button_Setup_ScannerCal_Train_Set.Name = "button_Setup_ScannerCal_Train_Set";
-            this.button_Setup_ScannerCal_Train_Set.Size = new System.Drawing.Size(180, 44);
-            this.button_Setup_ScannerCal_Train_Set.TabIndex = 0;
-            this.button_Setup_ScannerCal_Train_Set.Text = "Train";
-            this.button_Setup_ScannerCal_Train_Set.UseVisualStyleBackColor = false;
-            this.button_Setup_ScannerCal_Train_Set.Click += new System.EventHandler(this.button_Setup_ScannerCal_Train_Set_Click);
-            // 
-            // checkBox_Setup_Option_Hole02_50_Wait_Enable
-            // 
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Location = new System.Drawing.Point(1024, 113);
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Name = "checkBox_Setup_Option_Hole02_50_Wait_Enable";
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Size = new System.Drawing.Size(221, 20);
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.TabIndex = 125;
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Text = "Hole2~50 WaitTime(ms) :";
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Setup_Option_Hole02_50_Wait_Time
-            // 
-            this.textBox_Setup_Option_Hole02_50_Wait_Time.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_Hole02_50_Wait_Time.Location = new System.Drawing.Point(1246, 113);
-            this.textBox_Setup_Option_Hole02_50_Wait_Time.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Option_Hole02_50_Wait_Time.Name = "textBox_Setup_Option_Hole02_50_Wait_Time";
-            this.textBox_Setup_Option_Hole02_50_Wait_Time.Size = new System.Drawing.Size(50, 24);
-            this.textBox_Setup_Option_Hole02_50_Wait_Time.TabIndex = 124;
-            this.textBox_Setup_Option_Hole02_50_Wait_Time.Text = "1";
-            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -7378,6 +7390,15 @@
             this.groupBox_Setup_ScannerCal_Cross_Check.ResumeLayout(false);
             this.groupBox15.ResumeLayout(false);
             this.groupBox15.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Box_Setup_ScannerCal_ImageViewer)).EndInit();
+            this.groupBox_Setup_ScannerCal_SearchResult.ResumeLayout(false);
+            this.tabControl_Setup_ScannerCal_SearchResult.ResumeLayout(false);
+            this.Parameter.ResumeLayout(false);
+            this.Parameter.PerformLayout();
+            this.Result.ResumeLayout(false);
+            this.Result.PerformLayout();
+            this.groupBox_Setup_ScannerCal_TrainImage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Setup_ScannerCal_TrainImage)).EndInit();
             this.tabPage_Setup_FlatnessMeasurement.ResumeLayout(false);
             this.groupBox18.ResumeLayout(false);
             this.groupBox18.PerformLayout();
@@ -7401,15 +7422,6 @@
             this.groupBox_Offset.ResumeLayout(false);
             this.groupBox_Offset.PerformLayout();
             this.groupBox6.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Box_Setup_ScannerCal_ImageViewer)).EndInit();
-            this.groupBox_Setup_ScannerCal_SearchResult.ResumeLayout(false);
-            this.tabControl_Setup_ScannerCal_SearchResult.ResumeLayout(false);
-            this.Parameter.ResumeLayout(false);
-            this.Parameter.PerformLayout();
-            this.Result.ResumeLayout(false);
-            this.Result.PerformLayout();
-            this.groupBox_Setup_ScannerCal_TrainImage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Setup_ScannerCal_TrainImage)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -7962,5 +7974,6 @@
         private System.Windows.Forms.TextBox textBox_Setup_Option_LaserHeight_Retry_Count;
         private System.Windows.Forms.CheckBox checkBox_Setup_Option_Hole02_50_Wait_Enable;
         private System.Windows.Forms.TextBox textBox_Setup_Option_Hole02_50_Wait_Time;
+        private System.Windows.Forms.CheckBox checkBox_HoleCenterEnable;
     }
 }
