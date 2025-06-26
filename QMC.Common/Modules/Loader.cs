@@ -4788,7 +4788,7 @@ namespace QMC.Common.Modules
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Stacker1_Top");
 
             //  Target Position 변경 : 현재 위치에서 1mm 위
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1] = MC_Func.MC_GetEncPos((int)nAxis.Z1) + 1.0;
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1] = MC_Func.MC_GetEncPos((int)nAxis.Z1) + 1;
 
             //  이동 할 위치가 Top 위치를 벗어나는지 체크
             if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1] > stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_LPort_TopPos].LD_Stacker_Z1)
@@ -5868,6 +5868,16 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
+                        double dPos = loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1];
+                        m_strTemp = string.Format("SetPositionZ1: ({0:0.000})",
+                                                        dPos);
+                        Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+
+                        dPos = MC_Func.MC_GetEncPos((int)nAxis.Z1);
+                        m_strTemp = string.Format("GetPositionZ1: ({0:0.000})",
+                                                        dPos);
+                        Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+
                         m_strTemp = "Stacker Z1 축, Step Up 이동 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.LD_TransferZ_Move_ReadyPos_Timeout);
@@ -8740,7 +8750,7 @@ namespace QMC.Common.Modules
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine / 2.0;
 
             //  가감속
-            m_dAccDec = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Acceleration_Fine;
+            m_dAccDec = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Acceleration_Fine / 2.0;
 
             MC_Func.MC_MovePosition((int)nAxis.TR_Z,
                                 loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z],

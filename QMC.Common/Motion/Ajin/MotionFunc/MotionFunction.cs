@@ -217,6 +217,10 @@ namespace QMC.Common.Motion.Ajin.Motions
             {
                 m_dTol = 0.02;
             }
+            else if ((nAxis == (int)Loader.nAxis.Z0) || (nAxis == (int)Loader.nAxis.Z1))
+            {
+                m_dTol = 0.01;
+            }
 
             m_dCurPos = MC_GetEncPos(nAxis);
 
