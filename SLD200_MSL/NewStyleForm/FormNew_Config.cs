@@ -232,35 +232,6 @@ namespace SLD200_MSL
                 m_bFormVisible = true;
                 timer_Status.Enabled = true;
                 InitializeJogButtons();
-
-                if (Equipment.stLayerRecipeSet != null &&
-                    Equipment.stLayerRecipeSet.Length > 0)
-                {
-                    double width = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width;
-                    double height = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height;
-
-                    if (!double.IsNaN(width) && width >= 0 &&
-                        !double.IsNaN(height) && height >= 0)
-                    {
-                        textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = string.Format("{0:0.000}", width);
-                        textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = string.Format("{0:0.000}", height);
-                    }
-                    else
-                    {
-                        textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = "0.000";
-                        textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = "0.000";
-                        Log.Write("Config", "[경고] Recipe의 모듈 크기 값이 유효하지 않습니다.");
-                    }
-                }
-                else
-                {
-                    textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = "0.000";
-                    textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = "0.000";
-                    Log.Write("Config", "[오류] stLayerRecipeSet[0] 접근 불가");
-                }
-                //textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = string.Format("{0:0.000}", Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width);
-                //textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = string.Format("{0:0.000}", Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height);
-
             }
             else if (!this.Visible && m_bFormVisible)
             {
@@ -4328,6 +4299,11 @@ namespace SLD200_MSL
         
         private async void Button_Config_LDUL_TeachingPositions_Move_Click(object sender, EventArgs e)
         {
+            //  Loader Unloader Teaching Position 이동
+            //var mb = new MessageBoxOk();
+            //mb.ShowDialog("Information !", "미구현 기능.");
+            //return;
+
             int nIndex = listBox_Config_LDUL_TeachingPositions.SelectedIndex;
             if (nIndex < 0)
             {
@@ -6113,57 +6089,6 @@ namespace SLD200_MSL
             catch (Exception ex)
             {
                 Log.Write(ex);
-            }
-        }
-
-        private void button_Config_LDUL_Move_Recipe_Move_Click(object sender, EventArgs e)
-        {
-            string strTemp = string.Empty;
-            string strPosX = textBox_Config_LDUL_Move_Recipe_MAlignerX.Text;
-            string strPosY = textBox_Config_LDUL_Move_Recipe_MAlignerY.Text;
-            double dPosX = Equipment.ToDouble(strPosX);
-            double dPosY = Equipment.ToDouble(strPosY);
-
-            var mb = new MessageBoxYesNo();
-            Equipment.Type_Motor_Speed motor_Speed;
-
-            //  속도 설정
-            if (radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Checked)
-            {
-                motor_Speed = Equipment.Type_Motor_Speed.Fine;
-            }
-            else
-            {
-                motor_Speed = Equipment.Type_Motor_Speed.Coarse;
-            }
-
-            mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "위치로 보내시겠습니까?"))
-                return;
-
-            loader.MovetoLoader_ABS_Positions(Loader.nAxis.ALN_X, dPosX, motor_Speed);
-            loader.MovetoLoader_ABS_Positions(Loader.nAxis.ALN_Y, dPosY, motor_Speed);
-
-            Thread.Sleep(500);
-            bool bWaitX = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.ALN_X, dPosX).Result;
-            if (!bWaitX)
-            {
-                strTemp = string.Format("X-Axis이 이동 실패.");
-                Log.Write("SLD-200", Equipment.User_Name, strTemp);
-
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Error !", strTemp);
-                return;
-            }
-            bool bWaitY = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.ALN_Y, dPosY).Result;
-            if (!bWaitY)
-            {
-                strTemp = string.Format("Y-Axis이 이동 실패.");
-                Log.Write("SLD-200", Equipment.User_Name, strTemp);
-
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Error !", strTemp);
-                return;
             }
         }
     }

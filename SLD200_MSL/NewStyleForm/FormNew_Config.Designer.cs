@@ -36,12 +36,6 @@
             this.groupBox_Config_LDUL_DIO_Input = new System.Windows.Forms.GroupBox();
             this.checkedListBox_Config_LDUL_DIO_Input = new System.Windows.Forms.CheckedListBox();
             this.groupBox_Config_LDUL_Move = new System.Windows.Forms.GroupBox();
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner = new System.Windows.Forms.GroupBox();
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerY = new System.Windows.Forms.TextBox();
-            this.button_Config_LDUL_Move_Recipe_Move = new System.Windows.Forms.Button();
-            this.label_Config_LDUL_Move_Recipe_MAlignerX = new System.Windows.Forms.Label();
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerX = new System.Windows.Forms.TextBox();
-            this.label_Config_LDUL_Move_Recipe_MAlignerY = new System.Windows.Forms.Label();
             this.groupBox_Config_LDUL_Move_CmdMove = new System.Windows.Forms.GroupBox();
             this.button50 = new System.Windows.Forms.Button();
             this.groupBox_Config_LDUL_Move_CmdMove_Coordinates = new System.Windows.Forms.GroupBox();
@@ -621,7 +615,6 @@
             this.groupBox_Config_LDUL_DIO_Output.SuspendLayout();
             this.groupBox_Config_LDUL_DIO_Input.SuspendLayout();
             this.groupBox_Config_LDUL_Move.SuspendLayout();
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.SuspendLayout();
             this.groupBox_Config_LDUL_Move_CmdMove.SuspendLayout();
             this.groupBox_Config_LDUL_Move_CmdMove_Coordinates.SuspendLayout();
             this.groupBox_Config_LDUL_Move_CmdMove_Destination.SuspendLayout();
@@ -864,7 +857,6 @@
             // 
             // groupBox_Config_LDUL_Move
             // 
-            this.groupBox_Config_LDUL_Move.Controls.Add(this.groupBox_Config_LDUL_Move_Recipe_MAligner);
             this.groupBox_Config_LDUL_Move.Controls.Add(this.groupBox_Config_LDUL_Move_CmdMove);
             this.groupBox_Config_LDUL_Move.Controls.Add(this.groupBox_Config_LDUL_Move_JogMove);
             this.groupBox_Config_LDUL_Move.Controls.Add(this.button_Config_LDUL_Movement_AlignY_SetZero);
@@ -896,84 +888,13 @@
             this.groupBox_Config_LDUL_Move.TabStop = false;
             this.groupBox_Config_LDUL_Move.Text = " Move (mm)";
             // 
-            // groupBox_Config_LDUL_Move_Recipe_MAligner
-            // 
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.Controls.Add(this.textBox_Config_LDUL_Move_Recipe_MAlignerY);
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.Controls.Add(this.button_Config_LDUL_Move_Recipe_Move);
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.Controls.Add(this.label_Config_LDUL_Move_Recipe_MAlignerX);
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.Controls.Add(this.textBox_Config_LDUL_Move_Recipe_MAlignerX);
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.Controls.Add(this.label_Config_LDUL_Move_Recipe_MAlignerY);
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.Location = new System.Drawing.Point(373, 618);
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.Name = "groupBox_Config_LDUL_Move_Recipe_MAligner";
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.Size = new System.Drawing.Size(366, 148);
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.TabIndex = 62;
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.TabStop = false;
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.Text = "M-Aligner (Recipe Pos.)";
-            // 
-            // textBox_Config_LDUL_Move_Recipe_MAlignerY
-            // 
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Location = new System.Drawing.Point(181, 60);
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Name = "textBox_Config_LDUL_Move_Recipe_MAlignerY";
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Size = new System.Drawing.Size(105, 24);
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.TabIndex = 60;
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = "000.000";
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // button_Config_LDUL_Move_Recipe_Move
-            // 
-            this.button_Config_LDUL_Move_Recipe_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_LDUL_Move_Recipe_Move.Location = new System.Drawing.Point(292, 30);
-            this.button_Config_LDUL_Move_Recipe_Move.Margin = new System.Windows.Forms.Padding(5);
-            this.button_Config_LDUL_Move_Recipe_Move.Name = "button_Config_LDUL_Move_Recipe_Move";
-            this.button_Config_LDUL_Move_Recipe_Move.Size = new System.Drawing.Size(70, 54);
-            this.button_Config_LDUL_Move_Recipe_Move.TabIndex = 61;
-            this.button_Config_LDUL_Move_Recipe_Move.Text = "Move";
-            this.button_Config_LDUL_Move_Recipe_Move.UseVisualStyleBackColor = true;
-            this.button_Config_LDUL_Move_Recipe_Move.Click += new System.EventHandler(this.button_Config_LDUL_Move_Recipe_Move_Click);
-            // 
-            // label_Config_LDUL_Move_Recipe_MAlignerX
-            // 
-            this.label_Config_LDUL_Move_Recipe_MAlignerX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Config_LDUL_Move_Recipe_MAlignerX.Location = new System.Drawing.Point(27, 29);
-            this.label_Config_LDUL_Move_Recipe_MAlignerX.Margin = new System.Windows.Forms.Padding(5);
-            this.label_Config_LDUL_Move_Recipe_MAlignerX.Name = "label_Config_LDUL_Move_Recipe_MAlignerX";
-            this.label_Config_LDUL_Move_Recipe_MAlignerX.Size = new System.Drawing.Size(154, 24);
-            this.label_Config_LDUL_Move_Recipe_MAlignerX.TabIndex = 57;
-            this.label_Config_LDUL_Move_Recipe_MAlignerX.Text = "M-Aligner X Axis(mm) :";
-            this.label_Config_LDUL_Move_Recipe_MAlignerX.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Config_LDUL_Move_Recipe_MAlignerX
-            // 
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Location = new System.Drawing.Point(181, 30);
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Name = "textBox_Config_LDUL_Move_Recipe_MAlignerX";
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Size = new System.Drawing.Size(105, 24);
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.TabIndex = 58;
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = "000.000";
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label_Config_LDUL_Move_Recipe_MAlignerY
-            // 
-            this.label_Config_LDUL_Move_Recipe_MAlignerY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Config_LDUL_Move_Recipe_MAlignerY.Location = new System.Drawing.Point(27, 59);
-            this.label_Config_LDUL_Move_Recipe_MAlignerY.Margin = new System.Windows.Forms.Padding(5);
-            this.label_Config_LDUL_Move_Recipe_MAlignerY.Name = "label_Config_LDUL_Move_Recipe_MAlignerY";
-            this.label_Config_LDUL_Move_Recipe_MAlignerY.Size = new System.Drawing.Size(154, 24);
-            this.label_Config_LDUL_Move_Recipe_MAlignerY.TabIndex = 59;
-            this.label_Config_LDUL_Move_Recipe_MAlignerY.Text = "M-Aligner Y Axis(mm) :";
-            this.label_Config_LDUL_Move_Recipe_MAlignerY.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // groupBox_Config_LDUL_Move_CmdMove
             // 
             this.groupBox_Config_LDUL_Move_CmdMove.Controls.Add(this.button50);
             this.groupBox_Config_LDUL_Move_CmdMove.Controls.Add(this.groupBox_Config_LDUL_Move_CmdMove_Coordinates);
             this.groupBox_Config_LDUL_Move_CmdMove.Controls.Add(this.groupBox_Config_LDUL_Move_CmdMove_Destination);
             this.groupBox_Config_LDUL_Move_CmdMove.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox_Config_LDUL_Move_CmdMove.Location = new System.Drawing.Point(384, 163);
+            this.groupBox_Config_LDUL_Move_CmdMove.Location = new System.Drawing.Point(384, 247);
             this.groupBox_Config_LDUL_Move_CmdMove.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_LDUL_Move_CmdMove.Name = "groupBox_Config_LDUL_Move_CmdMove";
             this.groupBox_Config_LDUL_Move_CmdMove.Padding = new System.Windows.Forms.Padding(5);
@@ -8477,8 +8398,6 @@
             this.groupBox_Config_LDUL_DIO_Output.ResumeLayout(false);
             this.groupBox_Config_LDUL_DIO_Input.ResumeLayout(false);
             this.groupBox_Config_LDUL_Move.ResumeLayout(false);
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.ResumeLayout(false);
-            this.groupBox_Config_LDUL_Move_Recipe_MAligner.PerformLayout();
             this.groupBox_Config_LDUL_Move_CmdMove.ResumeLayout(false);
             this.groupBox_Config_LDUL_Move_CmdMove_Coordinates.ResumeLayout(false);
             this.groupBox_Config_LDUL_Move_CmdMove_Destination.ResumeLayout(false);
@@ -9192,11 +9111,5 @@
         private System.Windows.Forms.TextBox textBox_Config_LDUL_Module_Size_Set;
         private System.Windows.Forms.Label label_Config_LDUL_Module_Size_Set;
         private System.Windows.Forms.Button button_Config_LDUL_Module_Size_Save;
-        private System.Windows.Forms.Button button_Config_LDUL_Move_Recipe_Move;
-        private System.Windows.Forms.TextBox textBox_Config_LDUL_Move_Recipe_MAlignerY;
-        private System.Windows.Forms.Label label_Config_LDUL_Move_Recipe_MAlignerY;
-        private System.Windows.Forms.TextBox textBox_Config_LDUL_Move_Recipe_MAlignerX;
-        private System.Windows.Forms.Label label_Config_LDUL_Move_Recipe_MAlignerX;
-        private System.Windows.Forms.GroupBox groupBox_Config_LDUL_Move_Recipe_MAligner;
     }
 }
