@@ -35326,7 +35326,7 @@ namespace QMC.Common.Modules
                             // 선택 가공할때만 우선 이렇게 하자.
                             if (Equipment.SelectRunEnable_New)
                             {
-                                m_nDrillingWork_Group_Count = 0;
+                                m_nDrillingWork_Group_Count = 0; //
                             }
                         }
                     }
