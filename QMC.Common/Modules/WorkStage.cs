@@ -41851,7 +41851,7 @@ namespace QMC.Common.Modules
                     //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
                     if (Equipment.SelectRunEnable_New)
                     {
-                        m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
+                        //m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
                         m_strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
                         Log.Write("SLD-200", "Auto Run", m_strTemp);
                     }
