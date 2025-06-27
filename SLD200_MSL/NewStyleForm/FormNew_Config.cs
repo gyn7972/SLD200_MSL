@@ -21,6 +21,7 @@ using QMC.Common.Parts;
 using QMC.Common.VisionPart;
 using QMC.Core;
 using SLD200.NewStyleForm;
+using SLD200.NewStyleForm.NewSubForm;
 using SpiralLab.Sirius;
 using static QMC.Common.Equipment;
 using static QMC.Common.Modules.Loader;
@@ -6165,6 +6166,13 @@ namespace SLD200_MSL
                 mb1.ShowDialog("Error !", strTemp);
                 return;
             }
+        }
+
+        private void button_Config_TabLaser_LaserPowerMeasure_Click(object sender, EventArgs e)
+        {
+
+            var form = new FormNewSub_LaserPowerMeasure(bds.spiralLabScanner);
+            form.ShowDialog();
         }
     }
 }

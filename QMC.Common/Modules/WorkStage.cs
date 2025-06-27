@@ -3533,6 +3533,7 @@ namespace QMC.Common.Modules
         
         //VerifyScannerCameraOffset
         public Sequence_VerifyScannerCameraOffset m_ScannerCameraOffsetSequence { get; set; } = new Sequence_VerifyScannerCameraOffset();
+        public Sequence_LaserPowerMeasure m_Sequence_LaserPowerMeasure { get; set; } = new Sequence_LaserPowerMeasure();
 
         #region Constructor
         public WorkStage(string strName) : base(strName)
@@ -3832,8 +3833,6 @@ namespace QMC.Common.Modules
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
             m_pProcessConfigData.LoadFromIni(strFIle);
-
-            //m_ScannerCameraOffsetSequence = new Sequence_VerifyScannerCameraOffset();
         }
 
         public void Module_Allocation()
@@ -13485,8 +13484,6 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                // 최종으로 정상적일때만 Count 증가.
-                                //Equipment.m_nSerialNumberMarkingCount++;
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
                             }                            
 
@@ -18815,10 +18812,6 @@ namespace QMC.Common.Modules
 
             m_bThruHoleList_Success &= rtc.ListSpeed((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_ScannerJumpSpeed, (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_ScannerDrillingSpeed);
 
-
-
-
-
             Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 에 데이터 추가");
 
             m_nListBeginRetry_Count = 0;                    //  데이터 추가할 때도 안되는 경우가 있는 듯 하여, 데이터 집어넣기 재시도 Count 용 변수로 사용
@@ -19465,6 +19458,9 @@ namespace QMC.Common.Modules
 
             m_ScannerCameraOffsetSequence.Reset();
             scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+            m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+
+            m_Sequence_LaserPowerMeasure.Reset();
             m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
 
             m_nSensorRetryCount = 0;
@@ -23493,8 +23489,6 @@ namespace QMC.Common.Modules
 
             m_bScannerLib_Success &= rtc.ListJump(Vector2.Zero);
             
-            // 여기를 반복 돌리면 돌아 갈려나ㅏ...
-
             var markerArg = new MarkerArgDefault()
             {
                 Document = doc,
@@ -33802,7 +33796,7 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-        public bool MovetoWorkStage_ABS_PositionsY(double dPos, Type_Motor_Speed typeSpeed)
+        public bool MovetoWorkStage_ABS_PositionsMaskY(double dPos, Type_Motor_Speed typeSpeed)
         {
             // string strTemp = "";
             bool bRtn = false;
@@ -35212,7 +35206,7 @@ namespace QMC.Common.Modules
                             if (Equipment.SelectRunEnable_New)
                             {
                                 // 선택된 소켓 중에서 Hole1 Layer에 해당하는 소켓이 있는지 확인
-                                if (!IsCurrentSocketSelected(LayerType.LAYER_DRILLING, m_nDrillingWork_Group_Count))
+                                if (!IsCurrentSocketSelected(LayerType.LAYER_THRUHOLE, m_nDrillingWork_Group_Count))
                                 {
                                     Log.Write("선택 가공", $"소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                     m_nDrillingWork_Group_Count++;
@@ -35223,11 +35217,19 @@ namespace QMC.Common.Modules
                             // 소켓 얼라인이 하나도 안되는 경우가 있으면... --> (Layer 가공하지 않도록 다음 Layer 체크)
                             // 소켓 얼라인이 안되도 해야하고.. 갯수가 안맞아도 되어야 하는데..
                             if ((m_nDrillingData_SocketAlign_NGCount >= m_stThruHole_SocketData.Length) &&
-                                (m_stThruHole_SocketData.Length != 1)) // 한개인 경우가 있음.
+                                (m_stThruHole_SocketData.Length != 1)) 
                             {
-                                // 조건이 안맞으니깐 우선 넘긴다라..
+                                // 조건이 안맞으니깐 우선 넘김.
                                 m_nLaserDrilling_LayerCount++;
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_nDrillingData_SocketAlign_NGCount >= m_stThruHole_SocketData.Length");
+                            }
+                            else if ((m_nDrillingData_SocketAlign_NGCount >= m_stThruHole_SocketData.Length) &&
+                                    (m_stThruHole_SocketData.Length == 1) &&
+                                    (m_stDividedRegion_GroupData.Length == 1))
+                            {
+                                // 조건이 안맞으니깐 우선 넘김.
+                                m_nLaserDrilling_LayerCount++;
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stThruHole_SocketData.Length == 1, m_stDividedRegion_GroupData.Length == 1");
                             }
                             else
                             {
@@ -35248,12 +35250,21 @@ namespace QMC.Common.Modules
                                     //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_DrillingWork_Start;
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;                       //  Drilling 가공 Layer 파라미터로 변경 시작
                                 }
-                                // 조건: 무조건 태워야 하는 코드
-                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;
                             }
                         }
                         else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_OUTLINE)
                         {
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                // 선택된 소켓 중에서 Hole1 Layer에 해당하는 소켓이 있는지 확인
+                                if (!IsCurrentSocketSelected(LayerType.LAYER_OUTLINE, m_nDrillingWork_Group_Count))
+                                {
+                                    Log.Write("선택 가공", $"소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
+                                    m_nDrillingWork_Group_Count++;
+                                    break;
+                                }
+                            }
+
                             // 소켓 얼라인이 안되도 해야하고.. 갯수가 안맞아도 되어야 하는데..
                             if ((m_nDrillingData_SocketAlign_NGCount >= m_stOutLine_SocketData.Length) &&
                                 (m_stOutLine_SocketData.Length != 1)) // 한개인 경우가 있음.
@@ -35261,6 +35272,14 @@ namespace QMC.Common.Modules
                                 // 조건이 안맞으니깐 우선 넘긴다라..
                                 m_nLaserDrilling_LayerCount++;
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_nDrillingData_SocketAlign_NGCount >= m_stOutLine_SocketData.Length");
+                            }
+                            else if ((m_nDrillingData_SocketAlign_NGCount >= m_stOutLine_SocketData.Length) &&
+                                    (m_stOutLine_SocketData.Length == 1) &&
+                                    (m_stDividedRegion_GroupData.Length == 1))
+                            {
+                                // 조건이 안맞으니깐 우선 넘김.
+                                m_nLaserDrilling_LayerCount++;
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stOutLine_SocketData.Length == 1, m_stDividedRegion_GroupData.Length == 1");
                             }
                             else
                             {
@@ -35280,12 +35299,21 @@ namespace QMC.Common.Modules
                                     //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_DrillingWork_Start;
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;                       //  Drilling 가공 Layer 파라미터로 변경 시작
                                 }
-                                // 조건: 무조건 태워야 하는 코드
-                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;
                             }
                         }
                         else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_MARKING)
                         {
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                // 선택된 소켓 중에서 Hole1 Layer에 해당하는 소켓이 있는지 확인
+                                if (!IsCurrentSocketSelected(LayerType.LAYER_MARKING, m_nDrillingWork_Group_Count))
+                                {
+                                    Log.Write("선택 가공", $"소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
+                                    m_nDrillingWork_Group_Count++;
+                                    break;
+                                }
+                            }
+
                             //  소켓 얼라인이 하나도 안되는 경우가 있으면... --> (Layer 가공하지 않도록 다음 Layer 체크)
                             //
                             //  체크1 : Hole 소켓은 여러개이고, 마킹 소켓은 1개인 경우. (마킹 소켓이 1개인 경우는, 모듈 한쪽 구석에 한번만 마킹하는 경우)
@@ -35296,6 +35324,14 @@ namespace QMC.Common.Modules
                                 (m_stMarking_SocketData.m_stMarking_ObjectData.Length != 1))
                             {
                                 m_nLaserDrilling_LayerCount++;
+                            }
+                            else if ((m_nDrillingData_SocketAlign_NGCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length) &&
+                                    (m_stMarking_SocketData.m_stMarking_ObjectData.Length == 1) &&
+                                    (m_stDividedRegion_GroupData.Length == 1))
+                            {
+                                // 조건이 안맞으니깐 우선 넘김.
+                                m_nLaserDrilling_LayerCount++;
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stMarking_SocketData.m_stMarking_ObjectData.Length == 1, m_stDividedRegion_GroupData.Length == 1");
                             }
                             else
                             {
@@ -35652,8 +35688,6 @@ namespace QMC.Common.Modules
                             }
                         }
 
-                        //m_nLaserDrilling_LayerCount++; //이거는.. 한개의 소켓만 한다는거니깐..
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                     }
@@ -35997,8 +36031,6 @@ namespace QMC.Common.Modules
                             }
                         }
 
-                        //m_nLaserDrilling_LayerCount++;
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                     }
@@ -36529,8 +36561,6 @@ namespace QMC.Common.Modules
                                 }
                             }
 
-                            //m_nLaserDrilling_LayerCount++;
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         }
@@ -36587,9 +36617,9 @@ namespace QMC.Common.Modules
 
                         //  가공 데이터 생성
                         string m_strMarkingData = "";
-                        int m_nStartNumber = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber < 0 ? 0 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber;
-                        int m_nDigits = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits < 0 ? 1 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits;
-                        int m_nIncreaseStep = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_IncreaseStep;
+                        int m_nStartNumber = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber;
+                        int m_nDigits = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits < 0 ? 3 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits;
+                        int m_nIncreaseStep = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_IncreaseStep <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_IncreaseStep;
                         if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
                         {
                             //m_strMarkingData = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
@@ -36706,8 +36736,6 @@ namespace QMC.Common.Modules
                                 }
                             }
 
-                            //m_nLaserDrilling_LayerCount++;
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         }
@@ -41926,8 +41954,6 @@ namespace QMC.Common.Modules
                             }
                         }
 
-                        //m_nLaserDrilling_LayerCount++;
-                        //nNextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                         nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                     }

@@ -698,6 +698,12 @@
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.Designer.cs">
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_LaserPowerMeasure.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_LaserPowerMeasure.Designer.cs">
+      <DependentUpon>FormNewSub_LaserPowerMeasure.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_MotorMove.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1571,6 +1577,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.resx">
       <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_LaserPowerMeasure.resx">
+      <DependentUpon>FormNewSub_LaserPowerMeasure.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Main_MotorMove.resx">
       <DependentUpon>FormNewSub_Main_MotorMove.cs</DependentUpon>

@@ -615,6 +615,7 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
+            this.button_Config_TabLaser_LaserPowerMeasure = new System.Windows.Forms.Button();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -5299,6 +5300,7 @@
             // 
             // tabPage_Config_Laser
             // 
+            this.tabPage_Config_Laser.Controls.Add(this.button_Config_TabLaser_LaserPowerMeasure);
             this.tabPage_Config_Laser.Controls.Add(this.button_Config_TabLaser_ScannerVisionOffset);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox_MotorizedBET);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox_VarioScan);
@@ -8454,6 +8456,18 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // button_Config_TabLaser_LaserPowerMeasure
+            // 
+            this.button_Config_TabLaser_LaserPowerMeasure.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_TabLaser_LaserPowerMeasure.Location = new System.Drawing.Point(474, 133);
+            this.button_Config_TabLaser_LaserPowerMeasure.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_TabLaser_LaserPowerMeasure.Name = "button_Config_TabLaser_LaserPowerMeasure";
+            this.button_Config_TabLaser_LaserPowerMeasure.Size = new System.Drawing.Size(172, 46);
+            this.button_Config_TabLaser_LaserPowerMeasure.TabIndex = 84;
+            this.button_Config_TabLaser_LaserPowerMeasure.Text = "LaserPowerMeasure";
+            this.button_Config_TabLaser_LaserPowerMeasure.UseVisualStyleBackColor = true;
+            this.button_Config_TabLaser_LaserPowerMeasure.Click += new System.EventHandler(this.button_Config_TabLaser_LaserPowerMeasure_Click);
+            // 
             // FormNew_Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -9198,5 +9212,6 @@
         private System.Windows.Forms.TextBox textBox_Config_LDUL_Move_Recipe_MAlignerX;
         private System.Windows.Forms.Label label_Config_LDUL_Move_Recipe_MAlignerX;
         private System.Windows.Forms.GroupBox groupBox_Config_LDUL_Move_Recipe_MAligner;
+        private System.Windows.Forms.Button button_Config_TabLaser_LaserPowerMeasure;
     }
 }
