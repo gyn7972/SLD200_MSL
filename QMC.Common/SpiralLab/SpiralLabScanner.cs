@@ -17,6 +17,8 @@ using QMC.Common.VisionPart;
 using QMC.Common.Modules;
 using RTC6Import;
 using System.Threading;
+using System.ServiceModel.Syndication;
+using static QMC.Common.Q_Sequence.Sequence_VerifyScannerCameraOffset;
 
 
 
@@ -25,6 +27,61 @@ namespace QMC.Common.Parts
     //internal class SpiralLabScanner : Part
     public class SpiralLabScanner : Part
     {
+        public class ScannerLaserSetting
+        {
+            // Laser Condition
+            public float PowerPercent { get; set; } = 5f;  // 나중에 analog로 변환 가능
+            public float Frequency { get; set; } = 5000.0f;    // kHz
+            public float PulseWidth { get; set; } = 1.0f;   // µs
+            public float DutyCycle
+            {
+                get => Frequency > 0 ? PulseWidth / (1000f / Frequency) : 0f; // Duty Cycle = Pulse Width / Period
+                set
+                {
+                    if (Frequency > 0)
+                        PulseWidth = value * (1000f / Frequency);
+                }
+            }
+            // Delay
+            public float LaserOnDelay { get; set; } = 0f;
+            public float LaserOffDelay { get; set; } = 0f;
+            public float MarkDelay { get; set; } = 0f;
+            public float JumpDelay { get; set; } = 200f;
+            public float PolygonDelay { get; set; } = 0f;
+
+            // Speed
+            public float JumpSpeed { get; set; } = 1000f;    // mm/s
+            public float MarkSpeed { get; set; } = 100f;     // mm/s
+
+            // 기타
+            public bool EnableCrossCheck { get; set; } = false;
+            public string CalibrationName { get; set; } = string.Empty;
+
+            public ScannerLaserSetting Clone()
+            {
+                return (ScannerLaserSetting)this.MemberwiseClone();
+            }
+
+            public void Initialize()
+            {
+                PowerPercent = 10f;
+                Frequency = 5000.0f;    // kHz
+                PulseWidth = 10.0f;   // µs
+                DutyCycle = 0f; // 초기값 설정
+                LaserOnDelay = 0f;
+                LaserOffDelay = 0f;
+                MarkDelay = 0f;
+                JumpDelay = 200f;
+                PolygonDelay = 0f;
+                JumpSpeed = 1000f;    // mm/s
+                MarkSpeed = 100f;     // mm/s
+                EnableCrossCheck = false;
+                CalibrationName = string.Empty;
+            }
+
+        }
+
+
         #region Define
         private System.Timers.Timer _monitorTimer;
         private const uint OverTempWarningBit = 0x40u;
@@ -36,7 +93,10 @@ namespace QMC.Common.Parts
         #region Property
         public string ScannerName { get; set; }
         public Rtc6 rtc { get; set; }
+        public LaserVirtual laser { set; get; }
         #endregion
+
+
 
         public SpiralLabScanner(string name, IRtc rtcInstance) : base(name)
         {
@@ -70,15 +130,15 @@ namespace QMC.Common.Parts
             {
                 if (disposing)
                 {
-                //Dispose(true);
-                // 관리되는 리소스 해제
-                if (rtc != null && rtc is IDisposable dRtc)
-                    dRtc.Dispose();
+                    //Dispose(true);
+                    // 관리되는 리소스 해제
+                    if (rtc != null && rtc is IDisposable dRtc)
+                        dRtc.Dispose();
 
-                rtc = null;
+                    rtc = null;
 
-                // 비관리 리소스 해제 (필요시 여기에 작성)
-                IsInitialized = false;
+                    // 비관리 리소스 해제 (필요시 여기에 작성)
+                    IsInitialized = false;
 
                 }
                 _disposed = true;
@@ -99,7 +159,7 @@ namespace QMC.Common.Parts
             _monitorTimer?.Dispose();
             _monitorTimer = null;
         }
-        
+
         public void CheckAndLogTemperature()
         {
             if (rtc == null)
@@ -268,7 +328,7 @@ namespace QMC.Common.Parts
                 Log.Write(ex);
                 return false;
             }
-            
+
             return isOverTemp;
         }
 
@@ -310,6 +370,170 @@ namespace QMC.Common.Parts
 
         // DrawCalibrationCrosses, DrawCross, DrawCalibrationArc, DrawArc 등 기존 메서드들은 그대로 유지됨
         // ... (기존 코드 생략)
+
+        public bool LaserSetting()
+        {
+            if (rtc == null)
+                return false;
+
+            try
+            {
+                if (rtc.CtlGetStatus(RtcStatus.Busy))
+                    return false;
+
+                bool success = true;
+
+                float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
+                float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;
+
+                if (fFrequency / 2 <= fPulseWidth)
+                    fPulseWidth = fFrequency / 2;
+                if (fFrequency <= 0) fFrequency = 0f;
+                if (fPulseWidth <= 0) fPulseWidth = 0f;
+
+                if (!rtc.ListFrequency(fFrequency, fPulseWidth))
+                {
+                    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
+                    return false;
+                }
+
+                float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
+                float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
+                float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
+                float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
+                float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
+                if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
+                if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
+                if (fMarkDelay <= 0) fMarkDelay = 0;
+                if (fJumpDelay <= 0) fJumpDelay = 200;
+                if (fPolygonDelay <= 0) fPolygonDelay = 0;
+
+                if (!rtc.ListDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
+                {
+                    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
+                    return false;
+                }
+
+                float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
+                float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
+                if (fJumpSpeed <= 0) fJumpSpeed = 0;
+                if (fMarkSpeed <= 0) fMarkSpeed = 0;
+
+                if (!rtc.ListSpeed(fJumpSpeed, fMarkSpeed))
+                {
+                    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
+                    return false;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return false;
+            }
+            return true;
+        }
+
+        public bool LaserOn(float durationMsec, ScannerLaserSetting setting)
+        {
+            if (rtc == null)
+                return false;
+
+            try
+            {
+                if (rtc.CtlGetStatus(RtcStatus.Busy))
+                    return false;
+
+                string strTemp = string.Empty;
+                bool success = true;
+
+
+                int m_nSDC_Count = 0;
+                do
+                {
+                    // Spot Distance Control
+                    var alc = rtc as IRtcAutoLaserControl;
+                    success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.Disabled, AutoLaserControlMode.Disabled, 0, 0, 0);
+                    if (!success)
+                    {
+                        strTemp = string.Format("CtlAutoLaserControl(null, null) 파라미터 적용 실패, ({0}/3)", m_nSDC_Count + 1);
+                        Log.Write("SLD-200", "Auto Run", strTemp);
+                    }
+                    else
+                    {
+                        strTemp = string.Format("CtlAutoLaserControl(null, null) 파라미터 적용 성공, ({0}/3)", m_nSDC_Count + 1);
+                        Log.Write("SLD-200", "Auto Run", strTemp);
+                    }
+
+                    m_nSDC_Count++;
+                } while (!success && (m_nSDC_Count < 3));
+
+
+                success &= rtc.ListBegin(laser, ListType.Single);
+
+                float fFrequency = (float)Math.Max(setting.Frequency, 0);
+                float fPulseWidth = (float)Math.Min(setting.PulseWidth, fFrequency / 2);
+                success &= rtc.ListFrequency(fFrequency, fPulseWidth);
+
+                success &= rtc.ListDelay(
+                            Math.Max(setting.LaserOnDelay, 0),
+                            Math.Max(setting.LaserOffDelay, 0),
+                            Math.Max(setting.MarkDelay, 0),
+                            Math.Max(setting.JumpDelay, 200),
+                            Math.Max(setting.PolygonDelay, 0));
+
+                success &= rtc.ListSpeed(
+                            Math.Max(setting.JumpSpeed, 200),
+                            Math.Max(setting.MarkSpeed, 100));
+
+                success &= rtc.ListJump(0, 0);
+                success &= rtc.ListLaserOn(durationMsec); // 레이저 켜기:단위 msec
+
+                if (!success)
+                    return false;
+
+                success &= rtc.ListEnd();
+                if (success)
+                    success &= rtc.ListExecute(true);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return false;
+            }
+            return true;
+        }
+
+        public bool LaserOff()
+        {
+            if (rtc == null)
+                return false;
+            try
+            {
+                if (rtc.CtlGetStatus(RtcStatus.Busy))
+                    return false;
+                bool success = rtc.ListBegin(laser, ListType.Single);
+                success &= rtc.ListLaserOff();
+                success &= rtc.ListEnd();
+                if (success)
+                    success &= rtc.ListExecute(true);
+                return success;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return false;
+            }
+        }
+
+        public void LaserAbort()
+        {
+            rtc.CtlAbort();
+            Thread.Sleep(2000);
+            rtc.CtlReset();
+        }
+
+
 
     }
 }

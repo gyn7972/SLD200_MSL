@@ -640,7 +640,6 @@ namespace QMC.Common.Q_Sequence
 
                             m_VerifyScannerCameraOffsetStep = (int)VerifyScannerCameraOffset_Step.None;
                             return workStage.AlarmPost(AlarmKey.WaterLine_Open_Fail);
-
                         }
                     }
                     break;

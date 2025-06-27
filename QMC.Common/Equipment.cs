@@ -1011,8 +1011,9 @@ namespace QMC.Common
         public static bool m_bMainProcessStatus_UL_Module_PortPutDown_Complete { set; get; } = false;       //  Unloader Port 에 Module Put Down 완료
 
 
-        //  Serial Number 마킹 시 증가되는 Count 확인용. (프로그램 재시작, Count Clear 시에는 초기화 됨)
-        public static int m_nSerialNumberMarkingCount = 0;            //  Serial Number 마킹 Count
+        // Serial Number 마킹 시 증가되는 Count 확인용. (프로그램 재시작, Count Clear 시에는 초기화 됨)
+        // 무조건 1번 부터 시작.
+        public static int m_nSerialNumberMarkingCount = 1;            //  Serial Number 마킹 Count
 
 
         //  텍스트 마킹 시, 마킹 Entity 가 1개일 경우 소켓 얼라인과 함께 한번만 얼라인 하기 위한 Flag 
@@ -1270,12 +1271,12 @@ namespace QMC.Common
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_Height = 0.0;                        //  Marking Template Entity Height
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_TextType = true;                     //  Marking Template Entity Data Text Type (true: Fixed Text, false: Serial Number)
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_PrefixData = "";                     //  Marking Template Entity Prefix Data
-                stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber = 0;                     //  Marking Template Entity Start Number
-                stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits = 0;                          //  Marking Template Entity Digits
-                stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep = 0;                    //  Marking Template Entity Increase Step (or Decrease)
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber = 1;                     //  Marking Template Entity Start Number
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits = 3;                          //  Marking Template Entity Digits
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep = 1;                    //  Marking Template Entity Increase Step (or Decrease)
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData = "";                     //  Marking Template Entity Suffix Data
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use = false;                   //  Marking Template Entity Hatch Use (true: Use, false: Not Use)
-                stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = 0.2;                 //  Marking Template Entity Hatch Spacing
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = 0.1;                 //  Marking Template Entity Hatch Spacing
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;        //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
@@ -1492,6 +1493,7 @@ namespace QMC.Common
 
             //전부 생성한 후 Init하자
             workStage.m_ScannerCameraOffsetSequence.Init();
+            workStage.m_Sequence_LaserPowerMeasure.Init();
 
 
             // 여기때문에 시작이 느림. 
