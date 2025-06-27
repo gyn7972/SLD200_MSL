@@ -39907,8 +39907,6 @@ namespace QMC.Common.Modules
                                     lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral Polyline 데이터로 변환 생성 완료");
-
-
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral Polyline 데이터 List 추가 시작");
 
                                     //  객체 Edge 좌표 데이터 저장
@@ -41391,12 +41389,12 @@ namespace QMC.Common.Modules
                             m_nThruHole_SocketCount = m_nDrillingWork_Group_Count;
 
                             //  Hole1 Layer 가 있는 경우는, Hole1 Align 시 해당 Socket 의 모든 Layer 데이터가 Align 적용 되기 때문에 바로 가공 진행하도록 한다.
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Hole1 Layer 가 있음. 이미 Align 이 완료된 상태이므로 가공 진행.");
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Layer 가 있음. 이미 Align 이 완료된 상태이므로 가공 진행.");
                             nextStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
                         }
                         else
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Marking Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Thruhole Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
 
                             m_nLaserDrilling_LayerCount++;
                             nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
