@@ -35212,7 +35212,7 @@ namespace QMC.Common.Modules
                             if (Equipment.SelectRunEnable_New)
                             {
                                 // 선택된 소켓 중에서 Hole1 Layer에 해당하는 소켓이 있는지 확인
-                                if (!IsCurrentSocketSelected(LayerType.LAYER_DRILLING, m_nDrillingWork_Group_Count))
+                                if (!IsCurrentSocketSelected(LayerType.LAYER_THRUHOLE, m_nDrillingWork_Group_Count))
                                 {
                                     Log.Write("선택 가공", $"소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                     m_nDrillingWork_Group_Count++;
@@ -35227,7 +35227,15 @@ namespace QMC.Common.Modules
                             {
                                 // 조건이 안맞으니깐 우선 넘긴다라..
                                 m_nLaserDrilling_LayerCount++;
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_nDrillingData_SocketAlign_NGCount >= m_stThruHole_SocketData.Length");
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stThruHole_SocketData.Length");
+                            }
+                            else if ((m_nDrillingData_SocketAlign_NGCount >= m_stThruHole_SocketData.Length) &&
+                                    (m_stThruHole_SocketData.Length == 1) &&
+                                     m_stDividedRegion_GroupData.Length == 1)
+                            {
+                                // 조건이 안맞으니깐 우선 넘긴다라..
+                                m_nLaserDrilling_LayerCount++;
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stDividedRegion_GroupData.Length == 1, m_stThruHole_SocketData.Length == 1");
                             }
                             else
                             {
@@ -35254,13 +35262,32 @@ namespace QMC.Common.Modules
                         }
                         else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_OUTLINE)
                         {
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                // 선택된 소켓 중에서 Hole1 Layer에 해당하는 소켓이 있는지 확인
+                                if (!IsCurrentSocketSelected(LayerType.LAYER_OUTLINE, m_nDrillingWork_Group_Count))
+                                {
+                                    Log.Write("선택 가공", $"소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
+                                    m_nDrillingWork_Group_Count++;
+                                    break;
+                                }
+                            }
+
                             // 소켓 얼라인이 안되도 해야하고.. 갯수가 안맞아도 되어야 하는데..
                             if ((m_nDrillingData_SocketAlign_NGCount >= m_stOutLine_SocketData.Length) &&
                                 (m_stOutLine_SocketData.Length != 1)) // 한개인 경우가 있음.
                             {
                                 // 조건이 안맞으니깐 우선 넘긴다라..
                                 m_nLaserDrilling_LayerCount++;
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_nDrillingData_SocketAlign_NGCount >= m_stOutLine_SocketData.Length");
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stOutLine_SocketData.Length");
+                            }
+                            else if ((m_nDrillingData_SocketAlign_NGCount >= m_stOutLine_SocketData.Length) &&
+                                    (m_stOutLine_SocketData.Length == 1) &&
+                                     m_stDividedRegion_GroupData.Length == 1)
+                            {
+                                // 조건이 안맞으니깐 우선 넘긴다라..
+                                m_nLaserDrilling_LayerCount++;
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stDividedRegion_GroupData.Length == 1, m_stOutLine_SocketData.Length == 1");
                             }
                             else
                             {
@@ -35286,6 +35313,17 @@ namespace QMC.Common.Modules
                         }
                         else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_MARKING)
                         {
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                // 선택된 소켓 중에서 Hole1 Layer에 해당하는 소켓이 있는지 확인
+                                if (!IsCurrentSocketSelected(LayerType.LAYER_MARKING, m_nDrillingWork_Group_Count))
+                                {
+                                    Log.Write("선택 가공", $"소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
+                                    m_nDrillingWork_Group_Count++;
+                                    break;
+                                }
+                            }
+
                             //  소켓 얼라인이 하나도 안되는 경우가 있으면... --> (Layer 가공하지 않도록 다음 Layer 체크)
                             //
                             //  체크1 : Hole 소켓은 여러개이고, 마킹 소켓은 1개인 경우. (마킹 소켓이 1개인 경우는, 모듈 한쪽 구석에 한번만 마킹하는 경우)
@@ -35296,6 +35334,15 @@ namespace QMC.Common.Modules
                                 (m_stMarking_SocketData.m_stMarking_ObjectData.Length != 1))
                             {
                                 m_nLaserDrilling_LayerCount++;
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stMarking_SocketData.m_stMarking_ObjectData.Length");
+                            }
+                            else if ((m_nDrillingData_SocketAlign_NGCount >= m_stMarking_SocketData.m_stMarking_ObjectData.Length) &&
+                                    (m_stMarking_SocketData.m_stMarking_ObjectData.Length == 1) &&
+                                     m_stDividedRegion_GroupData.Length == 1)
+                            {
+                                // 조건이 안맞으니깐 우선 넘긴다라..
+                                m_nLaserDrilling_LayerCount++;
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stDividedRegion_GroupData.Length == 1, m_stMarking_SocketData.m_stMarking_ObjectData.Length == 1");
                             }
                             else
                             {
@@ -36752,7 +36799,8 @@ namespace QMC.Common.Modules
                             {
                                 // 여기서 이거 안해도 될듯.
                                 //m_nDrillingWork_Group_Count = m_nSelectedSocket_Index;
-                                m_nDrillingWork_Group_Count = 0;
+                                //m_nDrillingWork_Group_Count = 0;
+                                //여기서 0으로 카운트 초기화 화면 안되는데.. 뭐지?
                             }
 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move;
@@ -38664,6 +38712,11 @@ namespace QMC.Common.Modules
                         if (m_bPassedSocket_Exist)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "m_bPassedSocket_Exist");
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                //m_nDrillingWork_Group_Count = 0;
+                                //여기서도 하면 안되는디
+                            }
                             m_nLaserDrilling_LayerCount++;
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -38702,6 +38755,10 @@ namespace QMC.Common.Modules
                         if (m_bPassedSocket_Exist)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "m_bPassedSocket_Exist");
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                            }
                             m_nLaserDrilling_LayerCount++;
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -40787,7 +40844,10 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingWork_CompleteCheck:            //  Drilling 작업 완료 확인                    
 
                     Log.Write("SLD-200", "Auto Run", "Layer 가공 완료. 가공할 Layer 가 남아있는지 체크하러 이동.");
-
+                    if (Equipment.SelectRunEnable_New)
+                    {
+                        m_nDrillingWork_Group_Count = 0;
+                    }
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                     break;
 
@@ -41179,6 +41239,10 @@ namespace QMC.Common.Modules
                                 }
                             }
 
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                            }
                             m_nLaserDrilling_LayerCount++;
                             nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -41223,6 +41287,10 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Marking Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
 
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                            }
                             m_nLaserDrilling_LayerCount++;
                             nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -41328,6 +41396,11 @@ namespace QMC.Common.Modules
                         else
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                            }
                             m_nLaserDrilling_LayerCount++;
                             nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -41370,6 +41443,10 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Marking Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
 
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                            }
                             m_nLaserDrilling_LayerCount++;
                             nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -41473,6 +41550,11 @@ namespace QMC.Common.Modules
                         else
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                            }
                             m_nLaserDrilling_LayerCount++;
                             nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -41519,6 +41601,10 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Marking Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
 
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                            }
                             m_nLaserDrilling_LayerCount++;
                             nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -41620,6 +41706,11 @@ namespace QMC.Common.Modules
                         else
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+
+                            if (Equipment.SelectRunEnable_New)
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                            }
                             m_nLaserDrilling_LayerCount++;
                             nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
@@ -41928,6 +42019,7 @@ namespace QMC.Common.Modules
 
                         //m_nLaserDrilling_LayerCount++;
                         //nNextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                         nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                     }
