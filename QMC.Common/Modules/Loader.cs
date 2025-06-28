@@ -7021,11 +7021,8 @@ namespace QMC.Common.Modules
                                     // Loader Transfer 돌아가지 않게
                                     Equipment.CycleStopped_LoaderTransfer = true;
                                 }
-                                else
-                                {
-                                    Equipment.CycleStopped_LoaderTransfer = false;
-                                    m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
-                                }
+
+                                m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
                             }
                             break;
                     }

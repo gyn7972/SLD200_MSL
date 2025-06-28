@@ -2769,6 +2769,11 @@ namespace SLD200_MSL
                 //  Cycle Stop 을 설정했으므로 Socket Stop 은 Cancel
                 Equipment.CycleSocketStop = false;
                 Equipment.SocketStopped = false;
+
+                Equipment.CycleStopped_MainWork = false;
+                Equipment.CycleStopped_LoaderTransfer = false;
+                Equipment.CycleStopped_UnloaderTransfer = false;
+                
                 checkBox_Main_SocketStop.Checked = false;
             }
 
