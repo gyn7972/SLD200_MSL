@@ -6181,6 +6181,8 @@ namespace SLD200_MSL
 
         private void button_Config_TabLaser_LaserPowerMeasure_Click(object sender, EventArgs e)
         {
+            //InitspiralLabScanner
+            FormLaserPowerMeasure.InitSpiralLab(bds.spiralLabScanner);
             FormLaserPowerMeasure.Show();
         }
     }

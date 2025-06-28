@@ -32,14 +32,26 @@ namespace QMC.Common.Parts
             // Laser Condition
             public float PowerPercent { get; set; } = 5f;  // 나중에 analog로 변환 가능
             public float Frequency { get; set; } = 5000.0f;    // kHz
-            public float PulseWidth { get; set; } = 1.0f;   // µs
+            
+            private float _pulseWidth = 1.0f;  // µs
+            public float PulseWidth
+            {
+                get => _pulseWidth;
+                set => _pulseWidth = value;
+            }
+
             public float DutyCycle
             {
-                get => Frequency > 0 ? PulseWidth / (1000f / Frequency) : 0f; // Duty Cycle = Pulse Width / Period
+                get => Frequency > 0 ? (PulseWidth / (1_000_000f / Frequency)) * 100f : 0f;
                 set
                 {
                     if (Frequency > 0)
-                        PulseWidth = value * (1000f / Frequency);
+                    {
+                        float periodSeconds = 1f / Frequency;
+                        float pulseWidthSeconds = (value / 100f) * periodSeconds;
+
+                        PulseWidth = pulseWidthSeconds * 1_000_000f;// * 10f; // μs + 보정 ×10
+                    }
                 }
             }
             // Delay
@@ -448,31 +460,36 @@ namespace QMC.Common.Parts
                 bool success = true;
 
 
-                int m_nSDC_Count = 0;
-                do
-                {
-                    // Spot Distance Control
-                    var alc = rtc as IRtcAutoLaserControl;
-                    success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.Disabled, AutoLaserControlMode.Disabled, 0, 0, 0);
-                    if (!success)
-                    {
-                        strTemp = string.Format("CtlAutoLaserControl(null, null) 파라미터 적용 실패, ({0}/3)", m_nSDC_Count + 1);
-                        Log.Write("SLD-200", "Auto Run", strTemp);
-                    }
-                    else
-                    {
-                        strTemp = string.Format("CtlAutoLaserControl(null, null) 파라미터 적용 성공, ({0}/3)", m_nSDC_Count + 1);
-                        Log.Write("SLD-200", "Auto Run", strTemp);
-                    }
+                //int m_nSDC_Count = 0;
+                //do
+                //{
+                //    // Spot Distance Control
+                //    var alc = rtc as IRtcAutoLaserControl;
+                //    success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.Disabled, AutoLaserControlMode.Disabled, 0, 0, 0);
+                //    if (!success)
+                //    {
+                //        strTemp = string.Format("CtlAutoLaserControl(null, null) 파라미터 적용 실패, ({0}/3)", m_nSDC_Count + 1);
+                //        Log.Write("SLD-200", "Auto Run", strTemp);
+                //    }
+                //    else
+                //    {
+                //        strTemp = string.Format("CtlAutoLaserControl(null, null) 파라미터 적용 성공, ({0}/3)", m_nSDC_Count + 1);
+                //        Log.Write("SLD-200", "Auto Run", strTemp);
+                //    }
 
-                    m_nSDC_Count++;
-                } while (!success && (m_nSDC_Count < 3));
+                //    m_nSDC_Count++;
+                //} while (!success && (m_nSDC_Count < 3));
 
+                //rtc.CtlLaserMode(LaserMode.Co2);
+
+                //rtc.CtlFrequency(setting.Frequency, 2);
+                //rtc.CtlLaserOn();
 
                 success &= rtc.ListBegin(laser, ListType.Single);
 
                 float fFrequency = (float)Math.Max(setting.Frequency, 0);
-                float fPulseWidth = (float)Math.Min(setting.PulseWidth, fFrequency / 2);
+                //float fPulseWidth = (float)Math.Min(setting.PulseWidth, fFrequency / 2);
+                float fPulseWidth = setting.PulseWidth;
                 success &= rtc.ListFrequency(fFrequency, fPulseWidth);
 
                 success &= rtc.ListDelay(
@@ -494,7 +511,7 @@ namespace QMC.Common.Parts
 
                 success &= rtc.ListEnd();
                 if (success)
-                    success &= rtc.ListExecute(true);
+                    success &= rtc.ListExecute(false);
             }
             catch (Exception ex)
             {

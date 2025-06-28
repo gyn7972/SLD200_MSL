@@ -30903,7 +30903,8 @@ namespace QMC.Common.Modules
 
                 case (int)ScannerCalibration_Step.LaserShutter_Close_Check:                                          //  Shutter Close 확인
                     {
-                        if (!workStageParameter.DI_BDS_PowerMeter_BW_Check() && workStageParameter.DI_BDS_PowerMeter_FW_Check())
+                        if (!workStageParameter.DI_BDS_PowerMeter_BW_Check() && 
+                            workStageParameter.DI_BDS_PowerMeter_FW_Check())
                         {
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserFrequency_Change;
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserPower_Change;
