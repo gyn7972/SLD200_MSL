@@ -78,8 +78,8 @@ namespace QMC.Common.Motion.Ajin.Motions
             int ret = 0;
             double dPos = 0.0;
             double dCurrentX = 0;
-
             double dCurrentY = 0;
+
             AXM.GetActualPosition(nAxis, ref dPos);
             string str = this.GetType().ToString();
             XyCoordinate source = new XyCoordinate();

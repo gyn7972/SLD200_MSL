@@ -6996,14 +6996,6 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage 에 Module Put Down 완료");
                             m_strTemp = "LD Transfer, Work Stage 에 Module Put Down 완료";
 
-                            //  Work Stage 에 모듈을 내려놨으니 도면을 다시 로드해야 한다. (DryRun 이면 안함)       --> Work Stage 에 Module 을 Loading 하기 시작할 때 Parsing 하도록
-                            //if (!workStage.m_bMainWorkCycle_DryRun)
-                            //{
-                            //    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-                            //}
-                            ////  WorkStage 의 MainWork 에서 Parsing 진행        --> 여기가 아니라 Work Stage 에 Module 을 Put Down 하러 출발하면서 해야지 ㅡㅡ
-                            //Equipment.ProcessingData_Parsing_byLoader = true;
-
                             m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = true;
                             m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;
                             m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;
@@ -7022,13 +7014,17 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
-
-                                //  Cycle Stop 이면?   --> Loader 에게 Cycle Stop 은, Stage 에 Module 을 갖다 놓으면 Cycle 완료
+                                // Cycle Stop 이면?   --> Loader 에게 Cycle Stop 은, Stage 에 Module 을 갖다 놓으면 Cycle 완료
+                                // Stage CycleStop하고 멈추자.
                                 if (Equipment.CycleModuleStop)
                                 {
                                     // Loader Transfer 돌아가지 않게
                                     Equipment.CycleStopped_LoaderTransfer = true;
+                                }
+                                else
+                                {
+                                    Equipment.CycleStopped_LoaderTransfer = false;
+                                    m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
                                 }
                             }
                             break;

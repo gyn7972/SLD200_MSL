@@ -46,6 +46,8 @@ namespace SLD200_MSL
         public FormNewSub_Recipe_Vision userform_RecipeVision { get; set; }
         public FormNewSub_Recipe_GoldPowder userform_RecipeGoldPowder { get; set; }
 
+        public Action<bool> ActionLoadRecipe;
+
         public FormNew_Recipe()
         {
             InitializeComponent();
@@ -2091,10 +2093,6 @@ namespace SLD200_MSL
                 }
                 textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
 
-
-
-
-
                 //  BET, Mrad
                 switch (Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex)
                 {
@@ -2129,7 +2127,6 @@ namespace SLD200_MSL
                         break;
                 }
 
-
                 if (workStage.m_beamExpander_Comm != null)
                 {
                     if (workStage.m_beamExpander_Comm.IsOpen)
@@ -2148,7 +2145,6 @@ namespace SLD200_MSL
                     }
                 }
 
-
                 switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType)
                 {
                     case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
@@ -2164,17 +2160,14 @@ namespace SLD200_MSL
                         break;
                 }
                 
-                
                 //  Z-Axis Offset mm
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
 
                 int m_nCount = 0;
-
                 do
                 {
                     m_nCount++;
                 } while (m_nCount < 1000);
-                
                 
                 //  도면 Import
                 m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
@@ -2197,7 +2190,6 @@ namespace SLD200_MSL
                             }
                         }
                     }
-
 
                     // 다른 곳 사용시!!! 아래 switch 구문 messagebox Log 등으로 수정 필요.!
                     // 선택 가공을 위해 Drilling Data Parsing 도 해준다.
@@ -2269,6 +2261,9 @@ namespace SLD200_MSL
                     listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = 0;   // 다시 선택 → 이벤트 발생
 
                 }
+
+                workStage.ResetProcess();
+                
             }
         }
 

@@ -129,7 +129,6 @@ namespace SLD200_MSL
             set { m_formModuleMonitor = value; }
         }
 
-
         public FormNew_Main()
         {
             InitializeComponent();
@@ -185,6 +184,7 @@ namespace SLD200_MSL
 
             FormNew_Main_Load();
         }
+
 
 
 
@@ -310,6 +310,8 @@ namespace SLD200_MSL
             //m_formModuleMonitor = new FormNewSub_ModuleMonitor();
             //m_formModuleMonitor.Owner = this;
             ShowModuleMonitorControl();
+
+            workStage.ActionProcessStop += OnProcssStop;
         }
 
         
@@ -379,9 +381,23 @@ namespace SLD200_MSL
         {
             m_SiriusViewerRefresy = bRtn;
         }
+
+        public void OnProcssStop(bool bRtn)
+        {
+            if(bRtn)
+            {
+                if (this.InvokeRequired)
+                {
+                    this.BeginInvoke(new System.Action(() => OnProcssStop(bRtn)));
+                    return;
+                }
+
+                workStage.StopProcess();
+            }
+        }
+
         #endregion
 
-       
         private void InitImageViewer()
         {
             //if (this.ImageViewer_Main_highs.IsHandleCreated)
@@ -2997,7 +3013,6 @@ namespace SLD200_MSL
 
 
         }
-            
 
         private void checkBox_Main_Loader_Transfer_Pause_CheckedChanged(object sender, EventArgs e)
         {
@@ -3619,6 +3634,9 @@ namespace SLD200_MSL
         
         private async  void button_TEST12_Click(object sender, EventArgs e)
         {
+            workStage.m_Sequence_LaserPowerMeasure.TestLog(); //  테스트용 로그 출력
+            return;
+
             Equipment.AutoRunStatus = true;
 
             // 전체 초기화
