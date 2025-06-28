@@ -26,6 +26,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         private SpiralLabScanner.ScannerLaserSetting _setting = new SpiralLabScanner.ScannerLaserSetting();
         static WorkStage workStage;
         static Vision vision;
+        static Bds bds;
 
         private System.Windows.Forms.Timer timerModuleStatus;
         private bool _isRunning_ModuleStatus = false;
@@ -41,6 +42,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 if (module.Name == "WorkStage") workStage = module as WorkStage;
                 if (module.Name == "Vision") vision = module as Vision;
+                if (module.Name == "BDS") bds = module as Bds;
             }
 
             timerModuleStatus = new System.Windows.Forms.Timer();
@@ -51,7 +53,19 @@ namespace SLD200.NewStyleForm.NewSubForm
             _scanner = scanner;
             InitSettingTable();
 
-            comboBoxTargetType.SelectedIndex = 0; // 기본값으로 "Top" 선택
+            if(Equipment.Machine_LaserType_CO2)
+            {
+                comboBoxTargetType.SelectedIndex = 1; // 기본값으로 "Top" 선택
+                comboBox_MaskIndex.SelectedIndex = 4;
+                comboBox_BETPositionIndex.SelectedIndex = 0;
+            }
+            else
+            {
+                comboBox_MaskIndex.Visible = false;
+                comboBox_BETPositionIndex.Visible = false;
+            }
+
+               
 
             workStage.m_Sequence_LaserPowerMeasure.OnPowerMeasured += UpdatePowerMeasureLog;
         }
@@ -70,6 +84,10 @@ namespace SLD200.NewStyleForm.NewSubForm
             base.OnFormClosing(e);
         }
 
+        public void InitSpiralLab(SpiralLabScanner spiralLabScanner)
+        {
+            _scanner = spiralLabScanner;
+        }
         public void DisposeSemiAutoResources()
         {
             if (timerModuleStatus != null)
@@ -113,7 +131,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void InitSettingTable()
         {
-            comboBoxTargetType.SelectedIndex = 0; // 기본값으로 "Top" 선택
+            comboBoxTargetType.SelectedIndex = 1; // 기본값으로 "Top" 선택
 
             dataGridViewSettings.ColumnCount = 2;
             dataGridViewSettings.Columns[0].Name = "Parameter";
@@ -126,15 +144,15 @@ namespace SLD200.NewStyleForm.NewSubForm
             LoadLaserPowerMeasureSetting();
             if (Equipment.Machine_LaserType_CO2)
             {
-                dataGridViewSettings.Rows.Add("Frequency", _setting.Frequency);
-                dataGridViewSettings.Rows.Add("PulseWidth", _setting.PulseWidth);
-                dataGridViewSettings.Rows.Add("DutyCycle", _setting.DutyCycle);
+                dataGridViewSettings.Rows.Add("Frequency(Hz)", _setting.Frequency);
+                dataGridViewSettings.Rows.Add("PulseWidth(us)", _setting.PulseWidth);
+                dataGridViewSettings.Rows.Add("DutyCycle(%)", _setting.DutyCycle);
             }
             else
             {
-                dataGridViewSettings.Rows.Add("PowerPercent", _setting.PowerPercent);
-                dataGridViewSettings.Rows.Add("Frequency", _setting.Frequency);
-                dataGridViewSettings.Rows.Add("PulseWidth", _setting.PulseWidth);
+                dataGridViewSettings.Rows.Add("PowerPercent(%)", _setting.PowerPercent);
+                dataGridViewSettings.Rows.Add("Frequency(Hz)", _setting.Frequency);
+                dataGridViewSettings.Rows.Add("PulseWidth(us)", _setting.PulseWidth);
             }
 
 
@@ -144,7 +162,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             try
             {
-                _setting.Initialize();
+                //_setting.Initialize();
                 if (numericUpDownDuration.Value <= 0)
                 {
                     MessageBox.Show("Duration는 0보다 큰 값이어야 합니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -164,31 +182,31 @@ namespace SLD200.NewStyleForm.NewSubForm
                     {
                         switch (param)
                         {
-                            case "Frequency": _setting.Frequency = value; break;
-                            case "PulseWidth": _setting.PulseWidth = value; break;
-                            case "DutyCycle": _setting.DutyCycle = value; break;
+                            case "Frequency(Hz)": _setting.Frequency = value; break;
+                            case "PulseWidth(us)": _setting.PulseWidth = value; break;
+                            case "DutyCycle(%)": _setting.DutyCycle = value; break;
                         }
                     }
                     else
                     {
                         switch (param)
                         {
-                            case "PowerPercent": _setting.PowerPercent = value; break;
-                            case "Frequency": _setting.Frequency = value; break;
-                            case "PulseWidth": _setting.PulseWidth = value; break;
+                            case "PowerPercent(%)": _setting.PowerPercent = value; break;
+                            case "Frequency(Hz)": _setting.Frequency = value; break;
+                            case "PulseWidth(us)": _setting.PulseWidth = value; break;
                         }
                     }
-                }
-
-                if (_setting.PowerPercent < 0 || _setting.PowerPercent > 100)
-                {
-                    MessageBox.Show("PowerPercent는 0에서 100 사이의 값이어야 합니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
                 }
 
                 bool result = false;
                 if (!Equipment.Machine_LaserType_CO2) // UV인 경우.
                 {
+                    if (_setting.PowerPercent < 0 || _setting.PowerPercent > 100)
+                    {
+                        MessageBox.Show("PowerPercent는 0에서 100 사이의 값이어야 합니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
                     result = SetLaserPower(_setting.PowerPercent);
                     if (!result)
                         MessageBox.Show("레이저 파워 변경", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -214,7 +232,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
-            _scanner.LaserOff();
+            //_scanner.rtc.CtlLaserOff();
+            
+            //_scanner.LaserOff();
             // or
             _scanner.LaserAbort();
         }
@@ -249,16 +269,61 @@ namespace SLD200.NewStyleForm.NewSubForm
             string selectedTarget = comboBoxTargetType.SelectedItem.ToString();
             string strTemp = string.Empty;
 
+            if(Equipment.Machine_LaserType_CO2)
+            {
+                selectedTarget = "Stage";
+            }
+
             if (selectedTarget == "Top")
             {
-                // 탑에 대한 로직
+                if (Equipment.Machine_LaserType_CO2)
+                {
+                    strTemp = "CO2는 Top PowerMeter가 없습니다.";
+                    Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                    new MessageBoxOk().ShowDialog("Information !", strTemp);
+                }
+
+                // LaserShutter_Close
                 workStage.workStageParameter.DO_BDS_PowerMeter_BW(false);
                 Thread.Sleep(100); // 잠시 대기
                 workStage.workStageParameter.DO_BDS_PowerMeter_FW(true);
 
-                // 셔터 닫힘 확인을 최대 3초간 반복 체크
+                // 셔터 닫힘 확인을 최대 5초간 반복 체크
                 bool bSuccess = false;
-                int timeoutMs = 3000;
+                int timeoutMs = 5000;
+                int elapsedMs = 0;
+                int intervalMs = 100;
+                while (elapsedMs < timeoutMs)
+                {
+                    if (!workStage.workStageParameter.DI_BDS_PowerMeter_BW_Check() &&
+                         workStage.workStageParameter.DI_BDS_PowerMeter_FW_Check())
+                    {
+                        bSuccess = true;
+                        break;
+                    }
+
+                    Thread.Sleep(intervalMs);
+                    elapsedMs += intervalMs;
+                }
+
+                if (!bSuccess)
+                {
+                    strTemp = "Shutter 닫기 실패 (3초 내 상태 도달 못함)";
+                    Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                    new MessageBoxOk().ShowDialog("Error !", strTemp);
+                    return;
+                }
+            }
+            else if (selectedTarget == "Stage")
+            {
+                // LaserShutter_Open
+                workStage.workStageParameter.DO_BDS_PowerMeter_BW(true);
+                Thread.Sleep(100); // 잠시 대기
+                workStage.workStageParameter.DO_BDS_PowerMeter_FW(false);
+
+                // 셔터 닫힘 확인을 최대 5초간 반복 체크
+                bool bSuccess = false;
+                int timeoutMs = 5000;
                 int elapsedMs = 0;
                 int intervalMs = 100;
                 while (elapsedMs < timeoutMs)
@@ -281,9 +346,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     new MessageBoxOk().ShowDialog("Error !", strTemp);
                     return;
                 }
-            }
-            else if (selectedTarget == "Stage")
-            {
+
                 // 스테이지에 대한 로직
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "위치 이동 하시겠습니까?"))
@@ -295,7 +358,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 motor_Speed = Equipment.Type_Motor_Speed.Coarse;
                 int nIndex = 0; //Teaching Position Index
 
-                nIndex = (int)Vision.Vision_TeachingPosList.Laser_FocusPos;
+                nIndex = (int)Vision.Vision_TeachingPosList.Vision_SafetyPos;
                 workStage.MovetoWorkStage_TeachingPositionsZ(nIndex, motor_Speed);
                 double dPosZ = vision.stVisionTeachingPos[nIndex].Vision_Z;
                 Thread.Sleep(500);
@@ -325,12 +388,38 @@ namespace SLD200.NewStyleForm.NewSubForm
                     mb1.ShowDialog("Error !", strTemp);
                     return;
                 }
+
+                if(Equipment.Machine_LaserType_CO2)
+                {
+                    //nIndex = (int)Bds.BDS_TeachingPosList.BDS_Mask4Pos;
+                    nIndex = comboBox_MaskIndex.SelectedIndex;
+                    double dPosMaskY = bds.stBDSTeachingPos[nIndex].Mask_Y;
+                    workStage.MovetoWorkStage_ABS_PositionsMaskY(dPosMaskY, motor_Speed);
+                    Thread.Sleep(500);
+                    bool bWaitMaskY = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.MASK_Y, dPosMaskY).Result;
+                    if (!bWaitMaskY)
+                    {
+                        strTemp = string.Format("MaskY-Axis이 이동 실패.");
+                        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                        var mb1 = new MessageBoxOk();
+                        mb1.ShowDialog("Error !", strTemp);
+                        return;
+                    }
+
+                    nIndex = comboBox_BETPositionIndex.SelectedIndex;
+                    workStage.LaserDrillingStepBETChange(nIndex);
+                }
             }
+
+            strTemp = string.Format("준비 완료.");
+            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            var mb2 = new MessageBoxOk();
+            mb2.ShowDialog("Complete !", strTemp);
         }
 
         private void comboBoxTargetType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            workStage.m_Sequence_LaserPowerMeasure.m_nType = comboBoxTargetType.SelectedIndex;
+            workStage.m_Sequence_LaserPowerMeasure.m_nType = (comboBoxTargetType.SelectedIndex + 1);
         }
 
         public void SaveLaserPowerMeasureSetting()
@@ -345,6 +434,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 NativeMethods.WritePrivateProfileString("Laser", "Frequency", _setting.Frequency.ToString(), iniPath);
                 NativeMethods.WritePrivateProfileString("Laser", "PulseWidth", _setting.PulseWidth.ToString(), iniPath);
                 NativeMethods.WritePrivateProfileString("Laser", "DutyCycle", _setting.DutyCycle.ToString(), iniPath);
+                NativeMethods.WritePrivateProfileString("Laser", "MaskIndex", comboBox_MaskIndex.SelectedIndex.ToString(), iniPath);
+                NativeMethods.WritePrivateProfileString("Laser", "BetIndex", comboBox_BETPositionIndex.SelectedIndex.ToString(), iniPath);
             }
             else
             {
@@ -383,6 +474,17 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 NativeMethods.GetPrivateProfileString("Laser", "DutyCycle", "1", temp, 255, iniPath);
                 _setting.DutyCycle = (float)Equipment.ToDouble(temp.ToString());
+
+                NativeMethods.GetPrivateProfileString("Laser", "MaskIndex", "1", temp, 255, iniPath);
+                comboBox_MaskIndex.SelectedIndex = Equipment.ToInt(temp.ToString());
+
+                NativeMethods.GetPrivateProfileString("Laser", "BetIndex", "1", temp, 255, iniPath);
+                comboBox_BETPositionIndex.SelectedIndex = Equipment.ToInt(temp.ToString());
+
+
+                workStage.m_Sequence_LaserPowerMeasure.m_nMaskindex = comboBox_MaskIndex.SelectedIndex;
+                workStage.m_Sequence_LaserPowerMeasure.m_nBETIndex = comboBox_BETPositionIndex.SelectedIndex;
+
             }
             else
             {
@@ -497,6 +599,70 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             MessageBox.Show("UpdatePowerMeasureLog 테스트 완료");
+        }
+
+        private void dataGridViewSettings_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex != 1) return;
+
+            var param = dataGridViewSettings.Rows[e.RowIndex].Cells[0].Value?.ToString();
+            var valueStr = dataGridViewSettings.Rows[e.RowIndex].Cells[1].Value?.ToString();
+            if (!float.TryParse(valueStr, out float value))
+                return;
+
+            switch (param)
+            {
+                case "Frequency(Hz)":
+                    _setting.Frequency = value;
+                    UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
+                    UpdateSettingRow("PulseWidth(us)", _setting.PulseWidth);
+                    break;
+
+                case "PulseWidth(us)":
+                    _setting.PulseWidth = value;
+                    UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
+                    break;
+
+                case "DutyCycle(%)":
+                    _setting.DutyCycle = value;
+                    UpdateSettingRow("PulseWidth(us)", _setting.PulseWidth);
+                    break;
+
+                case "PowerPercent(%)":
+                    _setting.PowerPercent = value;
+                    break;
+            }
+        }
+
+        private void UpdateSettingRow(string paramName, float value)
+        {
+            foreach (DataGridViewRow row in dataGridViewSettings.Rows)
+            {
+                if (row.Cells[0].Value?.ToString() == paramName)
+                {
+                    row.Cells[1].Value = value.ToString("F2");
+                    break;
+                }
+            }
+        }
+
+
+        private void dataGridViewSettings_CurrentCellChanged(object sender, EventArgs e)
+        {
+            if (dataGridViewSettings.IsCurrentCellDirty)
+                dataGridViewSettings.CommitEdit(DataGridViewDataErrorContexts.Commit);
+
+            dataGridViewSettings.Refresh();
+        }
+
+        private void comboBox_MaskIndex_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            workStage.m_Sequence_LaserPowerMeasure.m_nMaskindex = (comboBox_MaskIndex.SelectedIndex);
+        }
+
+        private void comboBox_BETPositionIndex_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            workStage.m_Sequence_LaserPowerMeasure.m_nBETIndex = (comboBox_BETPositionIndex.SelectedIndex);
         }
     }
 }

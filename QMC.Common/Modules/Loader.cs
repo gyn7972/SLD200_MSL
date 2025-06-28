@@ -9690,7 +9690,7 @@ namespace QMC.Common.Modules
                 catch (Exception ex)
                 {
                     Log.Write(ex);
-                    return double.NaN; // 명확하게 오류값 반환
+                    return 0.0; 
                 }
                 return dEncPos;
             }

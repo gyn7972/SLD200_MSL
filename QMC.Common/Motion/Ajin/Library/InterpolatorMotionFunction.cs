@@ -411,7 +411,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                     if (ret != 0)
                     {
                         Log.Write("StageScannerPos", "MC_GetEncPos", $"[오류] ReverseInterpolate 실패 (축 {nAxis}) → Code: {ret}");
-                        return double.NaN;
+                        //return 0.0;
                     }
 
                     dPos = source.X;
@@ -445,7 +445,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                     if (ret != 0)
                     {
                         Log.Write("StageScannerPos", "MC_GetEncPos", $"[오류] ReverseInterpolate 실패 (축 {nAxis}) → Code: {ret}");
-                        return double.NaN;
+                        //return 0.0;
                     }
 
                     dPos = source.Y;
@@ -518,7 +518,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                         if (ret != 0)
                         {
                             Log.Write("SLD-200", "MC_MovePosition", $"[오류] Interpolate 실패 (축 {Axis}) → Code: {ret}");
-                            return false;
+                            //return false;
                         }
 
                         if (Axis == (int)WorkStage.nAxis.X)
@@ -596,7 +596,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                         if (ret != 0)
                         {
                             Log.Write("SLD-200", "MC_MoveRelPosition", $"[오류] Interpolate 실패 (축 {Axis}) → Code: {ret}");
-                            return false;
+                            //return false;
                         }
 
                         if (Axis == (int)WorkStage.nAxis.X)
@@ -660,7 +660,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                 if (ret != 0)
                 {
                     Log.Write("SLD-200", "MovePosition", $"[오류] Interpolate 실패 → Code: {ret}");
-                    return false;
+                    //return false;
                 }
 
                 bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPositionInterpolated.X, vel, accel, decel);

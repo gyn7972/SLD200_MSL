@@ -35,8 +35,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridViewSettings = new System.Windows.Forms.DataGridView();
             this.buttonApplyAndFire = new System.Windows.Forms.Button();
             this.labelDuration = new System.Windows.Forms.Label();
@@ -49,6 +49,10 @@
             this.button_SeqStop = new System.Windows.Forms.Button();
             this.listBox_PowerLog = new System.Windows.Forms.ListBox();
             this.button_Test = new System.Windows.Forms.Button();
+            this.comboBox_BETPositionIndex = new System.Windows.Forms.ComboBox();
+            this.comboBox_MaskIndex = new System.Windows.Forms.ComboBox();
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition = new System.Windows.Forms.Label();
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSettings)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDuration)).BeginInit();
             this.SuspendLayout();
@@ -57,30 +61,32 @@
             // 
             this.dataGridViewSettings.AllowUserToAddRows = false;
             this.dataGridViewSettings.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.Format = "N0";
-            dataGridViewCellStyle1.NullValue = "0";
-            this.dataGridViewSettings.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.Format = "N0";
+            dataGridViewCellStyle5.NullValue = "0";
+            this.dataGridViewSettings.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridViewSettings.BackgroundColor = System.Drawing.SystemColors.Menu;
             this.dataGridViewSettings.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridViewSettings.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Sunken;
             this.dataGridViewSettings.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.Format = "N0";
-            dataGridViewCellStyle2.NullValue = "0";
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewSettings.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.Format = "N0";
+            dataGridViewCellStyle6.NullValue = "0";
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewSettings.DefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridViewSettings.Location = new System.Drawing.Point(14, 11);
             this.dataGridViewSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dataGridViewSettings.Name = "dataGridViewSettings";
             this.dataGridViewSettings.RowHeadersWidth = 62;
-            this.dataGridViewSettings.Size = new System.Drawing.Size(322, 196);
+            this.dataGridViewSettings.Size = new System.Drawing.Size(322, 123);
             this.dataGridViewSettings.TabIndex = 0;
+            this.dataGridViewSettings.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewSettings_CellValueChanged);
+            this.dataGridViewSettings.CurrentCellChanged += new System.EventHandler(this.dataGridViewSettings_CurrentCellChanged);
             // 
             // buttonApplyAndFire
             // 
@@ -224,11 +230,73 @@
             this.button_Test.UseVisualStyleBackColor = true;
             this.button_Test.Click += new System.EventHandler(this.button_Test_Click);
             // 
+            // comboBox_BETPositionIndex
+            // 
+            this.comboBox_BETPositionIndex.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox_BETPositionIndex.FormattingEnabled = true;
+            this.comboBox_BETPositionIndex.Items.AddRange(new object[] {
+            "0.8x",
+            "0.9x",
+            "1.0x",
+            "1.1x",
+            "1.2x"});
+            this.comboBox_BETPositionIndex.Location = new System.Drawing.Point(192, 168);
+            this.comboBox_BETPositionIndex.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_BETPositionIndex.Name = "comboBox_BETPositionIndex";
+            this.comboBox_BETPositionIndex.Size = new System.Drawing.Size(73, 24);
+            this.comboBox_BETPositionIndex.TabIndex = 232;
+            this.comboBox_BETPositionIndex.Text = "1.0x";
+            this.comboBox_BETPositionIndex.SelectedIndexChanged += new System.EventHandler(this.comboBox_BETPositionIndex_SelectedIndexChanged);
+            // 
+            // comboBox_MaskIndex
+            // 
+            this.comboBox_MaskIndex.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox_MaskIndex.FormattingEnabled = true;
+            this.comboBox_MaskIndex.Items.AddRange(new object[] {
+            "None Mask Position",
+            "#1 Mask Position",
+            "#2 Mask Position",
+            "#3 Mask Position",
+            "#4 Mask Position"});
+            this.comboBox_MaskIndex.Location = new System.Drawing.Point(192, 141);
+            this.comboBox_MaskIndex.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_MaskIndex.Name = "comboBox_MaskIndex";
+            this.comboBox_MaskIndex.Size = new System.Drawing.Size(144, 24);
+            this.comboBox_MaskIndex.TabIndex = 231;
+            this.comboBox_MaskIndex.Text = "None Mask Position";
+            this.comboBox_MaskIndex.SelectedIndexChanged += new System.EventHandler(this.comboBox_MaskIndex_SelectedIndexChanged);
+            // 
+            // label_Recipe_TabRecipe_Miscellaneous_BETPosition
+            // 
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Location = new System.Drawing.Point(14, 167);
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Name = "label_Recipe_TabRecipe_Miscellaneous_BETPosition";
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Size = new System.Drawing.Size(174, 25);
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.TabIndex = 230;
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Text = "BET Zoom Position :";
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Recipe_TabRecipe_Miscellaneous_Mask
+            // 
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Location = new System.Drawing.Point(14, 141);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Name = "label_Recipe_TabRecipe_Miscellaneous_Mask";
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Size = new System.Drawing.Size(174, 25);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.TabIndex = 229;
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Text = "Mask Position :";
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormNewSub_LaserPowerMeasure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(822, 249);
+            this.Controls.Add(this.comboBox_BETPositionIndex);
+            this.Controls.Add(this.comboBox_MaskIndex);
+            this.Controls.Add(this.label_Recipe_TabRecipe_Miscellaneous_BETPosition);
+            this.Controls.Add(this.label_Recipe_TabRecipe_Miscellaneous_Mask);
             this.Controls.Add(this.button_Test);
             this.Controls.Add(this.button_SeqStop);
             this.Controls.Add(this.button_SeqStart);
@@ -261,5 +329,9 @@
         private System.Windows.Forms.Button button_SeqStart;
         private System.Windows.Forms.Button button_SeqStop;
         private System.Windows.Forms.Button button_Test;
+        private System.Windows.Forms.ComboBox comboBox_BETPositionIndex;
+        private System.Windows.Forms.ComboBox comboBox_MaskIndex;
+        private System.Windows.Forms.Label label_Recipe_TabRecipe_Miscellaneous_BETPosition;
+        private System.Windows.Forms.Label label_Recipe_TabRecipe_Miscellaneous_Mask;
     }
 }
