@@ -411,7 +411,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                     if (ret != 0)
                     {
                         Log.Write("StageScannerPos", "MC_GetEncPos", $"[오류] ReverseInterpolate 실패 (축 {nAxis}) → Code: {ret}");
-                        return double.NaN;
+                        return 0.0;
                     }
 
                     dPos = source.X;
@@ -445,7 +445,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                     if (ret != 0)
                     {
                         Log.Write("StageScannerPos", "MC_GetEncPos", $"[오류] ReverseInterpolate 실패 (축 {nAxis}) → Code: {ret}");
-                        return double.NaN;
+                        return 0.0;
                     }
 
                     dPos = source.Y;
