@@ -438,7 +438,7 @@ namespace QMC.Common.Global
             if (File.Exists(logFile))
                 lines = File.ReadAllLines(logFile, Encoding.UTF8).ToList();
 
-            bool isUpdated = false;
+            bool isUpdated = false;  
 
             // 마지막 줄 기준 레시피 동일 시 업데이트
             if (lines.Count > 0)
