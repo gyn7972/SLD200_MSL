@@ -35129,9 +35129,9 @@ namespace QMC.Common.Modules
                         {
                             if (Equipment.SelectRunEnable_New)
                             {
-                                if (!IsCurrentSocketSelected(LayerType.LAYER_THRUHOLE, m_nDrillingWork_Group_Count))
+                                if (!IsCurrentSocketSelected(LayerType.LAYER_DRILLING, m_nDrillingWork_Group_Count))
                                 {
-                                    if (m_nDrillingWork_Group_Count < m_stDividedRegion_GroupData.Length)
+                                    if (m_nDrillingWork_Group_Count <= m_stDividedRegion_GroupData.Length)
                                     {
                                         Log.Write("선택 가공", $"LAYER_THRUHOLE:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                         m_nDrillingWork_Group_Count++;
@@ -35156,7 +35156,7 @@ namespace QMC.Common.Modules
                             {
                                 if (!IsCurrentSocketSelected(LayerType.LAYER_THRUHOLE, m_nDrillingWork_Group_Count))
                                 {
-                                    if(m_nDrillingWork_Group_Count < m_stThruHole_SocketData.Length)
+                                    if(m_nDrillingWork_Group_Count <= m_stThruHole_SocketData.Length)
                                     {
                                         Log.Write("선택 가공", $"소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                         m_nDrillingWork_Group_Count++;
@@ -35230,7 +35230,7 @@ namespace QMC.Common.Modules
                             {
                                 if (!IsCurrentSocketSelected(LayerType.LAYER_OUTLINE, m_nDrillingWork_Group_Count))
                                 {
-                                    if (m_nDrillingWork_Group_Count < m_stOutLine_SocketData.Length)
+                                    if (m_nDrillingWork_Group_Count <= m_stOutLine_SocketData.Length)
                                     {
                                         Log.Write("선택 가공", $"LAYER_OUTLINE:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                         m_nDrillingWork_Group_Count++;
@@ -35302,7 +35302,7 @@ namespace QMC.Common.Modules
                             {
                                 if (!IsCurrentSocketSelected(LayerType.LAYER_MARKING, m_nDrillingWork_Group_Count))
                                 {
-                                    if (m_nDrillingWork_Group_Count < m_stMarking_SocketData.m_stMarking_ObjectData.Length)
+                                    if (m_nDrillingWork_Group_Count <= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
                                     {
                                         Log.Write("선택 가공", $"LAYER_MARKING:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                         m_nDrillingWork_Group_Count++;
@@ -42016,6 +42016,8 @@ namespace QMC.Common.Modules
                         }
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                        m_nHoleLayer_ProcessIndex_Count = 0;        //  소켓이 바뀌면 Hole layer 1 부터 다시 시작
+                        m_nHoleLayer_ProcessIndex = 0;
                         nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                     }
                     else                                                                                                    //  전체 가공이면? 다음 소켓으로 이동
