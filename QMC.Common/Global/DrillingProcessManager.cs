@@ -447,26 +447,18 @@ namespace QMC.Common.Global
                 var parts = lastLine.Split(',');
                 if (parts.Length >= 5 && parts[2] == recipeName)
                 {
+                    // 기존 startTime 유지
+                    string originalStartTime = parts[0];
                     if (int.TryParse(parts[4], out int prevCount))
                     {
                         int updatedCount = prevCount + count;
-                        string updatedLine = $"{parts[0]},{endTime},{recipeName},{drawingName},{updatedCount}";
+                        string updatedLine = $"{originalStartTime},{endTime},{recipeName},{drawingName},{updatedCount}";
                         lines[lines.Count - 1] = updatedLine;
                         isUpdated = true;
                     }
                 }
             }
-            //if (lines.Count > 0)
-            //{
-            //    string lastLine = lines.Last();
-            //    var parts = lastLine.Split(',');
-            //    if (parts.Length >= 5 && parts[2] == recipeName)
-            //    {
-            //        string updatedLine = $"{parts[0]},{endTime},{recipeName},{drawingName},{count}";
-            //        lines[lines.Count - 1] = updatedLine;
-            //        isUpdated = true;
-            //    }
-            //}
+
 
             // 새 레시피면 새로운 라인 추가
             if (!isUpdated)
