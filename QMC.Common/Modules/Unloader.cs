@@ -4855,10 +4855,6 @@ namespace QMC.Common.Modules
                                     Equipment.CycleStopped_UnloaderTransfer = true;
                                 }
                             }
-                            else
-                            {
-                                Equipment.CycleStopped_UnloaderTransfer = false;
-                            }
                             break;
 
                         case (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp:
