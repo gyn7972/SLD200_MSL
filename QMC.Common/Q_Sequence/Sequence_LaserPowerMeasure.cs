@@ -927,6 +927,7 @@ namespace QMC.Common.Q_Sequence
         private int _powerMeasureLogIndex = 0;
         private const int _powerMeasureInitialDelayMs = 20000;  // 20초 대기 시간
         private bool _isPowerMeasureDelayed = false;            // 지연 완료 여부
+        private bool _isPowerMeasureOnes = false;            // 지연 완료 여부
         public int _powerMeasureLogIntervalMs = 5000;   // 3초 간격
         public int _powerMeasureLogTotalTimeMs = 60000; // 총 30초
         private int LaserPowerMeasure_Start(ref bool bComp)
@@ -935,7 +936,7 @@ namespace QMC.Common.Q_Sequence
             bool result = false;
             string strTemp = string.Empty;
 
-            if (_powerMeasureLogIndex == 0 && !_isPowerMeasureDelayed)
+            if (_powerMeasureLogIndex == 0 && !_isPowerMeasureDelayed && !_isPowerMeasureOnes)
             {
                 if (!Equipment.Machine_LaserType_CO2) // UV인 경우.
                 {
@@ -959,6 +960,7 @@ namespace QMC.Common.Q_Sequence
                 result = _scanner.LaserOn(duration, _setting);
 
                 Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "파워 측정 시작: 20초 대기 후 5초 간격으로 측정 시작");
+                _isPowerMeasureOnes = true;
                 TickCount_Start((int)TickType.TICK_POWER_MEASURE_LAST_SAVE);  // 최초 시작 시간
             }
 
@@ -975,10 +977,12 @@ namespace QMC.Common.Q_Sequence
                 Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "20초 경과: 파워 측정 시작 (5초 간격)");
                 TickCount_Start((int)TickType.TICK_POWER_MEASURE_START);  // 측정 시작 타이머
                 _isPowerMeasureDelayed = true;
+
+                _isPowerMeasureOnes = false;
             }
 
             // 30초 이후 종료 (20초 대기 + 10초 측정)
-            if (TickCount_Elapsed((int)TickType.TICK_POWER_MEASURE_LAST_SAVE) >= _powerMeasureLogTotalTimeMs)
+            if (TickCount_Elapsed((int)TickType.TICK_POWER_MEASURE_LAST_SAVE) >= _powerMeasureLogTotalTimeMs * 0.8)
             {
                 string position = (_setting.PowerMeterType == 0) ? "Top" : "Stage";
                 SavePowerMeasureLogList(position);

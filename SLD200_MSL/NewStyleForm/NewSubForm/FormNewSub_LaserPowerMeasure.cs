@@ -565,6 +565,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             _setting.PowerMeterType = comboBoxTargetType.SelectedIndex;
             _setting.MaskIndex = comboBox_MaskIndex.SelectedIndex;
             _setting.BETIndex = comboBox_BETPositionIndex.SelectedIndex;
+
+            SaveLaserPowerMeasureSetting();
+
             if (_setting.PowerMeterType == 0) // Top
             {
                 if (Equipment.Machine_LaserType_CO2)
