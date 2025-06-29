@@ -13396,10 +13396,6 @@ namespace QMC.Common.Modules
                             Equipment.CycleStopped_MainWork = true;
                         }
                     }
-                    else
-                    {
-                        Equipment.CycleStopped_MainWork = false;
-                    }
 
                     //  Seq. Test 일 경우
                     if (!Equipment.AutoRunStatus && Equipment.SeqTestMode)
@@ -41002,14 +40998,14 @@ namespace QMC.Common.Modules
                     strTemp = string.Format("전체 가공 완료");
                     Log.Write("SLD-200", "Auto Run", strTemp);
 
-                    // 시점 변경 필요함.
-                    //Equipment.m_nSerialNumberMarkingCount++;
-
-                    //Cycle Time
-                    DrillingManager.CycleTimer_DoneModuleCount++;
-                    DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
-
-                    DrillingManager.SaveLotLog();                     // 최신 로그 저장
+                    if (Equipment.AutoRunStatus)
+                    {
+                        //Cycle Time
+                        DrillingManager.CycleTimer_DoneModuleCount++;
+                        DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
+                        DrillingManager.SaveLotLog();                     // 최신 로그 저장
+                    }
+                        
 
                     strTemp = string.Format("LaserDrillingOneCycle Time: {0:0.000} sec", DrillingManager.CycleTimer_LaserDrilling.Latest.Interval.TotalSeconds);
                     Log.Write("SLD-200", "Auto Run", strTemp);
