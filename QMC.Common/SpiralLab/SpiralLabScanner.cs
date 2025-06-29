@@ -19,6 +19,8 @@ using RTC6Import;
 using System.Threading;
 using System.ServiceModel.Syndication;
 using static QMC.Common.Q_Sequence.Sequence_VerifyScannerCameraOffset;
+using QMC.Core;
+using System.Windows.Forms;
 
 
 
@@ -32,14 +34,13 @@ namespace QMC.Common.Parts
             // Laser Condition
             public float PowerPercent { get; set; } = 5f;  // 나중에 analog로 변환 가능
             public float Frequency { get; set; } = 5000.0f;    // kHz
-            
+
             private float _pulseWidth = 1.0f;  // µs
             public float PulseWidth
             {
                 get => _pulseWidth;
                 set => _pulseWidth = value;
             }
-
             public float DutyCycle
             {
                 get => Frequency > 0 ? (PulseWidth / (1_000_000f / Frequency)) * 100f : 0f;
@@ -69,6 +70,11 @@ namespace QMC.Common.Parts
             public bool EnableCrossCheck { get; set; } = false;
             public string CalibrationName { get; set; } = string.Empty;
 
+            public int PowerMeterType {get; set;} = 0;
+            public int MaskIndex { get; set;} = 4;
+            public int BETIndex { get; set;} = 0;
+            public int Duration { get; set; } = 0;
+
             public ScannerLaserSetting Clone()
             {
                 return (ScannerLaserSetting)this.MemberwiseClone();
@@ -89,6 +95,58 @@ namespace QMC.Common.Parts
                 MarkSpeed = 100f;     // mm/s
                 EnableCrossCheck = false;
                 CalibrationName = string.Empty;
+
+                PowerMeterType = 0;
+                MaskIndex = 4;
+                BETIndex = 0;
+                Duration = 5000;
+            }
+
+            public bool LoadPowerMeterConfig()
+            {
+                bool bRtn = true;
+
+                string iniPath = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+                StringBuilder temp = new StringBuilder(255);
+
+                Initialize();              //초기화 후 Data Load.
+
+                NativeMethods.GetPrivateProfileString("Laser", "TargetTypeIndex", "0", temp, 255, iniPath);
+                PowerMeterType = Equipment.ToInt(temp.ToString());
+
+                NativeMethods.GetPrivateProfileString("Laser", "Duration", "100000", temp, 255, iniPath);
+                Duration = Equipment.ToInt(temp.ToString());
+
+                if (Equipment.Machine_LaserType_CO2)
+                {
+                    NativeMethods.GetPrivateProfileString("Laser", "Frequency", "7000", temp, 255, iniPath);
+                    Frequency = (float)Equipment.ToDouble(temp.ToString());
+
+                    NativeMethods.GetPrivateProfileString("Laser", "PulseWidth", "1", temp, 255, iniPath);
+                    PulseWidth = (float)Equipment.ToDouble(temp.ToString());
+
+                    NativeMethods.GetPrivateProfileString("Laser", "DutyCycle", "1", temp, 255, iniPath);
+                    DutyCycle = (float)Equipment.ToDouble(temp.ToString());
+
+                    NativeMethods.GetPrivateProfileString("Laser", "MaskIndex", "1", temp, 255, iniPath);
+                    MaskIndex = Equipment.ToInt(temp.ToString());
+
+                    NativeMethods.GetPrivateProfileString("Laser", "BetIndex", "1", temp, 255, iniPath);
+                    BETIndex = Equipment.ToInt(temp.ToString());
+                }
+                else
+                {
+                    NativeMethods.GetPrivateProfileString("Laser", "PowerPercent", "10", temp, 255, iniPath);
+                    PowerPercent = (float)Equipment.ToDouble(temp.ToString());
+
+                    NativeMethods.GetPrivateProfileString("Laser", "Frequency", "500000", temp, 255, iniPath);
+                    Frequency = (float)Equipment.ToDouble(temp.ToString());
+
+                    NativeMethods.GetPrivateProfileString("Laser", "PulseWidth", "1", temp, 255, iniPath);
+                    PulseWidth = (float)Equipment.ToDouble(temp.ToString());
+                }
+
+                return bRtn;
             }
 
         }

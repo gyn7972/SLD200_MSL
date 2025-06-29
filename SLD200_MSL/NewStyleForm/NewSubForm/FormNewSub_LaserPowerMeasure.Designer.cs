@@ -35,8 +35,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridViewSettings = new System.Windows.Forms.DataGridView();
             this.buttonApplyAndFire = new System.Windows.Forms.Button();
             this.labelDuration = new System.Windows.Forms.Label();
@@ -61,24 +61,24 @@
             // 
             this.dataGridViewSettings.AllowUserToAddRows = false;
             this.dataGridViewSettings.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.Format = "N0";
-            dataGridViewCellStyle5.NullValue = "0";
-            this.dataGridViewSettings.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.Format = "N0";
+            dataGridViewCellStyle3.NullValue = "0";
+            this.dataGridViewSettings.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridViewSettings.BackgroundColor = System.Drawing.SystemColors.Menu;
             this.dataGridViewSettings.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridViewSettings.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Sunken;
             this.dataGridViewSettings.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.Format = "N0";
-            dataGridViewCellStyle6.NullValue = "0";
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewSettings.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.Format = "N0";
+            dataGridViewCellStyle4.NullValue = "0";
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewSettings.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewSettings.Location = new System.Drawing.Point(14, 11);
             this.dataGridViewSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dataGridViewSettings.Name = "dataGridViewSettings";
@@ -130,7 +130,7 @@
             this.numericUpDownDuration.Size = new System.Drawing.Size(136, 23);
             this.numericUpDownDuration.TabIndex = 2;
             this.numericUpDownDuration.Value = new decimal(new int[] {
-            10000,
+            30000,
             0,
             0,
             0});
@@ -232,6 +232,7 @@
             // 
             // comboBox_BETPositionIndex
             // 
+            this.comboBox_BETPositionIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_BETPositionIndex.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBox_BETPositionIndex.FormattingEnabled = true;
             this.comboBox_BETPositionIndex.Items.AddRange(new object[] {
@@ -245,11 +246,11 @@
             this.comboBox_BETPositionIndex.Name = "comboBox_BETPositionIndex";
             this.comboBox_BETPositionIndex.Size = new System.Drawing.Size(73, 24);
             this.comboBox_BETPositionIndex.TabIndex = 232;
-            this.comboBox_BETPositionIndex.Text = "1.0x";
             this.comboBox_BETPositionIndex.SelectedIndexChanged += new System.EventHandler(this.comboBox_BETPositionIndex_SelectedIndexChanged);
             // 
             // comboBox_MaskIndex
             // 
+            this.comboBox_MaskIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_MaskIndex.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBox_MaskIndex.FormattingEnabled = true;
             this.comboBox_MaskIndex.Items.AddRange(new object[] {
@@ -263,7 +264,6 @@
             this.comboBox_MaskIndex.Name = "comboBox_MaskIndex";
             this.comboBox_MaskIndex.Size = new System.Drawing.Size(144, 24);
             this.comboBox_MaskIndex.TabIndex = 231;
-            this.comboBox_MaskIndex.Text = "None Mask Position";
             this.comboBox_MaskIndex.SelectedIndexChanged += new System.EventHandler(this.comboBox_MaskIndex_SelectedIndexChanged);
             // 
             // label_Recipe_TabRecipe_Miscellaneous_BETPosition

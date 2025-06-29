@@ -1,6 +1,7 @@
 ﻿using QMC.Common.Modules;
 using QMC.Common.Parts;
 using QMC.Common.Q_Config;
+using SpiralLab.Sirius;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,8 +22,7 @@ namespace QMC.Common.Q_Sequence
     {
         public enum LaserPowerMeasure_Type
         {
-            None = 0,
-            Top,                                                    //  Top Check
+            Top = 0,                                                //  Top Check
             Stage,                                                  //  Stage Check
         }
 
@@ -67,15 +67,13 @@ namespace QMC.Common.Q_Sequence
             Complete,                                                  //  완료
         }
 
+        private SpiralLabScanner _scanner;
+        private SpiralLabScanner.ScannerLaserSetting _setting = new SpiralLabScanner.ScannerLaserSetting();
         static QMC.Common.Modules.WorkStage workStage;
         static QMC.Common.Modules.Vision vision;
         static QMC.Common.Modules.Bds bds;
 
         private LaserPowerMeasure_Step m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None;
-
-        public int m_nType { get; set; } = 2;
-        public int m_nMaskindex { get; set; } = 4;
-        public int m_nBETIndex { get; set; } = 0;
 
         #region Thread(Task)
         protected Task m_taskTimer_Main_Tick = null;
@@ -186,6 +184,7 @@ namespace QMC.Common.Q_Sequence
                 }
             });
             listTask.Add(m_taskTimer_Main_Tick);
+
         }
 
         #region Tick Count Check
@@ -214,11 +213,17 @@ namespace QMC.Common.Q_Sequence
         #endregion
 
 
+        public void InitSpiralLab(SpiralLabScanner spiralLabScanner)
+        {
+            _scanner = spiralLabScanner;
+        }
 
-
+        public bool IsCompleted { get; private set; } = false;
         public void Start()
         {
+            IsCompleted = false;
             m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.Start;
+            m_MainTick_Start = true;
         }
         public LaserPowerMeasure_Step GetCurrentStep()
         {
@@ -234,12 +239,26 @@ namespace QMC.Common.Q_Sequence
         }
         public void Reset()
         {
+            IsCompleted = false;
             m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None;
+            m_MainTick_Start = false;
         }
         int SeqLaserPowerMeasure()
         {
             int nRtn = 0;
             LaserPowerMeasure_Step nStep = LaserPowerMeasure_Step.None;
+
+            if (workStage.rtc == null)
+            {
+                Log.Write("SeqLaserPowerMeasure", "workStage.rtc is not initialized.");
+                return -1;
+            }
+
+            if (_scanner == null)
+            {
+                Log.Write("SeqLaserPowerMeasure", "SpiralLabScanner is not initialized.");
+                return -1;
+            }
 
             switch (m_LaserPowerMeasure_Step)
             {
@@ -255,6 +274,8 @@ namespace QMC.Common.Q_Sequence
                     }
                     else
                     {
+                        _setting.LoadPowerMeterConfig();
+
                         TickCount_Start((int)TickType.TICK_LASER_POWER_MEASURE);
                         m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.WaterLine_Open;
                     }
@@ -371,8 +392,8 @@ namespace QMC.Common.Q_Sequence
                     else
                     {
                         TickCount_Start((int)TickType.TICK_LASER_POWER_MEASURE);
-                        TickCount_Start((int)TickType.TICK_POWER_MEASURE_START);
-                        TickCount_Start((int)TickType.TICK_POWER_MEASURE_LAST_SAVE);
+                        //TickCount_Start((int)TickType.TICK_POWER_MEASURE_START);
+                        //TickCount_Start((int)TickType.TICK_POWER_MEASURE_LAST_SAVE);
                         m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.LaserPowerMeasure_Start;
                     }
                     break;
@@ -381,7 +402,7 @@ namespace QMC.Common.Q_Sequence
                     bool bComp = false;
                     if (LaserPowerMeasure_Start(ref bComp) != 0)
                     {
-                        if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout * 10)
+                        if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout * 5)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Top Check Laser Power Measure Start Fail.");
                             return -1; // Top Check 레이저 Power 측정 시작 실패
@@ -402,7 +423,7 @@ namespace QMC.Common.Q_Sequence
                 case LaserPowerMeasure_Step.LaserPowerMeasure_Start_Check:
                     if (TopCheck_LaserPowerMeasure_Start_Check() != 0)
                     {
-                        if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
+                        if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout * 5)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Top Check Laser Power Measure Start Check Fail.");
                             return -1; // Top Check 레이저 Power 측정 시작 확인 실패
@@ -612,16 +633,29 @@ namespace QMC.Common.Q_Sequence
                     else
                     {
                         TickCount_Start((int)TickType.TICK_LASER_POWER_MEASURE);
-                        TickCount_Start((int)TickType.TICK_POWER_MEASURE_START);
-                        TickCount_Start((int)TickType.TICK_POWER_MEASURE_LAST_SAVE);
+                        //TickCount_Start((int)TickType.TICK_POWER_MEASURE_START);
+                        //TickCount_Start((int)TickType.TICK_POWER_MEASURE_LAST_SAVE);
                         m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.LaserPowerMeasure_Start;
                     }
                     break;
 
                 case LaserPowerMeasure_Step.Complete:
-                    Log.Write("SeqLaserPowerMeasure", "Laser Power Measure Sequence Complete.");
-                    m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None; // 완료 후 초기화
-                    return 0; // 성공적으로 완료
+
+                    if (!workStage.rtc.CtlGetStatus(RtcStatus.Busy))
+                    {
+                        IsCompleted = true;
+                        Log.Write("SeqLaserPowerMeasure", "Laser Power Measure Sequence Complete.");
+                        m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None; // 완료 후 초기화
+                        return 0; // 성공적으로 완료
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
+                    {
+                        IsCompleted = true;
+                        Log.Write("SeqLaserPowerMeasure", "Laser Power Measure Sequence is still busy.");
+                        m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None; // 완료 후 초기화
+                        return -1; // 아직 Busy 상태
+                    }
+                    break;
 
                 default:
                     Log.Write("SeqLaserPowerMeasure", "Unknown Step in Laser Power Measure Sequence.");
@@ -804,11 +838,11 @@ namespace QMC.Common.Q_Sequence
         {
             int nRtn = 0;
 
-            int nBETIndex = 0; // BET 배율 설정 필요.
+            int nBETIndex = _setting.BETIndex;  //0; // BET 배율 설정 필요.
             if (nBETIndex < 0 || nBETIndex >= 5)                                    //  BET 배율은 총4개로 고정되어 있음.
             {
                 nRtn = -1; // BET 변경 실패
-                Log.Write("SeqLaserPower", Equipment.User_Name, "BETA_Change", "지정되지 않은 BET Index 입니다. (0 ~ 4)");
+                Log.Write("SeqLaserPower", Equipment.User_Name, "BETA_Change", "지정되지 않은 BET Index 입니다. (0 ~ 5)");
             }
             else
             {
@@ -840,10 +874,15 @@ namespace QMC.Common.Q_Sequence
             int nRtn = 0;
 
             //Powermeter 측정을 위한 Mask 변경
-            int nMaskIndex = (int)Bds.BDS_TeachingPosList.BDS_Mask4Pos;
+            int nMaskIndex = (int)_setting.MaskIndex;  //Bds.BDS_TeachingPosList.BDS_Mask4Pos;
+            if(nMaskIndex < 0 || nMaskIndex >= bds.stBDSTeachingPos.Length)
+            {
+                Log.Write("SeqLaserPowerMeasure", Equipment.User_Name, "Mask_Change", "지정되지 않은 Mask Index 입니다. (0 ~ 4)");
+                return -1; // Mask 변경 실패
+            }
+
             double dPosMaskY = bds.stBDSTeachingPos[nMaskIndex].Mask_Y;
             Type_Motor_Speed speed = Type_Motor_Speed.Coarse;
-
             workStage.MovetoWorkStage_ABS_PositionsMaskY(dPosMaskY, speed);
 
             return nRtn;
@@ -886,58 +925,133 @@ namespace QMC.Common.Q_Sequence
         }
 
         private int _powerMeasureLogIndex = 0;
+        private const int _powerMeasureInitialDelayMs = 20000;  // 20초 대기 시간
+        private bool _isPowerMeasureDelayed = false;            // 지연 완료 여부
         public int _powerMeasureLogIntervalMs = 5000;   // 3초 간격
-        public int _powerMeasureLogTotalTimeMs = 30000; // 총 30초
+        public int _powerMeasureLogTotalTimeMs = 60000; // 총 30초
         private int LaserPowerMeasure_Start(ref bool bComp)
         {
             int nRtn = 0;
+            bool result = false;
+            string strTemp = string.Empty;
 
-            // 처음 진입 시 초기화
-            if (_powerMeasureLogIndex == 0)
+            if (_powerMeasureLogIndex == 0 && !_isPowerMeasureDelayed)
             {
-                Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "파워 측정 시작: 30초 동안 3초 간격 10회 측정");
+                if (!Equipment.Machine_LaserType_CO2) // UV인 경우.
+                {
+                    if (_setting.PowerPercent < 0 || _setting.PowerPercent > 100)
+                    {
+                        strTemp = string.Format("PowerPercent는 0에서 100 사이의 값이어야 합니다.");
+                        Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", strTemp);
+                        return -1;
+                    }
+
+                    result = SetLaserPower(_setting.PowerPercent);
+                    if (!result)
+                    {
+                        strTemp = string.Format("레이저 파워 변경-Error");
+                        Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", strTemp);
+                        return -1;
+                    }
+                }
+
+                float duration = (float)_powerMeasureLogTotalTimeMs * 0.9f;
+                result = _scanner.LaserOn(duration, _setting);
+
+                Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "파워 측정 시작: 20초 대기 후 5초 간격으로 측정 시작");
+                TickCount_Start((int)TickType.TICK_POWER_MEASURE_LAST_SAVE);  // 최초 시작 시간
             }
 
-            // 30초가 지났으면 완료 처리
+            // 아직 20초 대기 중이면 대기
+            if (!_isPowerMeasureDelayed)
+            {
+                if (TickCount_Elapsed((int)TickType.TICK_POWER_MEASURE_LAST_SAVE) < _powerMeasureInitialDelayMs)
+                {
+                    bComp = false;
+                    return 0; // 아직 대기 중
+                }
+
+                // 20초 경과 후, 측정 시작
+                Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "20초 경과: 파워 측정 시작 (5초 간격)");
+                TickCount_Start((int)TickType.TICK_POWER_MEASURE_START);  // 측정 시작 타이머
+                _isPowerMeasureDelayed = true;
+            }
+
+            // 30초 이후 종료 (20초 대기 + 10초 측정)
             if (TickCount_Elapsed((int)TickType.TICK_POWER_MEASURE_LAST_SAVE) >= _powerMeasureLogTotalTimeMs)
             {
-                if (m_nType == 0) {
-                    SavePowerMeasureLogList("Top"); // 또는 "Stage"
-                    Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "Top 위치에서 파워 측정 완료");
-                }
-                else
-                {
-                    SavePowerMeasureLogList("Stage"); // 또는 "Stage"
-                    Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "Stage 위치에서 파워 측정 완료");
-                }
-                _measuredPowerList.Clear();     // 다음 측정을 위한 초기화
+                string position = (_setting.PowerMeterType == 0) ? "Top" : "Stage";
+                SavePowerMeasureLogList(position);
+                Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", $"{position} 위치에서 파워 측정 완료");
 
+                _measuredPowerList.Clear();
                 bComp = true;
-                _powerMeasureLogIndex = 0; // 다음 측정 위해 초기화
-                return 0; // 성공 완료
+
+                // 모든 상태 초기화
+                _powerMeasureLogIndex = 0;
+                _isPowerMeasureDelayed = false;
+                return 0;
             }
 
-            // 3초마다 측정 저장
+            // 5초 간격 측정
             if (TickCount_Elapsed((int)TickType.TICK_POWER_MEASURE_START) >= _powerMeasureLogIntervalMs)
             {
-                //label_Config_Laser_PowerMeterValue_BDS.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterBDS_Value);
-                //label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
-                double power = 0.0;
-                if (m_nType == 0)
-                {
-                    power = workStage.m_dPowerMeterBDS_Value;
-                }
-                else
-                {
-                    power = workStage.m_dPowerMeterStage_Value;
-                }
+                double power = (_setting.PowerMeterType == 0) ? workStage.m_dPowerMeterBDS_Value : workStage.m_dPowerMeterStage_Value;
 
-                AppendPowerMeasure(power); // 매 측정마다 누적
-
+                AppendPowerMeasure(power);
                 OnPowerMeasured?.Invoke((float)power);
 
-                bComp = false;
                 _powerMeasureLogIndex++;
+                TickCount_Start((int)TickType.TICK_POWER_MEASURE_START); // 다음 5초 타이머 리셋
+            }
+
+            //기존 코드
+            {
+                // 처음 진입 시 초기화
+                //if (_powerMeasureLogIndex == 0)
+                //{
+                //    Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "파워 측정 시작: 30초 동안 3초 간격 10회 측정");
+                //}
+
+                //// 30초가 지났으면 완료 처리
+                //if (TickCount_Elapsed((int)TickType.TICK_POWER_MEASURE_LAST_SAVE) >= _powerMeasureLogTotalTimeMs)
+                //{
+                //    if (m_nType == 0) {
+                //        SavePowerMeasureLogList("Top"); // 또는 "Stage"
+                //        Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "Top 위치에서 파워 측정 완료");
+                //    }
+                //    else
+                //    {
+                //        SavePowerMeasureLogList("Stage"); // 또는 "Stage"
+                //        Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "Stage 위치에서 파워 측정 완료");
+                //    }
+                //    _measuredPowerList.Clear();     // 다음 측정을 위한 초기화
+
+                //    bComp = true;
+                //    _powerMeasureLogIndex = 0; // 다음 측정 위해 초기화
+                //    return 0; // 성공 완료
+                //}
+
+                //// 3초마다 측정 저장
+                //if (TickCount_Elapsed((int)TickType.TICK_POWER_MEASURE_START) >= _powerMeasureLogIntervalMs)
+                //{
+                //    double power = 0.0;
+                //    if (m_nType == 0)
+                //    {
+                //        power = workStage.m_dPowerMeterBDS_Value;
+                //    }
+                //    else
+                //    {
+                //        power = workStage.m_dPowerMeterStage_Value;
+                //    }
+
+                //    AppendPowerMeasure(power); // 매 측정마다 누적
+
+                //    OnPowerMeasured?.Invoke((float)power);
+
+                //    bComp = false;
+                //    _powerMeasureLogIndex++;
+                //}
             }
 
             return nRtn;
@@ -977,10 +1091,10 @@ namespace QMC.Common.Q_Sequence
             //Top이냐 Stage냐에 따라 Power Meter 위치가 다름
             if(Equipment.Machine_LaserType_CO2)
             {
-                m_nType = (int)LaserPowerMeasure_Type.Stage;
+                _setting.PowerMeterType = (int)LaserPowerMeasure_Type.Stage;
             }
 
-            switch(m_nType)
+            switch(_setting.PowerMeterType)
             {
                 case (int)LaserPowerMeasure_Type.Top:
                     {
@@ -1060,7 +1174,6 @@ namespace QMC.Common.Q_Sequence
             return nRtn;
         }
 
-
         private List<double> _measuredPowerList = new List<double>();
 
         public void SavePowerMeasureLogList(string targetType)
@@ -1117,6 +1230,31 @@ namespace QMC.Common.Q_Sequence
 
             // 저장 함수 호출
             SavePowerMeasureLogList(targetType);
+        }
+
+        public bool SetLaserPower(float powerPercent)
+        {
+            bool bSuccess = false;
+            string strTemp = string.Empty;
+            if ((workStage.m_rapidLxLaser_Comm != null))
+            {
+                if (workStage.m_rapidLxLaser_Comm.IsOpen)
+                {
+                    workStage.RapidLxLaserComm_Laser_OutputEnergy_Set(powerPercent);
+
+                    strTemp = string.Format("Laser Power 변경 시작, Laser Power ({0:0.000})",
+                                            powerPercent);
+                    Log.Write("SLD-200", "SetLaserPower", strTemp);
+                    bSuccess = true;
+                }
+                else
+                {
+                    strTemp = string.Format("Laser Power 변경 실패. (Laser Comm 열리지 않음)");
+                    Log.Write("SLD-200", "SetLaserPower", strTemp);
+                }
+            }
+
+            return bSuccess;
         }
     }
 }

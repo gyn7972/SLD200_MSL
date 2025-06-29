@@ -3,8 +3,10 @@ using QMC.Common.Global;
 using QMC.Common.Modules;
 using QMC.Common.Parts;
 using QMC.Common.Q_Sequence;
+using QMC.Common.UI;
 using QMC.Common.VisionPart;
 using QMC.Core;
+using SLD200.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,8 +17,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using static QMC.Common.Q_Sequence.Sequence_VerifyScannerCameraOffset;
+using MessageBox = System.Windows.MessageBox;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
@@ -162,10 +166,25 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             try
             {
-                //_setting.Initialize();
+                string strTemp = string.Empty;
+                var mb = new QMC.Core.MessageBoxOk();
+                if (!m_bReadyStatus)
+                {
+                    strTemp = "레이저 파워 측정을 시작하기 전에 준비 상태를 확인하세요.";
+                    mb.ShowDialog("Error!", strTemp);
+
+                    return;
+                }
+                
                 if (numericUpDownDuration.Value <= 0)
                 {
-                    MessageBox.Show("Duration는 0보다 큰 값이어야 합니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    strTemp = string.Format("Duration는 0보다 큰 값이어야 합니다. 현재 값: {0}", numericUpDownDuration.Value);
+                    mb.ShowDialog("Error!", strTemp);
+                    return;
+                }
+
+                if (workStage.rtc == null)
+                {
                     return;
                 }
 
@@ -203,30 +222,50 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     if (_setting.PowerPercent < 0 || _setting.PowerPercent > 100)
                     {
-                        MessageBox.Show("PowerPercent는 0에서 100 사이의 값이어야 합니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        strTemp = string.Format("PowerPercent는 0에서 100 사이의 값이어야 합니다.");
+                        mb.ShowDialog("Error!", strTemp);
                         return;
                     }
 
                     result = SetLaserPower(_setting.PowerPercent);
                     if (!result)
-                        MessageBox.Show("레이저 파워 변경", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    {
+                        strTemp = string.Format("레이저 파워 변경-Error");
+                        mb.ShowDialog("Error!", strTemp);
+                        return;
+                    }
                 }
 
                 float duration = (float)numericUpDownDuration.Value;
-                result = _scanner.LaserOn(duration, _setting);
-                if (result)
+                if (!_scanner.LaserOn(duration, _setting))
                 {
-                    SaveLaserPowerMeasureSetting();
-                    MessageBox.Show("레이저 출력 성공", "완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    mb.ShowDialog("Error!", "출력 실패");
+                    return;
                 }
+
+                // 진행률 처리
+                _cts = new CancellationTokenSource();
+                int lastProgress = 0;
+                Task<int> delayTask = CreateDelayTask((int)duration, (elapsed) => lastProgress = elapsed, _cts.Token);
+
+                var pf = new ProgressForm("레이저 출력 중", "지정된 시간 동안 레이저를 출력합니다.", delayTask, _scanner);
+                pf.StopProcess += (obj) =>
+                {
+                    _cts.Cancel();  // Task 취소
+                    _scanner?.LaserAbort();  // 레이저 중단
+                };
+
+                pf.ShowDialog();
+
+                SaveLaserPowerMeasureSetting();
+                if (delayTask.Result == 0)
+                    mb.ShowDialog("Complete!", "출력 성공");
                 else
-                {
-                    MessageBox.Show("레이저 출력 실패", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                    mb.ShowDialog("Error!", "출력이 중단되었습니다.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"에러 발생: {ex.Message}", "예외", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Write(ex);
             }
         }
 
@@ -236,6 +275,12 @@ namespace SLD200.NewStyleForm.NewSubForm
             
             //_scanner.LaserOff();
             // or
+
+            if(workStage.rtc == null)
+            {
+                return;
+            }
+
             _scanner.LaserAbort();
         }
 
@@ -264,12 +309,16 @@ namespace SLD200.NewStyleForm.NewSubForm
             return bSuccess;
         }
 
+        public bool m_bReadyStatus = false;
+
         private void button_MeasureReady_Click(object sender, EventArgs e)
         {
             string selectedTarget = comboBoxTargetType.SelectedItem.ToString();
             string strTemp = string.Empty;
 
-            if(Equipment.Machine_LaserType_CO2)
+            m_bReadyStatus = false;
+
+            if (Equipment.Machine_LaserType_CO2)
             {
                 selectedTarget = "Stage";
             }
@@ -280,7 +329,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     strTemp = "CO2는 Top PowerMeter가 없습니다.";
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                    new MessageBoxOk().ShowDialog("Information !", strTemp);
+                    new QMC.Core.MessageBoxOk().ShowDialog("Information !", strTemp);
                 }
 
                 // LaserShutter_Close
@@ -310,7 +359,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     strTemp = "Shutter 닫기 실패 (3초 내 상태 도달 못함)";
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                    new MessageBoxOk().ShowDialog("Error !", strTemp);
+                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
                     return;
                 }
             }
@@ -343,12 +392,12 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     strTemp = "Shutter 닫기 실패 (3초 내 상태 도달 못함)";
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                    new MessageBoxOk().ShowDialog("Error !", strTemp);
+                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
                     return;
                 }
 
                 // 스테이지에 대한 로직
-                var mb = new MessageBoxYesNo();
+                var mb = new QMC.Core.MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "위치 이동 하시겠습니까?"))
                     return;
 
@@ -368,7 +417,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     strTemp = string.Format("Z-Axis이 이동 실패.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
 
-                    var mb1 = new MessageBoxOk();
+                    var mb1 = new QMC.Core.MessageBoxOk();
                     mb1.ShowDialog("Error !", strTemp);
                     return;
                 }
@@ -384,7 +433,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     strTemp = string.Format("X-Axis 또는 Y-Axis이 이동 실패.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                    var mb1 = new MessageBoxOk();
+                    var mb1 = new QMC.Core.MessageBoxOk();
                     mb1.ShowDialog("Error !", strTemp);
                     return;
                 }
@@ -401,7 +450,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     {
                         strTemp = string.Format("MaskY-Axis이 이동 실패.");
                         Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                        var mb1 = new MessageBoxOk();
+                        var mb1 = new QMC.Core.MessageBoxOk();
                         mb1.ShowDialog("Error !", strTemp);
                         return;
                     }
@@ -411,15 +460,18 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
             }
 
+            m_bReadyStatus = true;
+
             strTemp = string.Format("준비 완료.");
             Log.Write("SLD-200", Equipment.User_Name, strTemp);
-            var mb2 = new MessageBoxOk();
+            var mb2 = new QMC.Core.MessageBoxOk();
             mb2.ShowDialog("Complete !", strTemp);
         }
 
         private void comboBoxTargetType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            workStage.m_Sequence_LaserPowerMeasure.m_nType = (comboBoxTargetType.SelectedIndex + 1);
+            _setting.PowerMeterType = (comboBoxTargetType.SelectedIndex);
+            SaveLaserPowerMeasureSetting();
         }
 
         public void SaveLaserPowerMeasureSetting()
@@ -450,9 +502,12 @@ namespace SLD200.NewStyleForm.NewSubForm
             string iniPath = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
             StringBuilder temp = new StringBuilder(255);
 
+            string strTemp = string.Empty;
+            var mb = new QMC.Core.MessageBoxOk();
             if (!File.Exists(iniPath))
             {
-                MessageBox.Show("LaserPowerMeasure 설정 파일이 없습니다.\r\n[기본값으로 시작합니다.]", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                strTemp = "LaserPowerMeasure 설정 파일이 없습니다.\r\n[기본값으로 시작합니다.]";
+                mb.ShowDialog("Info", strTemp);
                 return;
             }
 
@@ -460,9 +515,11 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             NativeMethods.GetPrivateProfileString("Laser", "TargetTypeIndex", "0", temp, 255, iniPath);
             comboBoxTargetType.SelectedIndex = Equipment.ToInt(temp.ToString());
+            _setting.PowerMeterType = comboBoxTargetType.SelectedIndex;
 
             NativeMethods.GetPrivateProfileString("Laser", "Duration", "100000", temp, 255, iniPath);
             numericUpDownDuration.Value = (decimal)Equipment.ToDouble(temp.ToString());
+            _setting.Duration = (int)numericUpDownDuration.Value;
 
             if (Equipment.Machine_LaserType_CO2)
             {
@@ -481,10 +538,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 NativeMethods.GetPrivateProfileString("Laser", "BetIndex", "1", temp, 255, iniPath);
                 comboBox_BETPositionIndex.SelectedIndex = Equipment.ToInt(temp.ToString());
 
-
-                workStage.m_Sequence_LaserPowerMeasure.m_nMaskindex = comboBox_MaskIndex.SelectedIndex;
-                workStage.m_Sequence_LaserPowerMeasure.m_nBETIndex = comboBox_BETPositionIndex.SelectedIndex;
-
+                _setting.MaskIndex = comboBox_MaskIndex.SelectedIndex;
+                _setting.BETIndex = comboBox_BETPositionIndex.SelectedIndex;
             }
             else
             {
@@ -501,21 +556,57 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_SeqStart_Click(object sender, EventArgs e)
         {
-            var mb = new MessageBoxYesNo();
+            var mb = new QMC.Core.MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "파워 측정 하시겠습니까?"))
                 return;
 
             string strTemp = string.Empty;
 
-            workStage.m_Sequence_LaserPowerMeasure.m_nType = comboBoxTargetType.SelectedIndex;
+            _setting.PowerMeterType = comboBoxTargetType.SelectedIndex;
+            _setting.MaskIndex = comboBox_MaskIndex.SelectedIndex;
+            _setting.BETIndex = comboBox_BETPositionIndex.SelectedIndex;
+            if (_setting.PowerMeterType == 0) // Top
+            {
+                if (Equipment.Machine_LaserType_CO2)
+                {
+                    strTemp = "Top PowerMeter는 UV장비에서만 지원합니다.";
+                    Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                    return;
+                }
+            }
+
+            ResetPowerMeasureList();
             workStage.m_Sequence_LaserPowerMeasure.Start();
-            workStage.m_Sequence_LaserPowerMeasure.m_MainTick_Start = true;
+
+            // Task로 완료 대기
+            CancellationTokenSource cts = new CancellationTokenSource();
+            Task<int> waitTask = CreateSequenceWaitTask(() => workStage.m_Sequence_LaserPowerMeasure.IsCompleted, cts.Token);
+
+            var pf = new ProgressForm("파워 측정 중", "시퀀스 완료까지 기다리는 중입니다...", waitTask, _scanner);
+            pf.StopProcess += (obj) =>
+            {
+                cts.Cancel();  // 취소 요청
+                _scanner?.LaserAbort();  // 레이저 중지
+                workStage.m_Sequence_LaserPowerMeasure.Reset(); // 시퀀스 강제 종료
+            };
+
+            pf.ShowDialog();
+
+            if (waitTask.Result == 0)
+            {
+                new QMC.Core.MessageBoxOk().ShowDialog("Complete!", "측정 완료");
+            }
+            else
+            {
+                new QMC.Core.MessageBoxOk().ShowDialog("Canceled!", "측정 중단됨");
+            }
+
         }
 
         private void button_SeqStop_Click(object sender, EventArgs e)
         {
-            workStage.m_Sequence_LaserPowerMeasure.Reset();
-            workStage.m_Sequence_LaserPowerMeasure.m_MainTick_Start = false;
+            workStage.m_Sequence_LaserPowerMeasure.Reset(); //Stop
         }
 
         public void UpdatePowerMeasureLog(List<float> measuredValues)
@@ -589,6 +680,36 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_Test_Click(object sender, EventArgs e)
         {
+            var mb = new QMC.Core.MessageBoxOk();
+            float duration = (float)numericUpDownDuration.Value;
+            //if (!_scanner.LaserOn(duration, _setting))
+            //{
+            //    mb.ShowDialog("Error!", "출력 실패");
+            //    return;
+            //}
+
+            // 진행률 처리
+            _cts = new CancellationTokenSource();
+            int lastProgress = 0;
+            Task<int> delayTask = CreateDelayTask((int)duration, (elapsed) => lastProgress = elapsed, _cts.Token);
+
+            var pf = new ProgressForm("레이저 출력 중", "지정된 시간 동안 레이저를 출력합니다.", delayTask, _scanner);
+            pf.StopProcess += (obj) =>
+            {
+                _cts.Cancel();  // Task 취소
+                _scanner?.LaserAbort();  // 레이저 중단
+            };
+
+            pf.ShowDialog();
+
+            //SaveLaserPowerMeasureSetting();
+            if (delayTask.Result == 0)
+                mb.ShowDialog("Complete!", "출력 성공");
+            else
+                mb.ShowDialog("Error!", "출력이 중단되었습니다.");
+
+            return;
+
             // 예시 파워 값들
             float[] testPowers = new float[] { 121.3f, 122.7f, 120.8f, 124.2f, 123.1f };
 
@@ -653,16 +774,59 @@ namespace SLD200.NewStyleForm.NewSubForm
                 dataGridViewSettings.CommitEdit(DataGridViewDataErrorContexts.Commit);
 
             dataGridViewSettings.Refresh();
+            SaveLaserPowerMeasureSetting();
         }
 
         private void comboBox_MaskIndex_SelectedIndexChanged(object sender, EventArgs e)
         {
-            workStage.m_Sequence_LaserPowerMeasure.m_nMaskindex = (comboBox_MaskIndex.SelectedIndex);
+            _setting.MaskIndex = (comboBox_MaskIndex.SelectedIndex);
+            SaveLaserPowerMeasureSetting();
         }
 
         private void comboBox_BETPositionIndex_SelectedIndexChanged(object sender, EventArgs e)
         {
-            workStage.m_Sequence_LaserPowerMeasure.m_nBETIndex = (comboBox_BETPositionIndex.SelectedIndex);
+            _setting.BETIndex = (comboBox_BETPositionIndex.SelectedIndex);
+            SaveLaserPowerMeasureSetting();
         }
+
+
+        private CancellationTokenSource _cts;
+        private Task<int> CreateDelayTask(int durationMs, Action<int> onProgress, CancellationToken token)
+        {
+            return Task.Run(async () =>
+            {
+                int elapsed = 0;
+                int interval = 100;
+
+                while (elapsed < durationMs)
+                {
+                    if (token.IsCancellationRequested)
+                        return -1;  // 취소됨
+
+                    await Task.Delay(interval);
+                    elapsed += interval;
+                    onProgress?.Invoke(elapsed);
+                }
+
+                return 0;  // 완료
+            }, token);
+        }
+
+        private Task<int> CreateSequenceWaitTask(Func<bool> isCompleted, CancellationToken token)
+        {
+            return Task.Run(async () =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    await Task.Delay(100);
+
+                    if (isCompleted())
+                        return 0;  // 완료
+                }
+
+                return -1;  // 중단됨
+            }, token);
+        }
+
     }
 }

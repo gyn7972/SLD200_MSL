@@ -6183,6 +6183,7 @@ namespace SLD200_MSL
         {
             //InitspiralLabScanner
             FormLaserPowerMeasure.InitSpiralLab(bds.spiralLabScanner);
+            FormLaserPowerMeasure.m_bReadyStatus = false;
             FormLaserPowerMeasure.Show();
         }
     }
