@@ -11919,32 +11919,6 @@ namespace QMC.Common.Modules
         {
             string m_strTemp = "";
 
-            //if ((m_nLaserDrilling_MainStep != (int)LaserDrilling_Step.None) ||
-
-            //    ((m_nLaserPowerCal_Step >= (int)LaserPowerCal_Step.ThruHole_LaserParameter_Change_Start) && (m_nLaserPowerCal_Step <= (int)LaserPowerCal_Step.ThruHole_LaserParameter_Change_Complete)) ||
-            //    ((m_nLaserPowerCal_Step >= (int)LaserPowerCal_Step.OutLine_LaserParameter_Change_Start) && (m_nLaserPowerCal_Step <= (int)LaserPowerCal_Step.OutLine_LaserParameter_Change_Complete)) ||
-            //    ((m_nLaserPowerCal_Step >= (int)LaserPowerCal_Step.Drilling_LaserParameter_Change_Start) && (m_nLaserPowerCal_Step <= (int)LaserPowerCal_Step.Drilling_LaserParameter_Change_Complete)) ||
-
-            //    ((m_nLaserPowerCal_byRange_Step >= (int)LaserPowerCal_byRange_Step.Thruhole_LaserParameter_Change_Start) && (m_nLaserPowerCal_byRange_Step <= (int)LaserPowerCal_byRange_Step.Thruhole_LaserParameter_Change_Complete)) ||
-            //    ((m_nLaserPowerCal_byRange_Step >= (int)LaserPowerCal_byRange_Step.Outline_LaserParameter_Change_Start) && (m_nLaserPowerCal_byRange_Step <= (int)LaserPowerCal_byRange_Step.Outline_LaserParameter_Change_Complete)) ||
-            //    ((m_nLaserPowerCal_byRange_Step >= (int)LaserPowerCal_byRange_Step.Drilling_LaserParameter_Change_Start) && (m_nLaserPowerCal_byRange_Step <= (int)LaserPowerCal_byRange_Step.Drilling_LaserParameter_Change_Complete)))
-            //{
-            //    if (m_nLaserCommStep == (int)LaserComm_Step.GateStatus_Check)
-            //    {
-            //        m_bLaserComm_Paused = true;
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        m_bLaserComm_Paused = false;
-            //    }
-            //}
-            //else
-            //{
-            //    m_bLaserComm_Paused = false;
-            //}
-
-
             if (m_rapidLxLaser_Comm == null)
             {
                 m_nLaserCommStep = (int)LaserComm_Step.None;
@@ -35611,7 +35585,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
 
                         return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
                     }
                     break;
 
@@ -35631,7 +35604,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
 
                         return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
                     }
                     break;
 
@@ -35952,7 +35924,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
 
                         return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
                     }
                     break;
 
@@ -36821,7 +36792,6 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Hole1 Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)");
                         return AlarmPost(AlarmKey.eLaserComm_NotOpen);
-
                     }
                     if (!m_rapidLxLaser_Comm.IsOpen)
                     {
@@ -36829,170 +36799,227 @@ namespace QMC.Common.Modules
                         return AlarmPost(AlarmKey.eLaserComm_NotOpen);
                     }
 
-                    //Todo: 추가 필요 - 여기서 Laser Power Table 작성 후 변경 하고 시작. 
+                    double targetPower = 0;
+                    string layerName = "";
+
                     switch (m_LayerType)
                     {
                         case LayerType.LAYER_DRILLING:
-                            m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
-                            if (m_dLaserPower > 0.0)
-                            {
-                                strTemp = string.Format("Hole{0} Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_nHoleLayer_ProcessIndex + 1, m_dLaserPower);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                TickCount_Start((int)TickType.TICK_MAIN);
-
-                                RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
-                            }
-                            else
-                            {
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Hole1 Layer Laser Power 변경 실패. (변경 출력이 0)");
-                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                            }
+                            targetPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+                            layerName = $"Hole{m_nHoleLayer_ProcessIndex + 1}";
                             break;
-
                         case LayerType.LAYER_OUTLINE:
-
-                            //  성부장 작업
-                            m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power;
-                            if (m_dLaserPower > 0.0)
-                            {
-                                strTemp = string.Format("Outline Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                TickCount_Start((int)TickType.TICK_MAIN);
-
-                                RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
-                            }
-                            else
-                            {
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Outline Layer Laser Power 변경 실패. (변경 출력이 0)");
-                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                            }
+                            targetPower = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power;
+                            layerName = "Outline";
                             break;
-
                         case LayerType.LAYER_THRUHOLE:
-                            m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power;
-                            if (m_dLaserPower > 0.0)
-                            {
-                                strTemp = string.Format("Thruhole Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                TickCount_Start((int)TickType.TICK_MAIN);
-
-                                RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
-                            }
-                            else
-                            {
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Thruhole Layer Laser Power 변경 실패. (변경 출력이 0)");
-                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                            }
+                            targetPower = Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power;
+                            layerName = "Thruhole";
                             break;
-
                         case LayerType.LAYER_MARKING:
-                            m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power;
-                            if (m_dLaserPower > 0.0)
-                            {
-                                strTemp = string.Format("Marking Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                TickCount_Start((int)TickType.TICK_MAIN);
-
-                                RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
-                            }
-                            else
-                            {
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Marking Layer Laser Power 변경 실패. (변경 출력이 0)");
-                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                            }
+                            targetPower = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power;
+                            layerName = "Marking";
                             break;
-
                     }
+
+                    if (TrySetLaserPower(targetPower, layerName))
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
+
+                    // 기존 코드
+                    {
+                        //switch (m_LayerType)
+                        //{
+                        //    case LayerType.LAYER_DRILLING:
+                        //        m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+                        //        if (m_dLaserPower > 0.0)
+                        //        {
+                        //            strTemp = string.Format("Hole{0} Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_nHoleLayer_ProcessIndex + 1, m_dLaserPower);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            TickCount_Start((int)TickType.TICK_MAIN);
+
+                        //            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                        //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
+                        //        }
+                        //        else
+                        //        {
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Hole1 Layer Laser Power 변경 실패. (변경 출력이 0)");
+                        //            return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        //        }
+                        //        break;
+
+                        //    case LayerType.LAYER_OUTLINE:
+
+                        //        //  성부장 작업
+                        //        m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power;
+                        //        if (m_dLaserPower > 0.0)
+                        //        {
+                        //            strTemp = string.Format("Outline Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            TickCount_Start((int)TickType.TICK_MAIN);
+
+                        //            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                        //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
+                        //        }
+                        //        else
+                        //        {
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Outline Layer Laser Power 변경 실패. (변경 출력이 0)");
+                        //            return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        //        }
+                        //        break;
+
+                        //    case LayerType.LAYER_THRUHOLE:
+                        //        m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power;
+                        //        if (m_dLaserPower > 0.0)
+                        //        {
+                        //            strTemp = string.Format("Thruhole Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            TickCount_Start((int)TickType.TICK_MAIN);
+
+                        //            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                        //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
+                        //        }
+                        //        else
+                        //        {
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Thruhole Layer Laser Power 변경 실패. (변경 출력이 0)");
+                        //            return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        //        }
+                        //        break;
+
+                        //    case LayerType.LAYER_MARKING:
+                        //        m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power;
+                        //        if (m_dLaserPower > 0.0)
+                        //        {
+                        //            strTemp = string.Format("Marking Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            TickCount_Start((int)TickType.TICK_MAIN);
+
+                        //            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                        //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
+                        //        }
+                        //        else
+                        //        {
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Marking Layer Laser Power 변경 실패. (변경 출력이 0)");
+                        //            return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        //        }
+                        //        break;
+                        //}
+                    }
+                    
                     break;
 
 
                 case (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck:                     //  Drilling 가공 Laser Power 변경 완료 확인
 
+                    targetPower = 0;
+                    layerName = "";
+
                     switch (m_LayerType)
                     {
                         case LayerType.LAYER_DRILLING:
-                            if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
-                                (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
-                            {
-                                strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
-                            }
-                            else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
-                            {
-                                strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                            }
+                            targetPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+                            layerName = $"Hole{m_nHoleLayer_ProcessIndex + 1}";
                             break;
-
                         case LayerType.LAYER_OUTLINE:
-
-                            //  성부장 작업
-                            if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power - 0.5)) &&
-                                (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power + 0.5)))
-                            {
-                                strTemp = string.Format("Socket 가공 중 Outline Layer Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
-                            }
-                            else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
-                            {
-                                strTemp = string.Format("Socket 가공 중 Outline Layer Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                            }
+                            targetPower = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power;
+                            layerName = "Outline";
                             break;
-
                         case LayerType.LAYER_THRUHOLE:
-
-                            //  성부장 작업
-                            if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power - 0.5)) &&
-                                (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power + 0.5)))
-                            {
-                                strTemp = string.Format("Socket 가공 중 Thruhole Layer Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
-                            }
-                            else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
-                            {
-                                strTemp = string.Format("Socket 가공 중 Thruhole Layer Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                            }
+                            targetPower = Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power;
+                            layerName = "Thruhole";
                             break;
-
                         case LayerType.LAYER_MARKING:
-                            if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power - 0.5)) &&
-                                (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power + 0.5)))
-                            {
-                                strTemp = string.Format("Socket 가공 중 Marking Layer Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
-                            }
-                            else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
-                            {
-                                strTemp = string.Format("Socket 가공 중 Marking Layer Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
-                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-
-                                return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
-                            }
+                            targetPower = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power;
+                            layerName = "Marking";
                             break;
+                    }
+
+                    if (CheckLaserPowerChanged(targetPower, layerName))
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+
+                    //기존 코드
+                    {
+                        //switch (m_LayerType)
+                        //{
+                        //    case LayerType.LAYER_DRILLING:
+                        //        if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
+                        //            (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                        //        {
+                        //            strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                        //        }
+                        //        else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)    //20250629; 10000 ->60000 변경. 알람 한 번 발생. 정지하고 재시작시 동작.
+                        //        {
+                        //            strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        //        }
+                        //        break;
+
+                        //    case LayerType.LAYER_OUTLINE:
+
+                        //        //  성부장 작업
+                        //        if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power - 0.5)) &&
+                        //            (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power + 0.5)))
+                        //        {
+                        //            strTemp = string.Format("Socket 가공 중 Outline Layer Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                        //        }
+                        //        else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                        //        {
+                        //            strTemp = string.Format("Socket 가공 중 Outline Layer Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        //        }
+                        //        break;
+
+                        //    case LayerType.LAYER_THRUHOLE:
+
+                        //        //  성부장 작업
+                        //        if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power - 0.5)) &&
+                        //            (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power + 0.5)))
+                        //        {
+                        //            strTemp = string.Format("Socket 가공 중 Thruhole Layer Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                        //        }
+                        //        else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                        //        {
+                        //            strTemp = string.Format("Socket 가공 중 Thruhole Layer Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        //        }
+                        //        break;
+
+                        //    case LayerType.LAYER_MARKING:
+                        //        if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power - 0.5)) &&
+                        //            (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Drilling_Power + 0.5)))
+                        //        {
+                        //            strTemp = string.Format("Socket 가공 중 Marking Layer Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                        //        }
+                        //        else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                        //        {
+                        //            strTemp = string.Format("Socket 가공 중 Marking Layer Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
+                        //            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                        //            return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                        //        }
+                        //        break;
+                        //}
                     }
                     break;
 
@@ -39220,7 +39247,6 @@ namespace QMC.Common.Modules
 
                             m_nListBeginRetry_Count = 0;                    //  데이터 추가할 때도 안되는 경우가 있는 듯 하여, 데이터 집어넣기 재시도 Count 용 변수로 사용
 
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add;
                             if (Config.ParamConfig.bDrilling_WorkUnit_Hole)
                             {
                                 m_nLaserDrilling_InGroup_HoleCount_Backup = m_nLaserDrilling_InGroup_HoleCount;
@@ -42289,6 +42315,67 @@ namespace QMC.Common.Modules
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
             DrillingManager.CycleTimer_LaserDrilling.SaveToIni("LaserDrilling", strPath);
         }
+
+
+        private int m_nLaserPowerRetryCount = 0;
+        private const int MAX_LASER_POWER_RETRY = 3;
+        private const int LASER_POWER_RETRY_INTERVAL_MS = 2000;  // 재시도 간격 2초
+        private bool TrySetLaserPower(double targetPower, string layerName)
+        {
+            if (targetPower <= 0.0)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", $"{layerName} Layer Laser Power 변경 실패. (변경 출력이 0)");
+                AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                return false;
+            }
+
+            m_nLaserPowerRetryCount = 0;
+            TickCount_Start((int)TickType.TICK_MAIN);
+
+            string strTemp = $"[{layerName}] Layer Laser Power 변경 시작, Laser Power ({targetPower:0.000})";
+            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+            RapidLxLaserComm_Laser_OutputEnergy_Set(targetPower);
+            return true;
+        }
+
+        private bool CheckLaserPowerChanged(double targetPower, string layerName)
+        {
+            // m_dLaser_OutputEnergy : Laser Seq에서 받아옴.
+            if (Math.Abs(m_dLaser_OutputEnergy - targetPower) < 0.5)
+            {
+                string strTemp = $"[{layerName}] Layer Laser Power 변경 성공, 현재 Laser Power ({m_dLaser_OutputEnergy:0.000})";
+                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                return true;
+            }
+
+            if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+            {
+                if (m_nLaserPowerRetryCount < MAX_LASER_POWER_RETRY)
+                {
+                    m_nLaserPowerRetryCount++;
+                    string strTemp = $"[{layerName}] Laser Power 변경 재시도 {m_nLaserPowerRetryCount}/{MAX_LASER_POWER_RETRY}";
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+                    RapidLxLaserComm_Laser_OutputEnergy_Set(targetPower);
+                    return false;
+                }
+                else
+                {
+                    string strTemp = $"[{layerName}] Layer Laser Power 변경 실패 - 최대 재시도 초과, 현재 Laser Power ({m_dLaser_OutputEnergy:0.000})";
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                    AlarmPost(AlarmKey.eLaserPowerChange_Fail);
+                    return false;
+                }
+            }
+
+            return false; // 아직 기다리는 중
+        }
+
+
+
+
     }
 }
 #endregion
