@@ -67,22 +67,32 @@ namespace SLD200_MSL
                 string logFile = Path.Combine(logFolder, $"AlarmLog_{day:yyyyMMdd}.csv");
                 if (!File.Exists(logFile)) continue;
 
-                string[] lines = File.ReadAllLines(logFile, new UTF8Encoding(true));
-                foreach (var line in lines)
+                try
                 {
-                    var parts = line.Split(',');
-                    if (parts.Length < 6) continue;
+                    using (var fs = new FileStream(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (var reader = new StreamReader(fs, new UTF8Encoding(true)))
+                    {
+                        while (!reader.EndOfStream)
+                        {
+                            var line = reader.ReadLine();
+                            var parts = line.Split(',');
+                            if (parts.Length < 6) continue;
 
-                    try
-                    {
-                        int rowIndex = m_DataGridViewAlarmLog.Rows.Add();
-                        m_DataGridViewAlarmLog.Rows[rowIndex].SetValues(parts);
+                            try
+                            {
+                                int rowIndex = m_DataGridViewAlarmLog.Rows.Add();
+                                m_DataGridViewAlarmLog.Rows[rowIndex].SetValues(parts);
+                            }
+                            catch (Exception exRow)
+                            {
+                                Log.Write("AlarmLogViewer", $"Row 추가 실패: {exRow.Message}");
+                            }
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        Log.Write(ex);
-                        //Console.WriteLine("DataGridView에 값 넣기 실패: " + ex.Message);
-                    }
+                }
+                catch (Exception exFile)
+                {
+                    Log.Write("AlarmLogViewer", $"파일 열기 실패: {exFile.Message}");
                 }
             }
         }

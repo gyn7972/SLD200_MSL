@@ -7624,7 +7624,6 @@ namespace QMC.Common.Modules
                     return;
                 }
 
-
                 // Scanner signal로 레이저 발진 유/무 확인.
                 UpdateLaserStatus();
 
@@ -7735,6 +7734,36 @@ namespace QMC.Common.Modules
                 // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
                 if (Equipment.AutoRunStatus)
                 {
+                    if(loader.m_bStackerZ0_DownWhenEmpty && loader.m_bStackerZ1_DownWhenEmpty)
+                    {
+                        // 장비 정지.
+                        StopProcess();
+
+                        if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
+                        {
+                            CommonModule.Instance.TowerLamp.Green_Off();
+                        }
+                        if (CommonModule.Instance.TowerLamp.Is_Yellow_On() == 0)
+                        {
+                            CommonModule.Instance.TowerLamp.Yellow_On();
+                        }
+                        if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
+                        {
+                            CommonModule.Instance.TowerLamp.Red_Off();
+                        }
+                        if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                        {
+                            CommonModule.Instance.TowerLamp.Buzzer_Off();
+                        }
+
+                        //  버튼 색깔 변경
+                        CommonModule.Instance.OperationButtons.StartLamp(false);
+                        CommonModule.Instance.OperationButtons.StopLamp(true);
+                        CommonModule.Instance.OperationButtons.ResetLamp(false);
+
+                        CommonModule.Instance.TowerLamp_BuzzerStop = false;
+                    }
+
                     // 장비 시작하고 Step에서 상부 집진기 ON 하는데...
                     //if (!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper))
                     //{
@@ -42428,6 +42457,15 @@ namespace QMC.Common.Modules
             DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 정지 : 정지 버튼 눌렀을때도 정지하고 다시 해야지.
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
             DrillingManager.CycleTimer_LaserDrilling.SaveToIni("LaserDrilling", strPath);
+
+
+            //집진기 상/하부 | 이오나이저 Off
+            DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+            Thread.Sleep(1);
+            DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+            Thread.Sleep(1);
+            loader.loaderParameter.DO_Loader_Ionizer(false);
+
         }
 
 

@@ -435,47 +435,104 @@ namespace QMC.Common.Global
             int count = CycleTimer_DoneModuleCount;
 
             List<string> lines = new List<string>();
-            if (File.Exists(logFile))
-                lines = File.ReadAllLines(logFile, Encoding.UTF8).ToList();
-
-            bool isUpdated = false;  
-
-            // 마지막 줄 기준 레시피 동일 시 업데이트
-            if (lines.Count > 0)
-            {
-                string lastLine = lines.Last();
-                var parts = lastLine.Split(',');
-                if (parts.Length >= 5 && parts[2] == recipeName)
-                {
-                    // 기존 startTime 유지
-                    string originalStartTime = parts[0];
-                    if (int.TryParse(parts[4], out int prevCount))
-                    {
-                        int updatedCount = prevCount + count;
-                        string updatedLine = $"{originalStartTime},{endTime},{recipeName},{drawingName},{updatedCount}";
-                        lines[lines.Count - 1] = updatedLine;
-                        isUpdated = true;
-                    }
-                }
-            }
-
-
-            // 새 레시피면 새로운 라인 추가
-            if (!isUpdated)
-            {
-                string newLine = $"{startTime},{endTime},{recipeName},{drawingName},{count}";
-                lines.Add(newLine);
-            }
 
             try
             {
-                File.WriteAllLines(logFile, lines, new UTF8Encoding(true));
+                if (File.Exists(logFile))
+                {
+                    using (FileStream fs = new FileStream(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (StreamReader reader = new StreamReader(fs, Encoding.UTF8))
+                    {
+                        while (!reader.EndOfStream)
+                            lines.Add(reader.ReadLine());
+                    }
+                }
+
+                bool isUpdated = false;
+
+                if (lines.Count > 0)
+                {
+                    string lastLine = lines.Last();
+                    var parts = lastLine.Split(',');
+                    if (parts.Length >= 5 && parts[2] == recipeName)
+                    {
+                        string originalStartTime = parts[0];
+                        if (int.TryParse(parts[4], out int prevCount))
+                        {
+                            int updatedCount = prevCount + count;
+                            string updatedLine = $"{originalStartTime},{endTime},{recipeName},{drawingName},{updatedCount}";
+                            lines[lines.Count - 1] = updatedLine;
+                            isUpdated = true;
+                        }
+                    }
+                }
+
+                if (!isUpdated)
+                {
+                    string newLine = $"{startTime},{endTime},{recipeName},{drawingName},{count}";
+                    lines.Add(newLine);
+                }
+
+                // 파일에 다시 전체 쓰기 (공유 허용)
+                using (FileStream fs = new FileStream(logFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                using (StreamWriter writer = new StreamWriter(fs, new UTF8Encoding(true)))
+                {
+                    foreach (string line in lines)
+                        writer.WriteLine(line);
+                }
+
                 Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={count}");
             }
             catch (Exception ex)
             {
                 Log.Write("DrillStatus", $"LOT 로그 저장 실패: {ex.Message}");
             }
+
+            // 기존 코드와 동일하게 파일에 쓰기
+            {
+                //if (File.Exists(logFile))
+                //    lines = File.ReadAllLines(logFile, Encoding.UTF8).ToList();
+
+                //bool isUpdated = false;
+
+                //// 마지막 줄 기준 레시피 동일 시 업데이트
+                //if (lines.Count > 0)
+                //{
+                //    string lastLine = lines.Last();
+                //    var parts = lastLine.Split(',');
+                //    if (parts.Length >= 5 && parts[2] == recipeName)
+                //    {
+                //        // 기존 startTime 유지
+                //        string originalStartTime = parts[0];
+                //        if (int.TryParse(parts[4], out int prevCount))
+                //        {
+                //            int updatedCount = prevCount + count;
+                //            string updatedLine = $"{originalStartTime},{endTime},{recipeName},{drawingName},{updatedCount}";
+                //            lines[lines.Count - 1] = updatedLine;
+                //            isUpdated = true;
+                //        }
+                //    }
+                //}
+
+
+                //// 새 레시피면 새로운 라인 추가
+                //if (!isUpdated)
+                //{
+                //    string newLine = $"{startTime},{endTime},{recipeName},{drawingName},{count}";
+                //    lines.Add(newLine);
+                //}
+
+                //try
+                //{
+                //    File.WriteAllLines(logFile, lines, new UTF8Encoding(true));
+                //    Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={count}");
+                //}
+                //catch (Exception ex)
+                //{
+                //    Log.Write("DrillStatus", $"LOT 로그 저장 실패: {ex.Message}");
+                //}
+            }
+            
         }
 
 

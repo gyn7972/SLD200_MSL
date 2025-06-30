@@ -1900,7 +1900,7 @@ namespace QMC.Common.Modules
 
 
         // 클래스 상단 (예: Loader 관련 클래스 또는 제어 클래스 내부)
-        private bool m_bStackerZ0_DownWhenEmpty = false;
+        public bool m_bStackerZ0_DownWhenEmpty = false;
 
         #region Stacker Move Function (Module PickUp & PutDown 높이로 이동 -> 이건 Loader Unloader 에서 하도록 해야 할듯???)
 
@@ -1983,12 +1983,24 @@ namespace QMC.Common.Modules
                         m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                         m_nMAlign_Step == (int)MAlign_Step.None &&
                         MC_Func.MC_GetDone((int)nAxis.Z0) &&
-                        MC_Func.MC_GetInposition((int)nAxis.Z0))
+                        MC_Func.MC_GetInposition((int)nAxis.Z0) &&
+                        workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None &&
+                        unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None)
                     {
                         Log.Write("SLD-200", "Stacker0 No Material 상태 → Z축 하강 실행");
                         StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
                         m_bStackerZ0_DownWhenEmpty = true;
                     }
+                    //if (!m_bStackerZ0_DownWhenEmpty &&
+                    //    m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
+                    //    m_nMAlign_Step == (int)MAlign_Step.None &&
+                    //    MC_Func.MC_GetDone((int)nAxis.Z0) &&
+                    //    MC_Func.MC_GetInposition((int)nAxis.Z0))
+                    //{
+                    //    Log.Write("SLD-200", "Stacker0 No Material 상태 → Z축 하강 실행");
+                    //    StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                    //    m_bStackerZ0_DownWhenEmpty = true;
+                    //}
                 }
             }
             else
@@ -2867,7 +2879,7 @@ namespace QMC.Common.Modules
         }
 
 
-        private bool m_bStackerZ1_DownWhenEmpty = false; // Stacker Z1이 자재가 없을 때 하강했는지 여부를 확인하는 플래그
+        public bool m_bStackerZ1_DownWhenEmpty = false; // Stacker Z1이 자재가 없을 때 하강했는지 여부를 확인하는 플래그
         public int Run_Stacker1Module_PickupWaitingPos_Func()
         {
             int ret = 0;
@@ -2908,7 +2920,9 @@ namespace QMC.Common.Modules
                         m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                         m_nMAlign_Step == (int)MAlign_Step.None &&
                         MC_Func.MC_GetDone((int)nAxis.Z1) &&
-                        MC_Func.MC_GetInposition((int)nAxis.Z1))
+                        MC_Func.MC_GetInposition((int)nAxis.Z1) &&
+                        workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None &&
+                        unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None)
                     {
                         Log.Write("SLD-200", "Stacker1 No Material 상태 → Z축 하강 실행");
                         StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
@@ -8869,7 +8883,8 @@ namespace QMC.Common.Modules
                 Directory.CreateDirectory(logFolder);
 
                 // UTF-8 with BOM로 저장
-                using (var writer = new StreamWriter(logFile, true, new UTF8Encoding(true))) // true → BOM 포함
+                using (var fs = new FileStream(logFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                using (var writer = new StreamWriter(fs, new UTF8Encoding(true)))
                 {
                     string logLine = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss},{alarm.Title},{alarm.Grade},{alarm.Source},{alarm.Cause},{(int)AlarmCode}";
                     writer.WriteLine(logLine);
@@ -9187,7 +9202,6 @@ namespace QMC.Common.Modules
                     if (workStage.m_bHomeOK)
                     {
                         if (loaderParameter.IsDO_Loader_Ionizer_On() &&
-
                         (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
                         !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
                         {

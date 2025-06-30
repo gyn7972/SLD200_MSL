@@ -508,11 +508,11 @@ namespace SLD200_MSL
             else
             {
                 control[0].Enabled = true;                  //  Operation 버튼
-                control[1].Enabled = true;                  //  Configuration 버튼
-                control[2].Enabled = false;                 //  Maint 버튼
-                control[3].Enabled = false;                 //  Recipe 버튼
-                control[4].Enabled = false;                 //  Setup 버튼
-                control[5].Enabled = false;                 //  IO 버튼
+                control[1].Enabled = true;                  //  Recipe 버튼
+                control[2].Enabled = false;                 //  Configuration 버튼
+                control[3].Enabled = false;                 //  Setup 버튼
+                control[4].Enabled = true;                 //  LOG 버튼
+                control[5].Enabled = false;                 //  LogOut 버튼
             }
         }
         public void UpdateLogInInfo()

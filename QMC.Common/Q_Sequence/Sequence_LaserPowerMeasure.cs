@@ -1223,7 +1223,14 @@ namespace QMC.Common.Q_Sequence
 
             try
             {
-                File.AppendAllLines(logFile, lines, new UTF8Encoding(true));
+                // 파일 공유 설정 적용 → UI 등에서 동시에 읽어도 예외 안 남
+                using (FileStream fs = new FileStream(logFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                using (StreamWriter writer = new StreamWriter(fs, new UTF8Encoding(true)))
+                {
+                    foreach (string line in lines)
+                        writer.WriteLine(line);
+                }
+                //File.AppendAllLines(logFile, lines, new UTF8Encoding(true));
                 Log.Write("LaserPowerMeasure", $"파워 측정 로그 {lines.Count}줄 저장 완료 (대상: {targetType})");
             }
             catch (Exception ex)

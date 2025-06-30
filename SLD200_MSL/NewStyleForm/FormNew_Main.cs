@@ -1725,7 +1725,6 @@ namespace SLD200_MSL
                 //var mb = new MessageBoxOk();
                 //mb.ShowDialog("Information", message);
             }
-            
 
             if (checkBox_Test_DryRun.Checked)
             {
@@ -2134,6 +2133,15 @@ namespace SLD200_MSL
 
             button_Main_Start.BackColor = Color.LightGreen;
             button_Main_Start.ForeColor = Color.Black;
+
+
+
+            //집진기 상/하부 | 이오나이저 Off
+            workStage.DustCollector_On((int)nDustCollector.DustCollector_Upper);
+            Thread.Sleep(1);
+            workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
+            Thread.Sleep(1);
+            loader.loaderParameter.DO_Loader_Ionizer(true);
 
             //  Loader Stacker 동작
             //loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
@@ -4684,6 +4692,16 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            Equipment.Scanner_Vision_Offset_Setting_X = 0.0015;
+            Equipment.Scanner_Vision_Offset_Setting_Y = -0.0023;
+
+            workStage.m_ScannerCameraOffsetSequence.SaveScannerCameraOffsetLog("OK",  // 또는 "NG"
+                                    Equipment.stOffsetDistance.FromScannerToFineCam.X,
+                                    Equipment.stOffsetDistance.FromScannerToFineCam.Y,
+                                    Equipment.Scanner_Vision_Offset_Setting_X,
+                                    Equipment.Scanner_Vision_Offset_Setting_Y
+                                    );
+
             return;
             string strTemp = string.Empty;
             var markingLayer = workStage.DrillingManager.GetLayer(LayerList.Marking);
