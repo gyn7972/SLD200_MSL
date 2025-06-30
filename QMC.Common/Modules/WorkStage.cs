@@ -40952,6 +40952,7 @@ namespace QMC.Common.Modules
                         }
                     }
 
+                    m_bSocketAlign_OK = false;
                     Log.Write("DrillStatus", "[Fail] 레이저 가공 시퀀스 실패 종료");
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
                     break;
