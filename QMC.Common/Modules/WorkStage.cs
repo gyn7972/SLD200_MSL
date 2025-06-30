@@ -860,6 +860,9 @@ namespace QMC.Common.Modules
         private XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();         //  Stage XY Map Data 로 변환된 위치 이동 좌표
         public XyzCoordinate xyzCoord_WorkStagePos_Align = new XyzCoordinate();
 
+        private XyCoordinate xyEscapeMove = new XyCoordinate();         //  Stage XY Map Data 로 변환된 위치 이동 좌표 (Escape Move 용)
+
+
         public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
 
         public bool _isVerifyScannerCamOffsetRunning = false; // 중복 실행 방지 플래그
@@ -15617,6 +15620,7 @@ namespace QMC.Common.Modules
 
 
         int m_nStage_RetryCount = 0;
+        int m_nEscapeMoveCount = 0;
         bool m_bWorkStage_LogOnce = false;
         public bool m_bFirstAutoCrossCheckDone = false; // 최초 1회 실행 여부 플래그
         private int m_nSensorRetryCount = 0;
@@ -34110,7 +34114,6 @@ namespace QMC.Common.Modules
             {
                 retryCount = 0;
                 Equipment.m_bCheckAxesMotionDoneWithRetry = false;
-
                 TickCount_Start((int)TickType.TICK_MAIN);
                 return true;
             }
@@ -34145,6 +34148,26 @@ namespace QMC.Common.Modules
                                 "  FieldSize NO : " + m_nDividedRegion_Region_CurrentIndex_forZigZag.ToString() +
                                 "  Fail Pos (X: " + dPoscurX.ToString("F3") +
                                 ", Y: " + dPoscurY.ToString("F3") + ")");
+
+                    double diffX = targetX.HasValue ? Math.Abs(targetX.Value - dPoscurX) : 0;
+                    double diffY = targetY.HasValue ? Math.Abs(targetY.Value - dPoscurY) : 0;
+
+                    // 무조건 탈출 이동 1회
+                    if (retryCount == 1)
+                    {
+                        // 100um 이동 후 목표 위치로 재 이동(할꺼임.시컨스에서)
+                        double escapeX = targetX.HasValue ? targetX.Value + 0.1 : dPoscurX;
+                        double escapeY = targetY.HasValue ? targetY.Value + 0.1 : dPoscurY;
+
+                        Log.Write("StageScannerPos", $"[EscapeMove] retryCount={retryCount} | diffX={diffX:F4}, diffY={diffY:F4}");
+                        Log.Write("StageScannerPos", $"[EscapeMove] Moving to (X:{escapeX:F3}, Y:{escapeY:F3})");
+
+                        xyEscapeMove.X = escapeX;
+                        xyEscapeMove.Y = escapeY;
+                        MovetoWorkStage_ABS_PositionsXY(xyEscapeMove, Type_Motor_Speed.Fine);
+
+                        Thread.Sleep(500);
+                    }
 
                     SeqStep = jumpBackStep;
                     TickCount_Start((int)TickType.TICK_MAIN);
@@ -39202,7 +39225,6 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck:                 //  가공 할 Region Center 위치로 이동 완료 확인
 
-                    // 2025.06.01 // <- Check 구문 전부 이렇게 변경 필요.
                     tempStep = m_nLaserDrilling_MainStep;
                     if (CheckAxesMotionDoneWithRetry(
                             xyInterpolatedCoordinate.X,
@@ -39233,6 +39255,7 @@ namespace QMC.Common.Modules
                     {
                         m_nLaserDrilling_MainStep = tempStep;  // 다시 반영
                     }
+
                     break;
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:
@@ -39246,7 +39269,7 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 100) //안전화 타임.
+                            if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 300) //안전화 타임.
                             {
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                             }
