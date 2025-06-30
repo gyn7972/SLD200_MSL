@@ -13956,7 +13956,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("StageScannerPos",
                         "Socket NO : " + m_nDrillingWork_Group_Count.ToString() +
-                        "  FieldSize NO : " + m_nSocketAlign_FiducialCount.ToString() +
+                        "  Fiducial NO : " + m_nSocketAlign_FiducialCount.ToString() +
                         "  Target Pos (X: " + xyCoordinateAlign.X.ToString("F3") +
                         ", Y: " + xyCoordinateAlign.Y.ToString("F3") + ")");
                     //  속도 설정
@@ -34153,7 +34153,7 @@ namespace QMC.Common.Modules
                     double diffY = targetY.HasValue ? Math.Abs(targetY.Value - dPoscurY) : 0;
 
                     // 무조건 탈출 이동 1회
-                    if (retryCount == 1)
+                    //if (retryCount == 1)
                     {
                         // 100um 이동 후 목표 위치로 재 이동(할꺼임.시컨스에서)
                         double escapeX = targetX.HasValue ? targetX.Value + 0.1 : dPoscurX;
@@ -34194,10 +34194,49 @@ namespace QMC.Common.Modules
                                 ", Y: " + dPoscurY.ToString("F3") + ")");
 
                     retryCount = 0;
-                    SeqStep = jumpBackStep;
-                    Equipment.MachineStop_byAlarm = true;
-
-                    AlarmPost(AlarmKey.eStageMoveFail);
+                    if(jumpBackStep == (int)SocketAlign_Step.SocketAlignXY_MoveFiducialPos)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "SocketAlignXY_MoveFiducialPos - Motion Move Fail. Retry 횟수 초과");
+                        m_bAlignCompleted = true;
+                        m_bSocketAlign_OK = false;
+                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+                        SeqStep = (int)SocketAlign_Step.None;
+                    }
+                    else if(jumpBackStep == (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos - Motion Move Fail. Retry 횟수 초과");
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+                        SeqStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    else if (jumpBackStep == (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos - Motion Move Fail. Retry 횟수 초과");
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+                        SeqStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    else if (jumpBackStep == (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos - Motion Move Fail. Retry 횟수 초과");
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+                        SeqStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    else if (jumpBackStep == (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "OutLine_ScannerOnly_StageXY_MoveObjectCenterPos - Motion Move Fail. Retry 횟수 초과");
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+                        SeqStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    else if (jumpBackStep == (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos_DoneCheck)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking_StageXY_MoveObjectCenterPos_DoneCheck - Motion Move Fail. Retry 횟수 초과");
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+                        SeqStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    else
+                    {
+                        SeqStep = jumpBackStep;
+                        AlarmPost(AlarmKey.eStageMoveFail);
+                    }
                 }
             }
 
