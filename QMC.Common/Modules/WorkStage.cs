@@ -34166,7 +34166,7 @@ namespace QMC.Common.Modules
                         xyEscapeMove.Y = escapeY;
                         MovetoWorkStage_ABS_PositionsXY(xyEscapeMove, Type_Motor_Speed.Fine);
 
-                        Thread.Sleep(500);
+                        Thread.Sleep(1000); 
                     }
 
                     SeqStep = jumpBackStep;
@@ -41021,7 +41021,7 @@ namespace QMC.Common.Modules
                     strTemp = string.Format("전체 가공 완료");
                     Log.Write("SLD-200", "Auto Run", strTemp);
 
-                    if (Equipment.AutoRunStatus)
+                    if (Equipment.AutoRunStatus) 
                     {
                         //Cycle Time
                         DrillingManager.CycleTimer_DoneModuleCount++;
