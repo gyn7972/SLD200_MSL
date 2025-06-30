@@ -803,6 +803,7 @@ namespace QMC.Common
         //  Auto/Manual 상태 확인
         // 현재 장비의 준비 상태를 관리 할것.! " Auto인 경우에만 시컨스와 같은 동작 가능 하도록 "
         // Auto : 자동 운전 모드, Manual : 수동 운전 모드
+        public static bool ResetProcess { set; get; } = false;
         public static bool AutoManualStatus { set; get; } = false;
 
         // 장비 구동 유/무 변수 : 장비 시컨스 구동 유/무 변수 :: 실제로 장비 구동 확인 

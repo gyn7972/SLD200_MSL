@@ -2786,6 +2786,11 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
 
+            if (Equipment.ResetProcess)
+                return;
+
+            Equipment.ResetProcess = true;
+
             //Main화면 - 변수 == 필요한가.. 흠..
             checkBox_Main_SocketDrilling_Pass.Checked = false;
             selectedRow = -1;
@@ -2797,18 +2802,28 @@ namespace SLD200_MSL
 
             // 아래 구문.. 함수로 만드나.. 여기에 그냥 놔두나...
             // Reset하면 Laser Shot 끄자.
-            if(workStage.rtc != null)
+            var mb2 = new QMC.Core.MessageBoxOk();
+            string strTemp = string.Empty;
+            if (!workStage.m_bHomeOK)
+            {
+                Equipment.ResetProcess = false;
+                strTemp = string.Format("초기화 진행 바랍니다.");
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                mb2.ShowDialog("Error !", strTemp);
+                return;
+            }
+
+            if (workStage.rtc != null)
             {
                 workStage.rtc.CtlAbort(); //  RTC Abort
                 Thread.Sleep(1000);
                 workStage.rtc.CtlReset(); //  RTC Reset
             }
 
-            if(workStage.m_bHomeOK)
+            if (workStage.m_bHomeOK)
             {
                 // Axis - 대기위치 이동
-                var mb2 = new QMC.Core.MessageBoxOk();
-                string strTemp = string.Empty;
+                
                 //  속도 설정
                 Equipment.Type_Motor_Speed motor_Speed;
                 motor_Speed = Equipment.Type_Motor_Speed.Coarse;
@@ -2830,6 +2845,7 @@ namespace SLD200_MSL
                 bool bWaitZ = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Z, dPosZ).Result;
                 if (!bWaitZ)
                 {
+                    Equipment.ResetProcess = false;
                     strTemp = string.Format("Stage Z-Axis이 이동 실패.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     mb2.ShowDialog("Error !", strTemp);
@@ -2838,6 +2854,7 @@ namespace SLD200_MSL
                 bool bWaitZ_Loader = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_Z, dPosZ_Loader).Result;
                 if (!bWaitZ_Loader)
                 {
+                    Equipment.ResetProcess = false;
                     strTemp = string.Format("Loader Z-Axis이 이동 실패.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     mb2.ShowDialog("Error !", strTemp);
@@ -2846,6 +2863,7 @@ namespace SLD200_MSL
                 bool bWaitZ_Unloader = unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, dPosZ_Unloader).Result;
                 if (!bWaitZ_Unloader)
                 {
+                    Equipment.ResetProcess = false;
                     strTemp = string.Format("Unloader Z-Axis이 이동 실패.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     mb2.ShowDialog("Error !", strTemp);
@@ -2872,6 +2890,7 @@ namespace SLD200_MSL
                 bool bWaitZ_PortR = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z0, dPosZ_PortR).Result;
                 if (!bWaitZ_PortR)
                 {
+                    Equipment.ResetProcess = false;
                     strTemp = string.Format("Loader PortR Z-Axis이 이동 실패.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     mb2.ShowDialog("Error !", strTemp);
@@ -2880,6 +2899,7 @@ namespace SLD200_MSL
                 bool bWaitZ_PortL = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z1, dPosZ_PortL).Result;
                 if (!bWaitZ_PortL)
                 {
+                    Equipment.ResetProcess = false;
                     strTemp = string.Format("Loader PortL Z-Axis이 이동 실패.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     mb2.ShowDialog("Error !", strTemp);
@@ -2888,6 +2908,7 @@ namespace SLD200_MSL
                 bool bWaitZ_UnPortR = unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z0, dPosZ_UnPortR).Result;
                 if (!bWaitZ_UnPortR)
                 {
+                    Equipment.ResetProcess = false;
                     strTemp = string.Format("Unloader PortR Z-Axis이 이동 실패.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     mb2.ShowDialog("Error !", strTemp);
@@ -2896,6 +2917,7 @@ namespace SLD200_MSL
                 bool bWaitZ_UnPortL = unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z1, dPosZ_UnPortL).Result;
                 if (!bWaitZ_UnPortL)
                 {
+                    Equipment.ResetProcess = false;
                     strTemp = string.Format("Unloader PortL Z-Axis이 이동 실패.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     mb2.ShowDialog("Error !", strTemp);
@@ -2912,6 +2934,7 @@ namespace SLD200_MSL
                 bool bWaitY = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY).Result;
                 if (!bWaitX || !bWaitY)
                 {
+                    Equipment.ResetProcess = false;
                     strTemp = string.Format("X-Axis 또는 Y-Axis이 이동 실패.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     mb2.ShowDialog("Error !", strTemp);
@@ -2955,6 +2978,11 @@ namespace SLD200_MSL
 
                     mb2.ShowDialog("Reset", "Unloader Picker - 자재 확인 및 버큠 Off 바랍니다.");
                 }
+
+                Equipment.ResetProcess = false;
+                strTemp = string.Format("Reset Complete");
+                mb2.ShowDialog("Complete !", strTemp);
+                return;
             }
 
             // 기존 코드
