@@ -1717,7 +1717,7 @@ namespace SLD200_MSL
                 (int)nSerialNumber_IncreaseType.forEachModule))       //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
                 {
                     int nCount = Equipment.m_nSerialNumberMarkingCount;
-                    m_strTemp = string.Format("Module Number : {0} 부터 시작합니다.", nCount);
+                    m_strTemp = string.Format("Module Number : [[ {0} ]] 부터 시작합니다.", nCount);
                     var mb = new MessageBoxOk();
                     mb.ShowDialog("Information !", m_strTemp);
                 }
