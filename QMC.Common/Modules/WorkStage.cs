@@ -36700,7 +36700,7 @@ namespace QMC.Common.Modules
                             m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", Equipment.m_nSerialNumberMarkingCount);
                             Equipment.m_nSerialNumberMarkingCount += m_nIncreaseStep;
 
-                            //  Suffix 있으면 붙이고
+                            // Suffix 있으면 붙이고
                             if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData.Length > 0)
                             {
                                 m_strMarkingData += Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData;

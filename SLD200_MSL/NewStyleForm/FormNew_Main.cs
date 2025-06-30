@@ -54,6 +54,7 @@ using SLD200.NewStyleForm.NewSubForm;
 using MessageBox = System.Windows.Forms.MessageBox;
 using SLD200.NewStyleForm;
 using System.Reflection;
+using QMC.Common.Global;
 
 namespace SLD200_MSL
 {
@@ -1708,6 +1709,24 @@ namespace SLD200_MSL
                 return;
             }
 
+            var markingLayer = workStage.DrillingManager.GetLayer(LayerList.Marking);
+            if (markingLayer != null && markingLayer.SocketList.Count > 0)
+            {
+                if ((!Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType) &&                                                                     //  마킹이 고정 Text 가 아닌 Serial Number 마킹인 경우
+                (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType ==
+                (int)nSerialNumber_IncreaseType.forEachModule))       //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
+                {
+                    int nCount = Equipment.m_nSerialNumberMarkingCount;
+                    m_strTemp = string.Format("Module Number : [[ {0} ]] 부터 시작합니다.", nCount);
+                    var mb = new MessageBoxOk();
+                    mb.ShowDialog("Information !", m_strTemp);
+                }
+                //string message = $"Marking 레이어가 존재하며, {markingLayer.SocketList.Count}개의 소켓이 포함되어 있습니다.";
+                //var mb = new MessageBoxOk();
+                //mb.ShowDialog("Information", message);
+            }
+            
+
             if (checkBox_Test_DryRun.Checked)
             {
                 workStage.m_bMainWorkCycle_DryRun = true;
@@ -1741,7 +1760,6 @@ namespace SLD200_MSL
             if (!loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
             {
                 m_strTemp = string.Format("Loader 좌측 Port 에 자재가 없으므로 Loader Pause 상태로 시작합니다.\r\n\r\n[자재 투입 후 Pause 해제 요망]");
-
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", m_strTemp);
             }
@@ -3774,12 +3792,6 @@ namespace SLD200_MSL
             }
         }
 
-        private void button_Test12_Click(object sender, EventArgs e)
-        {
-            workStage.AlarmPost(QMC.Common.Modules.WorkStage.AlarmKey.PreAlignFail);
-        }
-
-
         //  Text 의 Cap Height 로 Width 크기를 구하는 함수
         public float GetTextWidthByCapHeight(string text, string fontName, float capHeight)
         {
@@ -3801,7 +3813,7 @@ namespace SLD200_MSL
         
         private async  void button_TEST12_Click(object sender, EventArgs e)
         {
-            workStage.m_Sequence_LaserPowerMeasure.TestLog(); //  테스트용 로그 출력
+            //workStage.m_Sequence_LaserPowerMeasure.TestLog(); //  테스트용 로그 출력
             return;
 
             Equipment.AutoRunStatus = true;
@@ -4672,6 +4684,28 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            return;
+            string strTemp = string.Empty;
+            var markingLayer = workStage.DrillingManager.GetLayer(LayerList.Marking);
+            if (markingLayer != null && markingLayer.SocketList.Count > 0)
+            {
+                //if ((!Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType) &&                                                                     //  마킹이 고정 Text 가 아닌 Serial Number 마킹인 경우
+                //    (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType == (int)nSerialNumber_IncreaseType.forEachModule))       //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
+                
+                if(Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType == (int)nSerialNumber_IncreaseType.forEachModule)
+                {
+                    int nCount = Equipment.m_nSerialNumberMarkingCount;
+                    strTemp = string.Format("Module Number : {0} 부터 시작합니다.", nCount);
+                    var mb = new MessageBoxOk();
+                    mb.ShowDialog("Information !", strTemp);
+                }
+                //string message = $"Marking 레이어가 존재하며, {markingLayer.SocketList.Count}개의 소켓이 포함되어 있습니다.";
+                //var mb = new MessageBoxOk();
+                //mb.ShowDialog("Information", message);
+            }
+
+            return;
+
             int nSocket = 0;
             nSocket = 0;
 
@@ -4816,7 +4850,7 @@ namespace SLD200_MSL
             //bds.DustCollector_Upper.GetFrequency(out freq);
 
 
-            string strTemp = "";
+            //string strTemp = "";
             double offsetX = 0.0, offsetY = 0.0;
 
             for (int i = 0; i < 20; i++)
