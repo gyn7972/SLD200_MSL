@@ -2787,8 +2787,10 @@ namespace SLD200_MSL
                 return;
 
             if (Equipment.ResetProcess)
+            {
                 return;
-
+            }
+                
             Equipment.ResetProcess = true;
 
             //Main화면 - 변수 == 필요한가.. 흠..

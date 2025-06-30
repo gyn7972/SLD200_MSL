@@ -34166,7 +34166,7 @@ namespace QMC.Common.Modules
                         xyEscapeMove.Y = escapeY;
                         MovetoWorkStage_ABS_PositionsXY(xyEscapeMove, Type_Motor_Speed.Fine);
 
-                        Thread.Sleep(500);
+                        Thread.Sleep(1000);
                     }
 
                     SeqStep = jumpBackStep;
