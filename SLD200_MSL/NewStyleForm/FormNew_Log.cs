@@ -79,6 +79,7 @@ namespace SLD200_MSL
             AddGridColumn("RecipeName", "RecipeName");
             AddGridColumn("DrawingName", "DrawingName");
             AddGridColumn("CompletedCount", "CompletedCount");
+            AddGridColumn("NG_Count", "NG_Count");
         }
 
         private void InitGrid_LaserPower()
@@ -227,7 +228,7 @@ namespace SLD200_MSL
                     {
                         var line = reader.ReadLine();
                         var parts = line.Split(',');
-                        if (parts.Length < 5) continue;
+                        if (parts.Length < 6) continue;
 
                         int rowIndex = dataGridView_Log.Rows.Add();
                         dataGridView_Log.Rows[rowIndex].Cells["StartTime"].Value = parts[0];
@@ -235,6 +236,7 @@ namespace SLD200_MSL
                         dataGridView_Log.Rows[rowIndex].Cells["RecipeName"].Value = parts[2];
                         dataGridView_Log.Rows[rowIndex].Cells["DrawingName"].Value = parts[3];
                         dataGridView_Log.Rows[rowIndex].Cells["CompletedCount"].Value = parts[4];
+                        dataGridView_Log.Rows[rowIndex].Cells["NG_Count"].Value = parts[5];
                     }
                 }
             }

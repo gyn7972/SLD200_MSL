@@ -176,7 +176,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.MAligner_MoveXY_Narrowly_Fail;
             alarm.Title = "메카닉 얼라이너";
-            alarm.Cause = "메카닉 얼라이너를 얼라인 위치로 보내는데 실패 하였습니다. \n메카닉 얼라이너 끼임이나 모터를 확인 하여 주십시요.";
+            alarm.Cause = "메카닉 얼라이너를 얼라인 위치로 보내는데 실패 하였습니다. 메카닉 얼라이너 끼임이나 모터를 확인 하여 주십시요.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -184,7 +184,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.MAligner_MoveXY_LittleWidely_Fail;
             alarm.Title = "메카닉 얼라이너";
-            alarm.Cause = "메카닉 얼라이너를 얼라인 대기 위치로 보내는데 실패 하였습니다. \n메카닉 얼라이너 끼임이나 모터를 확인 하여 주십시요.";
+            alarm.Cause = "메카닉 얼라이너를 얼라인 대기 위치로 보내는데 실패 하였습니다. 메카닉 얼라이너 끼임이나 모터를 확인 하여 주십시요.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -353,7 +353,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_StackerIsWorking;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer Stacker가 동작 중입니다. \n스태커가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
+            alarm.Cause = "Loader Trasfer Stacker가 동작 중입니다. 스태커가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -405,7 +405,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_MAlignerIsWorking;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer MAligner가 동작 중입니다. \nMAligner가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
+            alarm.Cause = "Loader Trasfer MAligner가 동작 중입니다. MAligner가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -432,7 +432,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_PickerVacuumOff_Timeout;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer Picker 진공이 해제 되지 않았습니다. \n공압솔레노이드 벨브나 IO 모듈 릴레이 점검이 필요 합니다.";
+            alarm.Cause = "Loader Trasfer Picker 진공이 해제 되지 않았습니다. 공압솔레노이드 벨브나 IO 모듈 릴레이 점검이 필요 합니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -441,7 +441,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_TransferZ_Move_PressPos_Timeout;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer Z 축이 Press 위치로 이동 하지 못하였습니다./n 티칭 위치를 확인 하여 주십시요. \n그리퍼 핑거와 얼라이너 간섭이 있을수 있습니다.";
+            alarm.Cause = "Loader Trasfer Z 축이 Press 위치로 이동 하지 못하였습니다. 티칭 위치를 확인 하여 주십시요. 그리퍼 핑거와 얼라이너 간섭이 있을수 있습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -458,7 +458,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_MAlignerVacuumOff_Timeout;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer MAligner 진공이 해제 되지 않았습니다. \n공압솔레노이드 벨브나 IO 모듈 릴레이 점검이 필요 합니다.";
+            alarm.Cause = "Loader Trasfer MAligner 진공이 해제 되지 않았습니다. 공압솔레노이드 벨브나 IO 모듈 릴레이 점검이 필요 합니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -494,7 +494,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_WorkStage_Is_Working;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer WorkStage가 동작 중입니다. \nWorkStage가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
+            alarm.Cause = "Loader Trasfer WorkStage가 동작 중입니다. WorkStage가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -503,7 +503,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_LaserDrilling_Is_Working;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Workstage가 가공 동작 중입니다. \n레이저 가공 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
+            alarm.Cause = "Workstage가 가공 동작 중입니다. 레이저 가공 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -3928,9 +3928,10 @@ namespace QMC.Common.Modules
             }
 
             //TargetCount가 0이면 멈추지 않고 돌아야 한다.
-            //CycleTimer_DoneModuleCount <- workStage에서 증가하기때문에 target-1 일때 멈추자? 
+            //CycleTimer_DoneModuleCount <- workStage에서 증가하기때문에 target-1 일때 멈추자?
+            int nTargetCount = Equipment.DrillModuleTargetCount - 1;
             if (Equipment.DrillModuleTargetCount != 0 &&
-                (Equipment.DrillModuleTargetCount -1) < (workStage.DrillingManager.CycleTimer_DoneModuleCount) &&
+                nTargetCount < (workStage.DrillingManager.CycleTimer_DoneModuleCount) &&
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None)
             {
                 if (m_bMLoader_LogOnce == false)
@@ -3943,6 +3944,13 @@ namespace QMC.Common.Modules
                 // SemiAuto처럼 정지를 시켜야겠다.
                 // 여기 들어오면.. Loader, workStage 정지하고.
                 m_LoaderWork_Start = false;
+
+                string message = string.Format(
+                                                        "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Loader 공정 정지 요청",
+                                                        Equipment.DrillModuleTargetCount,
+                                                        workStage.DrillingManager.CycleTimer_DoneModuleCount);
+
+                Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", message);
                 return ret;
                 //this.m_LaserDrillingWork_Start = false;
                 //this.m_ProductAlign_Start = false;

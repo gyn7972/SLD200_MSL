@@ -4296,6 +4296,7 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            return;
             workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
             Thread.Sleep(1000);
             workStage.DrillingManager.CycleTimer_LaserDrilling.End();

@@ -1411,7 +1411,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.eGetdata_Not_group;
             alarm.Title = "데이터로드에 실패";
-            alarm.Cause = "데이터가 Group이 아닙니다.. 데이터를 확인해 주세요.";
+            alarm.Cause = "데이터가 Group이 아닙니다. 데이터를 확인해 주세요.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -1429,7 +1429,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.eGetdata_Layername_ng;
             alarm.Title = "데이터로드에 실패";
-            alarm.Cause = "Layer이름은 Thruhol,Drilling,outline,Marking 4가지만 가능 합니다.. 데이터를 확인해 주세요.";
+            alarm.Cause = "Layer이름은 Thruhol,Drilling,outline,Marking 4가지만 가능 합니다. 데이터를 확인해 주세요.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -1438,7 +1438,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.eGetdata_Motiontype_ng;
             alarm.Title = "Motion Type";
-            alarm.Cause = "모션 타입은 ScannerOnly 가능 합니다.. 데이터를 확인해 주세요.";
+            alarm.Cause = "모션 타입은 ScannerOnly 가능 합니다. 데이터를 확인해 주세요.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -13402,7 +13402,7 @@ namespace QMC.Common.Modules
                                     //Cycle Time
                                     DrillingManager.CycleTimer_DoneModuleCount++;
                                     DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
-                                    DrillingManager.SaveLotLog();                     // 최신 로그 저장
+                                    DrillingManager.SaveLotLog(false);                     // 최신 로그 저장
 
                                     //TargetCount가 0이면 멈추지 않고 돌아야 한다.
                                     if (Equipment.DrillModuleTargetCount != 0 &&
@@ -13418,6 +13418,12 @@ namespace QMC.Common.Modules
                                         //this.m_SubWork_Start = false;
                                         // Unloader는 제품 제거하고 정지.
                                         //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
+                                        string message = string.Format(
+                                                        "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Stage 공정 정지 요청",
+                                                        Equipment.DrillModuleTargetCount,
+                                                        DrillingManager.CycleTimer_DoneModuleCount);
+                                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", message);
+                                        
                                     }
                                 }
                             }
@@ -13445,6 +13451,12 @@ namespace QMC.Common.Modules
                                         //this.m_SubWork_Start = false;
                                         // Unloader는 제품 제거하고 정지.
                                         //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
+                                        string message = string.Format(
+                                                        "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Stage 공정 정지 요청",
+                                                        Equipment.DrillModuleTargetCount,
+                                                        DrillingManager.CycleTimer_DoneModuleCount);
+                                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", message);
+                                       
                                     }
                                 }
                             }                            
@@ -33253,6 +33265,10 @@ namespace QMC.Common.Modules
         public void ResetRecovery()
         {
             m_nLaserDrilling_MainStep_Recovery = 0;
+            m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+            m_nMainWork_Step = 0;
+            m_nWorkStage_Move_Step = 0;
         }
         public XyCoordinate ConvertFineCamToDrawing(XyCoordinate xyFineVisionPos)
         {
