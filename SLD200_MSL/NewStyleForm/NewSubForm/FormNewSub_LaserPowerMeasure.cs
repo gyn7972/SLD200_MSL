@@ -1,4 +1,5 @@
-﻿using QMC.Common;
+﻿using Newtonsoft.Json.Linq;
+using QMC.Common;
 using QMC.Common.Global;
 using QMC.Common.Modules;
 using QMC.Common.Parts;
@@ -91,6 +92,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         public void InitSpiralLab(SpiralLabScanner spiralLabScanner)
         {
             _scanner = spiralLabScanner;
+            LoadLaserPowerMeasureSetting();
         }
         public void DisposeSemiAutoResources()
         {
@@ -203,7 +205,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                         {
                             case "Frequency(Hz)": _setting.Frequency = value; break;
                             case "PulseWidth(us)": _setting.PulseWidth = value; break;
-                            case "DutyCycle(%)": _setting.DutyCycle = value; break;
+                            case "DutyCycle(%)":
+                                if (Equipment.Machine_LaserType_CO2)
+                                {
+                                    if (value < 2.5f || value >= 20.0f)
+                                    {
+                                        strTemp = string.Format($"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
+                                        mb.ShowDialog("Error!", strTemp);
+                                        UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        _setting.DutyCycle = value;
+                                        UpdateSettingRow("PulseWidth(us)", _setting.PulseWidth);
+                                    }
+                                }
+                                break;
                         }
                     }
                     else
@@ -235,6 +253,16 @@ namespace SLD200.NewStyleForm.NewSubForm
                         return;
                     }
                 }
+                else
+                {
+                    if (_setting.DutyCycle < 2.5f || _setting.DutyCycle >= 20.0f)
+                    {
+                        strTemp = $"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\r\n현재 설정: {_setting.DutyCycle:F2}%";
+                        Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", strTemp);
+                        mb.ShowDialog("Error!", strTemp);
+                        return;
+                    }
+                }
 
                 float duration = (float)numericUpDownDuration.Value;
                 if (!_scanner.LaserOn(duration, _setting))
@@ -249,6 +277,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Task<int> delayTask = CreateDelayTask((int)duration, (elapsed) => lastProgress = elapsed, _cts.Token);
 
                 var pf = new ProgressForm("레이저 출력 중", "지정된 시간 동안 레이저를 출력합니다.", delayTask, _scanner);
+                pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
+                pf.TopMost = true;
                 pf.StopProcess += (obj) =>
                 {
                     _cts.Cancel();  // Task 취소
@@ -587,6 +617,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             Task<int> waitTask = CreateSequenceWaitTask(() => workStage.m_Sequence_LaserPowerMeasure.IsCompleted, cts.Token);
 
             var pf = new ProgressForm("파워 측정 중", "시퀀스 완료까지 기다리는 중입니다...", waitTask, _scanner);
+            pf.TopMost = true;
+            pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
             pf.StopProcess += (obj) =>
             {
                 cts.Cancel();  // 취소 요청
@@ -683,6 +715,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_Test_Click(object sender, EventArgs e)
         {
+            return;
             var mb = new QMC.Core.MessageBoxOk();
             float duration = (float)numericUpDownDuration.Value;
             //if (!_scanner.LaserOn(duration, _setting))
@@ -697,6 +730,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             Task<int> delayTask = CreateDelayTask((int)duration, (elapsed) => lastProgress = elapsed, _cts.Token);
 
             var pf = new ProgressForm("레이저 출력 중", "지정된 시간 동안 레이저를 출력합니다.", delayTask, _scanner);
+            pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
             pf.StopProcess += (obj) =>
             {
                 _cts.Cancel();  // Task 취소
@@ -734,6 +768,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (!float.TryParse(valueStr, out float value))
                 return;
 
+            var mb = new QMC.Core.MessageBoxOk();
+            string strTemp = string.Empty;
             switch (param)
             {
                 case "Frequency(Hz)":
@@ -743,13 +779,47 @@ namespace SLD200.NewStyleForm.NewSubForm
                     break;
 
                 case "PulseWidth(us)":
+                    float BeforePulseWidth = 0;
+                    BeforePulseWidth = _setting.PulseWidth;
                     _setting.PulseWidth = value;
-                    UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
+
+                    // DutyCycle 자동 계산 후 검증
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        float duty = _setting.DutyCycle;
+                        if (duty < 2.5f || duty >= 20.0f)
+                        {
+                            strTemp = string.Format($"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
+                            mb.ShowDialog("Error!", strTemp);
+                            //UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
+                            // 원래 값으로 되돌림
+                            UpdateSettingRow("PulseWidth(us)", BeforePulseWidth); // 다시 표시
+                            //return;
+                        }
+                        else
+                        {
+                            UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
+                        }
+                    }
+                    //_setting.PulseWidth = value;
+                    //UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
                     break;
 
                 case "DutyCycle(%)":
-                    _setting.DutyCycle = value;
-                    UpdateSettingRow("PulseWidth(us)", _setting.PulseWidth);
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        if (value < 2.5f || value >= 20.0f)
+                        {
+                            strTemp = string.Format($"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
+                            mb.ShowDialog("Error!", strTemp);
+                            UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
+                        }
+                        else
+                        {
+                            _setting.DutyCycle = value;
+                            UpdateSettingRow("PulseWidth(us)", _setting.PulseWidth);
+                        }
+                    }
                     break;
 
                 case "PowerPercent(%)":

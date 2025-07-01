@@ -943,7 +943,7 @@ namespace QMC.Common.Q_Sequence
                     if (_setting.PowerPercent < 0 || _setting.PowerPercent > 100)
                     {
                         strTemp = string.Format("PowerPercent는 0에서 100 사이의 값이어야 합니다.");
-                        Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", strTemp);
+                        Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", strTemp);
                         return -1;
                     }
 
@@ -951,15 +951,29 @@ namespace QMC.Common.Q_Sequence
                     if (!result)
                     {
                         strTemp = string.Format("레이저 파워 변경-Error");
-                        Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", strTemp);
+                        Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", strTemp);
                         return -1;
+                    }
+                }
+                else
+                {
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        if (!(_setting.DutyCycle >= 2.5f && _setting.DutyCycle < 20.0f))
+                        {
+                            strTemp = $"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\r\n현재 설정: {_setting.DutyCycle:F2}%";
+                            Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", strTemp);
+                            return -1;
+                            //mb.ShowDialog("Error!", strTemp);
+                            //return;
+                        }
                     }
                 }
 
                 float duration = (float)_powerMeasureLogTotalTimeMs * 0.9f;
                 result = _scanner.LaserOn(duration, _setting);
 
-                Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "파워 측정 시작: 20초 대기 후 5초 간격으로 측정 시작");
+                Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", "파워 측정 시작: 20초 대기 후 5초 간격으로 측정 시작");
                 _isPowerMeasureOnes = true;
                 TickCount_Start((int)TickType.TICK_POWER_MEASURE_LAST_SAVE);  // 최초 시작 시간
             }
@@ -974,7 +988,7 @@ namespace QMC.Common.Q_Sequence
                 }
 
                 // 20초 경과 후, 측정 시작
-                Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "20초 경과: 파워 측정 시작 (5초 간격)");
+                Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", "20초 경과: 파워 측정 시작 (5초 간격)");
                 TickCount_Start((int)TickType.TICK_POWER_MEASURE_START);  // 측정 시작 타이머
                 _isPowerMeasureDelayed = true;
 
@@ -986,7 +1000,7 @@ namespace QMC.Common.Q_Sequence
             {
                 string position = (_setting.PowerMeterType == 0) ? "Top" : "Stage";
                 SavePowerMeasureLogList(position);
-                Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", $"{position} 위치에서 파워 측정 완료");
+                Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", $"{position} 위치에서 파워 측정 완료");
 
                 _measuredPowerList.Clear();
                 bComp = true;

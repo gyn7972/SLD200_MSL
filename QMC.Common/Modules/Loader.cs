@@ -3950,7 +3950,7 @@ namespace QMC.Common.Modules
                                                         Equipment.DrillModuleTargetCount,
                                                         workStage.DrillingManager.CycleTimer_DoneModuleCount);
 
-                Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", message);
+                Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", message);
                 return ret;
                 //this.m_LaserDrillingWork_Start = false;
                 //this.m_ProductAlign_Start = false;

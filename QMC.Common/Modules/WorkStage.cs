@@ -13385,6 +13385,7 @@ namespace QMC.Common.Modules
 
                             Log.Write("DrillStatus", $"최종 결과: {forceNG}");
 
+                            int nTargetCount = Equipment.DrillModuleTargetCount - 1;
                             //if (forceNG)
                             if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
                                 m_bworkStageVacuumFail ||
@@ -13406,7 +13407,7 @@ namespace QMC.Common.Modules
 
                                     //TargetCount가 0이면 멈추지 않고 돌아야 한다.
                                     if (Equipment.DrillModuleTargetCount != 0 &&
-                                        Equipment.DrillModuleTargetCount < DrillingManager.CycleTimer_DoneModuleCount)
+                                        nTargetCount < DrillingManager.CycleTimer_DoneModuleCount)
                                     {
                                         // SemiAuto처럼 정지를 시켜야겠다.
                                         // 여기 들어오면.. Loader, workStage 정지하고.
@@ -13420,9 +13421,9 @@ namespace QMC.Common.Modules
                                         //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
                                         string message = string.Format(
                                                         "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Stage 공정 정지 요청",
-                                                        Equipment.DrillModuleTargetCount,
+                                                        nTargetCount,
                                                         DrillingManager.CycleTimer_DoneModuleCount);
-                                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", message);
+                                        Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
                                         
                                     }
                                 }
@@ -13439,7 +13440,7 @@ namespace QMC.Common.Modules
 
                                     //TargetCount가 0이면 멈추지 않고 돌아야 한다.
                                     if (Equipment.DrillModuleTargetCount != 0 &&
-                                        Equipment.DrillModuleTargetCount < DrillingManager.CycleTimer_DoneModuleCount)
+                                        nTargetCount < DrillingManager.CycleTimer_DoneModuleCount)
                                     {
                                         // SemiAuto처럼 정지를 시켜야겠다.
                                         // 여기 들어오면.. Loader, workStage 정지하고.
@@ -13453,9 +13454,9 @@ namespace QMC.Common.Modules
                                         //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
                                         string message = string.Format(
                                                         "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Stage 공정 정지 요청",
-                                                        Equipment.DrillModuleTargetCount,
+                                                        nTargetCount,
                                                         DrillingManager.CycleTimer_DoneModuleCount);
-                                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", message);
+                                        Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
                                        
                                     }
                                 }

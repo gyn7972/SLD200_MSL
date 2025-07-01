@@ -4707,7 +4707,8 @@ namespace SLD200_MSL
             CancellationTokenSource cts = new CancellationTokenSource();
             Task<int> resetTask = ResetSequenceAsync(cts.Token);
 
-            var pf = new ProgressForm("초기화 중", "시퀀스 완료까지 기다리는 중입니다...", resetTask);
+            var pf = new ProgressForm("Reset 중", "시퀀스 완료까지 기다리는 중입니다...", resetTask);
+            pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
             pf.StopProcess += (obj) =>
             {
                 cts.Cancel();

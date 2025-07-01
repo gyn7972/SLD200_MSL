@@ -4856,15 +4856,16 @@ namespace QMC.Common.Modules
                                 }
                             }
 
+                            int nTargetCount = Equipment.DrillModuleTargetCount - 1;
                             if (Equipment.DrillModuleTargetCount != 0 &&
-                                Equipment.DrillModuleTargetCount < workStage.DrillingManager.CycleTimer_DoneModuleCount)
+                                nTargetCount < workStage.DrillingManager.CycleTimer_DoneModuleCount)
                             {
                                 // Unloader는 제품 제거하고 정지.
                                 workStage.ActionProcessStop?.Invoke(true); //<-이건 Unloader에서 하면..되네.
 
                                 string message = string.Format(
                                                         "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Unloader 공정 정지 요청",
-                                                        Equipment.DrillModuleTargetCount,
+                                                        nTargetCount,
                                                         workStage.DrillingManager.CycleTimer_DoneModuleCount);
 
                                 Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", message);
