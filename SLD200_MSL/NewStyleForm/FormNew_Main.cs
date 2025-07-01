@@ -2998,7 +2998,7 @@ namespace SLD200_MSL
 
                     mb2.ShowDialog("Reset", "Loader Picker - 자재 확인 및 버큠 Off 바랍니다.");
                 }
-
+                 
                 if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
                     unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
                 {
