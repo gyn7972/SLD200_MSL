@@ -258,7 +258,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             Equipment.Type_Motor_Speed motor_Speed;
             motor_Speed = Equipment.Type_Motor_Speed.Coarse;
-            int nTeachingPosIndex = (int)Loader.LDUL_TeachingPosList.LD_LPort_ReadyPos;
+            int nTeachingPosIndex = (int)Loader.LDUL_TeachingPosList.LD_TR_LPortPos;
             loader.MovetoLoader_TeachingPositionsTransferX(nTeachingPosIndex, motor_Speed, true);
         }
 

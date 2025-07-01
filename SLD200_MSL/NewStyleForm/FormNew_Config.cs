@@ -74,6 +74,13 @@ namespace SLD200_MSL
         private double[] m_dMotionSetZeroPos_Unloader = new double[(int)UnloaderParameter.MotionKey.Max];
         private double[] m_dMotionSetZeroPos_Bds = new double[(int)BdsParameter.MotionKey.Max];
 
+        FormNewSub_LaserPowerMeasure m_FormLaserPowerMeasure;
+        public FormNewSub_LaserPowerMeasure FormLaserPowerMeasure
+        {
+            get { return m_FormLaserPowerMeasure; }
+            set { m_FormLaserPowerMeasure = value; }
+        }
+
         private FormNew_KeyPad m_keyPad;
         public System.Windows.Forms.Timer timer_Status;
 
@@ -217,6 +224,10 @@ namespace SLD200_MSL
             textBox_Config_LDUL_Module_Size_Set.Text = strTemp;
 
             InitializeJogButtons();
+
+            m_FormLaserPowerMeasure = new FormNewSub_LaserPowerMeasure(bds.spiralLabScanner);
+            m_FormLaserPowerMeasure.Owner = this;
+
         }
 
 
@@ -243,8 +254,8 @@ namespace SLD200_MSL
                     if (!double.IsNaN(width) && width >= 0 &&
                         !double.IsNaN(height) && height >= 0)
                     {
-                        textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = string.Format("{0:0.000}", width);
-                        textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = string.Format("{0:0.000}", height);
+                        textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = string.Format("{0:0.000}", width * -1);
+                        textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = string.Format("{0:0.000}", height * -1);
                     }
                     else
                     {
@@ -6170,9 +6181,10 @@ namespace SLD200_MSL
 
         private void button_Config_TabLaser_LaserPowerMeasure_Click(object sender, EventArgs e)
         {
-
-            var form = new FormNewSub_LaserPowerMeasure(bds.spiralLabScanner);
-            form.ShowDialog();
+            //InitspiralLabScanner
+            FormLaserPowerMeasure.InitSpiralLab(bds.spiralLabScanner);
+            FormLaserPowerMeasure.m_bReadyStatus = false;
+            FormLaserPowerMeasure.Show();
         }
     }
 }

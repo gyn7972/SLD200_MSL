@@ -211,6 +211,8 @@ namespace QMC.Common
             Water_Leak = m_bLeak;
         }
 
+        public static bool SocketHeight_Batch_Use { set; get; }           //  Socket Height Batch 사용 여부 (true: 사용, false: 미사용)
+
         public static int ScannerMode_Change_byUser { set; get; }           //  0: None         1: Change To RTC6       2: Change to syncAxis
         public static bool FormNew_SiriusEditor_TimerStart { set; get; }           //  Scanner Mode가 변경되었는지 여부. (RTC6, syncAxis)
 
@@ -245,16 +247,6 @@ namespace QMC.Common
         public static double WorkTotalTime_Marking_AdditionalTime { set; get; }        //  Marking 추가 시간 (sec)
 
         public static double MainCycle_Interval { set; get; }                           //  Main Cycle 타이머의 Interval. 
-
-
-        // DrillingProcessManager class로 옮긴 후 제어.
-        //public static int CycleTimer_TargetModuleCount = 0;
-        //public static int CycleTimer_DoneModuleCount = 0;
-        //public static int CycleTimer_NGSocketCount = 0;
-        //  workStage 가공시간 계산을 위해 사용되는 변수
-        //public static CycleTimer CycleTimer_LaserDrilling = new CycleTimer();
-
-
 
         //  Auto-Focus 에 실패했을 때 사용자가 수동으로 카메라 초점을 조작하기 위한 Flag
         public static bool AutoFocus_Failed { set; get; }
@@ -803,6 +795,7 @@ namespace QMC.Common
         //  Auto/Manual 상태 확인
         // 현재 장비의 준비 상태를 관리 할것.! " Auto인 경우에만 시컨스와 같은 동작 가능 하도록 "
         // Auto : 자동 운전 모드, Manual : 수동 운전 모드
+        public static bool ResetProcess { set; get; } = false;
         public static bool AutoManualStatus { set; get; } = false;
 
         // 장비 구동 유/무 변수 : 장비 시컨스 구동 유/무 변수 :: 실제로 장비 구동 확인 
@@ -835,7 +828,7 @@ namespace QMC.Common
         public static bool LaserDrillingCycStop_Reservation { set; get; } // 장비 Stop 예약
 
         public static double DrillModuleDelaySeconds = 0.0; // 예: 60초 (1분)
-
+        public static int DrillModuleTargetCount = 0; // 예: 60초 (1분) 동안 1초마다 카운트
 
         //  Loading 에 사용하던 Port 를 기억하기 위한 변수
         //  Pick Up 하던 Port 에서만 계속 진행하기 위한 Port Index

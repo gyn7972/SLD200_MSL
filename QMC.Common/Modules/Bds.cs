@@ -536,6 +536,8 @@ namespace QMC.Common.Modules
                 spiralLabScanner.Owner = this;
                 Parts.Add(spiralLabScanner);
 
+                workStage.m_Sequence_LaserPowerMeasure.InitSpiralLab(spiralLabScanner);
+
                 Log.Write("SLD-200", "InitspiralLabScannerModule", "Scanner 모듈 초기화 완료");
             }
         }

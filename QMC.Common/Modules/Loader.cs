@@ -176,7 +176,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.MAligner_MoveXY_Narrowly_Fail;
             alarm.Title = "메카닉 얼라이너";
-            alarm.Cause = "메카닉 얼라이너를 얼라인 위치로 보내는데 실패 하였습니다. \n메카닉 얼라이너 끼임이나 모터를 확인 하여 주십시요.";
+            alarm.Cause = "메카닉 얼라이너를 얼라인 위치로 보내는데 실패 하였습니다. 메카닉 얼라이너 끼임이나 모터를 확인 하여 주십시요.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -184,7 +184,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.MAligner_MoveXY_LittleWidely_Fail;
             alarm.Title = "메카닉 얼라이너";
-            alarm.Cause = "메카닉 얼라이너를 얼라인 대기 위치로 보내는데 실패 하였습니다. \n메카닉 얼라이너 끼임이나 모터를 확인 하여 주십시요.";
+            alarm.Cause = "메카닉 얼라이너를 얼라인 대기 위치로 보내는데 실패 하였습니다. 메카닉 얼라이너 끼임이나 모터를 확인 하여 주십시요.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -353,7 +353,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_StackerIsWorking;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer Stacker가 동작 중입니다. \n스태커가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
+            alarm.Cause = "Loader Trasfer Stacker가 동작 중입니다. 스태커가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -405,7 +405,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_MAlignerIsWorking;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer MAligner가 동작 중입니다. \nMAligner가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
+            alarm.Cause = "Loader Trasfer MAligner가 동작 중입니다. MAligner가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -432,7 +432,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_PickerVacuumOff_Timeout;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer Picker 진공이 해제 되지 않았습니다. \n공압솔레노이드 벨브나 IO 모듈 릴레이 점검이 필요 합니다.";
+            alarm.Cause = "Loader Trasfer Picker 진공이 해제 되지 않았습니다. 공압솔레노이드 벨브나 IO 모듈 릴레이 점검이 필요 합니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -441,7 +441,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_TransferZ_Move_PressPos_Timeout;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer Z 축이 Press 위치로 이동 하지 못하였습니다./n 티칭 위치를 확인 하여 주십시요. \n그리퍼 핑거와 얼라이너 간섭이 있을수 있습니다.";
+            alarm.Cause = "Loader Trasfer Z 축이 Press 위치로 이동 하지 못하였습니다. 티칭 위치를 확인 하여 주십시요. 그리퍼 핑거와 얼라이너 간섭이 있을수 있습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -458,7 +458,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_MAlignerVacuumOff_Timeout;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer MAligner 진공이 해제 되지 않았습니다. \n공압솔레노이드 벨브나 IO 모듈 릴레이 점검이 필요 합니다.";
+            alarm.Cause = "Loader Trasfer MAligner 진공이 해제 되지 않았습니다. 공압솔레노이드 벨브나 IO 모듈 릴레이 점검이 필요 합니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -494,7 +494,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_WorkStage_Is_Working;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer WorkStage가 동작 중입니다. \nWorkStage가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
+            alarm.Cause = "Loader Trasfer WorkStage가 동작 중입니다. WorkStage가 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -503,7 +503,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_LaserDrilling_Is_Working;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Workstage가 가공 동작 중입니다. \n레이저 가공 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
+            alarm.Cause = "Workstage가 가공 동작 중입니다. 레이저 가공 동작 중일 때는 트랜스퍼를 동작 시킬 수 없습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -1900,7 +1900,7 @@ namespace QMC.Common.Modules
 
 
         // 클래스 상단 (예: Loader 관련 클래스 또는 제어 클래스 내부)
-        private bool m_bStackerZ0_DownWhenEmpty = false;
+        public bool m_bStackerZ0_DownWhenEmpty = false;
 
         #region Stacker Move Function (Module PickUp & PutDown 높이로 이동 -> 이건 Loader Unloader 에서 하도록 해야 할듯???)
 
@@ -1983,12 +1983,24 @@ namespace QMC.Common.Modules
                         m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                         m_nMAlign_Step == (int)MAlign_Step.None &&
                         MC_Func.MC_GetDone((int)nAxis.Z0) &&
-                        MC_Func.MC_GetInposition((int)nAxis.Z0))
+                        MC_Func.MC_GetInposition((int)nAxis.Z0) &&
+                        workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None &&
+                        unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None)
                     {
                         Log.Write("SLD-200", "Stacker0 No Material 상태 → Z축 하강 실행");
                         StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
                         m_bStackerZ0_DownWhenEmpty = true;
                     }
+                    //if (!m_bStackerZ0_DownWhenEmpty &&
+                    //    m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
+                    //    m_nMAlign_Step == (int)MAlign_Step.None &&
+                    //    MC_Func.MC_GetDone((int)nAxis.Z0) &&
+                    //    MC_Func.MC_GetInposition((int)nAxis.Z0))
+                    //{
+                    //    Log.Write("SLD-200", "Stacker0 No Material 상태 → Z축 하강 실행");
+                    //    StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                    //    m_bStackerZ0_DownWhenEmpty = true;
+                    //}
                 }
             }
             else
@@ -2116,8 +2128,7 @@ namespace QMC.Common.Modules
             }
 
 
-                StackerModulePickupWaitingPos_Step currentStep = (StackerModulePickupWaitingPos_Step)m_nStacker0_ModulePickupWaitingPos_Step;
-
+            StackerModulePickupWaitingPos_Step currentStep = (StackerModulePickupWaitingPos_Step)m_nStacker0_ModulePickupWaitingPos_Step;
             switch (m_nStacker0_ModulePickupWaitingPos_Step)
             {
                 case (int)StackerModulePickupWaitingPos_Step.Start:
@@ -2867,7 +2878,7 @@ namespace QMC.Common.Modules
         }
 
 
-        private bool m_bStackerZ1_DownWhenEmpty = false; // Stacker Z1이 자재가 없을 때 하강했는지 여부를 확인하는 플래그
+        public bool m_bStackerZ1_DownWhenEmpty = false; // Stacker Z1이 자재가 없을 때 하강했는지 여부를 확인하는 플래그
         public int Run_Stacker1Module_PickupWaitingPos_Func()
         {
             int ret = 0;
@@ -2908,7 +2919,9 @@ namespace QMC.Common.Modules
                         m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                         m_nMAlign_Step == (int)MAlign_Step.None &&
                         MC_Func.MC_GetDone((int)nAxis.Z1) &&
-                        MC_Func.MC_GetInposition((int)nAxis.Z1))
+                        MC_Func.MC_GetInposition((int)nAxis.Z1) &&
+                        workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None &&
+                        unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None)
                     {
                         Log.Write("SLD-200", "Stacker1 No Material 상태 → Z축 하강 실행");
                         StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
@@ -3914,6 +3927,39 @@ namespace QMC.Common.Modules
             {   
             }
 
+            //TargetCount가 0이면 멈추지 않고 돌아야 한다.
+            //CycleTimer_DoneModuleCount <- workStage에서 증가하기때문에 target-1 일때 멈추자?
+            int nTargetCount = Equipment.DrillModuleTargetCount - 1;
+            if (Equipment.DrillModuleTargetCount != 0 &&
+                nTargetCount < (workStage.DrillingManager.CycleTimer_DoneModuleCount) &&
+                m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None)
+            {
+                if (m_bMLoader_LogOnce == false)
+                {
+                    m_strTemp = "Equipment.DrillModuleTargetCount - Stop";
+                    Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                    m_bMLoader_LogOnce = true;
+                }
+
+                // SemiAuto처럼 정지를 시켜야겠다.
+                // 여기 들어오면.. Loader, workStage 정지하고.
+                m_LoaderWork_Start = false;
+
+                string message = string.Format(
+                                                        "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Loader 공정 정지 요청",
+                                                        Equipment.DrillModuleTargetCount,
+                                                        workStage.DrillingManager.CycleTimer_DoneModuleCount);
+
+                Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", message);
+                return ret;
+                //this.m_LaserDrillingWork_Start = false;
+                //this.m_ProductAlign_Start = false;
+                //this.m_MainWork_Start = false;
+                //this.m_SubWork_Start = false;
+                // Unloader는 제품 제거하고 정지.
+                //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
+            }
+
             //  자동운전 시, Transfer 동작 조건
             if (Equipment.AutoRunStatus &&
                 !Equipment.Loader_Transfer_Pause &&                                     //  Loader Transfer Cycle Pause 시 동작 안되도록
@@ -4028,12 +4074,11 @@ namespace QMC.Common.Modules
                     //Log.Write("SLD-200", Equipment.User_Name, "m_nLoader_Transfer_Step", "Cycle_WorkStage_PutDown");
                     if(m_bMLoader_LogOnce == false)
                     {
-                        m_strTemp = "Cycle_WorkStage_PutDown";
+                        m_strTemp = "NONE";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         m_bMLoader_LogOnce = true;
                     }
                     //return AlarmPost(AlarmKey.LD_Transfer_Error);
-
                 }
             }
             else if(Equipment.SemiAutoEnable &&
@@ -4054,7 +4099,7 @@ namespace QMC.Common.Modules
                 // Stacker0 에서 Module 을 Pick Up 하기 위한 조건
                 // 1. stacker0번(Right)에서 제품 픽업
                 if (!m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete &&
-                    (m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None) &&
+                   (m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None) &&
 
                     m_bStacker0_Complete &&
 
@@ -4150,8 +4195,6 @@ namespace QMC.Common.Modules
                          (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
                         !workStage.m_bMainWorkCycle_Complete && 
                         (unloader.m_nUnloaderTransferMoveType != (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp))
-
-                    
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "m_nLoader_Transfer_Step", "Cycle_WorkStage_PutDown");
                     m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_WorkStage_PutDown;        //  Work Stage 에 Module Put Down Cycle
@@ -4159,14 +4202,12 @@ namespace QMC.Common.Modules
                 }
                 else
                 {
-                    //Log.Write("SLD-200", Equipment.User_Name, "m_nLoader_Transfer_Step", "Cycle_WorkStage_PutDown");
                     if (m_bMLoader_LogOnce == false)
                     {
-                        m_strTemp = "Cycle_WorkStage_PutDown";
+                        m_strTemp = "NONE";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         m_bMLoader_LogOnce = true;
                     }
-                    //return AlarmPost(AlarmKey.LD_Transfer_Error);
 
                 }
             }
@@ -4176,6 +4217,8 @@ namespace QMC.Common.Modules
             {
                 case (int)Loader_Transfer_Step.Start:
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "시작");
+
+                    m_bMLoader_LogOnce = true;  // Log 한번만 찍도록 : 위에꺼 로그 초기화.
 
                     Equipment.MachineStop_byAlarm = false;
 
@@ -6996,14 +7039,6 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage 에 Module Put Down 완료");
                             m_strTemp = "LD Transfer, Work Stage 에 Module Put Down 완료";
 
-                            //  Work Stage 에 모듈을 내려놨으니 도면을 다시 로드해야 한다. (DryRun 이면 안함)       --> Work Stage 에 Module 을 Loading 하기 시작할 때 Parsing 하도록
-                            //if (!workStage.m_bMainWorkCycle_DryRun)
-                            //{
-                            //    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-                            //}
-                            ////  WorkStage 의 MainWork 에서 Parsing 진행        --> 여기가 아니라 Work Stage 에 Module 을 Put Down 하러 출발하면서 해야지 ㅡㅡ
-                            //Equipment.ProcessingData_Parsing_byLoader = true;
-
                             m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = true;
                             m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;
                             m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;
@@ -7022,13 +7057,17 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
-
-                                //  Cycle Stop 이면?   --> Loader 에게 Cycle Stop 은, Stage 에 Module 을 갖다 놓으면 Cycle 완료
+                                // Cycle Stop 이면?   --> Loader 에게 Cycle Stop 은, Stage 에 Module 을 갖다 놓으면 Cycle 완료
+                                // Stage CycleStop하고 멈추자.
                                 if (Equipment.CycleModuleStop)
                                 {
                                     // Loader Transfer 돌아가지 않게
                                     Equipment.CycleStopped_LoaderTransfer = true;
+                                    m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_None;
+                                }
+                                else
+                                {
+                                    m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
                                 }
                             }
                             break;
@@ -8873,7 +8912,8 @@ namespace QMC.Common.Modules
                 Directory.CreateDirectory(logFolder);
 
                 // UTF-8 with BOM로 저장
-                using (var writer = new StreamWriter(logFile, true, new UTF8Encoding(true))) // true → BOM 포함
+                using (var fs = new FileStream(logFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                using (var writer = new StreamWriter(fs, new UTF8Encoding(true)))
                 {
                     string logLine = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss},{alarm.Title},{alarm.Grade},{alarm.Source},{alarm.Cause},{(int)AlarmCode}";
                     writer.WriteLine(logLine);
@@ -9190,12 +9230,15 @@ namespace QMC.Common.Modules
                 {
                     if (workStage.m_bHomeOK)
                     {
-                        if (loaderParameter.IsDO_Loader_Ionizer_On() &&
-
-                        (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
-                        !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
+                        //장비 시작하고 10초 후 부터 확인.
+                        if ((DateTime.Now - workStage.m_StartProcessTime).TotalSeconds > 10)
                         {
-                            AlarmPost(AlarmKey.LD_Ionizer_Alarm);
+                            if (loaderParameter.IsDO_Loader_Ionizer_On() &&
+                                (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
+                                !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
+                            {
+                                AlarmPost(AlarmKey.LD_Ionizer_Alarm);
+                            }
                         }
                     }
                 }
@@ -9694,7 +9737,7 @@ namespace QMC.Common.Modules
                 catch (Exception ex)
                 {
                     Log.Write(ex);
-                    return double.NaN; // 명확하게 오류값 반환
+                    return 0.0; 
                 }
                 return dEncPos;
             }

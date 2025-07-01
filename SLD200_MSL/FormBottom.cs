@@ -508,11 +508,11 @@ namespace SLD200_MSL
             else
             {
                 control[0].Enabled = true;                  //  Operation 버튼
-                control[1].Enabled = true;                  //  Configuration 버튼
-                control[2].Enabled = false;                 //  Maint 버튼
-                control[3].Enabled = false;                 //  Recipe 버튼
-                control[4].Enabled = false;                 //  Setup 버튼
-                control[5].Enabled = false;                 //  IO 버튼
+                control[1].Enabled = true;                  //  Recipe 버튼
+                control[2].Enabled = false;                 //  Configuration 버튼
+                control[3].Enabled = false;                 //  Setup 버튼
+                control[4].Enabled = true;                 //  LOG 버튼
+                control[5].Enabled = false;                 //  LogOut 버튼
             }
         }
         public void UpdateLogInInfo()
@@ -523,23 +523,23 @@ namespace SLD200_MSL
                 //if (Equipment.User_AdminMode)               //  관리자 (전체 버튼 활성화)
                 if ((Equipment.User_LoginMode == (int)UserMode.USER_ADMIN) || (Equipment.User_LoginMode == (int)UserMode.USER_ENGINEER))               //  관리자 (전체 버튼 활성화)
                 {
-                    control[0].Enabled = true;                  //  Operation 버튼
-                    control[1].Enabled = true;                  //  Configuration 버튼
-                    control[2].Enabled = true;                  //  Maint 버튼
-                    control[3].Enabled = true;                  //  Recipe 버튼
-                    control[4].Enabled = true;                  //  Setup 버튼
-                    control[5].Enabled = true;                  //  IO 버튼
+                    control[(int)ButtonBottomType.Main].Enabled = true;               
+                    control[(int)ButtonBottomType.Recipe].Enabled = true;             
+                    control[(int)ButtonBottomType.Config].Enabled = true;             
+                    control[(int)ButtonBottomType.Setup].Enabled = true;              
+                    control[(int)ButtonBottomType.Log].Enabled = true;                
+                    control[(int)ButtonBottomType.Lock].Enabled = true;               
 
                     //Equipment.Machine_LogIn = true;
                 }
                 else                                        //  작업자 (Maint 버튼만 활성화)
                 {
-                    control[0].Enabled = true;                  //  Operation 버튼
-                    control[1].Enabled = false;                 //  Configuration 버튼
-                    control[2].Enabled = true;                  //  Maint 버튼
-                    control[3].Enabled = false;                 //  Recipe 버튼
-                    control[4].Enabled = false;                 //  Setup 버튼
-                    control[5].Enabled = true;                  //  IO 버튼
+                    control[(int)ButtonBottomType.Main].Enabled = true;               
+                    control[(int)ButtonBottomType.Recipe].Enabled = true;             
+                    control[(int)ButtonBottomType.Config].Enabled = false;            
+                    control[(int)ButtonBottomType.Setup].Enabled = false;             
+                    control[(int)ButtonBottomType.Log].Enabled = true;                
+                    control[(int)ButtonBottomType.Lock].Enabled = false;              
 
                     //Equipment.Machine_LogIn = false;
                 }

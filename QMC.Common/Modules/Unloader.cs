@@ -4855,6 +4855,22 @@ namespace QMC.Common.Modules
                                     Equipment.CycleStopped_UnloaderTransfer = true;
                                 }
                             }
+
+                            int nTargetCount = Equipment.DrillModuleTargetCount - 1;
+                            if (Equipment.DrillModuleTargetCount != 0 &&
+                                nTargetCount < workStage.DrillingManager.CycleTimer_DoneModuleCount)
+                            {
+                                // Unloader는 제품 제거하고 정지.
+                                workStage.ActionProcessStop?.Invoke(true); //<-이건 Unloader에서 하면..되네.
+
+                                string message = string.Format(
+                                                        "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Unloader 공정 정지 요청",
+                                                        nTargetCount,
+                                                        workStage.DrillingManager.CycleTimer_DoneModuleCount);
+
+                                Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", message);
+                            }
+
                             break;
 
                         case (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp:
@@ -4882,9 +4898,7 @@ namespace QMC.Common.Modules
                             Equipment.SemiAutoEnable &&
                             _semiAutoRequest == SemiAutoStep.Start)
                             {
-                                
                                 Equipment.SemiAutoEnable = false;
-
                                 m_UnloaderWork_Start = false; // Unloader 작업 시작 플래그 초기화
                             }
                             break;
@@ -4905,9 +4919,7 @@ namespace QMC.Common.Modules
                             Equipment.SemiAutoEnable &&
                             _semiAutoRequest == SemiAutoStep.Start)
                             {
-                                
                                 Equipment.SemiAutoEnable = false;
-
                                 m_UnloaderWork_Start = false; // Unloader 작업 시작 플래그 초기화
                             }
                             break;
@@ -4924,11 +4936,10 @@ namespace QMC.Common.Modules
 
                             SetUnloaderComplete(true);
                             if (!Equipment.AutoRunStatus &&
-                            Equipment.SemiAutoEnable &&
-                            _semiAutoRequest == SemiAutoStep.Start)
+                                Equipment.SemiAutoEnable &&
+                                _semiAutoRequest == SemiAutoStep.Start)
                             {
                                 Equipment.SemiAutoEnable = false;
-
                                 m_UnloaderWork_Start = false; // Unloader 작업 시작 플래그 초기화
                             }
                             break;

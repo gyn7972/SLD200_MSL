@@ -16,6 +16,8 @@ using System.Windows.Forms;
 using QMC.Common.Vision.Tools;
 using System.Collections.Generic;
 using System.Timers;
+using System.IO;
+using System.Text;
 
 
 namespace QMC.Common.Q_Sequence
@@ -1826,6 +1828,13 @@ namespace QMC.Common.Q_Sequence
                                         $" Setting X: {Equipment.Scanner_Vision_Offset_Setting_X:F6}, " +
                                         $"Y: {Equipment.Scanner_Vision_Offset_Setting_Y:F6}");
 
+                                    SaveScannerCameraOffsetLog("OK",  // 또는 "NG"
+                                                                Equipment.stOffsetDistance.FromScannerToFineCam.X,
+                                                                Equipment.stOffsetDistance.FromScannerToFineCam.Y,
+                                                                Equipment.Scanner_Vision_Offset_Setting_X,
+                                                                Equipment.Scanner_Vision_Offset_Setting_Y
+                                                                );
+
                                     //  Scanner <-> FineCam Offset 적용 <- 검증 후에 적용하자.
                                     Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
                                     Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
@@ -1841,6 +1850,13 @@ namespace QMC.Common.Q_Sequence
                             }
                             else
                             {
+                                SaveScannerCameraOffsetLog("NG",
+                                                            Equipment.stOffsetDistance.FromScannerToFineCam.X,
+                                                            Equipment.stOffsetDistance.FromScannerToFineCam.Y,
+                                                            m_deltaX,
+                                                            (m_deltaY * -1)
+                                                            );
+
                                 strTemp = string.Format($"Cross Mark XY 위치가 허용 오차를 벗어남 (DeltaX: {m_deltaX}, DeltaY: {m_deltaY}, Allowable: {allowableXY})");
                                 Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
 
@@ -1952,9 +1968,45 @@ namespace QMC.Common.Q_Sequence
 
             return nRtn;
         }
+
+        public void SaveScannerCameraOffsetLog(string result, double beforeX, double beforeY, double offsetX, double offsetY)
+        {
+            string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ScannerCameraOffsetLog");
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
+
+            string logFile = Path.Combine(logDir, $"ScannerCameraOffsetLog_{DateTime.Now:yyyyMMdd}.csv");
+            bool needHeader = !File.Exists(logFile);
+
+            using (FileStream fs = new FileStream(logFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+            using (StreamWriter writer = new StreamWriter(fs, Encoding.UTF8))
+            {
+                if (needHeader)
+                {
+                    writer.WriteLine("Time,Result,BeforeOffsetX,BeforeOffsetY,OffsetX,OffsetY,AppliedOffsetX,AppliedOffsetY");
+                }
+
+                string appliedX = "";
+                string appliedY = "";
+
+                if (result == "OK")
+                {
+                    appliedX = (beforeX + offsetX).ToString("F3");
+                    appliedY = (beforeY + offsetY).ToString("F3");
+                }
+
+                string line = string.Format("{0},{1},{2:F3},{3:F3},{4:F3},{5:F3},{6},{7}",
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    result,
+                    beforeX, beforeY,
+                    offsetX, offsetY,
+                    appliedX, appliedY);
+
+                writer.WriteLine(line);
+            }
+        }
+
+
+
     }
-
-
-
-
 }

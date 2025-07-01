@@ -78,8 +78,8 @@ namespace QMC.Common.Motion.Ajin.Motions
             int ret = 0;
             double dPos = 0.0;
             double dCurrentX = 0;
-
             double dCurrentY = 0;
+
             AXM.GetActualPosition(nAxis, ref dPos);
             string str = this.GetType().ToString();
             XyCoordinate source = new XyCoordinate();
@@ -211,6 +211,7 @@ namespace QMC.Common.Motion.Ajin.Motions
             bool m_bRet = false;
             double m_dCurPos = 0.0;
             double m_dTol = 0.003; // 0.01;    //0.007;->0.01 변경: 2025.05.31 Stage 이동 실패 알람 발생으로.  //  Tolerance : +- 0.02mm // 0.01mm까지는 생각해봐야하나...
+            //double m_dTol = 0.005; // 0.003;->0.005; // 2025.06.30 - 너무 타이트함. 재 변경 // 공정은 위치 이동 후 500msec 기다리고 하는걸로 대체.
 
             //  Loader, Unloader TR-X 축의 경우 Tolerance 넓게
             if ((nAxis == (int)Loader.nAxis.TR_X) || (nAxis == (int)Unloader.nAxis.TR_X))

@@ -1142,7 +1142,6 @@
             this.button_TEST12.TabIndex = 192;
             this.button_TEST12.Text = "TEST";
             this.button_TEST12.UseVisualStyleBackColor = false;
-            this.button_TEST12.Visible = false;
             this.button_TEST12.Click += new System.EventHandler(this.button_TEST12_Click);
             // 
             // button_TestbyUser_LPort_Start
@@ -1805,7 +1804,6 @@
             this.button_TEST2.TabIndex = 213;
             this.button_TEST2.Text = "TEST";
             this.button_TEST2.UseVisualStyleBackColor = false;
-            this.button_TEST2.Visible = false;
             this.button_TEST2.Click += new System.EventHandler(this.button_TEST2_Click);
             // 
             // groupBox_BET_Status

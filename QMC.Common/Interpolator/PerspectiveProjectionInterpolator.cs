@@ -111,70 +111,183 @@ namespace QMC.Common.Interpolator
             return list;
         }
 
-        
 
+
+        //public override int Interpolate(XyCoordinate source, ref XyCoordinate dest)
+        //{
+        //    int ret = 0;
+        //    List<PositionOffset> list = GetAround4Point(source);
+        //    if(list.Count == 4)
+        //    {
+        //        QMCMatrix CorrectionMatrix = null;
+        //        PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
+        //        XyCoordinateCollection coordinatesSource = new XyCoordinateCollection();
+        //        XyCoordinateCollection coordinatesTarget = new XyCoordinateCollection();
+        //        int nIndex = 0;
+        //        foreach (PositionOffset v in list)
+        //        {
+        //            coordinatesSource.Add(new XyCoordinate(v.Position.X, v.Position.Y));
+        //            coordinatesTarget.Add(new XyCoordinate(v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
+
+        //        }
+        //        CorrectionMatrix = perspectiveProjection.GetCorrectionMatrix(coordinatesSource, coordinatesTarget);
+        //        XyCoordinate t = perspectiveProjection.GetPerspectiveProjectionPoint(source, CorrectionMatrix);
+
+        //        dest = t;
+        //    }
+        //    else
+        //    {
+        //        dest = source;
+        //    }
+
+
+        //    return ret;
+        //}
+
+        //public override int ReverseInterpolate(XyCoordinate dest, ref XyCoordinate source)
+        //{
+        //    int ret = 0;
+        //    List<PositionOffset> list = GetDestAround4Point(dest);
+        //    if (list.Count == 4)
+        //    {
+        //        QMCMatrix CorrectionMatrix = null;
+        //        PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
+        //        XyCoordinateCollection coordinatesSource = new XyCoordinateCollection();
+        //        XyCoordinateCollection coordinatesTarget = new XyCoordinateCollection();
+        //        int nIndex = 0;
+        //        foreach (PositionOffset v in list)
+        //        {
+        //            coordinatesSource.Add(new XyCoordinate(v.Position.X, v.Position.Y));
+        //            coordinatesTarget.Add(new XyCoordinate(v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
+        //        }
+        //        CorrectionMatrix = perspectiveProjection.GetCorrectionMatrix(coordinatesTarget, coordinatesSource);
+        //        XyCoordinate t = perspectiveProjection.GetPerspectiveProjectionPoint(dest, CorrectionMatrix);
+
+        //        source = t;
+        //    }
+        //    else
+        //    {
+        //        source = dest;
+        //    }
+
+        //    return ret;
+        //}
+
+
+
+        // 스테이지 이상 - 리팩토링
         public override int Interpolate(XyCoordinate source, ref XyCoordinate dest)
         {
-            int ret = 0;
-            List<PositionOffset> list = GetAround4Point(source);
-            if(list.Count == 4)
+            try
             {
-                QMCMatrix CorrectionMatrix = null;
-                PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
-                XyCoordinateCollection coordinatesSource = new XyCoordinateCollection();
-                XyCoordinateCollection coordinatesTarget = new XyCoordinateCollection();
-                int nIndex = 0;
-                foreach (PositionOffset v in list)
+                List<PositionOffset> list = GetAround4Point(source);
+                if (list == null || list.Count < 4)
                 {
-                    coordinatesSource.Add(new XyCoordinate(v.Position.X, v.Position.Y));
-                    coordinatesTarget.Add(new XyCoordinate(v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
-
+                    dest = source;
+                    //Log.Write("Interpolate", $"[오류] 주변 보정 포인트 부족 (Count={list?.Count ?? 0}) - Source: X={source.X:F3}, Y={source.Y:F3}");
+                    //dest = source;
+                    //return -1;
                 }
-                CorrectionMatrix = perspectiveProjection.GetCorrectionMatrix(coordinatesSource, coordinatesTarget);
-                XyCoordinate t = perspectiveProjection.GetPerspectiveProjectionPoint(source, CorrectionMatrix);
-                
-                dest = t;
+                else
+                {
+                    QMCMatrix CorrectionMatrix = null;
+                    PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
+                    XyCoordinateCollection coordinatesSource = new XyCoordinateCollection();
+                    XyCoordinateCollection coordinatesTarget = new XyCoordinateCollection();
+
+                    foreach (PositionOffset v in list)
+                    {
+                        coordinatesSource.Add(new XyCoordinate(v.Position.X, v.Position.Y));
+                        coordinatesTarget.Add(new XyCoordinate(v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
+                    }
+
+                    CorrectionMatrix = perspectiveProjection.GetCorrectionMatrix(coordinatesSource, coordinatesTarget);
+                    if (CorrectionMatrix == null)
+                    {
+                        Log.Write("Interpolate", "[오류] 보정 행렬 생성 실패");
+                        //dest = source;
+                        //return -2;
+                    }
+
+                    XyCoordinate t = perspectiveProjection.GetPerspectiveProjectionPoint(source, CorrectionMatrix);
+                    if (double.IsNaN(t.X) || double.IsNaN(t.Y) || double.IsInfinity(t.X) || double.IsInfinity(t.Y))
+                    {
+                        Log.Write("Interpolate", $"[오류] 보간 결과 비정상 → X={t.X:F3}, Y={t.Y:F3}");
+                        //dest = source;
+                        //return -3;
+                    }
+
+                    dest = t;
+                }
+
+                return 0;
             }
-            else
+            catch (Exception ex)
             {
+                Log.Write(ex);
+                Log.Write("Interpolate", $"[예외] {ex.Message}");
                 dest = source;
+                return -4;
             }
-
-
-            return ret;
         }
 
         public override int ReverseInterpolate(XyCoordinate dest, ref XyCoordinate source)
         {
-            int ret = 0;
-            List<PositionOffset> list = GetDestAround4Point(dest);
-            if (list.Count == 4)
+            try
             {
-                QMCMatrix CorrectionMatrix = null;
-                PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
-                XyCoordinateCollection coordinatesSource = new XyCoordinateCollection();
-                XyCoordinateCollection coordinatesTarget = new XyCoordinateCollection();
-                int nIndex = 0;
-                foreach (PositionOffset v in list)
+                List<PositionOffset> list = GetDestAround4Point(dest);
+                if (list == null || list.Count < 4)
                 {
-                    coordinatesSource.Add(new XyCoordinate(v.Position.X, v.Position.Y));
-                    coordinatesTarget.Add(new XyCoordinate(v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
-
-                    //  2025. 04. 17.  SCH : 로그파일 용량이 너무 커서..
-                    //Log.Write("PerspectiveProjectionInterpolator", String.Format("{0}, {1}, {2},{3},{4}",
-                    //    nIndex++, v.Position.X, v.Position.Y, v.Position.X + v.Offset.X, v.Position.Y + v.Offset.Y));
+                    source = dest;
+                    //if(list.Count != 1)
+                    //    Log.Write("ReverseInterpolate", $"[오류] 주변 역보정 포인트 부족 (Count={list?.Count ?? 0}) - Dest: X={dest.X:F3}, Y={dest.Y:F3}");
+                    //source = dest;
+                    //return -1;
                 }
-                CorrectionMatrix = perspectiveProjection.GetCorrectionMatrix(coordinatesTarget, coordinatesSource);
-                XyCoordinate t = perspectiveProjection.GetPerspectiveProjectionPoint(dest, CorrectionMatrix);
+                else
+                {
+                    QMCMatrix CorrectionMatrix = null;
+                    PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
+                    XyCoordinateCollection coordinatesSource = new XyCoordinateCollection();
+                    XyCoordinateCollection coordinatesTarget = new XyCoordinateCollection();
 
-                source = t;
+                    foreach (PositionOffset v in list)
+                    {
+                        coordinatesSource.Add(new XyCoordinate(v.Position.X, v.Position.Y));
+                        coordinatesTarget.Add(new XyCoordinate(v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
+                    }
+
+                    CorrectionMatrix = perspectiveProjection.GetCorrectionMatrix(coordinatesTarget, coordinatesSource);
+                    if (CorrectionMatrix == null)
+                    {
+                        Log.Write("ReverseInterpolate", "[오류] 역보정 행렬 생성 실패");
+                        //source = dest;
+                        //return -2;
+                    }
+
+                    XyCoordinate t = perspectiveProjection.GetPerspectiveProjectionPoint(dest, CorrectionMatrix);
+                    if (double.IsNaN(t.X) || double.IsNaN(t.Y) || double.IsInfinity(t.X) || double.IsInfinity(t.Y))
+                    {
+                        Log.Write("ReverseInterpolate", $"[오류] 역보간 결과 비정상 → X={t.X:F3}, Y={t.Y:F3}");
+                        //source = dest;
+                        //return -3;
+                    }
+
+                    source = t;
+                }
+
+                return 0;
             }
-            else
+            catch (Exception ex)
             {
+                Log.Write(ex);
+                Log.Write("ReverseInterpolate", $"[예외] {ex.Message}");
                 source = dest;
+                return -4;
             }
-
-            return ret;
         }
+
+
+
     }
 }

@@ -788,7 +788,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             workStage.m_bPassedSocket_Exist = false; //  Pass Socket 존재 여부
 
             // workstage LaserOff2 case문에서 초기화 하는 변수 전부 같이 Reset
-            workStage.GlobalSocketStatus_Init();            //위에서 하고 있는거 같지만.
+            //workStage.GlobalSocketStatus_Init();            //위에서 하고 있는거 같지만.
             workStage.GetDrillingData_ProcessingFlagCheck();
 
             //  가공이 완료되었으므로, Align 변수 false 로

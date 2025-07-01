@@ -54,6 +54,8 @@ using SLD200.NewStyleForm.NewSubForm;
 using MessageBox = System.Windows.Forms.MessageBox;
 using SLD200.NewStyleForm;
 using System.Reflection;
+using QMC.Common.Global;
+using System.Windows.Interop;
 
 namespace SLD200_MSL
 {
@@ -129,7 +131,6 @@ namespace SLD200_MSL
             set { m_formModuleMonitor = value; }
         }
 
-
         public FormNew_Main()
         {
             InitializeComponent();
@@ -185,6 +186,7 @@ namespace SLD200_MSL
 
             FormNew_Main_Load();
         }
+
 
 
 
@@ -310,6 +312,8 @@ namespace SLD200_MSL
             //m_formModuleMonitor = new FormNewSub_ModuleMonitor();
             //m_formModuleMonitor.Owner = this;
             ShowModuleMonitorControl();
+
+            workStage.ActionProcessStop += OnProcssStop;
         }
 
         
@@ -379,9 +383,23 @@ namespace SLD200_MSL
         {
             m_SiriusViewerRefresy = bRtn;
         }
+
+        public void OnProcssStop(bool bRtn)
+        {
+            if(bRtn)
+            {
+                if (this.InvokeRequired)
+                {
+                    this.BeginInvoke(new System.Action(() => OnProcssStop(bRtn)));
+                    return;
+                }
+
+                workStage.StopProcess();
+            }
+        }
+
         #endregion
 
-       
         private void InitImageViewer()
         {
             //if (this.ImageViewer_Main_highs.IsHandleCreated)
@@ -1692,6 +1710,23 @@ namespace SLD200_MSL
                 return;
             }
 
+            var markingLayer = workStage.DrillingManager.GetLayer(LayerList.Marking);
+            if (markingLayer != null && markingLayer.SocketList.Count > 0)
+            {
+                if ((!Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType) &&                                                                     //  마킹이 고정 Text 가 아닌 Serial Number 마킹인 경우
+                (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType ==
+                (int)nSerialNumber_IncreaseType.forEachModule))       //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
+                {
+                    int nCount = Equipment.m_nSerialNumberMarkingCount;
+                    m_strTemp = string.Format("Module Number : [[ {0} ]] 부터 시작합니다.", nCount);
+                    var mb = new MessageBoxOk();
+                    mb.ShowDialog("Information !", m_strTemp);
+                }
+                //string message = $"Marking 레이어가 존재하며, {markingLayer.SocketList.Count}개의 소켓이 포함되어 있습니다.";
+                //var mb = new MessageBoxOk();
+                //mb.ShowDialog("Information", message);
+            }
+
             if (checkBox_Test_DryRun.Checked)
             {
                 workStage.m_bMainWorkCycle_DryRun = true;
@@ -1725,10 +1760,60 @@ namespace SLD200_MSL
             if (!loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
             {
                 m_strTemp = string.Format("Loader 좌측 Port 에 자재가 없으므로 Loader Pause 상태로 시작합니다.\r\n\r\n[자재 투입 후 Pause 해제 요망]");
-
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", m_strTemp);
             }
+
+            //집진기 상/하부 | 이오나이저 Off
+            workStage.DustCollector_On((int)nDustCollector.DustCollector_Upper);
+            Thread.Sleep(1);
+            workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
+            Thread.Sleep(1);
+            loader.loaderParameter.DO_Loader_Ionizer(true);
+
+
+            //  Loader Stacker 동작
+            //loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
+            //loader.m_bStacker1_Complete = false;
+            //  Loader Stacker Pause 해제는 수동으로. (자동으로 풀어주니 너무 계속 한다)            
+            if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
+            {
+                loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
+
+                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
+                {
+                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+                }
+                //Equipment.Loader_LPort_Pause = false;
+            }
+            else if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
+            {
+                loader.m_bStacker1_Complete = false;
+
+                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
+                {
+                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+                }
+            }
+
+            //  Loader Stacker 의 Pause 상태에 따라 사용 우선순위 Port 결정
+            //  Pause 상태가 아닌 Port 에 우선순위 부여. (둘 다 Pause 상태이면, User 가 Pause 상태를 해제하는 Port 에 우선권 부여)
+            //  우선권이 부여된 Port 의 자재가 소진될 때 까지 바뀌지 않음. (Pick Up Fail 시에만 바뀜)
+            if (!Equipment.Loader_RPort_Pause && Equipment.Loader_LPort_Pause)
+            {
+                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.Stacker_0;
+            }
+            else if (Equipment.Loader_RPort_Pause && !Equipment.Loader_LPort_Pause)
+            {
+                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.Stacker_1;
+            }
+            else        //  둘 다 Pause
+            {
+                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.None;
+            }
+
+
+
 
             // Process Status
             var pos = ProcessManager.GetFirstUnprocessedPosition();
@@ -2083,12 +2168,16 @@ namespace SLD200_MSL
             }
 
             Equipment.SemiAutoEnable = false;
-            Equipment.SelectRunEnable_New = false;
-
             Equipment.SelectRunEnable = false;
+            Equipment.SelectRunEnable_New = false;
             workStage.m_nSelectedSocket_Index = -1;            //  선택한 소켓 인덱스 초기화
 
+
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
+
+            workStage.m_StartProcessTime = DateTime.Now;
+
+            FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);
             workStage.m_MainWork_Start = true;
             workStage.m_LaserDrillingWork_Start = true;
             Equipment.LaserDrillingCycStop_Reservation = false;
@@ -2101,54 +2190,8 @@ namespace SLD200_MSL
             button_Main_Start.BackColor = Color.LightGreen;
             button_Main_Start.ForeColor = Color.Black;
 
-            //  Loader Stacker 동작
-            //loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
-            //loader.m_bStacker1_Complete = false;
-
-            //  Loader Stacker Pause 해제는 수동으로. (자동으로 풀어주니 너무 계속 한다)            
-            if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
-            {
-                loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
-
-                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
-                {
-                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
-                }
-                //Equipment.Loader_LPort_Pause = false;
-            }
-            else if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
-            {
-                loader.m_bStacker1_Complete = false;
-
-                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
-                {
-                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
-                }
-            }
-
-            //  Loader Stacker 의 Pause 상태에 따라 사용 우선순위 Port 결정
-            //  Pause 상태가 아닌 Port 에 우선순위 부여. (둘 다 Pause 상태이면, User 가 Pause 상태를 해제하는 Port 에 우선권 부여)
-            //  우선권이 부여된 Port 의 자재가 소진될 때 까지 바뀌지 않음. (Pick Up Fail 시에만 바뀜)
-            if (!Equipment.Loader_RPort_Pause && Equipment.Loader_LPort_Pause)
-            {
-                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.Stacker_0;
-            }
-            else if (Equipment.Loader_RPort_Pause && !Equipment.Loader_LPort_Pause)
-            {
-                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.Stacker_1;
-            }
-            else        //  둘 다 Pause
-            {
-                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.None;
-            }
-
-
-            FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);
-
-            Equipment.SemiAutoEnable = false;
-            Equipment.SelectRunEnable_New = false;
-            Equipment.SelectRunEnable = false;
-
+            int nTargetCount = (int)numericUpDown_Module_TargetCount.Value;            //  모듈 타겟 카운트 초기화
+            Equipment.DrillModuleTargetCount = nTargetCount;
             Equipment.AutoRunStatus = true;
             workStage.SetRunStatus(RunStatus.Run);
 
@@ -2753,252 +2796,18 @@ namespace SLD200_MSL
                 //  Cycle Stop 을 설정했으므로 Socket Stop 은 Cancel
                 Equipment.CycleSocketStop = false;
                 Equipment.SocketStopped = false;
+
+                Equipment.CycleStopped_MainWork = false;
+                Equipment.CycleStopped_LoaderTransfer = false;
+                Equipment.CycleStopped_UnloaderTransfer = false;
+                
                 checkBox_Main_SocketStop.Checked = false;
             }
 
             Log.Write("SLD-200", Equipment.User_Name, "CheckBox Click", "Cycle Stop 체크박스 : " + Equipment.CycleModuleStop.ToString());
         }
 
-        private void button_Main_Reset_Click(object sender, EventArgs e)
-        {
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
-                return;
-
-            var mb1 = new MessageBoxOk();
-            mb1.ShowDialog("Reset", "모터 초기화 (대기위치 이동) 후 시작 바랍니다.");
-
-            try
-            {
-                // 가공 Data 초기화
-                ProcessManager.Reset();
-                //  Layer Info List 초기화
-                ProcessManager.Init();
-            }
-            catch(Exception ex)
-            {
-                Log.Write(ex);
-            }
-           
-
-            //  가공 Sequence Index 초기화 (Loading 부터 시작)
-            Equipment.m_bMainProcessStatus_LD_LPort_Complete = false;                       //  Loader LPort 투입 완료
-            Equipment.m_bMainProcessStatus_LD_RPort_Complete = false;                       //  Loader RPort 투입 완료
-            Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete = false;           //  Loader Port 에서 Module Pick Up 완료
-            Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete = false;      //  Loader M-Aligner 에 Module Put Down 완료
-            Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete = false;             //  Loader M-Align 완료
-            Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete = false;       //  Loader M-Aligner 에서 Module Pick Up 완료
-            Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete = false;     //  Loader Work Stage 에 Module Put Down 완료
-            Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete = false;       //  Work Stage Process 완료
-            Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete = false;      //  Unloader Work Stage 에서 Module Pick Up 완료
-            Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete = false;          //  Unloader Port 에 Module Put Down 완료
-
-            checkBox_Main_SocketDrilling_Pass.Checked = false;
-            Equipment.SocketDrilling_Skip = false;
-
-            Equipment.ProcessingData_Parsing_byLoader = false;
-
-            selectedRow = -1;
-            selectedColumn = -1;
-            workStage.m_nSelectedSocket_Index = -1;
-            workStage.m_nSocketAlign_StartIndex = -1;
-            Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
-            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
-            checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
-
-            //  Loader 파츠 사용 변수 초기화
-            loader.m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type
-            loader.m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
-            loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_None;
-            loader.m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
-            loader.m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
-            loader.m_nMAlign_Step = (int)MAlign_Step.None;
-            loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.None;                            //  Stacker 우선권 초기화
-
-            loader.m_bStacker0_Complete = false;
-            loader.m_bStacker1_Complete = false;
-            loader.m_bStacker0_PickUp_Failed = false;                                                       //  Stacker1 Pick Up 실패 여부 Flag 초기화
-            loader.m_bStacker1_PickUp_Failed = false;                                                       //  Stacker1 Pick Up 실패 여부 Flag 초기화
-
-            loader.m_bMAlignZone_ModuleExist = false;
-
-            loader.m_nLD_RESTORE_Transfer_Step = 0;
-            loader.m_nLD_RESTORE_Transfer_MoveType = 0;
-            loader.m_bLD_RESTORE_Transfer_toWorkStage_Module_PutDown_Complete_Flag = false;                 //  Work Stage 에 Module Put Down 완료 여부
-            loader.m_bLD_RESTORE_Transfer_fromStacker0_Module_PickUp_Complete_Flag = false;                 //  Stacker0 에서 Module Pick Up 완료 여부
-            loader.m_bLD_RESTORE_Transfer_fromStacker1_Module_PickUp_Complete_Flag = false;                 //  Stacker1 에서 Module Pick Up 완료 여부
-            loader.m_bLD_RESTORE_Transfer_fromMAligner_Module_PickUp_Complete_Flag = false;                 //  M-Aligner 에서 Module Pick Up 완료 여부
-            loader.m_bLD_RESTORE_Transfer_toMAligner_Module_PutDown_Complete_Flag = false;                  //  M-Aligner 에 Module Put Down 완료 여부
-            loader.m_nLD_RESTORE_MainWork_Cycle_Step = 0;
-            loader.m_nLD_RESTORE_DryRun_Cycle_Step = 0;
-            loader.m_nLD_RESTORE_LaserDrilling_Cycle_Step = 0;
-            loader.m_bLD_RESTORE_MainWork_Cycle_Complete = false;
-            loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;         //  Stacker0 에서 Module Pick Up 완료 여부
-            loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;         //  Stacker1 에서 Module Pick Up 완료 여부
-            loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;         //  M-Aligner 에서 Module Pick Up 완료 여부
-            loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;          //  M-Aligner 에 Module Put Down 완료 여부
-            loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;         //  Work Stage 에 Module Put Down 완료 여부
-
-            loader.m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;                    //  Stacker 에서 Module Pick Up 완료 여부
-            loader.m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;                    //  Stacker 에서 Module Pick Up 완료 여부
-            loader.m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;                    //  M-Aligner 에서 Module Pick Up 완료 여부
-            loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                     //  M-Aligner 에 Module Put Down 완료 여부
-            loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                    //  Work Stage 에 Module Put Down 완료 여부
-            loader.m_bLD_Transfer_fromStacker0_Module_PickUp_Complete_Flag = false;                         //  Stacker0 에서 Module Pick Up 완료 여부
-            loader.m_bLD_Transfer_fromStacker1_Module_PickUp_Complete_Flag = false;                         //  Stacker1 에서 Module Pick Up 완료 여부
-            loader.m_bLD_Transfer_fromMAligner_Module_PickUp_Complete_Flag = false;                         //  M-Aligner 에서 Module Pick Up 완료 여부
-            loader.m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag = false;                         //  Work Stage 에 Module Put Down 완료 여부
-            loader.m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag = false;                          //  M-Aligner 에 Module Put Down 완료 여부
-
-            loader.m_bStacker0_Run_byUser = false;                                                          //  Stacker0 Module Pick Up Cycle
-            loader.m_bStacker1_Run_byUser = false;                                                          //  Stacker1 Module Pick Up Cycle
-
-            loader.m_bLD_LPort_Complete = false;                                                            //  L-Port 동작 완료 여부
-            loader.m_bLD_RPort_Complete = false;                                                            //  R-Port 동작 완료 여부
-            loader.m_bLD_TR_ModulePickUp_LPort_Complete = false;                                            //  Transfer L-Port Module Pick Up 동작 완료 여부
-            loader.m_bLD_TR_ModulePickUp_RPort_Complete = false;                                            //  Transfer R-Port Module Pick Up 동작 완료 여부
-            loader.m_bLD_TR_ModulePutDown_MAligner_Complete = false;                                        //  Transfer Module Put Down 동작 완료 여부
-            loader.m_bLD_MAligner_Exist = false;                                                            //  M-Aligner 로 Module Pick & Place
-            loader.m_bLD_MAlign_Complete = false;                                                           //  M-Aligner 동작 완료 여부
-            loader.m_bLD_TR_ModulePickUp_MAligner_Complete = false;                                         //  M-Aligner Module Pick Up 동작 완료 여부
-            loader.m_bLD_WorkStage_LoadingComplete = false;                                                 //  Work Stage 로 Module Loading 완료 여부
-
-            //  Unloader 파츠 사용 변수 초기화
-            unloader.m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-            unloader.m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_None;
-            unloader.m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-            unloader.m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-            unloader.m_bStacker0_Complete = false;
-            unloader.m_bStacker1_Complete = false;
-
-            unloader.m_nUL_RESTORE_Transfer_Step = 0;
-            unloader.m_nUL_RESTORE_Transfer_MoveType = 0;
-            unloader.m_bUL_RESTORE_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;
-            unloader.m_bUL_RESTORE_LD_Transfer_toWorkStage_Module_PutDown_Complete = false;
-            unloader.m_nUL_RESTORE_MainWork_Cycle_Step = 0;
-            unloader.m_nUL_RESTORE_DryRun_Cycle_Step = 0;
-            unloader.m_nUL_RESTORE_LaserDrilling_Cycle_Step = 0;
-            unloader.m_bUL_RESTORE_MainWork_Cycle_Complete = false;
-            unloader.m_nUL_RESTORE_MainWork_Cycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;
-            unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = false;                                  //  OK 인 Module 을 R-Port 로 가져갈 것인지 L-Port 로 가져갈 것인지
-
-            unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;    //  Work Stage 에서 Module Pick Up 완료 여부
-            unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;      //  Stacker0 에 Module Put Down 완료 여부
-            unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;      //  Stacker1 에 Module Put Down 완료 여부
-            unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;            //  NG-Port 에 Module Put Down 완료 여부     
-
-            unloader.m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;               //  Work Stage 에서 Module Pick Up 완료 여부
-            unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                 //  Stacker0 에 Module Put Down 완료 여부
-            unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                 //  Stacker1 에 Module Put Down 완료 여부
-            unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                       //  NG-Port 에 Module Put Down 완료 여부
-            unloader.m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = false;                        //  Unloader Transfer Module Unloading 완료 여부
-            unloader.m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;                      //  Work Stage 에서 Module Pick Up 완료 여부
-
-            //  Main 파츠 사용 변수 초기화
-            workStage.m_bMainWorkCycle_Complete = false;
-            //workStage.m_bMainWorkCycle_ResultOK = false;
-            workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;
-            workStage.m_bMainWorkCycle_ResultOK_toRPort = true;
-            workStage.m_nMainWork_Step = (int)MainWork_Step.None;                                 //  Main Work Step
-            workStage.m_nMainWorkCycleType = (int)MainWorkCycleType.Cycle_None;                   //  자동 운전 시 사용하는 변수
-            workStage.m_bMainWorkCycle_DryRun = false;
-
-            //  Laser Drilling 파츠 사용 변수 초기화
-            workStage.m_bLaserDrilling_Complete = false;
-            workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-            Equipment.m_AlignMode = AlignMode.Socket;
-
-            workStage.m_bPassedSocket_Exist = false; //  Pass Socket 존재 여부
-
-            try
-            {
-                // workstage LaserOff2 case문에서 초기화 하는 변수 전부 같이 Reset
-                workStage.GlobalSocketStatus_Init();            //위에서 하고 있는거 같지만.
-                workStage.GetDrillingData_ProcessingFlagCheck();
-            }
-            catch(Exception ex)
-            {
-                Log.Write(ex);
-            }
-
-            //  가공이 완료되었으므로, Align 변수 false 로
-            workStage.m_bAlignCompleted = false;
-            Equipment.SelectRunEnable = false;
-            workStage.m_bForceEjectRequest = false;
-
-            Equipment.SemiAutoEnable = false;
-            Equipment.SelectRunEnable_New = false; 
-
-
-            // 장비 정지 시 그냥 정지 시킨다.
-            workStage.m_ScannerCameraOffsetSequence.Reset();
-            workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
-            workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
-            workStage.m_bSensorRequestPending = false;   // 요청 보냄
-            workStage.m_bSensorResponseReady = false;    // 응답 받음
-
-            workStage.m_bFirstAutoCrossCheckDone = false;
-
-            workStage.ResetRecovery();
-            unloader.ResetRecovery();
-            loader.ResetRecovery();
-
-            try
-            {
-                //도면을 현재 recipe로 불러온다.
-                if (Equipment.RecipeOpen_DrawingFilePath != null && Equipment.RecipeOpen_DrawingFilePath != "")
-                {
-                    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-                }
-            }
-            catch(Exception ex)
-            {
-                Log.Write(ex);
-            }
-
-            //I/O - Off
-            if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
-            {
-                workStage.workStageParameter.DO_Stage_Vacuum(false);
-
-                mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Reset", "workStage - 자재 확인 바랍니다.");
-            }
-
-            if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
-            {
-                loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, false);
-
-                mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Reset", "Loader_Aligner - 자재 확인 바랍니다.");
-            }
-
-            if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner))
-                loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
-
-            if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))
-                loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
-
-            if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
-                loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
-            {
-                mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Reset", "Loader Picker - 자재 확인 및 버큠 Off 바랍니다.");
-            }
-
-            if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
-                unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
-            {
-                mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Reset", "Unloader Picker - 자재 확인 및 버큠 Off 바랍니다.");
-            }
-
-
-        }
-            
-
+        
         private void checkBox_Main_Loader_Transfer_Pause_CheckedChanged(object sender, EventArgs e)
         {
             //Equipment.Loader_Transfer_Pause = checkBox_Main_Loader_Transfer_Pause.Checked;
@@ -3592,12 +3401,6 @@ namespace SLD200_MSL
             }
         }
 
-        private void button_Test12_Click(object sender, EventArgs e)
-        {
-            workStage.AlarmPost(QMC.Common.Modules.WorkStage.AlarmKey.PreAlignFail);
-        }
-
-
         //  Text 의 Cap Height 로 Width 크기를 구하는 함수
         public float GetTextWidthByCapHeight(string text, string fontName, float capHeight)
         {
@@ -3619,6 +3422,9 @@ namespace SLD200_MSL
         
         private async  void button_TEST12_Click(object sender, EventArgs e)
         {
+            //workStage.m_Sequence_LaserPowerMeasure.TestLog(); //  테스트용 로그 출력
+            return;
+
             Equipment.AutoRunStatus = true;
 
             // 전체 초기화
@@ -4439,9 +4245,10 @@ namespace SLD200_MSL
                 string inputText = GetValue(baseTextBox_SocketCountPerModule);
 
                 SetValue(baseTextBox_Module_TotalCount, workStage.DrillingManager.CycleTimer_DoneModuleCount.ToString());
+                SetValue(baseTextBox_Module_NGCount, workStage.DrillingManager.CycleTimer_NGModuleCount.ToString());
 
                 int nSocketCnt = inputText == "" ? 0 : ToInt(inputText);
-                int nSocketTotalCnt = totalCount * nSocketCnt;
+                int nSocketTotalCnt = doneCount * nSocketCnt;   //totalCount * nSocketCnt;
                 SetValue(baseTextBox_TotalSocketCount, nSocketTotalCnt.ToString());
                 SetValue(baseTextBox_NGSocketCount, (nSocketTotalCnt - NGCount).ToString());
 
@@ -4476,8 +4283,10 @@ namespace SLD200_MSL
         {
             workStage.DrillingManager.CycleTimer_TargetModuleCount = 0;
             workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
+            workStage.DrillingManager.CycleTimer_NGModuleCount = 0;
+            workStage.DrillingManager.CycleTimer_DoneSocketCount = 0;
             workStage.DrillingManager.CycleTimer_NGSocketCount = 0;
-
+            
             numericUpDown_Module_TargetCount.Value = 0;
             baseTextBox_Module_TotalCount.Text = "0";
             baseTextBox_Module_NGCount.Text = "0";
@@ -4487,6 +4296,45 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            return;
+            workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
+            Thread.Sleep(1000);
+            workStage.DrillingManager.CycleTimer_LaserDrilling.End();
+
+            workStage.DrillingManager.SaveLotLog();                     // 최신 로그 저장
+            return;
+            Equipment.Scanner_Vision_Offset_Setting_X = 0.0015;
+            Equipment.Scanner_Vision_Offset_Setting_Y = -0.0023;
+
+            workStage.m_ScannerCameraOffsetSequence.SaveScannerCameraOffsetLog("OK",  // 또는 "NG"
+                                    Equipment.stOffsetDistance.FromScannerToFineCam.X,
+                                    Equipment.stOffsetDistance.FromScannerToFineCam.Y,
+                                    Equipment.Scanner_Vision_Offset_Setting_X,
+                                    Equipment.Scanner_Vision_Offset_Setting_Y
+                                    );
+
+            return;
+            string strTemp = string.Empty;
+            var markingLayer = workStage.DrillingManager.GetLayer(LayerList.Marking);
+            if (markingLayer != null && markingLayer.SocketList.Count > 0)
+            {
+                //if ((!Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType) &&                                                                     //  마킹이 고정 Text 가 아닌 Serial Number 마킹인 경우
+                //    (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType == (int)nSerialNumber_IncreaseType.forEachModule))       //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
+                
+                if(Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType == (int)nSerialNumber_IncreaseType.forEachModule)
+                {
+                    int nCount = Equipment.m_nSerialNumberMarkingCount;
+                    strTemp = string.Format("Module Number : {0} 부터 시작합니다.", nCount);
+                    var mb = new MessageBoxOk();
+                    mb.ShowDialog("Information !", strTemp);
+                }
+                //string message = $"Marking 레이어가 존재하며, {markingLayer.SocketList.Count}개의 소켓이 포함되어 있습니다.";
+                //var mb = new MessageBoxOk();
+                //mb.ShowDialog("Information", message);
+            }
+
+            return;
+
             int nSocket = 0;
             nSocket = 0;
 
@@ -4631,7 +4479,7 @@ namespace SLD200_MSL
             //bds.DustCollector_Upper.GetFrequency(out freq);
 
 
-            string strTemp = "";
+            //string strTemp = "";
             double offsetX = 0.0, offsetY = 0.0;
 
             for (int i = 0; i < 20; i++)
@@ -4848,5 +4696,433 @@ namespace SLD200_MSL
             FormModuleMonitor.Visible = true;
         }
 
+
+        // 최종 수정 버전 - 실장비 대응 안전 강화 포함
+        private void button_Main_Reset_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
+                return;
+
+            CancellationTokenSource cts = new CancellationTokenSource();
+            Task<int> resetTask = ResetSequenceAsync(cts.Token);
+
+            var pf = new ProgressForm("Reset 중", "시퀀스 완료까지 기다리는 중입니다...", resetTask);
+            pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
+            pf.StopProcess += (obj) =>
+            {
+                cts.Cancel();
+                workStage?.rtc?.CtlAbort();
+            };
+
+            pf.ShowDialog();
+
+            string strTemp = string.Empty;
+            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+            if (resetTask.Result == 0)
+            {
+                strTemp = "Reset 완료";
+                new QMC.Core.MessageBoxOk().ShowDialog("Information !", strTemp);
+            }
+            else
+            {
+                strTemp = "Reset이 중단되었습니다.";
+                new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+            }
+        }
+
+        private readonly object _resetLock = new object();
+        private async Task<int> ResetSequenceAsync(CancellationToken token)
+        {
+            lock (_resetLock)
+            {
+                if (Equipment.ResetProcess)
+                    return 0;
+                Equipment.ResetProcess = true;
+            }
+
+            string strTemp = string.Empty;
+            try
+            {
+                checkBox_Main_SocketDrilling_Pass.Checked = false;
+                selectedRow = -1;
+                selectedColumn = -1;
+                checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
+
+                workStage.ResetProcess();
+
+                if (!workStage.m_bHomeOK)
+                {
+                    ShowError("초기화 진행 바랍니다.");
+                    return -1;
+                }
+
+                if (token.IsCancellationRequested) return -1;
+
+                try
+                {
+                    workStage.rtc?.CtlAbort();
+                    await Task.Delay(1000, token);
+                    workStage.rtc?.CtlReset();
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                    ShowError("RTC Abort 또는 Reset 실패");
+                    return -1;
+                }
+
+                bool result = await DoResetMotionAndIOAsync(token);
+                return result ? 0 : -1;
+            }
+            catch (OperationCanceledException)
+            {
+                strTemp = "workStage - 자재 확인 바랍니다. Reset";
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return -1;
+            }
+            finally
+            {
+                Equipment.ResetProcess = false;
+            }
+        }
+
+        private async Task<bool> DoResetMotionAndIOAsync(CancellationToken token)
+        {
+            var motor_Speed = Equipment.Type_Motor_Speed.Coarse;
+            var mb2 = new MessageBoxOk();
+            string strTemp = string.Empty;
+            try
+            {
+                int nIndex = (int)Vision.Vision_TeachingPosList.Vision_SafetyPos;
+                workStage.MovetoWorkStage_TeachingPositionsZ(nIndex, motor_Speed);
+                double dPosZ = vision.stVisionTeachingPos[nIndex].Vision_Z;
+
+                nIndex = (int)Loader.LDUL_TeachingPosList.LD_TR_SafetyPos;
+                loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                double dPosZ_Loader = loader.stLDULTeachingPos[nIndex].LD_Transfer_Z;
+
+                nIndex = (int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos;
+                unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                double dPosZ_Unloader = loader.stLDULTeachingPos[nIndex].UL_Transfer_Z;
+
+                await Task.Delay(500, token);
+
+                if (!await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Z, dPosZ))
+                    return ShowErrorAndReturn("Stage Z-Axis 이동 실패");
+                if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_Z, dPosZ_Loader))
+                    return ShowErrorAndReturn("Loader Z-Axis 이동 실패");
+                if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, dPosZ_Unloader))
+                    return ShowErrorAndReturn("Unloader Z-Axis 이동 실패");
+
+                // Port Z축 이동
+                nIndex = (int)Loader.LDUL_TeachingPosList.LD_RPort_ReadyPos;
+                loader.MovetoLoader_TeachingPositionsPortR(nIndex, motor_Speed);
+                double dPosZ_PortR = loader.stLDULTeachingPos[nIndex].LD_Stacker_Z0;
+
+                nIndex = (int)Loader.LDUL_TeachingPosList.LD_LPort_ReadyPos;
+                loader.MovetoLoader_TeachingPositionsPortL(nIndex, motor_Speed);
+                double dPosZ_PortL = loader.stLDULTeachingPos[nIndex].LD_Stacker_Z1;
+
+                nIndex = (int)Loader.LDUL_TeachingPosList.UL_RPort_ReadyPos;
+                unloader.MovetoUnloader_TeachingPositionsPortR(nIndex, motor_Speed);
+                double dPosZ_UnPortR = loader.stLDULTeachingPos[nIndex].UL_Stacker_Z0;
+
+                nIndex = (int)Loader.LDUL_TeachingPosList.UL_LPort_ReadyPos;
+                unloader.MovetoUnloader_TeachingPositionsPortL(nIndex, motor_Speed);
+                double dPosZ_UnPortL = loader.stLDULTeachingPos[nIndex].UL_Stacker_Z1;
+
+                await Task.Delay(500, token);
+
+                if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z0, dPosZ_PortR))
+                    return ShowErrorAndReturn("Loader PortR Z-Axis 이동 실패");
+                if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z1, dPosZ_PortL))
+                    return ShowErrorAndReturn("Loader PortL Z-Axis 이동 실패");
+                if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z0, dPosZ_UnPortR))
+                    return ShowErrorAndReturn("Unloader PortR Z-Axis 이동 실패");
+                if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z1, dPosZ_UnPortL))
+                    return ShowErrorAndReturn("Unloader PortL Z-Axis 이동 실패");
+
+                // Stage XY 이동
+                nIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_SafetyPos;
+                workStage.MovetoWorkStage_TeachingPositionsXY(nIndex, motor_Speed);
+                double dPosX = workStage.stWorkStageTeachingPos[nIndex].Stage_X;
+                double dPosY = workStage.stWorkStageTeachingPos[nIndex].Stage_Y;
+
+                await Task.Delay(500, token);
+
+                if (!await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, dPosX) ||
+                    !await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY))
+                    return ShowErrorAndReturn("Stage X/Y 축 이동 실패");
+
+                // Vacuum 해제
+                if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
+                {
+                    workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    strTemp = "workStage - 자재 확인 바랍니다. Reset";
+                    Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                }
+
+                foreach (var pos in Enum.GetValues(typeof(LoaderParameter.MAlignerVacuumPos)))
+                {
+                    int index = (int)pos;
+                    if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck(index))
+                        loader.loaderParameter.DO_Loader_Aligner_Vacuum(index, false);
+                }
+
+                foreach (var pos in Enum.GetValues(typeof(LoaderParameter.PickerVacuumPos)))
+                {
+                    int index = (int)pos;
+                    if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck(index))
+                        loader.loaderParameter.DO_Loader_Picker_Vacuum(index, false);
+                    if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index))
+                        unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                ShowError("Motion 또는 IO 처리 중 예외 발생");
+                return false;
+            }
+        }
+
+        private bool ShowErrorAndReturn(string msg)
+        {
+            ShowError(msg);
+            return false;
+        }
+
+        private void ShowError(string msg)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() => ShowError(msg)));
+                return;
+            }
+
+            Log.Write("SLD-200", Equipment.User_Name, msg);
+            new QMC.Core.MessageBoxOk().ShowDialog("Error !", msg);
+        }
+
+
+        //private void button_Main_Reset_Click(object sender, EventArgs e)
+        //{
+        //    var mb = new MessageBoxYesNo();
+        //    if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
+        //        return;
+
+        //    if (Equipment.ResetProcess)
+        //    {
+        //        return;
+        //    }
+
+        //    Equipment.ResetProcess = true;
+
+        //    //Main화면 - 변수 == 필요한가.. 흠..
+        //    checkBox_Main_SocketDrilling_Pass.Checked = false;
+        //    selectedRow = -1;
+        //    selectedColumn = -1;
+        //    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+        //    checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
+
+        //    workStage.ResetProcess();
+
+        //    // 아래 구문.. 함수로 만드나.. 여기에 그냥 놔두나...
+        //    // Reset하면 Laser Shot 끄자.
+        //    var mb2 = new QMC.Core.MessageBoxOk();
+        //    string strTemp = string.Empty;
+        //    if (!workStage.m_bHomeOK)
+        //    {
+        //        Equipment.ResetProcess = false;
+        //        strTemp = string.Format("초기화 진행 바랍니다.");
+        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //        mb2.ShowDialog("Error !", strTemp);
+        //        return;
+        //    }
+
+        //    if (workStage.rtc != null)
+        //    {
+        //        workStage.rtc.CtlAbort(); //  RTC Abort
+        //        Thread.Sleep(1000);
+        //        workStage.rtc.CtlReset(); //  RTC Reset
+        //    }
+
+        //    if (workStage.m_bHomeOK)
+        //    {
+        //        // Axis - 대기위치 이동
+
+        //        //  속도 설정
+        //        Equipment.Type_Motor_Speed motor_Speed;
+        //        motor_Speed = Equipment.Type_Motor_Speed.Coarse;
+        //        int nIndex = 0; //Teaching Position Index
+
+        //        nIndex = (int)Vision.Vision_TeachingPosList.Vision_SafetyPos;
+        //        workStage.MovetoWorkStage_TeachingPositionsZ(nIndex, motor_Speed);
+        //        double dPosZ = vision.stVisionTeachingPos[nIndex].Vision_Z;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.LD_TR_SafetyPos;
+        //        loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+        //        double dPosZ_Loader = loader.stLDULTeachingPos[nIndex].LD_Transfer_Z;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos;
+        //        unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+        //        double dPosZ_Unloader = loader.stLDULTeachingPos[nIndex].UL_Transfer_Z;
+        //        Thread.Sleep(500);
+
+        //        bool bWaitZ = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Z, dPosZ).Result;
+        //        if (!bWaitZ)
+        //        {
+        //            Equipment.ResetProcess = false;
+        //            strTemp = string.Format("Stage Z-Axis이 이동 실패.");
+        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //            mb2.ShowDialog("Error !", strTemp);
+        //            return;
+        //        }
+        //        bool bWaitZ_Loader = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_Z, dPosZ_Loader).Result;
+        //        if (!bWaitZ_Loader)
+        //        {
+        //            Equipment.ResetProcess = false;
+        //            strTemp = string.Format("Loader Z-Axis이 이동 실패.");
+        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //            mb2.ShowDialog("Error !", strTemp);
+        //            return;
+        //        }
+        //        bool bWaitZ_Unloader = unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, dPosZ_Unloader).Result;
+        //        if (!bWaitZ_Unloader)
+        //        {
+        //            Equipment.ResetProcess = false;
+        //            strTemp = string.Format("Unloader Z-Axis이 이동 실패.");
+        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //            mb2.ShowDialog("Error !", strTemp);
+        //            return;
+        //        }
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.LD_RPort_ReadyPos;
+        //        loader.MovetoLoader_TeachingPositionsPortR(nIndex, motor_Speed);
+        //        double dPosZ_PortR = loader.stLDULTeachingPos[nIndex].LD_Stacker_Z0;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.LD_LPort_ReadyPos;
+        //        loader.MovetoLoader_TeachingPositionsPortL(nIndex, motor_Speed);
+        //        double dPosZ_PortL = loader.stLDULTeachingPos[nIndex].LD_Stacker_Z1;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.UL_RPort_ReadyPos;
+        //        unloader.MovetoUnloader_TeachingPositionsPortR(nIndex, motor_Speed);
+        //        double dPosZ_UnPortR = loader.stLDULTeachingPos[nIndex].UL_Stacker_Z0;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.UL_LPort_ReadyPos;
+        //        unloader.MovetoUnloader_TeachingPositionsPortL(nIndex, motor_Speed);
+        //        double dPosZ_UnPortL = loader.stLDULTeachingPos[nIndex].UL_Stacker_Z1;
+
+        //        Thread.Sleep(500);
+        //        bool bWaitZ_PortR = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z0, dPosZ_PortR).Result;
+        //        if (!bWaitZ_PortR)
+        //        {
+        //            Equipment.ResetProcess = false;
+        //            strTemp = string.Format("Loader PortR Z-Axis이 이동 실패.");
+        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //            mb2.ShowDialog("Error !", strTemp);
+        //            return;
+        //        }
+        //        bool bWaitZ_PortL = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z1, dPosZ_PortL).Result;
+        //        if (!bWaitZ_PortL)
+        //        {
+        //            Equipment.ResetProcess = false;
+        //            strTemp = string.Format("Loader PortL Z-Axis이 이동 실패.");
+        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //            mb2.ShowDialog("Error !", strTemp);
+        //            return;
+        //        }
+        //        bool bWaitZ_UnPortR = unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z0, dPosZ_UnPortR).Result;
+        //        if (!bWaitZ_UnPortR)
+        //        {
+        //            Equipment.ResetProcess = false;
+        //            strTemp = string.Format("Unloader PortR Z-Axis이 이동 실패.");
+        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //            mb2.ShowDialog("Error !", strTemp);
+        //            return;
+        //        }
+        //        bool bWaitZ_UnPortL = unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z1, dPosZ_UnPortL).Result;
+        //        if (!bWaitZ_UnPortL)
+        //        {
+        //            Equipment.ResetProcess = false;
+        //            strTemp = string.Format("Unloader PortL Z-Axis이 이동 실패.");
+        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //            mb2.ShowDialog("Error !", strTemp);
+        //            return;
+        //        }
+
+        //        // Stage Position Reset : Unloader Pos으로?
+        //        nIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_SafetyPos;
+        //        workStage.MovetoWorkStage_TeachingPositionsXY(nIndex, motor_Speed);
+        //        double dPosX = workStage.stWorkStageTeachingPos[nIndex].Stage_X;
+        //        double dPosY = workStage.stWorkStageTeachingPos[nIndex].Stage_Y;
+        //        Thread.Sleep(500);
+        //        bool bWaitX = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, dPosX).Result;
+        //        bool bWaitY = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY).Result;
+        //        if (!bWaitX || !bWaitY)
+        //        {
+        //            Equipment.ResetProcess = false;
+        //            strTemp = string.Format("X-Axis 또는 Y-Axis이 이동 실패.");
+        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //            mb2.ShowDialog("Error !", strTemp);
+        //            return;
+        //        }
+
+        //        //I/O - Off
+        //        if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
+        //        {
+        //            workStage.workStageParameter.DO_Stage_Vacuum(false);
+        //            mb2.ShowDialog("Reset", "workStage - 자재 확인 바랍니다.");
+        //        }
+
+        //        if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
+        //        {
+        //            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, false);
+
+        //            mb2.ShowDialog("Reset", "Loader_Aligner - 자재 확인 바랍니다.");
+        //        }
+        //        if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner))
+        //            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
+
+        //        if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))
+        //            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
+
+
+        //        if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+        //            loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+        //        {
+        //            //loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, false);
+        //            //loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, false);
+
+        //            mb2.ShowDialog("Reset", "Loader Picker - 자재 확인 및 버큠 Off 바랍니다.");
+        //        }
+
+        //        if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+        //            unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+        //        {
+        //            //unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, false);
+        //            //unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, false);
+
+        //            mb2.ShowDialog("Reset", "Unloader Picker - 자재 확인 및 버큠 Off 바랍니다.");
+        //        }
+
+        //        Equipment.ResetProcess = false;
+        //        strTemp = string.Format("Reset Complete");
+        //        mb2.ShowDialog("Complete !", strTemp);
+        //        return;
+        //    }
+        //}
     }
 }
