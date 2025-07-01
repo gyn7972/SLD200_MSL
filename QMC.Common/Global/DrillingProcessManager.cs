@@ -122,6 +122,8 @@ namespace QMC.Common.Global
         // --- 추가된 변수들 ---
         public int CycleTimer_TargetModuleCount { get; set; } = 0;
         public int CycleTimer_DoneModuleCount { get; set; } = 0;
+        public int CycleTimer_NGModuleCount { get; set; } = 0;
+        public int CycleTimer_DoneSocketCount { get; set; } = 0;
         public int CycleTimer_NGSocketCount { get; set; } = 0;
         //  workStage 가공시간 계산을 위해 사용되는 변수
         public CycleTimer CycleTimer_LaserDrilling { get; set; } = new CycleTimer();
@@ -432,7 +434,8 @@ namespace QMC.Common.Global
             string endTime = CycleTimer_LaserDrilling.ProcessEndTime.ToString("yyyy-MM-dd HH:mm:ss");
             string recipeName = System.IO.Path.GetFileName(Equipment.Current_Recipe);
             string drawingName = System.IO.Path.GetFileName(Equipment.Current_DrawingFileName);
-            int count = CycleTimer_DoneModuleCount;
+            int count = 0;//CycleTimer_DoneModuleCount;
+            int countNg = 0;//CycleTimer_NGModuleCount;
 
             List<string> lines = new List<string>();
 
@@ -449,7 +452,7 @@ namespace QMC.Common.Global
                 }
 
                 bool isUpdated = false;
-
+                int updatedCount = 0;
                 if (lines.Count > 0)
                 {
                     string lastLine = lines.Last();
@@ -459,18 +462,24 @@ namespace QMC.Common.Global
                         string originalStartTime = parts[0];
                         if (int.TryParse(parts[4], out int prevCount))
                         {
-                            int updatedCount = prevCount + count;
+                            //int updatedCount = prevCount + count;
+                            updatedCount = prevCount + 1;   //기존꺼 불러와서 저장하기 때문에 +1만 해준다.
                             string updatedLine = $"{originalStartTime},{endTime},{recipeName},{drawingName},{updatedCount}";
                             lines[lines.Count - 1] = updatedLine;
                             isUpdated = true;
+
+                            Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={updatedCount}");
                         }
                     }
                 }
 
                 if (!isUpdated)
                 {
+                    count += 1; // 새 레시피면 카운트 1 증가
                     string newLine = $"{startTime},{endTime},{recipeName},{drawingName},{count}";
                     lines.Add(newLine);
+
+                    Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={count}");
                 }
 
                 // 파일에 다시 전체 쓰기 (공유 허용)
@@ -480,8 +489,6 @@ namespace QMC.Common.Global
                     foreach (string line in lines)
                         writer.WriteLine(line);
                 }
-
-                Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={count}");
             }
             catch (Exception ex)
             {

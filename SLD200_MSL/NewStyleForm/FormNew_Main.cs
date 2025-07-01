@@ -2134,7 +2134,8 @@ namespace SLD200_MSL
             button_Main_Start.BackColor = Color.LightGreen;
             button_Main_Start.ForeColor = Color.Black;
 
-
+            int nTargetCount = (int)numericUpDown_Module_TargetCount.Value;            //  모듈 타겟 카운트 초기화
+            Equipment.DrillModuleTargetCount = nTargetCount;
 
             //집진기 상/하부 | 이오나이저 Off
             workStage.DustCollector_On((int)nDustCollector.DustCollector_Upper);
@@ -4644,9 +4645,10 @@ namespace SLD200_MSL
                 string inputText = GetValue(baseTextBox_SocketCountPerModule);
 
                 SetValue(baseTextBox_Module_TotalCount, workStage.DrillingManager.CycleTimer_DoneModuleCount.ToString());
+                SetValue(baseTextBox_Module_NGCount, workStage.DrillingManager.CycleTimer_NGModuleCount.ToString());
 
                 int nSocketCnt = inputText == "" ? 0 : ToInt(inputText);
-                int nSocketTotalCnt = totalCount * nSocketCnt;
+                int nSocketTotalCnt = doneCount * nSocketCnt;   //totalCount * nSocketCnt;
                 SetValue(baseTextBox_TotalSocketCount, nSocketTotalCnt.ToString());
                 SetValue(baseTextBox_NGSocketCount, (nSocketTotalCnt - NGCount).ToString());
 
@@ -4681,8 +4683,10 @@ namespace SLD200_MSL
         {
             workStage.DrillingManager.CycleTimer_TargetModuleCount = 0;
             workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
+            workStage.DrillingManager.CycleTimer_NGModuleCount = 0;
+            workStage.DrillingManager.CycleTimer_DoneSocketCount = 0;
             workStage.DrillingManager.CycleTimer_NGSocketCount = 0;
-
+            
             numericUpDown_Module_TargetCount.Value = 0;
             baseTextBox_Module_TotalCount.Text = "0";
             baseTextBox_Module_NGCount.Text = "0";
@@ -4692,6 +4696,12 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
+            Thread.Sleep(1000);
+            workStage.DrillingManager.CycleTimer_LaserDrilling.End();
+
+            workStage.DrillingManager.SaveLotLog();                     // 최신 로그 저장
+            return;
             Equipment.Scanner_Vision_Offset_Setting_X = 0.0015;
             Equipment.Scanner_Vision_Offset_Setting_Y = -0.0023;
 

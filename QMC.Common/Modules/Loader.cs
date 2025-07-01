@@ -2128,8 +2128,7 @@ namespace QMC.Common.Modules
             }
 
 
-                StackerModulePickupWaitingPos_Step currentStep = (StackerModulePickupWaitingPos_Step)m_nStacker0_ModulePickupWaitingPos_Step;
-
+            StackerModulePickupWaitingPos_Step currentStep = (StackerModulePickupWaitingPos_Step)m_nStacker0_ModulePickupWaitingPos_Step;
             switch (m_nStacker0_ModulePickupWaitingPos_Step)
             {
                 case (int)StackerModulePickupWaitingPos_Step.Start:
@@ -3928,6 +3927,31 @@ namespace QMC.Common.Modules
             {   
             }
 
+            //TargetCount가 0이면 멈추지 않고 돌아야 한다.
+            //CycleTimer_DoneModuleCount <- workStage에서 증가하기때문에 target-1 일때 멈추자? 
+            if (Equipment.DrillModuleTargetCount != 0 &&
+                (Equipment.DrillModuleTargetCount -1) < (workStage.DrillingManager.CycleTimer_DoneModuleCount) &&
+                m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None)
+            {
+                if (m_bMLoader_LogOnce == false)
+                {
+                    m_strTemp = "Equipment.DrillModuleTargetCount - Stop";
+                    Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                    m_bMLoader_LogOnce = true;
+                }
+
+                // SemiAuto처럼 정지를 시켜야겠다.
+                // 여기 들어오면.. Loader, workStage 정지하고.
+                m_LoaderWork_Start = false;
+                return ret;
+                //this.m_LaserDrillingWork_Start = false;
+                //this.m_ProductAlign_Start = false;
+                //this.m_MainWork_Start = false;
+                //this.m_SubWork_Start = false;
+                // Unloader는 제품 제거하고 정지.
+                //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
+            }
+
             //  자동운전 시, Transfer 동작 조건
             if (Equipment.AutoRunStatus &&
                 !Equipment.Loader_Transfer_Pause &&                                     //  Loader Transfer Cycle Pause 시 동작 안되도록
@@ -4042,12 +4066,11 @@ namespace QMC.Common.Modules
                     //Log.Write("SLD-200", Equipment.User_Name, "m_nLoader_Transfer_Step", "Cycle_WorkStage_PutDown");
                     if(m_bMLoader_LogOnce == false)
                     {
-                        m_strTemp = "Cycle_WorkStage_PutDown";
+                        m_strTemp = "NONE";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         m_bMLoader_LogOnce = true;
                     }
                     //return AlarmPost(AlarmKey.LD_Transfer_Error);
-
                 }
             }
             else if(Equipment.SemiAutoEnable &&
@@ -4068,7 +4091,7 @@ namespace QMC.Common.Modules
                 // Stacker0 에서 Module 을 Pick Up 하기 위한 조건
                 // 1. stacker0번(Right)에서 제품 픽업
                 if (!m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete &&
-                    (m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None) &&
+                   (m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None) &&
 
                     m_bStacker0_Complete &&
 
@@ -4164,8 +4187,6 @@ namespace QMC.Common.Modules
                          (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
                         !workStage.m_bMainWorkCycle_Complete && 
                         (unloader.m_nUnloaderTransferMoveType != (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp))
-
-                    
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "m_nLoader_Transfer_Step", "Cycle_WorkStage_PutDown");
                     m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_WorkStage_PutDown;        //  Work Stage 에 Module Put Down Cycle
@@ -4173,14 +4194,12 @@ namespace QMC.Common.Modules
                 }
                 else
                 {
-                    //Log.Write("SLD-200", Equipment.User_Name, "m_nLoader_Transfer_Step", "Cycle_WorkStage_PutDown");
                     if (m_bMLoader_LogOnce == false)
                     {
-                        m_strTemp = "Cycle_WorkStage_PutDown";
+                        m_strTemp = "NONE";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         m_bMLoader_LogOnce = true;
                     }
-                    //return AlarmPost(AlarmKey.LD_Transfer_Error);
 
                 }
             }
@@ -4190,6 +4209,8 @@ namespace QMC.Common.Modules
             {
                 case (int)Loader_Transfer_Step.Start:
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "시작");
+
+                    m_bMLoader_LogOnce = true;  // Log 한번만 찍도록 : 위에꺼 로그 초기화.
 
                     Equipment.MachineStop_byAlarm = false;
 

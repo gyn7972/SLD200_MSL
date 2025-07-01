@@ -409,6 +409,8 @@ namespace QMC.Common.Modules
             public double[] dFiducialWidth;             //  Fiducial 마크 가로 크기
             public double[] dFiducialHeight;            //  Fiducial 마크 세로 크기
 
+            public double dLaserHeightValue;            //  레이저 높이 값
+
             public int m_nPreAlign_TotalCount;          //  PreAlign 마크 개수
             public PointD[] dPreAlignPos;               //  PreAlign 마크 위치 좌표
             public double[] dPreAlignWidth;             //  PreAlign 마크 가로 크기
@@ -2978,6 +2980,8 @@ namespace QMC.Common.Modules
             DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos,                    //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동
             DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck,          //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
             
+            DrillingData_SocketHeight_Batch,
+
             DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos,                   //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동
             DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck,         //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
             DrillingData_MovetoLaserHeightSensorPos_StableTime,                             //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 후 안정화 시간 대기
@@ -7828,7 +7832,7 @@ namespace QMC.Common.Modules
                             //ActionDrillingProcessManagerUpdated?.Invoke(DrillingManager);
 
                             //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
-                            GlobalSocketStatus_Init();
+                            //GlobalSocketStatus_Init();
 
                             // Thruhole 가공 Pass 여부를 결정하는 Flag 변수 선언을 여기에서 한번만 한다.
                             GetDrillingData_ProcessingFlagCheck();
@@ -13294,7 +13298,8 @@ namespace QMC.Common.Modules
                 case (int)MainWork_Step.LaserDrilling_Cycle_CompleteCheck:                         //  Laser Drilling Cycle 완료 확인
 
                     if ((m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None) &&
-                        !Equipment.CycleSocketStop && m_bLaserDrilling_Complete)
+                        !Equipment.CycleSocketStop && 
+                        m_bLaserDrilling_Complete)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling 완료");
 
@@ -13305,8 +13310,6 @@ namespace QMC.Common.Modules
                         int nCycleTime = TickCount_Elapsed((int)TickType.TICK_MAIN_CYCLE_CHECK);
                         //MainForm으로 Time 전달
                         m_OneCycleTimeMs = nCycleTime; //tick == ms
-
-
                     }
                     //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
                     //{
@@ -13357,7 +13360,6 @@ namespace QMC.Common.Modules
                             //  Laser Drilling 결과에 따라 OK/NG 다르게 해야 함.
                             //  소켓 얼라인 결과가 NG 이면 NG 로 (설정 개수 이상 NG 일 경우에)
                             //m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
-                            
                             var activeLayers = DrillingManager.LayerList
                                                 .Where(l => l.SocketList.Any(s => s.IsDrilled))   // 실제 가공된 소켓이 있는 Layer만
                                                 .ToList();
@@ -13385,13 +13387,60 @@ namespace QMC.Common.Modules
                                 !m_bFindLowerAlignMark_OK ||
                                 !m_bPreAlignCompleted)
                             {
+                                DrillingManager.CycleTimer_NGModuleCount++;
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
                                 m_bworkStageVacuumFail = false;
                                 m_bForceEjectRequest = false;
+                                if (Equipment.AutoRunStatus)
+                                {
+                                    //Cycle Time
+                                    DrillingManager.CycleTimer_DoneModuleCount++;
+                                    DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
+                                    DrillingManager.SaveLotLog();                     // 최신 로그 저장
+
+                                    //TargetCount가 0이면 멈추지 않고 돌아야 한다.
+                                    if (Equipment.DrillModuleTargetCount != 0 &&
+                                        Equipment.DrillModuleTargetCount < DrillingManager.CycleTimer_DoneModuleCount)
+                                    {
+                                        // SemiAuto처럼 정지를 시켜야겠다.
+                                        // 여기 들어오면.. Loader, workStage 정지하고.
+                                        loader.m_LoaderWork_Start = false;
+                                        this.m_LaserDrillingWork_Start = false;
+                                        this.m_ProductAlign_Start = false;
+
+                                        //this.m_MainWork_Start = false;
+                                        //this.m_SubWork_Start = false;
+                                        // Unloader는 제품 제거하고 정지.
+                                        //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
+                                    }
+                                }
                             }
                             else
                             {
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
+                                if (Equipment.AutoRunStatus)
+                                {
+                                    //Cycle Time
+                                    DrillingManager.CycleTimer_DoneModuleCount++;
+                                    DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
+                                    DrillingManager.SaveLotLog();                     // 최신 로그 저장
+
+                                    //TargetCount가 0이면 멈추지 않고 돌아야 한다.
+                                    if (Equipment.DrillModuleTargetCount != 0 &&
+                                        Equipment.DrillModuleTargetCount < DrillingManager.CycleTimer_DoneModuleCount)
+                                    {
+                                        // SemiAuto처럼 정지를 시켜야겠다.
+                                        // 여기 들어오면.. Loader, workStage 정지하고.
+                                        loader.m_LoaderWork_Start = false;
+                                        this.m_LaserDrillingWork_Start = false;
+                                        this.m_ProductAlign_Start = false;
+
+                                        //this.m_MainWork_Start = false;
+                                        //this.m_SubWork_Start = false;
+                                        // Unloader는 제품 제거하고 정지.
+                                        //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
+                                    }
+                                }
                             }                            
 
                             //  Loader 에서 Pick Up 한 Port 번호를 넣어준다. (Pick Up 한 Port 에 Put Down 하기 위함)
@@ -19155,12 +19204,12 @@ namespace QMC.Common.Modules
                 {
                     this.m_VerifyScannerCamOffset_Start = false;
                     this.m_MotionHome_Start = false;
-                    this.m_ProductAlign_Start = false;
                     //this.m_Comm_Start = false;
-                    this.m_SubWork_Start = false;
                     this.m_ScannerCalibration_Start = false;
+                    this.m_SubWork_Start = false;
                     this.m_LaserDrillingWork_Start = false;
                     this.m_MainWork_Start = false;
+                    this.m_ProductAlign_Start = false;
                     //this.m_MainStatus_Start = false;
 
                     Equipment.LaserDrillingCycStop_Reservation = false;
@@ -29548,8 +29597,6 @@ namespace QMC.Common.Modules
             //m_bGroupExist_LargerThanDivideSize = false;
 
             int m_nUnusableLayerCount = 0;
-
-
             if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
@@ -29559,8 +29606,6 @@ namespace QMC.Common.Modules
             //  일단 Layer 는 1개만 사용하기로...
 
             m_nGroupCount = 0;
-
-
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable)
@@ -37278,12 +37323,38 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z축, Laser Height Check 높이로 이동 완료.");
 
+                        // 여기서 개별 측정 후 진행 or 모두 측정 후 진행 시컨스 분기 필요.
+                        // 아니면.. case문을 하나 만드는게 좋을려나..
+
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos;                 //  Hole2 ~ Hole4 Layer 의 Defocusing 이동 완료하였으므로 다시 현재 Socket 가공 시작 (Hole1 데이터 가공)
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z축, Laser Height Check 높이로 이동 실패. (Timeout)");
                         return AlarmPost(AlarmKey.eStageMoveFail);
+                    }
+                    break;
+
+
+                //위치는 여기서 분기. Batch <- 전체 측정 시.
+                case (int)LaserDrilling_Step.DrillingData_SocketHeight_Batch:
+
+                    if (Equipment.SocketHeight_Batch_Use)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Height Batch 측정 시작.");
+
+                        //m_nDrillingWork_Group_Count //<-이거 갯수만큼돌아야됨.
+                        //if (m_nDrillingWork_Group_Count <= m_stDividedRegion_GroupData.Length)
+                        if (m_nDrillingWork_Group_Count < m_stDividedRegion_GroupData[0].nGroup_Num)
+                        {
+                            m_nDrillingWork_Group_Count++;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos;
+                        }
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Height Batch 측정 사용 안함. (Socket Height Check 모드 : Off)");
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos; // Socket Height Check Process Start 로 이동
                     }
                     break;
 
@@ -37482,6 +37553,11 @@ namespace QMC.Common.Modules
                     switch (m_LayerType)
                     {
                         case LayerType.LAYER_DRILLING:
+                            if (m_stDividedRegion_GroupData != null)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Drilling 소켓 데이터 개수 일치");
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                            }
                             break;
 
                         case LayerType.LAYER_OUTLINE:
@@ -37516,7 +37592,6 @@ namespace QMC.Common.Modules
                     {
                         var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
                         int socketIndex = m_nDrillingWork_Group_Count;
-
                         socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
                         if (socket != null)
                         {
@@ -37537,7 +37612,6 @@ namespace QMC.Common.Modules
                     }
 
                     SetStageComplete(SemiAutoStep.MeasureHeight, true);
-
                     if (Equipment.SemiAutoEnable &&
                             _semiAutoRequest == SemiAutoStep.MeasureHeight)
                     {
@@ -37549,6 +37623,21 @@ namespace QMC.Common.Modules
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
                     }
 
+                    if (Equipment.SocketHeight_Batch_Use)
+                    {
+                        if (m_nDrillingWork_Group_Count < m_stDividedRegion_GroupData[0].nGroup_Num)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeight_Batch;
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DrillingData_SocketHeightValue_Get-Equipment.SocketHeight_Batch_Use : true");
+                        }
+                        else
+                        {
+                            // 위에서 지정한 Step으로 이동하면 된다.
+                            // m_nLaserDrilling_MainStep
+
+                            m_nDrillingWork_Group_Count = 0; // Batch 측정이 끝났으므로 카운트 초기화
+                        }
+                    }
                     break;
 
 
@@ -37736,7 +37825,6 @@ namespace QMC.Common.Modules
                                 {
                                     stPreAlignList.Clear();
 
-                                    //m_nSocketNum_forAlign <- 이게 소켓넘버
                                     m_nPreAlignMarkNumMax = m_stDividedRegion_GroupData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
 
                                     double dFiducialPosX = 0.0;
@@ -37797,7 +37885,6 @@ namespace QMC.Common.Modules
                                 if (m_stOutLine_SocketData != null)
                                 {
                                     stPreAlignList.Clear();
-                                    //m_nSocketNum_forAlign <- 이게 소켓넘버
                                     m_nPreAlignMarkNumMax = m_stOutLine_SocketData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
 
                                     double dFiducialPosX = 0.0;
@@ -37858,7 +37945,6 @@ namespace QMC.Common.Modules
                                 if (m_stThruHole_SocketData != null)
                                 {
                                     stPreAlignList.Clear();
-                                    //m_nSocketNum_forAlign <- 이게 소켓넘버
                                     m_nPreAlignMarkNumMax = m_stThruHole_SocketData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
 
                                     double dFiducialPosX = 0.0;
@@ -37917,7 +38003,6 @@ namespace QMC.Common.Modules
                                 if (m_stMarking_SocketData.m_stMarking_ObjectData != null)
                                 {
                                     stPreAlignList.Clear();
-                                    //m_nSocketNum_forAlign <- 이게 소켓넘버
                                     m_nPreAlignMarkNumMax = m_stMarking_SocketData.m_stMarking_ObjectData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
 
                                     double dFiducialPosX = 0.0;
@@ -41090,15 +41175,31 @@ namespace QMC.Common.Modules
                     strTemp = string.Format("전체 가공 완료");
                     Log.Write("SLD-200", "Auto Run", strTemp);
 
-                    if (Equipment.AutoRunStatus) 
-                    {
-                        //Cycle Time
-                        DrillingManager.CycleTimer_DoneModuleCount++;
-                        DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
-                        DrillingManager.SaveLotLog();                     // 최신 로그 저장
-                    }
-                        
+                    //기존 코드 
+                    //if (Equipment.AutoRunStatus) 
+                    //{
+                    //    //Cycle Time
+                    //    DrillingManager.CycleTimer_DoneModuleCount++;
+                    //    DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
+                    //    DrillingManager.SaveLotLog();                     // 최신 로그 저장
 
+                    //    //TargetCount가 0이면 멈추지 않고 돌아야 한다.
+                    //    if (Equipment.DrillModuleTargetCount != 0 &&
+                    //        Equipment.DrillModuleTargetCount < DrillingManager.CycleTimer_DoneModuleCount)
+                    //    {
+                    //        // SemiAuto처럼 정지를 시켜야겠다.
+                    //        // 여기 들어오면.. Loader, workStage 정지하고.
+                    //        loader.m_LoaderWork_Start = false;
+
+                    //        this.m_SubWork_Start = false;
+                    //        this.m_LaserDrillingWork_Start = false;
+                    //        this.m_MainWork_Start = false;
+                    //        this.m_ProductAlign_Start = false;
+                    //        // Unloader는 제품 제거하고 정지.
+                    //        //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
+                    //    }
+                    //}
+                        
                     strTemp = string.Format("LaserDrillingOneCycle Time: {0:0.000} sec", DrillingManager.CycleTimer_LaserDrilling.Latest.Interval.TotalSeconds);
                     Log.Write("SLD-200", "Auto Run", strTemp);
 
@@ -41111,9 +41212,9 @@ namespace QMC.Common.Modules
                         Equipment.SemiAutoEnable = false;
 
                         m_LaserDrillingWork_Start = false;
+                        m_ProductAlign_Start = false;
                         m_MainWork_Start = false;
                         m_SubWork_Start = false;
-                        m_ProductAlign_Start = false;
                     }
 
                     if (Equipment.SelectRunEnable_New)
@@ -42304,7 +42405,7 @@ namespace QMC.Common.Modules
             try
             {
                 // workstage LaserOff2 case문에서 초기화 하는 변수 전부 같이 Reset
-                GlobalSocketStatus_Init();            //위에서 하고 있는거 같지만.
+                //GlobalSocketStatus_Init();            //위에서 하고 있는거 같지만.
                 GetDrillingData_ProcessingFlagCheck();
             }
             catch (Exception ex)
