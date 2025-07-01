@@ -126,7 +126,10 @@ namespace SLD200.NewStyleForm.NewSubForm
                 float duration = (float)numericUpDownDuration.Value;
                 result = _scanner.LaserOn(duration, _setting);
                 if (result)
-                    MessageBox.Show("레이저 출력 성공", "완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                {
+                    //MessageBox.Show("레이저 출력 성공", "완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                }
                 else
                     MessageBox.Show("레이저 출력 실패", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
