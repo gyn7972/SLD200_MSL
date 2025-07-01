@@ -1763,6 +1763,57 @@ namespace SLD200_MSL
                 mb.ShowDialog("Information !", m_strTemp);
             }
 
+            //집진기 상/하부 | 이오나이저 Off
+            workStage.DustCollector_On((int)nDustCollector.DustCollector_Upper);
+            Thread.Sleep(1);
+            workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
+            Thread.Sleep(1);
+            loader.loaderParameter.DO_Loader_Ionizer(true);
+
+
+            //  Loader Stacker 동작
+            //loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
+            //loader.m_bStacker1_Complete = false;
+            //  Loader Stacker Pause 해제는 수동으로. (자동으로 풀어주니 너무 계속 한다)            
+            if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
+            {
+                loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
+
+                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
+                {
+                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+                }
+                //Equipment.Loader_LPort_Pause = false;
+            }
+            else if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
+            {
+                loader.m_bStacker1_Complete = false;
+
+                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
+                {
+                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+                }
+            }
+
+            //  Loader Stacker 의 Pause 상태에 따라 사용 우선순위 Port 결정
+            //  Pause 상태가 아닌 Port 에 우선순위 부여. (둘 다 Pause 상태이면, User 가 Pause 상태를 해제하는 Port 에 우선권 부여)
+            //  우선권이 부여된 Port 의 자재가 소진될 때 까지 바뀌지 않음. (Pick Up Fail 시에만 바뀜)
+            if (!Equipment.Loader_RPort_Pause && Equipment.Loader_LPort_Pause)
+            {
+                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.Stacker_0;
+            }
+            else if (Equipment.Loader_RPort_Pause && !Equipment.Loader_LPort_Pause)
+            {
+                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.Stacker_1;
+            }
+            else        //  둘 다 Pause
+            {
+                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.None;
+            }
+
+
+
+
             // Process Status
             var pos = ProcessManager.GetFirstUnprocessedPosition();
             if (pos.HasValue)
@@ -2116,12 +2167,16 @@ namespace SLD200_MSL
             }
 
             Equipment.SemiAutoEnable = false;
-            Equipment.SelectRunEnable_New = false;
-
             Equipment.SelectRunEnable = false;
+            Equipment.SelectRunEnable_New = false;
             workStage.m_nSelectedSocket_Index = -1;            //  선택한 소켓 인덱스 초기화
 
+
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
+
+            workStage.m_StartProcessTime = DateTime.Now;
+
+            FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);
             workStage.m_MainWork_Start = true;
             workStage.m_LaserDrillingWork_Start = true;
             Equipment.LaserDrillingCycStop_Reservation = false;
@@ -2136,62 +2191,6 @@ namespace SLD200_MSL
 
             int nTargetCount = (int)numericUpDown_Module_TargetCount.Value;            //  모듈 타겟 카운트 초기화
             Equipment.DrillModuleTargetCount = nTargetCount;
-
-            //집진기 상/하부 | 이오나이저 Off
-            workStage.DustCollector_On((int)nDustCollector.DustCollector_Upper);
-            Thread.Sleep(1);
-            workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
-            Thread.Sleep(1);
-            loader.loaderParameter.DO_Loader_Ionizer(true);
-
-            //  Loader Stacker 동작
-            //loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
-            //loader.m_bStacker1_Complete = false;
-
-            //  Loader Stacker Pause 해제는 수동으로. (자동으로 풀어주니 너무 계속 한다)            
-            if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
-            {
-                loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
-
-                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
-                {
-                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
-                }
-                //Equipment.Loader_LPort_Pause = false;
-            }
-            else if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
-            {
-                loader.m_bStacker1_Complete = false;
-
-                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
-                {
-                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
-                }
-            }
-
-            //  Loader Stacker 의 Pause 상태에 따라 사용 우선순위 Port 결정
-            //  Pause 상태가 아닌 Port 에 우선순위 부여. (둘 다 Pause 상태이면, User 가 Pause 상태를 해제하는 Port 에 우선권 부여)
-            //  우선권이 부여된 Port 의 자재가 소진될 때 까지 바뀌지 않음. (Pick Up Fail 시에만 바뀜)
-            if (!Equipment.Loader_RPort_Pause && Equipment.Loader_LPort_Pause)
-            {
-                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.Stacker_0;
-            }
-            else if (Equipment.Loader_RPort_Pause && !Equipment.Loader_LPort_Pause)
-            {
-                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.Stacker_1;
-            }
-            else        //  둘 다 Pause
-            {
-                loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.None;
-            }
-
-
-            FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);
-
-            Equipment.SemiAutoEnable = false;
-            Equipment.SelectRunEnable_New = false;
-            Equipment.SelectRunEnable = false;
-
             Equipment.AutoRunStatus = true;
             workStage.SetRunStatus(RunStatus.Run);
 

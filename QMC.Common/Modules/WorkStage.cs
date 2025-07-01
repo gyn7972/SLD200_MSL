@@ -7513,6 +7513,7 @@ namespace QMC.Common.Modules
             }
         }
 
+        public DateTime m_StartProcessTime;
         private async void Timer_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -7738,35 +7739,40 @@ namespace QMC.Common.Modules
                 // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
                 if (Equipment.AutoRunStatus)
                 {
-                    if(loader.m_bStackerZ0_DownWhenEmpty && loader.m_bStackerZ1_DownWhenEmpty)
+                    //장비 시작하고 10초 후 부터 확인.
+                    if ((DateTime.Now - m_StartProcessTime).TotalSeconds > 10)
                     {
-                        // 장비 정지.
-                        StopProcess();
+                        if (loader.m_bStackerZ0_DownWhenEmpty && loader.m_bStackerZ1_DownWhenEmpty)
+                        {
+                            // 장비 정지.
+                            StopProcess();
 
-                        if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
-                        {
-                            CommonModule.Instance.TowerLamp.Green_Off();
-                        }
-                        if (CommonModule.Instance.TowerLamp.Is_Yellow_On() == 0)
-                        {
-                            CommonModule.Instance.TowerLamp.Yellow_On();
-                        }
-                        if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
-                        {
-                            CommonModule.Instance.TowerLamp.Red_Off();
-                        }
-                        if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                        {
-                            CommonModule.Instance.TowerLamp.Buzzer_Off();
-                        }
+                            if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
+                            {
+                                CommonModule.Instance.TowerLamp.Green_Off();
+                            }
+                            if (CommonModule.Instance.TowerLamp.Is_Yellow_On() == 0)
+                            {
+                                CommonModule.Instance.TowerLamp.Yellow_On();
+                            }
+                            if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
+                            {
+                                CommonModule.Instance.TowerLamp.Red_Off();
+                            }
+                            if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                            {
+                                CommonModule.Instance.TowerLamp.Buzzer_Off();
+                            }
 
-                        //  버튼 색깔 변경
-                        CommonModule.Instance.OperationButtons.StartLamp(false);
-                        CommonModule.Instance.OperationButtons.StopLamp(true);
-                        CommonModule.Instance.OperationButtons.ResetLamp(false);
+                            //  버튼 색깔 변경
+                            CommonModule.Instance.OperationButtons.StartLamp(false);
+                            CommonModule.Instance.OperationButtons.StopLamp(true);
+                            CommonModule.Instance.OperationButtons.ResetLamp(false);
 
-                        CommonModule.Instance.TowerLamp_BuzzerStop = false;
+                            CommonModule.Instance.TowerLamp_BuzzerStop = false;
+                        }
                     }
+                        
 
                     // 장비 시작하고 Step에서 상부 집진기 ON 하는데...
                     //if (!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper))
@@ -42566,7 +42572,7 @@ namespace QMC.Common.Modules
             DustCollector_Off((int)nDustCollector.DustCollector_Lower);
             Thread.Sleep(1);
             loader.loaderParameter.DO_Loader_Ionizer(false);
-
+            Thread.Sleep(100);
         }
 
 

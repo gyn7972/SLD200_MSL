@@ -9222,11 +9222,15 @@ namespace QMC.Common.Modules
                 {
                     if (workStage.m_bHomeOK)
                     {
-                        if (loaderParameter.IsDO_Loader_Ionizer_On() &&
-                        (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
-                        !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
+                        //장비 시작하고 10초 후 부터 확인.
+                        if ((DateTime.Now - workStage.m_StartProcessTime).TotalSeconds > 10)
                         {
-                            AlarmPost(AlarmKey.LD_Ionizer_Alarm);
+                            if (loaderParameter.IsDO_Loader_Ionizer_On() &&
+                                (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
+                                !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
+                            {
+                                AlarmPost(AlarmKey.LD_Ionizer_Alarm);
+                            }
                         }
                     }
                 }
