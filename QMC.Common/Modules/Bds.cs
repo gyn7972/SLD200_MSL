@@ -419,7 +419,7 @@ namespace QMC.Common.Modules
         }
 
         private DateTime _lastScannerCheckTime = DateTime.MinValue;
-        private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(100); //0.1초
+        private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(500); //0.1초
         private void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
