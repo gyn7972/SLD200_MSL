@@ -229,9 +229,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                             case "DutyCycle(%)":
                                 if (Equipment.Machine_LaserType_CO2)
                                 {
-                                    if (value < 2.5f || value >= 20.0f)
+                                    if (value < 1f || value >= 20.0f)
                                     {
-                                        strTemp = string.Format($"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
+                                        strTemp = string.Format($"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
                                         mb.ShowDialog("Error!", strTemp);
                                         UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
                                         return;
@@ -276,9 +276,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
                 else
                 {
-                    if (_setting.DutyCycle < 2.5f || _setting.DutyCycle >= 20.0f)
+                    if (_setting.DutyCycle < 1f || _setting.DutyCycle >= 20.0f)
                     {
-                        strTemp = $"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\r\n현재 설정: {_setting.DutyCycle:F2}%";
+                        strTemp = $"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\r\n현재 설정: {_setting.DutyCycle:F2}%";
                         Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", strTemp);
                         mb.ShowDialog("Error!", strTemp);
                         return;
@@ -820,9 +820,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                     if (Equipment.Machine_LaserType_CO2)
                     {
                         float duty = _setting.DutyCycle;
-                        if (duty < 2.5f || duty >= 20.0f)
+                        if (duty < 1f || duty >= 20.0f)
                         {
-                            strTemp = string.Format($"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
+                            strTemp = string.Format($"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
                             mb.ShowDialog("Error!", strTemp);
                             //UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
                             // 원래 값으로 되돌림
@@ -841,9 +841,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 case "DutyCycle(%)":
                     if (Equipment.Machine_LaserType_CO2)
                     {
-                        if (value < 2.5f || value >= 20.0f)
+                        if (value < 1f || value >= 20.0f)
                         {
-                            strTemp = string.Format($"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
+                            strTemp = string.Format($"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
                             mb.ShowDialog("Error!", strTemp);
                             UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
                         }

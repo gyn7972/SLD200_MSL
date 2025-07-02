@@ -959,9 +959,9 @@ namespace QMC.Common.Q_Sequence
                 {
                     if (Equipment.Machine_LaserType_CO2)
                     {
-                        if (!(_setting.DutyCycle >= 2.5f && _setting.DutyCycle < 20.0f))
+                        if (!(_setting.DutyCycle >= 1f && _setting.DutyCycle < 20.0f))
                         {
-                            strTemp = $"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\r\n현재 설정: {_setting.DutyCycle:F2}%";
+                            strTemp = $"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\r\n현재 설정: {_setting.DutyCycle:F2}%";
                             Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", strTemp);
                             return -1;
                             //mb.ShowDialog("Error!", strTemp);
