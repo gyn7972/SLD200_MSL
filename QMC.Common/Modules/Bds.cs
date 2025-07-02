@@ -415,7 +415,7 @@ namespace QMC.Common.Modules
             }); ;
             listTask.Add(m_taskTimer_BDS_MainStatus_Tick);
 
-            return ret;
+            return ret; 
         }
 
         private DateTime _lastScannerCheckTime = DateTime.MinValue;
