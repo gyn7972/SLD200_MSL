@@ -168,7 +168,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             try
             {
-                string strTemp = string.Empty;
+                string strTemp = string.Empty; 
                 var mb = new QMC.Core.MessageBoxOk();
                 if (!m_bReadyStatus)
                 {
