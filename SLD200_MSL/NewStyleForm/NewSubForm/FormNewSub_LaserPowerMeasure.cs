@@ -33,8 +33,8 @@ namespace SLD200.NewStyleForm.NewSubForm
         static Vision vision;
         static Bds bds;
 
-        private System.Windows.Forms.Timer timerModuleStatus;
-        private bool _isRunning_ModuleStatus = false;
+        private System.Windows.Forms.Timer timerLaserPowerMeasureStatus;
+        private bool _isRunning_LaserPowerMeasureStatus = false;
 
         private List<float> _measuredPowerList = new List<float>();
         public FormNewSub_LaserPowerMeasure(SpiralLabScanner scanner)
@@ -50,10 +50,10 @@ namespace SLD200.NewStyleForm.NewSubForm
                 if (module.Name == "BDS") bds = module as Bds;
             }
 
-            timerModuleStatus = new System.Windows.Forms.Timer();
-            timerModuleStatus.Interval = 100;
-            timerModuleStatus.Tick += TimerModuleStatus_Tick;
-            timerModuleStatus.Start();
+            timerLaserPowerMeasureStatus = new System.Windows.Forms.Timer();
+            timerLaserPowerMeasureStatus.Interval = 100;
+            timerLaserPowerMeasureStatus.Tick += TimerModuleStatus_Tick;
+            timerLaserPowerMeasureStatus.Start();
 
             _scanner = scanner;
             InitSettingTable();
@@ -69,8 +69,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 comboBox_MaskIndex.Visible = false;
                 comboBox_BETPositionIndex.Visible = false;
             }
-
-               
 
             workStage.m_Sequence_LaserPowerMeasure.OnPowerMeasured += UpdatePowerMeasureLog;
         }
@@ -96,43 +94,72 @@ namespace SLD200.NewStyleForm.NewSubForm
         }
         public void DisposeSemiAutoResources()
         {
-            if (timerModuleStatus != null)
+            if (timerLaserPowerMeasureStatus != null)
             {
-                timerModuleStatus.Stop();
-                timerModuleStatus.Tick -= TimerModuleStatus_Tick;
-                timerModuleStatus.Dispose();
-                timerModuleStatus = null;
+                timerLaserPowerMeasureStatus.Stop();
+                timerLaserPowerMeasureStatus.Tick -= TimerModuleStatus_Tick;
+                timerLaserPowerMeasureStatus.Dispose();
+                timerLaserPowerMeasureStatus = null;
             }
             // 필요 시 다른 모듈 정리도 여기에
         }
 
         private void TimerModuleStatus_Tick(object sender, EventArgs e)
         {
-            if (_isRunning_ModuleStatus)
+            if (_isRunning_LaserPowerMeasureStatus)
                 return;
 
             try
             {
-                _isRunning_ModuleStatus = true;
+                _isRunning_LaserPowerMeasureStatus = true;
                 Timer_ModuleStatusRun();
             }
             catch (Exception ex)
             {
                 // 로그 남기기
                 Log.Write(ex);
-                _isRunning_ModuleStatus = false;
+                _isRunning_LaserPowerMeasureStatus = false;
             }
             finally
             {
-                _isRunning_ModuleStatus = false;
+                _isRunning_LaserPowerMeasureStatus = false;
             }
         }
 
+        private DateTime _measureStartTime;           // 측정 시작 시간 저장용
+        private int _lastLoggedSecond = -1;           // 마지막으로 기록된 시간(초)
         private void Timer_ModuleStatusRun()
         {
             // 실행할 작업들을 여기에 구현.
+            if(m_bStartLaserPowerMeasure)
+            {
+                float duration = (float)numericUpDownDuration.Value;  // 단위: 초
+                duration *= 1000;
+                double elapsedSeconds = (DateTime.Now - _measureStartTime).TotalSeconds;
 
+                if (elapsedSeconds >= duration * 0.9)
+                {
+                    // 종료
+                    m_bStartLaserPowerMeasure = false;
+                    return;
+                }
+                
 
+                // 1초마다 측정값 추가
+                int currentSecond = (int)elapsedSeconds;
+                if (currentSecond > _lastLoggedSecond)
+                {
+                    _lastLoggedSecond = currentSecond;
+
+                    // 예시 측정값 (실제 측정값을 받아와야 함)
+                    double measuredPower = (_setting.PowerMeterType == 0) ? workStage.m_dPowerMeterBDS_Value : workStage.m_dPowerMeterStage_Value;
+                    AddPowerMeasure((float)measuredPower);
+                }
+                else
+                {
+                    _lastLoggedSecond = (int)(duration/1000) / 2;
+                }
+            }
         }
 
         private void InitSettingTable()
@@ -168,9 +195,9 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             try
             {
-                string strTemp = string.Empty;
+                string strTemp = string.Empty; 
                 var mb = new QMC.Core.MessageBoxOk();
-                if (!m_bReadyStatus)
+                if (!m_bReadyLaserPowerMeasure)
                 {
                     strTemp = "레이저 파워 측정을 시작하기 전에 준비 상태를 확인하세요.";
                     mb.ShowDialog("Error!", strTemp);
@@ -208,9 +235,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                             case "DutyCycle(%)":
                                 if (Equipment.Machine_LaserType_CO2)
                                 {
-                                    if (value < 2.5f || value >= 20.0f)
+                                    if (value < 1f || value >= 20.0f)
                                     {
-                                        strTemp = string.Format($"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
+                                        strTemp = string.Format($"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
                                         mb.ShowDialog("Error!", strTemp);
                                         UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
                                         return;
@@ -255,9 +282,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
                 else
                 {
-                    if (_setting.DutyCycle < 2.5f || _setting.DutyCycle >= 20.0f)
+                    if (_setting.DutyCycle < 1f || _setting.DutyCycle >= 20.0f)
                     {
-                        strTemp = $"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\r\n현재 설정: {_setting.DutyCycle:F2}%";
+                        strTemp = $"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\r\n현재 설정: {_setting.DutyCycle:F2}%";
                         Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", strTemp);
                         mb.ShowDialog("Error!", strTemp);
                         return;
@@ -265,12 +292,19 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
 
                 float duration = (float)numericUpDownDuration.Value;
+                duration *= 1000; // 밀리초 단위로 변환
                 if (!_scanner.LaserOn(duration, _setting))
                 {
                     mb.ShowDialog("Error!", "출력 실패");
                     return;
                 }
 
+                _lastLoggedSecond = 0;
+                ResetPowerMeasureList(); 
+                _measureStartTime = DateTime.Now;
+                m_bStartLaserPowerMeasure = true; // 레이저 출력 시작 상태로 설정
+
+                strTemp = string.Format("레이저 파워 출력 시작, Duration ({0:0.000})초", duration);
                 // 진행률 처리
                 _cts = new CancellationTokenSource();
                 int lastProgress = 0;
@@ -289,9 +323,17 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 SaveLaserPowerMeasureSetting();
                 if (delayTask.Result == 0)
+                {
+                    m_bStartLaserPowerMeasure = false;
+                    strTemp = string.Format("레이저 파워 출력 완료, Duration ({0:0.000})초", duration);
                     mb.ShowDialog("Complete!", "출력 성공");
+                }
                 else
+                {
+                    m_bStartLaserPowerMeasure = false;
+                    strTemp = string.Format("레이저 파워 출력 완료, Duration ({0:0.000})초", duration);
                     mb.ShowDialog("Error!", "출력이 중단되었습니다.");
+                }
             }
             catch (Exception ex)
             {
@@ -339,14 +381,15 @@ namespace SLD200.NewStyleForm.NewSubForm
             return bSuccess;
         }
 
-        public bool m_bReadyStatus = false;
+        public bool m_bStartLaserPowerMeasure = false;
+        public bool m_bReadyLaserPowerMeasure = false;
 
         private void button_MeasureReady_Click(object sender, EventArgs e)
         {
             string selectedTarget = comboBoxTargetType.SelectedItem.ToString();
             string strTemp = string.Empty;
 
-            m_bReadyStatus = false;
+            m_bReadyLaserPowerMeasure = false;
 
             if (Equipment.Machine_LaserType_CO2)
             {
@@ -490,7 +533,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
             }
 
-            m_bReadyStatus = true;
+            m_bReadyLaserPowerMeasure = true;
 
             strTemp = string.Format("준비 완료.");
             Log.Write("SLD-200", Equipment.User_Name, strTemp);
@@ -501,7 +544,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void comboBoxTargetType_SelectedIndexChanged(object sender, EventArgs e)
         {
             _setting.PowerMeterType = (comboBoxTargetType.SelectedIndex);
-            SaveLaserPowerMeasureSetting();
+            //SaveLaserPowerMeasureSetting();
         }
 
         public void SaveLaserPowerMeasureSetting()
@@ -787,9 +830,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                     if (Equipment.Machine_LaserType_CO2)
                     {
                         float duty = _setting.DutyCycle;
-                        if (duty < 2.5f || duty >= 20.0f)
+                        if (duty < 1f || duty >= 20.0f)
                         {
-                            strTemp = string.Format($"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
+                            strTemp = string.Format($"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
                             mb.ShowDialog("Error!", strTemp);
                             //UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
                             // 원래 값으로 되돌림
@@ -808,9 +851,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 case "DutyCycle(%)":
                     if (Equipment.Machine_LaserType_CO2)
                     {
-                        if (value < 2.5f || value >= 20.0f)
+                        if (value < 1f || value >= 20.0f)
                         {
-                            strTemp = string.Format($"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
+                            strTemp = string.Format($"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
                             mb.ShowDialog("Error!", strTemp);
                             UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
                         }
@@ -901,5 +944,18 @@ namespace SLD200.NewStyleForm.NewSubForm
             }, token);
         }
 
+        private void FormNewSub_LaserPowerMeasure_VisibleChanged(object sender, EventArgs e)
+        {
+            if (this.Visible)
+            {
+                timerLaserPowerMeasureStatus?.Start();
+                LoadLaserPowerMeasureSetting();
+                RefreshPowerMeasureList();
+            }
+            else
+            {
+                timerLaserPowerMeasureStatus?.Stop();
+            }
+        }
     }
 }

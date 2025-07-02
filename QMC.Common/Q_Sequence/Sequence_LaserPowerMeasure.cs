@@ -959,9 +959,9 @@ namespace QMC.Common.Q_Sequence
                 {
                     if (Equipment.Machine_LaserType_CO2)
                     {
-                        if (!(_setting.DutyCycle >= 2.5f && _setting.DutyCycle < 20.0f))
+                        if (!(_setting.DutyCycle >= 1f && _setting.DutyCycle < 20.0f))
                         {
-                            strTemp = $"DutyCycle은 2.5% 이상, 20% 미만이어야 합니다.\r\n현재 설정: {_setting.DutyCycle:F2}%";
+                            strTemp = $"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\r\n현재 설정: {_setting.DutyCycle:F2}%";
                             Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", strTemp);
                             return -1;
                             //mb.ShowDialog("Error!", strTemp);
@@ -995,7 +995,7 @@ namespace QMC.Common.Q_Sequence
                 _isPowerMeasureOnes = false;
             }
 
-            // 30초 이후 종료 (20초 대기 + 10초 측정)
+            // ??초 이후 종료 (20초 대기 + ??초 측정)
             if (TickCount_Elapsed((int)TickType.TICK_POWER_MEASURE_LAST_SAVE) >= _powerMeasureLogTotalTimeMs * 0.8)
             {
                 string position = (_setting.PowerMeterType == 0) ? "Top" : "Stage";
@@ -1021,55 +1021,6 @@ namespace QMC.Common.Q_Sequence
 
                 _powerMeasureLogIndex++;
                 TickCount_Start((int)TickType.TICK_POWER_MEASURE_START); // 다음 5초 타이머 리셋
-            }
-
-            //기존 코드
-            {
-                // 처음 진입 시 초기화
-                //if (_powerMeasureLogIndex == 0)
-                //{
-                //    Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "파워 측정 시작: 30초 동안 3초 간격 10회 측정");
-                //}
-
-                //// 30초가 지났으면 완료 처리
-                //if (TickCount_Elapsed((int)TickType.TICK_POWER_MEASURE_LAST_SAVE) >= _powerMeasureLogTotalTimeMs)
-                //{
-                //    if (m_nType == 0) {
-                //        SavePowerMeasureLogList("Top"); // 또는 "Stage"
-                //        Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "Top 위치에서 파워 측정 완료");
-                //    }
-                //    else
-                //    {
-                //        SavePowerMeasureLogList("Stage"); // 또는 "Stage"
-                //        Log.Write("LaserPowerMeasure", "TopCheck_LaserPowerMeasure_Start", "Stage 위치에서 파워 측정 완료");
-                //    }
-                //    _measuredPowerList.Clear();     // 다음 측정을 위한 초기화
-
-                //    bComp = true;
-                //    _powerMeasureLogIndex = 0; // 다음 측정 위해 초기화
-                //    return 0; // 성공 완료
-                //}
-
-                //// 3초마다 측정 저장
-                //if (TickCount_Elapsed((int)TickType.TICK_POWER_MEASURE_START) >= _powerMeasureLogIntervalMs)
-                //{
-                //    double power = 0.0;
-                //    if (m_nType == 0)
-                //    {
-                //        power = workStage.m_dPowerMeterBDS_Value;
-                //    }
-                //    else
-                //    {
-                //        power = workStage.m_dPowerMeterStage_Value;
-                //    }
-
-                //    AppendPowerMeasure(power); // 매 측정마다 누적
-
-                //    OnPowerMeasured?.Invoke((float)power);
-
-                //    bComp = false;
-                //    _powerMeasureLogIndex++;
-                //}
             }
 
             return nRtn;

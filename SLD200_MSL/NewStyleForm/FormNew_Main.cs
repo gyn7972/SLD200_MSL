@@ -3422,7 +3422,7 @@ namespace SLD200_MSL
         
         private async  void button_TEST12_Click(object sender, EventArgs e)
         {
-            //workStage.m_Sequence_LaserPowerMeasure.TestLog(); //  테스트용 로그 출력
+            workStage.m_Sequence_LaserPowerMeasure.TestLog(); //  테스트용 로그 출력
             return;
 
             Equipment.AutoRunStatus = true;
@@ -4704,6 +4704,8 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
 
+            button_Main_Reset.Enabled = false;
+
             CancellationTokenSource cts = new CancellationTokenSource();
             Task<int> resetTask = ResetSequenceAsync(cts.Token);
 
@@ -4712,7 +4714,6 @@ namespace SLD200_MSL
             pf.StopProcess += (obj) =>
             {
                 cts.Cancel();
-                workStage?.rtc?.CtlAbort();
             };
 
             pf.ShowDialog();
@@ -4724,11 +4725,23 @@ namespace SLD200_MSL
             {
                 strTemp = "Reset 완료";
                 new QMC.Core.MessageBoxOk().ShowDialog("Information !", strTemp);
+                button_Main_Reset.Enabled = true;
+
+                Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                checkBox_Main_AutoRun.Checked = false;
+                button_Main_Start.BackColor = Color.LightGray;
+                button_Main_Start.ForeColor = Color.Black;
             }
             else
             {
                 strTemp = "Reset이 중단되었습니다.";
                 new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                button_Main_Reset.Enabled = true;
+
+                Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                checkBox_Main_AutoRun.Checked = false;
+                button_Main_Start.BackColor = Color.LightGray;
+                button_Main_Start.ForeColor = Color.Black;
             }
         }
 
@@ -4763,9 +4776,12 @@ namespace SLD200_MSL
 
                 try
                 {
-                    workStage.rtc?.CtlAbort();
-                    await Task.Delay(1000, token);
-                    workStage.rtc?.CtlReset();
+                    if(workStage.GetLaserBusyStatus())
+                    {
+                        workStage.rtc?.CtlAbort();
+                        await Task.Delay(2000, token);
+                        workStage.rtc?.CtlReset();
+                    }
                 }
                 catch (Exception ex)
                 {
