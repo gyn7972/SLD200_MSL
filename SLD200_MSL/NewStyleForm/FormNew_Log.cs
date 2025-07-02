@@ -95,15 +95,26 @@ namespace SLD200_MSL
             dataGridView_Log_LaserPower.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             dataGridView_Log_LaserPower.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
 
-            AddGridColumn_LaserPower_Fill("Time", "Time", 100);
-            AddGridColumn_LaserPower_Fill("Target", "Target", 100);
-            AddGridColumn_LaserPower_Fill("Type", "Type", 80);
-            AddGridColumn_LaserPower_Fill("Value", "Value", 80);
-            AddGridColumn_LaserPower_Fill("PowerPercent", "Power(%)", 90);
-            AddGridColumn_LaserPower_Fill("Frequency", "Freq(kHz)", 90);
-            AddGridColumn_LaserPower_Fill("PulseWidth", "PulseWidth(µs)", 100);
-            AddGridColumn_LaserPower_Fill("DutyCycle", "DutyCycle(%)", 100);
-
+            if(Equipment.Machine_LaserType_CO2)
+            {
+                AddGridColumn_LaserPower_Fill("Time", "Time", 100);
+                AddGridColumn_LaserPower_Fill("Target", "Target", 100);
+                AddGridColumn_LaserPower_Fill("Type", "Type", 80);
+                AddGridColumn_LaserPower_Fill("Frequency", "Freq(kHz)", 90);
+                AddGridColumn_LaserPower_Fill("PulseWidth", "PulseWidth(µs)", 100);
+                AddGridColumn_LaserPower_Fill("DutyCycle", "DutyCycle(%)", 100);
+                AddGridColumn_LaserPower_Fill("Value", "Value(W)", 80);
+            }
+            else
+            {
+                AddGridColumn_LaserPower_Fill("Time", "Time", 100);
+                AddGridColumn_LaserPower_Fill("Target", "Target", 100);
+                AddGridColumn_LaserPower_Fill("Type", "Type", 80);
+                AddGridColumn_LaserPower_Fill("Frequency", "Freq(kHz)", 90);
+                AddGridColumn_LaserPower_Fill("PulseWidth", "PulseWidth(µs)", 100);
+                AddGridColumn_LaserPower_Fill("PowerPercent", "Power(%)", 90);
+                AddGridColumn_LaserPower_Fill("Value", "Value(W)", 80);
+            }
         }
 
         private void InitGrid_AutoCross()
@@ -129,23 +140,6 @@ namespace SLD200_MSL
             AddGridColumn_AutoCross_Fill("AfterY", "AfterY", 100);
 
         }
-
-
-        // 기존 코드
-        //private void InitGrid_LaserPower()
-        //{
-        //    dataGridView_Log_LaserPower.Columns.Clear(); // 중복 방지
-
-        //    dataGridView_Log_LaserPower.AutoGenerateColumns = false;
-        //    dataGridView_Log_LaserPower.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        //    dataGridView_Log_LaserPower.ReadOnly = true;
-
-        //    AddGridColumn_LaserPower("Time", "Time");
-        //    AddGridColumn_LaserPower("Target", "Target");
-        //    AddGridColumn_LaserPower("Type", "Type");
-        //    AddGridColumn_LaserPower("Value", "Value");
-        //}
-
 
         private void AddGridColumn(string name, string headerText)
         {
@@ -277,14 +271,27 @@ namespace SLD200_MSL
                         int row = dataGridView_Log_LaserPower.Rows.Add();
                         var rowCells = dataGridView_Log_LaserPower.Rows[row].Cells;
 
-                        rowCells["Time"].Value = time;
-                        rowCells["Target"].Value = target;
-                        rowCells["Type"].Value = countType;
-                        rowCells["Value"].Value = value;
-                        rowCells["PowerPercent"].Value = powerPercent;
-                        rowCells["Frequency"].Value = frequency;
-                        rowCells["PulseWidth"].Value = pulseWidth;
-                        rowCells["DutyCycle"].Value = dutyCycle;
+                        if(Equipment.Machine_LaserType_CO2)
+                        {
+                            rowCells["Time"].Value = time;
+                            rowCells["Target"].Value = target;
+                            rowCells["Type"].Value = countType;
+                            rowCells["Value"].Value = value;
+                            rowCells["Frequency"].Value = frequency;
+                            rowCells["PulseWidth"].Value = pulseWidth;
+                            rowCells["DutyCycle"].Value = dutyCycle;
+                        }
+                        else
+                        {
+                            rowCells["Time"].Value = time;
+                            rowCells["Target"].Value = target;
+                            rowCells["Type"].Value = countType;
+                            rowCells["Value"].Value = value;
+                            rowCells["PowerPercent"].Value = powerPercent;
+                            rowCells["Frequency"].Value = frequency;
+                            rowCells["PulseWidth"].Value = pulseWidth;
+                        }
+                            
 
                         if (countType.Equals("Average", StringComparison.OrdinalIgnoreCase))
                         {
@@ -353,55 +360,6 @@ namespace SLD200_MSL
 
             Log.Write("ScannerCameraOffset", "자동 교차 오프셋 보정 로그 조회 완료");
         }
-
-
-        // 기존 코드
-        //private void SearchClick_LaserPower(DateTime startTime, DateTime endTime)
-        //{
-        //    dataGridView_Log_LaserPower.Rows.Clear();
-
-        //    string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LaserPowerLog");
-
-        //    for (var day = startTime.Date; day <= endTime.Date; day = day.AddDays(1))
-        //    {
-        //        string logFile = Path.Combine(logFolder, $"LaserPowerMeasureLog_{day:yyyyMMdd}.csv");
-        //        if (!File.Exists(logFile))
-        //            continue;
-
-        //        string[] lines = File.ReadAllLines(logFile, new UTF8Encoding(true));
-
-        //        foreach (var line in lines)
-        //        {
-        //            var parts = line.Split(',');
-        //            if (parts.Length < 4)
-        //                continue;
-
-        //            string time = parts[0];
-        //            string target = parts[1];
-        //            string countType = parts[2]; // Count_1, Count_2, ..., Average
-        //            string value = parts[3];
-
-        //            int row = dataGridView_Log_LaserPower.Rows.Add();
-        //            var rowCells = dataGridView_Log_LaserPower.Rows[row].Cells;
-
-        //            rowCells["Time"].Value = time;
-        //            rowCells["Target"].Value = target;
-        //            rowCells["Type"].Value = countType;
-        //            rowCells["Value"].Value = value;
-
-        //            // 평균값 강조 표시
-        //            if (countType.Equals("Average", StringComparison.OrdinalIgnoreCase))
-        //            {
-        //                dataGridView_Log_LaserPower.Rows[row].DefaultCellStyle.Font =
-        //                    new Font(dataGridView_Log_LaserPower.Font, FontStyle.Bold);
-        //                dataGridView_Log_LaserPower.Rows[row].DefaultCellStyle.BackColor = Color.LightGoldenrodYellow;
-        //            }
-        //        }
-        //    }
-
-        //    Log.Write("LaserPowerMeasure", "파워 측정 로그 조회 완료");
-        //}
-
 
         private void baseButton_Log_LaserPower_Search_Click(object sender, EventArgs e)
         {

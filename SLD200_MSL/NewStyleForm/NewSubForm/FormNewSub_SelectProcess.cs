@@ -1,4 +1,5 @@
-﻿using QMC.Common;
+﻿using Newtonsoft.Json.Linq;
+using QMC.Common;
 using QMC.Common.Global;
 using QMC.Common.Modules;
 using QMC.Common.Parts;
@@ -397,25 +398,26 @@ namespace SLD200.NewStyleForm.NewSubForm
                     return;
                 }
 
+                //집진기 상/하부 | 이오나이저 On
+                workStage.DustCollector_On((int)nDustCollector.DustCollector_Upper);
+                Thread.Sleep(1);
+                workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
+                Thread.Sleep(1);
+                loader.loaderParameter.DO_Loader_Ionizer(true);
+
                 if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
                 {
                     Equipment.LaserDrillingCycStop_Reservation = false;
                     workStage.m_bLaserDrilling_SocketStopped = false;
                     Equipment.SocketStopped = false;
 
+                    workStage.m_StartProcessTime = DateTime.Now;
                     SelectRunEnable_New = true;
                     workStage.m_nDrillingWork_Group_Count = 0;
                     workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
                     workStage.m_LaserDrillingWork_Start = true;
                     workStage.m_ProductAlign_Start = true;
                     WorkStartTick = Environment.TickCount;
-
-                    //집진기 상/하부 | 이오나이저 On
-                    workStage.DustCollector_On((int)nDustCollector.DustCollector_Upper);
-                    Thread.Sleep(1);
-                    workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
-                    Thread.Sleep(1);
-                    loader.loaderParameter.DO_Loader_Ionizer(true);
                 }
                 else
                 {
@@ -489,6 +491,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.m_bLaserDrilling_SocketStopped = false;
                 Equipment.SocketStopped = false;
 
+                workStage.m_StartProcessTime = DateTime.Now;
                 SelectRunEnable_New = true;
                 workStage.m_nDrillingWork_Group_Count = 0;
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
@@ -680,10 +683,19 @@ namespace SLD200.NewStyleForm.NewSubForm
             //workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Y, 2000);
             //workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Z, 2000);
 
-            //이건 고민 좀 하자.
-            //workStage.laser.Rtc.CtlAbort();             //  실행중인 리스트 명령(busy 상태를)을 강제 종료
-            //Thread.Sleep(2000);
-            //workStage.laser.Rtc.CtlReset();             //  에러 해제
+            try
+            {
+                if (workStage.GetLaserBusyStatus())
+                {
+                    workStage.rtc?.CtlAbort();
+                    Thread.Sleep(2000); // Abort 후 잠시 대기
+                    workStage.rtc?.CtlReset();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
 
             Equipment.SelectRunEnable_New = false; //  수동 가공 시작
 

@@ -2979,8 +2979,9 @@ namespace QMC.Common.Modules
             DrillingData_SocketHeightCheckProcess_Start,                                    //  Socket 높이 측정 프로세스 시작
             DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos,                    //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동
             DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck,          //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
-            
-            DrillingData_SocketHeight_Batch,
+
+            DrillingData_SocketHeight_Batch_Start,
+            DrillingData_SocketHeight_Batch_Complete,
 
             DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos,                   //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동
             DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck,         //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
@@ -37360,7 +37361,7 @@ namespace QMC.Common.Modules
 
 
                 //위치는 여기서 분기. Batch <- 전체 측정 시.
-                case (int)LaserDrilling_Step.DrillingData_SocketHeight_Batch:
+                case (int)LaserDrilling_Step.DrillingData_SocketHeight_Batch_Start:
 
                     if (Equipment.SocketHeight_Batch_Use)
                     {
@@ -37648,21 +37649,45 @@ namespace QMC.Common.Modules
 
                     if (Equipment.SocketHeight_Batch_Use)
                     {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeight_Batch_Complete;
+                    }
+                    break;
+
+                case (int)LaserDrilling_Step.DrillingData_SocketHeight_Batch_Complete:
+                    
+                    if (Equipment.SocketHeight_Batch_Use)
+                    {
                         if (m_nDrillingWork_Group_Count < m_stDividedRegion_GroupData[0].nGroup_Num)
                         {
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeight_Batch;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeight_Batch_Start;
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DrillingData_SocketHeightValue_Get-Equipment.SocketHeight_Batch_Use : true");
                         }
                         else
                         {
-                            // 위에서 지정한 Step으로 이동하면 된다.
-                            // m_nLaserDrilling_MainStep
-
                             m_nDrillingWork_Group_Count = 0; // Batch 측정이 끝났으므로 카운트 초기화
+                            if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)   // 소켓 얼라인 여부에 따라 분기
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move;
+                            }
+                            else
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                            }
                         }
                     }
-                    break;
+                    else
+                    {
+                        if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)   // 소켓 얼라인 여부에 따라 분기
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move;
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                        }
+                    }
 
+                        break;
 
                 case (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move:                                 //  Socket 가공 높이 보정 이동
 
