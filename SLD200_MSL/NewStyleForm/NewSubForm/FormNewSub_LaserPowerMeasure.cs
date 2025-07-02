@@ -134,14 +134,16 @@ namespace SLD200.NewStyleForm.NewSubForm
             if(m_bStartLaserPowerMeasure)
             {
                 float duration = (float)numericUpDownDuration.Value;  // 단위: 초
+                duration *= 1000;
                 double elapsedSeconds = (DateTime.Now - _measureStartTime).TotalSeconds;
 
-                if (elapsedSeconds >= duration)
+                if (elapsedSeconds >= duration * 0.9)
                 {
                     // 종료
                     m_bStartLaserPowerMeasure = false;
                     return;
                 }
+                
 
                 // 1초마다 측정값 추가
                 int currentSecond = (int)elapsedSeconds;
@@ -152,6 +154,10 @@ namespace SLD200.NewStyleForm.NewSubForm
                     // 예시 측정값 (실제 측정값을 받아와야 함)
                     double measuredPower = (_setting.PowerMeterType == 0) ? workStage.m_dPowerMeterBDS_Value : workStage.m_dPowerMeterStage_Value;
                     AddPowerMeasure((float)measuredPower);
+                }
+                else
+                {
+                    _lastLoggedSecond = (int)(duration/1000) / 2;
                 }
             }
         }
@@ -293,7 +299,11 @@ namespace SLD200.NewStyleForm.NewSubForm
                     return;
                 }
 
+                _lastLoggedSecond = 0;
+                ResetPowerMeasureList(); 
+                _measureStartTime = DateTime.Now;
                 m_bStartLaserPowerMeasure = true; // 레이저 출력 시작 상태로 설정
+
                 strTemp = string.Format("레이저 파워 출력 시작, Duration ({0:0.000})초", duration);
                 // 진행률 처리
                 _cts = new CancellationTokenSource();
