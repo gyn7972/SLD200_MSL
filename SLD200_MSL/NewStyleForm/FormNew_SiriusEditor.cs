@@ -2544,27 +2544,27 @@ namespace SLD200_MSL
             int m_nRegionIndex = 0;
             workStage.m_nCircleDrilling_CurrentRotStep = 2;
 
-            workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].X =
-                workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].X;
-            workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].Y =
-                workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y;
+            workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].X =
+                workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].X;
+            workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].Y =
+                workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y;
 
-            workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[1].X =
-                workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[1].X;
+            workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[1].X =
+                workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[1].X;
 
-            workStage.entity_Position.X = workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].X -
-                                                    workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.X +
-                                                    workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[1].X;           //  반지름 값
-            workStage.entity_Position.Y = workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y -
-                                                    workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.Y;
+            workStage.entity_Position.X = workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].X -
+                                                    workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.X +
+                                                    workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[1].X;           //  반지름 값
+            workStage.entity_Position.Y = workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y -
+                                                    workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.Y;
 
             //  시작 위치 각도 분할을 사용할 경우 (매번 분할 각도만큼 이동하여 시작)
             if (workStage.m_nCircleDrilling_CurrentRotStep >= 1)
             {
-                workStage.entity_Position_Center.X = workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].X -
-                                            workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.X;
-                workStage.entity_Position_Center.Y = workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y -
-                                            workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.Y;
+                workStage.entity_Position_Center.X = workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].X -
+                                            workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.X;
+                workStage.entity_Position_Center.Y = workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y -
+                                            workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.Y;
 
                 workStage.m_dCircleDrilling_RotDegree = 180.0;
 

@@ -412,6 +412,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                     Equipment.SocketStopped = false;
 
                     workStage.m_StartProcessTime = DateTime.Now;
+                    //Signal On 시키고 돌아갈 시간 벌기... ㅡㅡ
+                    Thread.Sleep(500); // 500ms 대기
+
                     SelectRunEnable_New = true;
                     workStage.m_nDrillingWork_Group_Count = 0;
                     workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
@@ -492,6 +495,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Equipment.SocketStopped = false;
 
                 workStage.m_StartProcessTime = DateTime.Now;
+                //Signal On 시키고 돌아갈 시간 벌기... ㅡㅡ
+                Thread.Sleep(500); // 500ms 대기
+
                 SelectRunEnable_New = true;
                 workStage.m_nDrillingWork_Group_Count = 0;
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
@@ -550,20 +556,20 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void DrawSocketButtonStyle(Graphics g, Rectangle rect, SocketProcessData socket)
         {
             var layerMap = new Dictionary<LayerType, Rectangle>
-    {
-        { LayerType.LAYER_DRILLING, GetTopLeftQuad(rect) },
-        { LayerType.LAYER_THRUHOLE, GetTopRightQuad(rect) },
-        { LayerType.LAYER_OUTLINE, GetBottomLeftQuad(rect) },
-        { LayerType.LAYER_MARKING, GetBottomRightQuad(rect) }
-    };
+            {
+                { LayerType.LAYER_DRILLING, GetTopLeftQuad(rect) },
+                { LayerType.LAYER_THRUHOLE, GetTopRightQuad(rect) },
+                { LayerType.LAYER_OUTLINE, GetBottomLeftQuad(rect) },
+                { LayerType.LAYER_MARKING, GetBottomRightQuad(rect) }
+            };
 
-            var textMap = new Dictionary<LayerType, string>
-    {
-        { LayerType.LAYER_DRILLING, "H" },
-        { LayerType.LAYER_THRUHOLE, "T" },
-        { LayerType.LAYER_OUTLINE, "O" },
-        { LayerType.LAYER_MARKING, "M" }
-    };
+                    var textMap = new Dictionary<LayerType, string>
+            {
+                { LayerType.LAYER_DRILLING, "H" },
+                { LayerType.LAYER_THRUHOLE, "T" },
+                { LayerType.LAYER_OUTLINE, "O" },
+                { LayerType.LAYER_MARKING, "M" }
+            };
 
             foreach (var kvp in layerMap)
             {

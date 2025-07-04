@@ -211,8 +211,7 @@ namespace QMC.Common
             Water_Leak = m_bLeak;
         }
 
-        public static bool SocketHeight_Batch_Use { set; get; } = false;           //  Socket Height Batch 사용 여부 (true: 사용, false: 미사용)
-
+        
         public static int ScannerMode_Change_byUser { set; get; }           //  0: None         1: Change To RTC6       2: Change to syncAxis
         public static bool FormNew_SiriusEditor_TimerStart { set; get; }           //  Scanner Mode가 변경되었는지 여부. (RTC6, syncAxis)
 
@@ -635,6 +634,8 @@ namespace QMC.Common
         public static int Machine_Hole02_50_Wait_Time { set; get; } = 0;                     //  Hole 02 50 Wait Time (ms)
 
         public static bool Machine_HoleCenter_Enable { set; get; } = false;                     //  Thruhole Use (true: Use, false: Not Use)
+
+        public static bool Machine_SocketHeight_Batch_Use { set; get; } = false;           //  Socket Height Batch 사용 여부 (true: 사용, false: 미사용)
 
         //  Offset Distance
         public struct stOffsetDistanceParameter
@@ -3083,6 +3084,9 @@ namespace QMC.Common
             Equipment.Machine_Hole02_50_Wait_Time = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "HoleCenter_Enable", "false", temp, 255, strFIle);
             Equipment.Machine_HoleCenter_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "SocketHeight_Batch_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_SocketHeight_Batch_Use = temp.ToString() == "False" ? false : true;
+
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

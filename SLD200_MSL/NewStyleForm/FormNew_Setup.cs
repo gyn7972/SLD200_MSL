@@ -1424,6 +1424,8 @@ namespace SLD200_MSL
 
             checkBox_HoleCenterEnable.Checked = Equipment.Machine_HoleCenter_Enable;
 
+            checkBox_Setup_Option_SocketHeight_Batch.Checked = Equipment.Machine_SocketHeight_Batch_Use;
+
             if (Equipment.Machine_FiducialImageSave_Always)
             {
                 radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
@@ -1884,6 +1886,9 @@ namespace SLD200_MSL
 
             Equipment.Machine_HoleCenter_Enable = checkBox_HoleCenterEnable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "HoleCenter_Enable", checkBox_HoleCenterEnable.Checked.ToString(), strFIle);
+
+            Equipment.Machine_SocketHeight_Batch_Use = checkBox_Setup_Option_SocketHeight_Batch.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "SocketHeight_Batch_Enable", checkBox_Setup_Option_SocketHeight_Batch.Checked.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2479,6 +2484,15 @@ namespace SLD200_MSL
             else
             {
                 checkBox_HoleCenterEnable.Checked = false;
+            }
+
+            if(Equipment.Machine_SocketHeight_Batch_Use)
+            {
+                checkBox_Setup_Option_SocketHeight_Batch.Checked = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_SocketHeight_Batch.Checked = false;
             }
 
         }

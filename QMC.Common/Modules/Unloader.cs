@@ -3489,30 +3489,6 @@ namespace QMC.Common.Modules
                                 m_strTemp = "Transfer 축, Module Picker Vacuum On 확인 실패)";
                                 Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                                 return AlarmPost(AlarmKey.UL_Transfer_Picker_Vacuum_On_Check);
-
-
-                                Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer 축, Module Picker Vacuum On 확인 실패");
-                                //////////////////////////////////////////////////////////////////////////////////////////
-                                //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 실패) - Picker 공압이 형성되지  않음
-                                //
-                                m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;
-                                //
-                                //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 실패)
-                                //////////////////////////////////////////////////////////////////////////////////////////
-                                //  알람 정지 (LED Bar - Red Blink)
-                                Equipment.MachineStop_byAlarm = true;
-                                //////////////////////////////////////////////////////////////////////////////////////////
-                                //  재시작 위치 저장용
-                                //
-                                m_bUnloader_WorkStage_PickUp_Retry = true;
-                                Equipment.MachineStop_byTimeout_Unloader = true;
-                                Unloader_CurrentStatus_Save_StopedByTimeout();
-                                //
-                                //  재시작 위치 저장용
-                                //////////////////////////////////////////////////////////////////////////////////////////
-                                return AlarmPost(AlarmKey.UL_Transfer_Picker_Vacuum_On_Check);
-                                m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-                                MessageBox.Show("Module Picker Vacuum On 확인 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
                         else
