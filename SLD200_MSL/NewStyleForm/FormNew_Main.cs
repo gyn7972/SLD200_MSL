@@ -4714,7 +4714,7 @@ namespace SLD200_MSL
             pf.StopProcess += (obj) =>
             {
                 cts.Cancel();
-            };
+            }; 
 
             pf.ShowDialog();
 
