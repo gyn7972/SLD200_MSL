@@ -17102,7 +17102,7 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
-        private void LaserDrilling_StepDrillingData_SocketDrillingHeight_ZOffset_Move(out string m_strTemp, out double lfVelocity, out double lfAccDec, out double m_dOffset)
+        private void LaserDrilling_StepDrillingData_SocketDrillingHeight_ZOffset_Move(out string strTemp, out double lfVelocity, out double lfAccDec, out double m_dOffset)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Socket 가공 Focus 조정 시작.");
             
@@ -17116,46 +17116,63 @@ namespace QMC.Common.Modules
             //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
             m_dOffset = m_dHoleLayer_Defocusing;
 
-            m_strTemp = "";
+            strTemp = "";
 
-            //  성부장 작업
+            var layerEnum = GetCurrentLayerEnum(m_LayerType);
+            var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+            if (socket != null && socket.IsSocketDisplacement)
+            {
+                m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+
+                strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                        layerEnum,
+                                        m_nDrillingWork_Group_Count,
+                                        m_dZOffset_SocketHeightCheck);
+                Log.Write("SocketHeight", strTemp);
+            }
+            else
+            {
+                Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+            }
+
             switch (m_LayerType)
             {
                 case LayerType.LAYER_DRILLING:
                     m_dOffset = m_dHoleLayer_Defocusing;
 
-                    m_strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Drilling Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
+                    strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Drilling Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
                             m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dHoleLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
                     break;
 
                 case LayerType.LAYER_THRUHOLE:
                     m_dOffset = m_dThruholeLayer_Defocusing;
 
-                    m_strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Thruhole Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
+                    strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Thruhole Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
                             m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dThruholeLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
                     break;
 
                 case LayerType.LAYER_OUTLINE:
                     m_dOffset = m_dOutlineLayer_Defocusing;
 
-                    m_strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Outline Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
+                    strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Outline Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
                             m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dOutlineLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
                     break;
 
                 case LayerType.LAYER_MARKING:
                     m_dOffset = m_dMarkingLayer_Defocusing;
 
-                    m_strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Marking Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
+                    strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Marking Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
                             m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dMarkingLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
                     break;
             }
-
-            Log.Write("SLD-200", "Auto Run", m_strTemp);
+            Log.Write("SocketHeight", strTemp);
 
             //  좌표계 (기존)
-            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
                 vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset;
+            strTemp = string.Format("TargetZ = {0:F3} mm",
+                                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]);
+            Log.Write("SocketHeight", strTemp);
 
             MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
                                   lfVelocity, lfAccDec, lfAccDec);
