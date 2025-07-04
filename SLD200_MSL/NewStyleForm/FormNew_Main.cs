@@ -3935,7 +3935,7 @@ namespace SLD200_MSL
             Equipment.Loader_LPort_Pause = checkBox_Main_Loader_LPort_Pause.Checked;
 
             //  L-Port 를 Pause 상태로 변경했을 경우
-            if (Equipment.Loader_LPort_Pause)
+            if (Equipment.Loader_LPort_Pause) 
             {
                 if (Equipment.Loader_RPort_Pause)           //  R-Port 가 이미 Pause 상태였으면
                 {
