@@ -17117,54 +17117,76 @@ namespace QMC.Common.Modules
             m_dOffset = m_dHoleLayer_Defocusing;
 
             strTemp = "";
-
-            var layerEnum = GetCurrentLayerEnum(m_LayerType);
-            var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
-            if (socket != null && socket.IsSocketDisplacement)
+            if (Equipment.Machine_SocketHeight_Batch_Use)
             {
-                m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
 
-                strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
-                                        layerEnum,
-                                        m_nDrillingWork_Group_Count,
-                                        m_dZOffset_SocketHeightCheck);
-                Log.Write("SocketHeight", strTemp);
+                    strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
             }
             else
             {
-                Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                //Log 남겨놔보자.
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    // 적용하지말고 로그만 남기자.
+                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+                    strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"로그만_Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
             }
 
-            switch (m_LayerType)
-            {
-                case LayerType.LAYER_DRILLING:
-                    m_dOffset = m_dHoleLayer_Defocusing;
+                switch (m_LayerType)
+                {
+                    case LayerType.LAYER_DRILLING:
+                        m_dOffset = m_dHoleLayer_Defocusing;
 
-                    strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Drilling Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
-                            m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dHoleLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
-                    break;
+                        strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Drilling Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
+                                m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dHoleLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
+                        break;
 
-                case LayerType.LAYER_THRUHOLE:
-                    m_dOffset = m_dThruholeLayer_Defocusing;
+                    case LayerType.LAYER_THRUHOLE:
+                        m_dOffset = m_dThruholeLayer_Defocusing;
 
-                    strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Thruhole Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
-                            m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dThruholeLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
-                    break;
+                        strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Thruhole Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
+                                m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dThruholeLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
+                        break;
 
-                case LayerType.LAYER_OUTLINE:
-                    m_dOffset = m_dOutlineLayer_Defocusing;
+                    case LayerType.LAYER_OUTLINE:
+                        m_dOffset = m_dOutlineLayer_Defocusing;
 
-                    strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Outline Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
-                            m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dOutlineLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
-                    break;
+                        strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Outline Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
+                                m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dOutlineLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
+                        break;
 
-                case LayerType.LAYER_MARKING:
-                    m_dOffset = m_dMarkingLayer_Defocusing;
+                    case LayerType.LAYER_MARKING:
+                        m_dOffset = m_dMarkingLayer_Defocusing;
 
-                    strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Marking Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
-                            m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dMarkingLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
-                    break;
-            }
+                        strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Marking Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
+                                m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dMarkingLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
+                        break;
+                }
             Log.Write("SocketHeight", strTemp);
 
             //  좌표계 (기존)
