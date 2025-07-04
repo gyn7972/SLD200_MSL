@@ -610,6 +610,7 @@ namespace QMC.Common.Modules
         public stThruHole_SocketData[] m_stThruHole_SocketData;                     //  Socket Data 를 저장한다.
         public stThruHole_SocketData[] m_stThruHole_SocketData_ProcessingFlag;      //  Socket Data 를 저장한다. (가공 여부 Flag)
         public bool m_bPassedSocket_Exist;
+        public bool m_bRetryAlignSucess;
         ///
         /// <summary>
         /// "쓰루홀" 처리 - 여기까지
@@ -16970,9 +16971,50 @@ namespace QMC.Common.Modules
 
                     break;
             }
-
             m_strTemp = strTemp;
             Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+
+            if (Equipment.Machine_SocketHeight_Batch_Use)
+            {
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+
+                    strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+            else
+            {
+                //Log 남겨놔보자.
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    // 적용하지말고 로그만 남기자.
+                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+                    strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"로그만_Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+
 
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
             //  속도 설정
@@ -17011,11 +17053,51 @@ namespace QMC.Common.Modules
             lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
             lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
 
+            string strTemp = string.Empty;
+            if (Equipment.Machine_SocketHeight_Batch_Use)
+            {
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+
+                    strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+            else
+            {
+                //Log 남겨놔보자.
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    // 적용하지말고 로그만 남기자.
+                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+                    strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"로그만_Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+
             //  가공 할 Layer 의 Z Offset 값으로 이동
             //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
             //LaserDrilling_StepDividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move <- 여기에서 Data 가져 왔음.
             m_dOffset = m_dHoleLayer_Defocusing;
-
             //  성부장 작업
             switch(m_LayerType)
             {
@@ -17065,8 +17147,48 @@ namespace QMC.Common.Modules
             m_strTemp = strTemp;
             Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-            workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+            //string strTemp = string.Empty;
+            if (Equipment.Machine_SocketHeight_Batch_Use)
+            {
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
 
+                    strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+            else
+            {
+                //Log 남겨놔보자.
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    // 적용하지말고 로그만 남기자.
+                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+                    strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"로그만_Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+
+            workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
             //  속도 설정
             lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
             lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
@@ -17271,6 +17393,47 @@ namespace QMC.Common.Modules
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Layer Z Offset 이동 시작");
 
+            string strTemp = string.Empty;
+            if (Equipment.Machine_SocketHeight_Batch_Use)
+            {
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+
+                    strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+            else
+            {
+                //Log 남겨놔보자.
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    // 적용하지말고 로그만 남기자.
+                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+                    strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"로그만_Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
 
             //  속도 설정
@@ -17280,7 +17443,6 @@ namespace QMC.Common.Modules
             //  가공 할 Layer 의 Z Offset 값으로 이동
             //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
             m_dOffset = m_dHoleLayer_Defocusing;
-
             //  성부장 작업
             switch (m_LayerType)
             {
@@ -17288,7 +17450,7 @@ namespace QMC.Common.Modules
                 case LayerType.LAYER_DRILLING:
                     m_dOffset = m_dHoleLayer_Defocusing;
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
-                    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dOffset;
+                    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset;
                     break;
 
                 case LayerType.LAYER_THRUHOLE:
@@ -18180,6 +18342,47 @@ namespace QMC.Common.Modules
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline Layer Z Offset 이동 시작");
 
+            string strTemp = string.Empty;
+            if (Equipment.Machine_SocketHeight_Batch_Use)
+            {
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+
+                    strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+            else
+            {
+                //Log 남겨놔보자.
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    // 적용하지말고 로그만 남기자.
+                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+                    strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"로그만_Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
 
             //  속도 설정
@@ -18228,6 +18431,47 @@ namespace QMC.Common.Modules
         private void LaserDrillingStepSetThruHoleLayerParameterZOffsetMove(out double lfVelocity, out double lfAccDec)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 시작");
+
+            string strTemp = string.Empty;
+            if (Equipment.Machine_SocketHeight_Batch_Use)
+            {
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+
+                    strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+            else
+            {
+                //Log 남겨놔보자.
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    // 적용하지말고 로그만 남기자.
+                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+                    strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"로그만_Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
 
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
 
@@ -18278,6 +18522,47 @@ namespace QMC.Common.Modules
         private void LaserDrillingStepSetMarkingLayerParameterZOffsetMove(out double lfVelocity, out double lfAccDec)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Marking Layer Z Offset 이동 시작");
+
+            string strTemp = string.Empty;
+            if (Equipment.Machine_SocketHeight_Batch_Use)
+            {
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+
+                    strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
+            else
+            {
+                //Log 남겨놔보자.
+                var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                if (socket != null && socket.IsSocketDisplacement)
+                {
+                    // 적용하지말고 로그만 남기자.
+                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
+                    strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                                            layerEnum,
+                                            m_nDrillingWork_Group_Count,
+                                            m_dZOffset_SocketHeightCheck);
+                    Log.Write("SocketHeight", strTemp);
+                }
+                else
+                {
+                    Log.Write("SocketHeight", $"로그만_Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                }
+            }
 
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
 
@@ -18609,6 +18894,8 @@ namespace QMC.Common.Modules
 
             m_nSensorRetryCount = 0;
             m_bSensorResponseReady = false;
+
+            m_bRetryAlignSucess = false;
 
         }
         #endregion
@@ -33663,6 +33950,8 @@ namespace QMC.Common.Modules
                         Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
                         if (GetDrillingData(true) == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
                         {
+                            GetDrillingData_ProcessingFlagCheck();
+
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공 시, WorkStage에서 가공 데이터 Parsing 성공");
                         }
                         else
@@ -34454,7 +34743,8 @@ namespace QMC.Common.Modules
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stThruHole_SocketData.Length == 1, m_stDividedRegion_GroupData.Length == 1");
                             }
                             else if (Equipment.SelectRunEnable_New &&
-                                     m_nDrillingData_SocketAlign_NGCount > 0)
+                                     m_nDrillingData_SocketAlign_NGCount > 0 && 
+                                     m_bRetryAlignSucess == false)
                             {
                                 // 조건이 안맞으니깐 우선 넘김.
                                 m_nLaserDrilling_LayerCount++;
@@ -34541,7 +34831,8 @@ namespace QMC.Common.Modules
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stOutLine_SocketData.Length == 1, m_stDividedRegion_GroupData.Length == 1");
                             }
                             else if (Equipment.SelectRunEnable_New &&
-                                     m_nDrillingData_SocketAlign_NGCount > 0)
+                                     m_nDrillingData_SocketAlign_NGCount > 0 &&
+                                     m_bRetryAlignSucess == false)
                             {
                                 // 조건이 안맞으니깐 우선 넘김.
                                 m_nLaserDrilling_LayerCount++;
@@ -34617,7 +34908,8 @@ namespace QMC.Common.Modules
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_stMarking_SocketData.m_stMarking_ObjectData.Length == 1, m_stDividedRegion_GroupData.Length == 1");
                             }
                             else if (Equipment.SelectRunEnable_New &&
-                                     m_nDrillingData_SocketAlign_NGCount > 0)
+                                     m_nDrillingData_SocketAlign_NGCount > 0 &&
+                                     m_bRetryAlignSucess == false)
                             {
                                 // 조건이 안맞으니깐 우선 넘김.
                                 m_nLaserDrilling_LayerCount++;
@@ -36362,6 +36654,18 @@ namespace QMC.Common.Modules
                                 m_dZOffset_SocketHeightCheck = 0.0;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos;
                             }
+                            else
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                                if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)   // 소켓 얼라인 여부에 따라 분기
+                                {
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                                }
+                                else
+                                {
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move;
+                                }
+                            }
                         }
                     }
                     else
@@ -36562,6 +36866,18 @@ namespace QMC.Common.Modules
                     LaserHeightSensorValue_Save(Equipment.Current_Recipe, m_nDrillingWork_Group_Count,
                         Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, avgSensorValue, m_dZOffset_SocketHeightCheck, true);
 
+                    {
+                        //var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
+                        //int socketIndex = m_nDrillingWork_Group_Count;
+                        //socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                        //if (socket != null)
+                        //{
+                        //    socket.IsSocketDisplacement = true;
+                        //    socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                        //    DrillingManager.MarkAsChanged();
+                        //    Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                        //}
+                    }
                     // Layer별 소켓 데이터에 저장
                     // hol가공시에..하니깐 Layer구분없이 전부 다 측정data 넣어야 하는거 아닌가?
                     switch (m_LayerType)
@@ -36571,6 +36887,17 @@ namespace QMC.Common.Modules
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DrillingData_SocketHeightValue_Get:LAYER_DRILLING");
                                 m_stLaserDrilling_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+
+                                var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
+                                int socketIndex = m_nDrillingWork_Group_Count;
+                                socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                                if (socket != null)
+                                {
+                                    socket.IsSocketDisplacement = true;
+                                    socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                                    DrillingManager.MarkAsChanged();
+                                    Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                }
                             }
 
                             if (m_stOutLine_SocketData != null)
@@ -36579,6 +36906,17 @@ namespace QMC.Common.Modules
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DrillingData_SocketHeightValue_Get:LAYER_OUTLINE");
                                     m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+
+                                    var drillingLayerEnum = GetCurrentLayerEnum(LayerType.LAYER_OUTLINE);
+                                    int socketIndex = m_nDrillingWork_Group_Count;
+                                    socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                                    if (socket != null)
+                                    {
+                                        socket.IsSocketDisplacement = true;
+                                        socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                                        DrillingManager.MarkAsChanged();
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                    }
                                 }
                                 
                             }
@@ -36589,6 +36927,17 @@ namespace QMC.Common.Modules
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DrillingData_SocketHeightValue_Get:LAYER_DRILLING");
                                     m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+
+                                    var drillingLayerEnum = GetCurrentLayerEnum(LayerType.LAYER_THRUHOLE);
+                                    int socketIndex = m_nDrillingWork_Group_Count;
+                                    socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                                    if (socket != null)
+                                    {
+                                        socket.IsSocketDisplacement = true;
+                                        socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                                        DrillingManager.MarkAsChanged();
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                    }
                                 }
                             }
 
@@ -36598,6 +36947,17 @@ namespace QMC.Common.Modules
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DrillingData_SocketHeightValue_Get:LAYER_MARKING");
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+
+                                    var drillingLayerEnum = GetCurrentLayerEnum(LayerType.LAYER_MARKING);
+                                    int socketIndex = m_nDrillingWork_Group_Count;
+                                    socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                                    if (socket != null)
+                                    {
+                                        socket.IsSocketDisplacement = true;
+                                        socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                                        DrillingManager.MarkAsChanged();
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                    }
                                 }
                             }
                             break;
@@ -36609,6 +36969,17 @@ namespace QMC.Common.Modules
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Outline 소켓 데이터 개수 일치");
                                     m_stOutLine_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+
+                                    var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
+                                    int socketIndex = m_nDrillingWork_Group_Count;
+                                    socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                                    if (socket != null)
+                                    {
+                                        socket.IsSocketDisplacement = true;
+                                        socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                                        DrillingManager.MarkAsChanged();
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                    }
                                 }
                             }
                             break;
@@ -36620,6 +36991,17 @@ namespace QMC.Common.Modules
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
                                     m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+
+                                    var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
+                                    int socketIndex = m_nDrillingWork_Group_Count;
+                                    socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                                    if (socket != null)
+                                    {
+                                        socket.IsSocketDisplacement = true;
+                                        socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                                        DrillingManager.MarkAsChanged();
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                    }
                                 }
                             }
                             break;
@@ -36631,24 +37013,35 @@ namespace QMC.Common.Modules
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Marking 소켓 데이터 개수 일치");
                                     m_stMarking_SocketData.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+
+                                    var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
+                                    int socketIndex = m_nDrillingWork_Group_Count;
+                                    socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                                    if (socket != null)
+                                    {
+                                        socket.IsSocketDisplacement = true;
+                                        socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                                        DrillingManager.MarkAsChanged();
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                    }
                                 }
                             }
                             break;
                     }
 
                     // DrillingManager 저장
-                    {
-                        var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
-                        int socketIndex = m_nDrillingWork_Group_Count;
-                        socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
-                        if (socket != null)
-                        {
-                            socket.IsSocketDisplacement = true;
-                            socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
-                            DrillingManager.MarkAsChanged();
-                            Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
-                        }
-                    }
+                    //{
+                    //    var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
+                    //    int socketIndex = m_nDrillingWork_Group_Count;
+                    //    socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                    //    if (socket != null)
+                    //    {
+                    //        socket.IsSocketDisplacement = true;
+                    //        socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                    //        DrillingManager.MarkAsChanged();
+                    //        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                    //    }
+                    //}
 
                     // 소켓 얼라인 여부에 따라 분기
                     if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
@@ -37704,7 +38097,7 @@ namespace QMC.Common.Modules
                             m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle = 0;
                         }
                     }
-
+                    m_bRetryAlignSucess = false;
                     switch (m_LayerType)
                     {
                         case LayerType.LAYER_DRILLING:
@@ -37716,6 +38109,7 @@ namespace QMC.Common.Modules
                                                                                 m_dALIGN_FACTOR_Offset_X,
                                                                                 m_dALIGN_FACTOR_Offset_Y,
                                                                                 m_dALIGN_FACTOR_Theta);
+                                m_bRetryAlignSucess = true;
                             }
                             else
                             {

@@ -144,8 +144,11 @@ namespace QMC.Common.Global
             {
                 foreach (var socket in layer.SocketList)
                 {
+                    socket.IsSocketDisplacement = false;
+                    socket.IsSocketAligned = false;
                     socket.IsDrilled = false;
                     socket.IsSuccess = false;
+                    socket.IsGoldPowderAligned = false;
                 }
             }
             MarkAsChanged();

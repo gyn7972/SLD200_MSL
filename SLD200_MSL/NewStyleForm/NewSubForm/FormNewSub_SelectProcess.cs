@@ -371,6 +371,8 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             try
             {
+                drillingProcessManager.ResetAll();
+
                 foreach (var layer in drillingProcessManager.LayerList)
                 {
                     foreach (var socket in layer.SocketList)
@@ -438,6 +440,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void ButtonProcessSelected_Click(object sender, EventArgs e)
         {
+            drillingProcessManager.ResetAll();
+
             var selectedPerLayer = drillingProcessManager.LayerList
                 .Where(layer => layer.LayerType != LayerType.LAYER_FIDUCIAL && layer.LayerType != LayerType.LAYER_PREALIGN)
                 .Select(layer => new
@@ -452,6 +456,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 })
                 .Where(x => x.Sockets.Count > 0)
                 .ToList();
+
+            
 
             if (selectedPerLayer.Count == 0)
             {
