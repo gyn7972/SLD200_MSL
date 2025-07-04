@@ -414,6 +414,8 @@ namespace SLD200_MSL
                 this.Box_Setup_ScannerCal_ImageViewer.ResumeDisplay();
                 this.Box_Setup_ScannerCal_ImageViewer.StartUpdateTask();
 
+                FormNew_Setup_Shown(null,null); //  폼이 처음 보일 때, Shown 이벤트를 강제로 호출하여 초기화 작업을 수행합니다.
+
             }
             else if (!this.Visible && m_bFormVisible)
             {
@@ -1426,6 +1428,9 @@ namespace SLD200_MSL
 
             checkBox_Setup_Option_SocketHeight_Batch.Checked = Equipment.Machine_SocketHeight_Batch_Use;
 
+            checkBox_Setup_Option_SocketVision_Batch.Checked = Equipment.Machine_SocketVision_Batch_Use;
+
+
             if (Equipment.Machine_FiducialImageSave_Always)
             {
                 radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
@@ -1889,6 +1894,9 @@ namespace SLD200_MSL
 
             Equipment.Machine_SocketHeight_Batch_Use = checkBox_Setup_Option_SocketHeight_Batch.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "SocketHeight_Batch_Enable", checkBox_Setup_Option_SocketHeight_Batch.Checked.ToString(), strFIle);
+
+            Equipment.Machine_SocketVision_Batch_Use = checkBox_Setup_Option_SocketVision_Batch.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "SocketVision_Batch_Enable", checkBox_Setup_Option_SocketVision_Batch.Checked.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2493,6 +2501,15 @@ namespace SLD200_MSL
             else
             {
                 checkBox_Setup_Option_SocketHeight_Batch.Checked = false;
+            }
+
+            if (Equipment.Machine_SocketVision_Batch_Use)
+            {
+                checkBox_Setup_Option_SocketVision_Batch.Checked = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_SocketVision_Batch.Checked = false;
             }
 
         }

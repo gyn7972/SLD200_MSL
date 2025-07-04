@@ -17145,7 +17145,7 @@ namespace QMC.Common.Modules
                 {
                     // 적용하지말고 로그만 남기자.
                     //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
-                    strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
+                    strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
                                             layerEnum,
                                             m_nDrillingWork_Group_Count,
                                             m_dZOffset_SocketHeightCheck);
@@ -17153,7 +17153,7 @@ namespace QMC.Common.Modules
                 }
                 else
                 {
-                    Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
+                    Log.Write("SocketHeight", $"로그만_Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
                 }
             }
 

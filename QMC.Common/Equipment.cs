@@ -636,7 +636,7 @@ namespace QMC.Common
         public static bool Machine_HoleCenter_Enable { set; get; } = false;                     //  Thruhole Use (true: Use, false: Not Use)
 
         public static bool Machine_SocketHeight_Batch_Use { set; get; } = false;           //  Socket Height Batch 사용 여부 (true: 사용, false: 미사용)
-
+        public static bool Machine_SocketVision_Batch_Use { set; get; } = false;
         //  Offset Distance
         public struct stOffsetDistanceParameter
         {
@@ -3086,7 +3086,9 @@ namespace QMC.Common
             Equipment.Machine_HoleCenter_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "SocketHeight_Batch_Enable", "false", temp, 255, strFIle);
             Equipment.Machine_SocketHeight_Batch_Use = temp.ToString() == "False" ? false : true;
-
+            NativeMethods.GetPrivateProfileString("Machine_Option", "SocketVision_Batch_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_SocketVision_Batch_Use = temp.ToString() == "False" ? false : true;
+            //
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

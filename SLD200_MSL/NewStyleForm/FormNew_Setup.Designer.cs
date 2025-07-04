@@ -436,6 +436,7 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.checkBox_Setup_Option_SocketHeight_Batch = new System.Windows.Forms.CheckBox();
             this.checkBox_HoleCenterEnable = new System.Windows.Forms.CheckBox();
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable = new System.Windows.Forms.CheckBox();
             this.textBox_Setup_Option_Hole02_50_Wait_Time = new System.Windows.Forms.TextBox();
@@ -574,7 +575,7 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.checkBox_Setup_Option_SocketHeight_Batch = new System.Windows.Forms.CheckBox();
+            this.checkBox_Setup_Option_SocketVision_Batch = new System.Windows.Forms.CheckBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -5691,6 +5692,7 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.checkBox_Setup_Option_SocketVision_Batch);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_SocketHeight_Batch);
             this.groupBox13.Controls.Add(this.checkBox_HoleCenterEnable);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_Hole02_50_Wait_Enable);
@@ -5765,6 +5767,15 @@
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
+            // 
+            // checkBox_Setup_Option_SocketHeight_Batch
+            // 
+            this.checkBox_Setup_Option_SocketHeight_Batch.Location = new System.Drawing.Point(1024, 190);
+            this.checkBox_Setup_Option_SocketHeight_Batch.Name = "checkBox_Setup_Option_SocketHeight_Batch";
+            this.checkBox_Setup_Option_SocketHeight_Batch.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_SocketHeight_Batch.TabIndex = 128;
+            this.checkBox_Setup_Option_SocketHeight_Batch.Text = "SocketHeight_Batch";
+            this.checkBox_Setup_Option_SocketHeight_Batch.UseVisualStyleBackColor = true;
             // 
             // checkBox_HoleCenterEnable
             // 
@@ -7321,14 +7332,14 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox_Setup_Option_SocketHeight_Batch
+            // checkBox_Setup_Option_SocketVision_Batch
             // 
-            this.checkBox_Setup_Option_SocketHeight_Batch.Location = new System.Drawing.Point(1024, 190);
-            this.checkBox_Setup_Option_SocketHeight_Batch.Name = "checkBox_Setup_Option_SocketHeight_Batch";
-            this.checkBox_Setup_Option_SocketHeight_Batch.Size = new System.Drawing.Size(221, 20);
-            this.checkBox_Setup_Option_SocketHeight_Batch.TabIndex = 128;
-            this.checkBox_Setup_Option_SocketHeight_Batch.Text = "SocketHeight_Batch";
-            this.checkBox_Setup_Option_SocketHeight_Batch.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_SocketVision_Batch.Location = new System.Drawing.Point(1024, 221);
+            this.checkBox_Setup_Option_SocketVision_Batch.Name = "checkBox_Setup_Option_SocketVision_Batch";
+            this.checkBox_Setup_Option_SocketVision_Batch.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_SocketVision_Batch.TabIndex = 129;
+            this.checkBox_Setup_Option_SocketVision_Batch.Text = "SocketVision_Batch";
+            this.checkBox_Setup_Option_SocketVision_Batch.UseVisualStyleBackColor = true;
             // 
             // FormNew_Setup
             // 
@@ -7987,5 +7998,6 @@
         private System.Windows.Forms.TextBox textBox_Setup_Option_Hole02_50_Wait_Time;
         private System.Windows.Forms.CheckBox checkBox_HoleCenterEnable;
         private System.Windows.Forms.CheckBox checkBox_Setup_Option_SocketHeight_Batch;
+        private System.Windows.Forms.CheckBox checkBox_Setup_Option_SocketVision_Batch;
     }
 }
