@@ -3040,7 +3040,6 @@ namespace SLD200_MSL
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !!", "Recipe Data를 저장하였습니다.");
 
-
                 Recipe_Open(fileName); // Recipe Open
             }
         }
@@ -3678,7 +3677,47 @@ namespace SLD200_MSL
             
         }
 
+        private void button_Recipe_New_Click(object sender, EventArgs e)
+        {
+            string folderPath = string.Empty;
+            string defaultRecipeFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Recipe");
+            if (string.IsNullOrWhiteSpace(Equipment.Current_Recipe))
+            {
+                // 기본 폴더 사용
+                folderPath = defaultRecipeFolder;
+            }
+            else
+            {
+                folderPath = Path.GetDirectoryName(Equipment.Current_Recipe);
+            }
 
+            // 폴더 없으면 생성
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
 
+            // 새 파일명 설정
+            string ext = ".ini";  // 확장자 필요시 조정
+            string fileName = Path.Combine(folderPath, "NewRecipe" + ext);
+            {
+                if (File.Exists(fileName) == false)
+                {
+                    using (FileStream fs = File.Create(fileName))
+                    {
+                        // 파일만 생성하고 바로 닫음
+                    }
+                }
+
+                //  Recipe Data 저장
+                Recipe_Data_Save_Refactory(fileName);
+                Equipment.Current_Recipe = fileName;
+                // Vision Data 저장
+                stVisionRecipeSet.SaveToIni(fileName);
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "Recipe Data를 새로 생성하였습니다.");
+
+                Recipe_Open(fileName); // Recipe Open
+            }
+        }
     }
 }

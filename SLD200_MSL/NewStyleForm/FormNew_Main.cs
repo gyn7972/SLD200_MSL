@@ -2176,6 +2176,9 @@ namespace SLD200_MSL
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
 
             workStage.m_StartProcessTime = DateTime.Now;
+            
+            //Signal On 시키고 돌아갈 시간 벌기... ㅡㅡ
+            Thread.Sleep(500); // 500ms 대기
 
             FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);
             workStage.m_MainWork_Start = true;
@@ -3118,13 +3121,13 @@ namespace SLD200_MSL
 
                 baseTextBox_Socket_Index.Text = "All";
                 workStage.m_nSelectedSocket_Index = -1;
-                if (workStage.m_stDividedRegion_GroupData != null)
+                if (workStage.m_stLaserDrilling_SocketData != null)
                 {
                     //  선택된 Socket 이 몇번 Socket 인지 확인
-                    for (int i = 0; i < workStage.m_stDividedRegion_GroupData.Length; i++)
+                    for (int i = 0; i < workStage.m_stLaserDrilling_SocketData.Length; i++)
                     {
-                        if ((m_dSelectedGroup_Center_X == workStage.m_stDividedRegion_GroupData[i].dGroupCenter.X) &&
-                            (m_dSelectedGroup_Center_Y == workStage.m_stDividedRegion_GroupData[i].dGroupCenter.Y))
+                        if ((m_dSelectedGroup_Center_X == workStage.m_stLaserDrilling_SocketData[i].dGroupCenter.X) &&
+                            (m_dSelectedGroup_Center_Y == workStage.m_stLaserDrilling_SocketData[i].dGroupCenter.Y))
                         {
                             baseTextBox_Socket_Index.Text = i.ToString();
                             workStage.m_nSelectedSocket_Index = i;
@@ -4879,10 +4882,12 @@ namespace SLD200_MSL
                     !await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY))
                     return ShowErrorAndReturn("Stage X/Y 축 이동 실패");
 
+
                 // Vacuum 해제
                 if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
                 {
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    workStage.workStageParameter.DO_Stage_Blow(false);
                     strTemp = "workStage - 자재 확인 바랍니다. Reset";
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
@@ -4892,16 +4897,26 @@ namespace SLD200_MSL
                 {
                     int index = (int)pos;
                     if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck(index))
+                    {
                         loader.loaderParameter.DO_Loader_Aligner_Vacuum(index, false);
+                        loader.loaderParameter.DO_Loader_Aligner_Blow(index, false);
+                    }
                 }
 
                 foreach (var pos in Enum.GetValues(typeof(LoaderParameter.PickerVacuumPos)))
                 {
                     int index = (int)pos;
                     if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck(index))
+                    {
                         loader.loaderParameter.DO_Loader_Picker_Vacuum(index, false);
+                        loader.loaderParameter.DO_Loader_Picker_Blow(false);
+                    }
+                        
                     if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index))
+                    {
                         unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
+                        unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
+                    }
                 }
 
                 return true;

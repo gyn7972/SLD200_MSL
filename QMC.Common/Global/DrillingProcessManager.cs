@@ -12,9 +12,12 @@ namespace QMC.Common.Global
     public class SocketProcessData
     {
         public int SocketNumber { get; set; }
+
+        // 변위센서 측정 유무 / 결과
+        public bool IsSocketDisplacement { get; set; }
         public double DisplacementZ { get; set; }
 
-        // Socket 얼라인 결과
+        // Socket 얼라인 유무 / 결과
         public bool IsSocketAligned { get; set; }
         public double SocketRotationCenterX { get; set; }
         public double SocketRotationCenterY { get; set; }
@@ -22,7 +25,7 @@ namespace QMC.Common.Global
         public double SocketOffsetY { get; set; }
         public double SocketTheta { get; set; }
 
-        // GoldPowder 얼라인 결과
+        // GoldPowder 얼라인 유무 / 결과
         public bool IsGoldPowderAligned { get; set; }
         public double GoldRotationCenterX { get; set; }
         public double GoldRotationCenterY { get; set; }
@@ -45,6 +48,7 @@ namespace QMC.Common.Global
 
         public void Reset()
         {
+            IsSocketDisplacement = false;
             DisplacementZ = 0;
             IsSocketAligned = false;
             SocketRotationCenterX = SocketRotationCenterY = 0;

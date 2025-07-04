@@ -221,6 +221,7 @@
             this.label323 = new System.Windows.Forms.Label();
             this.button153 = new System.Windows.Forms.Button();
             this.groupBox136 = new System.Windows.Forms.GroupBox();
+            this.checkBox_MasterView = new System.Windows.Forms.CheckBox();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.listView_Recipe_TabRecipe_LayerData = new System.Windows.Forms.ListView();
             this.groupBox137 = new System.Windows.Forms.GroupBox();
@@ -309,7 +310,6 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.checkBox_MasterView = new System.Windows.Forms.CheckBox();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -377,6 +377,7 @@
             this.button_Recipe_New.TabIndex = 22;
             this.button_Recipe_New.Text = "New";
             this.button_Recipe_New.UseVisualStyleBackColor = true;
+            this.button_Recipe_New.Click += new System.EventHandler(this.button_Recipe_New_Click);
             // 
             // button_Recipe_Apply
             // 
@@ -2717,6 +2718,17 @@
             this.groupBox136.TabStop = false;
             this.groupBox136.Text = " List of Layer ";
             // 
+            // checkBox_MasterView
+            // 
+            this.checkBox_MasterView.AutoSize = true;
+            this.checkBox_MasterView.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox_MasterView.Location = new System.Drawing.Point(10, 168);
+            this.checkBox_MasterView.Name = "checkBox_MasterView";
+            this.checkBox_MasterView.Size = new System.Drawing.Size(48, 17);
+            this.checkBox_MasterView.TabIndex = 58;
+            this.checkBox_MasterView.Text = "View";
+            this.checkBox_MasterView.UseVisualStyleBackColor = true;
+            // 
             // groupBox18
             // 
             this.groupBox18.Controls.Add(this.listView_Recipe_TabRecipe_LayerData);
@@ -3809,17 +3821,6 @@
             this.button_Recipe_Cancel.TabIndex = 20;
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
-            // 
-            // checkBox_MasterView
-            // 
-            this.checkBox_MasterView.AutoSize = true;
-            this.checkBox_MasterView.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox_MasterView.Location = new System.Drawing.Point(10, 168);
-            this.checkBox_MasterView.Name = "checkBox_MasterView";
-            this.checkBox_MasterView.Size = new System.Drawing.Size(48, 17);
-            this.checkBox_MasterView.TabIndex = 58;
-            this.checkBox_MasterView.Text = "View";
-            this.checkBox_MasterView.UseVisualStyleBackColor = true;
             // 
             // FormNew_Recipe
             // 

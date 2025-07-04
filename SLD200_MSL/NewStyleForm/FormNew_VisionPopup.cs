@@ -108,11 +108,11 @@ namespace SLD200_MSL
 
         public void Socket_List_Set()
         {
-            if (workStage.m_stDividedRegion_GroupData != null)
+            if (workStage.m_stLaserDrilling_SocketData != null)
             {
                 comboBox_Config_VisionPopup_AlignTest_SocketList.Items.Clear();
 
-                for (int i = 0; i < workStage.m_stDividedRegion_GroupData[0].nGroup_Num; i++)
+                for (int i = 0; i < workStage.m_stLaserDrilling_SocketData[0].nGroup_Num; i++)
                 {
                     comboBox_Config_VisionPopup_AlignTest_SocketList.Items.Add(i);
                 }
@@ -1761,15 +1761,15 @@ namespace SLD200_MSL
                 return;
             }
 
-            textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Text = workStage.m_stDividedRegion_GroupData[m_nIndex].dGroupCenter.X.ToString();
-            textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Text = workStage.m_stDividedRegion_GroupData[m_nIndex].dGroupCenter.Y.ToString();
+            textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Text = workStage.m_stLaserDrilling_SocketData[m_nIndex].dGroupCenter.X.ToString();
+            textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Text = workStage.m_stLaserDrilling_SocketData[m_nIndex].dGroupCenter.Y.ToString();
 
             //  Fiducial Mark Pos 등록
-            if (workStage.m_stDividedRegion_GroupData[m_nIndex].dFiducialPos.Length > 0)
+            if (workStage.m_stLaserDrilling_SocketData[m_nIndex].dFiducialPos.Length > 0)
             {
                 comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Items.Clear();
 
-                for (int i = 0; i < workStage.m_stDividedRegion_GroupData[m_nIndex].dFiducialPos.Length; i++)
+                for (int i = 0; i < workStage.m_stLaserDrilling_SocketData[m_nIndex].dFiducialPos.Length; i++)
                 {
                     comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Items.Add(i);
                 }
@@ -1797,7 +1797,7 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (m_nFiducialIndex < workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos.Length)
+            if (m_nFiducialIndex < workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos.Length)
             {
                 workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("Processing");
 
@@ -1822,8 +1822,8 @@ namespace SLD200_MSL
                 }
 
                 //  Fiducial 위치 반영
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
 
                 //  속도 설정
                 if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
@@ -2659,7 +2659,7 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (m_nFiducialIndex < workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos.Length)
+            if (m_nFiducialIndex < workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos.Length)
             {
                 workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("Processing");
 
@@ -2684,13 +2684,13 @@ namespace SLD200_MSL
                 }
 
                 //  Fiducial 위치 반영
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
 
                 //  보정량 반영
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += (workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X - 
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += (workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X - 
                                                                                                                 workStage.m_st4PointPosition_InspectedPos[m_nFiducialIndex].ptFiducial_Center.X) ;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += (workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y -
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += (workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y -
                                                                                                                 workStage.m_st4PointPosition_InspectedPos[m_nFiducialIndex].ptFiducial_Center.Y) ;
 
                 //  속도 설정
