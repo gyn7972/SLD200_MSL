@@ -2095,6 +2095,22 @@ namespace QMC.Common.Modules
 
                         m_bStacker0_Run_byUser = true;
                     }
+                    else if (Equipment.CycleModuleStop&& Equipment.CycleStopped_UnloaderTransfer)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "CycleStopped_LoaderTransfer : ON");
+
+                        if (!m_bStackerZ0_DownWhenEmpty &&
+                        m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
+                        m_nMAlign_Step == (int)MAlign_Step.None &&
+                        MC_Func.MC_GetDone((int)nAxis.Z0) &&
+                        MC_Func.MC_GetInposition((int)nAxis.Z0))
+                        {
+                            Log.Write("SLD-200", "Stacker0 No Material상태 → Z축 하강 실행");
+                            StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                            m_bStackerZ0_DownWhenEmpty = true;
+                            Equipment.CycleStopped_LoaderTransfer = true;
+                        }
+                    }
                 }
             }
             else if (Equipment.SemiAutoEnable && !Equipment.Loader_RPort_Pause)
@@ -2126,7 +2142,6 @@ namespace QMC.Common.Modules
                     }
                 }
             }
-
 
             StackerModulePickupWaitingPos_Step currentStep = (StackerModulePickupWaitingPos_Step)m_nStacker0_ModulePickupWaitingPos_Step;
             switch (m_nStacker0_ModulePickupWaitingPos_Step)
@@ -2167,21 +2182,6 @@ namespace QMC.Common.Modules
                         {
                             //  Full Sensor 감지되지 않는 상태일 경우 (Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
                             m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType2_FastUp;
-                        }
-                    }
-                    else if (Equipment.CycleStopped_LoaderTransfer)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "CycleStopped_LoaderTransfer : ON");
-
-                        if (!m_bStackerZ0_DownWhenEmpty &&
-                        m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
-                        m_nMAlign_Step == (int)MAlign_Step.None &&
-                        MC_Func.MC_GetDone((int)nAxis.Z0) &&
-                        MC_Func.MC_GetInposition((int)nAxis.Z0))
-                        {
-                            Log.Write("SLD-200", "Stacker0 No Material상태 → Z축 하강 실행");
-                            StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
-                            m_bStackerZ0_DownWhenEmpty = true;
                         }
                     }
                     else if (workStage.m_bMainWorkCycle_DryRun)
@@ -3063,6 +3063,23 @@ namespace QMC.Common.Modules
 
                         m_bStacker1_Run_byUser = true;
                     }
+                    else if (Equipment.CycleModuleStop && Equipment.CycleStopped_UnloaderTransfer)
+                    {
+
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "CycleStopped_LoaderTransfer : ON");
+
+                        if (!m_bStackerZ1_DownWhenEmpty &&
+                        m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
+                        m_nMAlign_Step == (int)MAlign_Step.None &&
+                        MC_Func.MC_GetDone((int)nAxis.Z1) &&
+                        MC_Func.MC_GetInposition((int)nAxis.Z1))
+                        {
+                            Log.Write("SLD-200", "Stacker1 No Material상태 → Z축 하강 실행");
+                            StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                            m_bStackerZ1_DownWhenEmpty = true;
+                            Equipment.CycleStopped_LoaderTransfer = true;
+                        }
+                    }
                 }
             }
             else if(Equipment.SemiAutoEnable && !Equipment.Loader_LPort_Pause)
@@ -3131,21 +3148,6 @@ namespace QMC.Common.Modules
                         {
                             //  Full Sensor 감지되지 않는 상태일 경우 (Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
                             m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType2_FastUp;
-                        }
-                    }
-                    else if (Equipment.CycleStopped_LoaderTransfer)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "CycleStopped_LoaderTransfer : ON");
-
-                        if (!m_bStackerZ1_DownWhenEmpty &&
-                        m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
-                        m_nMAlign_Step == (int)MAlign_Step.None &&
-                        MC_Func.MC_GetDone((int)nAxis.Z1) &&
-                        MC_Func.MC_GetInposition((int)nAxis.Z1))
-                        {
-                            Log.Write("SLD-200", "Stacker1 No Material상태 → Z축 하강 실행");
-                            StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
-                            m_bStackerZ1_DownWhenEmpty = true;
                         }
                     }
                     else if (workStage.m_bMainWorkCycle_DryRun)
@@ -7092,7 +7094,7 @@ namespace QMC.Common.Modules
                                 if (Equipment.CycleModuleStop)
                                 {
                                     // Loader Transfer 돌아가지 않게
-                                    Equipment.CycleStopped_LoaderTransfer = true;
+                                    //Equipment.CycleStopped_LoaderTransfer = true;
                                     m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_None;
                                 }
                                 else
@@ -9255,24 +9257,6 @@ namespace QMC.Common.Modules
                 // 4. Run_Transfer_Cycle_Func
                 int ret = 0;
 
-                //  홈 실행이 완료된 후 부터 Loader Ionizer 는 상시 체크
-                if (workStage != null)
-                {
-                    if (workStage.m_bHomeOK)
-                    {
-                        //장비 시작하고 10초 후 부터 확인.
-                        if ((DateTime.Now - workStage.m_StartProcessTime).TotalSeconds > 10)
-                        {
-                            if (loaderParameter.IsDO_Loader_Ionizer_On() &&
-                                (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
-                                !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
-                            {
-                                AlarmPost(AlarmKey.LD_Ionizer_Alarm);
-                            }
-                        }
-                    }
-                }
-
                 if (AlarmManager.Instance.IsAlarm)
                 {
                     return;
@@ -9283,6 +9267,26 @@ namespace QMC.Common.Modules
                 {
                     m_bMAlign_LogOnce = false;  // 무한으로 로그 남기는거 막기 위한 Flag.
                     return;
+                }
+
+                // 홈 실행이 완료된 후 부터 Loader Ionizer 는 상시 체크
+                // 정지 시에는 끄니깐.. 여기다 놔두자.
+                if (workStage != null)
+                {
+                    if (workStage.m_bHomeOK)
+                    {
+                        //장비 시작하고 10초 후 부터 확인.
+                        if (workStage.m_StartProcessTime != DateTime.MinValue &&
+                            (DateTime.Now - workStage.m_StartProcessTime).TotalSeconds > 10)
+                        {
+                            if (loaderParameter.IsDO_Loader_Ionizer_On() &&
+                                (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
+                                !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
+                            {
+                                AlarmPost(AlarmKey.LD_Ionizer_Alarm);
+                            }
+                        }
+                    }
                 }
 
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

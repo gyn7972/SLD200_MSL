@@ -33917,8 +33917,10 @@ namespace QMC.Common.Modules
                     {
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Start;  // 반복 진입
 
-                        ActionProcessStop?.Invoke(true);
-
+                        if (Equipment.CycleStopped_LoaderTransfer)
+                        {
+                            ActionProcessStop?.Invoke(true);
+                        }
                         break;
                     }
 

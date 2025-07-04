@@ -4825,7 +4825,7 @@ namespace QMC.Common.Modules
                             if (Equipment.CycleModuleStop)
                             {
                                 //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
-                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                                //if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
                                 {
                                     //  Unloader Transfer 돌아가지 않게
                                     Equipment.CycleStopped_UnloaderTransfer = true;

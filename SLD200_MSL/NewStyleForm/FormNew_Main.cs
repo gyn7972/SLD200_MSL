@@ -395,6 +395,12 @@ namespace SLD200_MSL
                 }
 
                 workStage.StopProcess();
+
+                //
+                button_Main_Start.BackColor = Color.LightGray;
+                button_Main_Start.ForeColor = Color.Black;
+
+                checkBox_Main_AutoRun.Checked = false;
             }
         }
 
@@ -4707,6 +4713,7 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
 
+            string strTemp = string.Empty;
             button_Main_Reset.Enabled = false;
 
             CancellationTokenSource cts = new CancellationTokenSource();
@@ -4717,11 +4724,19 @@ namespace SLD200_MSL
             pf.StopProcess += (obj) =>
             {
                 cts.Cancel();
+                strTemp = "Reset이 중단되었습니다.";
+                new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                button_Main_Reset.Enabled = true;
+
+                Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                checkBox_Main_AutoRun.Checked = false;
+                button_Main_Start.BackColor = Color.LightGray;
+                button_Main_Start.ForeColor = Color.Black;
             }; 
 
             pf.ShowDialog();
 
-            string strTemp = string.Empty;
+           
             Log.Write("SLD-200", Equipment.User_Name, strTemp);
             //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
             if (resetTask.Result == 0)
