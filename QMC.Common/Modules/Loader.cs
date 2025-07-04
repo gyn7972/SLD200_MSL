@@ -1984,7 +1984,7 @@ namespace QMC.Common.Modules
                         m_nMAlign_Step == (int)MAlign_Step.None &&
                         MC_Func.MC_GetDone((int)nAxis.Z0) &&
                         MC_Func.MC_GetInposition((int)nAxis.Z0) &&
-                        workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None &&
+                        //workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None &&
                         unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None)
                     {
                         Log.Write("SLD-200", "Stacker0 No Material 상태 → Z축 하강 실행");
@@ -2167,6 +2167,21 @@ namespace QMC.Common.Modules
                         {
                             //  Full Sensor 감지되지 않는 상태일 경우 (Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
                             m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType2_FastUp;
+                        }
+                    }
+                    else if (Equipment.CycleStopped_LoaderTransfer)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "CycleStopped_LoaderTransfer : ON");
+
+                        if (!m_bStackerZ0_DownWhenEmpty &&
+                        m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
+                        m_nMAlign_Step == (int)MAlign_Step.None &&
+                        MC_Func.MC_GetDone((int)nAxis.Z0) &&
+                        MC_Func.MC_GetInposition((int)nAxis.Z0))
+                        {
+                            Log.Write("SLD-200", "Stacker0 No Material상태 → Z축 하강 실행");
+                            StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                            m_bStackerZ0_DownWhenEmpty = true;
                         }
                     }
                     else if (workStage.m_bMainWorkCycle_DryRun)
@@ -2920,7 +2935,7 @@ namespace QMC.Common.Modules
                         m_nMAlign_Step == (int)MAlign_Step.None &&
                         MC_Func.MC_GetDone((int)nAxis.Z1) &&
                         MC_Func.MC_GetInposition((int)nAxis.Z1) &&
-                        workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None &&
+                        //workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None &&
                         unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None)
                     {
                         Log.Write("SLD-200", "Stacker1 No Material 상태 → Z축 하강 실행");
@@ -3116,6 +3131,21 @@ namespace QMC.Common.Modules
                         {
                             //  Full Sensor 감지되지 않는 상태일 경우 (Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
                             m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType2_FastUp;
+                        }
+                    }
+                    else if (Equipment.CycleStopped_LoaderTransfer)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "CycleStopped_LoaderTransfer : ON");
+
+                        if (!m_bStackerZ1_DownWhenEmpty &&
+                        m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
+                        m_nMAlign_Step == (int)MAlign_Step.None &&
+                        MC_Func.MC_GetDone((int)nAxis.Z1) &&
+                        MC_Func.MC_GetInposition((int)nAxis.Z1))
+                        {
+                            Log.Write("SLD-200", "Stacker1 No Material상태 → Z축 하강 실행");
+                            StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                            m_bStackerZ1_DownWhenEmpty = true;
                         }
                     }
                     else if (workStage.m_bMainWorkCycle_DryRun)

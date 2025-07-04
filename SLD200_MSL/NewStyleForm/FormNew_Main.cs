@@ -2799,12 +2799,13 @@ namespace SLD200_MSL
                 //  Cycle Stop 을 설정했으므로 Socket Stop 은 Cancel
                 Equipment.CycleSocketStop = false;
                 Equipment.SocketStopped = false;
-
+                checkBox_Main_SocketStop.Checked = false;
+            }
+            else
+            {
                 Equipment.CycleStopped_MainWork = false;
                 Equipment.CycleStopped_LoaderTransfer = false;
                 Equipment.CycleStopped_UnloaderTransfer = false;
-                
-                checkBox_Main_SocketStop.Checked = false;
             }
 
             Log.Write("SLD-200", Equipment.User_Name, "CheckBox Click", "Cycle Stop 체크박스 : " + Equipment.CycleModuleStop.ToString());
@@ -3933,9 +3934,8 @@ namespace SLD200_MSL
             //  Loader L-Port Pause 체크박스
             Equipment.Loader_LPort_Pause = checkBox_Main_Loader_LPort_Pause.Checked;
 
-
             //  L-Port 를 Pause 상태로 변경했을 경우
-            if (Equipment.Loader_LPort_Pause)
+            if (Equipment.Loader_LPort_Pause) 
             {
                 if (Equipment.Loader_RPort_Pause)           //  R-Port 가 이미 Pause 상태였으면
                 {
