@@ -27,6 +27,7 @@ using static QMC.Common.Modules.WorkStage;
 using System.Threading.Tasks;
 using System.Timers;
 using SpiralLab.Sirius;
+using QMC.Common.Q_Config;
 
 
 namespace QMC.Common.Modules
@@ -319,6 +320,8 @@ namespace QMC.Common.Modules
             }
 
             Teaching_Position_Load();
+
+            _laserAccumulatedTime = TimeSpan.FromSeconds(workStage.m_pProcessConfigData.LaserAccumulatedTime_Seconds);
         }
         #endregion
 
@@ -420,6 +423,11 @@ namespace QMC.Common.Modules
 
         private DateTime _lastScannerCheckTime = DateTime.MinValue;
         private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(500); //0.1초
+
+        private TimeSpan _laserAccumulatedTime = TimeSpan.Zero;
+        private DateTime _laserStartTime = DateTime.MinValue;
+        private bool _prevLaserBusy = false;
+
         private void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -448,6 +456,9 @@ namespace QMC.Common.Modules
                 else
                 {
                 }
+
+                // --- 레이져 누적 시간 계산용 현재 시각 ---
+                DateTime LaserOn_Now = DateTime.Now;
 
                 if (spiralLabScanner != null && spiralLabScanner.IsInitialized)
                 {
@@ -490,6 +501,40 @@ namespace QMC.Common.Modules
                         }
                     }
                 }
+
+                // 레이저 가공 중일 때 레이저 누적 시간 계산
+                // ------------------------------------------
+                // Laser 발진 시간 누적 로직 (m_bLaserBusy 기준)
+                // ------------------------------------------
+                bool laserBusy = workStage.m_bLaserBusy;
+
+                if (laserBusy && !_prevLaserBusy)
+                {
+                    // 레이저 발진 시작
+                    _laserStartTime = LaserOn_Now;
+                }
+                else if (!laserBusy && _prevLaserBusy)
+                {
+                    // 레이저 발진 종료
+                    if (_laserStartTime != DateTime.MinValue)
+                    {
+                        _laserAccumulatedTime += LaserOn_Now - _laserStartTime;
+                        _laserStartTime = DateTime.MinValue;
+
+                        workStage.m_pProcessConfigData.LaserAccumulatedTime_Seconds = GetLaserAccumulatedTime().TotalSeconds;
+                        string strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+                        workStage.m_pProcessConfigData.SaveToIni(strFIle);
+                    }
+                }
+                else if (laserBusy && _laserStartTime != DateTime.MinValue)
+                {
+                    // 실시간 누적 시간 표시 (옵션)
+                    TimeSpan current = _laserAccumulatedTime + (LaserOn_Now - _laserStartTime);
+                    //Log.Write("LaserBusy", $"누적 발진 시간: {current.TotalSeconds:F1} sec");
+                }
+
+                _prevLaserBusy = laserBusy;
+
             }
             catch (Exception ex)
             {
@@ -500,6 +545,20 @@ namespace QMC.Common.Modules
             {
                 _isMainStatusRunning = false; // 플래그 해제
             }
+        }
+        public void ClearLaserAccumulatedTime()
+        {
+            _laserAccumulatedTime = TimeSpan.Zero;
+            _laserStartTime = DateTime.MinValue;
+            _prevLaserBusy = false;
+        }
+
+        public TimeSpan GetLaserAccumulatedTime()
+        {
+            if (workStage.m_bLaserBusy && _laserStartTime != DateTime.MinValue)
+                return _laserAccumulatedTime + (DateTime.Now - _laserStartTime);
+            else
+                return _laserAccumulatedTime;
         }
 
         public void InitspiralLabScannerVarioModule()

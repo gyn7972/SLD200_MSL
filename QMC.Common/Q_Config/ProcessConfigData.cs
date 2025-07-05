@@ -14,6 +14,7 @@ namespace QMC.Common.Q_Config
         public int nAccelAxisX { get; set; } = 500; // mm/s^2
         public int nAccelAxisY { get; set; } = 500; // mm/s^2
         public double dModuleSizeSet { get; set; } = 200.0; // mm, 모듈 사이즈 Limit 설정
+        public double LaserAccumulatedTime_Seconds { get; set; } = 0.0;
 
         public ProcessConfigData()
         {
@@ -36,6 +37,9 @@ namespace QMC.Common.Q_Config
                 NativeMethods.WritePrivateProfileString("ProcessAccel", "AccelAxisY", nAccelAxisY.ToString(), path);
 
                 NativeMethods.WritePrivateProfileString("ProcessModule", "ModuleSizeSet", dModuleSizeSet.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString("ProcessLaser", "LaserAccumulatedTime_Seconds", LaserAccumulatedTime_Seconds.ToString(), path);
+
                 bRet = true;
             }
             catch (Exception ex)
@@ -65,6 +69,9 @@ namespace QMC.Common.Q_Config
 
                 NativeMethods.GetPrivateProfileString("ProcessModule", "ModuleSizeSet", "200.0", sb, sb.Capacity, path);
                 dModuleSizeSet = Equipment.ToDouble(sb.ToString());
+
+                NativeMethods.GetPrivateProfileString("ProcessLaser", "LaserAccumulatedTime_Seconds", "0.0", sb, sb.Capacity, path);
+                LaserAccumulatedTime_Seconds = Equipment.ToDouble(sb.ToString());
 
                 bRet = true;
             }

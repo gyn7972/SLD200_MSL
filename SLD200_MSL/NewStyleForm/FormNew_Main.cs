@@ -3968,7 +3968,6 @@ namespace SLD200_MSL
 
         private void button_TestbyUser_LPort_Start_Click(object sender, EventArgs e)
         {
-            // To do: Test code임. - 아래의 조건을 시컨스에 맞춰 넣어야함!!!!
             if (Equipment.AutoRunStatus)
             {
                 var mb = new MessageBoxYesNo();
@@ -4261,6 +4260,11 @@ namespace SLD200_MSL
                 SetValue(baseTextBox_TotalSocketCount, nSocketTotalCnt.ToString());
                 SetValue(baseTextBox_NGSocketCount, (nSocketTotalCnt - NGCount).ToString());
 
+
+
+                //SetValue(baseLabel_CurrentOneCycle_ElapsedTime, oneCycle.ToString(@"hh\:mm\:ss"));
+                TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
+                SetValue(baseLabel_LaserShot_TotalTime, LaserTotalCycle.ToString(@"hh\:mm\:ss"));
             }
             catch (Exception ex)
             {
@@ -4283,7 +4287,6 @@ namespace SLD200_MSL
             }
             else
             {
-
                 SetColor(control, Backcolor, control.ForeColor);
             }
         }
