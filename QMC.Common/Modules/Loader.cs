@@ -39,8 +39,6 @@ namespace QMC.Common.Modules
     public class Loader : Module
     {
         #region Define
-
-
         //#if true                                                                //  SLD-200C
 #if SLD_200C                                                                 //  SLD-200U
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
@@ -69,10 +67,7 @@ namespace QMC.Common.Modules
             ALN_Y = 1,
         }
 #endif
-
-
         #endregion
-
 
 
         #region Alarm
