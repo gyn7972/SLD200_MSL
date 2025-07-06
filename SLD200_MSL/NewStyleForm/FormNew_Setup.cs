@@ -140,6 +140,15 @@ namespace SLD200_MSL
             FormNew_Setup_Load();
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         //private void FormNew_Setup_Load(object sender, EventArgs e)
         private void FormNew_Setup_Load()
         {

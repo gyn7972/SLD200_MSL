@@ -1122,10 +1122,10 @@
     <Compile Include="FormContentBase.Designer.cs">
       <DependentUpon>FormContentBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormBottom.cs">
+    <Compile Include="NewStyleForm\FormBottom.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormBottom.Designer.cs">
+    <Compile Include="NewStyleForm\FormBottom.Designer.cs">
       <DependentUpon>FormBottom.cs</DependentUpon>
     </Compile>
     <Compile Include="FormDigitalIO.cs">
@@ -1158,10 +1158,10 @@
     <Compile Include="FormIOModule.Designer.cs">
       <DependentUpon>FormIOModule.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMain.cs">
+    <Compile Include="NewStyleForm\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.Designer.cs">
+    <Compile Include="NewStyleForm\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMaintMain.cs">
@@ -1278,10 +1278,10 @@
     <Compile Include="FormSubContentBase.Designer.cs">
       <DependentUpon>FormSubContentBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormTop.cs">
+    <Compile Include="NewStyleForm\FormTop.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormTop.Designer.cs">
+    <Compile Include="NewStyleForm\FormTop.Designer.cs">
       <DependentUpon>FormTop.cs</DependentUpon>
     </Compile>
     <Compile Include="FormTurretPartList.cs">
@@ -1748,7 +1748,7 @@
     <EmbeddedResource Include="FormContentBase.resx">
       <DependentUpon>FormContentBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormBottom.resx">
+    <EmbeddedResource Include="NewStyleForm\FormBottom.resx">
       <DependentUpon>FormBottom.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormDigitalIO.resx">
@@ -1766,7 +1766,7 @@
     <EmbeddedResource Include="FormIOModule.resx">
       <DependentUpon>FormIOModule.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
+    <EmbeddedResource Include="NewStyleForm\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMaintMain.resx">
@@ -1811,7 +1811,7 @@
     <EmbeddedResource Include="FormSubContentBase.resx">
       <DependentUpon>FormSubContentBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormTop.resx">
+    <EmbeddedResource Include="NewStyleForm\FormTop.resx">
       <DependentUpon>FormTop.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTurretPartList.resx">
