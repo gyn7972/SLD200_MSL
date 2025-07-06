@@ -9263,7 +9263,7 @@ namespace QMC.Common.Modules
                 }
 
                 //LoaderWork 정지 시 아래 시컨스 전부 정지 후 재실행. 
-                if (!m_LoaderWork_Start)
+                if (!m_LoaderWork_Start) 
                 {
                     m_bMAlign_LogOnce = false;  // 무한으로 로그 남기는거 막기 위한 Flag.
                     return;
