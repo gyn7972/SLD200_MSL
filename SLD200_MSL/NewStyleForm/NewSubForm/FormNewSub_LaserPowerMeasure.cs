@@ -173,22 +173,23 @@ namespace SLD200.NewStyleForm.NewSubForm
             dataGridViewSettings.Columns[0].ReadOnly = true;
             //dataGridViewSettings.Columns[1].ReadOnly = true;
 
-
             LoadLaserPowerMeasureSetting();
             if (Equipment.Machine_LaserType_CO2)
             {
                 dataGridViewSettings.Rows.Add("Frequency(Hz)", _setting.Frequency);
                 dataGridViewSettings.Rows.Add("PulseWidth(us)", _setting.PulseWidth);
                 dataGridViewSettings.Rows.Add("DutyCycle(%)", _setting.DutyCycle);
+                dataGridViewSettings.Rows.Add("Limit_Min(W)", _setting.PowerLimitMin);
+                dataGridViewSettings.Rows.Add("Limit_Max(W)", _setting.PowerLimitMax);
             }
             else
             {
                 dataGridViewSettings.Rows.Add("PowerPercent(%)", _setting.PowerPercent);
                 dataGridViewSettings.Rows.Add("Frequency(Hz)", _setting.Frequency);
                 dataGridViewSettings.Rows.Add("PulseWidth(us)", _setting.PulseWidth);
+                dataGridViewSettings.Rows.Add("Limit_Min(W)", _setting.PowerLimitMin);
+                dataGridViewSettings.Rows.Add("Limit_Max(W)", _setting.PowerLimitMax);
             }
-
-
         }
 
         private void buttonApplyAndFire_Click(object sender, EventArgs e)
@@ -233,22 +234,24 @@ namespace SLD200.NewStyleForm.NewSubForm
                             case "Frequency(Hz)": _setting.Frequency = value; break;
                             case "PulseWidth(us)": _setting.PulseWidth = value; break;
                             case "DutyCycle(%)":
-                                if (Equipment.Machine_LaserType_CO2)
+                            if (Equipment.Machine_LaserType_CO2)
+                            {
+                                if (value < 1f || value >= 20.0f)
                                 {
-                                    if (value < 1f || value >= 20.0f)
-                                    {
-                                        strTemp = string.Format($"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
-                                        mb.ShowDialog("Error!", strTemp);
-                                        UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
-                                        return;
-                                    }
-                                    else
-                                    {
-                                        _setting.DutyCycle = value;
-                                        UpdateSettingRow("PulseWidth(us)", _setting.PulseWidth);
-                                    }
+                                    strTemp = string.Format($"DutyCycle은 1% 이상, 20% 미만이어야 합니다.\n입력값: {value:F2}%", "DutyCycle 제한");
+                                    mb.ShowDialog("Error!", strTemp);
+                                    UpdateSettingRow("DutyCycle(%)", _setting.DutyCycle);
+                                    return;
                                 }
-                                break;
+                                else
+                                {
+                                    _setting.DutyCycle = value;
+                                    UpdateSettingRow("PulseWidth(us)", _setting.PulseWidth);
+                                }
+                            }
+                            break;
+                            case "Limit_Min(W)": _setting.PowerLimitMin = value; break;
+                            case "Limit_Max(W)": _setting.PowerLimitMax = value; break;
                         }
                     }
                     else
@@ -258,6 +261,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                             case "PowerPercent(%)": _setting.PowerPercent = value; break;
                             case "Frequency(Hz)": _setting.Frequency = value; break;
                             case "PulseWidth(us)": _setting.PulseWidth = value; break;
+                            case "Limit_Min(W)": _setting.PowerLimitMin = value; break;
+                            case "Limit_Max(W)": _setting.PowerLimitMax = value; break;
                         }
                     }
                 }
@@ -554,6 +559,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             NativeMethods.WritePrivateProfileString("Laser", "TargetTypeIndex", comboBoxTargetType.SelectedIndex.ToString(), iniPath);
             NativeMethods.WritePrivateProfileString("Laser", "Duration", numericUpDownDuration.Value.ToString(), iniPath);
 
+            NativeMethods.WritePrivateProfileString("Laser", "PowerLimitMin", _setting.PowerLimitMin.ToString(), iniPath);
+            NativeMethods.WritePrivateProfileString("Laser", "PowerLimitMax", _setting.PowerLimitMax.ToString(), iniPath);
+
             if (Equipment.Machine_LaserType_CO2)
             {
                 NativeMethods.WritePrivateProfileString("Laser", "Frequency", _setting.Frequency.ToString(), iniPath);
@@ -613,6 +621,11 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 _setting.MaskIndex = comboBox_MaskIndex.SelectedIndex;
                 _setting.BETIndex = comboBox_BETPositionIndex.SelectedIndex;
+
+                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMin", "0", temp, 255, iniPath);
+                _setting.PowerLimitMin = (float)Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMax", "0", temp, 255, iniPath);
+                _setting.PowerLimitMax = (float)Equipment.ToDouble(temp.ToString());
             }
             else
             {
@@ -624,6 +637,11 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 NativeMethods.GetPrivateProfileString("Laser", "PulseWidth", "1", temp, 255, iniPath);
                 _setting.PulseWidth = (float)Equipment.ToDouble(temp.ToString());
+
+                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMin", "0", temp, 255, iniPath);
+                _setting.PowerLimitMin = (float)Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMax", "0", temp, 255, iniPath);
+                _setting.PowerLimitMax = (float)Equipment.ToDouble(temp.ToString());
             }
         }
 
@@ -867,6 +885,16 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 case "PowerPercent(%)":
                     _setting.PowerPercent = value;
+                    UpdateSettingRow("PowerPercent(%)", _setting.PowerPercent);
+                    break;
+
+                case "Limit_Min(W)":
+                    _setting.PowerLimitMin = value;
+                    UpdateSettingRow("Limit_Min(W)", _setting.PowerLimitMin);
+                    break;
+                case "Limit_Max(W)":
+                    _setting.PowerLimitMax = value;
+                    UpdateSettingRow("Limit_Max(W)", _setting.PowerLimitMax);
                     break;
             }
         }
@@ -956,6 +984,11 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 timerLaserPowerMeasureStatus?.Stop();
             }
+        }
+
+        private void button_Param_Save_Click(object sender, EventArgs e)
+        {
+            SaveLaserPowerMeasureSetting();
         }
     }
 }

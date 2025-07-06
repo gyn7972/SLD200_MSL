@@ -808,6 +808,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             workStage.m_bSensorResponseReady = false;    // 응답 받음
 
             workStage.m_bFirstAutoCrossCheckDone = false;
+            workStage.m_bFirstLaserPowerCheckDone = false;
+            workStage.m_bFirstHeightCheckDone = false;
 
             workStage.ResetRecovery();
 

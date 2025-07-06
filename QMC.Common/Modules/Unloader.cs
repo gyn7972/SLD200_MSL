@@ -3431,7 +3431,7 @@ namespace QMC.Common.Modules
 
                         //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.workStageParameter.DO_Stage_Vacuum(false);
-                        Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
+                        Thread.Sleep(100); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
 
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_2ndStep;

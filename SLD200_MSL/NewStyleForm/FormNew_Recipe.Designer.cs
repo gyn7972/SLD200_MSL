@@ -723,6 +723,7 @@
             // 
             // comboBox_Recipe_TabRecipe_CustomMarking_DataType
             // 
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Items.AddRange(new object[] {
@@ -736,7 +737,6 @@
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Name = "comboBox_Recipe_TabRecipe_CustomMarking_DataType";
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Size = new System.Drawing.Size(130, 26);
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.TabIndex = 117;
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Text = "Text";
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndexChanged += new System.EventHandler(this.comboBox_Recipe_TabRecipe_CustomMarking_DataType_SelectedIndexChanged);
             // 
             // label22
@@ -2026,6 +2026,7 @@
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType
             // 
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Items.AddRange(new object[] {
@@ -2038,7 +2039,6 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Size = new System.Drawing.Size(147, 26);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.TabIndex = 143;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Text = "Circle (Arc)";
             // 
             // label38
             // 
@@ -2581,6 +2581,7 @@
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex
             // 
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Items.AddRange(new object[] {
@@ -2594,11 +2595,11 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Size = new System.Drawing.Size(73, 26);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.TabIndex = 92;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = "1.0x";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndexChanged += new System.EventHandler(this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex_SelectedIndexChanged);
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex
             // 
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Items.AddRange(new object[] {
@@ -2612,7 +2613,6 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Size = new System.Drawing.Size(186, 26);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.TabIndex = 91;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = "None Mask Position";
             // 
             // label_Recipe_TabRecipe_Miscellaneous_BETPosition
             // 

@@ -169,7 +169,7 @@ namespace QMC.Common.Q_Sequence
             //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
             m_taskTimer_Main_Tick = Task.Factory.StartNew(() =>
             {
-                Thread.CurrentThread.Name = "m_taskTimer_VerifyScannerCameraOffset_Tick";
+                Thread.CurrentThread.Name = "m_taskTimer_LaserPowerMeasure_Tick";
 
                 while (true)
                 {
@@ -240,9 +240,10 @@ namespace QMC.Common.Q_Sequence
         public void Reset()
         {
             IsCompleted = false;
-            m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None;
             m_MainTick_Start = false;
+            m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None;
         }
+
         int SeqLaserPowerMeasure()
         {
             int nRtn = 0;
@@ -275,7 +276,6 @@ namespace QMC.Common.Q_Sequence
                     else
                     {
                         _setting.LoadPowerMeterConfig();
-
                         TickCount_Start((int)TickType.TICK_LASER_POWER_MEASURE);
                         m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.WaterLine_Open;
                     }
@@ -287,6 +287,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "WaterLine Open Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.WaterLine_Open_Fail); // 수로 Open 실패
                             return -1; // 수로 Open 실패
                         }
                     }
@@ -303,6 +304,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "WaterLine Open Check Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.WaterLine_Open_Fail); // 수로 Open 실패
                             return -1; // 수로 Open 확인 실패
                         }
                     }
@@ -319,6 +321,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Laser On Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.Laser_On_Fail); // 레이저 On 실패
                             return -1; // 레이저 On 실패
                         }
                     }
@@ -335,6 +338,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Laser On Check Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.Laser_On_Fail); // 레이저 On 확인 실패
                             return -1; // 레이저 On 확인 실패
                         }
                     }
@@ -353,6 +357,7 @@ namespace QMC.Common.Q_Sequence
                         {
 
                             Log.Write("SeqLaserPowerMeasure", "Laser Power Measure Position Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.LaserPowerMeasureFail); // 레이저 Power 측정 위치 설정 실패
                             return -1; // 레이저 Power 측정 위치 설정 실패
                         }
                     }
@@ -370,6 +375,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Top Check Laser Shutter Close Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.BeamShutterCloseFail); // Top Check 레이저 Shutter Close 실패
                             return -1; // Top Check 레이저 Shutter Close 실패
                         }
                     }
@@ -386,6 +392,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Top Check Laser Shutter Close Check Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.BeamShutterCloseFail); // Top Check 레이저 Shutter Close 실패
                             return -1; // Top Check 레이저 Shutter Close 확인 실패
                         }
                     }
@@ -405,6 +412,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout * 5)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Top Check Laser Power Measure Start Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.LaserPowerMeasureFail); // Top Check 레이저 Power 측정 시작 실패
                             return -1; // Top Check 레이저 Power 측정 시작 실패
                         }
                     }
@@ -443,6 +451,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Laser Shutter Open Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eBeamShutterOpenFail); // 레이저 Shutter Open 실패
                             return -1; // 레이저 Shutter Open 실패
                         }
                     }
@@ -459,6 +468,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Laser Shutter Open Check Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eBeamShutterOpenFail); // 레이저 Shutter Open 확인 실패
                             return -1; // 레이저 Shutter Open 확인 실패
                         }
                     }
@@ -483,6 +493,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Mask Change Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.MaskY_Axis_Fail); // Mask 변경 실패
                             return -1; // Mask 변경 실패
                         }
                     }
@@ -499,6 +510,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Mask Change Check Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.MaskY_Axis_Fail); // Mask 변경 확인 실패
                             return -1; // Mask 변경 확인 실패
                         }
                     }
@@ -515,6 +527,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "BETA Change Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eBETChangeFail); // BET A 변경 실패
                             return -1; // BET A 변경 실패
                         }
                     }
@@ -531,6 +544,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "BETA Change Check Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eBETChangeFail); // BET A 변경 실패
                             return -1; // BET A 변경 확인 실패
                         }
                     }
@@ -547,6 +561,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Vario Change Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.Vario_Scan_Fail); // Vario 변경 실패
                             return -1; // Vario 변경 실패
                         }
                     }
@@ -563,6 +578,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Vario Change Check Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.Vario_Scan_Fail); // Vario 변경 확인 실패
                             return -1; // Vario 변경 확인 실패
                         }
                     }
@@ -579,6 +595,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Stage Z Move Process Position Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eZAxisFail); // Stage Z 이동 실패
                             return -1; // Stage Z 이동 실패
                         }
                     }
@@ -595,6 +612,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Stage Z Move Process Position Check Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eZAxisFail); // Stage Z 이동 확인 실패
                             return -1; // Stage Z 이동 확인 실패
                         }
                     }
@@ -611,6 +629,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Stage XY Move Power Meter Position Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail); // Stage XY 이동 실패
                             return -1; // Stage XY 이동 실패
                         }
                     }
@@ -627,6 +646,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Stage XY Move Power Meter Position Check Fail.");
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail); // Stage XY 이동 확인 실패
                             return -1; // Stage XY 이동 확인 실패
                         }
                     }
@@ -991,7 +1011,6 @@ namespace QMC.Common.Q_Sequence
                 Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", "20초 경과: 파워 측정 시작 (5초 간격)");
                 TickCount_Start((int)TickType.TICK_POWER_MEASURE_START);  // 측정 시작 타이머
                 _isPowerMeasureDelayed = true;
-
                 _isPowerMeasureOnes = false;
             }
 
@@ -1144,6 +1163,25 @@ namespace QMC.Common.Q_Sequence
         }
 
         private List<double> _measuredPowerList = new List<double>();
+        public float m_fMeasuredPower
+        {
+            get
+            {
+                if (_measuredPowerList.Count > 0)
+                    return (float)_measuredPowerList.Average();
+                else
+                    return 0f;
+            }
+        }
+
+        public float m_fPowerLimitMin
+        {
+            get { return _setting.PowerLimitMin; }
+        }
+        public float m_fPowerLimitMax
+        {
+            get { return _setting.PowerLimitMax; }
+        }
 
         public void SavePowerMeasureLogList(string targetType)
         {
@@ -1184,6 +1222,8 @@ namespace QMC.Common.Q_Sequence
                 string avgLine = $"{timestamp},{targetType},Average,{avg:F2}," +
                                  $"{powerPercent:F1},{frequency:F1},{pulseWidth:F2},{dutyCycle:F2}";
                 lines.Add(avgLine);
+
+
             }
 
             try

@@ -1430,6 +1430,11 @@ namespace SLD200_MSL
 
             checkBox_Setup_Option_SocketVision_Batch.Checked = Equipment.Machine_SocketVision_Batch_Use;
 
+            checkBox_Setup_Option_LaserMeasure.Checked = Equipment.Machine_LaserPowerMeasure_Enable;
+            textBox_Setup_Option_LaserMeasure.Text = Equipment.Machine_LaserPowerMeasure_Count.ToString();
+
+            checkBox_Setup_Option_HeightMeasure.Checked = Equipment.Machine_HeightMeasure_Enable;
+            textBox_Setup_Option_HeightMeasure.Text = Equipment.Machine_HeightMeasure_Count.ToString();
 
             if (Equipment.Machine_FiducialImageSave_Always)
             {
@@ -1897,6 +1902,16 @@ namespace SLD200_MSL
 
             Equipment.Machine_SocketVision_Batch_Use = checkBox_Setup_Option_SocketVision_Batch.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "SocketVision_Batch_Enable", checkBox_Setup_Option_SocketVision_Batch.Checked.ToString(), strFIle);
+
+            Equipment.Machine_LaserPowerMeasure_Enable = checkBox_Setup_Option_LaserMeasure.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LaserPowerMeasure_Enable", checkBox_Setup_Option_LaserMeasure.Checked.ToString(), strFIle);
+            Equipment.Machine_LaserPowerMeasure_Count = Equipment.ToInt(textBox_Setup_Option_LaserMeasure.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LaserPowerMeasure_Count", textBox_Setup_Option_LaserMeasure.Text.ToString(), strFIle);
+
+            Equipment.Machine_HeightMeasure_Enable = checkBox_Setup_Option_HeightMeasure.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_Enable", checkBox_Setup_Option_HeightMeasure.Checked.ToString(), strFIle);
+            Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(textBox_Setup_Option_HeightMeasure.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_Count", textBox_Setup_Option_HeightMeasure.Text.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2512,6 +2527,28 @@ namespace SLD200_MSL
                 checkBox_Setup_Option_SocketVision_Batch.Checked = false;
             }
 
+            if (Equipment.Machine_LaserPowerMeasure_Enable)
+            {
+                checkBox_Setup_Option_LaserMeasure.Checked = true;
+                textBox_Setup_Option_LaserMeasure.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_LaserMeasure.Checked = false;
+                textBox_Setup_Option_LaserMeasure.Enabled = false;
+            }
+
+            if (Equipment.Machine_HeightMeasure_Enable)
+            {
+                checkBox_Setup_Option_HeightMeasure.Checked = true;
+                textBox_Setup_Option_HeightMeasure.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_HeightMeasure.Checked = false;
+                textBox_Setup_Option_HeightMeasure.Enabled = false;
+            }
+
         }
 
         private void checkBox_Setup_Option_VacuumSensorEnable_CheckedChanged(object sender, EventArgs e)
@@ -3082,13 +3119,14 @@ namespace SLD200_MSL
             }
 
             //  선택한 위치 index 를 측정 위치로 설정
-            workStage.m_nFlatnessMeasure_Type = nIndex;
+            workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Type = nIndex;
 
-            if (workStage.m_nFlatnessMeasure_Step == (int)WorkStage.FlatnessMeasure_Step.None)
+            if (workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step == 
+                (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.None)
             {
                 var mb = new MessageBoxYesNo();
 
-                switch(workStage.m_nFlatnessMeasure_Type)
+                switch(workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Type)
                 {
                     case (int)FlatMeasureList.Stage:
                         m_strTemp = "[Stage] Flatness 측정을 시작하시겠습니까?";
@@ -3098,7 +3136,7 @@ namespace SLD200_MSL
                         m_strTemp = "[Cal. Plate] Flatness 측정을 시작하시겠습니까?";
                         break;
 
-                    case (int)FlatMeasureList.User1:
+                    case (int)FlatMeasureList.Auto_Stage:
                         m_strTemp = "[User1] Flatness 측정을 시작하시겠습니까?";
                         break;
 
@@ -3114,7 +3152,9 @@ namespace SLD200_MSL
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
                     return;
 
-                workStage.m_nFlatnessMeasure_Step = (int)WorkStage.FlatnessMeasure_Step.Start;
+                workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step = 
+                    (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.Start;
+
                 workStage.timer_Comm.Enabled = true;
                 workStage.timer_Comm.Start();
             }
@@ -3141,7 +3181,8 @@ namespace SLD200_MSL
                 return;
             }
 
-            workStage.m_nFlatnessMeasure_Step = (int)WorkStage.FlatnessMeasure_Step.None;
+            workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step = 
+                (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.None;
 
             workStage.MC_Func.MC_MotorStop((int)WorkStage.nAxis.X, 2000);
             workStage.MC_Func.MC_MotorStop((int)WorkStage.nAxis.Y, 2000);
@@ -4411,6 +4452,34 @@ namespace SLD200_MSL
             {
                 Equipment.Machine_Hole02_50_Wait_Enable = false;
                 textBox_Setup_Option_Hole02_50_Wait_Time.Enabled = false;
+            }
+        }
+
+        private void checkBox_Setup_Option_LaserMeasure_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_LaserMeasure.Checked)
+            {
+                Equipment.Machine_LaserPowerMeasure_Enable = true;
+                textBox_Setup_Option_LaserMeasure.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_LaserPowerMeasure_Enable = false;
+                textBox_Setup_Option_LaserMeasure.Enabled = false;
+            }
+        }
+
+        private void checkBox_Setup_Option_HeightMeasure_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_HeightMeasure.Checked)
+            {
+                Equipment.Machine_HeightMeasure_Enable = true;
+                textBox_Setup_Option_HeightMeasure.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_HeightMeasure_Enable = false;
+                textBox_Setup_Option_HeightMeasure.Enabled = false;
             }
         }
     }

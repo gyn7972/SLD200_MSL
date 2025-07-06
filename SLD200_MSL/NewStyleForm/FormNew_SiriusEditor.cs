@@ -26,6 +26,7 @@ using System.Numerics;
 using SharpGL;
 using System.Xml.Linq;
 using SpiralLab;
+using System.Threading;
 
 //using OpenTK;
 //using OpenTK.Graphics.OpenGL;
@@ -999,6 +1000,7 @@ namespace SLD200_MSL
                     //  이미 RTC 가 초기화 되어 있다면 Rtc 객체를 닫고 다시 초기화 한다.
                     Rtc_Close();
                     Equipment._InitDeviceStatus.Scanner = false;
+                    Thread.Sleep(100); //  RTC 가 닫히는 시간을 준다.
                     if (Rtc_Init(true))
                     {
                         Equipment._InitDeviceStatus.Scanner = true;

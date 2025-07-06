@@ -188,6 +188,7 @@
     </Compile>
     <Compile Include="DustCollectorController\DustCollectorController.cs" />
     <Compile Include="Global\AreaInfo.cs" />
+    <Compile Include="Global\AxisMap.cs" />
     <Compile Include="Global\DrillingProcessManager.cs" />
     <Compile Include="Global\GlobalHotkeyMessageFilter.cs" />
     <Compile Include="Global\HoleAlignHelper.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="Q_Config\ScannerCalConfigData.cs" />
     <Compile Include="Q_Recipe\ScannerCalManager.cs" />
     <Compile Include="Q_Recipe\VisionRecipeData.cs" />
+    <Compile Include="Q_Sequence\Sequence_FlatnessMeasure.cs" />
     <Compile Include="Q_Sequence\Sequence_LaserPowerMeasure.cs" />
     <Compile Include="Q_Sequence\Sequence_VerifyScannerCameraOffset.cs" />
     <Compile Include="SpiralLab\Sirius\QMCSiriusEditorForm.cs">

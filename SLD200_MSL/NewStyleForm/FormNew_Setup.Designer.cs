@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -436,6 +436,11 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.checkBox_Setup_Option_HeightMeasure = new System.Windows.Forms.CheckBox();
+            this.textBox_Setup_Option_HeightMeasure = new System.Windows.Forms.TextBox();
+            this.checkBox_Setup_Option_LaserMeasure = new System.Windows.Forms.CheckBox();
+            this.textBox_Setup_Option_LaserMeasure = new System.Windows.Forms.TextBox();
+            this.checkBox_Setup_Option_SocketVision_Batch = new System.Windows.Forms.CheckBox();
             this.checkBox_Setup_Option_SocketHeight_Batch = new System.Windows.Forms.CheckBox();
             this.checkBox_HoleCenterEnable = new System.Windows.Forms.CheckBox();
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable = new System.Windows.Forms.CheckBox();
@@ -575,7 +580,6 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.checkBox_Setup_Option_SocketVision_Batch = new System.Windows.Forms.CheckBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -730,6 +734,7 @@
             // 
             // comboBox_Setup_Communication_TCPIP_OpenType
             // 
+            this.comboBox_Setup_Communication_TCPIP_OpenType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Communication_TCPIP_OpenType.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Communication_TCPIP_OpenType.FormattingEnabled = true;
             this.comboBox_Setup_Communication_TCPIP_OpenType.Items.AddRange(new object[] {
@@ -740,7 +745,6 @@
             this.comboBox_Setup_Communication_TCPIP_OpenType.Name = "comboBox_Setup_Communication_TCPIP_OpenType";
             this.comboBox_Setup_Communication_TCPIP_OpenType.Size = new System.Drawing.Size(114, 24);
             this.comboBox_Setup_Communication_TCPIP_OpenType.TabIndex = 52;
-            this.comboBox_Setup_Communication_TCPIP_OpenType.Text = "Client";
             this.comboBox_Setup_Communication_TCPIP_OpenType.SelectedIndexChanged += new System.EventHandler(this.comboBox_Setup_Communication_TCPIP_OpenType_SelectedIndexChanged);
             // 
             // button_KeypadCall_Setup_Communication_TCPIP_IP
@@ -1250,14 +1254,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle7;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1310,14 +1314,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle8;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -2151,6 +2155,7 @@
             // 
             // comboBox_Setup_Motion_Limit_Active
             // 
+            this.comboBox_Setup_Motion_Limit_Active.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Limit_Active.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Limit_Active.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Limit_Active.Items.AddRange(new object[] {
@@ -2161,10 +2166,10 @@
             this.comboBox_Setup_Motion_Limit_Active.Name = "comboBox_Setup_Motion_Limit_Active";
             this.comboBox_Setup_Motion_Limit_Active.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Limit_Active.TabIndex = 44;
-            this.comboBox_Setup_Motion_Limit_Active.Text = "Low";
             // 
             // comboBox_Setup_Motion_Limit_Install
             // 
+            this.comboBox_Setup_Motion_Limit_Install.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Limit_Install.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Limit_Install.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Limit_Install.Items.AddRange(new object[] {
@@ -2175,7 +2180,6 @@
             this.comboBox_Setup_Motion_Limit_Install.Name = "comboBox_Setup_Motion_Limit_Install";
             this.comboBox_Setup_Motion_Limit_Install.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Limit_Install.TabIndex = 43;
-            this.comboBox_Setup_Motion_Limit_Install.Text = "Installed";
             // 
             // label232
             // 
@@ -2601,6 +2605,7 @@
             // 
             // comboBox_Setup_Motion_Home_ZPhaseUse
             // 
+            this.comboBox_Setup_Motion_Home_ZPhaseUse.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Home_ZPhaseUse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Home_ZPhaseUse.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Home_ZPhaseUse.Items.AddRange(new object[] {
@@ -2612,7 +2617,6 @@
             this.comboBox_Setup_Motion_Home_ZPhaseUse.Name = "comboBox_Setup_Motion_Home_ZPhaseUse";
             this.comboBox_Setup_Motion_Home_ZPhaseUse.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_ZPhaseUse.TabIndex = 62;
-            this.comboBox_Setup_Motion_Home_ZPhaseUse.Text = "Disable";
             // 
             // label34
             // 
@@ -2753,6 +2757,7 @@
             // 
             // comboBox_Setup_Motion_Home_Direction
             // 
+            this.comboBox_Setup_Motion_Home_Direction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Home_Direction.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Home_Direction.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Home_Direction.Items.AddRange(new object[] {
@@ -2763,10 +2768,10 @@
             this.comboBox_Setup_Motion_Home_Direction.Name = "comboBox_Setup_Motion_Home_Direction";
             this.comboBox_Setup_Motion_Home_Direction.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Direction.TabIndex = 48;
-            this.comboBox_Setup_Motion_Home_Direction.Text = "Negative";
             // 
             // comboBox_Setup_Motion_Home_Active
             // 
+            this.comboBox_Setup_Motion_Home_Active.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Home_Active.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Home_Active.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Home_Active.Items.AddRange(new object[] {
@@ -2777,10 +2782,10 @@
             this.comboBox_Setup_Motion_Home_Active.Name = "comboBox_Setup_Motion_Home_Active";
             this.comboBox_Setup_Motion_Home_Active.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Active.TabIndex = 47;
-            this.comboBox_Setup_Motion_Home_Active.Text = "Low";
             // 
             // comboBox_Setup_Motion_Home_Install
             // 
+            this.comboBox_Setup_Motion_Home_Install.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Home_Install.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Home_Install.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Home_Install.Items.AddRange(new object[] {
@@ -2791,10 +2796,10 @@
             this.comboBox_Setup_Motion_Home_Install.Name = "comboBox_Setup_Motion_Home_Install";
             this.comboBox_Setup_Motion_Home_Install.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Install.TabIndex = 46;
-            this.comboBox_Setup_Motion_Home_Install.Text = "Installed";
             // 
             // comboBox_Setup_Motion_Home_Sensing
             // 
+            this.comboBox_Setup_Motion_Home_Sensing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Home_Sensing.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Home_Sensing.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Home_Sensing.Items.AddRange(new object[] {
@@ -2806,7 +2811,6 @@
             this.comboBox_Setup_Motion_Home_Sensing.Name = "comboBox_Setup_Motion_Home_Sensing";
             this.comboBox_Setup_Motion_Home_Sensing.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Sensing.TabIndex = 45;
-            this.comboBox_Setup_Motion_Home_Sensing.Text = "Home Sensor";
             // 
             // textBox_Setup_Motion_Home_Offset
             // 
@@ -3847,6 +3851,7 @@
             // 
             // comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex
             // 
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.FormattingEnabled = true;
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Items.AddRange(new object[] {
@@ -3860,7 +3865,6 @@
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Name = "comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex";
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Size = new System.Drawing.Size(73, 24);
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.TabIndex = 228;
-            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Text = "1.0x";
             // 
             // label_Setup_ScannerCal_VisionZOffset
             // 
@@ -3875,6 +3879,7 @@
             // 
             // comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex
             // 
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.FormattingEnabled = true;
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Items.AddRange(new object[] {
@@ -3888,7 +3893,6 @@
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Name = "comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex";
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Size = new System.Drawing.Size(129, 24);
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.TabIndex = 227;
-            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Text = "None Mask Position";
             // 
             // textBox_Setup_ScannerCal_VisionZOffset
             // 
@@ -4901,6 +4905,7 @@
             // 
             // comboBox_Setup_FlatnessMeasurementPos_List
             // 
+            this.comboBox_Setup_FlatnessMeasurementPos_List.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_FlatnessMeasurementPos_List.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Setup_FlatnessMeasurementPos_List.FormattingEnabled = true;
             this.comboBox_Setup_FlatnessMeasurementPos_List.Items.AddRange(new object[] {
@@ -4914,7 +4919,6 @@
             this.comboBox_Setup_FlatnessMeasurementPos_List.Name = "comboBox_Setup_FlatnessMeasurementPos_List";
             this.comboBox_Setup_FlatnessMeasurementPos_List.Size = new System.Drawing.Size(118, 26);
             this.comboBox_Setup_FlatnessMeasurementPos_List.TabIndex = 147;
-            this.comboBox_Setup_FlatnessMeasurementPos_List.Text = "Work Stage";
             this.comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndexChanged += new System.EventHandler(this.comboBox_Setup_FlatnessMeasurementPos_List_SelectedIndexChanged);
             // 
             // label91
@@ -5692,6 +5696,10 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.checkBox_Setup_Option_HeightMeasure);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_HeightMeasure);
+            this.groupBox13.Controls.Add(this.checkBox_Setup_Option_LaserMeasure);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_LaserMeasure);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_SocketVision_Batch);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_SocketHeight_Batch);
             this.groupBox13.Controls.Add(this.checkBox_HoleCenterEnable);
@@ -5768,29 +5776,78 @@
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
             // 
+            // checkBox_Setup_Option_HeightMeasure
+            // 
+            this.checkBox_Setup_Option_HeightMeasure.Location = new System.Drawing.Point(1024, 279);
+            this.checkBox_Setup_Option_HeightMeasure.Name = "checkBox_Setup_Option_HeightMeasure";
+            this.checkBox_Setup_Option_HeightMeasure.Size = new System.Drawing.Size(221, 24);
+            this.checkBox_Setup_Option_HeightMeasure.TabIndex = 133;
+            this.checkBox_Setup_Option_HeightMeasure.Text = "HeightMeasure Enable (ea):";
+            this.checkBox_Setup_Option_HeightMeasure.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_HeightMeasure.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_HeightMeasure_CheckedChanged);
+            // 
+            // textBox_Setup_Option_HeightMeasure
+            // 
+            this.textBox_Setup_Option_HeightMeasure.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_HeightMeasure.Location = new System.Drawing.Point(1246, 279);
+            this.textBox_Setup_Option_HeightMeasure.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_HeightMeasure.Name = "textBox_Setup_Option_HeightMeasure";
+            this.textBox_Setup_Option_HeightMeasure.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_HeightMeasure.TabIndex = 132;
+            this.textBox_Setup_Option_HeightMeasure.Text = "1";
+            // 
+            // checkBox_Setup_Option_LaserMeasure
+            // 
+            this.checkBox_Setup_Option_LaserMeasure.Location = new System.Drawing.Point(1024, 243);
+            this.checkBox_Setup_Option_LaserMeasure.Name = "checkBox_Setup_Option_LaserMeasure";
+            this.checkBox_Setup_Option_LaserMeasure.Size = new System.Drawing.Size(221, 24);
+            this.checkBox_Setup_Option_LaserMeasure.TabIndex = 131;
+            this.checkBox_Setup_Option_LaserMeasure.Text = "LaserMeasure Enable (ea):";
+            this.checkBox_Setup_Option_LaserMeasure.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_LaserMeasure.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_LaserMeasure_CheckedChanged);
+            // 
+            // textBox_Setup_Option_LaserMeasure
+            // 
+            this.textBox_Setup_Option_LaserMeasure.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_LaserMeasure.Location = new System.Drawing.Point(1246, 243);
+            this.textBox_Setup_Option_LaserMeasure.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_LaserMeasure.Name = "textBox_Setup_Option_LaserMeasure";
+            this.textBox_Setup_Option_LaserMeasure.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_LaserMeasure.TabIndex = 130;
+            this.textBox_Setup_Option_LaserMeasure.Text = "1";
+            // 
+            // checkBox_Setup_Option_SocketVision_Batch
+            // 
+            this.checkBox_Setup_Option_SocketVision_Batch.Location = new System.Drawing.Point(1024, 207);
+            this.checkBox_Setup_Option_SocketVision_Batch.Name = "checkBox_Setup_Option_SocketVision_Batch";
+            this.checkBox_Setup_Option_SocketVision_Batch.Size = new System.Drawing.Size(221, 24);
+            this.checkBox_Setup_Option_SocketVision_Batch.TabIndex = 129;
+            this.checkBox_Setup_Option_SocketVision_Batch.Text = "SocketVision_Batch_Enable";
+            this.checkBox_Setup_Option_SocketVision_Batch.UseVisualStyleBackColor = true;
+            // 
             // checkBox_Setup_Option_SocketHeight_Batch
             // 
-            this.checkBox_Setup_Option_SocketHeight_Batch.Location = new System.Drawing.Point(1024, 190);
+            this.checkBox_Setup_Option_SocketHeight_Batch.Location = new System.Drawing.Point(1024, 171);
             this.checkBox_Setup_Option_SocketHeight_Batch.Name = "checkBox_Setup_Option_SocketHeight_Batch";
-            this.checkBox_Setup_Option_SocketHeight_Batch.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_SocketHeight_Batch.Size = new System.Drawing.Size(221, 24);
             this.checkBox_Setup_Option_SocketHeight_Batch.TabIndex = 128;
-            this.checkBox_Setup_Option_SocketHeight_Batch.Text = "SocketHeight_Batch";
+            this.checkBox_Setup_Option_SocketHeight_Batch.Text = "SocketHeight_Batch_Enable";
             this.checkBox_Setup_Option_SocketHeight_Batch.UseVisualStyleBackColor = true;
             // 
             // checkBox_HoleCenterEnable
             // 
-            this.checkBox_HoleCenterEnable.Location = new System.Drawing.Point(1024, 157);
+            this.checkBox_HoleCenterEnable.Location = new System.Drawing.Point(1024, 135);
             this.checkBox_HoleCenterEnable.Name = "checkBox_HoleCenterEnable";
-            this.checkBox_HoleCenterEnable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_HoleCenterEnable.Size = new System.Drawing.Size(221, 24);
             this.checkBox_HoleCenterEnable.TabIndex = 126;
             this.checkBox_HoleCenterEnable.Text = "Hole Center Enable";
             this.checkBox_HoleCenterEnable.UseVisualStyleBackColor = true;
             // 
             // checkBox_Setup_Option_Hole02_50_Wait_Enable
             // 
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Location = new System.Drawing.Point(1024, 113);
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Location = new System.Drawing.Point(1024, 99);
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Name = "checkBox_Setup_Option_Hole02_50_Wait_Enable";
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Size = new System.Drawing.Size(221, 24);
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.TabIndex = 125;
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Text = "Hole2~50 WaitTime(ms) :";
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.UseVisualStyleBackColor = true;
@@ -5799,7 +5856,7 @@
             // textBox_Setup_Option_Hole02_50_Wait_Time
             // 
             this.textBox_Setup_Option_Hole02_50_Wait_Time.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_Hole02_50_Wait_Time.Location = new System.Drawing.Point(1246, 113);
+            this.textBox_Setup_Option_Hole02_50_Wait_Time.Location = new System.Drawing.Point(1246, 99);
             this.textBox_Setup_Option_Hole02_50_Wait_Time.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Hole02_50_Wait_Time.Name = "textBox_Setup_Option_Hole02_50_Wait_Time";
             this.textBox_Setup_Option_Hole02_50_Wait_Time.Size = new System.Drawing.Size(50, 24);
@@ -5808,9 +5865,9 @@
             // 
             // checkBox_Setup_Option_LaserHeight_Retry_Enable
             // 
-            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Location = new System.Drawing.Point(1024, 70);
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Location = new System.Drawing.Point(1024, 63);
             this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Name = "checkBox_Setup_Option_LaserHeight_Retry_Enable";
-            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Size = new System.Drawing.Size(221, 24);
             this.checkBox_Setup_Option_LaserHeight_Retry_Enable.TabIndex = 123;
             this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Text = "Height Sensor - Retry(ea):";
             this.checkBox_Setup_Option_LaserHeight_Retry_Enable.UseVisualStyleBackColor = true;
@@ -5819,7 +5876,7 @@
             // textBox_Setup_Option_LaserHeight_Retry_Count
             // 
             this.textBox_Setup_Option_LaserHeight_Retry_Count.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_LaserHeight_Retry_Count.Location = new System.Drawing.Point(1246, 70);
+            this.textBox_Setup_Option_LaserHeight_Retry_Count.Location = new System.Drawing.Point(1246, 63);
             this.textBox_Setup_Option_LaserHeight_Retry_Count.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_LaserHeight_Retry_Count.Name = "textBox_Setup_Option_LaserHeight_Retry_Count";
             this.textBox_Setup_Option_LaserHeight_Retry_Count.Size = new System.Drawing.Size(50, 24);
@@ -5830,9 +5887,9 @@
             // 
             this.checkBox_Setup_Option_AutoCrossCheck.Location = new System.Drawing.Point(1024, 27);
             this.checkBox_Setup_Option_AutoCrossCheck.Name = "checkBox_Setup_Option_AutoCrossCheck";
-            this.checkBox_Setup_Option_AutoCrossCheck.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_AutoCrossCheck.Size = new System.Drawing.Size(221, 24);
             this.checkBox_Setup_Option_AutoCrossCheck.TabIndex = 121;
-            this.checkBox_Setup_Option_AutoCrossCheck.Text = "AutoCrossCheck (ea):";
+            this.checkBox_Setup_Option_AutoCrossCheck.Text = "AutoCross Enable (ea):";
             this.checkBox_Setup_Option_AutoCrossCheck.UseVisualStyleBackColor = true;
             this.checkBox_Setup_Option_AutoCrossCheck.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_AutoCrossCheck_CheckedChanged);
             // 
@@ -6233,7 +6290,7 @@
             // label67
             // 
             this.label67.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label67.Location = new System.Drawing.Point(373, 22);
+            this.label67.Location = new System.Drawing.Point(373, 27);
             this.label67.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label67.Name = "label67";
             this.label67.Size = new System.Drawing.Size(134, 37);
@@ -6246,7 +6303,7 @@
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Checked = true;
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Location = new System.Drawing.Point(518, 44);
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Location = new System.Drawing.Point(518, 47);
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Name = "radioButton_Setup_Option_FiducialImageSave_FailedToFind";
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Size = new System.Drawing.Size(112, 21);
@@ -6259,7 +6316,7 @@
             // 
             this.radioButton_Setup_Option_FiducialImageSave_Always.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.radioButton_Setup_Option_FiducialImageSave_Always.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.radioButton_Setup_Option_FiducialImageSave_Always.Location = new System.Drawing.Point(518, 22);
+            this.radioButton_Setup_Option_FiducialImageSave_Always.Location = new System.Drawing.Point(518, 27);
             this.radioButton_Setup_Option_FiducialImageSave_Always.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioButton_Setup_Option_FiducialImageSave_Always.Name = "radioButton_Setup_Option_FiducialImageSave_Always";
             this.radioButton_Setup_Option_FiducialImageSave_Always.Size = new System.Drawing.Size(112, 21);
@@ -7332,15 +7389,6 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox_Setup_Option_SocketVision_Batch
-            // 
-            this.checkBox_Setup_Option_SocketVision_Batch.Location = new System.Drawing.Point(1024, 221);
-            this.checkBox_Setup_Option_SocketVision_Batch.Name = "checkBox_Setup_Option_SocketVision_Batch";
-            this.checkBox_Setup_Option_SocketVision_Batch.Size = new System.Drawing.Size(221, 20);
-            this.checkBox_Setup_Option_SocketVision_Batch.TabIndex = 129;
-            this.checkBox_Setup_Option_SocketVision_Batch.Text = "SocketVision_Batch";
-            this.checkBox_Setup_Option_SocketVision_Batch.UseVisualStyleBackColor = true;
-            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -7999,5 +8047,9 @@
         private System.Windows.Forms.CheckBox checkBox_HoleCenterEnable;
         private System.Windows.Forms.CheckBox checkBox_Setup_Option_SocketHeight_Batch;
         private System.Windows.Forms.CheckBox checkBox_Setup_Option_SocketVision_Batch;
+        private System.Windows.Forms.CheckBox checkBox_Setup_Option_LaserMeasure;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_LaserMeasure;
+        private System.Windows.Forms.CheckBox checkBox_Setup_Option_HeightMeasure;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_HeightMeasure;
     }
 }

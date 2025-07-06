@@ -39,8 +39,6 @@ namespace QMC.Common.Modules
     public class Loader : Module
     {
         #region Define
-
-
         //#if true                                                                //  SLD-200C
 #if SLD_200C                                                                 //  SLD-200U
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
@@ -69,10 +67,7 @@ namespace QMC.Common.Modules
             ALN_Y = 1,
         }
 #endif
-
-
         #endregion
-
 
 
         #region Alarm
@@ -4071,7 +4066,7 @@ namespace QMC.Common.Modules
                     //!workStage.m_bMainWorkCycle_Complete &&                                                   //  Work Stage 의 완료 상태가 False 일 때 얼라인 완료된 모듈을 픽업 한다. 
                     //((workStage.m_bMainWorkCycle_DryRun && (workStage.m_nDryRun_Step == (int)WorkStage.DryRun_Step.None)) ||                        //  Dry Run 이면?? Dry Run Step None 확인
                     //(!workStage.m_bMainWorkCycle_DryRun && (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))) &&     //  Drilling Run 이면?? Drilling Step None 확인
-
+                    (workStage.m_nLaserDrilling_MainStep > (int)LaserDrilling_Step.LaserOff2) &&      // 완료 될떄쯤에 픽업을 한다.
                     (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickUp_MAligner) &&
                     m_bMAlignZone_ModuleExist)
                 {
@@ -7408,12 +7403,12 @@ namespace QMC.Common.Modules
         {
             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "WorkStage, Module Vacuum On");
 
-            workStage.workStageParameter.DO_Stage_Vacuum(true);
             workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
+            Thread.Sleep(100);
+            workStage.workStageParameter.DO_Stage_Vacuum(true);
             workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
             //workStage.DustCollector_SetFrequence(Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
             Thread.Sleep(1000);
-
             if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "WorkStage, 하부 집진기 사용 안함.");
