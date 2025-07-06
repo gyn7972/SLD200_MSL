@@ -56,6 +56,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button_Param_Save = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSettings)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDuration)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -89,7 +90,7 @@
             this.dataGridViewSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dataGridViewSettings.Name = "dataGridViewSettings";
             this.dataGridViewSettings.RowHeadersWidth = 62;
-            this.dataGridViewSettings.Size = new System.Drawing.Size(322, 123);
+            this.dataGridViewSettings.Size = new System.Drawing.Size(322, 178);
             this.dataGridViewSettings.TabIndex = 0;
             this.dataGridViewSettings.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewSettings_CellValueChanged);
             this.dataGridViewSettings.CurrentCellChanged += new System.EventHandler(this.dataGridViewSettings_CurrentCellChanged);
@@ -110,7 +111,7 @@
             // 
             this.labelDuration.AutoSize = true;
             this.labelDuration.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelDuration.Location = new System.Drawing.Point(75, 232);
+            this.labelDuration.Location = new System.Drawing.Point(75, 287);
             this.labelDuration.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelDuration.Name = "labelDuration";
             this.labelDuration.Size = new System.Drawing.Size(106, 16);
@@ -120,7 +121,7 @@
             // numericUpDownDuration
             // 
             this.numericUpDownDuration.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericUpDownDuration.Location = new System.Drawing.Point(185, 230);
+            this.numericUpDownDuration.Location = new System.Drawing.Point(185, 285);
             this.numericUpDownDuration.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.numericUpDownDuration.Maximum = new decimal(new int[] {
             1661992959,
@@ -227,7 +228,7 @@
             // button_Test
             // 
             this.button_Test.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Test.Location = new System.Drawing.Point(1, 232);
+            this.button_Test.Location = new System.Drawing.Point(1, 283);
             this.button_Test.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.button_Test.Name = "button_Test";
             this.button_Test.Size = new System.Drawing.Size(70, 24);
@@ -248,7 +249,7 @@
             "1.0x",
             "1.1x",
             "1.2x"});
-            this.comboBox_BETPositionIndex.Location = new System.Drawing.Point(185, 201);
+            this.comboBox_BETPositionIndex.Location = new System.Drawing.Point(185, 256);
             this.comboBox_BETPositionIndex.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_BETPositionIndex.Name = "comboBox_BETPositionIndex";
             this.comboBox_BETPositionIndex.Size = new System.Drawing.Size(73, 24);
@@ -266,7 +267,7 @@
             "#2 Mask Position",
             "#3 Mask Position",
             "#4 Mask Position"});
-            this.comboBox_MaskIndex.Location = new System.Drawing.Point(185, 174);
+            this.comboBox_MaskIndex.Location = new System.Drawing.Point(185, 229);
             this.comboBox_MaskIndex.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_MaskIndex.Name = "comboBox_MaskIndex";
             this.comboBox_MaskIndex.Size = new System.Drawing.Size(144, 24);
@@ -276,7 +277,7 @@
             // label_Recipe_TabRecipe_Miscellaneous_BETPosition
             // 
             this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Location = new System.Drawing.Point(7, 200);
+            this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Location = new System.Drawing.Point(7, 255);
             this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Name = "label_Recipe_TabRecipe_Miscellaneous_BETPosition";
             this.label_Recipe_TabRecipe_Miscellaneous_BETPosition.Size = new System.Drawing.Size(174, 25);
@@ -287,7 +288,7 @@
             // label_Recipe_TabRecipe_Miscellaneous_Mask
             // 
             this.label_Recipe_TabRecipe_Miscellaneous_Mask.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Location = new System.Drawing.Point(7, 174);
+            this.label_Recipe_TabRecipe_Miscellaneous_Mask.Location = new System.Drawing.Point(7, 229);
             this.label_Recipe_TabRecipe_Miscellaneous_Mask.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Recipe_TabRecipe_Miscellaneous_Mask.Name = "label_Recipe_TabRecipe_Miscellaneous_Mask";
             this.label_Recipe_TabRecipe_Miscellaneous_Mask.Size = new System.Drawing.Size(174, 25);
@@ -297,6 +298,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button_Param_Save);
             this.groupBox1.Controls.Add(this.dataGridViewSettings);
             this.groupBox1.Controls.Add(this.comboBox_BETPositionIndex);
             this.groupBox1.Controls.Add(this.labelDuration);
@@ -310,7 +312,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(12, 11);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(337, 260);
+            this.groupBox1.Size = new System.Drawing.Size(337, 315);
             this.groupBox1.TabIndex = 233;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Parameter";
@@ -340,11 +342,23 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Manual";
             // 
+            // button_Param_Save
+            // 
+            this.button_Param_Save.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Param_Save.Location = new System.Drawing.Point(259, 14);
+            this.button_Param_Save.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.button_Param_Save.Name = "button_Param_Save";
+            this.button_Param_Save.Size = new System.Drawing.Size(70, 24);
+            this.button_Param_Save.TabIndex = 233;
+            this.button_Param_Save.Text = "SAVE";
+            this.button_Param_Save.UseVisualStyleBackColor = true;
+            this.button_Param_Save.Click += new System.EventHandler(this.button_Param_Save_Click);
+            // 
             // FormNewSub_LaserPowerMeasure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(839, 281);
+            this.ClientSize = new System.Drawing.Size(839, 331);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -380,5 +394,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button button_Param_Save;
     }
 }

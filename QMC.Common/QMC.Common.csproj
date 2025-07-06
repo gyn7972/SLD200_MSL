@@ -209,6 +209,7 @@
     <Compile Include="Q_Config\ScannerCalConfigData.cs" />
     <Compile Include="Q_Recipe\ScannerCalManager.cs" />
     <Compile Include="Q_Recipe\VisionRecipeData.cs" />
+    <Compile Include="Q_Sequence\Sequence_FlatnessMeasure.cs" />
     <Compile Include="Q_Sequence\Sequence_LaserPowerMeasure.cs" />
     <Compile Include="Q_Sequence\Sequence_VerifyScannerCameraOffset.cs" />
     <Compile Include="SpiralLab\Sirius\QMCSiriusEditorForm.cs">

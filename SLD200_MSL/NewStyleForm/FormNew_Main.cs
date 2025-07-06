@@ -1313,6 +1313,7 @@ namespace SLD200_MSL
                 {
                     Log.Write(ex);
                 }
+
                 if (SiriusViewer_Main.InvokeRequired)
                 {
                     this.Invoke(new System.Action(() =>
@@ -1563,6 +1564,8 @@ namespace SLD200_MSL
                 Comm_Init();
 
                 workStage.m_bFirstAutoCrossCheckDone = false;
+                workStage.m_bFirstLaserPowerCheckDone = false;
+                workStage.m_bFirstHeightCheckDone = false;
 
                 workStage.m_bHomeOK = false;
                 m_bHomeProgress_Show = true;
@@ -4905,6 +4908,7 @@ namespace SLD200_MSL
                 if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
                 {
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    Thread.Sleep(100);
                     workStage.workStageParameter.DO_Stage_Blow(false);
                     strTemp = "workStage - 자재 확인 바랍니다. Reset";
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);

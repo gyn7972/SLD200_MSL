@@ -741,9 +741,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 workStage.workStageParameter.DO_Stage_Blow(true);
                 workStage.workStageParameter.DO_Stage_Vacuum(false);
-                workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
-                Thread.Sleep(1000); // 1초 대기
+                Thread.Sleep(500); // 1초 대기
                 workStage.workStageParameter.DO_Stage_Blow(false);
+                workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
             }
             else
             {

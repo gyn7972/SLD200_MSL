@@ -625,7 +625,7 @@ namespace QMC.Common
         public static int Machine_LoaderStacker_NoMaterialDetectTime { set; get; } = 10;                    //  Loader Stacker No Material Detect Time
         public static int Machine_PolylineCurve_Resolution { set; get; } = 100;                             //  Polyline Curve Resolution
 
-        public static bool Machine_AutoCrossCheck_Enable { set; get; } = false  ;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static bool Machine_AutoCrossCheck_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
         public static int Machine_AutoCrossCheck_Count { set; get; } = 1;                    
         public static bool Machine_HeightSensorRetry_Enable { set; get; } = false;                    
         public static int Machine_HeightSensorRetry_Count { set; get; } = 5;
@@ -637,6 +637,12 @@ namespace QMC.Common
 
         public static bool Machine_SocketHeight_Batch_Use { set; get; } = false;           //  Socket Height Batch 사용 여부 (true: 사용, false: 미사용)
         public static bool Machine_SocketVision_Batch_Use { set; get; } = false;
+        public static bool Machine_LaserPowerMeasure_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static int Machine_LaserPowerMeasure_Count { set; get; } = 1;
+
+        public static bool Machine_HeightMeasure_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static int Machine_HeightMeasure_Count { set; get; } = 1;
+
         //  Offset Distance
         public struct stOffsetDistanceParameter
         {
@@ -1019,7 +1025,7 @@ namespace QMC.Common
         {
             Stage = 0,
             CalPos,
-            User1,
+            Auto_Stage,
             User2,
             User3,
         }
@@ -1488,6 +1494,7 @@ namespace QMC.Common
             //전부 생성한 후 Init하자
             workStage.m_ScannerCameraOffsetSequence.Init();
             workStage.m_Sequence_LaserPowerMeasure.Init();
+            workStage.m_Sequence_FlatnessMeasure.Init();
 
 
             // 여기때문에 시작이 느림. 
@@ -3088,6 +3095,14 @@ namespace QMC.Common
             Equipment.Machine_SocketHeight_Batch_Use = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "SocketVision_Batch_Enable", "false", temp, 255, strFIle);
             Equipment.Machine_SocketVision_Batch_Use = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LaserPowerMeasure_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_LaserPowerMeasure_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LaserPowerMeasure_Count", "1", temp, 255, strFIle);
+            Equipment.Machine_LaserPowerMeasure_Count = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_Count", "1", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(temp.ToString());
             //
 
             //  Offset Distance

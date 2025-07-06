@@ -75,6 +75,10 @@ namespace QMC.Common.Parts
             public int BETIndex { get; set;} = 0;
             public int Duration { get; set; } = 0;
 
+            public float PowerLimitMin { get; set; } = 0f; // 레이저 출력 제한 (0 = 제한 없음)
+            public float PowerLimitMax { get; set; } = 0f; // 레이저 출력 제한 (0 = 제한 없음)
+
+
             public ScannerLaserSetting Clone()
             {
                 return (ScannerLaserSetting)this.MemberwiseClone();
@@ -100,6 +104,9 @@ namespace QMC.Common.Parts
                 MaskIndex = 4;
                 BETIndex = 0;
                 Duration = 5000;
+
+                PowerLimitMin = 0; // 레이저 출력 제한 (0 = 제한 없음)
+                PowerLimitMax = 0; // 레이저 출력 제한 (0 = 제한 없음)
             }
 
             public bool LoadPowerMeterConfig()
@@ -116,6 +123,11 @@ namespace QMC.Common.Parts
 
                 NativeMethods.GetPrivateProfileString("Laser", "Duration", "100000", temp, 255, iniPath);
                 Duration = Equipment.ToInt(temp.ToString());
+
+                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMin", "0", temp, 255, iniPath);
+                PowerLimitMin = (float)Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMax", "0", temp, 255, iniPath);
+                PowerLimitMax = (float)Equipment.ToDouble(temp.ToString());
 
                 if (Equipment.Machine_LaserType_CO2)
                 {
