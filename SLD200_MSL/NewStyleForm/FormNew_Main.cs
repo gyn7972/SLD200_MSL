@@ -4730,14 +4730,16 @@ namespace SLD200_MSL
             pf.StopProcess += (obj) =>
             {
                 cts.Cancel();
-                strTemp = "Reset이 중단되었습니다.";
-                new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-                button_Main_Reset.Enabled = true;
 
                 Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
                 checkBox_Main_AutoRun.Checked = false;
                 button_Main_Start.BackColor = Color.LightGray;
                 button_Main_Start.ForeColor = Color.Black;
+
+
+                strTemp = "Reset이 중단되었습니다.";
+                new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                button_Main_Reset.Enabled = true;
             }; 
 
             pf.ShowDialog();

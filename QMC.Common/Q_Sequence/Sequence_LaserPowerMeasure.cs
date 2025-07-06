@@ -696,10 +696,11 @@ namespace QMC.Common.Q_Sequence
             }
             else
             {
-                string strTemp = string.Format("Stage XY Move Center Position 실패");
-                Log.Write("SeqLaserPowerMeasure", "StageXY_Move_PowerMeterPos_Check", strTemp);
                 nRtn = -1;
-                return workStage.AlarmPost(AlarmKey.eStageMoveFail);
+                //string strTemp = string.Format("Stage XY Move Center Position 실패");
+                //Log.Write("SeqLaserPowerMeasure", "StageXY_Move_PowerMeterPos_Check", strTemp);
+                //nRtn = -1;
+                //return workStage.AlarmPost(AlarmKey.eStageMoveFail);
             }
 
             return nRtn;
@@ -727,11 +728,11 @@ namespace QMC.Common.Q_Sequence
             }
             else
             {
-                strTemp = string.Format("Stage Z 축, Laser Height Check 높이로 이동 실패");
-                Log.Write("SeqLaserPowerMeasure", "StageZ_Move_ProcessPos_Check", strTemp);
-
                 nRtn = -1;
-                return workStage.AlarmPost(WorkStage.AlarmKey.eZAxisFail);
+
+                //strTemp = string.Format("Stage Z 축, Laser Height Check 높이로 이동 실패");
+                //Log.Write("SeqLaserPowerMeasure", "StageZ_Move_ProcessPos_Check", strTemp);
+                //return workStage.AlarmPost(WorkStage.AlarmKey.eZAxisFail);
             }
 
             return nRtn;

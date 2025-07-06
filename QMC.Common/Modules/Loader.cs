@@ -4066,7 +4066,9 @@ namespace QMC.Common.Modules
                     //!workStage.m_bMainWorkCycle_Complete &&                                                   //  Work Stage 의 완료 상태가 False 일 때 얼라인 완료된 모듈을 픽업 한다. 
                     //((workStage.m_bMainWorkCycle_DryRun && (workStage.m_nDryRun_Step == (int)WorkStage.DryRun_Step.None)) ||                        //  Dry Run 이면?? Dry Run Step None 확인
                     //(!workStage.m_bMainWorkCycle_DryRun && (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))) &&     //  Drilling Run 이면?? Drilling Step None 확인
-                    (workStage.m_nLaserDrilling_MainStep > (int)LaserDrilling_Step.LaserOff2) &&      // 완료 될떄쯤에 픽업을 한다.
+                    (((workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)) ||
+                    (workStage.m_nLaserDrilling_MainStep > (int)WorkStage.LaserDrilling_Step.LaserOff2)) &&      // 완료 될떄쯤에 픽업을 한다.
+                    
                     (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickUp_MAligner) &&
                     m_bMAlignZone_ModuleExist)
                 {
