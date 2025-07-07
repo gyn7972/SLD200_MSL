@@ -14,6 +14,7 @@ using static OpenCvSharp.LineIterator;
 using static SLD200.NewStyleForm.FormNew_JogPopup;
 using static QMC.Common.Equipment;
 using QMC.Common.Parts;
+using SLD200_MSL;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
@@ -194,6 +195,89 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 control.Text = text;
                 control.Visible = isVisible;
+            }
+        }
+
+        // 이거 각각 폼에 만들어야함.
+        private void InitRecipeUI_KeyPad()
+        {
+            RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행
+        }
+        private void RegisterKeyPadDoubleClickHandlers(Control parent)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                // 조건: 숫자 입력용 TextBox 또는 RichTextBox만
+                bool isTargetTextBox = ctrl is TextBox || ctrl is RichTextBox;
+
+                if (isTargetTextBox && ctrl.Tag?.ToString().Contains("KeyPad") == true)
+                {
+                    ctrl.DoubleClick -= textBox_DoubleClick_OpenKeyPad; // 중복 연결 방지
+                    ctrl.DoubleClick += textBox_DoubleClick_OpenKeyPad;
+
+                    // 키보드 입력 제한용 Validating 연결
+                    ctrl.Validating -= textBox_Validate_KeyPadRange;
+                    ctrl.Validating += textBox_Validate_KeyPadRange;
+                }
+
+                // 하위 컨트롤 재귀 탐색
+                if (ctrl.HasChildren)
+                    RegisterKeyPadDoubleClickHandlers(ctrl);
+            }
+        }
+        private void textBox_DoubleClick_OpenKeyPad(object sender, EventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                string currentText = ctrl.Text ?? "0";
+                var dlg = new FormNew_KeyPad();
+
+                if (double.TryParse(currentText, out double value))
+                    dlg.SetInitialValue(value);
+                else
+                    dlg.SetInitialValue(0);
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string result = dlg.EnteredValue.ToString(meta.Format);
+                    ctrl.Text = result;
+                }
+            }
+        }
+        private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
+        {
+            if (sender is TextBox tb && tb.Tag != null)
+            {
+                var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
+
+                if (double.TryParse(tb.Text, out double val))
+                {
+                    if (val < meta.Min)
+                    {
+                        tb.Text = meta.Min.ToString(meta.Format);
+                        //MessageBox.Show($"최소값 {meta.Min}보다 작습니다."); // 또는 자동 보정만
+                    }
+                    else if (val > meta.Max)
+                    {
+                        tb.Text = meta.Max.ToString(meta.Format);
+                        //MessageBox.Show($"최대값 {meta.Max}보다 큽니다.");
+                    }
+                    else
+                    {
+                        tb.Text = val.ToString(meta.Format);
+                    }
+                }
+                else
+                {
+                    // 숫자 아님 → 초기화
+                    tb.Text = meta.Min.ToString(meta.Format);
+                }
             }
         }
     }

@@ -4524,6 +4524,22 @@ namespace QMC.Common.Modules
             Equipment._InitDeviceStatus.Illuminator = true;
 
         }
+
+        public void Illuminator_Close()
+        {
+            try
+            {
+                if (CommonModule.Instance.Illuminator == null)
+                    return;
+
+                CommonModule.Instance.Illuminator.Close();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            
+        }
         #endregion
 
         #region Serial Comm. - Power Meter (Exit & Target Pos.)
@@ -4612,6 +4628,21 @@ namespace QMC.Common.Modules
 
             Equipment._InitDeviceStatus.PowerMeter_Bds = true;
             m_nPowerMeterBDSCommStep = (int)PowerMeterBDSComm_Step.Start;
+        }
+        public void PowerMeterComm_ExitPos_Close()
+        {
+            try
+            {
+                if (m_powerMeter_ExitPos_Comm == null)
+                    return;
+
+                m_powerMeter_ExitPos_Comm.CloseComm();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            
         }
 
         private void PowerMeter_ExitPos_DataReceivedHandler(byte[] receiveData)
@@ -4728,7 +4759,20 @@ namespace QMC.Common.Modules
             Equipment._InitDeviceStatus.PowerMeter_Stage = true;
             m_nPowerMeterStageCommStep = (int)PowerMeterStageComm_Step.Start;
         }
+        public void PowerMeterComm_TargetPos_Close()
+        {
+            try
+            {
+                if (m_powerMeter_TargetPos_Comm == null)
+                    return;
 
+                m_powerMeter_TargetPos_Comm.CloseComm();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
         private void PowerMeter_TargetPos_DataReceivedHandler(byte[] receiveData)
         {
             string @string = Encoding.Default.GetString(receiveData);
@@ -4888,6 +4932,20 @@ namespace QMC.Common.Modules
             m_nBETCommStep = (int)BETComm_Step.Start;
 
             Equipment._InitDeviceStatus.BeamExpander = true;
+        }
+        public void BeamExpanderComm_Close()
+        {
+            try
+            {
+                if (m_beamExpander_Comm == null)
+                    return;
+
+                m_beamExpander_Comm.CloseComm();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
 
         private List<byte> receiveBuffer = new List<byte>();
@@ -5390,7 +5448,6 @@ namespace QMC.Common.Modules
 
         #endregion
 
-
         //Bds로 이동 후 삭제.
         #region Serial Comm. - Dust Collector (Upper, Lower Position)
         public void DustCollector_UpperPos_Comm_Init()
@@ -5662,8 +5719,6 @@ namespace QMC.Common.Modules
             string m_strSendData = "";
             byte[] m_cSendCmd = null;
 
-
-
             m_DataNum = 12;                                         //  길이 고정
             m_cSendCmd = new byte[m_DataNum];
 
@@ -5689,8 +5744,6 @@ namespace QMC.Common.Modules
             m_cSendCmd[9] = (byte)m_strCheckSum[0];                 //  CheckSum 2자리 중 앞자리
             m_cSendCmd[10] = (byte)m_strCheckSum[1];                //  CheckSum 2자리 중 뒷자리
             m_cSendCmd[11] = chrEOT;
-
-
 
             m_strSendData = Encoding.Default.GetString(m_cSendCmd);
 
@@ -5902,51 +5955,6 @@ namespace QMC.Common.Modules
             }
 
             return bRtn;
-
-            //bool m_bRet = false;
-            //string m_strAddress = "";
-            //string m_strData = "";
-            //m_strAddress = "0006";                              //  운전 Address
-            //m_strData = "0002";                                 //  정방향 운전
-            //if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
-            //{
-            //    if (m_dustCollector_UpperPos_Comm != null)
-            //    {
-            //        if (m_dustCollector_UpperPos_Comm.IsOpen)
-            //        {
-            //            m_bDustCollector_UpperPos_CommData_Received = false;
-            //            m_strDustCollector_UpperPos_Comm_ReceivedData = "";
-
-            //            DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, m_strAddress, 1, m_strData);
-
-            //            m_bRet = true;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        m_bRet = false;
-            //    }
-            //}
-            //else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
-            //{
-            //    if (m_dustCollector_LowerPos_Comm != null)
-            //    {
-            //        if (m_dustCollector_LowerPos_Comm.IsOpen)
-            //        {
-            //            m_bDustCollector_LowerPos_CommData_Received = false;
-            //            m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-
-            //            DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, m_strAddress, 1, m_strData);
-
-            //            m_bRet = true;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        m_bRet = false;
-            //    }
-            //}
-            //return m_bRet;
         }
         public bool DustCollector_Off(int m_nDustCollector)
         {
@@ -5963,51 +5971,6 @@ namespace QMC.Common.Modules
                     break;
             }
             return bRtn;
-
-            //bool m_bRet = false;
-            //string m_strAddress = "";
-            //string m_strData = "";
-            //m_strAddress = "0006";                              //  운전 Address
-            //m_strData = "0001";                                 //  운전 정지
-            //if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
-            //{
-            //    if (m_dustCollector_UpperPos_Comm != null)
-            //    {
-            //        if (m_dustCollector_UpperPos_Comm.IsOpen)
-            //        {
-            //            m_bDustCollector_UpperPos_CommData_Received = false;
-            //            m_strDustCollector_UpperPos_Comm_ReceivedData = "";
-
-            //            DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, m_strAddress, 1, m_strData);
-
-            //            m_bRet = true;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        m_bRet = false;
-            //    }
-            //}
-            //else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
-            //{
-            //    if (m_dustCollector_LowerPos_Comm != null)
-            //    {
-            //        if (m_dustCollector_LowerPos_Comm.IsOpen)
-            //        {
-            //            m_bDustCollector_LowerPos_CommData_Received = false;
-            //            m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-
-            //            DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, m_strAddress, 1, m_strData);
-
-            //            m_bRet = true;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        m_bRet = false;
-            //    }
-            //}
-            //return m_bRet;
         }
         public bool DustCollector_SetFrequence(int m_nDustCollector, double dRet_Freq)
         {
@@ -6113,7 +6076,6 @@ namespace QMC.Common.Modules
 
             //return m_bRet;
         }
-
         public string ConvertDecimalToHex(string m_strDecimalNumber)
         {
             int decimalNumber = 0;
@@ -6211,7 +6173,21 @@ namespace QMC.Common.Modules
             //  포트 연결되면 데이터 읽기 시작
             m_nEPROCommStep = (int)EPROComm_Step.Start;
         }
+        public void ElectroPneumaticRegulator_Comm_Close()
+        {
+            try
+            {
+                if (m_electroRegulator_Comm == null)
+                    return;
 
+                m_electroRegulator_Comm.CloseComm();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            
+        }
         private void ElectroPneumaticRegulator_DataReceivedHandler(byte[] receiveData)
         {
             //  전공 레귤레이터
@@ -6232,12 +6208,10 @@ namespace QMC.Common.Modules
                 }
             }
         }
-
         private void ElectroPneumaticRegulator_DisconnectedHandler()
         {
             Console.WriteLine("Electro Pneumatic Regulator serial COM7 disconnected");
         }
-
         public bool ElectroPneumaticRegulatorComm_Pressure_Set(double m_dkPa)
         {
             bool m_bRet = false;
@@ -6297,7 +6271,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public double ElectroPneumaticRegulatorComm_ReceivedData_ConvertTo_Pressure(string m_strReceivedData)
         {
             double m_dRet = 0.0;
@@ -6343,7 +6316,6 @@ namespace QMC.Common.Modules
 
             return m_dRet;
         }
-
         public bool ElectroPneumaticRegulatorComm_Pressure_Inc()
         {
             bool m_bRet = false;
@@ -6369,7 +6341,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool ElectroPneumaticRegulatorComm_Pressure_Dec()
         {
             bool m_bRet = false;
@@ -6395,7 +6366,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool ElectroPneumaticRegulatorComm_SettingPressure_Read()                //  압력 설정값 읽기
         {
             bool m_bRet = false;
@@ -6421,7 +6391,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool ElectroPneumaticRegulatorComm_Pressure_Read()                //  압력값 읽기
         {
             bool m_bRet = false;
@@ -6447,7 +6416,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool ElectroRegulatorCommReceivedData_To_Pressure_Value(int m_nPressureStep, ref double m_dkPa)
         {
             bool m_bRet = false;
@@ -6478,9 +6446,147 @@ namespace QMC.Common.Modules
 
         #endregion
 
+        public bool Sirius_Init()
+        {
+            bool bRtn = false;
+
+            //흠.. Sirius
+            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+            {
+                // 문서 생성후 뷰어에 지정
+                //var doc = new DocumentDefault();
+                //SiriusViewer_Main.Document = doc;
+                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+            }
+
+            bRtn = true;
+            return bRtn;
+        }
+
+        public bool ScannerComm_Init(ref Rtc6 rtc6, ref LaserVirtual laser, ref MarkerDefault maker)
+        {
+            bool bRtn = false;
+            #region RTC 초기화
+            //create Rtc for dummy (가상 RTC 카드)//var rtc = new RtcVirtual(0); //create Rtc6 controller
+            rtc = new Rtc6(0);
+            //Rtc6 Ethernet//var rtc = new Rtc6Ethernet(0, "192.168.0.100", "255.255.255.0"); 
+            if (Equipment.Machine_LaserType_CO2)                                                                                //  CO2 레이저
+            {
+                // theoretically size of scanner field of view (이론적인 FOV 크기) : 60mm
+                float fov = 72.5f;          //  MSL-CO2 장비에서 맞춘 데이터// k factor (bits/mm) = 2^20 / fov
+                float kfactor = (float)Math.Pow(2, 20) / fov;//float kfactor = (float)workStage.Config.ParamConfig.Scanner_KFactor;
+                if (kfactor == 0)
+                    kfactor = (float)18830.1889;
+
+                //string correctionFile = Equipment.Scanner_Calibration_srcFilePath;
+                string correctionFile = "D:\\SLD-200_Parameter\\Cor_200C.ct5";
+                if (File.Exists(correctionFile) == false)
+                {
+                    string m_strPath = string.Format("Scanner Correction 파일이 없습니다.\r\n\r\n[{0}]", correctionFile);
+                    MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                bRtn &= rtc.Initialize(kfactor, LaserMode.Co2, correctionFile); // initialize rtc controller
+            }
+            else                                                                                                                //  UV 레이저
+            {
+                // theoretically size of scanner field of view (이론적인 FOV 크기) : 60mm
+                float fov = 105.0f;         //  MSL-UV 장비에서 맞춘 데이터
+                float kfactor = (float)Math.Pow(2, 20) / fov;   // k factor (bits/mm) = 2^20 / fov
+                if (kfactor == 0)
+                    kfactor = (float)18830.1889;
+
+                //string correctionFile = Equipment.Scanner_Calibration_srcFilePath;
+                string correctionFile = "D:\\SLD-200_Parameter\\Cor_200U.ct5";
+                if (File.Exists(correctionFile) == false)
+                {
+                    string m_strPath = string.Format("Scanner Correction 파일이 없습니다.\r\n\r\n[{0}]", correctionFile);
+                    MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                bRtn &= rtc.Initialize(kfactor, LaserMode.Yag1, correctionFile);// initialize rtc controller
+            }
+
+            // basic frequency and pulse width// laser frequency : 50KHz, pulse width : 2usec (주파수 50KHz, 펄스폭 2usec)
+            bRtn &= rtc.CtlFrequency(50 * 1000, 2);
+            bRtn &= rtc.CtlSpeed(500, 500);
+            bRtn &= rtc.CtlDelay(10, 100, 200, 200, 0);
+            //  rtc Head Offset
+            Vector3 ScannerOffset = new Vector3(0, 0, 0);
+            ScannerOffset.X = (float)Equipment.Scanner_HeadOffset_X;
+            ScannerOffset.Y = (float)Equipment.Scanner_HeadOffset_Y;
+            ScannerOffset.Z = (float)Equipment.Scanner_HeadOffset_Angle;
+            rtc.PrimaryHeadBaseOffset = ScannerOffset;
+            #endregion
+
+            #region 레이저 소스 초기화
+            // virtual laser source with max 20W power (최대 출력 20W 의 가상 레이저 소스 생성)
+            laser = new LaserVirtual(0, "virtual", 20);
+            // assign RTC instance at laser 
+            laser.Rtc = rtc;                   //  Sirius1
+            // initialize laser source
+            bRtn &= laser.Initialize();
+            // set basic power output to 2W
+            bRtn &= laser.CtlPower(2);
+            #endregion
+
+            #region 마커 지정
+            marker = new MarkerDefault(0, " RTC6 Marker ");           //  Sirius1
+            #endregion
+
+            InitspiralLabScannerModule();
+
+            //this.SiriusEditor.Laser = workStage.laser;
+            //this.SiriusEditor.Marker = workStage.marker;                        //  Sirius1
+            //this.SiriusEditor.Rtc = workStage.rtc;
+            //흠.. Sirius :여기서 하면 안됨.
+            //if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+            //{
+            //    // 문서 생성후 뷰어에 지정
+            //    //var doc = new DocumentDefault();
+            //    //SiriusViewer_Main.Document = doc;
+            //    Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+            //}
+
+            return bRtn;
+        }
+
+        public bool ScannerComm_Close()
+        {
+            if (rtc == null || laser == null)
+                return false;
+      
+            bool bRtn = false;
+            if (rtc.CtlGetStatus(RtcStatus.Busy))
+            {
+                rtc.CtlAbort(); // abort marking operation
+                rtc.CtlBusyWait(); // wait until busy has finished
+            }
+            rtc.Dispose();
+            laser.Dispose();
+            DisposespiralLabScannerModule();
+
+            rtc = null;
+            laser = null;
+
+            bRtn = true;
+            return bRtn;
+        }
+
+        public void ChillerComm_Init()
+        {
+            // I/O 인데
+            workStageParameter.DO_Chiller_Run(true);
+        }
+
+        public void ChillerComm_Close()
+        {
+            // I/O 인데
+            workStageParameter.DO_Chiller_Run(false);
+        }
+
 
         #region Serial Comm. - Rapid LX Laser
-
         public void RapidLxLaser_Comm_Init()
         {
             string m_strPortName = "COM11";
@@ -6492,7 +6598,6 @@ namespace QMC.Common.Modules
 
             //  Comm. Port 설정
             m_strPortName = string.Format("COM{0}", Equipment.stCommunicationSet[(int)Equipment.CommList.Laser].Serial_CommPort + 1);
-
             //  Baud Rate 설정
             switch (Equipment.stCommunicationSet[(int)Equipment.CommList.Laser].Serial_CommBaudRate)
             {
@@ -6560,7 +6665,20 @@ namespace QMC.Common.Modules
             //  포트 연결되면 데이터 읽기 시작
             m_nLaserCommStep = (int)LaserComm_Step.Start;
         }
+        public void RapidLxLaser_Comm_Close()
+        {
+            try
+            {
+                if (m_rapidLxLaser_Comm == null)
+                    return;
 
+                m_rapidLxLaser_Comm.CloseComm();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
         private void RapidLxLaser_DataReceivedHandler(byte[] receiveData)
         {
             //  Coherent Laser
@@ -6584,12 +6702,10 @@ namespace QMC.Common.Modules
                 }
             }
         }
-
         private void RapidLxLaser_DisconnectedHandler()
         {
             Console.WriteLine("Rapid LX Laser serial COM11 disconnected");
         }
-
         public bool RapidLxLaserComm_Laser_HostName_Read()
         {
             bool m_bRet = false;
@@ -6621,7 +6737,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_SystemStatus_Read()
         {
             bool m_bRet = false;
@@ -6650,7 +6765,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_StartStop(bool m_bStart)
         {
             bool m_bRet = false;
@@ -6695,7 +6809,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_SystemFaults_Read()
         {
             bool m_bRet = false;
@@ -6720,7 +6833,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_SystemFaults_Clear()
         {
             bool m_bRet = false;
@@ -6746,7 +6858,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_FaultCode_Clear()
         {
             bool m_bRet = false;
@@ -6775,7 +6886,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_PulseMode_Read()
         {
             bool m_bRet = false;
@@ -6801,7 +6911,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_PulseMode_Set(int m_nPulseMode)
         {
             bool m_bRet = false;
@@ -6828,7 +6937,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_AmplifierRR_Read()
         {
             bool m_bRet = false;
@@ -6857,7 +6965,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_OutputRR_Read()
         {
             bool m_bRet = false;
@@ -6883,7 +6990,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_AmplifierRR_Set(double m_dAmpRR)
         {
             bool m_bRet = false;
@@ -6924,7 +7030,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_OutputEnergy_Read()
         {
             bool m_bRet = false;
@@ -6950,7 +7055,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_OutputEnergy_Set(double m_dEnergy)
         {
             bool m_bRet = false;
@@ -6985,7 +7089,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_LaserHeadOperatingHours_Read()
         {
             bool m_bRet = false;
@@ -7011,7 +7114,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_WaterTemperature_Read()
         {
             bool m_bRet = false;
@@ -7037,7 +7139,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_SHGTemperature_Read()
         {
             bool m_bRet = false;
@@ -7065,7 +7166,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool RapidLxLaserComm_Laser_THGTemperature_Read()
         {
             bool m_bRet = false;
@@ -7093,7 +7193,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         #endregion
 
 
@@ -7116,28 +7215,21 @@ namespace QMC.Common.Modules
             m_SocketLaser = new AsyncSocketClient((int)nSocketID.Laser);
             m_SocketLaser.Connect(m_strIP, m_nPort);
         }
-
         #endregion
 
 
         #region Socket - Laser Height Sensor
-
         //CL-3000 Model
-
         public void LaserSensor_Socket_Connect()
         {
             string m_strIP = "127.0.0.1";
             int m_nPort = 5001;
-
             //  IP 설정
             m_strIP = Equipment.stCommunicationSet[(int)Equipment.CommList.LaserHeightSensor].TCPIP_IPAddress;
-
             //  Port 설정
             m_nPort = Equipment.stCommunicationSet[(int)Equipment.CommList.LaserHeightSensor].TCPIP_PortNum;
-
             if (!Equipment.stCommunicationSet[(int)Equipment.CommList.LaserHeightSensor].Connect)
                 return;
-
             m_SocketLaserHeightSensor = new AsyncSocketClient((int)nSocketID.LaserSensor);
             m_SocketLaserHeightSensor.OnReceive += m_SocketLaserHeightSensor_OnReceive;
             if (m_SocketLaserHeightSensor.Connect(m_strIP, m_nPort))
@@ -7145,7 +7237,20 @@ namespace QMC.Common.Modules
                 m_nLaserHeightSensorSocketStep = (int)LaserHeightSensorSocket_Step.Start;
             }
         }
+        public void LaserSensor_Socket_Disconnect()
+        {
+            try
+            {
+                if (m_SocketLaserHeightSensor == null)
+                    return;
 
+                m_SocketLaserHeightSensor.Close();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
         private void m_SocketLaserHeightSensor_OnReceive(object sender, AsyncSocketReceiveEventArgs e)
         {
             string @string = Encoding.Default.GetString(e.ReceiveData);
@@ -7166,7 +7271,6 @@ namespace QMC.Common.Modules
                 }
             }
         }
-
         public bool LaserSensor_Socket_SettingMode()                //  설정 모드로 변경
         {
             //  설정 모드로 변경
@@ -7191,7 +7295,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool LaserSensor_Socket_MeasurementMode()            //  측정 모드로 변경
         {
             //  측정 모드로 변경
@@ -7216,7 +7319,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         public bool LaserSensor_Socket_ReadValue()             //  측정값 출력
         {
             //  측정값 출력
@@ -7259,7 +7361,6 @@ namespace QMC.Common.Modules
 
             return m_bRet;
         }
-
         #endregion
 
 
@@ -42426,9 +42527,36 @@ namespace QMC.Common.Modules
             return false; // 아직 기다리는 중
         }
 
+        public void InitCameraFine()
+        {
+            //  카메라 초기화
+            Camera_HighRes.SetRunStatus(Part.RunStatus.Run);
+            Camera_HighRes.Initialize();
+            
+        }
 
+        public void CloseCameraFine()
+        {
+            if (Camera_HighRes != null)
+            {
+                Camera_HighRes.Close();
+            }
+        }
 
+        public void InitCameraPre()
+        {
+            //  카메라 초기화
+            Camera_LowRes.SetRunStatus(Part.RunStatus.Run);
+            Camera_LowRes.Initialize();
+        }
 
+        public void CloseCameraPre()
+        {
+            if (Camera_LowRes != null)
+            {
+                Camera_LowRes.Close();
+            }
+        }
     }
 }
 #endregion

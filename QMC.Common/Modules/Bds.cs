@@ -29,6 +29,7 @@ using System.Timers;
 using SpiralLab.Sirius;
 using QMC.Common.Q_Config;
 using QMC.Common.Laser.Coherent_CO2;
+using QMC.Process.WorkStage.Parts;
 
 
 namespace QMC.Common.Modules
@@ -400,15 +401,15 @@ namespace QMC.Common.Modules
                 LaserCO2Manager.Owner = this;
                 Parts.Add(LaserCO2Manager);
                 //  레이저 연결 - 여기서? Test니깐?
-                if (!LaserCO2Manager.Connect())
-                {
-                    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 실패!");
-                    //AlarmPost(AlarmKey.LaserComm_ConnectFail);
-                }
-                else
-                {
-                    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 성공");
-                }
+                //if (!LaserCO2Manager.Connect())
+                //{
+                //    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 실패!");
+                //    //AlarmPost(AlarmKey.LaserComm_ConnectFail);
+                //}
+                //else
+                //{
+                //    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 성공");
+                //}
             }
             
 
@@ -752,7 +753,23 @@ namespace QMC.Common.Modules
 
             return true;
         }
-
+        public void DisconnectDustCollector(DustCollectorController.CollectorPosition position)
+        {
+            if (position == DustCollectorController.CollectorPosition.Upper)
+            {
+                if (DustCollector_Upper == null)
+                {
+                    DustCollector_Upper.Disconnect();
+                }
+            }
+            else if (position == DustCollectorController.CollectorPosition.Lower)
+            {
+                if (DustCollector_Lower == null)
+                {
+                    DustCollector_Lower.Disconnect();
+                }
+            }
+        }
 
 
 
@@ -1082,5 +1099,6 @@ namespace QMC.Common.Modules
             strFIle = ConfigManager.GetConfigPath() + "\\Common Setting (Do not delete or modify).ini";
         }
 
+        
     }
 }

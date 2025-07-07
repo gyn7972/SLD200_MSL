@@ -575,7 +575,7 @@
             this.Controls.Add(this.groupBox_JogPopup_Unloader_JogMove);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormNewSub_JogPopup_Unloader";
-            this.Size = new System.Drawing.Size(646, 472);
+            this.Size = new System.Drawing.Size(520, 472);
             this.groupBox_JogPopup_Unloader_JogMove.ResumeLayout(false);
             this.groupBox_JogPopup_Unloader_MoveMode.ResumeLayout(false);
             this.groupBox_JogPopup_Unloader_MoveMode.PerformLayout();

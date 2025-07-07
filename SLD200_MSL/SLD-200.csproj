@@ -680,6 +680,12 @@
     <Compile Include="NeedleCalibrationJogControl.designer.cs">
       <DependentUpon>NeedleCalibrationJogControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_DeviceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_DeviceControl.Designer.cs">
+      <DependentUpon>FormNewSub_DeviceControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Loader.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1568,6 +1574,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NeedleCalibrationJogControl.resx">
       <DependentUpon>NeedleCalibrationJogControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_DeviceControl.resx">
+      <DependentUpon>FormNewSub_DeviceControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Loader.resx">
       <DependentUpon>FormNewSub_JogPopup_Loader.cs</DependentUpon>

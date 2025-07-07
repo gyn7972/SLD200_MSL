@@ -760,7 +760,7 @@
             this.Controls.Add(this.groupBox_JogPopup_Loader_JogMove);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormNewSub_JogPopup_Loader";
-            this.Size = new System.Drawing.Size(646, 472);
+            this.Size = new System.Drawing.Size(520, 475);
             this.groupBox_JogPopup_Loader_JogMove.ResumeLayout(false);
             this.groupBox_JogPopup_Loader_MAligner.ResumeLayout(false);
             this.groupBox_JogPopup_Loader_MoveMode.ResumeLayout(false);

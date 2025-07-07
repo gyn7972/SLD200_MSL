@@ -437,6 +437,9 @@ namespace AsyncSocket
         {
             try
             {
+                if (conn == null)
+                    return;
+
                 Socket client = conn;
 
                 client.Shutdown(SocketShutdown.Both);

@@ -117,6 +117,9 @@ namespace QMC.Common.Vision.Optics.Leesos
 
         public override void Close()
         {
+            if (m_Communicator == null)
+                return;
+
             base.Close();
             m_bStop = true;
             m_Communicator.Close();

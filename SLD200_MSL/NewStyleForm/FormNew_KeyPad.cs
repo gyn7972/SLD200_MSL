@@ -26,6 +26,13 @@ namespace SLD200_MSL
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
+
+        public void SetInitialValue(double value)
+        {
+            label_NumPad.Text = value.ToString();
+        }
+
+
         private void AddDigit(string digit)
         {
             if (label_NumPad.Text == "0")
@@ -77,8 +84,8 @@ namespace SLD200_MSL
         }
 
         public double EnteredValue { get; private set; }
-        public double MinValue { get; set; } = 0;
-        public double MaxValue { get; set; } = 100000;
+        public double MinValue { get; set; } = -999999999;
+        public double MaxValue { get; set; } = 999999999;
 
         private void button_Apply_Click(object sender, EventArgs e)
         {
@@ -142,6 +149,36 @@ namespace SLD200_MSL
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+    }
+
+    public class KeyPadMeta
+    {
+        public double Min { get; set; } = double.MinValue;
+        public double Max { get; set; } = double.MaxValue;
+        public string Format { get; set; } = "0.###";
+
+        public static KeyPadMeta ParseFromTag(string tag)
+        {
+            var meta = new KeyPadMeta();
+
+            if (string.IsNullOrWhiteSpace(tag))
+                return meta;
+
+            var parts = tag.Split(';');
+            foreach (var part in parts)
+            {
+                if (part.StartsWith("Min=") && double.TryParse(part.Substring(4), out double min))
+                    meta.Min = min;
+
+                else if (part.StartsWith("Max=") && double.TryParse(part.Substring(4), out double max))
+                    meta.Max = max;
+
+                else if (part.StartsWith("Format="))
+                    meta.Format = part.Substring(7);
+            }
+
+            return meta;
         }
     }
 }

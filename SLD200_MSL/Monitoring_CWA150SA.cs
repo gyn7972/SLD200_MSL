@@ -2842,9 +2842,7 @@ namespace SLD200_MSL
             //  테스트 코드
 
             //workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-79.9);
-
             workStage.DustCollectorComm_Send_Read((int)nDustCollector.DustCollector_Upper, "3000", 1);
-
             return;
 
             //workStage.m_bHomeOK = true;
