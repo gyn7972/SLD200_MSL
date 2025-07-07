@@ -96,6 +96,15 @@ namespace SLD200_MSL
             radioButton_VisionPopup_Move_MoveMode_Coarse.Checked = true;
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         public FormNew_VisionPopup CreateSiriusEditor()
         {
             if (m_formVisionPopup == null)

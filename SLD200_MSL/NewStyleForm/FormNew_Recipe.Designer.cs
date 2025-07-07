@@ -1518,6 +1518,7 @@
             this.button_GoldPowderThickness.TabIndex = 33;
             this.button_GoldPowderThickness.Text = "#";
             this.button_GoldPowderThickness.UseVisualStyleBackColor = true;
+            this.button_GoldPowderThickness.Click += new System.EventHandler(this.button_GoldPowderThickness_Click);
             // 
             // checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign
             // 

@@ -197,6 +197,10 @@
     <Compile Include="Global\ProcessManagerExtended.cs" />
     <Compile Include="Global\SocketInfo.cs" />
     <Compile Include="Interpolator\DrawingResizeForPerspectiveProjection.cs" />
+    <Compile Include="Laser\Coherent_CO2\LaserDiagnosticInterface.cs" />
+    <Compile Include="Laser\Coherent_CO2\LaserDiagnosticManager.cs" />
+    <Compile Include="Laser\Coherent_CO2\LaserResponseParser.cs" />
+    <Compile Include="Laser\Coherent_CO2\LaserTcpClient.cs" />
     <Compile Include="ListParam.cs" />
     <Compile Include="Modules\DeviceConnectionModule.cs" />
     <Compile Include="Modules\Laser.cs" />

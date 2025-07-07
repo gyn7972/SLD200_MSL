@@ -157,6 +157,7 @@ namespace SLD200_MSL
             this.button_Result.TabIndex = 18;
             this.button_Result.Text = "=";
             this.button_Result.UseVisualStyleBackColor = true;
+            this.button_Result.Click += new System.EventHandler(this.button_Result_Click);
             // 
             // button_Divide
             // 
@@ -167,6 +168,7 @@ namespace SLD200_MSL
             this.button_Divide.TabIndex = 17;
             this.button_Divide.Text = "/";
             this.button_Divide.UseVisualStyleBackColor = true;
+            this.button_Divide.Click += new System.EventHandler(this.button_Divide_Click);
             // 
             // button_Multiply
             // 
@@ -177,6 +179,7 @@ namespace SLD200_MSL
             this.button_Multiply.TabIndex = 16;
             this.button_Multiply.Text = "*";
             this.button_Multiply.UseVisualStyleBackColor = true;
+            this.button_Multiply.Click += new System.EventHandler(this.button_Multiply_Click);
             // 
             // button_Minus
             // 
@@ -187,6 +190,7 @@ namespace SLD200_MSL
             this.button_Minus.TabIndex = 15;
             this.button_Minus.Text = "-";
             this.button_Minus.UseVisualStyleBackColor = true;
+            this.button_Minus.Click += new System.EventHandler(this.button_Minus_Click);
             // 
             // button_Plus
             // 
@@ -197,6 +201,7 @@ namespace SLD200_MSL
             this.button_Plus.TabIndex = 14;
             this.button_Plus.Text = "+";
             this.button_Plus.UseVisualStyleBackColor = true;
+            this.button_Plus.Click += new System.EventHandler(this.button_Plus_Click);
             // 
             // button_PlusMinus
             // 
@@ -207,6 +212,7 @@ namespace SLD200_MSL
             this.button_PlusMinus.TabIndex = 13;
             this.button_PlusMinus.Text = "+ / -";
             this.button_PlusMinus.UseVisualStyleBackColor = true;
+            this.button_PlusMinus.Click += new System.EventHandler(this.button_PlusMinus_Click);
             // 
             // button_Clear
             // 
@@ -360,6 +366,7 @@ namespace SLD200_MSL
             this.button_Apply.TabIndex = 19;
             this.button_Apply.Text = "Apply";
             this.button_Apply.UseVisualStyleBackColor = true;
+            this.button_Apply.Click += new System.EventHandler(this.button_Apply_Click);
             // 
             // button_Cancel
             // 
@@ -370,6 +377,7 @@ namespace SLD200_MSL
             this.button_Cancel.TabIndex = 20;
             this.button_Cancel.Text = "Cancel";
             this.button_Cancel.UseVisualStyleBackColor = true;
+            this.button_Cancel.Click += new System.EventHandler(this.button_Cancel_Click);
             // 
             // FormNew_KeyPad
             // 

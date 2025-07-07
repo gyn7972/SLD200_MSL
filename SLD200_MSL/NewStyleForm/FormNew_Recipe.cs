@@ -64,6 +64,15 @@ namespace SLD200_MSL
             FormNewSub_Recipe_Load();
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         public void SetRecipeTabs(FormNewSub_Recipe_Vision vision, FormNewSub_Recipe_GoldPowder gold)
         {
             this.userform_RecipeVision = vision;
@@ -3717,6 +3726,16 @@ namespace SLD200_MSL
                 mb.ShowDialog("Information !!", "Recipe Data를 새로 생성하였습니다.");
 
                 Recipe_Open(fileName); // Recipe Open
+            }
+        }
+
+        private void button_GoldPowderThickness_Click(object sender, EventArgs e)
+        {
+            var dlg = new FormNew_KeyPad();
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                double value = dlg.EnteredValue;
+                // 사용
             }
         }
     }

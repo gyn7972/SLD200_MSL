@@ -47,6 +47,14 @@ namespace SLD200_MSL
             InitGrid_AutoCross();
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
