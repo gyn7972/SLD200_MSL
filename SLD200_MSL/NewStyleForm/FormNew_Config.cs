@@ -2962,19 +2962,19 @@ namespace SLD200_MSL
 
             //  Temp Position 저장
 
-            //  Temp1 Stage X
+            //  Temp1 Stage
+            NativeMethods.WritePrivateProfileString("TempPos1", "StageName", textBox_Config_WorkStage_TempPos1_StageName.Text.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("TempPos1", "StageX", textBox_Config_WorkStage_TempPos1_StageX.Text.ToString(), strFIle);
-            //  Temp1 Stage Y
             NativeMethods.WritePrivateProfileString("TempPos1", "StageY", textBox_Config_WorkStage_TempPos1_StageY.Text.ToString(), strFIle);
 
-            //  Temp2 Stage X
+            //  Temp2 Stage
+            NativeMethods.WritePrivateProfileString("TempPos2", "StageName", textBox_Config_WorkStage_TempPos2_StageName.Text.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("TempPos2", "StageX", textBox_Config_WorkStage_TempPos2_StageX.Text.ToString(), strFIle);
-            //  Temp2 Stage Y
             NativeMethods.WritePrivateProfileString("TempPos2", "StageY", textBox_Config_WorkStage_TempPos2_StageY.Text.ToString(), strFIle);
 
-            //  Temp3 Stage X
+            //  Temp3 Stage
+            NativeMethods.WritePrivateProfileString("TempPos3", "StageName", textBox_Config_WorkStage_TempPos3_StageName.Text.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("TempPos3", "StageX", textBox_Config_WorkStage_TempPos3_StageX.Text.ToString(), strFIle);
-            //  Temp3 Stage Y
             NativeMethods.WritePrivateProfileString("TempPos3", "StageY", textBox_Config_WorkStage_TempPos3_StageY.Text.ToString(), strFIle);
         }
 
@@ -2995,25 +2995,24 @@ namespace SLD200_MSL
             }
 
             //  Temp Position 데이터 로드
-
-            //  Temp1 Stage X
+            NativeMethods.GetPrivateProfileString("TempPos1", "StageName", "TempPos", temp, 255, strFIle);
+            textBox_Config_WorkStage_TempPos1_StageName.Text = temp.ToString();
             NativeMethods.GetPrivateProfileString("TempPos1", "StageX", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos1_StageX.Text = temp.ToString();
-            //  Temp1 Stage Y
             NativeMethods.GetPrivateProfileString("TempPos1", "StageY", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos1_StageY.Text = temp.ToString();
 
-            //  Temp2 Stage X
+            NativeMethods.GetPrivateProfileString("TempPos2", "StageName", "TempPos", temp, 255, strFIle);
+            textBox_Config_WorkStage_TempPos2_StageName.Text = temp.ToString();
             NativeMethods.GetPrivateProfileString("TempPos2", "StageX", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos2_StageX.Text = temp.ToString();
-            //  Temp2 Stage Y
             NativeMethods.GetPrivateProfileString("TempPos2", "StageY", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos2_StageY.Text = temp.ToString();
 
-            //  Temp3 Stage X
+            NativeMethods.GetPrivateProfileString("TempPos3", "StageName", "TempPos", temp, 255, strFIle);
+            textBox_Config_WorkStage_TempPos3_StageName.Text = temp.ToString();
             NativeMethods.GetPrivateProfileString("TempPos3", "StageX", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos3_StageX.Text = temp.ToString();
-            //  Temp3 Stage Y
             NativeMethods.GetPrivateProfileString("TempPos3", "StageY", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos3_StageY.Text = temp.ToString();
 

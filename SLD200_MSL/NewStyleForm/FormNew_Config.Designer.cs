@@ -376,6 +376,7 @@
             this.label39 = new System.Windows.Forms.Label();
             this.listBox_Config_Vision_TeachingPositions = new System.Windows.Forms.ListBox();
             this.tabPage_Config_Laser = new System.Windows.Forms.TabPage();
+            this.button_Config_TabLaser_LaserPowerMeasure = new System.Windows.Forms.Button();
             this.button_Config_TabLaser_ScannerVisionOffset = new System.Windows.Forms.Button();
             this.groupBox_MotorizedBET = new System.Windows.Forms.GroupBox();
             this.Button_Config_BDS_BET_Mrad_Init = new System.Windows.Forms.Button();
@@ -615,7 +616,9 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
-            this.button_Config_TabLaser_LaserPowerMeasure = new System.Windows.Forms.Button();
+            this.textBox_Config_WorkStage_TempPos1_StageName = new System.Windows.Forms.TextBox();
+            this.textBox_Config_WorkStage_TempPos2_StageName = new System.Windows.Forms.TextBox();
+            this.textBox_Config_WorkStage_TempPos3_StageName = new System.Windows.Forms.TextBox();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -2960,6 +2963,9 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.textBox_Config_WorkStage_TempPos3_StageName);
+            this.groupBox3.Controls.Add(this.textBox_Config_WorkStage_TempPos2_StageName);
+            this.groupBox3.Controls.Add(this.textBox_Config_WorkStage_TempPos1_StageName);
             this.groupBox3.Controls.Add(this.button_Config_WorkStage_ToTempPos3_Move);
             this.groupBox3.Controls.Add(this.textBox_Config_WorkStage_TempPos3_StageY);
             this.groupBox3.Controls.Add(this.label34);
@@ -2979,11 +2985,11 @@
             this.groupBox3.Controls.Add(this.textBox_Config_WorkStage_TempPos1_StageX);
             this.groupBox3.Controls.Add(this.label28);
             this.groupBox3.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox3.Location = new System.Drawing.Point(351, 25);
+            this.groupBox3.Location = new System.Drawing.Point(351, 16);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox3.Size = new System.Drawing.Size(245, 207);
+            this.groupBox3.Size = new System.Drawing.Size(245, 261);
             this.groupBox3.TabIndex = 39;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = " Temp. Position  (Abs. , mm) ";
@@ -2991,7 +2997,7 @@
             // button_Config_WorkStage_ToTempPos3_Move
             // 
             this.button_Config_WorkStage_ToTempPos3_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_ToTempPos3_Move.Location = new System.Drawing.Point(178, 148);
+            this.button_Config_WorkStage_ToTempPos3_Move.Location = new System.Drawing.Point(181, 207);
             this.button_Config_WorkStage_ToTempPos3_Move.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_ToTempPos3_Move.Name = "button_Config_WorkStage_ToTempPos3_Move";
             this.button_Config_WorkStage_ToTempPos3_Move.Size = new System.Drawing.Size(57, 48);
@@ -3003,7 +3009,7 @@
             // textBox_Config_WorkStage_TempPos3_StageY
             // 
             this.textBox_Config_WorkStage_TempPos3_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos3_StageY.Location = new System.Drawing.Point(57, 172);
+            this.textBox_Config_WorkStage_TempPos3_StageY.Location = new System.Drawing.Point(60, 231);
             this.textBox_Config_WorkStage_TempPos3_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos3_StageY.Name = "textBox_Config_WorkStage_TempPos3_StageY";
             this.textBox_Config_WorkStage_TempPos3_StageY.Size = new System.Drawing.Size(70, 24);
@@ -3014,7 +3020,7 @@
             // label34
             // 
             this.label34.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label34.Location = new System.Drawing.Point(3, 171);
+            this.label34.Location = new System.Drawing.Point(6, 230);
             this.label34.Margin = new System.Windows.Forms.Padding(5);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(53, 24);
@@ -3025,7 +3031,7 @@
             // button_Config_WorkStage_GetCurrentPos_ToTempPos3
             // 
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Location = new System.Drawing.Point(130, 148);
+            this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Location = new System.Drawing.Point(133, 207);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Name = "button_Config_WorkStage_GetCurrentPos_ToTempPos3";
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Size = new System.Drawing.Size(47, 48);
@@ -3037,7 +3043,7 @@
             // textBox_Config_WorkStage_TempPos3_StageX
             // 
             this.textBox_Config_WorkStage_TempPos3_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos3_StageX.Location = new System.Drawing.Point(57, 148);
+            this.textBox_Config_WorkStage_TempPos3_StageX.Location = new System.Drawing.Point(60, 207);
             this.textBox_Config_WorkStage_TempPos3_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos3_StageX.Name = "textBox_Config_WorkStage_TempPos3_StageX";
             this.textBox_Config_WorkStage_TempPos3_StageX.Size = new System.Drawing.Size(70, 24);
@@ -3048,7 +3054,7 @@
             // label35
             // 
             this.label35.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label35.Location = new System.Drawing.Point(3, 147);
+            this.label35.Location = new System.Drawing.Point(6, 206);
             this.label35.Margin = new System.Windows.Forms.Padding(5);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(53, 24);
@@ -3059,7 +3065,7 @@
             // button_Config_WorkStage_ToTempPos2_Move
             // 
             this.button_Config_WorkStage_ToTempPos2_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_ToTempPos2_Move.Location = new System.Drawing.Point(178, 88);
+            this.button_Config_WorkStage_ToTempPos2_Move.Location = new System.Drawing.Point(181, 126);
             this.button_Config_WorkStage_ToTempPos2_Move.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_ToTempPos2_Move.Name = "button_Config_WorkStage_ToTempPos2_Move";
             this.button_Config_WorkStage_ToTempPos2_Move.Size = new System.Drawing.Size(57, 48);
@@ -3071,7 +3077,7 @@
             // textBox_Config_WorkStage_TempPos2_StageY
             // 
             this.textBox_Config_WorkStage_TempPos2_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos2_StageY.Location = new System.Drawing.Point(57, 112);
+            this.textBox_Config_WorkStage_TempPos2_StageY.Location = new System.Drawing.Point(60, 150);
             this.textBox_Config_WorkStage_TempPos2_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos2_StageY.Name = "textBox_Config_WorkStage_TempPos2_StageY";
             this.textBox_Config_WorkStage_TempPos2_StageY.Size = new System.Drawing.Size(70, 24);
@@ -3082,7 +3088,7 @@
             // label13
             // 
             this.label13.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label13.Location = new System.Drawing.Point(3, 111);
+            this.label13.Location = new System.Drawing.Point(6, 149);
             this.label13.Margin = new System.Windows.Forms.Padding(5);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(53, 24);
@@ -3093,7 +3099,7 @@
             // button_Config_WorkStage_GetCurrentPos_ToTempPos2
             // 
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Location = new System.Drawing.Point(130, 88);
+            this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Location = new System.Drawing.Point(133, 126);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Name = "button_Config_WorkStage_GetCurrentPos_ToTempPos2";
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Size = new System.Drawing.Size(47, 48);
@@ -3105,7 +3111,7 @@
             // textBox_Config_WorkStage_TempPos2_StageX
             // 
             this.textBox_Config_WorkStage_TempPos2_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos2_StageX.Location = new System.Drawing.Point(57, 88);
+            this.textBox_Config_WorkStage_TempPos2_StageX.Location = new System.Drawing.Point(60, 126);
             this.textBox_Config_WorkStage_TempPos2_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos2_StageX.Name = "textBox_Config_WorkStage_TempPos2_StageX";
             this.textBox_Config_WorkStage_TempPos2_StageX.Size = new System.Drawing.Size(70, 24);
@@ -3116,7 +3122,7 @@
             // label33
             // 
             this.label33.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label33.Location = new System.Drawing.Point(3, 87);
+            this.label33.Location = new System.Drawing.Point(6, 125);
             this.label33.Margin = new System.Windows.Forms.Padding(5);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(53, 24);
@@ -3127,7 +3133,7 @@
             // button_Config_WorkStage_ToTempPos1_Move
             // 
             this.button_Config_WorkStage_ToTempPos1_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_ToTempPos1_Move.Location = new System.Drawing.Point(178, 28);
+            this.button_Config_WorkStage_ToTempPos1_Move.Location = new System.Drawing.Point(181, 47);
             this.button_Config_WorkStage_ToTempPos1_Move.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_ToTempPos1_Move.Name = "button_Config_WorkStage_ToTempPos1_Move";
             this.button_Config_WorkStage_ToTempPos1_Move.Size = new System.Drawing.Size(57, 48);
@@ -3139,7 +3145,7 @@
             // textBox_Config_WorkStage_TempPos1_StageY
             // 
             this.textBox_Config_WorkStage_TempPos1_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos1_StageY.Location = new System.Drawing.Point(57, 52);
+            this.textBox_Config_WorkStage_TempPos1_StageY.Location = new System.Drawing.Point(60, 71);
             this.textBox_Config_WorkStage_TempPos1_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos1_StageY.Name = "textBox_Config_WorkStage_TempPos1_StageY";
             this.textBox_Config_WorkStage_TempPos1_StageY.Size = new System.Drawing.Size(70, 24);
@@ -3150,7 +3156,7 @@
             // label30
             // 
             this.label30.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label30.Location = new System.Drawing.Point(3, 51);
+            this.label30.Location = new System.Drawing.Point(6, 70);
             this.label30.Margin = new System.Windows.Forms.Padding(5);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(53, 24);
@@ -3161,7 +3167,7 @@
             // button_Config_WorkStage_GetCurrentPos_ToTempPos1
             // 
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Location = new System.Drawing.Point(130, 28);
+            this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Location = new System.Drawing.Point(133, 47);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Name = "button_Config_WorkStage_GetCurrentPos_ToTempPos1";
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Size = new System.Drawing.Size(47, 48);
@@ -3173,7 +3179,7 @@
             // textBox_Config_WorkStage_TempPos1_StageX
             // 
             this.textBox_Config_WorkStage_TempPos1_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos1_StageX.Location = new System.Drawing.Point(57, 28);
+            this.textBox_Config_WorkStage_TempPos1_StageX.Location = new System.Drawing.Point(60, 47);
             this.textBox_Config_WorkStage_TempPos1_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos1_StageX.Name = "textBox_Config_WorkStage_TempPos1_StageX";
             this.textBox_Config_WorkStage_TempPos1_StageX.Size = new System.Drawing.Size(70, 24);
@@ -3184,7 +3190,7 @@
             // label28
             // 
             this.label28.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label28.Location = new System.Drawing.Point(3, 27);
+            this.label28.Location = new System.Drawing.Point(6, 46);
             this.label28.Margin = new System.Windows.Forms.Padding(5);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(53, 24);
@@ -5317,6 +5323,18 @@
             this.tabPage_Config_Laser.TabIndex = 3;
             this.tabPage_Config_Laser.Text = "Laser";
             this.tabPage_Config_Laser.UseVisualStyleBackColor = true;
+            // 
+            // button_Config_TabLaser_LaserPowerMeasure
+            // 
+            this.button_Config_TabLaser_LaserPowerMeasure.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_TabLaser_LaserPowerMeasure.Location = new System.Drawing.Point(474, 133);
+            this.button_Config_TabLaser_LaserPowerMeasure.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_TabLaser_LaserPowerMeasure.Name = "button_Config_TabLaser_LaserPowerMeasure";
+            this.button_Config_TabLaser_LaserPowerMeasure.Size = new System.Drawing.Size(172, 46);
+            this.button_Config_TabLaser_LaserPowerMeasure.TabIndex = 84;
+            this.button_Config_TabLaser_LaserPowerMeasure.Text = "LaserPowerMeasure";
+            this.button_Config_TabLaser_LaserPowerMeasure.UseVisualStyleBackColor = true;
+            this.button_Config_TabLaser_LaserPowerMeasure.Click += new System.EventHandler(this.button_Config_TabLaser_LaserPowerMeasure_Click);
             // 
             // button_Config_TabLaser_ScannerVisionOffset
             // 
@@ -8456,17 +8474,38 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button_Config_TabLaser_LaserPowerMeasure
+            // textBox_Config_WorkStage_TempPos1_StageName
             // 
-            this.button_Config_TabLaser_LaserPowerMeasure.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_TabLaser_LaserPowerMeasure.Location = new System.Drawing.Point(474, 133);
-            this.button_Config_TabLaser_LaserPowerMeasure.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button_Config_TabLaser_LaserPowerMeasure.Name = "button_Config_TabLaser_LaserPowerMeasure";
-            this.button_Config_TabLaser_LaserPowerMeasure.Size = new System.Drawing.Size(172, 46);
-            this.button_Config_TabLaser_LaserPowerMeasure.TabIndex = 84;
-            this.button_Config_TabLaser_LaserPowerMeasure.Text = "LaserPowerMeasure";
-            this.button_Config_TabLaser_LaserPowerMeasure.UseVisualStyleBackColor = true;
-            this.button_Config_TabLaser_LaserPowerMeasure.Click += new System.EventHandler(this.button_Config_TabLaser_LaserPowerMeasure_Click);
+            this.textBox_Config_WorkStage_TempPos1_StageName.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Config_WorkStage_TempPos1_StageName.Location = new System.Drawing.Point(60, 20);
+            this.textBox_Config_WorkStage_TempPos1_StageName.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_WorkStage_TempPos1_StageName.Name = "textBox_Config_WorkStage_TempPos1_StageName";
+            this.textBox_Config_WorkStage_TempPos1_StageName.Size = new System.Drawing.Size(178, 24);
+            this.textBox_Config_WorkStage_TempPos1_StageName.TabIndex = 59;
+            this.textBox_Config_WorkStage_TempPos1_StageName.Text = "Temp Pos1";
+            this.textBox_Config_WorkStage_TempPos1_StageName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_Config_WorkStage_TempPos2_StageName
+            // 
+            this.textBox_Config_WorkStage_TempPos2_StageName.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Config_WorkStage_TempPos2_StageName.Location = new System.Drawing.Point(60, 101);
+            this.textBox_Config_WorkStage_TempPos2_StageName.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_WorkStage_TempPos2_StageName.Name = "textBox_Config_WorkStage_TempPos2_StageName";
+            this.textBox_Config_WorkStage_TempPos2_StageName.Size = new System.Drawing.Size(178, 24);
+            this.textBox_Config_WorkStage_TempPos2_StageName.TabIndex = 60;
+            this.textBox_Config_WorkStage_TempPos2_StageName.Text = "Temp Pos2";
+            this.textBox_Config_WorkStage_TempPos2_StageName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_Config_WorkStage_TempPos3_StageName
+            // 
+            this.textBox_Config_WorkStage_TempPos3_StageName.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Config_WorkStage_TempPos3_StageName.Location = new System.Drawing.Point(60, 181);
+            this.textBox_Config_WorkStage_TempPos3_StageName.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_WorkStage_TempPos3_StageName.Name = "textBox_Config_WorkStage_TempPos3_StageName";
+            this.textBox_Config_WorkStage_TempPos3_StageName.Size = new System.Drawing.Size(178, 24);
+            this.textBox_Config_WorkStage_TempPos3_StageName.TabIndex = 61;
+            this.textBox_Config_WorkStage_TempPos3_StageName.Text = "Temp Pos3";
+            this.textBox_Config_WorkStage_TempPos3_StageName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // FormNew_Config
             // 
@@ -9213,5 +9252,8 @@
         private System.Windows.Forms.Label label_Config_LDUL_Move_Recipe_MAlignerX;
         private System.Windows.Forms.GroupBox groupBox_Config_LDUL_Move_Recipe_MAligner;
         private System.Windows.Forms.Button button_Config_TabLaser_LaserPowerMeasure;
+        private System.Windows.Forms.TextBox textBox_Config_WorkStage_TempPos3_StageName;
+        private System.Windows.Forms.TextBox textBox_Config_WorkStage_TempPos2_StageName;
+        private System.Windows.Forms.TextBox textBox_Config_WorkStage_TempPos1_StageName;
     }
 }

@@ -3728,5 +3728,15 @@ namespace SLD200_MSL
                 Recipe_Open(fileName); // Recipe Open
             }
         }
+
+        private void button_GoldPowderThickness_Click(object sender, EventArgs e)
+        {
+            var dlg = new FormNew_KeyPad();
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                double value = dlg.EnteredValue;
+                // 사용
+            }
+        }
     }
 }
