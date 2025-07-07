@@ -36694,7 +36694,7 @@ namespace QMC.Common.Modules
                             int nextStep = 0;
                             nextStep = LaserDrilling_StepDrillingData_SocketRemainedCheck_SelectMode();
                             m_nLaserDrilling_MainStep = nextStep;
-                        }
+                        } 
                     }
                     break;
 
