@@ -1697,7 +1697,7 @@
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Name = "textBox_Recipe_TabRecipe_LaserParam_Frequency";
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Size = new System.Drawing.Size(53, 24);
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.TabIndex = 19;
-            this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Tag = "KeyPad;Min=1;Max=9999999;Format=0";
+            this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Tag = "KeyPad;Min=0.001;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = "10000";
             // 
             // label77
@@ -1731,7 +1731,7 @@
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Name = "textBox_Recipe_TabRecipe_LaserParam_DutyCycle";
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Size = new System.Drawing.Size(53, 24);
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.TabIndex = 16;
-            this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Tag = "KeyPad;Min=0;Max=20;Format=0.0";
+            this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Tag = "KeyPad;Min=0;Max=20;Format=0.000";
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = "10";
             // 
             // button_DutyCycle_Calc
@@ -1754,7 +1754,7 @@
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Name = "textBox_Recipe_TabRecipe_LaserParam_PulseWidth";
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Size = new System.Drawing.Size(53, 24);
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.TabIndex = 14;
-            this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Tag = "KeyPad;Min=1;Max=9999999;Format=0";
+            this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = "10";
             // 
             // label20

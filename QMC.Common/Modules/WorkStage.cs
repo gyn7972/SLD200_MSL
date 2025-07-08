@@ -41376,7 +41376,8 @@ namespace QMC.Common.Modules
                             //nextStep = (int)LaserDrilling_Step.DrillingData_FailedSocket_Start;
                             nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;                 //  분할 영역 Drilling 작업 시작
                         }
-                        else if (m_stThruHole_SocketData_ProcessingFlag.Length == 1 &&
+                        else if ((m_stThruHole_SocketData_ProcessingFlag != null) &&
+                                m_stThruHole_SocketData_ProcessingFlag.Length == 1 &&
                                 m_stThruHole_SocketData_ProcessingFlag[0].bProcessing == false)
                         {
                             var layerEnum = GetCurrentLayerEnum(m_LayerType);
