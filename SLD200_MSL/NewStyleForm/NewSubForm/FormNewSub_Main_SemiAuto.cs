@@ -47,7 +47,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             timerSemiAuto = new System.Windows.Forms.Timer();
-            timerSemiAuto.Interval = 100;
+            timerSemiAuto.Interval = 200;
             timerSemiAuto.Tick += TimerSemiAuto_Tick;
             timerSemiAuto.Start();
 

@@ -101,7 +101,7 @@ namespace SLD200_MSL
             m_nBlink = 0;
 
             m_Timer = new Timer();
-            m_Timer.Interval = 100;
+            m_Timer.Interval = 200;
             m_Timer.Tick += UpdateUI_Tick;
             m_Timer.Start();
 

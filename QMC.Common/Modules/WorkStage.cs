@@ -3762,7 +3762,6 @@ namespace QMC.Common.Modules
 
             Teaching_Position_Load();
 
-
             m_bPassedSocket_Exist = false;
 
             if(m_pProcessConfigData == null)
@@ -9017,8 +9016,8 @@ namespace QMC.Common.Modules
             // 이전 Step과 다를 때만 로그 출력
             if (currentStep != m_prevFindAlignMarkStep)
             {
-                Log.Write("SLD-200", Equipment.User_Name, "FindAlignMark", $"Step: {currentStep}");
-                Log.Write("Seq_Step", Equipment.User_Name, "FindAlignMark", $"Step: {currentStep}");
+                Log.Write("SLD-200", Equipment.User_Name, "FindAlignMark", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
+                Log.Write("Seq_Step", Equipment.User_Name, "FindAlignMark", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
                 m_prevFindAlignMarkStep = currentStep;
             }
         }
@@ -14803,8 +14802,8 @@ namespace QMC.Common.Modules
 
             if (currentStep != m_prevSocketAlignStep)
             {
-                Log.Write("SLD-200", Equipment.User_Name, "SocketAlign", $"Step: {currentStep}");
-                Log.Write("Seq_Step", Equipment.User_Name, "SocketAlign", $"Step: {currentStep}");
+                Log.Write("SLD-200", Equipment.User_Name, "SocketAlign", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
+                Log.Write("Seq_Step", Equipment.User_Name, "SocketAlign", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
                 m_prevSocketAlignStep = currentStep;
             }
 
@@ -41171,8 +41170,8 @@ namespace QMC.Common.Modules
 
             if (currentStep != m_prevLaserDrillingStep)
             {
-                Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}");
-                Log.Write("Seq_Step", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}");
+                Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
+                Log.Write("Seq_Step", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
                 m_prevLaserDrillingStep = currentStep;
             }
             return 0;
@@ -41377,7 +41376,7 @@ namespace QMC.Common.Modules
                             nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;                 //  분할 영역 Drilling 작업 시작
                         }
                         else if ((m_stThruHole_SocketData_ProcessingFlag != null) &&
-                                m_stThruHole_SocketData_ProcessingFlag.Length == 1 &&
+                                m_stThruHole_SocketData_ProcessingFlag.Length == 1 &&   // 한개가 아니고... hole이랑 갯수가 같을 수도 있는데.
                                 m_stThruHole_SocketData_ProcessingFlag[0].bProcessing == false)
                         {
                             var layerEnum = GetCurrentLayerEnum(m_LayerType);
@@ -41413,7 +41412,50 @@ namespace QMC.Common.Modules
                                 //return;
                             }
                         }
-                        else                                                                                //  가공을 건너 뛴 Socket 이 없거나, Socket 보정을 위한 Align 성공한 Socket 번호가 없을 경우, 다음 Layer 확인하러...
+                        else if ((m_stThruHole_SocketData_ProcessingFlag != null) &&
+                                m_stThruHole_SocketData_ProcessingFlag.Length == m_stLaserDrilling_SocketData[0].nGroup_Num &&   
+                                m_stThruHole_SocketData_ProcessingFlag[0].bProcessing == false)
+                        {
+                            // 한개가 아니고... hole이랑 갯수가 같을 수도 있는데..
+                            // 이때도 가장 가까운 Align 성공한거로 얼라인해서 전체 적용해야 되네.
+
+                            var layerEnum = GetCurrentLayerEnum(m_LayerType);
+                            int closestAlignedSocket = -1;
+                            int groupCount = m_stLaserDrilling_SocketData[0].nGroup_Num;
+
+                            for (int i = 0; i < groupCount; i++)
+                            {
+                                var socket = DrillingManager.GetSocket(layerEnum, i);
+                                if (socket != null && socket.IsSocketAligned)
+                                {
+                                    closestAlignedSocket = i;
+                                    break; // 가장 먼저 찾은 Align 성공 소켓으로 시도
+                                }
+                            }
+
+                            if (closestAlignedSocket != -1)
+                            {
+                                m_nSocketNum_forFailedSocket_Align = closestAlignedSocket;
+                                nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                                string m_strTemp = string.Format("Socket Align 실패한 Socket 이 있음. Align 재시도를 위한 Socket 번호 : {0}", m_nSocketNum_forFailedSocket_Align);
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                            }
+                            else
+                            {
+                                //여기를 들어오면 안되는건데.
+                                m_nLaserDrilling_LayerCount++;
+                                nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "근접 소켓 중 Align 성공한 소켓 없음.");
+                                //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "근접 소켓 중 Align 성공한 소켓 없음 → 장비 정지");
+                                //AlarmPost(AlarmKey.SocketAlignFailed);
+                                //StopProcess();
+                                //return;
+                            }
+                        }
+
+                        // Outline이랑 마크도.. 1개인 경우에는 해야하잖아.. 흠..
+
+                        else  //  가공을 건너 뛴 Socket 이 없거나, Socket 보정을 위한 Align 성공한 Socket 번호가 없을 경우, 다음 Layer 확인하러...
                         {
                             string m_strTemp = string.Format("Socket Align 실패한 Socket 없음. 다음 Layer 확인.");
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);

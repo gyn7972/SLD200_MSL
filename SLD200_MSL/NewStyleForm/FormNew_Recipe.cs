@@ -108,7 +108,7 @@ namespace SLD200_MSL
 
             //  Recipe Open 타이머
             timer_Recipe_Open = new System.Windows.Forms.Timer();
-            timer_Recipe_Open.Interval = 50;
+            timer_Recipe_Open.Interval = 200;
             timer_Recipe_Open.Tick += new System.EventHandler(Timer_RecipeOpen_Func);
             timer_Recipe_Open.Enabled = true;
 

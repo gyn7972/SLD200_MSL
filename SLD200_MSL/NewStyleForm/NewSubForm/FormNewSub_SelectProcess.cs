@@ -59,7 +59,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             timerModuleStatus = new System.Windows.Forms.Timer();
-            timerModuleStatus.Interval = 100;
+            timerModuleStatus.Interval = 200;
             timerModuleStatus.Tick += TimerModuleStatus_Tick;
             timerModuleStatus.Start();
 

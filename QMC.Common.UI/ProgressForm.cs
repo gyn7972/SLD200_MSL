@@ -34,7 +34,7 @@ namespace QMC.Common.UI
 
             if (m_listAsyncResults != null)
             {
-                timerCheckProcess.Interval = 50;
+                timerCheckProcess.Interval = 100;
                 timerCheckProcess.Tick += TimerCheckProcess_Tick;
                 timerCheckProcess.Start();
             }
@@ -57,7 +57,7 @@ namespace QMC.Common.UI
             StartPosition = FormStartPosition.CenterParent;
             if (m_AsyncResult != null)
             {
-                timerCheckProcess.Interval = 50;
+                timerCheckProcess.Interval = 100;
                 timerCheckProcess.Tick += TimerCheckProcess_Tick;
                 timerCheckProcess.Start();
             }
