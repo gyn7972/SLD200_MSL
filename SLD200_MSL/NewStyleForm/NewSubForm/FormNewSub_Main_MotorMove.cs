@@ -49,7 +49,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             timerMotorMove = new System.Windows.Forms.Timer();
-            timerMotorMove.Interval = 100;
+            timerMotorMove.Interval = 200;
             timerMotorMove.Tick += TimerMotorMove_Tick;
             timerMotorMove.Start();
 

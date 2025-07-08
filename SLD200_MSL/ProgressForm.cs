@@ -45,7 +45,7 @@ namespace SLD200_MSL
 
             if (m_listAsyncResults != null)
             {
-                timerCheckProcess.Interval = 50;
+                timerCheckProcess.Interval = 100;
                 timerCheckProcess.Tick += TimerCheckProcess_Tick;
                 timerCheckProcess.Start();
             }
@@ -71,7 +71,7 @@ namespace SLD200_MSL
             m_listAsyncResults = null;
             if (m_AsyncResult != null)
             {
-                timerCheckProcess.Interval = 50;
+                timerCheckProcess.Interval = 100;
                 timerCheckProcess.Tick += TimerCheckProcess_Tick;
                 timerCheckProcess.Start();
             }

@@ -75,13 +75,13 @@ namespace SLD200_MSL
 
             //  Status 타이머
             timer_Status = new System.Windows.Forms.Timer();
-            timer_Status.Interval = 50;
+            timer_Status.Interval = 200;
             timer_Status.Tick += new System.EventHandler(Timer_Status_Func);
             //timer_Status.Enabled = true;
 
             //  RTC6 초기화 타이머 (1회만 적용)
             timer_RtcInit = new System.Windows.Forms.Timer();
-            timer_RtcInit.Interval = 50;
+            timer_RtcInit.Interval = 200;
             timer_RtcInit.Tick += new System.EventHandler(Timer_RtcInit_Func);
             timer_RtcInit.Enabled = true;
 

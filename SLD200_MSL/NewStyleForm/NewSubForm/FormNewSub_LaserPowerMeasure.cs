@@ -51,7 +51,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             timerLaserPowerMeasureStatus = new System.Windows.Forms.Timer();
-            timerLaserPowerMeasureStatus.Interval = 100;
+            timerLaserPowerMeasureStatus.Interval = 200;
             timerLaserPowerMeasureStatus.Tick += TimerModuleStatus_Tick;
             timerLaserPowerMeasureStatus.Start();
 
