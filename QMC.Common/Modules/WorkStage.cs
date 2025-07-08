@@ -33672,7 +33672,7 @@ namespace QMC.Common.Modules
 
         public double m_dModuleHeight = 0.0; // 모듈 높이
         public double m_dStageheight = 0.0;
-        // 기존꺼가 양산 중이라 따로 만들어서 Test
+        private bool m_bSocketAlign_Start_Batch_Complete = false;
         private int Run_LaserDrilling_Main_Cycle_SelectMode()
         {
             m_nLaserDrilling_MainStep_Recovery = -1;
@@ -38001,7 +38001,11 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nDrillingWork_Group_Count = 0;
+                            if(m_bSocketAlign_Start_Batch_Complete)
+                            {
+                                m_nDrillingWork_Group_Count = 0;
+                            }
+                            
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start_Batch_Use;
                         }
                     }

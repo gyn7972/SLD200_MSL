@@ -547,19 +547,19 @@ namespace SLD200_MSL
             }
 
             //신규-TEST 필요
-            {
-                Rtc6 rtc6 = new Rtc6();
-                LaserVirtual laser = new LaserVirtual();
-                MarkerDefault maker = new MarkerDefault(0, " RTC6 Marker ");
+            //안되네.. 나중에 다시 TEST
+            //{
+            //    Rtc6 rtc6 = new Rtc6();
+            //    LaserVirtual laser = new LaserVirtual();
+            //    MarkerDefault maker = new MarkerDefault(0, " RTC6 Marker ");
 
-                workStage.ScannerComm_Init(ref rtc6, ref laser, ref maker);
+            //    workStage.ScannerComm_Init(ref rtc6, ref laser, ref maker);
 
-                this.SiriusEditor.Rtc = rtc6;
-                this.SiriusEditor.Laser = laser;
-                this.SiriusEditor.Marker = maker;
-            }
-
-            return bRet;
+            //    this.SiriusEditor.Rtc = rtc6;
+            //    this.SiriusEditor.Laser = laser;
+            //    this.SiriusEditor.Marker = maker;
+            //}
+            //return bRet;
 
             //기존 코드
             #region RTC 초기화
