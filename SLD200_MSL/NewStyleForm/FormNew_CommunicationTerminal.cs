@@ -784,5 +784,7 @@ namespace SLD200_MSL
             //Thread.Sleep(100);
             bds.DustCollector_Upper.SetFrequency(10);
         }
+
+
     }
 }

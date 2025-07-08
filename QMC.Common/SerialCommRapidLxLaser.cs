@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows.Forms;
+using QMC.Common;
 
 namespace SerialCommRapidLxLaser
 {
@@ -61,6 +62,7 @@ namespace SerialCommRapidLxLaser
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 //Debug.WriteLine(ex.ToString());
                 return false;
             }
@@ -79,7 +81,8 @@ namespace SerialCommRapidLxLaser
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+               Log.Write(ex);
+               //Debug.WriteLine(ex.ToString());
             }
         }
 
@@ -95,6 +98,7 @@ namespace SerialCommRapidLxLaser
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 //Debug.WriteLine(ex.ToString());
             }
             return false;
@@ -112,6 +116,7 @@ namespace SerialCommRapidLxLaser
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 //Debug.WriteLine(ex.ToString());
             }
             return false;
@@ -129,6 +134,7 @@ namespace SerialCommRapidLxLaser
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 //Debug.WriteLine(ex.ToString());
             }
             return false;
@@ -151,6 +157,7 @@ namespace SerialCommRapidLxLaser
                 }
                 catch (TimeoutException ex)
                 {
+                    Log.Write(ex);
                     //Debug.WriteLine(ex.ToString());
                 }
             }
@@ -172,12 +179,14 @@ namespace SerialCommRapidLxLaser
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 //Debug.WriteLine(ex.ToString());
             }
         }
 
         private void serialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {
+            //Log.Write(e);
             //Debug.WriteLine(e.ToString());
         }
 
@@ -216,6 +225,7 @@ namespace SerialCommRapidLxLaser
                 }
                 catch (Exception ex)
                 {
+                    Log.Write(ex);
                     //Debug.WriteLine(ex.ToString());
                 }
             }

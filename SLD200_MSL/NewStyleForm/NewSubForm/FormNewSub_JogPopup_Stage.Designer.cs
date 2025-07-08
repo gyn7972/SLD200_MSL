@@ -605,7 +605,7 @@
             this.Controls.Add(this.groupBox_jogPopup_Stage_JogMove);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormNewSub_JogPopup_Stage";
-            this.Size = new System.Drawing.Size(646, 472);
+            this.Size = new System.Drawing.Size(520, 472);
             this.groupBox_jogPopup_Stage_JogMove.ResumeLayout(false);
             this.groupBox_jogPopup_Stage_Mask.ResumeLayout(false);
             this.groupBox__jogPopup_Stage_MoveMode.ResumeLayout(false);
