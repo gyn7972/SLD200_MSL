@@ -395,20 +395,21 @@ namespace QMC.Common.Modules
 
             if(Equipment.Machine_LaserType_CO2)
             {
-                LaserCO2Manager = new LaserDiagnosticManager("LaserCO2", "169.254.12.13", 5000);
+                //LaserCO2Manager = new LaserDiagnosticManager("LaserCO2", "169.254.12.13", 5000);
+                LaserCO2Manager = new LaserDiagnosticManager("LaserCO2", "169.254.12.13", 23);
                 LaserCO2Manager.Create();
                 LaserCO2Manager.Owner = this;
                 Parts.Add(LaserCO2Manager);
                 //  레이저 연결 - 여기서? Test니깐?
-                if (!LaserCO2Manager.Connect())
-                {
-                    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 실패!");
-                    //AlarmPost(AlarmKey.LaserComm_ConnectFail);
-                }
-                else
-                {
-                    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 성공");
-                }
+                //if (!LaserCO2Manager.Connect())
+                //{
+                //    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 실패!");
+                //    //AlarmPost(AlarmKey.LaserComm_ConnectFail);
+                //}
+                //else
+                //{
+                //    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 성공");
+                //}
             }
             
 
