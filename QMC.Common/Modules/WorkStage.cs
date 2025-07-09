@@ -37890,7 +37890,7 @@ namespace QMC.Common.Modules
                         else
                         {
                             m_nPreAlignRetryCount++;
-                            if (m_nPreAlignRetryCount < 3)
+                            if (m_nPreAlignRetryCount < 2)
                             {
                                 m_bPreAlignCompleted = false;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Retry;
@@ -37985,13 +37985,7 @@ namespace QMC.Common.Modules
                     {
                         m_bPreAlignCompleted = true;
 
-                        if (Equipment.Machine_SocketVision_Batch_Use &&
-                               m_bSocketAlign_Start_Batch_Complete == false)
-                        {
-                            Log.Write("SLD-200", "Auto Run", "DrillingData_PreAlign_Correction_Complete - Machine_SocketVision_Batch_Use");
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start_Batch_Use;
-                        }
-                        else if (Equipment.Machine_PreAlign_First_Enable &&
+                        if (Equipment.Machine_PreAlign_First_Enable &&
                                 m_bPreAlign_First_Complete == false)
                         {
                             Log.Write("SLD-200", "Auto Run", "DrillingData_PreAlign_Correction_Complete - Machine_PreAlign_First_Enable");
@@ -38001,7 +37995,16 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                            if (Equipment.Machine_SocketVision_Batch_Use &&
+                               m_bSocketAlign_Start_Batch_Complete == false)
+                            {
+                                Log.Write("SLD-200", "Auto Run", "DrillingData_PreAlign_Correction_Complete - Machine_SocketVision_Batch_Use");
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start_Batch_Use;
+                            }
+                            else
+                            {
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                            }
                         }
                         //m_bPreAlignCompleted = true;
                         //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;

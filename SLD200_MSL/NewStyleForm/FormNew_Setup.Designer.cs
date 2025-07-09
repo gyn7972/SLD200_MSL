@@ -438,6 +438,7 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.checkBox_Setup_Option_PreAlign_First_Enable = new System.Windows.Forms.CheckBox();
             this.checkBox_Setup_Option_HeightMeasure = new System.Windows.Forms.CheckBox();
             this.textBox_Setup_Option_HeightMeasure = new System.Windows.Forms.TextBox();
             this.checkBox_Setup_Option_LaserMeasure = new System.Windows.Forms.CheckBox();
@@ -582,7 +583,6 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.checkBox_Setup_Option_PreAlign_First_Enable = new System.Windows.Forms.CheckBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -5873,6 +5873,15 @@
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
             // 
+            // checkBox_Setup_Option_PreAlign_First_Enable
+            // 
+            this.checkBox_Setup_Option_PreAlign_First_Enable.Location = new System.Drawing.Point(1024, 311);
+            this.checkBox_Setup_Option_PreAlign_First_Enable.Name = "checkBox_Setup_Option_PreAlign_First_Enable";
+            this.checkBox_Setup_Option_PreAlign_First_Enable.Size = new System.Drawing.Size(221, 24);
+            this.checkBox_Setup_Option_PreAlign_First_Enable.TabIndex = 134;
+            this.checkBox_Setup_Option_PreAlign_First_Enable.Text = "PreAlign_First_Enable";
+            this.checkBox_Setup_Option_PreAlign_First_Enable.UseVisualStyleBackColor = true;
+            // 
             // checkBox_Setup_Option_HeightMeasure
             // 
             this.checkBox_Setup_Option_HeightMeasure.Location = new System.Drawing.Point(1024, 279);
@@ -7529,15 +7538,6 @@
             this.label96.TabIndex = 77;
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // checkBox_Setup_Option_PreAlign_First_Enable
-            // 
-            this.checkBox_Setup_Option_PreAlign_First_Enable.Location = new System.Drawing.Point(1024, 311);
-            this.checkBox_Setup_Option_PreAlign_First_Enable.Name = "checkBox_Setup_Option_PreAlign_First_Enable";
-            this.checkBox_Setup_Option_PreAlign_First_Enable.Size = new System.Drawing.Size(221, 24);
-            this.checkBox_Setup_Option_PreAlign_First_Enable.TabIndex = 134;
-            this.checkBox_Setup_Option_PreAlign_First_Enable.Text = "SocketVision_Batch_Enable";
-            this.checkBox_Setup_Option_PreAlign_First_Enable.UseVisualStyleBackColor = true;
             // 
             // FormNew_Setup
             // 
