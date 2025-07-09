@@ -421,6 +421,8 @@ namespace SLD200_MSL
             //m_formDeviceControl = new FormNewSub_DeviceControl();
             //m_formDeviceControl.Owner = this;
 
+            InitRecipeUI_KeyPad();
+
             this.Refresh();
         }
 
@@ -4556,17 +4558,17 @@ namespace SLD200_MSL
             {
                 string currentText = ctrl.Text ?? "0";
                 var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);
                 else
                     dlg.SetInitialValue(0);
-
-                // Tag 파싱
-                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
-
-                dlg.MinValue = meta.Min;
-                dlg.MaxValue = meta.Max;
 
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {

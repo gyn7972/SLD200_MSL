@@ -75,6 +75,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             InitAxisLabelMap();
             InitializeJogButtons();
+
+            InitRecipeUI_KeyPad();
+
             m_bInitialized = true;
         }
 
@@ -210,17 +213,17 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 string currentText = ctrl.Text ?? "0";
                 var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);
                 else
                     dlg.SetInitialValue(0);
-
-                // Tag 파싱
-                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
-
-                dlg.MinValue = meta.Min;
-                dlg.MaxValue = meta.Max;
 
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {

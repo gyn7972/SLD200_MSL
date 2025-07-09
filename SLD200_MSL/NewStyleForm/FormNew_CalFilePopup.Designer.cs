@@ -71,6 +71,8 @@
             this.textBox_CalFilePopup_OffsetZ.Name = "textBox_CalFilePopup_OffsetZ";
             this.textBox_CalFilePopup_OffsetZ.Size = new System.Drawing.Size(100, 24);
             this.textBox_CalFilePopup_OffsetZ.TabIndex = 2;
+            this.textBox_CalFilePopup_OffsetZ.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
+            this.textBox_CalFilePopup_OffsetZ.Text = "0.1";
             // 
             // label_CalFilePopup_CalFile
             // 
@@ -152,6 +154,8 @@
             this.textBox_CalFilePopup_CurrentOffsetZ.Name = "textBox_CalFilePopup_CurrentOffsetZ";
             this.textBox_CalFilePopup_CurrentOffsetZ.Size = new System.Drawing.Size(100, 24);
             this.textBox_CalFilePopup_CurrentOffsetZ.TabIndex = 11;
+            this.textBox_CalFilePopup_CurrentOffsetZ.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
+            this.textBox_CalFilePopup_CurrentOffsetZ.Text = "0.1";
             // 
             // label_CalFilePopup_CurrentOffsetZ
             // 

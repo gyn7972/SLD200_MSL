@@ -7991,7 +7991,7 @@ namespace QMC.Common.Modules
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
                                     //  메인 화면에 그려지는 가공위치의 개수
-                                    (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+                                    (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = bds.spiralLabScanner.CalculateArraySize(Main_SocketPositions);
                                     //  가공 소켓이 몇개의 영역으로 나눠지는지
                                     Main_SocketPositions_SubRowCount = m_stLaserDrilling_SocketData[0].nGroup_Region_Divided_Y > 0 ? m_stLaserDrilling_SocketData[0].nGroup_Region_Divided_Y : 1;
                                     Main_SocketPositions_SubColumnCount = m_stLaserDrilling_SocketData[0].nGroup_Region_Divided_X > 0 ? m_stLaserDrilling_SocketData[0].nGroup_Region_Divided_X : 1;
@@ -31003,17 +31003,17 @@ namespace QMC.Common.Modules
                             if (Equipment.Scanner_Vision_Offset_Setting_Use == true)
                             {
                                 //걍 무조건 Closs로
-                                DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                                bds.spiralLabScanner.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
                             }
                             else
                             {
                                 if (Equipment.Scanner_Calibration_MarkType_Cross)
                                 {
-                                    DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                                    bds.spiralLabScanner.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
                                 }
                                 else //Circle
                                 {
-                                    DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
+                                    bds.spiralLabScanner.DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
                                 }
                             }
                         }
@@ -31022,17 +31022,17 @@ namespace QMC.Common.Modules
                             if (Equipment.Scanner_Vision_Offset_Setting_Use == true)
                             {
                                 //걍 무조건 Closs로
-                                DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                                bds.spiralLabScanner.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
                             }
                             else
                             {
                                 if (Equipment.Scanner_Calibration_MarkType_Cross)
                                 {
-                                    DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                                    bds.spiralLabScanner.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
                                 }
                                 else //Circle
                                 {
-                                    DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
+                                    bds.spiralLabScanner.DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
                                 }
                             }
                         }
@@ -31934,499 +31934,505 @@ namespace QMC.Common.Modules
             }
         }
 
-        // Todo : 아래 함수. SpiralLabScanner 정상 동작하면 지우고 옮기자.
-        public bool DrawCalibrationCrosses(int rows, int cols, float pitchX, float pitchY, double markLength = 0.5)
-        {
-            if (rows <= 0 || cols <= 0)
-                throw new ArgumentException("Rows and columns must be greater than zero.");
-
-            bool bRtn = false;
-
-            float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength; //1.0f; //(float)markLength; 
-
-            //if (!Equipment.Machine_LaserType_CO2)
-            //{
-            //    float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
-            //    float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
-
-            //    if (fFrequency / 2 <= fPulseWidth)
-            //        fPulseWidth = fFrequency / 2;
-            //    if (fFrequency <= 0) fFrequency = 0f;
-            //    if (fPulseWidth <= 0) fPulseWidth = 0f;
-
-            //    if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
-            //    {
-            //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
-            //        return false;
-            //    }
-            //}
-
-            //float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
-            //float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
-            //if (fJumpSpeed <= 0) fJumpSpeed = 0;
-            //if (fMarkSpeed <= 0) fMarkSpeed = 0;
-
-            //if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
-            //{
-            //    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
-            //    return false;
-            //}
-
-            //float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
-            //float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
-            //float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
-            //float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
-            //float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
-            //if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
-            //if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
-            //if (fMarkDelay <= 0) fMarkDelay = 0;
-            //if (fJumpDelay <= 0) fJumpDelay = 200;
-            //if (fPolygonDelay <= 0) fPolygonDelay = 0;
-
-            //if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
-            //{
-            //    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
-            //    return false;
-            //}
-
-            var rtcMode = rtc as IRtc;
-
-            rtcMode.ListBegin(laser, ListType.Auto);
-
-            //if (Equipment.Machine_LaserType_CO2)
-            {
-                float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
-                float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
-
-                if (fFrequency / 2 <= fPulseWidth)
-                    fPulseWidth = fFrequency / 2;
-                if (fFrequency <= 0) fFrequency = 0f;
-                if (fPulseWidth <= 0) fPulseWidth = 0f;
-
-                if (!rtcMode.ListFrequency(fFrequency, fPulseWidth))
-                {
-                    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
-                    return false;
-                }
-            }
-
-            float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
-            float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
-            float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
-            float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
-            float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
-            if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
-            if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
-            if (fMarkDelay <= 0) fMarkDelay = 0;
-            if (fJumpDelay <= 0) fJumpDelay = 200;
-            if (fPolygonDelay <= 0) fPolygonDelay = 0;
-
-            if (!rtcMode.ListDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
-            {
-                Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
-                return false;
-            }
-
-            float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
-            float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
-            if (fJumpSpeed <= 0) fJumpSpeed = 0;
-            if (fMarkSpeed <= 0) fMarkSpeed = 0;
-
-            if (!rtcMode.ListSpeed(fJumpSpeed, fMarkSpeed))
-            {
-                Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
-                return false;
-            }
-
-            // 중심 기준 좌표로 시작점 계산
-            float startX = -((cols - 1) * pitchX) / 2.0f;
-            float startY = -((rows - 1) * pitchY) / 2.0f;
-
-            for (int row = 0; row < rows; row++)
-            {
-                for (int col = 0; col < cols; col++)
-                {
-                    float centerX = startX + col * pitchX;
-                    float centerY = startY + row * pitchY;
-
-                    DrawCross(centerX, centerY, crossSize);
-                }
-            }
-
-            rtcMode.ListEnd();
-            rtcMode.ListExecute();
-
-            bRtn = true;
-            return bRtn;
-        }
-
-        /// <summary>
-        /// 주어진 중심 좌표에 1mm 크기의 십자가를 그리는 함수
-        /// </summary>
-        /// <param name="centerX">십자가 중심의 X 좌표</param>
-        /// <param name="centerY">십자가 중심의 Y 좌표</param>
-        /// <param name="size">십자가의 크기 (mm)</param>
-        private void DrawCross(float centerX, float centerY, float size)
-        {
-            var rtcMode = rtc as IRtc;
-
-            float halfSize = size / 2;
-
-            // 가로선 그리기
-            rtcMode.ListJump(centerX - halfSize, centerY);
-            rtcMode.ListMark(centerX + halfSize, centerY);
-
-            // 세로선 그리기
-            rtcMode.ListJump(centerX, centerY - halfSize);
-            rtcMode.ListMark(centerX, centerY + halfSize);
-        }
-
-        /// <summary>
-        /// Vacuum 관련 장치에 제품 유무 확인하는 함수 (Auto Run 시 체크하여 메세지 창 Pup-Up)
-        /// 
-        private void Check_VacuumParts_Module_Exist()
-        {
-            bool m_bLoader_Exist = false;
-            bool m_bWorkStage_Exist = false;
-            bool m_bUnloader_Exist = false;
-
-            //  Loader Picker Vacuum On
-            loader.loaderParameter.DO_Loader_Picker_Blow(false);
-            loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
-            loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
-
-            //  Loader M-Aligner Vacuum On
-            loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Center, false);
-            loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
-            loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
-            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
-            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
-            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
-
-            //  Work Stage
-            workStageParameter.DO_Stage_Blow(false);
-            workStageParameter.DO_Stage_Vacuum(true);
-            ElectroPneumaticRegulatorComm_Pressure_Set(-60);
-
-            //  Unloader Picker Vacuum On
-            unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
-            unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, true);
-            unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, true);
-
-            int m_nCount = 0;
-
-            do
-            {
-                //  모든 공압을 켠 후 1초 정도 기다린다.
-            } while (m_nCount++ < 1000);
-
-            //  Loader Picker 에 Module 이 붙어있는지 체크
-            if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
-                loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
-            {
-                m_bLoader_Exist = true;
-            }
-
-            loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, false);
-            loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, false);
-            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, false);
-            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
-            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
-
-            //  Work Stage 에 Module 이 붙어있는지 체크
-            if (workStageParameter.DI_Stage_Vacuum_Check())
-            {
-                m_bWorkStage_Exist = true;
-            }
-
-            workStageParameter.DO_Stage_Vacuum(false);
-            ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
-
-            //  Unloader Picker 에 Module 이 붙어있는지 체크
-            if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
-                unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
-            {
-                m_bUnloader_Exist = true;
-            }
-
-            unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, false);
-            unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, false);
-
-
-            if (m_bLoader_Exist)
-            {
-                MessageBox.Show("Loader Transfer Picker 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            if (m_bWorkStage_Exist)
-            {
-                MessageBox.Show("Work Stage 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            if (m_bUnloader_Exist)
-            {
-                MessageBox.Show("Unloader Transfer Picker 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        public bool DrawCalibrationArc(int rows, int cols, float pitchX, float pitchY)
-        {
-            if (rows <= 0 || cols <= 0)
-                throw new ArgumentException("Rows and columns must be greater than zero.");
-
-            bool bRtn = false;
-
-            float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength; //1.0f; //(float)markLength; 
-
-            if (Equipment.Machine_LaserType_CO2)
-            {
-                float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
-                float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
-
-                if (fFrequency / 2 <= fPulseWidth)
-                    fPulseWidth = fFrequency / 2;
-                if (fFrequency <= 0) fFrequency = 0f;
-                if (fPulseWidth <= 0) fPulseWidth = 0f;
-
-                if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
-                {
-                    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
-                    return false;
-                }
-            }
-
-            float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
-            float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
-            if (fJumpSpeed <= 0) fJumpSpeed = 0;
-            if (fMarkSpeed <= 0) fMarkSpeed = 0;
-
-            if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
-            {
-                Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
-                return false;
-            }
-
-            float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
-            float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
-            float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
-            float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
-            float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
-            if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
-            if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
-            if (fMarkDelay <= 0) fMarkDelay = 0;
-            if (fJumpDelay <= 0) fJumpDelay = 200;
-            if (fPolygonDelay <= 0) fPolygonDelay = 0;
-
-            if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
-            {
-                Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
-                return false;
-            }
-
-            rtc.ListBegin(laser, ListType.Auto);
-            // 중심 기준 좌표로 시작점 계산
-            float startX = -((cols - 1) * pitchX) / 2.0f;
-            float startY = -((rows - 1) * pitchY) / 2.0f;
-
-            for (int row = 0; row < rows; row++)
-            {
-                for (int col = 0; col < cols; col++)
-                {
-                    float centerX = startX + col * pitchX;
-                    float centerY = startY + row * pitchY;
-
-                    // DrawArc 호출: 중심 좌표와 반지름, 시작 각도, 끝 각도를 전달
-                    float radius = crossSize / 2.0f; // 반지름은 crossSize의 절반으로 설정
-                    float startAngle = 0.0f;         // 시작 각도 (0도)
-                    float endAngle = 360.0f;         // 끝 각도 (360도, 완전한 원)
-
-                    DrawArc(centerX, centerY, radius, startAngle, endAngle);
-
-                    //radius만 가지고 구하기.
-                    //PointD pointD = new PointD(centerX, centerY);
-                    //PointD startPoint = new PointD(centerX - radius, centerY);
-                    //PointD endPoint = new PointD(centerX + radius, centerY);
-                    //var angles = CalculateAngles(pointD, startPoint, endPoint);
-                    //// DrawArc 호출: 중심 좌표와 반지름, 시작 각도, 끝 각도를 전달
-                    //DrawArc(centerX, centerY, radius, (float)angles.startAngle, (float)angles.endAngle);
-
-                }
-            }
-
-            rtc.ListEnd();
-            rtc.ListExecute();
-            bRtn = true;
-            return bRtn;
-        }
-
-        /// <summary>
-        /// FOV기준으로 cal 진행시 사용 함수.
-        /// <summary>
-        public bool DrawCalibrationArc(float fovWidth, float fovHeight, int rows, int cols, out float pitchX, out float pitchY)
-        {
-            pitchX = 0;
-            pitchY = 0;
-
-            if (rows <= 0 || cols <= 0)
-                throw new ArgumentException("Rows and columns must be greater than zero.");
-
-            bool bRtn = false;
-            float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength;  //1.0f; // 각 원의 지름을 1mm로 설정
-
-            // pitch 자동 계산
-            pitchX = (cols > 1) ? fovWidth / (cols - 1) : 0;
-            pitchY = (rows > 1) ? fovHeight / (rows - 1) : 0;
-
-            if (Equipment.Machine_LaserType_CO2)
-            {
-                float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
-                float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
-
-                if (fFrequency / 2 <= fPulseWidth)
-                    fPulseWidth = fFrequency / 2;
-                if (fFrequency <= 0) fFrequency = 5000;
-                if (fPulseWidth <= 0) fPulseWidth = 2.6f;
-
-                if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
-                {
-                    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
-                    return false;
-                }
-            }
-
-            float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
-            float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
-            if (fJumpSpeed <= 0) fJumpSpeed = 0; 
-            if (fMarkSpeed <= 0) fMarkSpeed = 0; 
-
-            if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
-            {
-                Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
-                return false;
-            }
-
-            float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
-            float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
-            float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
-            float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
-            float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
-            if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
-            if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
-            if (fMarkDelay <= 0) fMarkDelay = 0;
-            if (fJumpDelay <= 0) fJumpDelay = 200;
-            if (fPolygonDelay <= 0) fPolygonDelay = 0;
-
-            if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
-            {
-                Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
-                return false;
-            }
-
-            rtc.ListBegin(laser, ListType.Auto);
-
-            float startX = -((cols - 1) * pitchX) / 2.0f;
-            float startY = -((rows - 1) * pitchY) / 2.0f;
-
-            for (int row = 0; row < rows; row++)
-            {
-                for (int col = 0; col < cols; col++)
-                {
-                    float centerX = startX + col * pitchX;
-                    float centerY = startY + row * pitchY;
-
-                    float radius = crossSize / 2.0f;
-                    DrawArc(centerX, centerY, radius, 0.0f, 360.0f);
-                }
-            }
-
-            rtc.ListEnd();
-            rtc.ListExecute();
-            bRtn = true;
-            return bRtn;
-        }
-
-        private void DrawArc(float centerX, float centerY, float radius, float startAngle, float endAngle)
-        {
-            if (radius <= 0)
-                throw new ArgumentException("Radius must be greater than zero.");
-
-            // 원호의 sweepAngle 계산
-            float sweepAngle = endAngle - startAngle;
-
-            // 원호 시작점 계산.
-            float startX = centerX + radius * (float)Math.Cos(startAngle * Math.PI / 180.0);
-            float startY = centerY + radius * (float)Math.Sin(startAngle * Math.PI / 180.0);
-
-            // 먼저 원호의 시작점으로 점프
-            if (!rtc.ListJump(startX, startY))
-            {
-                throw new InvalidOperationException("Failed to jump to arc start position.");
-            }
-
-            // rtc.ListArc 호출
-            if (!rtc.ListArc(centerX, centerY, sweepAngle))
-            {
-                throw new InvalidOperationException("Failed to draw arc using rtc.ListArc.");
-            }
-        }
-
-        public static (double startAngle, double endAngle) CalculateAngles(PointD center, PointD startPoint, PointD endPoint)
-        {
-            // 시작 각도 계산
-            double startAngle = Math.Atan2(startPoint.Y - center.Y, startPoint.X - center.X) * (180.0 / Math.PI);
-
-            // 끝 각도 계산
-            double endAngle = Math.Atan2(endPoint.Y - center.Y, endPoint.X - center.X) * (180.0 / Math.PI);
-
-            // 각도를 0~360 범위로 변환
-            if (startAngle < 0) startAngle += 360;
-            if (endAngle < 0) endAngle += 360;
-
-            return (startAngle, endAngle);
-        }
-
-        // Todo: 구영남 Cal파일 넣기 함수 만들것.
-        public bool LoadCorrectionData(int tableIndex, string filePath)
-        {
-            // CorrectionData를 처리하는 메서드
-            // 초기화를 해야 하냐 말아야 하냐.. 
-            // 초기화를 안하고 cal파일이 들어가면 땡큐인데.. 될꺼같다.. select도 있으니깐..
-            CorrectionTableIndex index = (CorrectionTableIndex)tableIndex;
-            bool bRtn = rtc.CtlLoadCorrectionFile(index, filePath);   //  Sirius1
-            if (bRtn == false)
-            {
-                //MessageBox.Show("파일을 적용하지 못했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Log.Write("SLD-200", "LoadCorrectionData", "파일을 적용하지 못했습니다.");
-                return false;
-            }
-            //cal 파일 선택하여 사용한다.
-            rtc.CtlSelectCorrection(index, 0);
-            return true;
-        }
-
-        /// <summary>
-        /// 위치 좌표값 리스트로부터 배열의 Rows와 Columns를 계산합니다.
-        /// </summary>
-        public (int Rows, int Columns) CalculateArraySize(List<PointD> positions)
-        {
-            if (positions == null || positions.Count == 0)
-            {
-                MessageBox.Show("좌표값 리스트가 비어 있습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            // 허용 오차 설정 (예: 0.01)
-            double tolerance = 0.01;
-
-            // X, Y 좌표값을 정렬하여 고유한 값 추출 (허용 오차 적용)
-            var uniqueX = positions.Select(p => Math.Round(p.X / tolerance) * tolerance).Distinct().OrderBy(x => x).ToList();
-            var uniqueY = positions.Select(p => Math.Round(p.Y / tolerance) * tolerance).Distinct().OrderBy(y => y).ToList();
-
-            // 가로(Columns)와 세로(Rows) 계산
-            int columns = uniqueX.Count;
-            int rows = uniqueY.Count;
-
-            return (rows, columns);
-        }
+        //// Todo : 아래 함수. SpiralLabScanner 정상 동작하면 지우고 옮기자.
+        //public bool DrawCalibrationCrosses(int rows, int cols, float pitchX, float pitchY, double markLength = 0.5)
+        //{
+        //    if (rows <= 0 || cols <= 0)
+        //        throw new ArgumentException("Rows and columns must be greater than zero.");
+
+        //    bool bRtn = false;
+
+        //    float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength; //1.0f; //(float)markLength; 
+
+        //    //if (!Equipment.Machine_LaserType_CO2)
+        //    //{
+        //    //    float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
+        //    //    float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
+
+        //    //    if (fFrequency / 2 <= fPulseWidth)
+        //    //        fPulseWidth = fFrequency / 2;
+        //    //    if (fFrequency <= 0) fFrequency = 0f;
+        //    //    if (fPulseWidth <= 0) fPulseWidth = 0f;
+
+        //    //    if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
+        //    //    {
+        //    //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
+        //    //        return false;
+        //    //    }
+        //    //}
+
+        //    //float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
+        //    //float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
+        //    //if (fJumpSpeed <= 0) fJumpSpeed = 0;
+        //    //if (fMarkSpeed <= 0) fMarkSpeed = 0;
+
+        //    //if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
+        //    //{
+        //    //    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
+        //    //    return false;
+        //    //}
+
+        //    //float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
+        //    //float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
+        //    //float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
+        //    //float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
+        //    //float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
+        //    //if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
+        //    //if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
+        //    //if (fMarkDelay <= 0) fMarkDelay = 0;
+        //    //if (fJumpDelay <= 0) fJumpDelay = 200;
+        //    //if (fPolygonDelay <= 0) fPolygonDelay = 0;
+
+        //    //if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
+        //    //{
+        //    //    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
+        //    //    return false;
+        //    //}
+
+        //    var rtcMode = rtc as IRtc;
+
+        //    rtcMode.CtlLaserMode(LaserMode.Co2);
+
+        //    rtcMode.ListBegin(laser, ListType.Auto);
+
+        //    //if (Equipment.Machine_LaserType_CO2)
+        //    {
+        //        float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
+        //        float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
+
+        //        if (fFrequency / 2 <= fPulseWidth)
+        //            fPulseWidth = fFrequency / 2;
+        //        if (fFrequency <= 0) fFrequency = 0f;
+        //        if (fPulseWidth <= 0) fPulseWidth = 0f;
+
+        //        if (!rtcMode.ListFrequency(fFrequency, fPulseWidth))
+        //        {
+        //            Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
+        //            return false;
+        //        }
+        //    }
+
+        //    float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
+        //    float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
+        //    float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
+        //    float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
+        //    float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
+        //    if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
+        //    if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
+        //    if (fMarkDelay <= 0) fMarkDelay = 0;
+        //    if (fJumpDelay <= 0) fJumpDelay = 200;
+        //    if (fPolygonDelay <= 0) fPolygonDelay = 0;
+
+        //    if (!rtcMode.ListDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
+        //    {
+        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
+        //        return false;
+        //    }
+
+        //    float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
+        //    float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
+        //    if (fJumpSpeed <= 0) fJumpSpeed = 0;
+        //    if (fMarkSpeed <= 0) fMarkSpeed = 0;
+
+        //    if (!rtcMode.ListSpeed(fJumpSpeed, fMarkSpeed))
+        //    {
+        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
+        //        return false;
+        //    }
+
+        //    // 중심 기준 좌표로 시작점 계산
+        //    float startX = -((cols - 1) * pitchX) / 2.0f;
+        //    float startY = -((rows - 1) * pitchY) / 2.0f;
+
+        //    for (int row = 0; row < rows; row++)
+        //    {
+        //        for (int col = 0; col < cols; col++)
+        //        {
+        //            float centerX = startX + col * pitchX;
+        //            float centerY = startY + row * pitchY;
+
+        //            DrawCross(centerX, centerY, crossSize);
+        //        }
+        //    }
+
+        //    rtcMode.ListEnd();
+        //    rtcMode.ListExecute();
+
+        //    bRtn = true;
+        //    return bRtn;
+        //}
+
+        ///// <summary>
+        ///// 주어진 중심 좌표에 1mm 크기의 십자가를 그리는 함수
+        ///// </summary>
+        ///// <param name="centerX">십자가 중심의 X 좌표</param>
+        ///// <param name="centerY">십자가 중심의 Y 좌표</param>
+        ///// <param name="size">십자가의 크기 (mm)</param>
+        //private void DrawCross(float centerX, float centerY, float size)
+        //{
+        //    var rtcMode = rtc as IRtc;
+
+        //    float halfSize = size / 2;
+
+        //    // 가로선 그리기
+        //    rtcMode.ListJump(centerX - halfSize, centerY);
+        //    rtcMode.ListMark(centerX + halfSize, centerY);
+
+        //    // 세로선 그리기
+        //    rtcMode.ListJump(centerX, centerY - halfSize);
+        //    rtcMode.ListMark(centerX, centerY + halfSize);
+        //}
+
+        ///// <summary>
+        ///// Vacuum 관련 장치에 제품 유무 확인하는 함수 (Auto Run 시 체크하여 메세지 창 Pup-Up)
+        ///// 
+        //private void Check_VacuumParts_Module_Exist()
+        //{
+        //    bool m_bLoader_Exist = false;
+        //    bool m_bWorkStage_Exist = false;
+        //    bool m_bUnloader_Exist = false;
+
+        //    //  Loader Picker Vacuum On
+        //    loader.loaderParameter.DO_Loader_Picker_Blow(false);
+        //    loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
+        //    loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
+
+        //    //  Loader M-Aligner Vacuum On
+        //    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Center, false);
+        //    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
+        //    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
+        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
+        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
+        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+
+        //    //  Work Stage
+        //    workStageParameter.DO_Stage_Blow(false);
+        //    workStageParameter.DO_Stage_Vacuum(true);
+        //    ElectroPneumaticRegulatorComm_Pressure_Set(-60);
+
+        //    //  Unloader Picker Vacuum On
+        //    unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
+        //    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, true);
+        //    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, true);
+
+        //    int m_nCount = 0;
+
+        //    do
+        //    {
+        //        //  모든 공압을 켠 후 1초 정도 기다린다.
+        //    } while (m_nCount++ < 1000);
+
+        //    //  Loader Picker 에 Module 이 붙어있는지 체크
+        //    if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+        //        loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+        //    {
+        //        m_bLoader_Exist = true;
+        //    }
+
+        //    loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, false);
+        //    loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, false);
+        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, false);
+        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
+        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
+
+        //    //  Work Stage 에 Module 이 붙어있는지 체크
+        //    if (workStageParameter.DI_Stage_Vacuum_Check())
+        //    {
+        //        m_bWorkStage_Exist = true;
+        //    }
+
+        //    workStageParameter.DO_Stage_Vacuum(false);
+        //    ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
+
+        //    //  Unloader Picker 에 Module 이 붙어있는지 체크
+        //    if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
+        //        unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
+        //    {
+        //        m_bUnloader_Exist = true;
+        //    }
+
+        //    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, false);
+        //    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, false);
+
+
+        //    if (m_bLoader_Exist)
+        //    {
+        //        MessageBox.Show("Loader Transfer Picker 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+
+        //    if (m_bWorkStage_Exist)
+        //    {
+        //        MessageBox.Show("Work Stage 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+
+        //    if (m_bUnloader_Exist)
+        //    {
+        //        MessageBox.Show("Unloader Transfer Picker 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+        //public bool DrawCalibrationArc(int rows, int cols, float pitchX, float pitchY)
+        //{
+        //    if (rows <= 0 || cols <= 0)
+        //        throw new ArgumentException("Rows and columns must be greater than zero.");
+
+        //    bool bRtn = false;
+
+        //    float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength; //1.0f; //(float)markLength; 
+
+        //    rtc.CtlLaserMode(LaserMode.Co2);
+
+        //    if (Equipment.Machine_LaserType_CO2)
+        //    {
+        //        float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
+        //        float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
+
+        //        if (fFrequency / 2 <= fPulseWidth)
+        //            fPulseWidth = fFrequency / 2;
+        //        if (fFrequency <= 0) fFrequency = 0f;
+        //        if (fPulseWidth <= 0) fPulseWidth = 0f;
+
+        //        if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
+        //        {
+        //            Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
+        //            return false;
+        //        }
+        //    }
+
+        //    float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
+        //    float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
+        //    if (fJumpSpeed <= 0) fJumpSpeed = 0;
+        //    if (fMarkSpeed <= 0) fMarkSpeed = 0;
+
+        //    if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
+        //    {
+        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
+        //        return false;
+        //    }
+
+        //    float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
+        //    float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
+        //    float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
+        //    float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
+        //    float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
+        //    if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
+        //    if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
+        //    if (fMarkDelay <= 0) fMarkDelay = 0;
+        //    if (fJumpDelay <= 0) fJumpDelay = 200;
+        //    if (fPolygonDelay <= 0) fPolygonDelay = 0;
+
+        //    if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
+        //    {
+        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
+        //        return false;
+        //    }
+
+        //    rtc.ListBegin(laser, ListType.Auto);
+        //    // 중심 기준 좌표로 시작점 계산
+        //    float startX = -((cols - 1) * pitchX) / 2.0f;
+        //    float startY = -((rows - 1) * pitchY) / 2.0f;
+
+        //    for (int row = 0; row < rows; row++)
+        //    {
+        //        for (int col = 0; col < cols; col++)
+        //        {
+        //            float centerX = startX + col * pitchX;
+        //            float centerY = startY + row * pitchY;
+
+        //            // DrawArc 호출: 중심 좌표와 반지름, 시작 각도, 끝 각도를 전달
+        //            float radius = crossSize / 2.0f; // 반지름은 crossSize의 절반으로 설정
+        //            float startAngle = 0.0f;         // 시작 각도 (0도)
+        //            float endAngle = 360.0f;         // 끝 각도 (360도, 완전한 원)
+
+        //            DrawArc(centerX, centerY, radius, startAngle, endAngle);
+
+        //            //radius만 가지고 구하기.
+        //            //PointD pointD = new PointD(centerX, centerY);
+        //            //PointD startPoint = new PointD(centerX - radius, centerY);
+        //            //PointD endPoint = new PointD(centerX + radius, centerY);
+        //            //var angles = CalculateAngles(pointD, startPoint, endPoint);
+        //            //// DrawArc 호출: 중심 좌표와 반지름, 시작 각도, 끝 각도를 전달
+        //            //DrawArc(centerX, centerY, radius, (float)angles.startAngle, (float)angles.endAngle);
+
+        //        }
+        //    }
+
+        //    rtc.ListEnd();
+        //    rtc.ListExecute();
+        //    bRtn = true;
+        //    return bRtn;
+        //}
+
+        ///// <summary>
+        ///// FOV기준으로 cal 진행시 사용 함수.
+        ///// <summary>
+        //public bool DrawCalibrationArc(float fovWidth, float fovHeight, int rows, int cols, out float pitchX, out float pitchY)
+        //{
+        //    pitchX = 0;
+        //    pitchY = 0;
+
+        //    if (rows <= 0 || cols <= 0)
+        //        throw new ArgumentException("Rows and columns must be greater than zero.");
+
+        //    bool bRtn = false;
+        //    float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength;  //1.0f; // 각 원의 지름을 1mm로 설정
+
+        //    // pitch 자동 계산
+        //    pitchX = (cols > 1) ? fovWidth / (cols - 1) : 0;
+        //    pitchY = (rows > 1) ? fovHeight / (rows - 1) : 0;
+
+        //    rtc.CtlLaserMode(LaserMode.Co2);
+
+        //    if (Equipment.Machine_LaserType_CO2)
+        //    {
+        //        float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
+        //        float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
+
+        //        if (fFrequency / 2 <= fPulseWidth)
+        //            fPulseWidth = fFrequency / 2;
+        //        if (fFrequency <= 0) fFrequency = 5000;
+        //        if (fPulseWidth <= 0) fPulseWidth = 2.6f;
+
+        //        if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
+        //        {
+        //            Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
+        //            return false;
+        //        }
+        //    }
+
+        //    float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
+        //    float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
+        //    if (fJumpSpeed <= 0) fJumpSpeed = 0; 
+        //    if (fMarkSpeed <= 0) fMarkSpeed = 0; 
+
+        //    if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
+        //    {
+        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
+        //        return false;
+        //    }
+
+        //    float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
+        //    float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
+        //    float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
+        //    float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
+        //    float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
+        //    if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
+        //    if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
+        //    if (fMarkDelay <= 0) fMarkDelay = 0;
+        //    if (fJumpDelay <= 0) fJumpDelay = 200;
+        //    if (fPolygonDelay <= 0) fPolygonDelay = 0;
+
+        //    if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
+        //    {
+        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
+        //        return false;
+        //    }
+
+        //    rtc.ListBegin(laser, ListType.Auto);
+
+        //    float startX = -((cols - 1) * pitchX) / 2.0f;
+        //    float startY = -((rows - 1) * pitchY) / 2.0f;
+
+        //    for (int row = 0; row < rows; row++)
+        //    {
+        //        for (int col = 0; col < cols; col++)
+        //        {
+        //            float centerX = startX + col * pitchX;
+        //            float centerY = startY + row * pitchY;
+
+        //            float radius = crossSize / 2.0f;
+        //            DrawArc(centerX, centerY, radius, 0.0f, 360.0f);
+        //        }
+        //    }
+
+        //    rtc.ListEnd();
+        //    rtc.ListExecute();
+        //    bRtn = true;
+        //    return bRtn;
+        //}
+
+        //private void DrawArc(float centerX, float centerY, float radius, float startAngle, float endAngle)
+        //{
+        //    if (radius <= 0)
+        //        throw new ArgumentException("Radius must be greater than zero.");
+
+        //    // 원호의 sweepAngle 계산
+        //    float sweepAngle = endAngle - startAngle;
+
+        //    // 원호 시작점 계산.
+        //    float startX = centerX + radius * (float)Math.Cos(startAngle * Math.PI / 180.0);
+        //    float startY = centerY + radius * (float)Math.Sin(startAngle * Math.PI / 180.0);
+
+        //    // 먼저 원호의 시작점으로 점프
+        //    if (!rtc.ListJump(startX, startY))
+        //    {
+        //        throw new InvalidOperationException("Failed to jump to arc start position.");
+        //    }
+
+        //    // rtc.ListArc 호출
+        //    if (!rtc.ListArc(centerX, centerY, sweepAngle))
+        //    {
+        //        throw new InvalidOperationException("Failed to draw arc using rtc.ListArc.");
+        //    }
+        //}
+
+        //public static (double startAngle, double endAngle) CalculateAngles(PointD center, PointD startPoint, PointD endPoint)
+        //{
+        //    // 시작 각도 계산
+        //    double startAngle = Math.Atan2(startPoint.Y - center.Y, startPoint.X - center.X) * (180.0 / Math.PI);
+
+        //    // 끝 각도 계산
+        //    double endAngle = Math.Atan2(endPoint.Y - center.Y, endPoint.X - center.X) * (180.0 / Math.PI);
+
+        //    // 각도를 0~360 범위로 변환
+        //    if (startAngle < 0) startAngle += 360;
+        //    if (endAngle < 0) endAngle += 360;
+
+        //    return (startAngle, endAngle);
+        //}
+
+        //// Todo: 구영남 Cal파일 넣기 함수 만들것.
+        //public bool LoadCorrectionData(int tableIndex, string filePath)
+        //{
+        //    // CorrectionData를 처리하는 메서드
+        //    // 초기화를 해야 하냐 말아야 하냐.. 
+        //    // 초기화를 안하고 cal파일이 들어가면 땡큐인데.. 될꺼같다.. select도 있으니깐..
+        //    CorrectionTableIndex index = (CorrectionTableIndex)tableIndex;
+        //    bool bRtn = rtc.CtlLoadCorrectionFile(index, filePath);   //  Sirius1
+        //    if (bRtn == false)
+        //    {
+        //        //MessageBox.Show("파일을 적용하지 못했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        Log.Write("SLD-200", "LoadCorrectionData", "파일을 적용하지 못했습니다.");
+        //        return false;
+        //    }
+        //    //cal 파일 선택하여 사용한다.
+        //    rtc.CtlSelectCorrection(index, 0);
+        //    return true;
+        //}
+
+        ///// <summary>
+        ///// 위치 좌표값 리스트로부터 배열의 Rows와 Columns를 계산합니다.
+        ///// </summary>
+        //public (int Rows, int Columns) CalculateArraySize(List<PointD> positions)
+        //{
+        //    if (positions == null || positions.Count == 0)
+        //    {
+        //        MessageBox.Show("좌표값 리스트가 비어 있습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+
+        //    // 허용 오차 설정 (예: 0.01)
+        //    double tolerance = 0.01;
+
+        //    // X, Y 좌표값을 정렬하여 고유한 값 추출 (허용 오차 적용)
+        //    var uniqueX = positions.Select(p => Math.Round(p.X / tolerance) * tolerance).Distinct().OrderBy(x => x).ToList();
+        //    var uniqueY = positions.Select(p => Math.Round(p.Y / tolerance) * tolerance).Distinct().OrderBy(y => y).ToList();
+
+        //    // 가로(Columns)와 세로(Rows) 계산
+        //    int columns = uniqueX.Count;
+        //    int rows = uniqueY.Count;
+
+        //    return (rows, columns);
+        //}
 
         /// <summary>
         /// 특정 위치 좌표가 배열의 몇 번째 Row와 Column에 해당하는지 반환합니다.
@@ -32702,6 +32708,7 @@ namespace QMC.Common.Modules
 
             return m_dPulseWidth;
         }
+
 
         //motion 함수 
         public double GetEncWorkStagePos_Motor(WorkStage.nAxis nAxis)
@@ -37452,7 +37459,7 @@ namespace QMC.Common.Modules
                         }
 
                         //tableIndex 0 으로 고정.
-                        bool bRtn = LoadCorrectionData(0, nearest.CalFilePath);
+                        bool bRtn = bds.spiralLabScanner.LoadCorrectionData(0, nearest.CalFilePath);
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Change_Calibration_Cal_File_DoneCheck;
                     }

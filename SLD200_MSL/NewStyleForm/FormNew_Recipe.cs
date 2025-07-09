@@ -3765,17 +3765,17 @@ namespace SLD200_MSL
             {
                 string currentText = ctrl.Text ?? "0";
                 var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);
                 else
                     dlg.SetInitialValue(0);
-
-                // Tag 파싱
-                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
-
-                dlg.MinValue = meta.Min;
-                dlg.MaxValue = meta.Max;
 
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
@@ -3786,7 +3786,7 @@ namespace SLD200_MSL
         }
         private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
         {
-            if (sender is TextBox tb && tb.Tag != null)
+            if (sender is TextBoxBase tb && tb.Tag != null)
             {
                 var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
 
