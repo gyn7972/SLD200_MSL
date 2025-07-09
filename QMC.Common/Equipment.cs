@@ -644,6 +644,8 @@ namespace QMC.Common
         public static bool Machine_HeightMeasure_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
         public static int Machine_HeightMeasure_Count { set; get; } = 1;
 
+        public static bool Machine_PreAlign_First_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+
         //  Offset Distance
         public struct stOffsetDistanceParameter
         {
@@ -3097,6 +3099,8 @@ namespace QMC.Common
             Equipment.Machine_HeightMeasure_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_Count", "1", temp, 255, strFIle);
             Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "PreAlign_First_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_PreAlign_First_Enable = temp.ToString() == "False" ? false : true;
             //
 
             //  Offset Distance
