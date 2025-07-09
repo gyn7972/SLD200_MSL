@@ -1473,6 +1473,10 @@ namespace SLD200_MSL
             checkBox_Setup_Option_HeightMeasure.Checked = Equipment.Machine_HeightMeasure_Enable;
             textBox_Setup_Option_HeightMeasure.Text = Equipment.Machine_HeightMeasure_Count.ToString();
 
+            checkBox_Setup_Option_PreAlign_First_Enable.Checked = Equipment.Machine_PreAlign_First_Enable;
+            //NativeMethods.GetPrivateProfileString("Machine_Option", "PreAlign_First_Enable", "false", temp, 255, strFIle);
+            //Equipment.Machine_PreAlign_First_Enable = temp.ToString() == "False" ? false : true;
+
             if (Equipment.Machine_FiducialImageSave_Always)
             {
                 radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
@@ -1949,6 +1953,9 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_Enable", checkBox_Setup_Option_HeightMeasure.Checked.ToString(), strFIle);
             Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(textBox_Setup_Option_HeightMeasure.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_Count", textBox_Setup_Option_HeightMeasure.Text.ToString(), strFIle);
+
+            Equipment.Machine_PreAlign_First_Enable = checkBox_Setup_Option_PreAlign_First_Enable.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "PreAlign_First_Enable", checkBox_Setup_Option_PreAlign_First_Enable.Checked.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);

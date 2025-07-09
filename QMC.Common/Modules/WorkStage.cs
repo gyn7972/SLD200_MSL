@@ -18714,6 +18714,7 @@ namespace QMC.Common.Modules
             m_bRetryAlignSucess = false;
 
             m_bSocketAlign_Start_Batch_Complete = false;
+            m_bPreAlign_First_Complete = false;
 
         }
         #endregion
@@ -32560,6 +32561,28 @@ namespace QMC.Common.Modules
             result.X -= position.X;
             result.Y -= position.Y;
 
+
+            // PreAlign Data 적용/미적용
+            if(Equipment.Machine_PreAlign_First_Enable)
+            {
+                XyCoordinate xyCoordinate = new XyCoordinate(0,0);
+                xyCoordinate = result;
+
+                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinate before : ", xyCoordinate.ToString());
+                //xyCoordinateAlignPositionOrgLast <- PreAliginData.
+                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+
+                double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
+                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionOrgLast : ", dAngle.ToString());
+
+                xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
+                                                   xyCoordinateAlignPositionOrgLast.Y, dAngle);
+
+                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinate After : ", xyCoordinate.ToString());
+
+                result = xyCoordinate;
+            }
+
             return result;
         }
         public XyzCoordinate ConvertFineCamToLaserHeightSensor(XyzCoordinate position)
@@ -33681,6 +33704,7 @@ namespace QMC.Common.Modules
         public double m_dModuleHeight = 0.0; // 모듈 높이
         public double m_dStageheight = 0.0;
         private bool m_bSocketAlign_Start_Batch_Complete = false;
+        private bool m_bPreAlign_First_Complete = false;
         private int Run_LaserDrilling_Main_Cycle_SelectMode()
         {
             m_nLaserDrilling_MainStep_Recovery = -1;
@@ -36719,10 +36743,16 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 시작.");
 
-                    //  임시 주석 
-                    m_nDrillingData_SocketAlign_Count++;
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_FineCamMap;            //  Socket Align 함수에서 맵데이터를 변경하므로, 여기에서는 변경할 필요 없다.
-
+                    if(Equipment.Machine_PreAlign_First_Enable &&
+                        m_bPreAlign_First_Complete == false)
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                    }
+                    else
+                    {
+                        m_nDrillingData_SocketAlign_Count++; //  임시 주석 <- 이 변수는 사용 안하는듯.
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_FineCamMap;            //  Socket Align 함수에서 맵데이터를 변경하므로, 여기에서는 변경할 필요 없다.
+                    }
                     break;
 
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37375,8 +37405,6 @@ namespace QMC.Common.Modules
                     break;
                 //  소켓 높이 측정 종료
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
                 case (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move:                                 //  Socket 의 실리콘 층 두께를 반영하여 높이 보정 이동 (실리콘층 아래에 Fiducial 마크가 있음)
 
                     SetStageComplete(SemiAutoStep.PreAlign, false);
@@ -37962,6 +37990,14 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", "Auto Run", "DrillingData_PreAlign_Correction_Complete - Machine_SocketVision_Batch_Use");
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start_Batch_Use;
+                        }
+                        else if (Equipment.Machine_PreAlign_First_Enable &&
+                                m_bPreAlign_First_Complete == false)
+                        {
+                            Log.Write("SLD-200", "Auto Run", "DrillingData_PreAlign_Correction_Complete - Machine_PreAlign_First_Enable");
+
+                            m_bPreAlign_First_Complete = true;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Start;
                         }
                         else
                         {
@@ -42435,6 +42471,7 @@ namespace QMC.Common.Modules
             m_bPassedSocket_Exist = false; //  Pass Socket 존재 여부
 
             m_bSocketAlign_Start_Batch_Complete = false;
+            m_bPreAlign_First_Complete = false;
 
             try
             {
@@ -42454,7 +42491,6 @@ namespace QMC.Common.Modules
 
             Equipment.SemiAutoEnable = false;
             Equipment.SelectRunEnable_New = false;
-
 
             // 장비 정지 시 그냥 정지 시킨다.
             m_ScannerCameraOffsetSequence.Reset();

@@ -447,9 +447,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
             xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
 
-
             workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
-
 
             workStage.MovetoWorkStage_ABS_PositionsZ(dZPos, Equipment.Type_Motor_Speed.Fine);
             workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
