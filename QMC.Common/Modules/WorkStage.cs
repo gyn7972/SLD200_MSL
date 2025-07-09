@@ -6446,7 +6446,7 @@ namespace QMC.Common.Modules
 
         #endregion
 
-        public bool Sirius_Init()
+        public bool Sirius_Init() 
         {
             bool bRtn = false;
 
