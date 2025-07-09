@@ -59,7 +59,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             timerModuleStatus = new System.Windows.Forms.Timer();
-            timerModuleStatus.Interval = 100;
+            timerModuleStatus.Interval = 200;
             timerModuleStatus.Tick += TimerModuleStatus_Tick;
             timerModuleStatus.Start();
 
@@ -67,6 +67,14 @@ namespace SLD200.NewStyleForm.NewSubForm
             workStage.ActionDrillingProcessManagerSelectedUpdated += OnDrillingDataUpdated;
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -371,6 +379,8 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             try
             {
+                drillingProcessManager.ResetAll();
+
                 foreach (var layer in drillingProcessManager.LayerList)
                 {
                     foreach (var socket in layer.SocketList)
@@ -412,6 +422,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                     Equipment.SocketStopped = false;
 
                     workStage.m_StartProcessTime = DateTime.Now;
+                    //Signal On 시키고 돌아갈 시간 벌기... ㅡㅡ
+                    Thread.Sleep(500); // 500ms 대기
+
                     SelectRunEnable_New = true;
                     workStage.m_nDrillingWork_Group_Count = 0;
                     workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
@@ -435,6 +448,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void ButtonProcessSelected_Click(object sender, EventArgs e)
         {
+            drillingProcessManager.ResetAll();
+
             var selectedPerLayer = drillingProcessManager.LayerList
                 .Where(layer => layer.LayerType != LayerType.LAYER_FIDUCIAL && layer.LayerType != LayerType.LAYER_PREALIGN)
                 .Select(layer => new
@@ -449,6 +464,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 })
                 .Where(x => x.Sockets.Count > 0)
                 .ToList();
+
+            
 
             if (selectedPerLayer.Count == 0)
             {
@@ -492,6 +509,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Equipment.SocketStopped = false;
 
                 workStage.m_StartProcessTime = DateTime.Now;
+                //Signal On 시키고 돌아갈 시간 벌기... ㅡㅡ
+                Thread.Sleep(500); // 500ms 대기
+
                 SelectRunEnable_New = true;
                 workStage.m_nDrillingWork_Group_Count = 0;
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
@@ -550,20 +570,20 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void DrawSocketButtonStyle(Graphics g, Rectangle rect, SocketProcessData socket)
         {
             var layerMap = new Dictionary<LayerType, Rectangle>
-    {
-        { LayerType.LAYER_DRILLING, GetTopLeftQuad(rect) },
-        { LayerType.LAYER_THRUHOLE, GetTopRightQuad(rect) },
-        { LayerType.LAYER_OUTLINE, GetBottomLeftQuad(rect) },
-        { LayerType.LAYER_MARKING, GetBottomRightQuad(rect) }
-    };
+            {
+                { LayerType.LAYER_DRILLING, GetTopLeftQuad(rect) },
+                { LayerType.LAYER_THRUHOLE, GetTopRightQuad(rect) },
+                { LayerType.LAYER_OUTLINE, GetBottomLeftQuad(rect) },
+                { LayerType.LAYER_MARKING, GetBottomRightQuad(rect) }
+            };
 
-            var textMap = new Dictionary<LayerType, string>
-    {
-        { LayerType.LAYER_DRILLING, "H" },
-        { LayerType.LAYER_THRUHOLE, "T" },
-        { LayerType.LAYER_OUTLINE, "O" },
-        { LayerType.LAYER_MARKING, "M" }
-    };
+                    var textMap = new Dictionary<LayerType, string>
+            {
+                { LayerType.LAYER_DRILLING, "H" },
+                { LayerType.LAYER_THRUHOLE, "T" },
+                { LayerType.LAYER_OUTLINE, "O" },
+                { LayerType.LAYER_MARKING, "M" }
+            };
 
             foreach (var kvp in layerMap)
             {

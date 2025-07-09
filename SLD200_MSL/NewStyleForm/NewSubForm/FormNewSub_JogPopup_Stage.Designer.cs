@@ -196,6 +196,7 @@
             this.textBox_jogPopup_Stage_JogMove_StepSize.Name = "textBox_jogPopup_Stage_JogMove_StepSize";
             this.textBox_jogPopup_Stage_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
             this.textBox_jogPopup_Stage_JogMove_StepSize.TabIndex = 75;
+            this.textBox_jogPopup_Stage_JogMove_StepSize.Tag = "KeyPad;Min=-2000;Max=2000;Format=0.000";
             this.textBox_jogPopup_Stage_JogMove_StepSize.Text = "1.000";
             // 
             // label_jogPopup_Stage_StepSize
@@ -605,7 +606,7 @@
             this.Controls.Add(this.groupBox_jogPopup_Stage_JogMove);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormNewSub_JogPopup_Stage";
-            this.Size = new System.Drawing.Size(646, 472);
+            this.Size = new System.Drawing.Size(520, 472);
             this.groupBox_jogPopup_Stage_JogMove.ResumeLayout(false);
             this.groupBox_jogPopup_Stage_Mask.ResumeLayout(false);
             this.groupBox__jogPopup_Stage_MoveMode.ResumeLayout(false);

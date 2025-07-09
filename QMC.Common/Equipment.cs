@@ -42,6 +42,7 @@ using Cognex.VisionPro;
 using System.ServiceModel.Syndication;
 using QMC.Common.Recipe;
 using System.IO.Ports;
+using QMC.Common.Global;
 
 
 
@@ -211,8 +212,7 @@ namespace QMC.Common
             Water_Leak = m_bLeak;
         }
 
-        public static bool SocketHeight_Batch_Use { set; get; } = false;           //  Socket Height Batch 사용 여부 (true: 사용, false: 미사용)
-
+        
         public static int ScannerMode_Change_byUser { set; get; }           //  0: None         1: Change To RTC6       2: Change to syncAxis
         public static bool FormNew_SiriusEditor_TimerStart { set; get; }           //  Scanner Mode가 변경되었는지 여부. (RTC6, syncAxis)
 
@@ -626,7 +626,7 @@ namespace QMC.Common
         public static int Machine_LoaderStacker_NoMaterialDetectTime { set; get; } = 10;                    //  Loader Stacker No Material Detect Time
         public static int Machine_PolylineCurve_Resolution { set; get; } = 100;                             //  Polyline Curve Resolution
 
-        public static bool Machine_AutoCrossCheck_Enable { set; get; } = false  ;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static bool Machine_AutoCrossCheck_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
         public static int Machine_AutoCrossCheck_Count { set; get; } = 1;                    
         public static bool Machine_HeightSensorRetry_Enable { set; get; } = false;                    
         public static int Machine_HeightSensorRetry_Count { set; get; } = 5;
@@ -635,6 +635,14 @@ namespace QMC.Common
         public static int Machine_Hole02_50_Wait_Time { set; get; } = 0;                     //  Hole 02 50 Wait Time (ms)
 
         public static bool Machine_HoleCenter_Enable { set; get; } = false;                     //  Thruhole Use (true: Use, false: Not Use)
+
+        public static bool Machine_SocketHeight_Batch_Use { set; get; } = false;           //  Socket Height Batch 사용 여부 (true: 사용, false: 미사용)
+        public static bool Machine_SocketVision_Batch_Use { set; get; } = false;
+        public static bool Machine_LaserPowerMeasure_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static int Machine_LaserPowerMeasure_Count { set; get; } = 1;
+
+        public static bool Machine_HeightMeasure_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static int Machine_HeightMeasure_Count { set; get; } = 1;
 
         //  Offset Distance
         public struct stOffsetDistanceParameter
@@ -1018,7 +1026,7 @@ namespace QMC.Common
         {
             Stage = 0,
             CalPos,
-            User1,
+            Auto_Stage,
             User2,
             User3,
         }
@@ -1275,7 +1283,6 @@ namespace QMC.Common
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
             }
 
-
             //  평탄도 측정 위치 초기화
             for (int i = 0; i < System.Enum.GetValues(typeof(FlatMeasureList)).Length; i++)
             {
@@ -1297,34 +1304,27 @@ namespace QMC.Common
             Scanner_HeadOffset_Y = 0;
             Scanner_HeadOffset_Angle = 0;
 
-
             //  Coordinate System Matching Offset (Stage Origin Pos. to Scanner Center Pos.)
             CoordinateMatchingOffset_X = 0.0;
             CoordinateMatchingOffset_Y = 0.0;
-
 
             //  Offset distance from the stage to the scanner position (스테이지와 스캐너 좌표계를 일치시키지 않는다면, 이 값만큼 이동해서 가공해야 함) - 스테이지 스캐너 좌표계를 일치시키면 이 값은 반드시 0 으로 설정해야 함.
             StageOffset_forDrilling_X = 0.0;
             StageOffset_forDrilling_Y = 0.0;
 
-
             //  Keyence Laser Height Sensor 기준값 설정
             LaserHeightSensor_ReferenceValue_atVisionFocusPosition = 0.0;         //  Vision Focus 위치에서의 Keyence Laser Height Sensor 기준값
             LaserHeightSensor_ReferenceValue_atScannerFocusPosition = 0.0;        //  Scanner Focus 위치에서의 Keyence Laser Height Sensor 기준값
 
-
             //  집진기 대기 시간
             DustCollector_TurnOn_AfterStableTime = 1000.0;                        //  Dust Collector On 시 안정화 시간 (sec)
-
 
             //  파일 저장 위치
             RecipeFilePath = "";
             DrawingFilePath = "";
 
-
             //  도면 렌더링  분해능
             SiriusDrawing_Rendering_Resolution = 50;
-
 
             //  BET 별 Mrad
             BET_0_8X_Mrad = 0.5;                //  BET 0.8X Zoom
@@ -1332,7 +1332,6 @@ namespace QMC.Common
             BET_1_0X_Mrad = 0.24;               //  BET 1.0X Zoom
             BET_1_1X_Mrad = 0.11;               //  BET 1.1X Zoom
             BET_1_2X_Mrad = 0.02;               //  BET 1.2X Zoom
-
 
             Scanner_Calibration_LaserFrequency = 0.0;            //  Scanner Calibration Laser Frequency
             Scanner_Calibration_LaserPulseWidth = 0.0;
@@ -1371,7 +1370,6 @@ namespace QMC.Common
 
             MapDataStatus_Activate = false;
 
-
             m_nLastDioUID = 0;
             m_nLastAxisUID = 0;
             m_nLastModuleNo = 0;
@@ -1385,8 +1383,10 @@ namespace QMC.Common
             LoadingQueue = new LoadingQueue();
             ConfigManager.SetEquipmentName(Name);
 
-            
             CreateModules();    //오래걸리는부분.
+
+            LoadMachineAxis();  //장비 Axis Setting
+
             LoadMotionBoards();
             LoadIOBoards();
             //LoadModuleCollection();
@@ -1411,6 +1411,7 @@ namespace QMC.Common
             {
                 m_nBoardOpened = board.Open();
             }
+
             foreach (var board in IOBoards)
             {
                 board.Open();
@@ -1487,6 +1488,7 @@ namespace QMC.Common
             //전부 생성한 후 Init하자
             workStage.m_ScannerCameraOffsetSequence.Init();
             workStage.m_Sequence_LaserPowerMeasure.Init();
+            workStage.m_Sequence_FlatnessMeasure.Init();
 
 
             // 여기때문에 시작이 느림. 
@@ -3083,6 +3085,19 @@ namespace QMC.Common
             Equipment.Machine_Hole02_50_Wait_Time = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "HoleCenter_Enable", "false", temp, 255, strFIle);
             Equipment.Machine_HoleCenter_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "SocketHeight_Batch_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_SocketHeight_Batch_Use = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "SocketVision_Batch_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_SocketVision_Batch_Use = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LaserPowerMeasure_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_LaserPowerMeasure_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LaserPowerMeasure_Count", "1", temp, 255, strFIle);
+            Equipment.Machine_LaserPowerMeasure_Count = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_Count", "1", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(temp.ToString());
+            //
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);
@@ -3381,5 +3396,43 @@ namespace QMC.Common
         }
 
         public static bool m_bCheckAxesMotionDoneWithRetry = false;
+
+        public static bool LoadMachineAxis()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Machine Option 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  Machine Option  로드
+            //  Machine Name
+            NativeMethods.GetPrivateProfileString("Machine_Option", "Machine_Name", "SLD-200", temp, 255, strFIle);
+            Equipment.Machine_Name = temp.ToString();
+
+            //  Laser Type                                                                            //  True : CO₂,    False : UV
+            NativeMethods.GetPrivateProfileString("Machine_Option", "Laser_Type", "True", temp, 255, strFIle);
+            Equipment.Machine_LaserType_CO2 = temp.ToString() == "False" ? false : true;
+
+
+            // Axis Setting
+            // AxisMap 초기화
+            AxisMap.Init(Equipment.Machine_LaserType_CO2);
+
+            return m_bRet;
+        }
+
+        public static int Axis_Test(AxisMap.AxisKey key)
+        {
+            return AxisMap.Get(key);
+        }
     }
 }

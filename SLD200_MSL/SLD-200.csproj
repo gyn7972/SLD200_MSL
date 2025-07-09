@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -46,7 +46,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>5</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -680,6 +680,12 @@
     <Compile Include="NeedleCalibrationJogControl.designer.cs">
       <DependentUpon>NeedleCalibrationJogControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_DeviceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_DeviceControl.Designer.cs">
+      <DependentUpon>FormNewSub_DeviceControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Loader.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1122,10 +1128,10 @@
     <Compile Include="FormContentBase.Designer.cs">
       <DependentUpon>FormContentBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormBottom.cs">
+    <Compile Include="NewStyleForm\FormBottom.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormBottom.Designer.cs">
+    <Compile Include="NewStyleForm\FormBottom.Designer.cs">
       <DependentUpon>FormBottom.cs</DependentUpon>
     </Compile>
     <Compile Include="FormDigitalIO.cs">
@@ -1158,10 +1164,10 @@
     <Compile Include="FormIOModule.Designer.cs">
       <DependentUpon>FormIOModule.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMain.cs">
+    <Compile Include="NewStyleForm\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.Designer.cs">
+    <Compile Include="NewStyleForm\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMaintMain.cs">
@@ -1278,10 +1284,10 @@
     <Compile Include="FormSubContentBase.Designer.cs">
       <DependentUpon>FormSubContentBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormTop.cs">
+    <Compile Include="NewStyleForm\FormTop.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormTop.Designer.cs">
+    <Compile Include="NewStyleForm\FormTop.Designer.cs">
       <DependentUpon>FormTop.cs</DependentUpon>
     </Compile>
     <Compile Include="FormTurretPartList.cs">
@@ -1569,6 +1575,9 @@
     <EmbeddedResource Include="NeedleCalibrationJogControl.resx">
       <DependentUpon>NeedleCalibrationJogControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_DeviceControl.resx">
+      <DependentUpon>FormNewSub_DeviceControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Loader.resx">
       <DependentUpon>FormNewSub_JogPopup_Loader.cs</DependentUpon>
     </EmbeddedResource>
@@ -1748,7 +1757,7 @@
     <EmbeddedResource Include="FormContentBase.resx">
       <DependentUpon>FormContentBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormBottom.resx">
+    <EmbeddedResource Include="NewStyleForm\FormBottom.resx">
       <DependentUpon>FormBottom.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormDigitalIO.resx">
@@ -1766,7 +1775,7 @@
     <EmbeddedResource Include="FormIOModule.resx">
       <DependentUpon>FormIOModule.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
+    <EmbeddedResource Include="NewStyleForm\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMaintMain.resx">
@@ -1811,7 +1820,7 @@
     <EmbeddedResource Include="FormSubContentBase.resx">
       <DependentUpon>FormSubContentBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormTop.resx">
+    <EmbeddedResource Include="NewStyleForm\FormTop.resx">
       <DependentUpon>FormTop.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTurretPartList.resx">

@@ -63,7 +63,7 @@
             this.baseLabel_Total_RemainedTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_TotalRemain_Time = new SLD200_MSL.BaseLabel();
             this.progressBar_OneCycle_Time = new System.Windows.Forms.ProgressBar();
-            this.baseLabel_CurrentOneCycle_TotalTime = new SLD200_MSL.BaseLabel();
+            this.baseLabel_LaserShot_TotalTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_CurrentOneCycle_ElapsedTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_CurrentOneCycle_Time = new SLD200_MSL.BaseLabel();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
@@ -186,10 +186,10 @@
             this.panel_Main_SemiAuto = new System.Windows.Forms.Panel();
             this.panel_Main_ModuleStatus = new System.Windows.Forms.Panel();
             this.groupBox_ModuleStatus = new System.Windows.Forms.GroupBox();
+            this.button_Main_SelectedProcess = new System.Windows.Forms.Button();
             this.baseLabel_Module_WaitTime_sec = new SLD200_MSL.BaseLabel();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
-            this.button_Main_SelectedProcess = new System.Windows.Forms.Button();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -610,7 +610,7 @@
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_Total_RemainedTime);
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_TotalRemain_Time);
             this.baseGroupBox_WorkingTime.Controls.Add(this.progressBar_OneCycle_Time);
-            this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_CurrentOneCycle_TotalTime);
+            this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_LaserShot_TotalTime);
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_CurrentOneCycle_ElapsedTime);
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_CurrentOneCycle_Time);
             this.baseGroupBox_WorkingTime.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -706,17 +706,17 @@
             this.progressBar_OneCycle_Time.TabIndex = 112;
             this.progressBar_OneCycle_Time.Value = 50;
             // 
-            // baseLabel_CurrentOneCycle_TotalTime
+            // baseLabel_LaserShot_TotalTime
             // 
-            this.baseLabel_CurrentOneCycle_TotalTime.AutoSize = true;
-            this.baseLabel_CurrentOneCycle_TotalTime.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_CurrentOneCycle_TotalTime.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_CurrentOneCycle_TotalTime.Location = new System.Drawing.Point(346, 34);
-            this.baseLabel_CurrentOneCycle_TotalTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabel_CurrentOneCycle_TotalTime.Name = "baseLabel_CurrentOneCycle_TotalTime";
-            this.baseLabel_CurrentOneCycle_TotalTime.Size = new System.Drawing.Size(72, 17);
-            this.baseLabel_CurrentOneCycle_TotalTime.TabIndex = 111;
-            this.baseLabel_CurrentOneCycle_TotalTime.Text = "00:00:00";
+            this.baseLabel_LaserShot_TotalTime.AutoSize = true;
+            this.baseLabel_LaserShot_TotalTime.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_LaserShot_TotalTime.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_LaserShot_TotalTime.Location = new System.Drawing.Point(346, 34);
+            this.baseLabel_LaserShot_TotalTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel_LaserShot_TotalTime.Name = "baseLabel_LaserShot_TotalTime";
+            this.baseLabel_LaserShot_TotalTime.Size = new System.Drawing.Size(72, 17);
+            this.baseLabel_LaserShot_TotalTime.TabIndex = 111;
+            this.baseLabel_LaserShot_TotalTime.Text = "00:00:00";
             // 
             // baseLabel_CurrentOneCycle_ElapsedTime
             // 
@@ -2318,6 +2318,20 @@
             this.groupBox_ModuleStatus.TabStop = false;
             this.groupBox_ModuleStatus.Text = "Module Status";
             // 
+            // button_Main_SelectedProcess
+            // 
+            this.button_Main_SelectedProcess.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_SelectedProcess.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_SelectedProcess.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Main_SelectedProcess.Location = new System.Drawing.Point(1359, 485);
+            this.button_Main_SelectedProcess.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_SelectedProcess.Name = "button_Main_SelectedProcess";
+            this.button_Main_SelectedProcess.Size = new System.Drawing.Size(192, 59);
+            this.button_Main_SelectedProcess.TabIndex = 220;
+            this.button_Main_SelectedProcess.Text = "Selected Process";
+            this.button_Main_SelectedProcess.UseVisualStyleBackColor = false;
+            this.button_Main_SelectedProcess.Click += new System.EventHandler(this.button_Main_SelectedProcess_Click);
+            // 
             // baseLabel_Module_WaitTime_sec
             // 
             this.baseLabel_Module_WaitTime_sec.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -2341,6 +2355,7 @@
             this.baseTextBox_DryRun_ProcessingTime.Name = "baseTextBox_DryRun_ProcessingTime";
             this.baseTextBox_DryRun_ProcessingTime.Size = new System.Drawing.Size(26, 24);
             this.baseTextBox_DryRun_ProcessingTime.TabIndex = 151;
+            this.baseTextBox_DryRun_ProcessingTime.Tag = "KeyPad;Min=0;Max=1500;Format=0.000";
             this.baseTextBox_DryRun_ProcessingTime.Text = "5";
             this.baseTextBox_DryRun_ProcessingTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -2355,20 +2370,6 @@
             this.baseLabel5.TabIndex = 150;
             this.baseLabel5.Text = "(DryRun Time (sec) :";
             this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // button_Main_SelectedProcess
-            // 
-            this.button_Main_SelectedProcess.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button_Main_SelectedProcess.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button_Main_SelectedProcess.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Main_SelectedProcess.Location = new System.Drawing.Point(1359, 485);
-            this.button_Main_SelectedProcess.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button_Main_SelectedProcess.Name = "button_Main_SelectedProcess";
-            this.button_Main_SelectedProcess.Size = new System.Drawing.Size(192, 59);
-            this.button_Main_SelectedProcess.TabIndex = 220;
-            this.button_Main_SelectedProcess.Text = "Selected Process";
-            this.button_Main_SelectedProcess.UseVisualStyleBackColor = false;
-            this.button_Main_SelectedProcess.Click += new System.EventHandler(this.button_Main_SelectedProcess_Click);
             // 
             // FormNew_Main
             // 
@@ -2513,7 +2514,7 @@
         private BaseLabel baseLabel_Total_RemainedTime;
         private BaseLabel baseLabel_TotalRemain_Time;
         private System.Windows.Forms.ProgressBar progressBar_OneCycle_Time;
-        private BaseLabel baseLabel_CurrentOneCycle_TotalTime;
+        private BaseLabel baseLabel_LaserShot_TotalTime;
         private BaseLabel baseLabel_CurrentOneCycle_ElapsedTime;
         private BaseLabel baseLabel_CurrentOneCycle_Time;
         private BaseTextBox baseTextBox_SocketCountPerModule;

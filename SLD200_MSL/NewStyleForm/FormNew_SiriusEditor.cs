@@ -26,6 +26,7 @@ using System.Numerics;
 using SharpGL;
 using System.Xml.Linq;
 using SpiralLab;
+using System.Threading;
 
 //using OpenTK;
 //using OpenTK.Graphics.OpenGL;
@@ -74,13 +75,13 @@ namespace SLD200_MSL
 
             //  Status 타이머
             timer_Status = new System.Windows.Forms.Timer();
-            timer_Status.Interval = 50;
+            timer_Status.Interval = 200;
             timer_Status.Tick += new System.EventHandler(Timer_Status_Func);
             //timer_Status.Enabled = true;
 
             //  RTC6 초기화 타이머 (1회만 적용)
             timer_RtcInit = new System.Windows.Forms.Timer();
-            timer_RtcInit.Interval = 50;
+            timer_RtcInit.Interval = 200;
             timer_RtcInit.Tick += new System.EventHandler(Timer_RtcInit_Func);
             timer_RtcInit.Enabled = true;
 
@@ -92,6 +93,15 @@ namespace SLD200_MSL
 
             //HookEditorToolbarButtons();
             //this.Load += (s, e) => HookEditorToolbarButtons(); // Load 이후 실행
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
@@ -493,8 +503,7 @@ namespace SLD200_MSL
 
         public bool Rtc_Init(bool bRetryInit = false)
         {
-            bool m_bRet = true;
-
+            bool bRet = true;
             if (!bRetryInit)
             {
                 //SpiralLab.Sirius.Config.AngleFactor = 50;
@@ -532,11 +541,27 @@ namespace SLD200_MSL
                 this.SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged1;
 
                 //true / false가 아니라 팅겨 나와 버린다.
-                m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
+                bRet = SpiralLab.Core.Initialize();                   //  Sirius1
                                                                         // create document
                                                                         // 신규 문서 생성
             }
 
+            //신규-TEST 필요
+            //안되네.. 나중에 다시 TEST
+            //{
+            //    Rtc6 rtc6 = new Rtc6();
+            //    LaserVirtual laser = new LaserVirtual();
+            //    MarkerDefault maker = new MarkerDefault(0, " RTC6 Marker ");
+
+            //    workStage.ScannerComm_Init(ref rtc6, ref laser, ref maker);
+
+            //    this.SiriusEditor.Rtc = rtc6;
+            //    this.SiriusEditor.Laser = laser;
+            //    this.SiriusEditor.Marker = maker;
+            //}
+            //return bRet;
+
+            //기존 코드
             #region RTC 초기화
             //create Rtc for dummy (가상 RTC 카드)
             //var rtc = new RtcVirtual(0); 
@@ -564,7 +589,7 @@ namespace SLD200_MSL
                     return false;
                 }
                 // initialize rtc controller
-                m_bRet &= workStage.rtc.Initialize(kfactor, LaserMode.Co2, correctionFile); 
+                bRet &= workStage.rtc.Initialize(kfactor, LaserMode.Co2, correctionFile); 
             }
             else                                                                                                                //  UV 레이저
             {
@@ -584,18 +609,18 @@ namespace SLD200_MSL
                     return false;
                 }
                 // initialize rtc controller
-                m_bRet &= workStage.rtc.Initialize(kfactor, LaserMode.Yag1, correctionFile);
+                bRet &= workStage.rtc.Initialize(kfactor, LaserMode.Yag1, correctionFile);
             }
 
             // basic frequency and pulse width
             // laser frequency : 50KHz, pulse width : 2usec (주파수 50KHz, 펄스폭 2usec)
-            m_bRet &= workStage.rtc.CtlFrequency(50 * 1000, 2);
+            bRet &= workStage.rtc.CtlFrequency(50 * 1000, 2);
             // basic speed
             // jump and mark speed : 500mm/s (점프, 마크 속도 500mm/s)
-            m_bRet &= workStage.rtc.CtlSpeed(500, 500);
+            bRet &= workStage.rtc.CtlSpeed(500, 500);
             // basic delays
             // scanner and laser delays (스캐너/레이저 지연값 설정)
-            m_bRet &= workStage.rtc.CtlDelay(10, 100, 200, 200, 0);
+            bRet &= workStage.rtc.CtlDelay(10, 100, 200, 200, 0);
 
             //  rtc Head Offset
             Vector3 ScannerOffset = new Vector3(0, 0, 0);
@@ -612,337 +637,29 @@ namespace SLD200_MSL
             // assign RTC instance at laser 
             workStage.laser.Rtc = workStage.rtc;                   //  Sirius1
             // initialize laser source
-            m_bRet &= workStage.laser.Initialize();
+            bRet &= workStage.laser.Initialize();
             // set basic power output to 2W
-            m_bRet &= workStage.laser.CtlPower(2);
+            bRet &= workStage.laser.CtlPower(2);
             #endregion
 
             #region 마커 지정
             workStage.marker = new MarkerDefault(0, " RTC6 Marker ");           //  Sirius1
             #endregion
 
+            workStage.InitspiralLabScannerModule();
+
             this.SiriusEditor.Laser = workStage.laser;
             this.SiriusEditor.Marker = workStage.marker;                        //  Sirius1
             this.SiriusEditor.Rtc = workStage.rtc;
 
-            workStage.InitspiralLabScannerModule();
-
-            return m_bRet;
-
-            //기존코드
-            {
-                //bool m_bRet = true;
-
-                ////SpiralLab.Sirius.Config.AngleFactor = 50;
-                //if (Equipment.SiriusDrawing_Rendering_Resolution < 0)
-                //{
-                //    SpiralLab.Sirius.Config.AngleFactor = 50;
-                //}
-                //else
-                //{
-                //    SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
-                //}
-
-                ////  Arc 를 Polyline 으로 만들 경우
-                //Config.LwPolylineBulgeToLines = true;
-                //Config.LwPolylineBulgeToLineMinThreshold = (float)0.001;
-                //if (Equipment.Machine_PolylineCurve_Resolution < 1)
-                //    Config.LwPolylineBulgePrecision = 100;
-                //else
-                //    Config.LwPolylineBulgePrecision = Equipment.Machine_PolylineCurve_Resolution;
-
-                //m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
-                ////SpiralLab.Sirius2.Core.Initialize();                  //  Sirius2
-                ////this.SiriusEditor.EnablePens = true;
-                //// create document
-                //// 신규 문서 생성
-                //var doc = new DocumentDefault();                        //  Sirius1
-                ////var doc = new DocumentBase();                         //  Sirius2             --> 나중에 수정해야함. 필요하면..
-                //// assign document into editor
-
-                ////  변수 초기화 (Laser 에서 사용)
-                ////if (SiriusViewer == null)
-                ////{
-                ////    SiriusViewer = new SpiralLab.Sirius.SiriusViewerForm();
-                ////}
-                //if (SiriusEditor == null)
-                //{
-                //    SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
-                //}
-                //// 문서 지정
-                ////this.SiriusViewer.Document = doc;
-                //this.SiriusEditor.Document = doc;
-
-
-                //// assign document source changed event handler
-                //// 내부 데이타(IDocument) 가 변경될경우 이를 이벤트 통지를 받는 핸들러 등록
-                //this.SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged1;
-
-                //#region RTC 초기화
-                ////create Rtc for dummy (가상 RTC 카드)
-                ////var rtc = new RtcVirtual(0); 
-
-                ////create Rtc5 controller
-                ////var rtc = new Rtc5(0);
-
-                ////create Rtc6 controller
-                //workStage.rtc = new Rtc6(0);
-
-                ////Rtc6 Ethernet
-                ////var rtc = new Rtc6Ethernet(0, "192.168.0.100", "255.255.255.0"); 
-
-                //if (Equipment.Machine_LaserType_CO2)                                                                                //  CO2 레이저
-                //{
-                //    // theoretically size of scanner field of view (이론적인 FOV 크기) : 60mm
-                //    float fov = 72.5f;          //  MSL-CO2 장비에서 맞춘 데이터
-                //    // k factor (bits/mm) = 2^20 / fov
-                //    float kfactor = (float)Math.Pow(2, 20) / fov;
-                //    //float kfactor = (float)workStage.Config.ParamConfig.Scanner_KFactor;
-                //    if (kfactor == 0)
-                //        kfactor = (float)18830.1889;
-                //    //kfactor = (float)18830.1889;
-                //    // full path of correction file
-                //    //var correctionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", "cor_1to1.ct5");
-
-                //    string correctionSrcFile = Equipment.Scanner_Calibration_srcFilePath;
-                //    string correctionFile = "D:\\SLD-200_Parameter\\Cor_200C.ct5";
-
-                //    if (File.Exists(correctionFile) == false)
-                //    {
-                //        string m_strPath = string.Format("Scanner Correction 파일이 없습니다.\r\n\r\n[{0}]", correctionFile);
-                //        MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //        return false;
-                //    }
-
-                //    // initialize rtc controller
-                //    m_bRet &= workStage.rtc.Initialize(kfactor, LaserMode.Co2, correctionFile);                                                                       //  Sirius1
-                //    //if (!workStage.rtc.Initialize(kfactor, LaserMode.Co2, correctionFile))                                                                         //  Sirius1
-                //    //{
-                //    //    m_bRet &= false;
-                //    //    //return false;
-                //    //}
-                //    //var rtc = ScannerFactory.CreateRtc6(0, kfactor, LaserModes.Yag1, RtcSignalLevels.ActiveHigh, RtcSignalLevels.ActiveHigh, correctionFile);     //  Sirius2
-                //}
-                //else                                                                                                                //  UV 레이저
-                //{
-                //    // theoretically size of scanner field of view (이론적인 FOV 크기) : 60mm
-                //    float fov = 105.0f;         //  MSL-UV 장비에서 맞춘 데이터
-                //    // k factor (bits/mm) = 2^20 / fov
-                //    float kfactor = (float)Math.Pow(2, 20) / fov;
-                //    //float kfactor = (float)workStage.Config.ParamConfig.Scanner_KFactor;
-                //    if (kfactor == 0)
-                //        kfactor = (float)18830.1889;
-                //    //kfactor = (float)18830.1889;
-                //    // full path of correction file
-                //    //var correctionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", "cor_1to1.ct5");
-
-                //    string correctionSrcFile = Equipment.Scanner_Calibration_srcFilePath;
-                //    string correctionFile = "D:\\SLD-200_Parameter\\Cor_200U.ct5";
-                //    if (File.Exists(correctionFile) == false)
-                //    {
-                //        string m_strPath = string.Format("Scanner Correction 파일이 없습니다.\r\n\r\n[{0}]", correctionFile);
-                //        MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //        return false;
-                //    }
-                //    // initialize rtc controller
-                //    m_bRet &= workStage.rtc.Initialize(kfactor, LaserMode.Yag1, correctionFile);
-                //    //m_bRet &=  workStage.rtc.CtlLoadCorrectionFile(0, correctionFile);       
-                //    //  Sirius1
-                //    //if (!workStage.rtc.Initialize(kfactor, LaserMode.Yag1, correctionFile))                                                                         //  Sirius1
-                //    //{
-                //    //    //return false;
-                //    //}
-                //    //var rtc = ScannerFactory.CreateRtc6(0, kfactor, LaserModes.Yag1, RtcSignalLevels.ActiveHigh, RtcSignalLevels.ActiveHigh, correctionFile);     //  Sirius2
-                //}
-
-                //// basic frequency and pulse width
-                //// laser frequency : 50KHz, pulse width : 2usec (주파수 50KHz, 펄스폭 2usec)
-                //m_bRet &= workStage.rtc.CtlFrequency(50 * 1000, 2);
-                ////if (!workStage.rtc.CtlFrequency(50 * 1000, 2))
-                ////{
-                ////    //return false;
-                ////}
-
-                //// basic speed
-                //// jump and mark speed : 500mm/s (점프, 마크 속도 500mm/s)
-                //m_bRet &= workStage.rtc.CtlSpeed(500, 500);
-                ////if (!workStage.rtc.CtlSpeed(500, 500))
-                ////{
-                ////    //return false;
-                ////}
-
-                //// basic delays
-                //// scanner and laser delays (스캐너/레이저 지연값 설정)
-                //m_bRet &= workStage.rtc.CtlDelay(10, 100, 200, 200, 0);
-                ////if (!workStage.rtc.CtlDelay(10, 100, 200, 200, 0))
-                ////{
-                ////    //return false;
-                ////}
-
-                ////  rtc Head Offset
-                //Vector3 ScannerOffset = new Vector3(0, 0, 0);
-                //ScannerOffset.X = (float)Equipment.Scanner_HeadOffset_X;
-                //ScannerOffset.Y = (float)Equipment.Scanner_HeadOffset_Y;
-                //ScannerOffset.Z = (float)Equipment.Scanner_HeadOffset_Angle;
-                //workStage.rtc.PrimaryHeadBaseOffset = ScannerOffset;
-                //#endregion
-
-                ////this.SiriusEditor.Rtc = workStage.rtc6;
-
-                //#region 레이저 소스 초기화
-                //// virtual laser source with max 20W power (최대 출력 20W 의 가상 레이저 소스 생성)
-                ////var laser = new LaserVirtual(0, "virtual", 20);
-                //workStage.laser = new LaserVirtual(0, "virtual", 20);
-                ////var laser = new IPGYLPTypeD(0, "IPG YLP D", 1, 20);
-                ////var laser = new IPGYLPTypeE(0, "IPG YLP E", 1, 20);
-                ////var laser = new IPGYLPN(0, "IPG YLP N", 1, 100);
-                ////var laser = new JPTTypeE(0, "JPT Type E", 1, 20);
-                ////var laser = new SPIG4(0, "SPI G3/4", 1, 20);
-                ////var laser = new PhotonicsIndustryDX(0, "DX", 1, 20);
-                ////var laser = new PhotonicsIndustryRGHAIO(0, "RGHAIO", 1, 20);
-                ////var laser = new AdvancedOptoWaveFotia(0, "Fotia", 1, 20);
-                ////var laser = new AdvancedOptoWaveAOPico(0, "AOPico", 1, 20);
-                ////var laser = new CoherentAviaLX(0, "Avia LX", 1, 20);
-                ////var laser = new CoherentDiamondJSeries(0, "Diamond JSeries", "10.0.0.1", 200.0f);
-                ////var laser = new CoherentDiamondCSeries(0, "Diamond CSeries", 1, 100.0f);
-                ////var laser = new SpectraPhysicsHippo(0, "Hippo", 1, 30);
-                ////var laser = new SpectraPhysicsTalon(0, "Talon", 1, 20);
-
-                //// assign RTC instance at laser 
-                //workStage.laser.Rtc = workStage.rtc;                   //  Sirius1
-                ////workStage.laser.Scanner = workStage.rtc6;               //  Sirius2
-
-                //// initialize laser source
-                //m_bRet &= workStage.laser.Initialize();
-                ////if (!workStage.laser.Initialize())
-                ////{
-                ////    //return false;
-                ////}
-
-                //// set basic power output to 2W
-                //m_bRet &= workStage.laser.CtlPower(2);
-                ////if (!workStage.laser.CtlPower(2))
-                ////{
-                ////    //return false;
-                ////}
-                //#endregion
-
-                ////this.SiriusEditor.Laser = workStage.laser;                  //  Sirius1
-
-                //#region 마커 지정
-                //// create default marker 
-                ////marker = new MarkerDefault(0, " SyncAxis Marker ");
-                ////var marker = new MarkerDefault(0);
-                //workStage.marker = new MarkerDefault(0, " RTC6 Marker ");           //  Sirius1
-                ////workStage.marker = new MarkerRtc(0, " RTC6 Marker ");             //  Sirius2
-                ////workStage.marker.ScannerRotateAngle = 90.0;                         //  Scanner 가공 Field 를 CCW 방향으로 90도 회전 (Scanner 좌표계와 Stage 좌표계가 일치하지 않음) - 일단 보류. 이걸 하면 Scanner Cal 좌표계가 바뀌기 때문에...
-
-                ////workStage.marker.Laser.Scanner.ScannerRotateAngle = 90.0;                     //  2022. 10. 12.  SCH : Scanner 가공 Field 를 CCW 방향으로 90도 회전
-                ////  (SLD-100 은 Scanner 와 Stage 방향이 일치하지 않음. Scanner 가 CW 방향으로 90도 돌아가 있음)
-                //// If scanner rotate at 90 deg
-                ////rtc.MatrixStack.BaseMatrix = Matrix4x4.CreateRotationZ((float)(90 * Math.PI / 180.0));                //  Sirius2
-                //#endregion
-
-                //this.SiriusEditor.Laser = workStage.laser;
-                //this.SiriusEditor.Marker = workStage.marker;                        //  Sirius1
-                //this.SiriusEditor.Rtc = workStage.rtc;
-
-                //#region RTC extension IO 
-                ////// create RTC io 
-                ////var rtcExt1DInput = new RtcDInputExt1(rtc, 0, "DIN RTC EXT1");
-                ////rtcExt1DInput.Initialize();
-                ////var rtcExt1DOutput = new RtcDOutputExt1(rtc, 0, "DOUT RTC EXT1");
-                ////rtcExt1DOutput.Initialize();
-                ////var rtcExt2DOutput = new RtcDOutputExt2(rtc, 0, "DIN RTC EXT2");
-                ////rtcExt2DOutput.Initialize();
-
-                //////rtc 5,6 only
-                ////var rtcPin2DInput = new RtcDInput2Pin(rtc, 0, "DIN RTC PIN2");
-                ////rtcPin2DInput.Initialize();
-                ////var rtcPin2DOutput = new RtcDOutput2Pin(rtc, 0, "DOUT RTC PIN2");
-                ////rtcPin2DOutput.Initialize();
-
-                ////this.SiriusEditor.RtcExtension1Input = rtcExt1DInput;
-                ////this.SiriusEditor.RtcExtension1Output = rtcExt1DOutput;
-                ////this.SiriusEditor.RtcExtension2Output = rtcExt2DOutput;
-                ////this.SiriusEditor.RtcPin2Input = rtcPin2DInput;
-                ////this.SiriusEditor.RtcPin2Output = rtcPin2DOutput;
-                //#endregion
-
-                //#region XYZ 모터
-                ////var motorX = new MotorVirtual(0, "X");
-                ////motorX.Initialize();
-                ////var motorY = new MotorVirtual(1, "Y");
-                ////motorY.Initialize();
-                ////var motorZ = new MotorVirtual(2, "Z");
-                ////motorZ.Initialize();
-                ////var motorR = new MotorVirtual(2, "R");
-                ////motorR.Initialize();
-
-                ////var motorArray = new IMotor[]
-                ////{
-                ////motorX,
-                ////motorY,
-                ////motorZ,
-                ////motorR,
-                ////};
-                ////var motors = new MotorsDefault(0, "Group", motorArray);
-                ////this.SiriusEditor.Motors = motors;
-
-                ////var motorZ = new MotorVirtual(0, "Z");
-                ////this.SiriusEditor.MotorZ = motorZ;
-                //#endregion
-
-                //#region PowerMeter
-                ////// 파워메터
-                ////var powerMeter = new PowerMeterVirtual(0, "Virtual", laser.MaxPowerWatt);
-                //////var powerMeter = new PowerMeterOphir(0, "OphirJuno", "3040875");
-                //////var powerMeter = new PowerMeterCoherentPowerMax(0, "CoherentPM", 1);
-                //////var powerMeter = new PowerMeterThorLabsPMSeries(0, "PM100USB", "SERIALNO");
-                ////powerMeter.Initialize();
-                ////this.SiriusEditor.PowerMeter = powerMeter;
-                //#endregion
-
-                //#region Powermap
-                ////var powerMap = new PowerMapDefault(0, "Virtual", "Watt");
-                //////var powerMapFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "powermap", "default.map");
-                //////PowerMapSerializer.Open(powerMap, powerMapFile);
-                ////this.SiriusEditor.PowerMap = powerMap;
-                ////laser.PowerMap = powerMap;
-                //#endregion
-
-                //{
-                //    ////  Arc 를 Polyline 으로 만들 경우
-                //    //if (workStage.Config.ParamConfig.ConvertArcToPolyline)
-                //    //{
-                //    //    Config.LwPolylineBulgeToLines = true;
-
-                //    //    if (workStage.Config.ParamConfig.ArcToPolyline_Resolution < 1)
-                //    //        Config.LwPolylineBulgePrecision = 10;
-                //    //    else
-                //    //        Config.LwPolylineBulgePrecision = workStage.Config.ParamConfig.ArcToPolyline_Resolution;
-                //    //}
-                //    //else        //  Arc 를 Bulge 값을 이용해서 Arc 처럼 만들 경우
-                //    //{
-                //    //    Config.LwPolylineBulgeToLines = false;
-                //    //}
-
-                //    ////  Spot Distance Control 설정 Off
-                //    //workStage.m_bSpotDistanceControl_On = false;
-
-                //    ////  Spot Distance Value
-                //    //workStage.m_dSpot_Distance = 0.0;
-                //    //SiriusEditor.Enabled = true;
-                //}
-
-                //workStage.InitspiralLabScannerModule();
-
-                //return m_bRet;
-            }
+            return bRet;
           }
 
         public bool Rtc_Close()
         {
+            if (workStage.rtc == null || workStage.laser == null)
+                return false;
+
             bool bRtn = false;
             if (workStage.rtc.CtlGetStatus(RtcStatus.Busy))
             {
@@ -977,18 +694,13 @@ namespace SLD200_MSL
 
         private void Timer_RtcInit_Func(object sender, EventArgs e)
         {
-            //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
-
             //timer_RtcInit.Enabled = false;
-
             if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
             {
                 //시컨스에서 초기화 했다 안했다 할거니깐.. 죽이면 안됨.
                 //우선 안되니깐 죽이자.
                 //timer_RtcInit.Enabled = false;
-
                 //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
-
                 Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
 
                 // sirius 팅겨나와서 이거 여기다 둬야 하네...
@@ -999,6 +711,7 @@ namespace SLD200_MSL
                     //  이미 RTC 가 초기화 되어 있다면 Rtc 객체를 닫고 다시 초기화 한다.
                     Rtc_Close();
                     Equipment._InitDeviceStatus.Scanner = false;
+                    Thread.Sleep(100); //  RTC 가 닫히는 시간을 준다.
                     if (Rtc_Init(true))
                     {
                         Equipment._InitDeviceStatus.Scanner = true;
@@ -2544,27 +2257,27 @@ namespace SLD200_MSL
             int m_nRegionIndex = 0;
             workStage.m_nCircleDrilling_CurrentRotStep = 2;
 
-            workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].X =
-                workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].X;
-            workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].Y =
-                workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y;
+            workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].X =
+                workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].X;
+            workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].Y =
+                workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y;
 
-            workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[1].X =
-                workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[1].X;
+            workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[1].X =
+                workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[workStage.m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[1].X;
 
-            workStage.entity_Position.X = workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].X -
-                                                    workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.X +
-                                                    workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[1].X;           //  반지름 값
-            workStage.entity_Position.Y = workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y -
-                                                    workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.Y;
+            workStage.entity_Position.X = workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[0].X -
+                                                    workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.X +
+                                                    workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint_PreDrilling[1].X;           //  반지름 값
+            workStage.entity_Position.Y = workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y -
+                                                    workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.Y;
 
             //  시작 위치 각도 분할을 사용할 경우 (매번 분할 각도만큼 이동하여 시작)
             if (workStage.m_nCircleDrilling_CurrentRotStep >= 1)
             {
-                workStage.entity_Position_Center.X = workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].X -
-                                            workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.X;
-                workStage.entity_Position_Center.Y = workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y -
-                                            workStage.m_stDividedRegion_GroupData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.Y;
+                workStage.entity_Position_Center.X = workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].X -
+                                            workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.X;
+                workStage.entity_Position_Center.Y = workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].m_stDividedRegion_ObjectData[workStage.m_nLaserDrilling_InGroup_HoleCount].dEdgePoint[0].Y -
+                                            workStage.m_stLaserDrilling_SocketData[workStage.m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nRegionIndex].dRegionCenter.Y;
 
                 workStage.m_dCircleDrilling_RotDegree = 180.0;
 

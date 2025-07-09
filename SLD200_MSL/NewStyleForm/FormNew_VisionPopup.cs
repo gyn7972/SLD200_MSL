@@ -96,6 +96,15 @@ namespace SLD200_MSL
             radioButton_VisionPopup_Move_MoveMode_Coarse.Checked = true;
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         public FormNew_VisionPopup CreateSiriusEditor()
         {
             if (m_formVisionPopup == null)
@@ -108,11 +117,11 @@ namespace SLD200_MSL
 
         public void Socket_List_Set()
         {
-            if (workStage.m_stDividedRegion_GroupData != null)
+            if (workStage.m_stLaserDrilling_SocketData != null)
             {
                 comboBox_Config_VisionPopup_AlignTest_SocketList.Items.Clear();
 
-                for (int i = 0; i < workStage.m_stDividedRegion_GroupData[0].nGroup_Num; i++)
+                for (int i = 0; i < workStage.m_stLaserDrilling_SocketData[0].nGroup_Num; i++)
                 {
                     comboBox_Config_VisionPopup_AlignTest_SocketList.Items.Add(i);
                 }
@@ -1761,15 +1770,15 @@ namespace SLD200_MSL
                 return;
             }
 
-            textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Text = workStage.m_stDividedRegion_GroupData[m_nIndex].dGroupCenter.X.ToString();
-            textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Text = workStage.m_stDividedRegion_GroupData[m_nIndex].dGroupCenter.Y.ToString();
+            textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Text = workStage.m_stLaserDrilling_SocketData[m_nIndex].dGroupCenter.X.ToString();
+            textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Text = workStage.m_stLaserDrilling_SocketData[m_nIndex].dGroupCenter.Y.ToString();
 
             //  Fiducial Mark Pos 등록
-            if (workStage.m_stDividedRegion_GroupData[m_nIndex].dFiducialPos.Length > 0)
+            if (workStage.m_stLaserDrilling_SocketData[m_nIndex].dFiducialPos.Length > 0)
             {
                 comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Items.Clear();
 
-                for (int i = 0; i < workStage.m_stDividedRegion_GroupData[m_nIndex].dFiducialPos.Length; i++)
+                for (int i = 0; i < workStage.m_stLaserDrilling_SocketData[m_nIndex].dFiducialPos.Length; i++)
                 {
                     comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Items.Add(i);
                 }
@@ -1797,7 +1806,7 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (m_nFiducialIndex < workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos.Length)
+            if (m_nFiducialIndex < workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos.Length)
             {
                 workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("Processing");
 
@@ -1822,8 +1831,8 @@ namespace SLD200_MSL
                 }
 
                 //  Fiducial 위치 반영
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
 
                 //  속도 설정
                 if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
@@ -2659,7 +2668,7 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (m_nFiducialIndex < workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos.Length)
+            if (m_nFiducialIndex < workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos.Length)
             {
                 workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("Processing");
 
@@ -2684,13 +2693,13 @@ namespace SLD200_MSL
                 }
 
                 //  Fiducial 위치 반영
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
 
                 //  보정량 반영
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += (workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X - 
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += (workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X - 
                                                                                                                 workStage.m_st4PointPosition_InspectedPos[m_nFiducialIndex].ptFiducial_Center.X) ;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += (workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y -
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += (workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y -
                                                                                                                 workStage.m_st4PointPosition_InspectedPos[m_nFiducialIndex].ptFiducial_Center.Y) ;
 
                 //  속도 설정
@@ -2961,6 +2970,89 @@ namespace SLD200_MSL
                     e.Graphics.DrawRectangle(pen, detectedCircle);
                 }
                 nIndex++;
+            }
+        }
+
+        // 이거 각각 폼에 만들어야함.
+        private void InitRecipeUI_KeyPad()
+        {
+            RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행
+        }
+        private void RegisterKeyPadDoubleClickHandlers(Control parent)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                // 조건: 숫자 입력용 TextBox 또는 RichTextBox만
+                bool isTargetTextBox = ctrl is TextBox || ctrl is RichTextBox;
+
+                if (isTargetTextBox && ctrl.Tag?.ToString().Contains("KeyPad") == true)
+                {
+                    ctrl.DoubleClick -= textBox_DoubleClick_OpenKeyPad; // 중복 연결 방지
+                    ctrl.DoubleClick += textBox_DoubleClick_OpenKeyPad;
+
+                    // 키보드 입력 제한용 Validating 연결
+                    ctrl.Validating -= textBox_Validate_KeyPadRange;
+                    ctrl.Validating += textBox_Validate_KeyPadRange;
+                }
+
+                // 하위 컨트롤 재귀 탐색
+                if (ctrl.HasChildren)
+                    RegisterKeyPadDoubleClickHandlers(ctrl);
+            }
+        }
+        private void textBox_DoubleClick_OpenKeyPad(object sender, EventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                string currentText = ctrl.Text ?? "0";
+                var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
+
+                if (double.TryParse(currentText, out double value))
+                    dlg.SetInitialValue(value);
+                else
+                    dlg.SetInitialValue(0);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string result = dlg.EnteredValue.ToString(meta.Format);
+                    ctrl.Text = result;
+                }
+            }
+        }
+        private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
+        {
+            if (sender is TextBox tb && tb.Tag != null)
+            {
+                var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
+
+                if (double.TryParse(tb.Text, out double val))
+                {
+                    if (val < meta.Min)
+                    {
+                        tb.Text = meta.Min.ToString(meta.Format);
+                        //MessageBox.Show($"최소값 {meta.Min}보다 작습니다."); // 또는 자동 보정만
+                    }
+                    else if (val > meta.Max)
+                    {
+                        tb.Text = meta.Max.ToString(meta.Format);
+                        //MessageBox.Show($"최대값 {meta.Max}보다 큽니다.");
+                    }
+                    else
+                    {
+                        tb.Text = val.ToString(meta.Format);
+                    }
+                }
+                else
+                {
+                    // 숫자 아님 → 초기화
+                    tb.Text = meta.Min.ToString(meta.Format);
+                }
             }
         }
     }

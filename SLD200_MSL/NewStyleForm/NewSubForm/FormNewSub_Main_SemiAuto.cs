@@ -47,11 +47,21 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             timerSemiAuto = new System.Windows.Forms.Timer();
-            timerSemiAuto.Interval = 100;
+            timerSemiAuto.Interval = 200;
             timerSemiAuto.Tick += TimerSemiAuto_Tick;
             timerSemiAuto.Start();
 
         }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         //protected override void OnFormClosing(FormClosingEventArgs e)
         //{
         //    if (e.CloseReason == CloseReason.UserClosing)
@@ -808,6 +818,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             workStage.m_bSensorResponseReady = false;    // 응답 받음
 
             workStage.m_bFirstAutoCrossCheckDone = false;
+            workStage.m_bFirstLaserPowerCheckDone = false;
+            workStage.m_bFirstHeightCheckDone = false;
 
             workStage.ResetRecovery();
 

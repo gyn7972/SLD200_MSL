@@ -59,7 +59,10 @@ namespace QMC.Common.Motion.Ajin.Motions
                 else                            //  UV
                 {
                     strParameterFile = string.Format("D:\\SLD-200_Parameter\\SLD-200U.mot");
-                }   
+                }
+
+
+
             }
 
             int ret = 0;

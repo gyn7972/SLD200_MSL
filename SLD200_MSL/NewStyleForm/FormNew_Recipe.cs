@@ -64,6 +64,15 @@ namespace SLD200_MSL
             FormNewSub_Recipe_Load();
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         public void SetRecipeTabs(FormNewSub_Recipe_Vision vision, FormNewSub_Recipe_GoldPowder gold)
         {
             this.userform_RecipeVision = vision;
@@ -99,7 +108,7 @@ namespace SLD200_MSL
 
             //  Recipe Open 타이머
             timer_Recipe_Open = new System.Windows.Forms.Timer();
-            timer_Recipe_Open.Interval = 50;
+            timer_Recipe_Open.Interval = 200;
             timer_Recipe_Open.Tick += new System.EventHandler(Timer_RecipeOpen_Func);
             timer_Recipe_Open.Enabled = true;
 
@@ -122,6 +131,8 @@ namespace SLD200_MSL
             listBox_Recipe_TabRecipe_ListOfDrawingLayer.ItemHeight = 24;
 
             checkBox_MasterView.Checked = false;
+
+            InitRecipeUI_KeyPad();
         }
 
         private void MachineType_Component_Enable(bool m_bLaserType)
@@ -3040,7 +3051,6 @@ namespace SLD200_MSL
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !!", "Recipe Data를 저장하였습니다.");
 
-
                 Recipe_Open(fileName); // Recipe Open
             }
         }
@@ -3678,7 +3688,132 @@ namespace SLD200_MSL
             
         }
 
+        private void button_Recipe_New_Click(object sender, EventArgs e)
+        {
+            string folderPath = string.Empty;
+            string defaultRecipeFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Recipe");
+            if (string.IsNullOrWhiteSpace(Equipment.Current_Recipe))
+            {
+                // 기본 폴더 사용
+                folderPath = defaultRecipeFolder;
+            }
+            else
+            {
+                folderPath = Path.GetDirectoryName(Equipment.Current_Recipe);
+            }
 
+            // 폴더 없으면 생성
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            // 새 파일명 설정
+            string ext = ".ini";  // 확장자 필요시 조정
+            string fileName = Path.Combine(folderPath, "NewRecipe" + ext);
+            {
+                if (File.Exists(fileName) == false)
+                {
+                    using (FileStream fs = File.Create(fileName))
+                    {
+                        // 파일만 생성하고 바로 닫음
+                    }
+                }
+
+                //  Recipe Data 저장
+                Recipe_Data_Save_Refactory(fileName);
+                Equipment.Current_Recipe = fileName;
+                // Vision Data 저장
+                stVisionRecipeSet.SaveToIni(fileName);
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "Recipe Data를 새로 생성하였습니다.");
+
+                Recipe_Open(fileName); // Recipe Open
+            }
+        }
+
+
+        // 이거 각각 폼에 만들어야함.
+        private void InitRecipeUI_KeyPad()
+        {
+            RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행
+        }
+        private void RegisterKeyPadDoubleClickHandlers(Control parent)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                // 조건: 숫자 입력용 TextBox 또는 RichTextBox만
+                bool isTargetTextBox = ctrl is TextBox || ctrl is RichTextBox;
+
+                if (isTargetTextBox && ctrl.Tag?.ToString().Contains("KeyPad") == true)
+                {
+                    ctrl.DoubleClick -= textBox_DoubleClick_OpenKeyPad; // 중복 연결 방지
+                    ctrl.DoubleClick += textBox_DoubleClick_OpenKeyPad;
+
+                    // 키보드 입력 제한용 Validating 연결
+                    ctrl.Validating -= textBox_Validate_KeyPadRange;
+                    ctrl.Validating += textBox_Validate_KeyPadRange;
+                }
+
+                // 하위 컨트롤 재귀 탐색
+                if (ctrl.HasChildren)
+                    RegisterKeyPadDoubleClickHandlers(ctrl);
+            }
+        }
+        private void textBox_DoubleClick_OpenKeyPad(object sender, EventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                string currentText = ctrl.Text ?? "0";
+                var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
+
+                if (double.TryParse(currentText, out double value))
+                    dlg.SetInitialValue(value);
+                else
+                    dlg.SetInitialValue(0);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string result = dlg.EnteredValue.ToString(meta.Format);
+                    ctrl.Text = result;
+                }
+            }
+        }
+        private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
+        {
+            if (sender is TextBoxBase tb && tb.Tag != null)
+            {
+                var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
+
+                if (double.TryParse(tb.Text, out double val))
+                {
+                    if (val < meta.Min)
+                    {
+                        tb.Text = meta.Min.ToString(meta.Format);
+                        //MessageBox.Show($"최소값 {meta.Min}보다 작습니다."); // 또는 자동 보정만
+                    }
+                    else if (val > meta.Max)
+                    {
+                        tb.Text = meta.Max.ToString(meta.Format);
+                        //MessageBox.Show($"최대값 {meta.Max}보다 큽니다.");
+                    }
+                    else
+                    {
+                        tb.Text = val.ToString(meta.Format);
+                    }
+                }
+                else
+                {
+                    // 숫자 아님 → 초기화
+                    tb.Text = meta.Min.ToString(meta.Format);
+                }
+            }
+        }
 
     }
 }

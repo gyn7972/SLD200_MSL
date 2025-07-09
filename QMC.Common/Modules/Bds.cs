@@ -27,6 +27,9 @@ using static QMC.Common.Modules.WorkStage;
 using System.Threading.Tasks;
 using System.Timers;
 using SpiralLab.Sirius;
+using QMC.Common.Q_Config;
+using QMC.Common.Laser.Coherent_CO2;
+using QMC.Process.WorkStage.Parts;
 
 
 namespace QMC.Common.Modules
@@ -88,10 +91,10 @@ namespace QMC.Common.Modules
         public float? CurrentRtcZDefocus { get; private set; }
         public SpiralLabScanner spiralLabScanner { get; set; } = null; //  SpiralLab Rtc2D 객체
 
-
         public DustCollectorController DustCollector_Upper { get; private set; } = null;
         public DustCollectorController DustCollector_Lower { get; private set; } = null;
 
+        public LaserDiagnosticManager LaserCO2Manager { get; private set; }
 
         //  레시피 변경 시 위치값을 갱신하기 위해
         public bool m_bParameterSetting_PosData_Reload { set; get; }            //  위치 데이터 다시 로드
@@ -319,6 +322,8 @@ namespace QMC.Common.Modules
             }
 
             Teaching_Position_Load();
+
+            _laserAccumulatedTime = TimeSpan.FromSeconds(workStage.m_pProcessConfigData.LaserAccumulatedTime_Seconds);
         }
         #endregion
 
@@ -389,6 +394,27 @@ namespace QMC.Common.Modules
             DustCollector_Lower.Owner = this;
             Parts.Add(DustCollector_Lower);
 
+            if(Equipment.Machine_LaserType_CO2)
+            {
+                //LaserCO2Manager = new LaserDiagnosticManager("LaserCO2", "169.254.12.13", 5000);
+                LaserCO2Manager = new LaserDiagnosticManager("LaserCO2", "169.254.12.13", 23);
+                LaserCO2Manager.Create();
+                LaserCO2Manager.Owner = this;
+                Parts.Add(LaserCO2Manager);
+                //  레이저 연결 - 여기서? Test니깐?
+                //if (!LaserCO2Manager.Connect())
+                //{
+                //    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 실패!");
+                //    //AlarmPost(AlarmKey.LaserComm_ConnectFail);
+                //}
+                //else
+                //{
+                //    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 성공");
+                //}
+            }
+            
+
+
             //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
             m_taskTimer_BDS_MainStatus_Tick = Task.Factory.StartNew(() =>
             {
@@ -419,7 +445,14 @@ namespace QMC.Common.Modules
         }
 
         private DateTime _lastScannerCheckTime = DateTime.MinValue;
-        private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(500); //0.1초
+        private DateTime _lastLaserCO2CheckTime = DateTime.MinValue;
+        private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(500); //0.5초
+        private TimeSpan _LaserCO2CheckInterval = TimeSpan.FromMilliseconds(1000); //1초
+
+        private TimeSpan _laserAccumulatedTime = TimeSpan.Zero;
+        private DateTime _laserStartTime = DateTime.MinValue;
+        private bool _prevLaserBusy = false;
+
         private void Timer_BDS_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -448,6 +481,9 @@ namespace QMC.Common.Modules
                 else
                 {
                 }
+
+                // --- 레이져 누적 시간 계산용 현재 시각 ---
+                DateTime LaserOn_Now = DateTime.Now;
 
                 if (spiralLabScanner != null && spiralLabScanner.IsInitialized)
                 {
@@ -491,6 +527,102 @@ namespace QMC.Common.Modules
                         }
                     }
                 }
+
+                // 레이저 가공 중일 때 레이저 누적 시간 계산
+                // ------------------------------------------
+                // Laser 발진 시간 누적 로직 (m_bLaserBusy 기준)
+                // ------------------------------------------
+                bool laserBusy = workStage.m_bLaserBusy;
+                if (laserBusy && !_prevLaserBusy)
+                {
+                    // 레이저 발진 시작
+                    _laserStartTime = LaserOn_Now;
+                }
+                else if (!laserBusy && _prevLaserBusy)
+                {
+                    // 레이저 발진 종료
+                    if (_laserStartTime != DateTime.MinValue)
+                    {
+                        _laserAccumulatedTime += LaserOn_Now - _laserStartTime;
+                        _laserStartTime = DateTime.MinValue;
+
+                        workStage.m_pProcessConfigData.LaserAccumulatedTime_Seconds = GetLaserAccumulatedTime().TotalSeconds;
+                        string strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+                        workStage.m_pProcessConfigData.SaveToIni(strFIle);
+                    }
+                }
+                else if (laserBusy && _laserStartTime != DateTime.MinValue)
+                {
+                    // 실시간 누적 시간 표시 (옵션)
+                    TimeSpan current = _laserAccumulatedTime + (LaserOn_Now - _laserStartTime);
+                    //Log.Write("LaserBusy", $"누적 발진 시간: {current.TotalSeconds:F1} sec");
+                }
+                _prevLaserBusy = laserBusy;
+
+
+                if(Equipment.Machine_LaserType_CO2)
+                {
+                    if (LaserCO2Manager?.IsConnected == true)
+                    {
+                        var now = DateTime.Now;
+                        if (now - _lastLaserCO2CheckTime > _LaserCO2CheckInterval)
+                        {
+                            _lastLaserCO2CheckTime = now;
+
+                            var status = LaserCO2Manager.RequestControllerStatus();
+                            if (status != null)
+                            {
+                                // 상태 정보 UI 표시 또는 로그
+                                Log.Write("LaserCO2", "LaserStatus", status.ToString());
+
+                                if (!status.Enable)
+                                    Log.Write("LaserCO2", "LaserStatus", "레이저 Enable 상태 아님");
+                                else
+                                    Log.Write("LaserCO2", "LaserStatus", "레이저 Enable 상태");
+
+                                if (!status.ShutterClosed)
+                                    Log.Write("LaserCO2", "LaserStatus", "셔터가 열려 있음");
+                                else
+                                    Log.Write("LaserCO2", "LaserStatus", "셔터가 닫혀 있음");
+
+                                if (status.DutyCyclePercent > 0)
+                                    Log.Write("LaserCO2", "LaserStatus", $"Duty Cycle: {status.DutyCyclePercent}%");
+
+                                if (status.SystemFault || status.ShutterFault || status.TempFault || status.SystemInterlock)
+                                {
+                                    Log.Write("LaserCO2", "LaserStatus", "LaserCO2Manager Fault Detected");
+                                    if (status.SystemFault)
+                                    {
+                                        Log.Write("LaserCO2", "LaserStatus", "System Fault 발생");
+                                        //AlarmPost(AlarmKey.Laser_Fault_System, "CO2 레이저: System Fault 발생");
+                                    }
+
+                                    if (status.ShutterFault)
+                                    {
+                                        Log.Write("LaserCO2", "LaserStatus", "Shutter Fault 발생");
+                                        //AlarmPost(AlarmKey.Laser_Fault_Shutter, "CO2 레이저: Shutter Fault 발생");
+                                    }
+
+                                    if (status.TempFault)
+                                    {
+                                        Log.Write("LaserCO2", "LaserStatus", "Temperature Fault 발생");
+                                        //AlarmPost(AlarmKey.Laser_Fault_Temperature, "CO2 레이저: 온도 이상 발생");
+                                    }
+
+                                    if (status.SystemInterlock)
+                                    {
+                                        Log.Write("LaserCO2", "LaserStatus", "System Interlock 동작 중");
+                                        //AlarmPost(AlarmKey.Laser_Fault_Interlock, "CO2 레이저: System Interlock 감지");
+                                    }
+                                }
+                                else
+                                {
+                                    Log.Write("LaserCO2", "LaserStatus", "상태 응답 없음 (null)");
+                                }
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -501,6 +633,20 @@ namespace QMC.Common.Modules
             {
                 _isMainStatusRunning = false; // 플래그 해제
             }
+        }
+        public void ClearLaserAccumulatedTime()
+        {
+            _laserAccumulatedTime = TimeSpan.Zero;
+            _laserStartTime = DateTime.MinValue;
+            _prevLaserBusy = false;
+        }
+
+        public TimeSpan GetLaserAccumulatedTime()
+        {
+            if (workStage.m_bLaserBusy && _laserStartTime != DateTime.MinValue)
+                return _laserAccumulatedTime + (DateTime.Now - _laserStartTime);
+            else
+                return _laserAccumulatedTime;
         }
 
         public void InitspiralLabScannerVarioModule()
@@ -609,7 +755,23 @@ namespace QMC.Common.Modules
 
             return true;
         }
-
+        public void DisconnectDustCollector(DustCollectorController.CollectorPosition position)
+        {
+            if (position == DustCollectorController.CollectorPosition.Upper)
+            {
+                if (DustCollector_Upper == null)
+                {
+                    DustCollector_Upper.Disconnect();
+                }
+            }
+            else if (position == DustCollectorController.CollectorPosition.Lower)
+            {
+                if (DustCollector_Lower == null)
+                {
+                    DustCollector_Lower.Disconnect();
+                }
+            }
+        }
 
 
 
@@ -939,5 +1101,6 @@ namespace QMC.Common.Modules
             strFIle = ConfigManager.GetConfigPath() + "\\Common Setting (Do not delete or modify).ini";
         }
 
+        
     }
 }

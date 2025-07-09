@@ -49,7 +49,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             timerMotorMove = new System.Windows.Forms.Timer();
-            timerMotorMove.Interval = 100;
+            timerMotorMove.Interval = 200;
             timerMotorMove.Tick += TimerMotorMove_Tick;
             timerMotorMove.Start();
 
@@ -59,6 +59,15 @@ namespace SLD200.NewStyleForm.NewSubForm
             _originalBackColors[button_MotorMove_Loader_Stacker_Vacuum] = button_MotorMove_Loader_Stacker_Vacuum.BackColor;
             _originalBackColors[button_MotorMove_Stage_ScannerFineCam] = button_MotorMove_Stage_ScannerFineCam.BackColor;
             _originalBackColors[button_MotorMove_Unloader_Vacuum] = button_MotorMove_Unloader_Vacuum.BackColor;//
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         //protected override void OnFormClosing(FormClosingEventArgs e)
@@ -741,9 +750,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 workStage.workStageParameter.DO_Stage_Blow(true);
                 workStage.workStageParameter.DO_Stage_Vacuum(false);
-                workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
-                Thread.Sleep(1000); // 1초 대기
+                Thread.Sleep(500); // 1초 대기
                 workStage.workStageParameter.DO_Stage_Blow(false);
+                workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
             }
             else
             {

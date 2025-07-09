@@ -29,10 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
+            this.panel_Setup_Communication_DeviceControl = new System.Windows.Forms.Panel();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
+            this.button_Setup_Communication_DeviceControl = new System.Windows.Forms.Button();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
             this.tabControl_Setup_Communication_Type = new System.Windows.Forms.TabControl();
             this.tabPage_TCPIP = new System.Windows.Forms.TabPage();
@@ -436,6 +438,12 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.checkBox_Setup_Option_HeightMeasure = new System.Windows.Forms.CheckBox();
+            this.textBox_Setup_Option_HeightMeasure = new System.Windows.Forms.TextBox();
+            this.checkBox_Setup_Option_LaserMeasure = new System.Windows.Forms.CheckBox();
+            this.textBox_Setup_Option_LaserMeasure = new System.Windows.Forms.TextBox();
+            this.checkBox_Setup_Option_SocketVision_Batch = new System.Windows.Forms.CheckBox();
+            this.checkBox_Setup_Option_SocketHeight_Batch = new System.Windows.Forms.CheckBox();
             this.checkBox_HoleCenterEnable = new System.Windows.Forms.CheckBox();
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable = new System.Windows.Forms.CheckBox();
             this.textBox_Setup_Option_Hole02_50_Wait_Time = new System.Windows.Forms.TextBox();
@@ -642,6 +650,7 @@
             // 
             // tabPage_Setup_Communication
             // 
+            this.tabPage_Setup_Communication.Controls.Add(this.panel_Setup_Communication_DeviceControl);
             this.tabPage_Setup_Communication.Controls.Add(this.groupBox86);
             this.tabPage_Setup_Communication.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPage_Setup_Communication.Location = new System.Drawing.Point(4, 54);
@@ -653,8 +662,17 @@
             this.tabPage_Setup_Communication.Text = "Communication";
             this.tabPage_Setup_Communication.UseVisualStyleBackColor = true;
             // 
+            // panel_Setup_Communication_DeviceControl
+            // 
+            this.panel_Setup_Communication_DeviceControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel_Setup_Communication_DeviceControl.Location = new System.Drawing.Point(672, 10);
+            this.panel_Setup_Communication_DeviceControl.Name = "panel_Setup_Communication_DeviceControl";
+            this.panel_Setup_Communication_DeviceControl.Size = new System.Drawing.Size(746, 434);
+            this.panel_Setup_Communication_DeviceControl.TabIndex = 217;
+            // 
             // groupBox86
             // 
+            this.groupBox86.Controls.Add(this.button_Setup_Communication_DeviceControl);
             this.groupBox86.Controls.Add(this.button_Test_SocketConnect);
             this.groupBox86.Controls.Add(this.tabControl_Setup_Communication_Type);
             this.groupBox86.Controls.Add(this.button96);
@@ -668,18 +686,30 @@
             this.groupBox86.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox86.Name = "groupBox86";
             this.groupBox86.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox86.Size = new System.Drawing.Size(1168, 434);
+            this.groupBox86.Size = new System.Drawing.Size(654, 434);
             this.groupBox86.TabIndex = 51;
             this.groupBox86.TabStop = false;
             this.groupBox86.Text = " Communication Set ";
             // 
+            // button_Setup_Communication_DeviceControl
+            // 
+            this.button_Setup_Communication_DeviceControl.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Communication_DeviceControl.Location = new System.Drawing.Point(527, 327);
+            this.button_Setup_Communication_DeviceControl.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Communication_DeviceControl.Name = "button_Setup_Communication_DeviceControl";
+            this.button_Setup_Communication_DeviceControl.Size = new System.Drawing.Size(102, 33);
+            this.button_Setup_Communication_DeviceControl.TabIndex = 61;
+            this.button_Setup_Communication_DeviceControl.Text = "Device";
+            this.button_Setup_Communication_DeviceControl.UseVisualStyleBackColor = true;
+            this.button_Setup_Communication_DeviceControl.Click += new System.EventHandler(this.button_Setup_Communication_DeviceControl_Click);
+            // 
             // button_Test_SocketConnect
             // 
             this.button_Test_SocketConnect.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_SocketConnect.Location = new System.Drawing.Point(947, 368);
+            this.button_Test_SocketConnect.Location = new System.Drawing.Point(510, 368);
             this.button_Test_SocketConnect.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Test_SocketConnect.Name = "button_Test_SocketConnect";
-            this.button_Test_SocketConnect.Size = new System.Drawing.Size(191, 43);
+            this.button_Test_SocketConnect.Size = new System.Drawing.Size(119, 56);
             this.button_Test_SocketConnect.TabIndex = 60;
             this.button_Test_SocketConnect.Text = "Laser Socket Disconnect";
             this.button_Test_SocketConnect.UseVisualStyleBackColor = true;
@@ -728,6 +758,7 @@
             // 
             // comboBox_Setup_Communication_TCPIP_OpenType
             // 
+            this.comboBox_Setup_Communication_TCPIP_OpenType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Communication_TCPIP_OpenType.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Communication_TCPIP_OpenType.FormattingEnabled = true;
             this.comboBox_Setup_Communication_TCPIP_OpenType.Items.AddRange(new object[] {
@@ -738,7 +769,6 @@
             this.comboBox_Setup_Communication_TCPIP_OpenType.Name = "comboBox_Setup_Communication_TCPIP_OpenType";
             this.comboBox_Setup_Communication_TCPIP_OpenType.Size = new System.Drawing.Size(114, 24);
             this.comboBox_Setup_Communication_TCPIP_OpenType.TabIndex = 52;
-            this.comboBox_Setup_Communication_TCPIP_OpenType.Text = "Client";
             this.comboBox_Setup_Communication_TCPIP_OpenType.SelectedIndexChanged += new System.EventHandler(this.comboBox_Setup_Communication_TCPIP_OpenType_SelectedIndexChanged);
             // 
             // button_KeypadCall_Setup_Communication_TCPIP_IP
@@ -846,6 +876,7 @@
             // 
             // comboBox_Setup_Communication_RS232_FlowControl
             // 
+            this.comboBox_Setup_Communication_RS232_FlowControl.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Communication_RS232_FlowControl.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Communication_RS232_FlowControl.FormattingEnabled = true;
             this.comboBox_Setup_Communication_RS232_FlowControl.Items.AddRange(new object[] {
@@ -857,7 +888,6 @@
             this.comboBox_Setup_Communication_RS232_FlowControl.Name = "comboBox_Setup_Communication_RS232_FlowControl";
             this.comboBox_Setup_Communication_RS232_FlowControl.Size = new System.Drawing.Size(114, 24);
             this.comboBox_Setup_Communication_RS232_FlowControl.TabIndex = 64;
-            this.comboBox_Setup_Communication_RS232_FlowControl.Text = "None";
             // 
             // label3
             // 
@@ -872,6 +902,7 @@
             // 
             // comboBox_Setup_Communication_RS232_StopBit
             // 
+            this.comboBox_Setup_Communication_RS232_StopBit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Communication_RS232_StopBit.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Communication_RS232_StopBit.FormattingEnabled = true;
             this.comboBox_Setup_Communication_RS232_StopBit.Items.AddRange(new object[] {
@@ -883,7 +914,6 @@
             this.comboBox_Setup_Communication_RS232_StopBit.Name = "comboBox_Setup_Communication_RS232_StopBit";
             this.comboBox_Setup_Communication_RS232_StopBit.Size = new System.Drawing.Size(114, 24);
             this.comboBox_Setup_Communication_RS232_StopBit.TabIndex = 62;
-            this.comboBox_Setup_Communication_RS232_StopBit.Text = "1";
             // 
             // label2
             // 
@@ -898,6 +928,7 @@
             // 
             // comboBox_Setup_Communication_RS232_Parity
             // 
+            this.comboBox_Setup_Communication_RS232_Parity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Communication_RS232_Parity.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Communication_RS232_Parity.FormattingEnabled = true;
             this.comboBox_Setup_Communication_RS232_Parity.Items.AddRange(new object[] {
@@ -909,7 +940,6 @@
             this.comboBox_Setup_Communication_RS232_Parity.Name = "comboBox_Setup_Communication_RS232_Parity";
             this.comboBox_Setup_Communication_RS232_Parity.Size = new System.Drawing.Size(114, 24);
             this.comboBox_Setup_Communication_RS232_Parity.TabIndex = 60;
-            this.comboBox_Setup_Communication_RS232_Parity.Text = "None";
             // 
             // label1
             // 
@@ -924,6 +954,7 @@
             // 
             // comboBox_Setup_Communication_RS232_DataBit
             // 
+            this.comboBox_Setup_Communication_RS232_DataBit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Communication_RS232_DataBit.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Communication_RS232_DataBit.FormattingEnabled = true;
             this.comboBox_Setup_Communication_RS232_DataBit.Items.AddRange(new object[] {
@@ -936,7 +967,6 @@
             this.comboBox_Setup_Communication_RS232_DataBit.Name = "comboBox_Setup_Communication_RS232_DataBit";
             this.comboBox_Setup_Communication_RS232_DataBit.Size = new System.Drawing.Size(114, 24);
             this.comboBox_Setup_Communication_RS232_DataBit.TabIndex = 58;
-            this.comboBox_Setup_Communication_RS232_DataBit.Text = "8";
             // 
             // button_KeypadCall_Setup_Communication_RS232_SpacingDelay
             // 
@@ -990,6 +1020,7 @@
             this.textBox_Setup_Communication_RS232_Timeout.Name = "textBox_Setup_Communication_RS232_Timeout";
             this.textBox_Setup_Communication_RS232_Timeout.Size = new System.Drawing.Size(114, 24);
             this.textBox_Setup_Communication_RS232_Timeout.TabIndex = 49;
+            this.textBox_Setup_Communication_RS232_Timeout.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Setup_Communication_RS232_Timeout.Text = "500";
             // 
             // label183
@@ -1016,6 +1047,7 @@
             // 
             // comboBox_Setup_Communication_RS232_BaudRate
             // 
+            this.comboBox_Setup_Communication_RS232_BaudRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Communication_RS232_BaudRate.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Communication_RS232_BaudRate.FormattingEnabled = true;
             this.comboBox_Setup_Communication_RS232_BaudRate.Items.AddRange(new object[] {
@@ -1032,7 +1064,6 @@
             this.comboBox_Setup_Communication_RS232_BaudRate.Name = "comboBox_Setup_Communication_RS232_BaudRate";
             this.comboBox_Setup_Communication_RS232_BaudRate.Size = new System.Drawing.Size(114, 24);
             this.comboBox_Setup_Communication_RS232_BaudRate.TabIndex = 53;
-            this.comboBox_Setup_Communication_RS232_BaudRate.Text = "115200";
             // 
             // textBox_Setup_Communication_RS232_SpacingDelay
             // 
@@ -1042,10 +1073,12 @@
             this.textBox_Setup_Communication_RS232_SpacingDelay.Name = "textBox_Setup_Communication_RS232_SpacingDelay";
             this.textBox_Setup_Communication_RS232_SpacingDelay.Size = new System.Drawing.Size(114, 24);
             this.textBox_Setup_Communication_RS232_SpacingDelay.TabIndex = 51;
+            this.textBox_Setup_Communication_RS232_SpacingDelay.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Setup_Communication_RS232_SpacingDelay.Text = "20";
             // 
             // comboBox_Setup_Communication_RS232_ComPort
             // 
+            this.comboBox_Setup_Communication_RS232_ComPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Communication_RS232_ComPort.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Communication_RS232_ComPort.FormattingEnabled = true;
             this.comboBox_Setup_Communication_RS232_ComPort.Items.AddRange(new object[] {
@@ -1068,15 +1101,14 @@
             this.comboBox_Setup_Communication_RS232_ComPort.Name = "comboBox_Setup_Communication_RS232_ComPort";
             this.comboBox_Setup_Communication_RS232_ComPort.Size = new System.Drawing.Size(114, 24);
             this.comboBox_Setup_Communication_RS232_ComPort.TabIndex = 52;
-            this.comboBox_Setup_Communication_RS232_ComPort.Text = "COM1";
             // 
             // button96
             // 
             this.button96.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button96.Location = new System.Drawing.Point(531, 381);
+            this.button96.Location = new System.Drawing.Point(398, 368);
             this.button96.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button96.Name = "button96";
-            this.button96.Size = new System.Drawing.Size(102, 43);
+            this.button96.Size = new System.Drawing.Size(102, 56);
             this.button96.TabIndex = 58;
             this.button96.Text = "Cancel";
             this.button96.UseVisualStyleBackColor = true;
@@ -1084,10 +1116,10 @@
             // button_Setup_Comm_Save
             // 
             this.button_Setup_Comm_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Comm_Save.Location = new System.Drawing.Point(398, 381);
+            this.button_Setup_Comm_Save.Location = new System.Drawing.Point(268, 368);
             this.button_Setup_Comm_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Comm_Save.Name = "button_Setup_Comm_Save";
-            this.button_Setup_Comm_Save.Size = new System.Drawing.Size(102, 43);
+            this.button_Setup_Comm_Save.Size = new System.Drawing.Size(102, 56);
             this.button_Setup_Comm_Save.TabIndex = 57;
             this.button_Setup_Comm_Save.Text = "Save";
             this.button_Setup_Comm_Save.UseVisualStyleBackColor = true;
@@ -1207,7 +1239,7 @@
             this.listBox_Setup_Communication_SelectUnit.Location = new System.Drawing.Point(10, 25);
             this.listBox_Setup_Communication_SelectUnit.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.listBox_Setup_Communication_SelectUnit.Name = "listBox_Setup_Communication_SelectUnit";
-            this.listBox_Setup_Communication_SelectUnit.Size = new System.Drawing.Size(232, 238);
+            this.listBox_Setup_Communication_SelectUnit.Size = new System.Drawing.Size(232, 256);
             this.listBox_Setup_Communication_SelectUnit.TabIndex = 0;
             this.listBox_Setup_Communication_SelectUnit.SelectedIndexChanged += new System.EventHandler(this.listBox_Setup_Communication_SelectUnit_SelectedIndexChanged);
             // 
@@ -1248,14 +1280,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle15.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle15;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1308,14 +1340,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle16.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle16;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -1929,6 +1961,7 @@
             this.textBox_Setup_Motion_Jog_MaxStepSize.Name = "textBox_Setup_Motion_Jog_MaxStepSize";
             this.textBox_Setup_Motion_Jog_MaxStepSize.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_MaxStepSize.TabIndex = 60;
+            this.textBox_Setup_Motion_Jog_MaxStepSize.Tag = "KeyPad;Min=0;Max=9999;Format=0.000";
             this.textBox_Setup_Motion_Jog_MaxStepSize.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Jog_CoarseStepSize
@@ -1939,6 +1972,7 @@
             this.textBox_Setup_Motion_Jog_CoarseStepSize.Name = "textBox_Setup_Motion_Jog_CoarseStepSize";
             this.textBox_Setup_Motion_Jog_CoarseStepSize.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_CoarseStepSize.TabIndex = 59;
+            this.textBox_Setup_Motion_Jog_CoarseStepSize.Tag = "KeyPad;Min=0;Max=9999;Format=0.000";
             this.textBox_Setup_Motion_Jog_CoarseStepSize.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Jog_FineStepSize
@@ -1949,6 +1983,7 @@
             this.textBox_Setup_Motion_Jog_FineStepSize.Name = "textBox_Setup_Motion_Jog_FineStepSize";
             this.textBox_Setup_Motion_Jog_FineStepSize.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_FineStepSize.TabIndex = 58;
+            this.textBox_Setup_Motion_Jog_FineStepSize.Tag = "KeyPad;Min=0;Max=9999;Format=0.000";
             this.textBox_Setup_Motion_Jog_FineStepSize.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Jog_MinStepSize
@@ -1959,6 +1994,7 @@
             this.textBox_Setup_Motion_Jog_MinStepSize.Name = "textBox_Setup_Motion_Jog_MinStepSize";
             this.textBox_Setup_Motion_Jog_MinStepSize.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_MinStepSize.TabIndex = 55;
+            this.textBox_Setup_Motion_Jog_MinStepSize.Tag = "KeyPad;Min=0;Max=9999;Format=0.000";
             this.textBox_Setup_Motion_Jog_MinStepSize.Text = "0.00000";
             // 
             // label21
@@ -2053,6 +2089,7 @@
             this.textBox_Setup_Motion_Jog_CoarseSpeed.Name = "textBox_Setup_Motion_Jog_CoarseSpeed";
             this.textBox_Setup_Motion_Jog_CoarseSpeed.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_CoarseSpeed.TabIndex = 57;
+            this.textBox_Setup_Motion_Jog_CoarseSpeed.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Jog_CoarseSpeed.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Jog_FineSpeed
@@ -2063,6 +2100,7 @@
             this.textBox_Setup_Motion_Jog_FineSpeed.Name = "textBox_Setup_Motion_Jog_FineSpeed";
             this.textBox_Setup_Motion_Jog_FineSpeed.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_FineSpeed.TabIndex = 56;
+            this.textBox_Setup_Motion_Jog_FineSpeed.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Jog_FineSpeed.Text = "0.00000";
             // 
             // label11
@@ -2149,6 +2187,7 @@
             // 
             // comboBox_Setup_Motion_Limit_Active
             // 
+            this.comboBox_Setup_Motion_Limit_Active.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Limit_Active.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Limit_Active.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Limit_Active.Items.AddRange(new object[] {
@@ -2159,10 +2198,10 @@
             this.comboBox_Setup_Motion_Limit_Active.Name = "comboBox_Setup_Motion_Limit_Active";
             this.comboBox_Setup_Motion_Limit_Active.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Limit_Active.TabIndex = 44;
-            this.comboBox_Setup_Motion_Limit_Active.Text = "Low";
             // 
             // comboBox_Setup_Motion_Limit_Install
             // 
+            this.comboBox_Setup_Motion_Limit_Install.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Limit_Install.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Limit_Install.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Limit_Install.Items.AddRange(new object[] {
@@ -2173,7 +2212,6 @@
             this.comboBox_Setup_Motion_Limit_Install.Name = "comboBox_Setup_Motion_Limit_Install";
             this.comboBox_Setup_Motion_Limit_Install.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Limit_Install.TabIndex = 43;
-            this.comboBox_Setup_Motion_Limit_Install.Text = "Installed";
             // 
             // label232
             // 
@@ -2243,6 +2281,7 @@
             this.textBox_Setup_Motion_Common_MinPos.Name = "textBox_Setup_Motion_Common_MinPos";
             this.textBox_Setup_Motion_Common_MinPos.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_MinPos.TabIndex = 54;
+            this.textBox_Setup_Motion_Common_MinPos.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Setup_Motion_Common_MinPos.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Common_MaxPos
@@ -2253,6 +2292,7 @@
             this.textBox_Setup_Motion_Common_MaxPos.Name = "textBox_Setup_Motion_Common_MaxPos";
             this.textBox_Setup_Motion_Common_MaxPos.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_MaxPos.TabIndex = 46;
+            this.textBox_Setup_Motion_Common_MaxPos.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Setup_Motion_Common_MaxPos.Text = "0.00000";
             // 
             // label27
@@ -2285,6 +2325,7 @@
             this.textBox_Setup_Motion_Common_SettleDelay.Name = "textBox_Setup_Motion_Common_SettleDelay";
             this.textBox_Setup_Motion_Common_SettleDelay.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_SettleDelay.TabIndex = 61;
+            this.textBox_Setup_Motion_Common_SettleDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_Motion_Common_SettleDelay.Text = "0.00000";
             // 
             // label229
@@ -2326,6 +2367,7 @@
             this.textBox_Setup_Motion_Common_CoarseSpeed.Name = "textBox_Setup_Motion_Common_CoarseSpeed";
             this.textBox_Setup_Motion_Common_CoarseSpeed.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_CoarseSpeed.TabIndex = 56;
+            this.textBox_Setup_Motion_Common_CoarseSpeed.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Common_CoarseSpeed.Text = "0.00000";
             // 
             // label16
@@ -2347,6 +2389,7 @@
             this.textBox_Setup_Motion_Common_MinSpeed.Name = "textBox_Setup_Motion_Common_MinSpeed";
             this.textBox_Setup_Motion_Common_MinSpeed.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_MinSpeed.TabIndex = 54;
+            this.textBox_Setup_Motion_Common_MinSpeed.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Common_MinSpeed.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Common_FineSpeed
@@ -2357,6 +2400,7 @@
             this.textBox_Setup_Motion_Common_FineSpeed.Name = "textBox_Setup_Motion_Common_FineSpeed";
             this.textBox_Setup_Motion_Common_FineSpeed.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_FineSpeed.TabIndex = 47;
+            this.textBox_Setup_Motion_Common_FineSpeed.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Common_FineSpeed.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Common_MaxSpeed
@@ -2367,6 +2411,7 @@
             this.textBox_Setup_Motion_Common_MaxSpeed.Name = "textBox_Setup_Motion_Common_MaxSpeed";
             this.textBox_Setup_Motion_Common_MaxSpeed.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_MaxSpeed.TabIndex = 46;
+            this.textBox_Setup_Motion_Common_MaxSpeed.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Common_MaxSpeed.Text = "0.00000";
             // 
             // label17
@@ -2430,6 +2475,7 @@
             this.textBox_Setup_Motion_Common_CoarseAcc.Name = "textBox_Setup_Motion_Common_CoarseAcc";
             this.textBox_Setup_Motion_Common_CoarseAcc.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_CoarseAcc.TabIndex = 56;
+            this.textBox_Setup_Motion_Common_CoarseAcc.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Common_CoarseAcc.Text = "0.00000";
             // 
             // label15
@@ -2451,6 +2497,7 @@
             this.textBox_Setup_Motion_Common_MinAcc.Name = "textBox_Setup_Motion_Common_MinAcc";
             this.textBox_Setup_Motion_Common_MinAcc.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_MinAcc.TabIndex = 54;
+            this.textBox_Setup_Motion_Common_MinAcc.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Common_MinAcc.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Common_FineAcc
@@ -2461,6 +2508,7 @@
             this.textBox_Setup_Motion_Common_FineAcc.Name = "textBox_Setup_Motion_Common_FineAcc";
             this.textBox_Setup_Motion_Common_FineAcc.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_FineAcc.TabIndex = 47;
+            this.textBox_Setup_Motion_Common_FineAcc.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Common_FineAcc.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Common_MaxAcc
@@ -2471,6 +2519,7 @@
             this.textBox_Setup_Motion_Common_MaxAcc.Name = "textBox_Setup_Motion_Common_MaxAcc";
             this.textBox_Setup_Motion_Common_MaxAcc.Size = new System.Drawing.Size(106, 24);
             this.textBox_Setup_Motion_Common_MaxAcc.TabIndex = 46;
+            this.textBox_Setup_Motion_Common_MaxAcc.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Common_MaxAcc.Text = "0.00000";
             // 
             // label30
@@ -2525,6 +2574,7 @@
             this.textBox_Setup_Motion_Common_Pulse.Name = "textBox_Setup_Motion_Common_Pulse";
             this.textBox_Setup_Motion_Common_Pulse.Size = new System.Drawing.Size(70, 24);
             this.textBox_Setup_Motion_Common_Pulse.TabIndex = 56;
+            this.textBox_Setup_Motion_Common_Pulse.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_Motion_Common_Pulse.Text = "0.00000";
             // 
             // label6
@@ -2546,6 +2596,7 @@
             this.textBox_Setup_Motion_Common_Unit.Name = "textBox_Setup_Motion_Common_Unit";
             this.textBox_Setup_Motion_Common_Unit.Size = new System.Drawing.Size(70, 24);
             this.textBox_Setup_Motion_Common_Unit.TabIndex = 45;
+            this.textBox_Setup_Motion_Common_Unit.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_Motion_Common_Unit.Text = "0.00000";
             // 
             // label221
@@ -2599,6 +2650,7 @@
             // 
             // comboBox_Setup_Motion_Home_ZPhaseUse
             // 
+            this.comboBox_Setup_Motion_Home_ZPhaseUse.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Home_ZPhaseUse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Home_ZPhaseUse.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Home_ZPhaseUse.Items.AddRange(new object[] {
@@ -2610,7 +2662,6 @@
             this.comboBox_Setup_Motion_Home_ZPhaseUse.Name = "comboBox_Setup_Motion_Home_ZPhaseUse";
             this.comboBox_Setup_Motion_Home_ZPhaseUse.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_ZPhaseUse.TabIndex = 62;
-            this.comboBox_Setup_Motion_Home_ZPhaseUse.Text = "Disable";
             // 
             // label34
             // 
@@ -2631,6 +2682,7 @@
             this.textBox_Setup_Motion_Home_ClearTime.Name = "textBox_Setup_Motion_Home_ClearTime";
             this.textBox_Setup_Motion_Home_ClearTime.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_ClearTime.TabIndex = 60;
+            this.textBox_Setup_Motion_Home_ClearTime.Tag = "KeyPad;Min=0;Max=9999;Format=0.000";
             this.textBox_Setup_Motion_Home_ClearTime.Text = "0.00000";
             // 
             // label33
@@ -2652,6 +2704,7 @@
             this.textBox_Setup_Motion_Home_Acceleration_2nd.Name = "textBox_Setup_Motion_Home_Acceleration_2nd";
             this.textBox_Setup_Motion_Home_Acceleration_2nd.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Acceleration_2nd.TabIndex = 58;
+            this.textBox_Setup_Motion_Home_Acceleration_2nd.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Home_Acceleration_2nd.Text = "0.00000";
             // 
             // label5
@@ -2673,6 +2726,7 @@
             this.textBox_Setup_Motion_Home_Acceleration_1st.Name = "textBox_Setup_Motion_Home_Acceleration_1st";
             this.textBox_Setup_Motion_Home_Acceleration_1st.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Acceleration_1st.TabIndex = 56;
+            this.textBox_Setup_Motion_Home_Acceleration_1st.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Home_Acceleration_1st.Text = "0.00000";
             // 
             // label28
@@ -2694,6 +2748,7 @@
             this.textBox_Setup_Motion_Home_Speed_Last.Name = "textBox_Setup_Motion_Home_Speed_Last";
             this.textBox_Setup_Motion_Home_Speed_Last.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Speed_Last.TabIndex = 54;
+            this.textBox_Setup_Motion_Home_Speed_Last.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Home_Speed_Last.Text = "0.00000";
             // 
             // label10
@@ -2715,6 +2770,7 @@
             this.textBox_Setup_Motion_Home_Speed_3rd.Name = "textBox_Setup_Motion_Home_Speed_3rd";
             this.textBox_Setup_Motion_Home_Speed_3rd.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Speed_3rd.TabIndex = 52;
+            this.textBox_Setup_Motion_Home_Speed_3rd.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Home_Speed_3rd.Text = "0.00000";
             // 
             // label9
@@ -2736,6 +2792,7 @@
             this.textBox_Setup_Motion_Home_Speed_2nd.Name = "textBox_Setup_Motion_Home_Speed_2nd";
             this.textBox_Setup_Motion_Home_Speed_2nd.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Speed_2nd.TabIndex = 50;
+            this.textBox_Setup_Motion_Home_Speed_2nd.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Home_Speed_2nd.Text = "0.00000";
             // 
             // label8
@@ -2751,6 +2808,7 @@
             // 
             // comboBox_Setup_Motion_Home_Direction
             // 
+            this.comboBox_Setup_Motion_Home_Direction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Home_Direction.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Home_Direction.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Home_Direction.Items.AddRange(new object[] {
@@ -2761,10 +2819,10 @@
             this.comboBox_Setup_Motion_Home_Direction.Name = "comboBox_Setup_Motion_Home_Direction";
             this.comboBox_Setup_Motion_Home_Direction.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Direction.TabIndex = 48;
-            this.comboBox_Setup_Motion_Home_Direction.Text = "Negative";
             // 
             // comboBox_Setup_Motion_Home_Active
             // 
+            this.comboBox_Setup_Motion_Home_Active.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Home_Active.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Home_Active.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Home_Active.Items.AddRange(new object[] {
@@ -2775,10 +2833,10 @@
             this.comboBox_Setup_Motion_Home_Active.Name = "comboBox_Setup_Motion_Home_Active";
             this.comboBox_Setup_Motion_Home_Active.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Active.TabIndex = 47;
-            this.comboBox_Setup_Motion_Home_Active.Text = "Low";
             // 
             // comboBox_Setup_Motion_Home_Install
             // 
+            this.comboBox_Setup_Motion_Home_Install.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Home_Install.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Home_Install.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Home_Install.Items.AddRange(new object[] {
@@ -2789,10 +2847,10 @@
             this.comboBox_Setup_Motion_Home_Install.Name = "comboBox_Setup_Motion_Home_Install";
             this.comboBox_Setup_Motion_Home_Install.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Install.TabIndex = 46;
-            this.comboBox_Setup_Motion_Home_Install.Text = "Installed";
             // 
             // comboBox_Setup_Motion_Home_Sensing
             // 
+            this.comboBox_Setup_Motion_Home_Sensing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_Motion_Home_Sensing.Font = new System.Drawing.Font("Tahoma", 10F);
             this.comboBox_Setup_Motion_Home_Sensing.FormattingEnabled = true;
             this.comboBox_Setup_Motion_Home_Sensing.Items.AddRange(new object[] {
@@ -2804,7 +2862,6 @@
             this.comboBox_Setup_Motion_Home_Sensing.Name = "comboBox_Setup_Motion_Home_Sensing";
             this.comboBox_Setup_Motion_Home_Sensing.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Sensing.TabIndex = 45;
-            this.comboBox_Setup_Motion_Home_Sensing.Text = "Home Sensor";
             // 
             // textBox_Setup_Motion_Home_Offset
             // 
@@ -2814,6 +2871,7 @@
             this.textBox_Setup_Motion_Home_Offset.Name = "textBox_Setup_Motion_Home_Offset";
             this.textBox_Setup_Motion_Home_Offset.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Offset.TabIndex = 35;
+            this.textBox_Setup_Motion_Home_Offset.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Setup_Motion_Home_Offset.Text = "0.00000";
             // 
             // label222
@@ -2835,6 +2893,7 @@
             this.textBox_Setup_Motion_Home_Speed_1st.Name = "textBox_Setup_Motion_Home_Speed_1st";
             this.textBox_Setup_Motion_Home_Speed_1st.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Speed_1st.TabIndex = 30;
+            this.textBox_Setup_Motion_Home_Speed_1st.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Setup_Motion_Home_Speed_1st.Text = "0.00000";
             // 
             // label220
@@ -3248,6 +3307,7 @@
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Name = "textBox_ScannerCal_Illuminator_Camera_ExposureTime_High";
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Size = new System.Drawing.Size(151, 23);
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.TabIndex = 225;
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Text = "000";
             // 
             // textBox_Setup_ScannerCal_Illuminator_FineCamRed
@@ -3258,6 +3318,7 @@
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Name = "textBox_Setup_ScannerCal_Illuminator_FineCamRed";
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Size = new System.Drawing.Size(151, 23);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.TabIndex = 19;
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Tag = "KeyPad;Min=0;Max=4096;Format=0";
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Text = "0";
             // 
             // label_Setup_ScannerCal_High_Red
@@ -3279,6 +3340,7 @@
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Name = "textBox_Setup_ScannerCal_Illuminator_FineCamIR";
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Size = new System.Drawing.Size(151, 23);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.TabIndex = 14;
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Tag = "KeyPad;Min=0;Max=4096;Format=0";
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Text = "0";
             // 
             // label_Setup_ScannerCal_High_IR
@@ -3459,7 +3521,7 @@
             this.baseLabel_Setup_ScannerCal_Max.Name = "baseLabel_Setup_ScannerCal_Max";
             this.baseLabel_Setup_ScannerCal_Max.Size = new System.Drawing.Size(55, 23);
             this.baseLabel_Setup_ScannerCal_Max.TabIndex = 32;
-            this.baseLabel_Setup_ScannerCal_Max.Text = "255";
+            this.baseLabel_Setup_ScannerCal_Max.Text = "4096";
             this.baseLabel_Setup_ScannerCal_Max.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // baseLabel_Setup_ScannerCal_Min
@@ -3496,6 +3558,7 @@
             this.textBox_Setup_ScannerCal_IlluminationValue.Name = "textBox_Setup_ScannerCal_IlluminationValue";
             this.textBox_Setup_ScannerCal_IlluminationValue.Size = new System.Drawing.Size(100, 23);
             this.textBox_Setup_ScannerCal_IlluminationValue.TabIndex = 27;
+            this.textBox_Setup_ScannerCal_IlluminationValue.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_IlluminationValue.Text = "000";
             this.textBox_Setup_ScannerCal_IlluminationValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -3845,6 +3908,7 @@
             // 
             // comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex
             // 
+            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.FormattingEnabled = true;
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Items.AddRange(new object[] {
@@ -3858,7 +3922,6 @@
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Name = "comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex";
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Size = new System.Drawing.Size(73, 24);
             this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.TabIndex = 228;
-            this.comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Text = "1.0x";
             // 
             // label_Setup_ScannerCal_VisionZOffset
             // 
@@ -3873,6 +3936,7 @@
             // 
             // comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex
             // 
+            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.FormattingEnabled = true;
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Items.AddRange(new object[] {
@@ -3886,7 +3950,6 @@
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Name = "comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex";
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Size = new System.Drawing.Size(129, 24);
             this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.TabIndex = 227;
-            this.comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Text = "None Mask Position";
             // 
             // textBox_Setup_ScannerCal_VisionZOffset
             // 
@@ -3896,6 +3959,7 @@
             this.textBox_Setup_ScannerCal_VisionZOffset.Name = "textBox_Setup_ScannerCal_VisionZOffset";
             this.textBox_Setup_ScannerCal_VisionZOffset.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_VisionZOffset.TabIndex = 159;
+            this.textBox_Setup_ScannerCal_VisionZOffset.Tag = "KeyPad;Min=0;Max=100;Format=0.000";
             this.textBox_Setup_ScannerCal_VisionZOffset.Text = "0.0";
             // 
             // label_Recipe_TabRecipe_Miscellaneous_BETPosition
@@ -4027,6 +4091,7 @@
             this.textBox_Setup_ScannerCal_PulseWidth.Name = "textBox_Setup_ScannerCal_PulseWidth";
             this.textBox_Setup_ScannerCal_PulseWidth.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_PulseWidth.TabIndex = 150;
+            this.textBox_Setup_ScannerCal_PulseWidth.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_PulseWidth.Text = "0.0";
             // 
             // label_Setup_ScannerCal_LastPosY
@@ -4061,6 +4126,7 @@
             this.textBox_Setup_ScannerCal_CalPitch.Name = "textBox_Setup_ScannerCal_CalPitch";
             this.textBox_Setup_ScannerCal_CalPitch.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_CalPitch.TabIndex = 144;
+            this.textBox_Setup_ScannerCal_CalPitch.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_CalPitch.Text = "0.0";
             // 
             // button_Setup_ScannerCal_CalPitch
@@ -4082,6 +4148,7 @@
             this.textBox_Setup_ScannerCal_CalAreaHeight.Name = "textBox_Setup_ScannerCal_CalAreaHeight";
             this.textBox_Setup_ScannerCal_CalAreaHeight.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_CalAreaHeight.TabIndex = 141;
+            this.textBox_Setup_ScannerCal_CalAreaHeight.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_CalAreaHeight.Text = "0.0";
             // 
             // button_Setup_ScannerCal_CalAreaHeight
@@ -4103,6 +4170,7 @@
             this.textBox_Setup_ScannerCal_CalAreaWidth.Name = "textBox_Setup_ScannerCal_CalAreaWidth";
             this.textBox_Setup_ScannerCal_CalAreaWidth.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_CalAreaWidth.TabIndex = 138;
+            this.textBox_Setup_ScannerCal_CalAreaWidth.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_CalAreaWidth.Text = "0.0";
             // 
             // textBox_Setup_ScannerCal_PolygonDelay
@@ -4113,6 +4181,7 @@
             this.textBox_Setup_ScannerCal_PolygonDelay.Name = "textBox_Setup_ScannerCal_PolygonDelay";
             this.textBox_Setup_ScannerCal_PolygonDelay.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_PolygonDelay.TabIndex = 135;
+            this.textBox_Setup_ScannerCal_PolygonDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_PolygonDelay.Text = "0.0";
             // 
             // button_Setup_ScannerCal_PolygonDelay
@@ -4145,6 +4214,7 @@
             this.textBox_Setup_ScannerCal_JumpDelay.Name = "textBox_Setup_ScannerCal_JumpDelay";
             this.textBox_Setup_ScannerCal_JumpDelay.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_JumpDelay.TabIndex = 132;
+            this.textBox_Setup_ScannerCal_JumpDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_JumpDelay.Text = "0.0";
             // 
             // button_Setup_ScannerCal_JumpDelay
@@ -4177,6 +4247,7 @@
             this.textBox_Setup_ScannerCal_MarkDelay.Name = "textBox_Setup_ScannerCal_MarkDelay";
             this.textBox_Setup_ScannerCal_MarkDelay.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_MarkDelay.TabIndex = 129;
+            this.textBox_Setup_ScannerCal_MarkDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_MarkDelay.Text = "0.0";
             // 
             // button_Setup_ScannerCal_MarkDelay
@@ -4209,6 +4280,7 @@
             this.textBox_Setup_ScannerCal_LaserOffDelay.Name = "textBox_Setup_ScannerCal_LaserOffDelay";
             this.textBox_Setup_ScannerCal_LaserOffDelay.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_LaserOffDelay.TabIndex = 126;
+            this.textBox_Setup_ScannerCal_LaserOffDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_LaserOffDelay.Text = "0.0";
             // 
             // button_Setup_ScannerCal_LaserOffDelay
@@ -4241,6 +4313,7 @@
             this.textBox_Setup_ScannerCal_LaserOnDelay.Name = "textBox_Setup_ScannerCal_LaserOnDelay";
             this.textBox_Setup_ScannerCal_LaserOnDelay.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_LaserOnDelay.TabIndex = 123;
+            this.textBox_Setup_ScannerCal_LaserOnDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_LaserOnDelay.Text = "0.0";
             // 
             // button_Setup_ScannerCal_LaserOnDelay
@@ -4273,6 +4346,7 @@
             this.textBox_Setup_ScannerCal_JumpSpeed.Name = "textBox_Setup_ScannerCal_JumpSpeed";
             this.textBox_Setup_ScannerCal_JumpSpeed.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_JumpSpeed.TabIndex = 120;
+            this.textBox_Setup_ScannerCal_JumpSpeed.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Setup_ScannerCal_JumpSpeed.Text = "0.0";
             // 
             // textBox_Setup_ScannerCal_MarkingSpeed
@@ -4283,6 +4357,7 @@
             this.textBox_Setup_ScannerCal_MarkingSpeed.Name = "textBox_Setup_ScannerCal_MarkingSpeed";
             this.textBox_Setup_ScannerCal_MarkingSpeed.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_MarkingSpeed.TabIndex = 119;
+            this.textBox_Setup_ScannerCal_MarkingSpeed.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Setup_ScannerCal_MarkingSpeed.Text = "0.0";
             // 
             // button_Setup_ScannerCal_CrossMarkLength
@@ -4359,6 +4434,7 @@
             this.textBox_Setup_ScannerCal_CrossMarkLength.Name = "textBox_Setup_ScannerCal_CrossMarkLength";
             this.textBox_Setup_ScannerCal_CrossMarkLength.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_CrossMarkLength.TabIndex = 65;
+            this.textBox_Setup_ScannerCal_CrossMarkLength.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_CrossMarkLength.Text = "0.0";
             // 
             // button_Setup_ScannerCal_LaserEnergy
@@ -4391,6 +4467,7 @@
             this.textBox_Setup_ScannerCal_LaserEnergy.Name = "textBox_Setup_ScannerCal_LaserEnergy";
             this.textBox_Setup_ScannerCal_LaserEnergy.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_LaserEnergy.TabIndex = 62;
+            this.textBox_Setup_ScannerCal_LaserEnergy.Tag = "KeyPad;Min=0;Max=100;Format=0.000";
             this.textBox_Setup_ScannerCal_LaserEnergy.Text = "0.0";
             // 
             // button_Setup_ScannerCal_LaserFrequency
@@ -4423,6 +4500,7 @@
             this.textBox_Setup_ScannerCal_LaserFrequency.Name = "textBox_Setup_ScannerCal_LaserFrequency";
             this.textBox_Setup_ScannerCal_LaserFrequency.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_LaserFrequency.TabIndex = 53;
+            this.textBox_Setup_ScannerCal_LaserFrequency.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_ScannerCal_LaserFrequency.Text = "0.0";
             // 
             // textBox_ScannerCal_LaserFrequency
@@ -4529,6 +4607,7 @@
             this.basetextBox_Setup_ScannerCal_MinScore.Name = "basetextBox_Setup_ScannerCal_MinScore";
             this.basetextBox_Setup_ScannerCal_MinScore.Size = new System.Drawing.Size(88, 13);
             this.basetextBox_Setup_ScannerCal_MinScore.TabIndex = 7;
+            this.basetextBox_Setup_ScannerCal_MinScore.Tag = "KeyPad;Min=0;Max=100;Format=0";
             // 
             // baseLabel_Setup_ScannerCal_AngleTolerance
             // 
@@ -4552,6 +4631,7 @@
             this.basetextBox_Setup_ScannerCal_MaxInstance.Name = "basetextBox_Setup_ScannerCal_MaxInstance";
             this.basetextBox_Setup_ScannerCal_MaxInstance.Size = new System.Drawing.Size(88, 13);
             this.basetextBox_Setup_ScannerCal_MaxInstance.TabIndex = 6;
+            this.basetextBox_Setup_ScannerCal_MaxInstance.Tag = "KeyPad;Min=0;Max=100;Format=0";
             // 
             // baseToggleButton_Setup_ScannerCal_DuplicateCheck
             // 
@@ -4580,6 +4660,7 @@
             this.basetextBox_Setup_ScannerCal_AngleTolerance.Name = "basetextBox_Setup_ScannerCal_AngleTolerance";
             this.basetextBox_Setup_ScannerCal_AngleTolerance.Size = new System.Drawing.Size(88, 13);
             this.basetextBox_Setup_ScannerCal_AngleTolerance.TabIndex = 5;
+            this.basetextBox_Setup_ScannerCal_AngleTolerance.Tag = "KeyPad;Min=0;Max=360;Format=0.000";
             // 
             // baseToggleButton_Setup_ScannerCal_UseMaskImage
             // 
@@ -4602,11 +4683,11 @@
             this.baseLabel_Setup_ScannerCal_MinScore.AutoSize = true;
             this.baseLabel_Setup_ScannerCal_MinScore.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold);
             this.baseLabel_Setup_ScannerCal_MinScore.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Setup_ScannerCal_MinScore.Location = new System.Drawing.Point(80, 45);
+            this.baseLabel_Setup_ScannerCal_MinScore.Location = new System.Drawing.Point(54, 45);
             this.baseLabel_Setup_ScannerCal_MinScore.Name = "baseLabel_Setup_ScannerCal_MinScore";
-            this.baseLabel_Setup_ScannerCal_MinScore.Size = new System.Drawing.Size(65, 13);
+            this.baseLabel_Setup_ScannerCal_MinScore.Size = new System.Drawing.Size(91, 13);
             this.baseLabel_Setup_ScannerCal_MinScore.TabIndex = 4;
-            this.baseLabel_Setup_ScannerCal_MinScore.Text = "MinScore :";
+            this.baseLabel_Setup_ScannerCal_MinScore.Text = "MinScore [%] :";
             // 
             // baseLabel_Setup_ScannerCal_MaxInstance
             // 
@@ -4899,6 +4980,7 @@
             // 
             // comboBox_Setup_FlatnessMeasurementPos_List
             // 
+            this.comboBox_Setup_FlatnessMeasurementPos_List.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Setup_FlatnessMeasurementPos_List.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Setup_FlatnessMeasurementPos_List.FormattingEnabled = true;
             this.comboBox_Setup_FlatnessMeasurementPos_List.Items.AddRange(new object[] {
@@ -4912,7 +4994,6 @@
             this.comboBox_Setup_FlatnessMeasurementPos_List.Name = "comboBox_Setup_FlatnessMeasurementPos_List";
             this.comboBox_Setup_FlatnessMeasurementPos_List.Size = new System.Drawing.Size(118, 26);
             this.comboBox_Setup_FlatnessMeasurementPos_List.TabIndex = 147;
-            this.comboBox_Setup_FlatnessMeasurementPos_List.Text = "Work Stage";
             this.comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndexChanged += new System.EventHandler(this.comboBox_Setup_FlatnessMeasurementPos_List_SelectedIndexChanged);
             // 
             // label91
@@ -5066,6 +5147,7 @@
             this.textBox_Setup_Flatness_TeachingPos9_StageY.Name = "textBox_Setup_Flatness_TeachingPos9_StageY";
             this.textBox_Setup_Flatness_TeachingPos9_StageY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos9_StageY.TabIndex = 135;
+            this.textBox_Setup_Flatness_TeachingPos9_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos9_StageY.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos9_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5088,6 +5170,7 @@
             this.textBox_Setup_Flatness_TeachingPos9_StageX.Name = "textBox_Setup_Flatness_TeachingPos9_StageX";
             this.textBox_Setup_Flatness_TeachingPos9_StageX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos9_StageX.TabIndex = 133;
+            this.textBox_Setup_Flatness_TeachingPos9_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos9_StageX.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos9_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5122,6 +5205,7 @@
             this.textBox_Setup_Flatness_TeachingPos8_StageY.Name = "textBox_Setup_Flatness_TeachingPos8_StageY";
             this.textBox_Setup_Flatness_TeachingPos8_StageY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos8_StageY.TabIndex = 130;
+            this.textBox_Setup_Flatness_TeachingPos8_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos8_StageY.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos8_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5144,6 +5228,7 @@
             this.textBox_Setup_Flatness_TeachingPos8_StageX.Name = "textBox_Setup_Flatness_TeachingPos8_StageX";
             this.textBox_Setup_Flatness_TeachingPos8_StageX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos8_StageX.TabIndex = 128;
+            this.textBox_Setup_Flatness_TeachingPos8_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos8_StageX.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos8_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5178,6 +5263,7 @@
             this.textBox_Setup_Flatness_TeachingPos7_StageY.Name = "textBox_Setup_Flatness_TeachingPos7_StageY";
             this.textBox_Setup_Flatness_TeachingPos7_StageY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos7_StageY.TabIndex = 125;
+            this.textBox_Setup_Flatness_TeachingPos7_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos7_StageY.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos7_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5200,6 +5286,7 @@
             this.textBox_Setup_Flatness_TeachingPos7_StageX.Name = "textBox_Setup_Flatness_TeachingPos7_StageX";
             this.textBox_Setup_Flatness_TeachingPos7_StageX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos7_StageX.TabIndex = 123;
+            this.textBox_Setup_Flatness_TeachingPos7_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos7_StageX.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos7_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5234,6 +5321,7 @@
             this.textBox_Setup_Flatness_TeachingPos6_StageY.Name = "textBox_Setup_Flatness_TeachingPos6_StageY";
             this.textBox_Setup_Flatness_TeachingPos6_StageY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos6_StageY.TabIndex = 120;
+            this.textBox_Setup_Flatness_TeachingPos6_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos6_StageY.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos6_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5256,6 +5344,7 @@
             this.textBox_Setup_Flatness_TeachingPos6_StageX.Name = "textBox_Setup_Flatness_TeachingPos6_StageX";
             this.textBox_Setup_Flatness_TeachingPos6_StageX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos6_StageX.TabIndex = 118;
+            this.textBox_Setup_Flatness_TeachingPos6_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos6_StageX.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos6_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5290,6 +5379,7 @@
             this.textBox_Setup_Flatness_TeachingPos5_StageY.Name = "textBox_Setup_Flatness_TeachingPos5_StageY";
             this.textBox_Setup_Flatness_TeachingPos5_StageY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos5_StageY.TabIndex = 115;
+            this.textBox_Setup_Flatness_TeachingPos5_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos5_StageY.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos5_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5312,6 +5402,7 @@
             this.textBox_Setup_Flatness_TeachingPos5_StageX.Name = "textBox_Setup_Flatness_TeachingPos5_StageX";
             this.textBox_Setup_Flatness_TeachingPos5_StageX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos5_StageX.TabIndex = 113;
+            this.textBox_Setup_Flatness_TeachingPos5_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos5_StageX.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos5_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5346,6 +5437,7 @@
             this.textBox_Setup_Flatness_TeachingPos4_StageY.Name = "textBox_Setup_Flatness_TeachingPos4_StageY";
             this.textBox_Setup_Flatness_TeachingPos4_StageY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos4_StageY.TabIndex = 110;
+            this.textBox_Setup_Flatness_TeachingPos4_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos4_StageY.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos4_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5368,6 +5460,7 @@
             this.textBox_Setup_Flatness_TeachingPos4_StageX.Name = "textBox_Setup_Flatness_TeachingPos4_StageX";
             this.textBox_Setup_Flatness_TeachingPos4_StageX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos4_StageX.TabIndex = 108;
+            this.textBox_Setup_Flatness_TeachingPos4_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos4_StageX.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos4_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5402,6 +5495,7 @@
             this.textBox_Setup_Flatness_TeachingPos3_StageY.Name = "textBox_Setup_Flatness_TeachingPos3_StageY";
             this.textBox_Setup_Flatness_TeachingPos3_StageY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos3_StageY.TabIndex = 105;
+            this.textBox_Setup_Flatness_TeachingPos3_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos3_StageY.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos3_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5424,6 +5518,7 @@
             this.textBox_Setup_Flatness_TeachingPos3_StageX.Name = "textBox_Setup_Flatness_TeachingPos3_StageX";
             this.textBox_Setup_Flatness_TeachingPos3_StageX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos3_StageX.TabIndex = 103;
+            this.textBox_Setup_Flatness_TeachingPos3_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos3_StageX.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos3_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5458,6 +5553,7 @@
             this.textBox_Setup_Flatness_TeachingPos2_StageY.Name = "textBox_Setup_Flatness_TeachingPos2_StageY";
             this.textBox_Setup_Flatness_TeachingPos2_StageY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos2_StageY.TabIndex = 100;
+            this.textBox_Setup_Flatness_TeachingPos2_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos2_StageY.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos2_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5480,6 +5576,7 @@
             this.textBox_Setup_Flatness_TeachingPos2_StageX.Name = "textBox_Setup_Flatness_TeachingPos2_StageX";
             this.textBox_Setup_Flatness_TeachingPos2_StageX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos2_StageX.TabIndex = 98;
+            this.textBox_Setup_Flatness_TeachingPos2_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos2_StageX.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos2_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5514,6 +5611,7 @@
             this.textBox_Setup_Flatness_TeachingPos1_StageY.Name = "textBox_Setup_Flatness_TeachingPos1_StageY";
             this.textBox_Setup_Flatness_TeachingPos1_StageY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos1_StageY.TabIndex = 95;
+            this.textBox_Setup_Flatness_TeachingPos1_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos1_StageY.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos1_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5536,6 +5634,7 @@
             this.textBox_Setup_Flatness_TeachingPos1_StageX.Name = "textBox_Setup_Flatness_TeachingPos1_StageX";
             this.textBox_Setup_Flatness_TeachingPos1_StageX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Setup_Flatness_TeachingPos1_StageX.TabIndex = 93;
+            this.textBox_Setup_Flatness_TeachingPos1_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Setup_Flatness_TeachingPos1_StageX.Text = "000.000";
             this.textBox_Setup_Flatness_TeachingPos1_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5665,6 +5764,7 @@
             this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Name = "textBox_Setup_Option_ReferenceValue_atScannerFocusPosition";
             this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Size = new System.Drawing.Size(82, 24);
             this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.TabIndex = 74;
+            this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Text = "0.0";
             // 
             // label64
@@ -5686,10 +5786,17 @@
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Name = "textBox_Setup_Option_ReferenceValue_atVisionFocusPosition";
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Size = new System.Drawing.Size(82, 24);
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.TabIndex = 71;
+            this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text = "0.0";
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.checkBox_Setup_Option_HeightMeasure);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_HeightMeasure);
+            this.groupBox13.Controls.Add(this.checkBox_Setup_Option_LaserMeasure);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_LaserMeasure);
+            this.groupBox13.Controls.Add(this.checkBox_Setup_Option_SocketVision_Batch);
+            this.groupBox13.Controls.Add(this.checkBox_Setup_Option_SocketHeight_Batch);
             this.groupBox13.Controls.Add(this.checkBox_HoleCenterEnable);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_Hole02_50_Wait_Enable);
             this.groupBox13.Controls.Add(this.textBox_Setup_Option_Hole02_50_Wait_Time);
@@ -5764,20 +5871,80 @@
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
             // 
+            // checkBox_Setup_Option_HeightMeasure
+            // 
+            this.checkBox_Setup_Option_HeightMeasure.Location = new System.Drawing.Point(1024, 279);
+            this.checkBox_Setup_Option_HeightMeasure.Name = "checkBox_Setup_Option_HeightMeasure";
+            this.checkBox_Setup_Option_HeightMeasure.Size = new System.Drawing.Size(221, 24);
+            this.checkBox_Setup_Option_HeightMeasure.TabIndex = 133;
+            this.checkBox_Setup_Option_HeightMeasure.Text = "HeightMeasure Enable (ea):";
+            this.checkBox_Setup_Option_HeightMeasure.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_HeightMeasure.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_HeightMeasure_CheckedChanged);
+            // 
+            // textBox_Setup_Option_HeightMeasure
+            // 
+            this.textBox_Setup_Option_HeightMeasure.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_HeightMeasure.Location = new System.Drawing.Point(1246, 279);
+            this.textBox_Setup_Option_HeightMeasure.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_HeightMeasure.Name = "textBox_Setup_Option_HeightMeasure";
+            this.textBox_Setup_Option_HeightMeasure.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_HeightMeasure.TabIndex = 132;
+            this.textBox_Setup_Option_HeightMeasure.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
+            this.textBox_Setup_Option_HeightMeasure.Text = "1";
+            // 
+            // checkBox_Setup_Option_LaserMeasure
+            // 
+            this.checkBox_Setup_Option_LaserMeasure.Location = new System.Drawing.Point(1024, 243);
+            this.checkBox_Setup_Option_LaserMeasure.Name = "checkBox_Setup_Option_LaserMeasure";
+            this.checkBox_Setup_Option_LaserMeasure.Size = new System.Drawing.Size(221, 24);
+            this.checkBox_Setup_Option_LaserMeasure.TabIndex = 131;
+            this.checkBox_Setup_Option_LaserMeasure.Text = "LaserMeasure Enable (ea):";
+            this.checkBox_Setup_Option_LaserMeasure.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_LaserMeasure.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_LaserMeasure_CheckedChanged);
+            // 
+            // textBox_Setup_Option_LaserMeasure
+            // 
+            this.textBox_Setup_Option_LaserMeasure.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_LaserMeasure.Location = new System.Drawing.Point(1246, 243);
+            this.textBox_Setup_Option_LaserMeasure.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_LaserMeasure.Name = "textBox_Setup_Option_LaserMeasure";
+            this.textBox_Setup_Option_LaserMeasure.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_LaserMeasure.TabIndex = 130;
+            this.textBox_Setup_Option_LaserMeasure.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
+            this.textBox_Setup_Option_LaserMeasure.Text = "1";
+            // 
+            // checkBox_Setup_Option_SocketVision_Batch
+            // 
+            this.checkBox_Setup_Option_SocketVision_Batch.Location = new System.Drawing.Point(1024, 207);
+            this.checkBox_Setup_Option_SocketVision_Batch.Name = "checkBox_Setup_Option_SocketVision_Batch";
+            this.checkBox_Setup_Option_SocketVision_Batch.Size = new System.Drawing.Size(221, 24);
+            this.checkBox_Setup_Option_SocketVision_Batch.TabIndex = 129;
+            this.checkBox_Setup_Option_SocketVision_Batch.Text = "SocketVision_Batch_Enable";
+            this.checkBox_Setup_Option_SocketVision_Batch.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Setup_Option_SocketHeight_Batch
+            // 
+            this.checkBox_Setup_Option_SocketHeight_Batch.Location = new System.Drawing.Point(1024, 171);
+            this.checkBox_Setup_Option_SocketHeight_Batch.Name = "checkBox_Setup_Option_SocketHeight_Batch";
+            this.checkBox_Setup_Option_SocketHeight_Batch.Size = new System.Drawing.Size(221, 24);
+            this.checkBox_Setup_Option_SocketHeight_Batch.TabIndex = 128;
+            this.checkBox_Setup_Option_SocketHeight_Batch.Text = "SocketHeight_Batch_Enable";
+            this.checkBox_Setup_Option_SocketHeight_Batch.UseVisualStyleBackColor = true;
+            // 
             // checkBox_HoleCenterEnable
             // 
-            this.checkBox_HoleCenterEnable.Location = new System.Drawing.Point(1024, 157);
+            this.checkBox_HoleCenterEnable.Location = new System.Drawing.Point(1024, 135);
             this.checkBox_HoleCenterEnable.Name = "checkBox_HoleCenterEnable";
-            this.checkBox_HoleCenterEnable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_HoleCenterEnable.Size = new System.Drawing.Size(221, 24);
             this.checkBox_HoleCenterEnable.TabIndex = 126;
             this.checkBox_HoleCenterEnable.Text = "Hole Center Enable";
             this.checkBox_HoleCenterEnable.UseVisualStyleBackColor = true;
             // 
             // checkBox_Setup_Option_Hole02_50_Wait_Enable
             // 
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Location = new System.Drawing.Point(1024, 113);
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Location = new System.Drawing.Point(1024, 99);
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Name = "checkBox_Setup_Option_Hole02_50_Wait_Enable";
-            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Size = new System.Drawing.Size(221, 24);
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.TabIndex = 125;
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.Text = "Hole2~50 WaitTime(ms) :";
             this.checkBox_Setup_Option_Hole02_50_Wait_Enable.UseVisualStyleBackColor = true;
@@ -5786,18 +5953,19 @@
             // textBox_Setup_Option_Hole02_50_Wait_Time
             // 
             this.textBox_Setup_Option_Hole02_50_Wait_Time.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_Hole02_50_Wait_Time.Location = new System.Drawing.Point(1246, 113);
+            this.textBox_Setup_Option_Hole02_50_Wait_Time.Location = new System.Drawing.Point(1246, 99);
             this.textBox_Setup_Option_Hole02_50_Wait_Time.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Hole02_50_Wait_Time.Name = "textBox_Setup_Option_Hole02_50_Wait_Time";
             this.textBox_Setup_Option_Hole02_50_Wait_Time.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_Hole02_50_Wait_Time.TabIndex = 124;
+            this.textBox_Setup_Option_Hole02_50_Wait_Time.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Setup_Option_Hole02_50_Wait_Time.Text = "1";
             // 
             // checkBox_Setup_Option_LaserHeight_Retry_Enable
             // 
-            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Location = new System.Drawing.Point(1024, 70);
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Location = new System.Drawing.Point(1024, 63);
             this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Name = "checkBox_Setup_Option_LaserHeight_Retry_Enable";
-            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Size = new System.Drawing.Size(221, 24);
             this.checkBox_Setup_Option_LaserHeight_Retry_Enable.TabIndex = 123;
             this.checkBox_Setup_Option_LaserHeight_Retry_Enable.Text = "Height Sensor - Retry(ea):";
             this.checkBox_Setup_Option_LaserHeight_Retry_Enable.UseVisualStyleBackColor = true;
@@ -5806,20 +5974,21 @@
             // textBox_Setup_Option_LaserHeight_Retry_Count
             // 
             this.textBox_Setup_Option_LaserHeight_Retry_Count.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_LaserHeight_Retry_Count.Location = new System.Drawing.Point(1246, 70);
+            this.textBox_Setup_Option_LaserHeight_Retry_Count.Location = new System.Drawing.Point(1246, 63);
             this.textBox_Setup_Option_LaserHeight_Retry_Count.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_LaserHeight_Retry_Count.Name = "textBox_Setup_Option_LaserHeight_Retry_Count";
             this.textBox_Setup_Option_LaserHeight_Retry_Count.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_LaserHeight_Retry_Count.TabIndex = 122;
+            this.textBox_Setup_Option_LaserHeight_Retry_Count.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Setup_Option_LaserHeight_Retry_Count.Text = "1";
             // 
             // checkBox_Setup_Option_AutoCrossCheck
             // 
             this.checkBox_Setup_Option_AutoCrossCheck.Location = new System.Drawing.Point(1024, 27);
             this.checkBox_Setup_Option_AutoCrossCheck.Name = "checkBox_Setup_Option_AutoCrossCheck";
-            this.checkBox_Setup_Option_AutoCrossCheck.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_AutoCrossCheck.Size = new System.Drawing.Size(221, 24);
             this.checkBox_Setup_Option_AutoCrossCheck.TabIndex = 121;
-            this.checkBox_Setup_Option_AutoCrossCheck.Text = "AutoCrossCheck (ea):";
+            this.checkBox_Setup_Option_AutoCrossCheck.Text = "AutoCross Enable (ea):";
             this.checkBox_Setup_Option_AutoCrossCheck.UseVisualStyleBackColor = true;
             this.checkBox_Setup_Option_AutoCrossCheck.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_AutoCrossCheck_CheckedChanged);
             // 
@@ -5831,6 +6000,7 @@
             this.textBox_Setup_Option_AutoCrossCheck.Name = "textBox_Setup_Option_AutoCrossCheck";
             this.textBox_Setup_Option_AutoCrossCheck.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_AutoCrossCheck.TabIndex = 120;
+            this.textBox_Setup_Option_AutoCrossCheck.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Setup_Option_AutoCrossCheck.Text = "1";
             // 
             // label78
@@ -5852,6 +6022,7 @@
             this.textBox_Setup_Option_ModulePickup_1stDistance.Name = "textBox_Setup_Option_ModulePickup_1stDistance";
             this.textBox_Setup_Option_ModulePickup_1stDistance.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_ModulePickup_1stDistance.TabIndex = 119;
+            this.textBox_Setup_Option_ModulePickup_1stDistance.Tag = "KeyPad;Min=0;Max=999;Format=0.000";
             this.textBox_Setup_Option_ModulePickup_1stDistance.Text = "10";
             // 
             // label79
@@ -5884,6 +6055,7 @@
             this.textBox_Setup_Option_VibrationMoveInterval.Name = "textBox_Setup_Option_VibrationMoveInterval";
             this.textBox_Setup_Option_VibrationMoveInterval.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_VibrationMoveInterval.TabIndex = 116;
+            this.textBox_Setup_Option_VibrationMoveInterval.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_VibrationMoveInterval.Text = "2";
             // 
             // label76
@@ -5905,6 +6077,7 @@
             this.textBox_Setup_Option_PolylineCurve_Resolution.Name = "textBox_Setup_Option_PolylineCurve_Resolution";
             this.textBox_Setup_Option_PolylineCurve_Resolution.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_PolylineCurve_Resolution.TabIndex = 114;
+            this.textBox_Setup_Option_PolylineCurve_Resolution.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_PolylineCurve_Resolution.Text = "100";
             // 
             // label77
@@ -5948,6 +6121,7 @@
             this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Name = "textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime";
             this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.TabIndex = 110;
+            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text = "100";
             // 
             // label73
@@ -5980,6 +6154,7 @@
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Name = "textBox_Setup_Option_StackerDownDistance_afterLDPickUp";
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.TabIndex = 107;
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Tag = "KeyPad;Min=0;Max=999;Format=0.000";
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text = "20";
             // 
             // label71
@@ -6012,6 +6187,7 @@
             this.textBox_Setup_Option_VibrationMoveDistance.Name = "textBox_Setup_Option_VibrationMoveDistance";
             this.textBox_Setup_Option_VibrationMoveDistance.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_VibrationMoveDistance.TabIndex = 103;
+            this.textBox_Setup_Option_VibrationMoveDistance.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_VibrationMoveDistance.Text = "2";
             // 
             // label69
@@ -6033,6 +6209,7 @@
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Name = "textBox_Setup_Option_LoaderStackerLiftUp_StableTime";
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.TabIndex = 101;
+            this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Tag = "KeyPad;Min=0;Max=9999999;Format=0.0";
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text = "1000";
             // 
             // label68
@@ -6066,6 +6243,7 @@
             this.textBox_Setup_Option_LoaderStacker_LiftUpStep.Name = "textBox_Setup_Option_LoaderStacker_LiftUpStep";
             this.textBox_Setup_Option_LoaderStacker_LiftUpStep.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_LoaderStacker_LiftUpStep.TabIndex = 97;
+            this.textBox_Setup_Option_LoaderStacker_LiftUpStep.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Setup_Option_LoaderStacker_LiftUpStep.Text = "7";
             // 
             // label62
@@ -6087,6 +6265,7 @@
             this.textBox_Setup_Option_NumberOfVibrations.Name = "textBox_Setup_Option_NumberOfVibrations";
             this.textBox_Setup_Option_NumberOfVibrations.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_NumberOfVibrations.TabIndex = 96;
+            this.textBox_Setup_Option_NumberOfVibrations.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_NumberOfVibrations.Text = "2";
             // 
             // label61
@@ -6108,6 +6287,7 @@
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Name = "textBox_Setup_Option_Vibration_AccDec_Ratio";
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.TabIndex = 94;
+            this.textBox_Setup_Option_Vibration_AccDec_Ratio.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Text = "2";
             // 
             // label66
@@ -6151,6 +6331,7 @@
             this.textBox_Setup_Option_VacuumBlowTime.Name = "textBox_Setup_Option_VacuumBlowTime";
             this.textBox_Setup_Option_VacuumBlowTime.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_VacuumBlowTime.TabIndex = 83;
+            this.textBox_Setup_Option_VacuumBlowTime.Tag = "KeyPad;Min=0;Max=9999999;Format=0.0";
             this.textBox_Setup_Option_VacuumBlowTime.Text = "500";
             // 
             // label75
@@ -6194,6 +6375,7 @@
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Name = "textBox_Setup_Option_Sirius_Drawing_Resolution";
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.TabIndex = 80;
+            this.textBox_Setup_Option_Sirius_Drawing_Resolution.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Text = "50";
             // 
             // label93
@@ -6215,12 +6397,13 @@
             this.textBox_Setup_Option_DustCollector_WaitingTime.Name = "textBox_Setup_Option_DustCollector_WaitingTime";
             this.textBox_Setup_Option_DustCollector_WaitingTime.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_DustCollector_WaitingTime.TabIndex = 78;
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Tag = "KeyPad;Min=0;Max=9999999;Format=0.0";
             this.textBox_Setup_Option_DustCollector_WaitingTime.Text = "500";
             // 
             // label67
             // 
             this.label67.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label67.Location = new System.Drawing.Point(373, 22);
+            this.label67.Location = new System.Drawing.Point(373, 27);
             this.label67.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label67.Name = "label67";
             this.label67.Size = new System.Drawing.Size(134, 37);
@@ -6233,7 +6416,7 @@
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Checked = true;
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Location = new System.Drawing.Point(518, 44);
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Location = new System.Drawing.Point(518, 47);
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Name = "radioButton_Setup_Option_FiducialImageSave_FailedToFind";
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Size = new System.Drawing.Size(112, 21);
@@ -6246,7 +6429,7 @@
             // 
             this.radioButton_Setup_Option_FiducialImageSave_Always.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.radioButton_Setup_Option_FiducialImageSave_Always.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.radioButton_Setup_Option_FiducialImageSave_Always.Location = new System.Drawing.Point(518, 22);
+            this.radioButton_Setup_Option_FiducialImageSave_Always.Location = new System.Drawing.Point(518, 27);
             this.radioButton_Setup_Option_FiducialImageSave_Always.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioButton_Setup_Option_FiducialImageSave_Always.Name = "radioButton_Setup_Option_FiducialImageSave_Always";
             this.radioButton_Setup_Option_FiducialImageSave_Always.Size = new System.Drawing.Size(112, 21);
@@ -6273,6 +6456,7 @@
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Name = "textBox_Setup_Option_FiducialMarkJudgementRange";
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_FiducialMarkJudgementRange.TabIndex = 72;
+            this.textBox_Setup_Option_FiducialMarkJudgementRange.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Text = "0.1";
             // 
             // checkBox_Setup_Option_LaserHeightCheckStableTime_Enable
@@ -6294,6 +6478,7 @@
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Name = "textBox_Setup_Option_LaserHeightCheckStableTime";
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_LaserHeightCheckStableTime.TabIndex = 70;
+            this.textBox_Setup_Option_LaserHeightCheckStableTime.Tag = "KeyPad;Min=0;Max=9999999;Format=0.0";
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Text = "500";
             // 
             // checkBox_Setup_Option_VacuumStableTime_Enable
@@ -6315,6 +6500,7 @@
             this.textBox_Setup_Option_VacuumStableTime.Name = "textBox_Setup_Option_VacuumStableTime";
             this.textBox_Setup_Option_VacuumStableTime.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_VacuumStableTime.TabIndex = 68;
+            this.textBox_Setup_Option_VacuumStableTime.Tag = "KeyPad;Min=0;Max=9999999;Format=0.0";
             this.textBox_Setup_Option_VacuumStableTime.Text = "500";
             // 
             // label60
@@ -6358,6 +6544,7 @@
             this.textBox_Setup_Option_MAligner_WidenDistance.Name = "textBox_Setup_Option_MAligner_WidenDistance";
             this.textBox_Setup_Option_MAligner_WidenDistance.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_MAligner_WidenDistance.TabIndex = 64;
+            this.textBox_Setup_Option_MAligner_WidenDistance.Tag = "KeyPad;Min=-100;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_MAligner_WidenDistance.Text = "2";
             // 
             // label57
@@ -6379,6 +6566,7 @@
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Name = "textBox_Setup_Option_MAligner_NarrowingDistance";
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_MAligner_NarrowingDistance.TabIndex = 62;
+            this.textBox_Setup_Option_MAligner_NarrowingDistance.Tag = "KeyPad;Min=-100;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Text = "0.5";
             // 
             // label56
@@ -6421,6 +6609,7 @@
             this.textBox_Setup_Option_SignalHoldTime.Name = "textBox_Setup_Option_SignalHoldTime";
             this.textBox_Setup_Option_SignalHoldTime.Size = new System.Drawing.Size(50, 24);
             this.textBox_Setup_Option_SignalHoldTime.TabIndex = 58;
+            this.textBox_Setup_Option_SignalHoldTime.Tag = "KeyPad;Min=0;Max=9999999;Format=0.0";
             this.textBox_Setup_Option_SignalHoldTime.Text = "500";
             // 
             // checkBox_Setup_Option_VacuumSensorEnable
@@ -6538,6 +6727,7 @@
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Name = "textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y";
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Size = new System.Drawing.Size(114, 24);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.TabIndex = 74;
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.00000";
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text = "0.0";
             // 
             // button11
@@ -6570,6 +6760,7 @@
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Name = "textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X";
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Size = new System.Drawing.Size(114, 24);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.TabIndex = 71;
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.00000";
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text = "0.0";
             // 
             // groupBox8
@@ -6645,6 +6836,7 @@
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Name = "textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y";
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Size = new System.Drawing.Size(114, 24);
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.TabIndex = 74;
+            this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Text = "0.0";
             // 
             // button14
@@ -6677,6 +6869,7 @@
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Name = "textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X";
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Size = new System.Drawing.Size(114, 24);
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.TabIndex = 71;
+            this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Text = "0.0";
             // 
             // groupBox7
@@ -6731,6 +6924,7 @@
             this.textBox_ScannerOffset_Angle.Name = "textBox_ScannerOffset_Angle";
             this.textBox_ScannerOffset_Angle.Size = new System.Drawing.Size(114, 24);
             this.textBox_ScannerOffset_Angle.TabIndex = 93;
+            this.textBox_ScannerOffset_Angle.Tag = "KeyPad;Min=-9999999;Max=9999999;Format=0.000000000";
             this.textBox_ScannerOffset_Angle.Text = "0.0";
             // 
             // btnScannerOffset_Set
@@ -6779,6 +6973,7 @@
             this.textBox_ScannerOffset_Y.Name = "textBox_ScannerOffset_Y";
             this.textBox_ScannerOffset_Y.Size = new System.Drawing.Size(114, 24);
             this.textBox_ScannerOffset_Y.TabIndex = 62;
+            this.textBox_ScannerOffset_Y.Tag = "KeyPad;Min=-9999999;Max=9999999;Format=0.000000000";
             this.textBox_ScannerOffset_Y.Text = "0.0";
             // 
             // button13
@@ -6811,6 +7006,7 @@
             this.textBox_ScannerOffset_X.Name = "textBox_ScannerOffset_X";
             this.textBox_ScannerOffset_X.Size = new System.Drawing.Size(114, 24);
             this.textBox_ScannerOffset_X.TabIndex = 53;
+            this.textBox_ScannerOffset_X.Tag = "KeyPad;Min=-9999999;Max=9999999;Format=0.000000000";
             this.textBox_ScannerOffset_X.Text = "0.0";
             // 
             // groupBox17
@@ -6843,6 +7039,7 @@
             this.textBox_Setup_Option_BET_Mrad_09x.Name = "textBox_Setup_Option_BET_Mrad_09x";
             this.textBox_Setup_Option_BET_Mrad_09x.Size = new System.Drawing.Size(59, 24);
             this.textBox_Setup_Option_BET_Mrad_09x.TabIndex = 129;
+            this.textBox_Setup_Option_BET_Mrad_09x.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_BET_Mrad_09x.Text = "0.37";
             // 
             // label84
@@ -6875,6 +7072,7 @@
             this.textBox_Setup_Option_BET_Mrad_08x.Name = "textBox_Setup_Option_BET_Mrad_08x";
             this.textBox_Setup_Option_BET_Mrad_08x.Size = new System.Drawing.Size(59, 24);
             this.textBox_Setup_Option_BET_Mrad_08x.TabIndex = 121;
+            this.textBox_Setup_Option_BET_Mrad_08x.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_BET_Mrad_08x.Text = "0.5";
             // 
             // textBox_Setup_Option_BET_Mrad_12x
@@ -6885,6 +7083,7 @@
             this.textBox_Setup_Option_BET_Mrad_12x.Name = "textBox_Setup_Option_BET_Mrad_12x";
             this.textBox_Setup_Option_BET_Mrad_12x.Size = new System.Drawing.Size(59, 24);
             this.textBox_Setup_Option_BET_Mrad_12x.TabIndex = 127;
+            this.textBox_Setup_Option_BET_Mrad_12x.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_BET_Mrad_12x.Text = "0.02";
             // 
             // label80
@@ -6917,6 +7116,7 @@
             this.textBox_Setup_Option_BET_Mrad_10x.Name = "textBox_Setup_Option_BET_Mrad_10x";
             this.textBox_Setup_Option_BET_Mrad_10x.Size = new System.Drawing.Size(59, 24);
             this.textBox_Setup_Option_BET_Mrad_10x.TabIndex = 123;
+            this.textBox_Setup_Option_BET_Mrad_10x.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_BET_Mrad_10x.Text = "0.24";
             // 
             // textBox_Setup_Option_BET_Mrad_11x
@@ -6927,6 +7127,7 @@
             this.textBox_Setup_Option_BET_Mrad_11x.Name = "textBox_Setup_Option_BET_Mrad_11x";
             this.textBox_Setup_Option_BET_Mrad_11x.Size = new System.Drawing.Size(59, 24);
             this.textBox_Setup_Option_BET_Mrad_11x.TabIndex = 125;
+            this.textBox_Setup_Option_BET_Mrad_11x.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_BET_Mrad_11x.Text = "0.11";
             // 
             // label81
@@ -7007,6 +7208,7 @@
             this.textBox_Setup_Option_OffsetY.Name = "textBox_Setup_Option_OffsetY";
             this.textBox_Setup_Option_OffsetY.Size = new System.Drawing.Size(114, 23);
             this.textBox_Setup_Option_OffsetY.TabIndex = 74;
+            this.textBox_Setup_Option_OffsetY.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Setup_Option_OffsetY.Text = "0.0";
             // 
             // textBox_Setup_Option_OffsetX
@@ -7017,6 +7219,7 @@
             this.textBox_Setup_Option_OffsetX.Name = "textBox_Setup_Option_OffsetX";
             this.textBox_Setup_Option_OffsetX.Size = new System.Drawing.Size(114, 23);
             this.textBox_Setup_Option_OffsetX.TabIndex = 73;
+            this.textBox_Setup_Option_OffsetX.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Setup_Option_OffsetX.Text = "0.0";
             // 
             // label87
@@ -7083,6 +7286,7 @@
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Name = "textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y";
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Size = new System.Drawing.Size(114, 23);
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.TabIndex = 68;
+            this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Text = "0.0";
             // 
             // button6
@@ -7115,6 +7319,7 @@
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Name = "textBox_Setup_Option_Offset_FineCamCoarseCam_Y";
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Size = new System.Drawing.Size(114, 23);
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.TabIndex = 65;
+            this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Text = "0.0";
             // 
             // button5
@@ -7147,6 +7352,7 @@
             this.textBox_Setup_Option_Offset_ScannerFineCam_Y.Name = "textBox_Setup_Option_Offset_ScannerFineCam_Y";
             this.textBox_Setup_Option_Offset_ScannerFineCam_Y.Size = new System.Drawing.Size(114, 23);
             this.textBox_Setup_Option_Offset_ScannerFineCam_Y.TabIndex = 62;
+            this.textBox_Setup_Option_Offset_ScannerFineCam_Y.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Setup_Option_Offset_ScannerFineCam_Y.Text = "0.0";
             // 
             // button4
@@ -7179,6 +7385,7 @@
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Name = "textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X";
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Size = new System.Drawing.Size(114, 23);
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.TabIndex = 59;
+            this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Text = "0.0";
             // 
             // button3
@@ -7211,6 +7418,7 @@
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.Name = "textBox_Setup_Option_Offset_FineCamCoarseCam_X";
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.Size = new System.Drawing.Size(114, 23);
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.TabIndex = 56;
+            this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Setup_Option_Offset_FineCamCoarseCam_X.Text = "0.0";
             // 
             // button1
@@ -7243,6 +7451,7 @@
             this.textBox_Setup_Option_Offset_ScannerFineCam_X.Name = "textBox_Setup_Option_Offset_ScannerFineCam_X";
             this.textBox_Setup_Option_Offset_ScannerFineCam_X.Size = new System.Drawing.Size(114, 23);
             this.textBox_Setup_Option_Offset_ScannerFineCam_X.TabIndex = 53;
+            this.textBox_Setup_Option_Offset_ScannerFineCam_X.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Setup_Option_Offset_ScannerFineCam_X.Text = "0.0";
             // 
             // button2
@@ -7975,5 +8184,13 @@
         private System.Windows.Forms.CheckBox checkBox_Setup_Option_Hole02_50_Wait_Enable;
         private System.Windows.Forms.TextBox textBox_Setup_Option_Hole02_50_Wait_Time;
         private System.Windows.Forms.CheckBox checkBox_HoleCenterEnable;
+        private System.Windows.Forms.CheckBox checkBox_Setup_Option_SocketHeight_Batch;
+        private System.Windows.Forms.CheckBox checkBox_Setup_Option_SocketVision_Batch;
+        private System.Windows.Forms.CheckBox checkBox_Setup_Option_LaserMeasure;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_LaserMeasure;
+        private System.Windows.Forms.CheckBox checkBox_Setup_Option_HeightMeasure;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_HeightMeasure;
+        private System.Windows.Forms.Panel panel_Setup_Communication_DeviceControl;
+        private System.Windows.Forms.Button button_Setup_Communication_DeviceControl;
     }
 }

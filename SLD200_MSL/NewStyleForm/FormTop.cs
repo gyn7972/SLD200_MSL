@@ -101,12 +101,21 @@ namespace SLD200_MSL
             m_nBlink = 0;
 
             m_Timer = new Timer();
-            m_Timer.Interval = 100;
+            m_Timer.Interval = 200;
             m_Timer.Tick += UpdateUI_Tick;
             m_Timer.Start();
 
             m_strRecipeName_Before = "";
             m_strDrawingFileName_Before = "";
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         protected override void OnLoad(EventArgs e)

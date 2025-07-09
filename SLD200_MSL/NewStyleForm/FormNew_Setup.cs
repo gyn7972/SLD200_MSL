@@ -35,6 +35,10 @@ using QMC.Common.Q_Config;
 using QMC.Common.Q_Sequence;
 using OpenCvSharp.Internal;
 using NativeMethods = QMC.Core.NativeMethods;
+using SLD200.NewStyleForm.NewSubForm;
+using TextBox = System.Windows.Forms.TextBox;
+using Control = System.Windows.Forms.Control;
+using RichTextBox = System.Windows.Forms.RichTextBox;
 //using OpenCvSharp;
 
 namespace SLD200_MSL
@@ -50,7 +54,13 @@ namespace SLD200_MSL
 
         //FormNew_VisionPopup m_formVisionPopup = new FormNew_VisionPopup();
         FormNew_CommunicationTerminal m_formCommTerminal = new FormNew_CommunicationTerminal();
-
+        
+        FormNewSub_DeviceControl m_formDeviceControl;
+        public FormNewSub_DeviceControl FormDeviceControl
+        {
+            get { return m_formDeviceControl; }
+            set { m_formDeviceControl = value; }
+        }
         //  IO
         private DioPointCollection m_DioPoints;
         private IOListControl Inputlist;
@@ -138,6 +148,15 @@ namespace SLD200_MSL
             workStage.scannerCompensator.UpdateResult += M_Owner_UpdateResult;
 
             FormNew_Setup_Load();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         //private void FormNew_Setup_Load(object sender, EventArgs e)
@@ -397,7 +416,25 @@ namespace SLD200_MSL
             //  Scanner Calibration Position : 처음에는 Cal Pan으로 설정.
             checkBox_Setup_ScannerCal_Position.Checked = true;
 
+
+            ShowDeivceControl();
+            //m_formDeviceControl = new FormNewSub_DeviceControl();
+            //m_formDeviceControl.Owner = this;
+
+            InitRecipeUI_KeyPad();
+
             this.Refresh();
+        }
+
+        private void ShowDeivceControl()
+        {
+            if (m_formDeviceControl == null)
+                m_formDeviceControl = new FormNewSub_DeviceControl();
+
+            panel_Setup_Communication_DeviceControl.Controls.Clear();
+            panel_Setup_Communication_DeviceControl.Controls.Add(m_formDeviceControl);
+            m_formDeviceControl.Dock = DockStyle.Fill;
+            m_formDeviceControl.Visible = true;
         }
 
         protected override void OnVisibleChanged(EventArgs e)
@@ -413,6 +450,8 @@ namespace SLD200_MSL
                 timer_Status.Enabled = true;
                 this.Box_Setup_ScannerCal_ImageViewer.ResumeDisplay();
                 this.Box_Setup_ScannerCal_ImageViewer.StartUpdateTask();
+
+                FormNew_Setup_Shown(null,null); //  폼이 처음 보일 때, Shown 이벤트를 강제로 호출하여 초기화 작업을 수행합니다.
 
             }
             else if (!this.Visible && m_bFormVisible)
@@ -1424,6 +1463,16 @@ namespace SLD200_MSL
 
             checkBox_HoleCenterEnable.Checked = Equipment.Machine_HoleCenter_Enable;
 
+            checkBox_Setup_Option_SocketHeight_Batch.Checked = Equipment.Machine_SocketHeight_Batch_Use;
+
+            checkBox_Setup_Option_SocketVision_Batch.Checked = Equipment.Machine_SocketVision_Batch_Use;
+
+            checkBox_Setup_Option_LaserMeasure.Checked = Equipment.Machine_LaserPowerMeasure_Enable;
+            textBox_Setup_Option_LaserMeasure.Text = Equipment.Machine_LaserPowerMeasure_Count.ToString();
+
+            checkBox_Setup_Option_HeightMeasure.Checked = Equipment.Machine_HeightMeasure_Enable;
+            textBox_Setup_Option_HeightMeasure.Text = Equipment.Machine_HeightMeasure_Count.ToString();
+
             if (Equipment.Machine_FiducialImageSave_Always)
             {
                 radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
@@ -1884,6 +1933,22 @@ namespace SLD200_MSL
 
             Equipment.Machine_HoleCenter_Enable = checkBox_HoleCenterEnable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "HoleCenter_Enable", checkBox_HoleCenterEnable.Checked.ToString(), strFIle);
+
+            Equipment.Machine_SocketHeight_Batch_Use = checkBox_Setup_Option_SocketHeight_Batch.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "SocketHeight_Batch_Enable", checkBox_Setup_Option_SocketHeight_Batch.Checked.ToString(), strFIle);
+
+            Equipment.Machine_SocketVision_Batch_Use = checkBox_Setup_Option_SocketVision_Batch.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "SocketVision_Batch_Enable", checkBox_Setup_Option_SocketVision_Batch.Checked.ToString(), strFIle);
+
+            Equipment.Machine_LaserPowerMeasure_Enable = checkBox_Setup_Option_LaserMeasure.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LaserPowerMeasure_Enable", checkBox_Setup_Option_LaserMeasure.Checked.ToString(), strFIle);
+            Equipment.Machine_LaserPowerMeasure_Count = Equipment.ToInt(textBox_Setup_Option_LaserMeasure.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LaserPowerMeasure_Count", textBox_Setup_Option_LaserMeasure.Text.ToString(), strFIle);
+
+            Equipment.Machine_HeightMeasure_Enable = checkBox_Setup_Option_HeightMeasure.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_Enable", checkBox_Setup_Option_HeightMeasure.Checked.ToString(), strFIle);
+            Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(textBox_Setup_Option_HeightMeasure.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_Count", textBox_Setup_Option_HeightMeasure.Text.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2481,6 +2546,46 @@ namespace SLD200_MSL
                 checkBox_HoleCenterEnable.Checked = false;
             }
 
+            if(Equipment.Machine_SocketHeight_Batch_Use)
+            {
+                checkBox_Setup_Option_SocketHeight_Batch.Checked = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_SocketHeight_Batch.Checked = false;
+            }
+
+            if (Equipment.Machine_SocketVision_Batch_Use)
+            {
+                checkBox_Setup_Option_SocketVision_Batch.Checked = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_SocketVision_Batch.Checked = false;
+            }
+
+            if (Equipment.Machine_LaserPowerMeasure_Enable)
+            {
+                checkBox_Setup_Option_LaserMeasure.Checked = true;
+                textBox_Setup_Option_LaserMeasure.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_LaserMeasure.Checked = false;
+                textBox_Setup_Option_LaserMeasure.Enabled = false;
+            }
+
+            if (Equipment.Machine_HeightMeasure_Enable)
+            {
+                checkBox_Setup_Option_HeightMeasure.Checked = true;
+                textBox_Setup_Option_HeightMeasure.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_HeightMeasure.Checked = false;
+                textBox_Setup_Option_HeightMeasure.Enabled = false;
+            }
+
         }
 
         private void checkBox_Setup_Option_VacuumSensorEnable_CheckedChanged(object sender, EventArgs e)
@@ -3051,13 +3156,14 @@ namespace SLD200_MSL
             }
 
             //  선택한 위치 index 를 측정 위치로 설정
-            workStage.m_nFlatnessMeasure_Type = nIndex;
+            workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Type = nIndex;
 
-            if (workStage.m_nFlatnessMeasure_Step == (int)WorkStage.FlatnessMeasure_Step.None)
+            if (workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step == 
+                (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.None)
             {
                 var mb = new MessageBoxYesNo();
 
-                switch(workStage.m_nFlatnessMeasure_Type)
+                switch(workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Type)
                 {
                     case (int)FlatMeasureList.Stage:
                         m_strTemp = "[Stage] Flatness 측정을 시작하시겠습니까?";
@@ -3067,7 +3173,7 @@ namespace SLD200_MSL
                         m_strTemp = "[Cal. Plate] Flatness 측정을 시작하시겠습니까?";
                         break;
 
-                    case (int)FlatMeasureList.User1:
+                    case (int)FlatMeasureList.Auto_Stage:
                         m_strTemp = "[User1] Flatness 측정을 시작하시겠습니까?";
                         break;
 
@@ -3083,7 +3189,9 @@ namespace SLD200_MSL
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
                     return;
 
-                workStage.m_nFlatnessMeasure_Step = (int)WorkStage.FlatnessMeasure_Step.Start;
+                workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step = 
+                    (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.Start;
+
                 workStage.timer_Comm.Enabled = true;
                 workStage.timer_Comm.Start();
             }
@@ -3110,7 +3218,8 @@ namespace SLD200_MSL
                 return;
             }
 
-            workStage.m_nFlatnessMeasure_Step = (int)WorkStage.FlatnessMeasure_Step.None;
+            workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step = 
+                (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.None;
 
             workStage.MC_Func.MC_MotorStop((int)WorkStage.nAxis.X, 2000);
             workStage.MC_Func.MC_MotorStop((int)WorkStage.nAxis.Y, 2000);
@@ -4380,6 +4489,122 @@ namespace SLD200_MSL
             {
                 Equipment.Machine_Hole02_50_Wait_Enable = false;
                 textBox_Setup_Option_Hole02_50_Wait_Time.Enabled = false;
+            }
+        }
+
+        private void checkBox_Setup_Option_LaserMeasure_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_LaserMeasure.Checked)
+            {
+                Equipment.Machine_LaserPowerMeasure_Enable = true;
+                textBox_Setup_Option_LaserMeasure.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_LaserPowerMeasure_Enable = false;
+                textBox_Setup_Option_LaserMeasure.Enabled = false;
+            }
+        }
+
+        private void checkBox_Setup_Option_HeightMeasure_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_HeightMeasure.Checked)
+            {
+                Equipment.Machine_HeightMeasure_Enable = true;
+                textBox_Setup_Option_HeightMeasure.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_HeightMeasure_Enable = false;
+                textBox_Setup_Option_HeightMeasure.Enabled = false;
+            }
+        }
+
+        private void button_Setup_Communication_DeviceControl_Click(object sender, EventArgs e)
+        {
+            //m_formDeviceControl.ShowDialog();
+        }
+
+        // 이거 각각 폼에 만들어야함.
+        private void InitRecipeUI_KeyPad()
+        {
+            RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행
+        }
+        private void RegisterKeyPadDoubleClickHandlers(Control parent)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                // 조건: 숫자 입력용 TextBox 또는 RichTextBox만
+                bool isTargetTextBox = ctrl is TextBox || ctrl is RichTextBox;
+
+                if (isTargetTextBox && ctrl.Tag?.ToString().Contains("KeyPad") == true)
+                {
+                    ctrl.DoubleClick -= textBox_DoubleClick_OpenKeyPad; // 중복 연결 방지
+                    ctrl.DoubleClick += textBox_DoubleClick_OpenKeyPad;
+
+                    // 키보드 입력 제한용 Validating 연결
+                    ctrl.Validating -= textBox_Validate_KeyPadRange;
+                    ctrl.Validating += textBox_Validate_KeyPadRange;
+                }
+
+                // 하위 컨트롤 재귀 탐색
+                if (ctrl.HasChildren)
+                    RegisterKeyPadDoubleClickHandlers(ctrl);
+            }
+        }
+        private void textBox_DoubleClick_OpenKeyPad(object sender, EventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                string currentText = ctrl.Text ?? "0";
+                var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
+
+                if (double.TryParse(currentText, out double value))
+                    dlg.SetInitialValue(value);
+                else
+                    dlg.SetInitialValue(0);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string result = dlg.EnteredValue.ToString(meta.Format);
+                    ctrl.Text = result;
+                }
+            }
+        }
+        private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
+        {
+            if (sender is TextBox tb && tb.Tag != null)
+            {
+                var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
+
+                if (double.TryParse(tb.Text, out double val))
+                {
+                    if (val < meta.Min)
+                    {
+                        tb.Text = meta.Min.ToString(meta.Format);
+                        //MessageBox.Show($"최소값 {meta.Min}보다 작습니다."); // 또는 자동 보정만
+                    }
+                    else if (val > meta.Max)
+                    {
+                        tb.Text = meta.Max.ToString(meta.Format);
+                        //MessageBox.Show($"최대값 {meta.Max}보다 큽니다.");
+                    }
+                    else
+                    {
+                        tb.Text = val.ToString(meta.Format);
+                    }
+                }
+                else
+                {
+                    // 숫자 아님 → 초기화
+                    tb.Text = meta.Min.ToString(meta.Format);
+                }
             }
         }
     }

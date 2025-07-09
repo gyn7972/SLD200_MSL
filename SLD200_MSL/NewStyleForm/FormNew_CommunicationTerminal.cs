@@ -72,10 +72,18 @@ namespace SLD200_MSL
 
             //  Status 타이머
             timer_Status = new System.Windows.Forms.Timer();
-            timer_Status.Interval = 100;
+            timer_Status.Interval = 200;
             timer_Status.Tick += new System.EventHandler(Timer_Status_Func);
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
         public FormNew_CommunicationTerminal CreateCommTerminal()
         {
             if (m_formCommTerminal == null)
@@ -776,5 +784,7 @@ namespace SLD200_MSL
             //Thread.Sleep(100);
             bds.DustCollector_Upper.SetFrequency(10);
         }
+
+
     }
 }

@@ -221,6 +221,7 @@
             this.label323 = new System.Windows.Forms.Label();
             this.button153 = new System.Windows.Forms.Button();
             this.groupBox136 = new System.Windows.Forms.GroupBox();
+            this.checkBox_MasterView = new System.Windows.Forms.CheckBox();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.listView_Recipe_TabRecipe_LayerData = new System.Windows.Forms.ListView();
             this.groupBox137 = new System.Windows.Forms.GroupBox();
@@ -309,7 +310,6 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.checkBox_MasterView = new System.Windows.Forms.CheckBox();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -377,6 +377,7 @@
             this.button_Recipe_New.TabIndex = 22;
             this.button_Recipe_New.Text = "New";
             this.button_Recipe_New.UseVisualStyleBackColor = true;
+            this.button_Recipe_New.Click += new System.EventHandler(this.button_Recipe_New_Click);
             // 
             // button_Recipe_Apply
             // 
@@ -564,6 +565,7 @@
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Increase";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Size = new System.Drawing.Size(35, 24);
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.TabIndex = 123;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Tag = "KeyPad;Min=1;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = "1";
             // 
             // label25
@@ -585,6 +587,7 @@
             this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Name = "textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing";
             this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Size = new System.Drawing.Size(48, 24);
             this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.TabIndex = 133;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Tag = "KeyPad;Min=0;Max=9999;Format=0.000";
             this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = "0.2";
             // 
             // label79
@@ -686,6 +689,7 @@
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Digits";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Size = new System.Drawing.Size(31, 24);
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.TabIndex = 121;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Tag = "KeyPad;Min=0;Max=9999;Format=0";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = "4";
             // 
             // label24
@@ -707,6 +711,7 @@
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Size = new System.Drawing.Size(35, 24);
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.TabIndex = 119;
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Tag = "KeyPad;Min=1;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = "1";
             // 
             // label23
@@ -722,6 +727,7 @@
             // 
             // comboBox_Recipe_TabRecipe_CustomMarking_DataType
             // 
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Items.AddRange(new object[] {
@@ -735,7 +741,6 @@
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Name = "comboBox_Recipe_TabRecipe_CustomMarking_DataType";
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Size = new System.Drawing.Size(130, 26);
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.TabIndex = 117;
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Text = "Text";
             this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndexChanged += new System.EventHandler(this.comboBox_Recipe_TabRecipe_CustomMarking_DataType_SelectedIndexChanged);
             // 
             // label22
@@ -826,6 +831,7 @@
             this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Name = "textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel";
             this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Size = new System.Drawing.Size(50, 24);
             this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.TabIndex = 108;
+            this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Tag = "KeyPad;Min=-80;Max=80;Format=0";
             this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = "-40";
             // 
             // groupBox17
@@ -1092,6 +1098,7 @@
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Name = "textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper";
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Size = new System.Drawing.Size(39, 24);
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.TabIndex = 19;
+            this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Tag = "KeyPad;Min=0;Max=60;Format=0";
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = "20";
             // 
             // label46
@@ -1113,6 +1120,7 @@
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Name = "textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower";
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Size = new System.Drawing.Size(39, 24);
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.TabIndex = 14;
+            this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Tag = "KeyPad;Min=0;Max=60;Format=0";
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = "20";
             // 
             // label48
@@ -1247,6 +1255,7 @@
             this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Name = "textBox_Recipe_TabRecipe_SpiralParam_AngleFactor";
             this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.TabIndex = 31;
+            this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.0";
             this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = "10";
             // 
             // label39
@@ -1279,6 +1288,7 @@
             this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Name = "textBox_Recipe_TabRecipe_SpiralParam_Revolutions";
             this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.TabIndex = 28;
+            this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.0";
             this.textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = "10";
             // 
             // label40
@@ -1311,6 +1321,7 @@
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Name = "textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter";
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.TabIndex = 25;
+            this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text = "0.0";
             // 
             // label41
@@ -1343,6 +1354,7 @@
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Name = "textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter";
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.TabIndex = 22;
+            this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = "0.0";
             // 
             // label42
@@ -1408,6 +1420,7 @@
             this.textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Name = "textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness";
             this.textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.TabIndex = 28;
+            this.textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
             this.textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = "0.0";
             // 
             // label36
@@ -1440,6 +1453,7 @@
             this.textBox_Recipe_TabRecipe_ModuleInformation_Height.Name = "textBox_Recipe_TabRecipe_ModuleInformation_Height";
             this.textBox_Recipe_TabRecipe_ModuleInformation_Height.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_ModuleInformation_Height.TabIndex = 25;
+            this.textBox_Recipe_TabRecipe_ModuleInformation_Height.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = "120";
             // 
             // label35
@@ -1472,6 +1486,7 @@
             this.textBox_Recipe_TabRecipe_ModuleInformation_Width.Name = "textBox_Recipe_TabRecipe_ModuleInformation_Width";
             this.textBox_Recipe_TabRecipe_ModuleInformation_Width.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_ModuleInformation_Width.TabIndex = 22;
+            this.textBox_Recipe_TabRecipe_ModuleInformation_Width.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Recipe_TabRecipe_ModuleInformation_Width.Text = "125";
             // 
             // label34
@@ -1537,6 +1552,7 @@
             this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Name = "textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness";
             this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.TabIndex = 32;
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
             this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text = "0.0";
             // 
             // textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY
@@ -1547,6 +1563,7 @@
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Name = "textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY";
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.TabIndex = 65;
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text = "0.0";
             // 
             // label_GoldPowderHeight
@@ -1579,6 +1596,7 @@
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Name = "textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX";
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.TabIndex = 63;
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text = "0.0";
             // 
             // label76
@@ -1657,7 +1675,7 @@
             this.label89.Name = "label89";
             this.label89.Size = new System.Drawing.Size(162, 17);
             this.label89.TabIndex = 21;
-            this.label89.Text = "(0% ~ 100%)  ";
+            this.label89.Text = "(0% ~ 20%)  ";
             this.label89.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // button34
@@ -1679,6 +1697,7 @@
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Name = "textBox_Recipe_TabRecipe_LaserParam_Frequency";
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Size = new System.Drawing.Size(53, 24);
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.TabIndex = 19;
+            this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Tag = "KeyPad;Min=0.001;Max=9999999;Format=0.0";
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = "10000";
             // 
             // label77
@@ -1712,6 +1731,7 @@
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Name = "textBox_Recipe_TabRecipe_LaserParam_DutyCycle";
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Size = new System.Drawing.Size(53, 24);
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.TabIndex = 16;
+            this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Tag = "KeyPad;Min=0;Max=20;Format=0.000";
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = "10";
             // 
             // button_DutyCycle_Calc
@@ -1734,6 +1754,7 @@
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Name = "textBox_Recipe_TabRecipe_LaserParam_PulseWidth";
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Size = new System.Drawing.Size(53, 24);
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.TabIndex = 14;
+            this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = "10";
             // 
             // label20
@@ -1900,6 +1921,7 @@
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Name = "richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset";
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Size = new System.Drawing.Size(147, 25);
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.TabIndex = 160;
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = "0.0";
             // 
             // label_Recipe_TabRecipe_Cal_ZAxisOffset
@@ -1944,6 +1966,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Name = "textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time";
             this.textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.TabIndex = 156;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = "0.0";
             // 
             // label87
@@ -1977,6 +2000,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Name = "textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance";
             this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.TabIndex = 153;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = "0.5";
             // 
             // checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance
@@ -2010,6 +2034,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Name = "textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height";
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.TabIndex = 150;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = "3";
             // 
             // label84
@@ -2025,6 +2050,7 @@
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType
             // 
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Items.AddRange(new object[] {
@@ -2037,7 +2063,6 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Size = new System.Drawing.Size(147, 26);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.TabIndex = 143;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Text = "Circle (Arc)";
             // 
             // label38
             // 
@@ -2081,6 +2106,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Name = "textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc";
             this.textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.TabIndex = 140;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = "360.0";
             // 
             // label32
@@ -2114,6 +2140,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Name = "textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle";
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.TabIndex = 137;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text = "50";
             // 
             // label8
@@ -2147,6 +2174,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Name = "textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower";
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.TabIndex = 134;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Tag = "KeyPad;Min=0;Max=100;Format=0.0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text = "3";
             // 
             // label_Recipe_TabRecipe_Miscellaneous_DrillingPower
@@ -2180,6 +2208,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Name = "textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay";
             this.textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.TabIndex = 131;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text = "10";
             // 
             // label75
@@ -2213,6 +2242,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Name = "textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay";
             this.textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.TabIndex = 128;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text = "10";
             // 
             // label74
@@ -2246,6 +2276,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Name = "textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay";
             this.textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.TabIndex = 125;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text = "10";
             // 
             // label73
@@ -2279,6 +2310,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Name = "textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay";
             this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.TabIndex = 122;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text = "10";
             // 
             // label72
@@ -2312,6 +2344,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Name = "textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay";
             this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.TabIndex = 119;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text = "10";
             // 
             // label53
@@ -2327,6 +2360,7 @@
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision
             // 
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Items.AddRange(new object[] {
@@ -2345,7 +2379,6 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Size = new System.Drawing.Size(147, 26);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.TabIndex = 116;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = "1";
             // 
             // button28
             // 
@@ -2367,6 +2400,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Name = "textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize";
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.TabIndex = 115;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = "3";
             // 
             // label71
@@ -2411,6 +2445,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Name = "textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed";
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.TabIndex = 111;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text = "200";
             // 
             // label69
@@ -2444,6 +2479,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Name = "textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed";
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.TabIndex = 108;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text = "50";
             // 
             // label68
@@ -2499,6 +2535,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Name = "textBox_Recipe_TabRecipe_Miscellaneous_Resizing";
             this.textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Size = new System.Drawing.Size(108, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_Resizing.TabIndex = 101;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = "0.0";
             // 
             // label63
@@ -2543,6 +2580,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Name = "textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance";
             this.textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Size = new System.Drawing.Size(108, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.TabIndex = 96;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = "0.0";
             // 
             // button1
@@ -2580,6 +2618,7 @@
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex
             // 
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Items.AddRange(new object[] {
@@ -2593,11 +2632,11 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Size = new System.Drawing.Size(73, 26);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.TabIndex = 92;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = "1.0x";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndexChanged += new System.EventHandler(this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex_SelectedIndexChanged);
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex
             // 
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Font = new System.Drawing.Font("Tahoma", 11F);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Items.AddRange(new object[] {
@@ -2611,7 +2650,6 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Size = new System.Drawing.Size(186, 26);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.TabIndex = 91;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = "None Mask Position";
             // 
             // label_Recipe_TabRecipe_Miscellaneous_BETPosition
             // 
@@ -2666,6 +2704,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Name = "textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition";
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.TabIndex = 86;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text = "1";
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance
@@ -2677,6 +2716,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Name = "textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance";
             this.textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.TabIndex = 82;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Tag = "KeyPad;Min=0;Max=9999999;Format=0.00000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = "0.0";
             // 
             // label323
@@ -2716,6 +2756,17 @@
             this.groupBox136.TabIndex = 76;
             this.groupBox136.TabStop = false;
             this.groupBox136.Text = " List of Layer ";
+            // 
+            // checkBox_MasterView
+            // 
+            this.checkBox_MasterView.AutoSize = true;
+            this.checkBox_MasterView.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox_MasterView.Location = new System.Drawing.Point(10, 168);
+            this.checkBox_MasterView.Name = "checkBox_MasterView";
+            this.checkBox_MasterView.Size = new System.Drawing.Size(48, 17);
+            this.checkBox_MasterView.TabIndex = 58;
+            this.checkBox_MasterView.Text = "View";
+            this.checkBox_MasterView.UseVisualStyleBackColor = true;
             // 
             // groupBox18
             // 
@@ -3809,17 +3860,6 @@
             this.button_Recipe_Cancel.TabIndex = 20;
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
-            // 
-            // checkBox_MasterView
-            // 
-            this.checkBox_MasterView.AutoSize = true;
-            this.checkBox_MasterView.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox_MasterView.Location = new System.Drawing.Point(10, 168);
-            this.checkBox_MasterView.Name = "checkBox_MasterView";
-            this.checkBox_MasterView.Size = new System.Drawing.Size(48, 17);
-            this.checkBox_MasterView.TabIndex = 58;
-            this.checkBox_MasterView.Text = "View";
-            this.checkBox_MasterView.UseVisualStyleBackColor = true;
             // 
             // FormNew_Recipe
             // 

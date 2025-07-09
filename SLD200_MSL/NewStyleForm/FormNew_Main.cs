@@ -56,6 +56,9 @@ using SLD200.NewStyleForm;
 using System.Reflection;
 using QMC.Common.Global;
 using System.Windows.Interop;
+using Control = System.Windows.Forms.Control;
+using TextBox = System.Windows.Forms.TextBox;
+using RichTextBox = System.Windows.Forms.RichTextBox;
 
 namespace SLD200_MSL
 {
@@ -117,11 +120,11 @@ namespace SLD200_MSL
             set { m_formMotorMove = value; }
         }
 
-        FormNewSub_SelectProcess m_formModuleStatus;
-        public FormNewSub_SelectProcess FormModuleStatus
+        FormNewSub_SelectProcess m_formSelectProcess;
+        public FormNewSub_SelectProcess FormSelectProcess
         {
-            get { return m_formModuleStatus; }
-            set { m_formModuleStatus = value; }
+            get { return m_formSelectProcess; }
+            set { m_formSelectProcess = value; }
         }
 
         FormNewSub_ModuleMonitor m_formModuleMonitor;
@@ -187,7 +190,14 @@ namespace SLD200_MSL
             FormNew_Main_Load();
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+             if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
 
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
 
 
         //private void FormNew_Main_Load(object sender, EventArgs e)
@@ -306,8 +316,8 @@ namespace SLD200_MSL
             //m_formMotorMove.Owner = this;
             ShowMotorMoveControl();
 
-            m_formModuleStatus = new FormNewSub_SelectProcess();
-            m_formModuleStatus.Owner = this;
+            m_formSelectProcess = new FormNewSub_SelectProcess();
+            m_formSelectProcess.Owner = this;
 
             //m_formModuleMonitor = new FormNewSub_ModuleMonitor();
             //m_formModuleMonitor.Owner = this;
@@ -395,6 +405,12 @@ namespace SLD200_MSL
                 }
 
                 workStage.StopProcess();
+
+                //
+                button_Main_Start.BackColor = Color.LightGray;
+                button_Main_Start.ForeColor = Color.Black;
+
+                checkBox_Main_AutoRun.Checked = false;
             }
         }
 
@@ -1075,7 +1091,6 @@ namespace SLD200_MSL
                 SetValue(pic, isInit);
                 
             }
-
         }
 
         private void SetValue(PictureBox pic, bool isInit)
@@ -1307,6 +1322,7 @@ namespace SLD200_MSL
                 {
                     Log.Write(ex);
                 }
+
                 if (SiriusViewer_Main.InvokeRequired)
                 {
                     this.Invoke(new System.Action(() =>
@@ -1557,6 +1573,8 @@ namespace SLD200_MSL
                 Comm_Init();
 
                 workStage.m_bFirstAutoCrossCheckDone = false;
+                workStage.m_bFirstLaserPowerCheckDone = false;
+                workStage.m_bFirstHeightCheckDone = false;
 
                 workStage.m_bHomeOK = false;
                 m_bHomeProgress_Show = true;
@@ -2176,6 +2194,9 @@ namespace SLD200_MSL
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
 
             workStage.m_StartProcessTime = DateTime.Now;
+            
+            //Signal On 시키고 돌아갈 시간 벌기... ㅡㅡ
+            Thread.Sleep(500); // 500ms 대기
 
             FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);
             workStage.m_MainWork_Start = true;
@@ -2796,12 +2817,13 @@ namespace SLD200_MSL
                 //  Cycle Stop 을 설정했으므로 Socket Stop 은 Cancel
                 Equipment.CycleSocketStop = false;
                 Equipment.SocketStopped = false;
-
+                checkBox_Main_SocketStop.Checked = false;
+            }
+            else
+            {
                 Equipment.CycleStopped_MainWork = false;
                 Equipment.CycleStopped_LoaderTransfer = false;
                 Equipment.CycleStopped_UnloaderTransfer = false;
-                
-                checkBox_Main_SocketStop.Checked = false;
             }
 
             Log.Write("SLD-200", Equipment.User_Name, "CheckBox Click", "Cycle Stop 체크박스 : " + Equipment.CycleModuleStop.ToString());
@@ -3118,13 +3140,13 @@ namespace SLD200_MSL
 
                 baseTextBox_Socket_Index.Text = "All";
                 workStage.m_nSelectedSocket_Index = -1;
-                if (workStage.m_stDividedRegion_GroupData != null)
+                if (workStage.m_stLaserDrilling_SocketData != null)
                 {
                     //  선택된 Socket 이 몇번 Socket 인지 확인
-                    for (int i = 0; i < workStage.m_stDividedRegion_GroupData.Length; i++)
+                    for (int i = 0; i < workStage.m_stLaserDrilling_SocketData.Length; i++)
                     {
-                        if ((m_dSelectedGroup_Center_X == workStage.m_stDividedRegion_GroupData[i].dGroupCenter.X) &&
-                            (m_dSelectedGroup_Center_Y == workStage.m_stDividedRegion_GroupData[i].dGroupCenter.Y))
+                        if ((m_dSelectedGroup_Center_X == workStage.m_stLaserDrilling_SocketData[i].dGroupCenter.X) &&
+                            (m_dSelectedGroup_Center_Y == workStage.m_stLaserDrilling_SocketData[i].dGroupCenter.Y))
                         {
                             baseTextBox_Socket_Index.Text = i.ToString();
                             workStage.m_nSelectedSocket_Index = i;
@@ -3930,9 +3952,8 @@ namespace SLD200_MSL
             //  Loader L-Port Pause 체크박스
             Equipment.Loader_LPort_Pause = checkBox_Main_Loader_LPort_Pause.Checked;
 
-
             //  L-Port 를 Pause 상태로 변경했을 경우
-            if (Equipment.Loader_LPort_Pause)
+            if (Equipment.Loader_LPort_Pause) 
             {
                 if (Equipment.Loader_RPort_Pause)           //  R-Port 가 이미 Pause 상태였으면
                 {
@@ -3959,7 +3980,6 @@ namespace SLD200_MSL
 
         private void button_TestbyUser_LPort_Start_Click(object sender, EventArgs e)
         {
-            // To do: Test code임. - 아래의 조건을 시컨스에 맞춰 넣어야함!!!!
             if (Equipment.AutoRunStatus)
             {
                 var mb = new MessageBoxYesNo();
@@ -4252,6 +4272,11 @@ namespace SLD200_MSL
                 SetValue(baseTextBox_TotalSocketCount, nSocketTotalCnt.ToString());
                 SetValue(baseTextBox_NGSocketCount, (nSocketTotalCnt - NGCount).ToString());
 
+
+
+                //SetValue(baseLabel_CurrentOneCycle_ElapsedTime, oneCycle.ToString(@"hh\:mm\:ss"));
+                TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
+                SetValue(baseLabel_LaserShot_TotalTime, LaserTotalCycle.ToString(@"hh\:mm\:ss"));
             }
             catch (Exception ex)
             {
@@ -4274,7 +4299,6 @@ namespace SLD200_MSL
             }
             else
             {
-
                 SetColor(control, Backcolor, control.ForeColor);
             }
         }
@@ -4381,8 +4405,8 @@ namespace SLD200_MSL
                 //FormSemiAuto.Show();  // 모달리스
                 //FormMotorMove.Show();  // 모달리스
 
-                FormModuleStatus.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
-                FormModuleStatus.Show();
+                FormSelectProcess.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
+                FormSelectProcess.Show();
 
                 FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
                 //FormModuleMonitor.Show();  // 모달리스
@@ -4644,8 +4668,8 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus)
                 return;
 
-            FormModuleStatus.LoadDrillingManager(workStage.DrillingManager);
-            FormModuleStatus.Show();
+            FormSelectProcess.LoadDrillingManager(workStage.DrillingManager);
+            FormSelectProcess.Show();
         }
 
         private string GetValue(System.Windows.Forms.Label control)
@@ -4704,6 +4728,7 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
 
+            string strTemp = string.Empty;
             button_Main_Reset.Enabled = false;
 
             CancellationTokenSource cts = new CancellationTokenSource();
@@ -4714,11 +4739,21 @@ namespace SLD200_MSL
             pf.StopProcess += (obj) =>
             {
                 cts.Cancel();
-            };
+
+                Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                checkBox_Main_AutoRun.Checked = false;
+                button_Main_Start.BackColor = Color.LightGray;
+                button_Main_Start.ForeColor = Color.Black;
+
+
+                strTemp = "Reset이 중단되었습니다.";
+                new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                button_Main_Reset.Enabled = true;
+            }; 
 
             pf.ShowDialog();
 
-            string strTemp = string.Empty;
+           
             Log.Write("SLD-200", Equipment.User_Name, strTemp);
             //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
             if (resetTask.Result == 0)
@@ -4879,10 +4914,13 @@ namespace SLD200_MSL
                     !await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY))
                     return ShowErrorAndReturn("Stage X/Y 축 이동 실패");
 
+
                 // Vacuum 해제
                 if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
                 {
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    Thread.Sleep(100);
+                    workStage.workStageParameter.DO_Stage_Blow(false);
                     strTemp = "workStage - 자재 확인 바랍니다. Reset";
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
@@ -4892,16 +4930,26 @@ namespace SLD200_MSL
                 {
                     int index = (int)pos;
                     if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck(index))
+                    {
                         loader.loaderParameter.DO_Loader_Aligner_Vacuum(index, false);
+                        loader.loaderParameter.DO_Loader_Aligner_Blow(index, false);
+                    }
                 }
 
                 foreach (var pos in Enum.GetValues(typeof(LoaderParameter.PickerVacuumPos)))
                 {
                     int index = (int)pos;
                     if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck(index))
+                    {
                         loader.loaderParameter.DO_Loader_Picker_Vacuum(index, false);
+                        loader.loaderParameter.DO_Loader_Picker_Blow(false);
+                    }
+                        
                     if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index))
+                    {
                         unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
+                        unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
+                    }
                 }
 
                 return true;
@@ -5140,5 +5188,89 @@ namespace SLD200_MSL
         //        return;
         //    }
         //}
+
+        // 이거 각각 폼에 만들어야함.
+        private void InitRecipeUI_KeyPad()
+        {
+            RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행
+        }
+        private void RegisterKeyPadDoubleClickHandlers(Control parent)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                // 조건: 숫자 입력용 TextBox 또는 RichTextBox만
+                bool isTargetTextBox = ctrl is TextBox || ctrl is RichTextBox;
+
+                if (isTargetTextBox && ctrl.Tag?.ToString().Contains("KeyPad") == true)
+                {
+                    ctrl.DoubleClick -= textBox_DoubleClick_OpenKeyPad; // 중복 연결 방지
+                    ctrl.DoubleClick += textBox_DoubleClick_OpenKeyPad;
+
+                    // 키보드 입력 제한용 Validating 연결
+                    ctrl.Validating -= textBox_Validate_KeyPadRange;
+                    ctrl.Validating += textBox_Validate_KeyPadRange;
+                }
+
+                // 하위 컨트롤 재귀 탐색
+                if (ctrl.HasChildren)
+                    RegisterKeyPadDoubleClickHandlers(ctrl);
+            }
+        }
+        private void textBox_DoubleClick_OpenKeyPad(object sender, EventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                string currentText = ctrl.Text ?? "0";
+                var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
+
+                if (double.TryParse(currentText, out double value))
+                    dlg.SetInitialValue(value);
+                else
+                    dlg.SetInitialValue(0);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string result = dlg.EnteredValue.ToString(meta.Format);
+                    ctrl.Text = result;
+                }
+            }
+        }
+        private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
+        {
+            if (sender is TextBox tb && tb.Tag != null)
+            {
+                var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
+
+                if (double.TryParse(tb.Text, out double val))
+                {
+                    if (val < meta.Min)
+                    {
+                        tb.Text = meta.Min.ToString(meta.Format);
+                        //MessageBox.Show($"최소값 {meta.Min}보다 작습니다."); // 또는 자동 보정만
+                    }
+                    else if (val > meta.Max)
+                    {
+                        tb.Text = meta.Max.ToString(meta.Format);
+                        //MessageBox.Show($"최대값 {meta.Max}보다 큽니다.");
+                    }
+                    else
+                    {
+                        tb.Text = val.ToString(meta.Format);
+                    }
+                }
+                else
+                {
+                    // 숫자 아님 → 초기화
+                    tb.Text = meta.Min.ToString(meta.Format);
+                }
+            }
+        }
     }
 }

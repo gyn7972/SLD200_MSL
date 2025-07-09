@@ -32,16 +32,13 @@ namespace SLD200_MSL
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button_Cancel = new System.Windows.Forms.Button();
             this.label_MinValue = new System.Windows.Forms.Label();
+            this.button_Apply = new System.Windows.Forms.Button();
             this.label_MaxValue = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label_NumPad = new System.Windows.Forms.Label();
-            this.button_Result = new System.Windows.Forms.Button();
-            this.button_Divide = new System.Windows.Forms.Button();
-            this.button_Multiply = new System.Windows.Forms.Button();
-            this.button_Minus = new System.Windows.Forms.Button();
-            this.button_Plus = new System.Windows.Forms.Button();
             this.button_PlusMinus = new System.Windows.Forms.Button();
             this.button_Clear = new System.Windows.Forms.Button();
             this.button_BackSpace = new System.Windows.Forms.Button();
@@ -56,24 +53,24 @@ namespace SLD200_MSL
             this.button_Num_1 = new System.Windows.Forms.Button();
             this.button_Num_Dot = new System.Windows.Forms.Button();
             this.button_Num_0 = new System.Windows.Forms.Button();
-            this.button_Apply = new System.Windows.Forms.Button();
-            this.button_Cancel = new System.Windows.Forms.Button();
+            this.button_Result = new System.Windows.Forms.Button();
+            this.button_Divide = new System.Windows.Forms.Button();
+            this.button_Multiply = new System.Windows.Forms.Button();
+            this.button_Minus = new System.Windows.Forms.Button();
+            this.button_Plus = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Controls.Add(this.button_Cancel);
             this.panel1.Controls.Add(this.label_MinValue);
+            this.panel1.Controls.Add(this.button_Apply);
             this.panel1.Controls.Add(this.label_MaxValue);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label_NumPad);
-            this.panel1.Controls.Add(this.button_Result);
-            this.panel1.Controls.Add(this.button_Divide);
-            this.panel1.Controls.Add(this.button_Multiply);
-            this.panel1.Controls.Add(this.button_Minus);
-            this.panel1.Controls.Add(this.button_Plus);
             this.panel1.Controls.Add(this.button_PlusMinus);
             this.panel1.Controls.Add(this.button_Clear);
             this.panel1.Controls.Add(this.button_BackSpace);
@@ -90,8 +87,19 @@ namespace SLD200_MSL
             this.panel1.Controls.Add(this.button_Num_0);
             this.panel1.Location = new System.Drawing.Point(10, 10);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(651, 355);
+            this.panel1.Size = new System.Drawing.Size(559, 355);
             this.panel1.TabIndex = 0;
+            // 
+            // button_Cancel
+            // 
+            this.button_Cancel.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.button_Cancel.Location = new System.Drawing.Point(369, 280);
+            this.button_Cancel.Name = "button_Cancel";
+            this.button_Cancel.Size = new System.Drawing.Size(178, 63);
+            this.button_Cancel.TabIndex = 20;
+            this.button_Cancel.Text = "Cancel";
+            this.button_Cancel.UseVisualStyleBackColor = true;
+            this.button_Cancel.Click += new System.EventHandler(this.button_Cancel_Click);
             // 
             // label_MinValue
             // 
@@ -103,6 +111,17 @@ namespace SLD200_MSL
             this.label_MinValue.TabIndex = 23;
             this.label_MinValue.Text = "0";
             this.label_MinValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // button_Apply
+            // 
+            this.button_Apply.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.button_Apply.Location = new System.Drawing.Point(369, 213);
+            this.button_Apply.Name = "button_Apply";
+            this.button_Apply.Size = new System.Drawing.Size(178, 63);
+            this.button_Apply.TabIndex = 19;
+            this.button_Apply.Text = "Apply";
+            this.button_Apply.UseVisualStyleBackColor = true;
+            this.button_Apply.Click += new System.EventHandler(this.button_Apply_Click);
             // 
             // label_MaxValue
             // 
@@ -139,7 +158,7 @@ namespace SLD200_MSL
             // 
             this.label_NumPad.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label_NumPad.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_NumPad.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold);
+            this.label_NumPad.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_NumPad.ForeColor = System.Drawing.Color.Lime;
             this.label_NumPad.Location = new System.Drawing.Point(9, 9);
             this.label_NumPad.Name = "label_NumPad";
@@ -148,72 +167,23 @@ namespace SLD200_MSL
             this.label_NumPad.Text = "label1";
             this.label_NumPad.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button_Result
-            // 
-            this.button_Result.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Result.Location = new System.Drawing.Point(408, 281);
-            this.button_Result.Name = "button_Result";
-            this.button_Result.Size = new System.Drawing.Size(232, 63);
-            this.button_Result.TabIndex = 18;
-            this.button_Result.Text = "=";
-            this.button_Result.UseVisualStyleBackColor = true;
-            // 
-            // button_Divide
-            // 
-            this.button_Divide.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Divide.Location = new System.Drawing.Point(527, 213);
-            this.button_Divide.Name = "button_Divide";
-            this.button_Divide.Size = new System.Drawing.Size(112, 63);
-            this.button_Divide.TabIndex = 17;
-            this.button_Divide.Text = "/";
-            this.button_Divide.UseVisualStyleBackColor = true;
-            // 
-            // button_Multiply
-            // 
-            this.button_Multiply.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Multiply.Location = new System.Drawing.Point(408, 213);
-            this.button_Multiply.Name = "button_Multiply";
-            this.button_Multiply.Size = new System.Drawing.Size(112, 63);
-            this.button_Multiply.TabIndex = 16;
-            this.button_Multiply.Text = "*";
-            this.button_Multiply.UseVisualStyleBackColor = true;
-            // 
-            // button_Minus
-            // 
-            this.button_Minus.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Minus.Location = new System.Drawing.Point(527, 145);
-            this.button_Minus.Name = "button_Minus";
-            this.button_Minus.Size = new System.Drawing.Size(112, 63);
-            this.button_Minus.TabIndex = 15;
-            this.button_Minus.Text = "-";
-            this.button_Minus.UseVisualStyleBackColor = true;
-            // 
-            // button_Plus
-            // 
-            this.button_Plus.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Plus.Location = new System.Drawing.Point(408, 145);
-            this.button_Plus.Name = "button_Plus";
-            this.button_Plus.Size = new System.Drawing.Size(112, 63);
-            this.button_Plus.TabIndex = 14;
-            this.button_Plus.Text = "+";
-            this.button_Plus.UseVisualStyleBackColor = true;
-            // 
             // button_PlusMinus
             // 
             this.button_PlusMinus.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_PlusMinus.Location = new System.Drawing.Point(527, 77);
+            this.button_PlusMinus.Location = new System.Drawing.Point(369, 146);
             this.button_PlusMinus.Name = "button_PlusMinus";
-            this.button_PlusMinus.Size = new System.Drawing.Size(112, 63);
+            this.button_PlusMinus.Size = new System.Drawing.Size(178, 63);
             this.button_PlusMinus.TabIndex = 13;
             this.button_PlusMinus.Text = "+ / -";
             this.button_PlusMinus.UseVisualStyleBackColor = true;
+            this.button_PlusMinus.Click += new System.EventHandler(this.button_PlusMinus_Click);
             // 
             // button_Clear
             // 
             this.button_Clear.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Clear.Location = new System.Drawing.Point(408, 77);
+            this.button_Clear.Location = new System.Drawing.Point(461, 77);
             this.button_Clear.Name = "button_Clear";
-            this.button_Clear.Size = new System.Drawing.Size(112, 63);
+            this.button_Clear.Size = new System.Drawing.Size(86, 63);
             this.button_Clear.TabIndex = 12;
             this.button_Clear.Text = "C";
             this.button_Clear.UseVisualStyleBackColor = true;
@@ -222,9 +192,9 @@ namespace SLD200_MSL
             // button_BackSpace
             // 
             this.button_BackSpace.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_BackSpace.Location = new System.Drawing.Point(527, 9);
+            this.button_BackSpace.Location = new System.Drawing.Point(369, 77);
             this.button_BackSpace.Name = "button_BackSpace";
-            this.button_BackSpace.Size = new System.Drawing.Size(112, 63);
+            this.button_BackSpace.Size = new System.Drawing.Size(86, 63);
             this.button_BackSpace.TabIndex = 11;
             this.button_BackSpace.Text = "BS";
             this.button_BackSpace.UseVisualStyleBackColor = true;
@@ -351,34 +321,77 @@ namespace SLD200_MSL
             this.button_Num_0.UseVisualStyleBackColor = true;
             this.button_Num_0.Click += new System.EventHandler(this.button_Num_0_Click);
             // 
-            // button_Apply
+            // button_Result
             // 
-            this.button_Apply.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Apply.Location = new System.Drawing.Point(696, 10);
-            this.button_Apply.Name = "button_Apply";
-            this.button_Apply.Size = new System.Drawing.Size(178, 63);
-            this.button_Apply.TabIndex = 19;
-            this.button_Apply.Text = "Apply";
-            this.button_Apply.UseVisualStyleBackColor = true;
+            this.button_Result.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.button_Result.Location = new System.Drawing.Point(575, 294);
+            this.button_Result.Name = "button_Result";
+            this.button_Result.Size = new System.Drawing.Size(24, 63);
+            this.button_Result.TabIndex = 18;
+            this.button_Result.Text = "=";
+            this.button_Result.UseVisualStyleBackColor = true;
+            this.button_Result.Visible = false;
+            this.button_Result.Click += new System.EventHandler(this.button_Result_Click);
             // 
-            // button_Cancel
+            // button_Divide
             // 
-            this.button_Cancel.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Cancel.Location = new System.Drawing.Point(696, 77);
-            this.button_Cancel.Name = "button_Cancel";
-            this.button_Cancel.Size = new System.Drawing.Size(178, 63);
-            this.button_Cancel.TabIndex = 20;
-            this.button_Cancel.Text = "Cancel";
-            this.button_Cancel.UseVisualStyleBackColor = true;
+            this.button_Divide.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.button_Divide.Location = new System.Drawing.Point(575, 20);
+            this.button_Divide.Name = "button_Divide";
+            this.button_Divide.Size = new System.Drawing.Size(24, 63);
+            this.button_Divide.TabIndex = 17;
+            this.button_Divide.Text = "/";
+            this.button_Divide.UseVisualStyleBackColor = true;
+            this.button_Divide.Visible = false;
+            this.button_Divide.Click += new System.EventHandler(this.button_Divide_Click);
+            // 
+            // button_Multiply
+            // 
+            this.button_Multiply.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.button_Multiply.Location = new System.Drawing.Point(575, 226);
+            this.button_Multiply.Name = "button_Multiply";
+            this.button_Multiply.Size = new System.Drawing.Size(24, 63);
+            this.button_Multiply.TabIndex = 16;
+            this.button_Multiply.Text = "*";
+            this.button_Multiply.UseVisualStyleBackColor = true;
+            this.button_Multiply.Visible = false;
+            this.button_Multiply.Click += new System.EventHandler(this.button_Multiply_Click);
+            // 
+            // button_Minus
+            // 
+            this.button_Minus.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.button_Minus.Location = new System.Drawing.Point(575, 89);
+            this.button_Minus.Name = "button_Minus";
+            this.button_Minus.Size = new System.Drawing.Size(24, 63);
+            this.button_Minus.TabIndex = 15;
+            this.button_Minus.Text = "-";
+            this.button_Minus.UseVisualStyleBackColor = true;
+            this.button_Minus.Visible = false;
+            this.button_Minus.Click += new System.EventHandler(this.button_Minus_Click);
+            // 
+            // button_Plus
+            // 
+            this.button_Plus.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.button_Plus.Location = new System.Drawing.Point(575, 158);
+            this.button_Plus.Name = "button_Plus";
+            this.button_Plus.Size = new System.Drawing.Size(24, 63);
+            this.button_Plus.TabIndex = 14;
+            this.button_Plus.Text = "+";
+            this.button_Plus.UseVisualStyleBackColor = true;
+            this.button_Plus.Visible = false;
+            this.button_Plus.Click += new System.EventHandler(this.button_Plus_Click);
             // 
             // FormNew_KeyPad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 373);
-            this.Controls.Add(this.button_Cancel);
-            this.Controls.Add(this.button_Apply);
+            this.ClientSize = new System.Drawing.Size(607, 373);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.button_Plus);
+            this.Controls.Add(this.button_Minus);
+            this.Controls.Add(this.button_Result);
+            this.Controls.Add(this.button_Multiply);
+            this.Controls.Add(this.button_Divide);
             this.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold);
             this.MaximizeBox = false;
             this.MinimizeBox = false;

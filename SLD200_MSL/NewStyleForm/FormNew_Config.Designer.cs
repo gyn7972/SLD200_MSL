@@ -197,6 +197,9 @@
             this.button_Config_WorkStage_CurrentCoarseCamPos_To_FineCamPos = new System.Windows.Forms.Button();
             this.button_Config_WorkStage_CurrentFineCamPos_To_CoarseCamPos = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.textBox_Config_WorkStage_TempPos3_StageName = new System.Windows.Forms.TextBox();
+            this.textBox_Config_WorkStage_TempPos2_StageName = new System.Windows.Forms.TextBox();
+            this.textBox_Config_WorkStage_TempPos1_StageName = new System.Windows.Forms.TextBox();
             this.button_Config_WorkStage_ToTempPos3_Move = new System.Windows.Forms.Button();
             this.textBox_Config_WorkStage_TempPos3_StageY = new System.Windows.Forms.TextBox();
             this.label34 = new System.Windows.Forms.Label();
@@ -376,6 +379,7 @@
             this.label39 = new System.Windows.Forms.Label();
             this.listBox_Config_Vision_TeachingPositions = new System.Windows.Forms.ListBox();
             this.tabPage_Config_Laser = new System.Windows.Forms.TabPage();
+            this.button_Config_TabLaser_LaserPowerMeasure = new System.Windows.Forms.Button();
             this.button_Config_TabLaser_ScannerVisionOffset = new System.Windows.Forms.Button();
             this.groupBox_MotorizedBET = new System.Windows.Forms.GroupBox();
             this.Button_Config_BDS_BET_Mrad_Init = new System.Windows.Forms.Button();
@@ -615,7 +619,6 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
-            this.button_Config_TabLaser_LaserPowerMeasure = new System.Windows.Forms.Button();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -920,6 +923,7 @@
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Name = "textBox_Config_LDUL_Move_Recipe_MAlignerY";
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Size = new System.Drawing.Size(105, 24);
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.TabIndex = 60;
+            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = "000.000";
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -954,6 +958,7 @@
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Name = "textBox_Config_LDUL_Move_Recipe_MAlignerX";
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Size = new System.Drawing.Size(105, 24);
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.TabIndex = 58;
+            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = "000.000";
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1104,6 +1109,7 @@
             this.textBox33.Name = "textBox33";
             this.textBox33.Size = new System.Drawing.Size(97, 24);
             this.textBox33.TabIndex = 54;
+            this.textBox33.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox33.Text = "000.000";
             this.textBox33.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1126,6 +1132,7 @@
             this.textBox34.Name = "textBox34";
             this.textBox34.Size = new System.Drawing.Size(97, 24);
             this.textBox34.TabIndex = 52;
+            this.textBox34.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox34.Text = "000.000";
             this.textBox34.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1159,6 +1166,7 @@
             this.textBox35.Name = "textBox35";
             this.textBox35.Size = new System.Drawing.Size(97, 24);
             this.textBox35.TabIndex = 49;
+            this.textBox35.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox35.Text = "000.000";
             this.textBox35.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1192,6 +1200,7 @@
             this.textBox36.Name = "textBox36";
             this.textBox36.Size = new System.Drawing.Size(97, 24);
             this.textBox36.TabIndex = 46;
+            this.textBox36.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox36.Text = "000.000";
             this.textBox36.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1236,6 +1245,7 @@
             this.textBox37.Name = "textBox37";
             this.textBox37.Size = new System.Drawing.Size(97, 24);
             this.textBox37.TabIndex = 42;
+            this.textBox37.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox37.Text = "000.000";
             this.textBox37.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1258,6 +1268,7 @@
             this.textBox38.Name = "textBox38";
             this.textBox38.Size = new System.Drawing.Size(97, 24);
             this.textBox38.TabIndex = 40;
+            this.textBox38.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox38.Text = "000.000";
             this.textBox38.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1363,6 +1374,7 @@
             this.textBox_Config_LDUL_JogMove_StepSize.Name = "textBox_Config_LDUL_JogMove_StepSize";
             this.textBox_Config_LDUL_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
             this.textBox_Config_LDUL_JogMove_StepSize.TabIndex = 75;
+            this.textBox_Config_LDUL_JogMove_StepSize.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_LDUL_JogMove_StepSize.Text = "1.000";
             // 
             // label8
@@ -2096,6 +2108,7 @@
             this.textBox_Config_LDUL_Module_Size_Set.Name = "textBox_Config_LDUL_Module_Size_Set";
             this.textBox_Config_LDUL_Module_Size_Set.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_LDUL_Module_Size_Set.TabIndex = 44;
+            this.textBox_Config_LDUL_Module_Size_Set.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_LDUL_Module_Size_Set.Text = "000.000";
             this.textBox_Config_LDUL_Module_Size_Set.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -2259,6 +2272,7 @@
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Name = "textBox_Config_LDUL_TeachingPos_MAlignerY";
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.TabIndex = 36;
+            this.textBox_Config_LDUL_TeachingPos_MAlignerY.Tag = "KeyPad;Min=-2000;Max=2000;Format=0.000";
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -2281,6 +2295,7 @@
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Name = "textBox_Config_LDUL_TeachingPos_MAlignerX";
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.TabIndex = 34;
+            this.textBox_Config_LDUL_TeachingPos_MAlignerX.Tag = "KeyPad;Min=-2000;Max=2000;Format=0.000";
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -2314,6 +2329,7 @@
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Name = "textBox_Config_LDUL_TeachingPos_LPortZ";
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_LDUL_TeachingPos_LPortZ.TabIndex = 31;
+            this.textBox_Config_LDUL_TeachingPos_LPortZ.Tag = "KeyPad;Min=-100;Max=500;Format=0.000";
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_LPortZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -2347,6 +2363,7 @@
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Name = "textBox_Config_LDUL_TeachingPos_RPortZ";
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_LDUL_TeachingPos_RPortZ.TabIndex = 28;
+            this.textBox_Config_LDUL_TeachingPos_RPortZ.Tag = "KeyPad;Min=-100;Max=500;Format=0.000";
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_RPortZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -2392,6 +2409,7 @@
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Name = "textBox_Config_LDUL_TeachingPos_TransferZ";
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_LDUL_TeachingPos_TransferZ.TabIndex = 24;
+            this.textBox_Config_LDUL_TeachingPos_TransferZ.Tag = "KeyPad;Min=-10;Max=200;Format=0.000";
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_TransferZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -2414,6 +2432,7 @@
             this.textBox_Config_LDUL_TeachingPos_TransferX.Name = "textBox_Config_LDUL_TeachingPos_TransferX";
             this.textBox_Config_LDUL_TeachingPos_TransferX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_LDUL_TeachingPos_TransferX.TabIndex = 22;
+            this.textBox_Config_LDUL_TeachingPos_TransferX.Tag = "KeyPad;Min=-2000;Max=2000;Format=0.000";
             this.textBox_Config_LDUL_TeachingPos_TransferX.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_TransferX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -2580,6 +2599,7 @@
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Name = "textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue";
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Size = new System.Drawing.Size(58, 27);
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.TabIndex = 43;
+            this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text = "20.0";
             // 
             // groupBox25
@@ -2681,6 +2701,7 @@
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Name = "textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue";
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Size = new System.Drawing.Size(58, 27);
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.TabIndex = 43;
+            this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text = "20.0";
             // 
             // groupBox70
@@ -2823,6 +2844,7 @@
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Name = "textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue";
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Size = new System.Drawing.Size(87, 27);
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.TabIndex = 43;
+            this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text = "0";
             // 
             // label36
@@ -2960,6 +2982,9 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.textBox_Config_WorkStage_TempPos3_StageName);
+            this.groupBox3.Controls.Add(this.textBox_Config_WorkStage_TempPos2_StageName);
+            this.groupBox3.Controls.Add(this.textBox_Config_WorkStage_TempPos1_StageName);
             this.groupBox3.Controls.Add(this.button_Config_WorkStage_ToTempPos3_Move);
             this.groupBox3.Controls.Add(this.textBox_Config_WorkStage_TempPos3_StageY);
             this.groupBox3.Controls.Add(this.label34);
@@ -2979,19 +3004,52 @@
             this.groupBox3.Controls.Add(this.textBox_Config_WorkStage_TempPos1_StageX);
             this.groupBox3.Controls.Add(this.label28);
             this.groupBox3.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox3.Location = new System.Drawing.Point(351, 25);
+            this.groupBox3.Location = new System.Drawing.Point(351, 16);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox3.Size = new System.Drawing.Size(245, 207);
+            this.groupBox3.Size = new System.Drawing.Size(245, 261);
             this.groupBox3.TabIndex = 39;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = " Temp. Position  (Abs. , mm) ";
             // 
+            // textBox_Config_WorkStage_TempPos3_StageName
+            // 
+            this.textBox_Config_WorkStage_TempPos3_StageName.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Config_WorkStage_TempPos3_StageName.Location = new System.Drawing.Point(60, 181);
+            this.textBox_Config_WorkStage_TempPos3_StageName.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_WorkStage_TempPos3_StageName.Name = "textBox_Config_WorkStage_TempPos3_StageName";
+            this.textBox_Config_WorkStage_TempPos3_StageName.Size = new System.Drawing.Size(178, 24);
+            this.textBox_Config_WorkStage_TempPos3_StageName.TabIndex = 61;
+            this.textBox_Config_WorkStage_TempPos3_StageName.Text = "Temp Pos3";
+            this.textBox_Config_WorkStage_TempPos3_StageName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_Config_WorkStage_TempPos2_StageName
+            // 
+            this.textBox_Config_WorkStage_TempPos2_StageName.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Config_WorkStage_TempPos2_StageName.Location = new System.Drawing.Point(60, 101);
+            this.textBox_Config_WorkStage_TempPos2_StageName.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_WorkStage_TempPos2_StageName.Name = "textBox_Config_WorkStage_TempPos2_StageName";
+            this.textBox_Config_WorkStage_TempPos2_StageName.Size = new System.Drawing.Size(178, 24);
+            this.textBox_Config_WorkStage_TempPos2_StageName.TabIndex = 60;
+            this.textBox_Config_WorkStage_TempPos2_StageName.Text = "Temp Pos2";
+            this.textBox_Config_WorkStage_TempPos2_StageName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_Config_WorkStage_TempPos1_StageName
+            // 
+            this.textBox_Config_WorkStage_TempPos1_StageName.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Config_WorkStage_TempPos1_StageName.Location = new System.Drawing.Point(60, 20);
+            this.textBox_Config_WorkStage_TempPos1_StageName.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Config_WorkStage_TempPos1_StageName.Name = "textBox_Config_WorkStage_TempPos1_StageName";
+            this.textBox_Config_WorkStage_TempPos1_StageName.Size = new System.Drawing.Size(178, 24);
+            this.textBox_Config_WorkStage_TempPos1_StageName.TabIndex = 59;
+            this.textBox_Config_WorkStage_TempPos1_StageName.Text = "Temp Pos1";
+            this.textBox_Config_WorkStage_TempPos1_StageName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // button_Config_WorkStage_ToTempPos3_Move
             // 
             this.button_Config_WorkStage_ToTempPos3_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_ToTempPos3_Move.Location = new System.Drawing.Point(178, 148);
+            this.button_Config_WorkStage_ToTempPos3_Move.Location = new System.Drawing.Point(181, 207);
             this.button_Config_WorkStage_ToTempPos3_Move.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_ToTempPos3_Move.Name = "button_Config_WorkStage_ToTempPos3_Move";
             this.button_Config_WorkStage_ToTempPos3_Move.Size = new System.Drawing.Size(57, 48);
@@ -3003,18 +3061,19 @@
             // textBox_Config_WorkStage_TempPos3_StageY
             // 
             this.textBox_Config_WorkStage_TempPos3_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos3_StageY.Location = new System.Drawing.Point(57, 172);
+            this.textBox_Config_WorkStage_TempPos3_StageY.Location = new System.Drawing.Point(60, 231);
             this.textBox_Config_WorkStage_TempPos3_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos3_StageY.Name = "textBox_Config_WorkStage_TempPos3_StageY";
             this.textBox_Config_WorkStage_TempPos3_StageY.Size = new System.Drawing.Size(70, 24);
             this.textBox_Config_WorkStage_TempPos3_StageY.TabIndex = 57;
+            this.textBox_Config_WorkStage_TempPos3_StageY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos3_StageY.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos3_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label34
             // 
             this.label34.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label34.Location = new System.Drawing.Point(3, 171);
+            this.label34.Location = new System.Drawing.Point(6, 230);
             this.label34.Margin = new System.Windows.Forms.Padding(5);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(53, 24);
@@ -3025,7 +3084,7 @@
             // button_Config_WorkStage_GetCurrentPos_ToTempPos3
             // 
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Location = new System.Drawing.Point(130, 148);
+            this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Location = new System.Drawing.Point(133, 207);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Name = "button_Config_WorkStage_GetCurrentPos_ToTempPos3";
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos3.Size = new System.Drawing.Size(47, 48);
@@ -3037,18 +3096,19 @@
             // textBox_Config_WorkStage_TempPos3_StageX
             // 
             this.textBox_Config_WorkStage_TempPos3_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos3_StageX.Location = new System.Drawing.Point(57, 148);
+            this.textBox_Config_WorkStage_TempPos3_StageX.Location = new System.Drawing.Point(60, 207);
             this.textBox_Config_WorkStage_TempPos3_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos3_StageX.Name = "textBox_Config_WorkStage_TempPos3_StageX";
             this.textBox_Config_WorkStage_TempPos3_StageX.Size = new System.Drawing.Size(70, 24);
             this.textBox_Config_WorkStage_TempPos3_StageX.TabIndex = 54;
+            this.textBox_Config_WorkStage_TempPos3_StageX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos3_StageX.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos3_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label35
             // 
             this.label35.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label35.Location = new System.Drawing.Point(3, 147);
+            this.label35.Location = new System.Drawing.Point(6, 206);
             this.label35.Margin = new System.Windows.Forms.Padding(5);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(53, 24);
@@ -3059,7 +3119,7 @@
             // button_Config_WorkStage_ToTempPos2_Move
             // 
             this.button_Config_WorkStage_ToTempPos2_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_ToTempPos2_Move.Location = new System.Drawing.Point(178, 88);
+            this.button_Config_WorkStage_ToTempPos2_Move.Location = new System.Drawing.Point(181, 126);
             this.button_Config_WorkStage_ToTempPos2_Move.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_ToTempPos2_Move.Name = "button_Config_WorkStage_ToTempPos2_Move";
             this.button_Config_WorkStage_ToTempPos2_Move.Size = new System.Drawing.Size(57, 48);
@@ -3071,18 +3131,19 @@
             // textBox_Config_WorkStage_TempPos2_StageY
             // 
             this.textBox_Config_WorkStage_TempPos2_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos2_StageY.Location = new System.Drawing.Point(57, 112);
+            this.textBox_Config_WorkStage_TempPos2_StageY.Location = new System.Drawing.Point(60, 150);
             this.textBox_Config_WorkStage_TempPos2_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos2_StageY.Name = "textBox_Config_WorkStage_TempPos2_StageY";
             this.textBox_Config_WorkStage_TempPos2_StageY.Size = new System.Drawing.Size(70, 24);
             this.textBox_Config_WorkStage_TempPos2_StageY.TabIndex = 51;
+            this.textBox_Config_WorkStage_TempPos2_StageY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos2_StageY.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos2_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label13
             // 
             this.label13.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label13.Location = new System.Drawing.Point(3, 111);
+            this.label13.Location = new System.Drawing.Point(6, 149);
             this.label13.Margin = new System.Windows.Forms.Padding(5);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(53, 24);
@@ -3093,7 +3154,7 @@
             // button_Config_WorkStage_GetCurrentPos_ToTempPos2
             // 
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Location = new System.Drawing.Point(130, 88);
+            this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Location = new System.Drawing.Point(133, 126);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Name = "button_Config_WorkStage_GetCurrentPos_ToTempPos2";
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos2.Size = new System.Drawing.Size(47, 48);
@@ -3105,18 +3166,19 @@
             // textBox_Config_WorkStage_TempPos2_StageX
             // 
             this.textBox_Config_WorkStage_TempPos2_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos2_StageX.Location = new System.Drawing.Point(57, 88);
+            this.textBox_Config_WorkStage_TempPos2_StageX.Location = new System.Drawing.Point(60, 126);
             this.textBox_Config_WorkStage_TempPos2_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos2_StageX.Name = "textBox_Config_WorkStage_TempPos2_StageX";
             this.textBox_Config_WorkStage_TempPos2_StageX.Size = new System.Drawing.Size(70, 24);
             this.textBox_Config_WorkStage_TempPos2_StageX.TabIndex = 48;
+            this.textBox_Config_WorkStage_TempPos2_StageX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos2_StageX.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos2_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label33
             // 
             this.label33.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label33.Location = new System.Drawing.Point(3, 87);
+            this.label33.Location = new System.Drawing.Point(6, 125);
             this.label33.Margin = new System.Windows.Forms.Padding(5);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(53, 24);
@@ -3127,7 +3189,7 @@
             // button_Config_WorkStage_ToTempPos1_Move
             // 
             this.button_Config_WorkStage_ToTempPos1_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_ToTempPos1_Move.Location = new System.Drawing.Point(178, 28);
+            this.button_Config_WorkStage_ToTempPos1_Move.Location = new System.Drawing.Point(181, 47);
             this.button_Config_WorkStage_ToTempPos1_Move.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_ToTempPos1_Move.Name = "button_Config_WorkStage_ToTempPos1_Move";
             this.button_Config_WorkStage_ToTempPos1_Move.Size = new System.Drawing.Size(57, 48);
@@ -3139,18 +3201,19 @@
             // textBox_Config_WorkStage_TempPos1_StageY
             // 
             this.textBox_Config_WorkStage_TempPos1_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos1_StageY.Location = new System.Drawing.Point(57, 52);
+            this.textBox_Config_WorkStage_TempPos1_StageY.Location = new System.Drawing.Point(60, 71);
             this.textBox_Config_WorkStage_TempPos1_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos1_StageY.Name = "textBox_Config_WorkStage_TempPos1_StageY";
             this.textBox_Config_WorkStage_TempPos1_StageY.Size = new System.Drawing.Size(70, 24);
             this.textBox_Config_WorkStage_TempPos1_StageY.TabIndex = 45;
+            this.textBox_Config_WorkStage_TempPos1_StageY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos1_StageY.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos1_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label30
             // 
             this.label30.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label30.Location = new System.Drawing.Point(3, 51);
+            this.label30.Location = new System.Drawing.Point(6, 70);
             this.label30.Margin = new System.Windows.Forms.Padding(5);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(53, 24);
@@ -3161,7 +3224,7 @@
             // button_Config_WorkStage_GetCurrentPos_ToTempPos1
             // 
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Location = new System.Drawing.Point(130, 28);
+            this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Location = new System.Drawing.Point(133, 47);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Name = "button_Config_WorkStage_GetCurrentPos_ToTempPos1";
             this.button_Config_WorkStage_GetCurrentPos_ToTempPos1.Size = new System.Drawing.Size(47, 48);
@@ -3173,18 +3236,19 @@
             // textBox_Config_WorkStage_TempPos1_StageX
             // 
             this.textBox_Config_WorkStage_TempPos1_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TempPos1_StageX.Location = new System.Drawing.Point(57, 28);
+            this.textBox_Config_WorkStage_TempPos1_StageX.Location = new System.Drawing.Point(60, 47);
             this.textBox_Config_WorkStage_TempPos1_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos1_StageX.Name = "textBox_Config_WorkStage_TempPos1_StageX";
             this.textBox_Config_WorkStage_TempPos1_StageX.Size = new System.Drawing.Size(70, 24);
             this.textBox_Config_WorkStage_TempPos1_StageX.TabIndex = 22;
+            this.textBox_Config_WorkStage_TempPos1_StageX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos1_StageX.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos1_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label28
             // 
             this.label28.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label28.Location = new System.Drawing.Point(3, 27);
+            this.label28.Location = new System.Drawing.Point(6, 46);
             this.label28.Margin = new System.Windows.Forms.Padding(5);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(53, 24);
@@ -3500,6 +3564,7 @@
             this.textBox14.Name = "textBox14";
             this.textBox14.Size = new System.Drawing.Size(97, 24);
             this.textBox14.TabIndex = 46;
+            this.textBox14.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox14.Text = "000.000";
             this.textBox14.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -3544,6 +3609,7 @@
             this.textBox15.Name = "textBox15";
             this.textBox15.Size = new System.Drawing.Size(97, 24);
             this.textBox15.TabIndex = 42;
+            this.textBox15.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox15.Text = "000.000";
             this.textBox15.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -3566,6 +3632,7 @@
             this.textBox18.Name = "textBox18";
             this.textBox18.Size = new System.Drawing.Size(97, 24);
             this.textBox18.TabIndex = 40;
+            this.textBox18.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox18.Text = "000.000";
             this.textBox18.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -3631,6 +3698,7 @@
             this.textBox_Config_WorkStage_JogMove_StepSize.Name = "textBox_Config_WorkStage_JogMove_StepSize";
             this.textBox_Config_WorkStage_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
             this.textBox_Config_WorkStage_JogMove_StepSize.TabIndex = 75;
+            this.textBox_Config_WorkStage_JogMove_StepSize.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_JogMove_StepSize.Text = "1.000";
             // 
             // label9
@@ -4093,6 +4161,7 @@
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Size = new System.Drawing.Size(87, 23);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.TabIndex = 46;
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = "000.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -4104,6 +4173,7 @@
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Size = new System.Drawing.Size(87, 23);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.TabIndex = 45;
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text = "000.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -4160,6 +4230,7 @@
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Size = new System.Drawing.Size(87, 23);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.TabIndex = 24;
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text = "000.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -4182,6 +4253,7 @@
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Size = new System.Drawing.Size(87, 23);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.TabIndex = 22;
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = "000.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -4345,6 +4417,7 @@
             this.textBox_Config_WorkStage_TeachingPos_StageY.Name = "textBox_Config_WorkStage_TeachingPos_StageY";
             this.textBox_Config_WorkStage_TeachingPos_StageY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_WorkStage_TeachingPos_StageY.TabIndex = 24;
+            this.textBox_Config_WorkStage_TeachingPos_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPos_StageY.Text = "000.000";
             this.textBox_Config_WorkStage_TeachingPos_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -4367,6 +4440,7 @@
             this.textBox_Config_WorkStage_TeachingPos_StageX.Name = "textBox_Config_WorkStage_TeachingPos_StageX";
             this.textBox_Config_WorkStage_TeachingPos_StageX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_WorkStage_TeachingPos_StageX.TabIndex = 22;
+            this.textBox_Config_WorkStage_TeachingPos_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPos_StageX.Text = "000.000";
             this.textBox_Config_WorkStage_TeachingPos_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -4492,6 +4566,7 @@
             this.textBox_Config_Vision_JogMove_StepSize.Name = "textBox_Config_Vision_JogMove_StepSize";
             this.textBox_Config_Vision_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
             this.textBox_Config_Vision_JogMove_StepSize.TabIndex = 75;
+            this.textBox_Config_Vision_JogMove_StepSize.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_Vision_JogMove_StepSize.Text = "1.000";
             // 
             // label10
@@ -4860,6 +4935,7 @@
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(97, 24);
             this.textBox7.TabIndex = 46;
+            this.textBox7.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox7.Text = "000.000";
             this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -4904,6 +4980,7 @@
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(97, 24);
             this.textBox8.TabIndex = 42;
+            this.textBox8.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox8.Text = "000.000";
             this.textBox8.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -4926,6 +5003,7 @@
             this.textBox9.Name = "textBox9";
             this.textBox9.Size = new System.Drawing.Size(97, 24);
             this.textBox9.TabIndex = 40;
+            this.textBox9.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox9.Text = "000.000";
             this.textBox9.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5266,6 +5344,7 @@
             this.textBox_Config_Vision_TeachingPos_VisionZ.Name = "textBox_Config_Vision_TeachingPos_VisionZ";
             this.textBox_Config_Vision_TeachingPos_VisionZ.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_Vision_TeachingPos_VisionZ.TabIndex = 22;
+            this.textBox_Config_Vision_TeachingPos_VisionZ.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
             this.textBox_Config_Vision_TeachingPos_VisionZ.Text = "000.000";
             this.textBox_Config_Vision_TeachingPos_VisionZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -5317,6 +5396,18 @@
             this.tabPage_Config_Laser.TabIndex = 3;
             this.tabPage_Config_Laser.Text = "Laser";
             this.tabPage_Config_Laser.UseVisualStyleBackColor = true;
+            // 
+            // button_Config_TabLaser_LaserPowerMeasure
+            // 
+            this.button_Config_TabLaser_LaserPowerMeasure.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_TabLaser_LaserPowerMeasure.Location = new System.Drawing.Point(474, 133);
+            this.button_Config_TabLaser_LaserPowerMeasure.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_TabLaser_LaserPowerMeasure.Name = "button_Config_TabLaser_LaserPowerMeasure";
+            this.button_Config_TabLaser_LaserPowerMeasure.Size = new System.Drawing.Size(172, 46);
+            this.button_Config_TabLaser_LaserPowerMeasure.TabIndex = 84;
+            this.button_Config_TabLaser_LaserPowerMeasure.Text = "LaserPowerMeasure";
+            this.button_Config_TabLaser_LaserPowerMeasure.UseVisualStyleBackColor = true;
+            this.button_Config_TabLaser_LaserPowerMeasure.Click += new System.EventHandler(this.button_Config_TabLaser_LaserPowerMeasure_Click);
             // 
             // button_Config_TabLaser_ScannerVisionOffset
             // 
@@ -5397,6 +5488,7 @@
             this.textBox_Config_BDS_BET_Mrad_Position.Name = "textBox_Config_BDS_BET_Mrad_Position";
             this.textBox_Config_BDS_BET_Mrad_Position.Size = new System.Drawing.Size(67, 23);
             this.textBox_Config_BDS_BET_Mrad_Position.TabIndex = 49;
+            this.textBox_Config_BDS_BET_Mrad_Position.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
             this.textBox_Config_BDS_BET_Mrad_Position.Text = "0.24";
             // 
             // Button_Config_BDS_BET_Zoom_Init
@@ -5442,6 +5534,7 @@
             this.textBox_Config_BDS_BET_Zoom_Position.Name = "textBox_Config_BDS_BET_Zoom_Position";
             this.textBox_Config_BDS_BET_Zoom_Position.Size = new System.Drawing.Size(67, 23);
             this.textBox_Config_BDS_BET_Zoom_Position.TabIndex = 45;
+            this.textBox_Config_BDS_BET_Zoom_Position.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
             this.textBox_Config_BDS_BET_Zoom_Position.Text = "1.0";
             // 
             // textBox_Config_BDS_BET_Mrad
@@ -5587,6 +5680,7 @@
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Name = "textBox_Config_TabLaser_VarioScan_ZDefocus";
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Size = new System.Drawing.Size(57, 23);
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.TabIndex = 16;
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Tag = "KeyPad;Min=-10;Max=100;Format=0.000";
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "10";
             // 
             // textBox_Config_TabLaser_VarioScan_ZOffset
@@ -5597,6 +5691,7 @@
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Name = "textBox_Config_TabLaser_VarioScan_ZOffset";
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Size = new System.Drawing.Size(57, 23);
             this.textBox_Config_TabLaser_VarioScan_ZOffset.TabIndex = 15;
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Tag = "KeyPad;Min=-10;Max=100;Format=0.000";
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Text = "10";
             // 
             // label_VarioScan_ZDefocus
@@ -5803,6 +5898,7 @@
             this.textBox_Config_TabLaser_PercentOfEnergy.Name = "textBox_Config_TabLaser_PercentOfEnergy";
             this.textBox_Config_TabLaser_PercentOfEnergy.Size = new System.Drawing.Size(150, 24);
             this.textBox_Config_TabLaser_PercentOfEnergy.TabIndex = 120;
+            this.textBox_Config_TabLaser_PercentOfEnergy.Tag = "KeyPad;Min=0;Max=100;Format=0.000";
             this.textBox_Config_TabLaser_PercentOfEnergy.Text = "0";
             // 
             // baseLabel_Config_TabLaser_PercentOfEnergy
@@ -5907,6 +6003,7 @@
             this.textBox_Config_TabLaser_Amplifier.Name = "textBox_Config_TabLaser_Amplifier";
             this.textBox_Config_TabLaser_Amplifier.Size = new System.Drawing.Size(150, 23);
             this.textBox_Config_TabLaser_Amplifier.TabIndex = 120;
+            this.textBox_Config_TabLaser_Amplifier.Tag = "KeyPad;Min=0;Max=9999;Format=0.000";
             this.textBox_Config_TabLaser_Amplifier.Text = "0";
             // 
             // baseLabel_Config_TabLaser_AmplifierRR
@@ -6754,6 +6851,7 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(97, 24);
             this.textBox3.TabIndex = 40;
+            this.textBox3.Tag = "KeyPad;Min=-200;Max=200;Format=0.000";
             this.textBox3.Text = "000.000";
             this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -6847,6 +6945,7 @@
             this.textBox_Config_BDS_JogMove_StepSize.Name = "textBox_Config_BDS_JogMove_StepSize";
             this.textBox_Config_BDS_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
             this.textBox_Config_BDS_JogMove_StepSize.TabIndex = 75;
+            this.textBox_Config_BDS_JogMove_StepSize.Tag = "KeyPad;Min=-200;Max=200;Format=0.000";
             this.textBox_Config_BDS_JogMove_StepSize.Text = "1.000";
             // 
             // label11
@@ -7149,6 +7248,7 @@
             this.textBox_Config_BDS_TeachingPos_MaskY.Name = "textBox_Config_BDS_TeachingPos_MaskY";
             this.textBox_Config_BDS_TeachingPos_MaskY.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_BDS_TeachingPos_MaskY.TabIndex = 22;
+            this.textBox_Config_BDS_TeachingPos_MaskY.Tag = "KeyPad;Min=-200;Max=200;Format=0.000";
             this.textBox_Config_BDS_TeachingPos_MaskY.Text = "000.000";
             this.textBox_Config_BDS_TeachingPos_MaskY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -8456,18 +8556,6 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button_Config_TabLaser_LaserPowerMeasure
-            // 
-            this.button_Config_TabLaser_LaserPowerMeasure.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_TabLaser_LaserPowerMeasure.Location = new System.Drawing.Point(474, 133);
-            this.button_Config_TabLaser_LaserPowerMeasure.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button_Config_TabLaser_LaserPowerMeasure.Name = "button_Config_TabLaser_LaserPowerMeasure";
-            this.button_Config_TabLaser_LaserPowerMeasure.Size = new System.Drawing.Size(172, 46);
-            this.button_Config_TabLaser_LaserPowerMeasure.TabIndex = 84;
-            this.button_Config_TabLaser_LaserPowerMeasure.Text = "LaserPowerMeasure";
-            this.button_Config_TabLaser_LaserPowerMeasure.UseVisualStyleBackColor = true;
-            this.button_Config_TabLaser_LaserPowerMeasure.Click += new System.EventHandler(this.button_Config_TabLaser_LaserPowerMeasure_Click);
-            // 
             // FormNew_Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -9213,5 +9301,8 @@
         private System.Windows.Forms.Label label_Config_LDUL_Move_Recipe_MAlignerX;
         private System.Windows.Forms.GroupBox groupBox_Config_LDUL_Move_Recipe_MAligner;
         private System.Windows.Forms.Button button_Config_TabLaser_LaserPowerMeasure;
+        private System.Windows.Forms.TextBox textBox_Config_WorkStage_TempPos3_StageName;
+        private System.Windows.Forms.TextBox textBox_Config_WorkStage_TempPos2_StageName;
+        private System.Windows.Forms.TextBox textBox_Config_WorkStage_TempPos1_StageName;
     }
 }

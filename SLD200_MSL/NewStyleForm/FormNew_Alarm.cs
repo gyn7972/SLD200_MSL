@@ -68,6 +68,15 @@ namespace SLD200_MSL
             this.VisibleChanged += FormNew_Alarm_VisibleChanged;
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void FormNew_Alarm_Load(object sender, EventArgs e)
         {
             InitDataGridViewColumn();
