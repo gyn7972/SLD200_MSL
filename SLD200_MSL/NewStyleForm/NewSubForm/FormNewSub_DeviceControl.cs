@@ -51,6 +51,15 @@ namespace SLD200.NewStyleForm.NewSubForm
             InitializeDeviceStatusBindings();
 
             InitializeDeviceList();
+
+            if(!Equipment.Machine_LaserType_CO2)
+            {
+                lblBeamExpander.Visible = false;
+                picBeamExpander.Visible = false;
+                btnBeamExpanderOn.Visible = false;
+                btnBeamExpanderOff.Visible = false;
+            }
+            
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -139,13 +148,6 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             if (workStage == null)
                 return;
-
-            // 인터락: 장비 상태 확인 (예: Motion이 먼저 켜져 있어야 함 등)
-            if (!Equipment._InitDeviceStatus.MotionIo)
-            {
-                MessageBox.Show("Motion 시스템이 먼저 켜져 있어야 합니다.", "인터락", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
 
             if (Equipment.Machine_LaserType_CO2)
                 TryDeviceControl("레이저", () => workStage.workStageParameter.DO_Laser_Enable(true), picLaser, true);

@@ -6451,7 +6451,9 @@ namespace QMC.Common.Modules
             bool bRtn = false;
 
             //흠.. Sirius
-            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+            // RTC_RTC6_COMPLETE 상관없이 가능 하잖아? 
+            // 연속으로 누르는거는 방지해야겠네...
+            //if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
             {
                 // 문서 생성후 뷰어에 지정
                 //var doc = new DocumentDefault();
@@ -6581,7 +6583,9 @@ namespace QMC.Common.Modules
 
         public void ChillerComm_Close()
         {
+            // 걍 끄면 안됨. Laser Off 상태 확인 후 꺼야함.
             // I/O 인데
+            return;
             workStageParameter.DO_Chiller_Run(false);
         }
 
@@ -7787,7 +7791,8 @@ namespace QMC.Common.Modules
                     AlarmPost(AlarmKey.Main_Purge_Alarm);
                 }
 
-                if (!workStageParameter.DI_Scanner_Flow_Check())
+                //if (!workStageParameter.DI_Scanner_Flow_Check())
+                if (workStageParameter.DI_Scanner_Flow_Check())
                 {
                     AlarmPost(AlarmKey.Scanner_Flow_Alarm);
                 }
