@@ -115,14 +115,32 @@ namespace QMC.Common
             int nValue = 0;
             try
             {
-                int.TryParse(str, out nValue);
+                if (double.TryParse(str, out double dValue))
+                {
+                    nValue = (int)dValue; // 소수점 이하 버림
+                }
+                else
+                {
+                    int.TryParse(str, out nValue);
+                }
             }
             catch (Exception ex)
             {
                 Log.Write(ex);
-                //Debug.WriteLine(ex.Message);
             }
             return nValue;
+
+            //int nValue = 0;
+            //try
+            //{
+            //    int.TryParse(str, out nValue);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Write(ex);
+            //    //Debug.WriteLine(ex.Message);
+            //}
+            //return nValue;
         }
 
         public static bool ToBoolean(string str)
