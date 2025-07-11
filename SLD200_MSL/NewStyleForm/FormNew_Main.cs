@@ -3738,7 +3738,10 @@ namespace SLD200_MSL
 
         private void button_TestbyUser_LPort_Start_Click(object sender, EventArgs e)
         {
-            if (Equipment.AutoRunStatus)
+            if (!workStage.m_bHomeOK || Equipment.AutoRunStatus)
+                return;
+
+            if (Equipment.AutoManualStatus)
             {
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer 시작 하시겠습니까?"))

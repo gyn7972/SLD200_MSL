@@ -250,7 +250,7 @@
             this.SiriusViewer_Main.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.SiriusViewer_Main.Name = "SiriusViewer_Main";
             this.SiriusViewer_Main.Progress = 0;
-            this.SiriusViewer_Main.Size = new System.Drawing.Size(547, 542);
+            this.SiriusViewer_Main.Size = new System.Drawing.Size(510, 553);
             this.SiriusViewer_Main.TabIndex = 34;
             // 
             // groupBoxMain_ModuleProcessingStatus
@@ -380,7 +380,7 @@
             this.checkBox_Main_AlignStartSocket_ContinueMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_AlignStartSocket_ContinueMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.checkBox_Main_AlignStartSocket_ContinueMode.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Location = new System.Drawing.Point(1289, 436);
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Location = new System.Drawing.Point(1490, 762);
             this.checkBox_Main_AlignStartSocket_ContinueMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_AlignStartSocket_ContinueMode.Name = "checkBox_Main_AlignStartSocket_ContinueMode";
             this.checkBox_Main_AlignStartSocket_ContinueMode.Size = new System.Drawing.Size(66, 44);
@@ -396,7 +396,7 @@
             this.checkBox_Main_AlignStartSocket_SelectMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_AlignStartSocket_SelectMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.checkBox_Main_AlignStartSocket_SelectMode.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_AlignStartSocket_SelectMode.Location = new System.Drawing.Point(1289, 436);
+            this.checkBox_Main_AlignStartSocket_SelectMode.Location = new System.Drawing.Point(1490, 762);
             this.checkBox_Main_AlignStartSocket_SelectMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_AlignStartSocket_SelectMode.Name = "checkBox_Main_AlignStartSocket_SelectMode";
             this.checkBox_Main_AlignStartSocket_SelectMode.Size = new System.Drawing.Size(66, 44);
@@ -886,11 +886,11 @@
             // 
             this.groupBox_ProcessingData.Controls.Add(this.SiriusViewer_Main);
             this.groupBox_ProcessingData.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_ProcessingData.Location = new System.Drawing.Point(12, 260);
+            this.groupBox_ProcessingData.Location = new System.Drawing.Point(12, 267);
             this.groupBox_ProcessingData.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox_ProcessingData.Name = "groupBox_ProcessingData";
             this.groupBox_ProcessingData.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_ProcessingData.Size = new System.Drawing.Size(570, 588);
+            this.groupBox_ProcessingData.Size = new System.Drawing.Size(527, 597);
             this.groupBox_ProcessingData.TabIndex = 19;
             this.groupBox_ProcessingData.TabStop = false;
             this.groupBox_ProcessingData.Text = "Processing Data";
@@ -947,7 +947,7 @@
             this.button_Main_Home.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_Home.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_Home.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Main_Home.Location = new System.Drawing.Point(1560, 120);
+            this.button_Main_Home.Location = new System.Drawing.Point(1558, 15);
             this.button_Main_Home.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_Home.Name = "button_Main_Home";
             this.button_Main_Home.Size = new System.Drawing.Size(97, 89);
@@ -961,11 +961,11 @@
             this.button_Main_RtcInit.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_Main_RtcInit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_RtcInit.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button_Main_RtcInit.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Main_RtcInit.Location = new System.Drawing.Point(1560, 9);
+            this.button_Main_RtcInit.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Main_RtcInit.Location = new System.Drawing.Point(1454, 63);
             this.button_Main_RtcInit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_RtcInit.Name = "button_Main_RtcInit";
-            this.button_Main_RtcInit.Size = new System.Drawing.Size(97, 58);
+            this.button_Main_RtcInit.Size = new System.Drawing.Size(97, 41);
             this.button_Main_RtcInit.TabIndex = 57;
             this.button_Main_RtcInit.Text = "Scanner Open";
             this.button_Main_RtcInit.UseVisualStyleBackColor = false;
@@ -1014,8 +1014,8 @@
             this.button_Main_CameraInit.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_Main_CameraInit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_CameraInit.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button_Main_CameraInit.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Main_CameraInit.Location = new System.Drawing.Point(1560, 71);
+            this.button_Main_CameraInit.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Main_CameraInit.Location = new System.Drawing.Point(1454, 15);
             this.button_Main_CameraInit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_CameraInit.Name = "button_Main_CameraInit";
             this.button_Main_CameraInit.Size = new System.Drawing.Size(97, 45);
@@ -1055,10 +1055,10 @@
             // groupBox_FineCam
             // 
             this.groupBox_FineCam.Controls.Add(this.ImageViewer_Main_highs);
-            this.groupBox_FineCam.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_FineCam.Location = new System.Drawing.Point(588, 260);
+            this.groupBox_FineCam.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox_FineCam.Location = new System.Drawing.Point(545, 267);
             this.groupBox_FineCam.Name = "groupBox_FineCam";
-            this.groupBox_FineCam.Size = new System.Drawing.Size(285, 260);
+            this.groupBox_FineCam.Size = new System.Drawing.Size(330, 295);
             this.groupBox_FineCam.TabIndex = 191;
             this.groupBox_FineCam.TabStop = false;
             this.groupBox_FineCam.Text = " Fine Camera ";
@@ -1071,13 +1071,13 @@
             this.ImageViewer_Main_highs.FrameRate = 1D;
             this.ImageViewer_Main_highs.InputImage = null;
             this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(6, 18);
             this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
             this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
             this.ImageViewer_Main_highs.Simulated = false;
-            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(263, 220);
-            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(317, 265);
+            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ImageViewer_Main_highs.TabIndex = 189;
             this.ImageViewer_Main_highs.TabStop = false;
             this.ImageViewer_Main_highs.UpdateDelayTime = 200;
@@ -1086,10 +1086,10 @@
             // groupBox_CoarseCam
             // 
             this.groupBox_CoarseCam.Controls.Add(this.ImageViewer_Main_Lows);
-            this.groupBox_CoarseCam.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_CoarseCam.Location = new System.Drawing.Point(588, 588);
+            this.groupBox_CoarseCam.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox_CoarseCam.Location = new System.Drawing.Point(543, 569);
             this.groupBox_CoarseCam.Name = "groupBox_CoarseCam";
-            this.groupBox_CoarseCam.Size = new System.Drawing.Size(285, 260);
+            this.groupBox_CoarseCam.Size = new System.Drawing.Size(330, 295);
             this.groupBox_CoarseCam.TabIndex = 192;
             this.groupBox_CoarseCam.TabStop = false;
             this.groupBox_CoarseCam.Text = " Coarse Camera ";
@@ -1102,12 +1102,12 @@
             this.ImageViewer_Main_Lows.FrameRate = 1D;
             this.ImageViewer_Main_Lows.InputImage = null;
             this.ImageViewer_Main_Lows.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_Lows.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_Lows.Location = new System.Drawing.Point(6, 18);
             this.ImageViewer_Main_Lows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ImageViewer_Main_Lows.Name = "ImageViewer_Main_Lows";
             this.ImageViewer_Main_Lows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
             this.ImageViewer_Main_Lows.Simulated = false;
-            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(263, 220);
+            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(317, 265);
             this.ImageViewer_Main_Lows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ImageViewer_Main_Lows.TabIndex = 190;
             this.ImageViewer_Main_Lows.TabStop = false;
@@ -1166,7 +1166,7 @@
             this.label_Title_Stacker_LPort.Location = new System.Drawing.Point(1275, 147);
             this.label_Title_Stacker_LPort.Name = "label_Title_Stacker_LPort";
             this.label_Title_Stacker_LPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(283, 26);
+            this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(380, 26);
             this.label_Title_Stacker_LPort.TabIndex = 205;
             this.label_Title_Stacker_LPort.Text = "L Stacker 자재 유/무";
             this.label_Title_Stacker_LPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1180,7 +1180,7 @@
             this.label_Title_Stacker_RPort.Location = new System.Drawing.Point(1275, 179);
             this.label_Title_Stacker_RPort.Name = "label_Title_Stacker_RPort";
             this.label_Title_Stacker_RPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Title_Stacker_RPort.Size = new System.Drawing.Size(283, 28);
+            this.label_Title_Stacker_RPort.Size = new System.Drawing.Size(380, 28);
             this.label_Title_Stacker_RPort.TabIndex = 206;
             this.label_Title_Stacker_RPort.Text = "R Stacker 자재 유/무";
             this.label_Title_Stacker_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1234,7 +1234,7 @@
             this.button_Main_ManualStart.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_Main_ManualStart.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_ManualStart.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Main_ManualStart.Location = new System.Drawing.Point(1289, 436);
+            this.button_Main_ManualStart.Location = new System.Drawing.Point(1490, 762);
             this.button_Main_ManualStart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_ManualStart.Name = "button_Main_ManualStart";
             this.button_Main_ManualStart.Size = new System.Drawing.Size(66, 44);
@@ -2281,7 +2281,7 @@
             this.label_Main_Title_Status.Location = new System.Drawing.Point(1275, 115);
             this.label_Main_Title_Status.Name = "label_Main_Title_Status";
             this.label_Main_Title_Status.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Main_Title_Status.Size = new System.Drawing.Size(283, 26);
+            this.label_Main_Title_Status.Size = new System.Drawing.Size(380, 26);
             this.label_Main_Title_Status.TabIndex = 215;
             this.label_Main_Title_Status.Text = "- - - - -";
             this.label_Main_Title_Status.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -2304,7 +2304,7 @@
             // 
             this.panel_Main_ModuleStatus.Location = new System.Drawing.Point(6, 20);
             this.panel_Main_ModuleStatus.Name = "panel_Main_ModuleStatus";
-            this.panel_Main_ModuleStatus.Size = new System.Drawing.Size(333, 226);
+            this.panel_Main_ModuleStatus.Size = new System.Drawing.Size(382, 226);
             this.panel_Main_ModuleStatus.TabIndex = 218;
             // 
             // groupBox_ModuleStatus
@@ -2313,7 +2313,7 @@
             this.groupBox_ModuleStatus.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox_ModuleStatus.Location = new System.Drawing.Point(12, 9);
             this.groupBox_ModuleStatus.Name = "groupBox_ModuleStatus";
-            this.groupBox_ModuleStatus.Size = new System.Drawing.Size(345, 250);
+            this.groupBox_ModuleStatus.Size = new System.Drawing.Size(394, 250);
             this.groupBox_ModuleStatus.TabIndex = 219;
             this.groupBox_ModuleStatus.TabStop = false;
             this.groupBox_ModuleStatus.Text = "Module Status";
@@ -2378,6 +2378,7 @@
             this.ClientSize = new System.Drawing.Size(1920, 875);
             this.ControlBox = false;
             this.Controls.Add(this.button_Main_SelectedProcess);
+            this.Controls.Add(this.groupBox_ProcessingData);
             this.Controls.Add(this.groupBox_ModuleStatus);
             this.Controls.Add(this.checkBox_Main_AlignStartSocket_ContinueMode);
             this.Controls.Add(this.panel_Main_SemiAuto);
@@ -2419,7 +2420,6 @@
             this.Controls.Add(this.button_Main_Stop);
             this.Controls.Add(this.button_Main_Pause);
             this.Controls.Add(this.button_Main_Start);
-            this.Controls.Add(this.groupBox_ProcessingData);
             this.Controls.Add(this.groupBoxMain_ProcessingStatus);
             this.Controls.Add(this.groupBoxMain_ModuleProcessingStatus);
             this.Font = new System.Drawing.Font("Tahoma", 9F);
@@ -2448,7 +2448,6 @@
             this.groupBoxMain_MaterialInformation.PerformLayout();
             this.groupBox_ProcessingData.ResumeLayout(false);
             this.groupBox_FineCam.ResumeLayout(false);
-            this.groupBox_FineCam.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.groupBox_CoarseCam.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
