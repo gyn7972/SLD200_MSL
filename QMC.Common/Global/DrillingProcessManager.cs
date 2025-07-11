@@ -442,6 +442,7 @@ namespace QMC.Common.Global
             string drawingName = Path.GetFileName(Equipment.Current_DrawingFileName);
             int count = 0;      // 전체 제품 수
             int countNg = 0;    // NG 수
+            int markingNumber = Equipment.m_nSerialNumberMarkingCount;  // 넣기에는 또.. 경우의 수가 너무 많다.
 
             List<string> lines = new List<string>();
 

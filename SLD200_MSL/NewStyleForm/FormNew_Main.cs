@@ -4081,7 +4081,13 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            int m_nMainWorkCycle_ResultOKNG = 1;
 
+            string message = string.Format(
+                                                        "[생산완료] 결과 = {0}, MarkingNumber = {1}",
+                                                        m_nMainWorkCycle_ResultOKNG,
+                                                        Equipment.m_nSerialNumberMarkingCount);
+            Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
 
 
             return;

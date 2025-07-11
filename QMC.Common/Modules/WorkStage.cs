@@ -13470,12 +13470,19 @@ namespace QMC.Common.Modules
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
                                 m_bworkStageVacuumFail = false;
                                 m_bForceEjectRequest = false;
-                                if (Equipment.AutoRunStatus)
+                                //if (Equipment.AutoRunStatus) // 이게 아니어도.. 되야지?
                                 {
                                     //Cycle Time
                                     DrillingManager.CycleTimer_DoneModuleCount++;
                                     DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
                                     DrillingManager.SaveLotLog(false);                     // 최신 로그 저장
+
+                                    string message = string.Format(
+                                                        "[생산완료] 결과 = {0}, MarkingNumber = {1}",
+                                                        m_nMainWorkCycle_ResultOKNG,
+                                                        Equipment.m_nSerialNumberMarkingCount);
+                                    Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
+
 
                                     //TargetCount가 0이면 멈추지 않고 돌아야 한다.
                                     if (Equipment.DrillModuleTargetCount != 0 &&
@@ -13491,7 +13498,7 @@ namespace QMC.Common.Modules
                                         //this.m_SubWork_Start = false;
                                         // Unloader는 제품 제거하고 정지.
                                         //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
-                                        string message = string.Format(
+                                        message = string.Format(
                                                         "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Stage 공정 정지 요청",
                                                         nTargetCount,
                                                         DrillingManager.CycleTimer_DoneModuleCount);
@@ -13503,12 +13510,18 @@ namespace QMC.Common.Modules
                             else
                             {
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
-                                if (Equipment.AutoRunStatus)
+                                //if (Equipment.AutoRunStatus) // 이게 아니어도.. 되야지?
                                 {
                                     //Cycle Time
                                     DrillingManager.CycleTimer_DoneModuleCount++;
                                     DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
                                     DrillingManager.SaveLotLog();                     // 최신 로그 저장
+
+                                    string message = string.Format(
+                                                        "[생산완료] 결과 = {0}, MarkingNumber = {1}",
+                                                        m_nMainWorkCycle_ResultOKNG,
+                                                        Equipment.m_nSerialNumberMarkingCount);
+                                    Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
 
                                     //TargetCount가 0이면 멈추지 않고 돌아야 한다.
                                     if (Equipment.DrillModuleTargetCount != 0 &&
@@ -13524,7 +13537,7 @@ namespace QMC.Common.Modules
                                         //this.m_SubWork_Start = false;
                                         // Unloader는 제품 제거하고 정지.
                                         //ActionProcessStop?.Invoke(true); //<-이건 Unloader에.
-                                        string message = string.Format(
+                                        message = string.Format(
                                                         "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Stage 공정 정지 요청",
                                                         nTargetCount,
                                                         DrillingManager.CycleTimer_DoneModuleCount);
@@ -41486,6 +41499,11 @@ namespace QMC.Common.Modules
 
                     if (Equipment.SelectRunEnable_New)
                     {
+                        //Cycle Time
+                        DrillingManager.CycleTimer_DoneModuleCount++;
+                        DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
+                        DrillingManager.SaveLotLog();                     // 최신 로그 저장
+
                         Equipment.SelectRunEnable_New = false; // 선택 가공 모드 종료
                     }
 
