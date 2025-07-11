@@ -52,7 +52,14 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             InitializeDeviceList();
 
-            if(!Equipment.Machine_LaserType_CO2)
+            if(Equipment.Machine_LaserType_CO2)
+            {
+                lblPowermeterBds.Visible = false;
+                picPowermeterBds.Visible = false;
+                btnPowermeterBdsOn.Visible = false;
+                btnPowermeterBdsOff.Visible = false;
+            }
+            else
             {
                 lblBeamExpander.Visible = false;
                 picBeamExpander.Visible = false;
@@ -146,23 +153,38 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void btnLaserOn_Click(object sender, EventArgs e)
         {
+            if (Equipment._InitDeviceStatus.Laser)
+                return;
+
             if (workStage == null)
                 return;
 
             if (Equipment.Machine_LaserType_CO2)
+            {
                 TryDeviceControl("레이저", () => workStage.workStageParameter.DO_Laser_Enable(true), picLaser, true);
+                Equipment._InitDeviceStatus.Laser = true;
+
+            }
             else
+            {
                 TryDeviceControl("레이저", () =>
                 {
                     workStage.m_bRapidLxLaser_UserConnect = true;
                     workStage.RapidLxLaser_Comm_Init();
                 }, picLaser, true);
+            } 
         }
 
         private void btnLaserOff_Click(object sender, EventArgs e)
         {
+            if (!Equipment._InitDeviceStatus.Laser)
+                return;
+
             if (Equipment.Machine_LaserType_CO2)
+            {
                 TryDeviceControl("레이저", () => workStage.workStageParameter.DO_Laser_Enable(false), picLaser, false);
+                Equipment._InitDeviceStatus.Laser = false;
+            }
             else
                 TryDeviceControl("레이저", () =>
                 {
@@ -174,7 +196,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void btnScannerOn_Click(object sender, EventArgs e) 
             => TryDeviceControl("스캐너", () => workStage.Sirius_Init(), picScanner, true);
         private void btnScannerOff_Click(object sender, EventArgs e) 
-            => TryDeviceControl("스캐너", () => workStage.ScannerComm_Close(), picScanner, false);
+            => TryDeviceControl("스캐너", () => workStage.Sirius_Close(), picScanner, false);
 
         private void btnChillerOn_Click(object sender, EventArgs e) 
             => TryDeviceControl("칠러", () => workStage.ChillerComm_Init(), picChiller, true);
@@ -275,7 +297,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     picLaser
                 ),
 
-                ("스캐너", () => workStage.Sirius_Init(), () => workStage.ScannerComm_Close(), picScanner),
+                ("스캐너", () => workStage.Sirius_Init(), () => workStage.Sirius_Close(), picScanner),
                 ("칠러", workStage.ChillerComm_Init, workStage.ChillerComm_Close, picChiller),
                 ("높이센서", workStage.LaserSensor_Socket_Connect, workStage.LaserSensor_Socket_Disconnect, picHeightSensor),
 
@@ -492,110 +514,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 workStage.LaserSensor_Socket_Connect();
             }
-        }
-
-        private void UpdateInitStatusFromComm()
-        {
-            bool bOn = false;
-
-            //장비 확인 필요
-            if (workStage.IsAlarm())
-                return;
-
-            bOn = Equipment.AjinBoard_Opened && workStage.m_bHomeOK;
-            _InitDeviceStatus.MotionIo = bOn;
-            //if (!_InitDeviceStatus.MotionIo)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
-
-            if (!Equipment.Machine_LaserType_CO2)
-            {
-                bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
-                _InitDeviceStatus.Laser = bOn;
-            }
-            else
-            {
-                // 여기서 io를 계속 읽는 거는 아닌거 같다.
-                // 근데 뭐 방법이 없잖아? 해보고 안되면 막자.
-                if (workStage.workStageParameter.IsDO_Laser_Enable())
-                    _InitDeviceStatus.Laser = true;
-                else
-                    _InitDeviceStatus.Laser = false;
-            }
-            //if (!_InitDeviceStatus.Laser)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
-
-            //RTC에서 초기화할때 선언함.
-            //bOn = workStage.rtc != null && workStage.rtc.;
-            //_InitDeviceStatus.Scanner = bOn;
-
-            if (!Equipment.Machine_LaserType_CO2)
-            {
-                bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
-                _InitDeviceStatus.PowerMeter_Bds = bOn;
-                if (!_InitDeviceStatus.PowerMeter_Bds)
-                    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
-            }
-
-            bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;
-            _InitDeviceStatus.PowerMeter_Stage = bOn;
-            if (!_InitDeviceStatus.PowerMeter_Stage)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_Stage);
-
-            // 미 연결 상태 - 연결되면 장착.
-            //bOn = workStage.m_beamExpander_Comm != null && workStage.m_beamExpander_Comm.IsOpen;
-            //_InitDeviceStatus.BeamExpander = bOn;
-            //if (!_InitDeviceStatus.BeamExpander)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_BeamExpander);
-
-            bOn = bds.DustCollector_Upper.IsConnected;
-            _InitDeviceStatus.DustCollector_Upper = bOn;
-            if (!_InitDeviceStatus.DustCollector_Upper)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Upper);
-
-            bOn = bds.DustCollector_Lower.IsConnected;
-            _InitDeviceStatus.DustCollector_Lower = bOn;
-            if (!_InitDeviceStatus.DustCollector_Lower)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Lower);
-
-            //bOn = workStage.m_dustCollector_UpperPos_Comm != null && workStage.m_dustCollector_UpperPos_Comm.IsOpen;
-            //_InitDeviceStatus.DustCollector_Upper = bOn;
-            //if (!_InitDeviceStatus.DustCollector_Upper)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Upper);
-            //bOn = workStage.m_dustCollector_LowerPos_Comm != null && workStage.m_dustCollector_LowerPos_Comm.IsOpen;
-            //_InitDeviceStatus.DustCollector_Lower = bOn;
-            //if (!_InitDeviceStatus.DustCollector_Lower)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Lower);
-
-            bOn = workStage.workStageParameter.DI_Chiller_Run();
-            _InitDeviceStatus.Chiller = bOn;
-            if (!_InitDeviceStatus.Chiller)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Chiller);
-
-            bOn = workStage.m_electroRegulator_Comm != null && workStage.m_electroRegulator_Comm.IsOpen;
-            _InitDeviceStatus.ElectroRegulator = bOn;
-            if (!_InitDeviceStatus.ElectroRegulator)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_ElectroRegulator);
-
-            bOn = workStage.m_SocketLaserHeightSensor != null && workStage.m_SocketLaserHeightSensor.isConnected;
-            _InitDeviceStatus.HeightSensor = bOn;
-            if (!_InitDeviceStatus.HeightSensor)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_HeightSensor);
-
-            bOn = workStage.Camera_HighRes != null && workStage.Camera_HighRes.Opened;
-            _InitDeviceStatus.CameraFine = bOn;
-            if (!_InitDeviceStatus.HeightSensor)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_CameraFine);
-
-            bOn = workStage.Camera_LowRes != null && workStage.Camera_LowRes.Opened;
-            _InitDeviceStatus.CameraPre = bOn;
-            if (!_InitDeviceStatus.HeightSensor)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_CameraPre);
-
-            bOn = CommonModule.Instance.Illuminator.m_bIsOpen;
-            _InitDeviceStatus.Illuminator = bOn;
-            if (!_InitDeviceStatus.HeightSensor)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Illuminator);
-
         }
 
         //초기화 상태 함수 확인 

@@ -326,6 +326,7 @@
             // 
             // btnMotionOn
             // 
+            this.btnMotionOn.Enabled = false;
             this.btnMotionOn.Location = new System.Drawing.Point(176, 165);
             this.btnMotionOn.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnMotionOn.Name = "btnMotionOn";
@@ -336,6 +337,7 @@
             // 
             // btnMotionOff
             // 
+            this.btnMotionOff.Enabled = false;
             this.btnMotionOff.Location = new System.Drawing.Point(236, 165);
             this.btnMotionOff.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnMotionOff.Name = "btnMotionOff";
@@ -366,6 +368,7 @@
             // 
             // btnIOOn
             // 
+            this.btnIOOn.Enabled = false;
             this.btnIOOn.Location = new System.Drawing.Point(176, 212);
             this.btnIOOn.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnIOOn.Name = "btnIOOn";
@@ -376,6 +379,7 @@
             // 
             // btnIOOff
             // 
+            this.btnIOOff.Enabled = false;
             this.btnIOOff.Location = new System.Drawing.Point(236, 212);
             this.btnIOOff.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnIOOff.Name = "btnIOOff";

@@ -302,7 +302,7 @@ namespace SLD200_MSL
 
             //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
             if (workStage.m_bHomeOK)
-                Comm_Init();
+                workStage.Comm_Init();
 
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
 
@@ -796,249 +796,6 @@ namespace SLD200_MSL
         }
         #endregion
 
-        public void Comm_Init()
-        {
-            workStage.Illuminator_Init();
-
-            //  Power Meter (Exit Position) - for UV Only
-            if (workStage.m_powerMeter_ExitPos_Comm == null)
-            {
-                workStage.PowerMeterComm_ExitPos_Init();
-            }
-            else
-            {
-                if (!workStage.m_powerMeter_ExitPos_Comm.IsOpen)
-                    workStage.PowerMeterComm_ExitPos_Init();
-            }
-
-            //  Power Meter (Target Position)
-            if (workStage.m_powerMeter_TargetPos_Comm == null)
-            {
-                workStage.PowerMeterComm_TargetPos_Init();
-            }
-            else
-            {
-                if (!workStage.m_powerMeter_TargetPos_Comm.IsOpen)
-                    workStage.PowerMeterComm_TargetPos_Init();
-            }
-
-            //  Motorized Beam Expander - for CO₂Only
-            if (workStage.m_beamExpander_Comm == null)
-            {
-                workStage.BeamExpanderComm_Init();
-            }
-            else
-            {
-                if (!workStage.m_beamExpander_Comm.IsOpen)
-                    workStage.BeamExpanderComm_Init();
-            }
-
-            //  Dust Collector (Upper Position)
-            if(!bds.DustCollector_Upper.IsConnected)
-            {
-                bds.InitDustCollector(DustCollectorController.CollectorPosition.Upper);
-            }
-            else
-            {
-                if (!bds.DustCollector_Upper.IsConnected)
-                {
-                    bds.InitDustCollector(DustCollectorController.CollectorPosition.Upper);
-                }
-            }
-
-            //  Dust Collector (Lower Position)
-            if (!bds.DustCollector_Lower.IsConnected)
-            {
-                bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower);
-            }
-            else
-            {
-                if (!bds.DustCollector_Lower.IsConnected)
-                {
-                    bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower);
-                }
-            }
-
-            //if (workStage.m_dustCollector_UpperPos_Comm == null)
-            //{
-            //    workStage.DustCollector_UpperPos_Comm_Init();
-            //}
-            //else
-            //{
-            //    if (!workStage.m_dustCollector_UpperPos_Comm.IsOpen)
-            //        workStage.DustCollector_UpperPos_Comm_Init();
-            //}
-            ////  Dust Collector (Lower Position)
-            //if (workStage.m_dustCollector_LowerPos_Comm == null)
-            //{
-            //    workStage.DustCollector_LowerPos_Comm_Init();
-
-            //    bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower);
-            //}
-            //else
-            //{
-            //    if (!workStage.m_dustCollector_LowerPos_Comm.IsOpen)
-            //        workStage.DustCollector_LowerPos_Comm_Init();
-
-            //    bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower);
-            //}
-
-
-            //  Electro Pneumatic Regulator
-            if (workStage.m_electroRegulator_Comm == null)
-            {
-                workStage.ElectroPneumaticRegulator_Comm_Init();
-            }
-            else
-            {
-                if (!workStage.m_electroRegulator_Comm.IsOpen)
-                    workStage.ElectroPneumaticRegulator_Comm_Init();
-            }
-
-            // Laser m_rapidLxLaser_Comm
-            if (Equipment.Machine_LaserType_CO2)
-            {
-                if(!workStage.workStageParameter.IsDO_Laser_Enable())
-                {
-                    // CO2 - Test 확인하고 하자.
-                    // workStage.workStageParameter.DO_Laser_Enable(true);
-                }
-            }
-            else
-            {
-                if (workStage.m_rapidLxLaser_Comm == null)
-                {
-                    workStage.m_bRapidLxLaser_UserConnect = true;
-                    workStage.RapidLxLaser_Comm_Init();
-                }
-                else
-                {
-                    if (!workStage.m_rapidLxLaser_Comm.IsOpen)
-                    {
-                        workStage.m_bRapidLxLaser_UserConnect = true;
-                        workStage.RapidLxLaser_Comm_Init();
-                    }
-                }
-            }
-            
-            
-            //  Laser X -> 이거 안쓰는데?
-            //if (workStage.m_SocketLaser == null)
-            //{
-            //    workStage.Laser_Socket_Connect();
-            //}
-
-            //  Laser Height Sensor
-            if (workStage.m_SocketLaserHeightSensor == null)
-            {
-                workStage.LaserSensor_Socket_Connect();
-            }
-        }
-
-        private void UpdateInitStatusFromComm()
-        {
-            bool bOn = false;
-
-            //장비 확인 필요
-            if (workStage.IsAlarm())
-                return;
-
-            bOn = Equipment.AjinBoard_Opened && workStage.m_bHomeOK;
-            _InitDeviceStatus.MotionIo = bOn;
-            //if (!_InitDeviceStatus.MotionIo)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
-
-            if (!Equipment.Machine_LaserType_CO2)
-            {
-                bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
-                _InitDeviceStatus.Laser = bOn;
-            }
-            else
-            {
-                // 여기서 io를 계속 읽는 거는 아닌거 같다.
-                // 근데 뭐 방법이 없잖아? 해보고 안되면 막자.
-                if (workStage.workStageParameter.IsDO_Laser_Enable())
-                    _InitDeviceStatus.Laser = true;
-                else
-                    _InitDeviceStatus.Laser = false;
-            }
-            //if (!_InitDeviceStatus.Laser)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
-
-            //RTC에서 초기화할때 선언함.
-            //bOn = workStage.rtc != null && workStage.rtc.;
-            //_InitDeviceStatus.Scanner = bOn;
-
-            if (!Equipment.Machine_LaserType_CO2)
-            {
-                bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
-                _InitDeviceStatus.PowerMeter_Bds = bOn;
-                if (!_InitDeviceStatus.PowerMeter_Bds)
-                    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
-            }
-
-            bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;
-            _InitDeviceStatus.PowerMeter_Stage = bOn;
-            if (!_InitDeviceStatus.PowerMeter_Stage)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_Stage);
-
-            // 미 연결 상태 - 연결되면 장착.
-            //bOn = workStage.m_beamExpander_Comm != null && workStage.m_beamExpander_Comm.IsOpen;
-            //_InitDeviceStatus.BeamExpander = bOn;
-            //if (!_InitDeviceStatus.BeamExpander)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_BeamExpander);
-
-            bOn = bds.DustCollector_Upper.IsConnected;
-            _InitDeviceStatus.DustCollector_Upper = bOn;
-            if (!_InitDeviceStatus.DustCollector_Upper)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Upper);
-
-            bOn = bds.DustCollector_Lower.IsConnected;
-            _InitDeviceStatus.DustCollector_Lower = bOn;
-            if (!_InitDeviceStatus.DustCollector_Lower)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Lower);
-
-            //bOn = workStage.m_dustCollector_UpperPos_Comm != null && workStage.m_dustCollector_UpperPos_Comm.IsOpen;
-            //_InitDeviceStatus.DustCollector_Upper = bOn;
-            //if (!_InitDeviceStatus.DustCollector_Upper)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Upper);
-            //bOn = workStage.m_dustCollector_LowerPos_Comm != null && workStage.m_dustCollector_LowerPos_Comm.IsOpen;
-            //_InitDeviceStatus.DustCollector_Lower = bOn;
-            //if (!_InitDeviceStatus.DustCollector_Lower)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Lower);
-
-            bOn = workStage.workStageParameter.DI_Chiller_Run();
-            _InitDeviceStatus.Chiller = bOn;
-            if (!_InitDeviceStatus.Chiller)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Chiller);
-
-            bOn = workStage.m_electroRegulator_Comm != null && workStage.m_electroRegulator_Comm.IsOpen;
-            _InitDeviceStatus.ElectroRegulator = bOn;
-            if (!_InitDeviceStatus.ElectroRegulator)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_ElectroRegulator);
-
-            bOn = workStage.m_SocketLaserHeightSensor != null && workStage.m_SocketLaserHeightSensor.isConnected;
-            _InitDeviceStatus.HeightSensor = bOn;
-            if (!_InitDeviceStatus.HeightSensor)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_HeightSensor);
-
-            bOn = workStage.Camera_HighRes != null && workStage.Camera_HighRes.Opened;
-            _InitDeviceStatus.CameraFine = bOn;
-            if (!_InitDeviceStatus.HeightSensor)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_CameraFine);
-
-            bOn = workStage.Camera_LowRes != null && workStage.Camera_LowRes.Opened;
-            _InitDeviceStatus.CameraPre = bOn;
-            if (!_InitDeviceStatus.HeightSensor)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_CameraPre);
-
-            bOn = CommonModule.Instance.Illuminator.m_bIsOpen;
-            _InitDeviceStatus.Illuminator = bOn;
-            if (!_InitDeviceStatus.HeightSensor)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Illuminator);
-
-        }
-
         //초기화 상태 함수 확인 
         private void InitializeDeviceStatusBindings()
         { 
@@ -1242,8 +999,9 @@ namespace SLD200_MSL
             //    m_bNeedAutoRunStop = true;
             //}
 
-            if (workStage.m_bHomeOK)
-                UpdateInitStatusFromComm();
+            //work Main Seq로 옮기자. GUI에서 할 필요가 없다.
+            //if (workStage.m_bHomeOK)
+            //    UpdateInitStatusFromComm();
 
         }
 
@@ -1570,7 +1328,7 @@ namespace SLD200_MSL
                 ///
 
                 //통신 초기화
-                Comm_Init();
+                workStage.Comm_Init();
 
                 workStage.m_bFirstAutoCrossCheckDone = false;
                 workStage.m_bFirstLaserPowerCheckDone = false;
@@ -4320,6 +4078,24 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+
+
+
+            return;
+            do
+            {
+                if (workStage.ShouldRaiseAlarm(WorkStage.AlarmKey.Main_CDA_Alarm, !workStage.workStageParameter.DI_Main_CDA_Check()))
+                    workStage.AlarmPost(WorkStage.AlarmKey.Main_CDA_Alarm);
+                if (workStage.ShouldRaiseAlarm(WorkStage.AlarmKey.Main_Purge_Alarm, !workStage.workStageParameter.DI_Main_Purge_Check()))
+                    workStage.AlarmPost(WorkStage.AlarmKey.Main_Purge_Alarm);
+
+                Thread.Sleep(100);
+            } while (false);
+
+
+            string strTemp = "15.25";
+            int na = ToInt(strTemp);
+
             return;
             workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
             Thread.Sleep(1000);
@@ -4338,7 +4114,7 @@ namespace SLD200_MSL
                                     );
 
             return;
-            string strTemp = string.Empty;
+            strTemp = string.Empty;
             var markingLayer = workStage.DrillingManager.GetLayer(LayerList.Marking);
             if (markingLayer != null && markingLayer.SocketList.Count > 0)
             {
