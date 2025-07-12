@@ -35,8 +35,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridViewSettings = new System.Windows.Forms.DataGridView();
             this.buttonApplyAndFire = new System.Windows.Forms.Button();
             this.labelDuration = new System.Windows.Forms.Label();
@@ -54,9 +54,9 @@
             this.label_Recipe_TabRecipe_Miscellaneous_BETPosition = new System.Windows.Forms.Label();
             this.label_Recipe_TabRecipe_Miscellaneous_Mask = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button_Param_Save = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.button_Param_Save = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSettings)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDuration)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -68,24 +68,24 @@
             // 
             this.dataGridViewSettings.AllowUserToAddRows = false;
             this.dataGridViewSettings.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.Format = "N0";
-            dataGridViewCellStyle3.NullValue = "0";
-            this.dataGridViewSettings.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.Format = "N0";
+            dataGridViewCellStyle5.NullValue = "0";
+            this.dataGridViewSettings.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridViewSettings.BackgroundColor = System.Drawing.SystemColors.Menu;
             this.dataGridViewSettings.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridViewSettings.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Sunken;
             this.dataGridViewSettings.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.Format = "N0";
-            dataGridViewCellStyle4.NullValue = "0";
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewSettings.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.Format = "N0";
+            dataGridViewCellStyle6.NullValue = "0";
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewSettings.DefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridViewSettings.Location = new System.Drawing.Point(7, 44);
             this.dataGridViewSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dataGridViewSettings.Name = "dataGridViewSettings";
@@ -136,6 +136,7 @@
             this.numericUpDownDuration.Name = "numericUpDownDuration";
             this.numericUpDownDuration.Size = new System.Drawing.Size(136, 23);
             this.numericUpDownDuration.TabIndex = 2;
+            this.numericUpDownDuration.Tag = "KeyPad;Min=0;Max=1441;Format=0";
             this.numericUpDownDuration.Value = new decimal(new int[] {
             30,
             0,
@@ -317,6 +318,18 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Parameter";
             // 
+            // button_Param_Save
+            // 
+            this.button_Param_Save.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Param_Save.Location = new System.Drawing.Point(259, 14);
+            this.button_Param_Save.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.button_Param_Save.Name = "button_Param_Save";
+            this.button_Param_Save.Size = new System.Drawing.Size(70, 24);
+            this.button_Param_Save.TabIndex = 233;
+            this.button_Param_Save.Text = "SAVE";
+            this.button_Param_Save.UseVisualStyleBackColor = true;
+            this.button_Param_Save.Click += new System.EventHandler(this.button_Param_Save_Click);
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.button_SeqStart);
@@ -341,18 +354,6 @@
             this.groupBox3.TabIndex = 235;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Manual";
-            // 
-            // button_Param_Save
-            // 
-            this.button_Param_Save.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Param_Save.Location = new System.Drawing.Point(259, 14);
-            this.button_Param_Save.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.button_Param_Save.Name = "button_Param_Save";
-            this.button_Param_Save.Size = new System.Drawing.Size(70, 24);
-            this.button_Param_Save.TabIndex = 233;
-            this.button_Param_Save.Text = "SAVE";
-            this.button_Param_Save.UseVisualStyleBackColor = true;
-            this.button_Param_Save.Click += new System.EventHandler(this.button_Param_Save_Click);
             // 
             // FormNewSub_LaserPowerMeasure
             // 

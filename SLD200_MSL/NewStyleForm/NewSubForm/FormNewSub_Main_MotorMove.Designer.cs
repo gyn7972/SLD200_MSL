@@ -52,6 +52,7 @@
             this.groupBox_MotorMove_heightSensor = new System.Windows.Forms.GroupBox();
             this.label_MotorMove_heightSensor = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox_MotorMove_Unloader.SuspendLayout();
             this.groupBox_MotorMove_MainStage.SuspendLayout();
             this.groupBox_MotorMove_Loader.SuspendLayout();
@@ -316,6 +317,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.groupBox_MotorMove_Unloader);
             this.groupBox1.Controls.Add(this.groupBox_MotorMove_heightSensor);
             this.groupBox1.Controls.Add(this.groupBox_MotorMove_MainStage);
@@ -327,6 +329,17 @@
             this.groupBox1.TabIndex = 82;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Motor Move";
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Blue;
+            this.label1.Location = new System.Drawing.Point(387, 195);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(166, 18);
+            this.label1.TabIndex = 82;
+            this.label1.Text = "* Ctrl+J : JogDlg Open";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNewSub_Main_MotorMove
             // 
@@ -370,5 +383,6 @@
         private System.Windows.Forms.GroupBox groupBox_MotorMove_heightSensor;
         private System.Windows.Forms.Label label_MotorMove_heightSensor;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label1;
     }
 }

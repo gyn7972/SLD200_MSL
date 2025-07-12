@@ -30,6 +30,8 @@ namespace SLD200_MSL
         public void SetInitialValue(double value)
         {
             label_NumPad.Text = value.ToString();
+            label_MaxValue.Text = MaxValue.ToString();
+            label_MinValue.Text = MinValue.ToString();
         }
 
 

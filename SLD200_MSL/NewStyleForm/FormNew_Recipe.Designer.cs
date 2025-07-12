@@ -565,7 +565,7 @@
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_Increase";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Size = new System.Drawing.Size(35, 24);
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.TabIndex = 123;
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Tag = "KeyPad;Min=1;Max=9999;Format=0";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Tag = "KeyPad;Min=1;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = "1";
             // 
             // label25
@@ -587,7 +587,7 @@
             this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Name = "textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing";
             this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Size = new System.Drawing.Size(48, 24);
             this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.TabIndex = 133;
-            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Tag = "KeyPad;Min=-1;Max=9999;Format=0.000";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Tag = "KeyPad;Min=0;Max=9999;Format=0.000";
             this.textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = "0.2";
             // 
             // label79
@@ -711,7 +711,7 @@
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Name = "textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Size = new System.Drawing.Size(35, 24);
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.TabIndex = 119;
-            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Tag = "KeyPad;Min=-9999;Max=9999;Format=0";
+            this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Tag = "KeyPad;Min=1;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = "1";
             // 
             // label23
@@ -1321,7 +1321,7 @@
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Name = "textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter";
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.TabIndex = 25;
-            this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.0";
+            this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text = "0.0";
             // 
             // label41
@@ -1354,7 +1354,7 @@
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Name = "textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter";
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Size = new System.Drawing.Size(45, 24);
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.TabIndex = 22;
-            this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.0";
+            this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = "0.0";
             // 
             // label42
@@ -1697,7 +1697,7 @@
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Name = "textBox_Recipe_TabRecipe_LaserParam_Frequency";
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Size = new System.Drawing.Size(53, 24);
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.TabIndex = 19;
-            this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Tag = "KeyPad;Min=0.001;Max=9999999;Format=0";
+            this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Tag = "KeyPad;Min=0.001;Max=9999999;Format=0.0";
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = "10000";
             // 
             // label77
@@ -2034,7 +2034,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Name = "textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height";
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.TabIndex = 150;
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Tag = "KeyPad;Min=0;Max=9999;Format=0";
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = "3";
             // 
             // label84
@@ -2400,7 +2400,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Name = "textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize";
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.TabIndex = 115;
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Tag = "KeyPad;Min=0;Max=9999;Format=0";
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = "3";
             // 
             // label71
@@ -2479,7 +2479,7 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Name = "textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed";
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Size = new System.Drawing.Size(147, 25);
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.TabIndex = 108;
-            this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Tag = "KeyPad;Min=0;Max=9999;Format=0";
+            this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text = "50";
             // 
             // label68

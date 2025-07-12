@@ -115,14 +115,32 @@ namespace QMC.Common
             int nValue = 0;
             try
             {
-                int.TryParse(str, out nValue);
+                if (double.TryParse(str, out double dValue))
+                {
+                    nValue = (int)dValue; // 소수점 이하 버림
+                }
+                else
+                {
+                    int.TryParse(str, out nValue);
+                }
             }
             catch (Exception ex)
             {
                 Log.Write(ex);
-                //Debug.WriteLine(ex.Message);
             }
             return nValue;
+
+            //int nValue = 0;
+            //try
+            //{
+            //    int.TryParse(str, out nValue);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Write(ex);
+            //    //Debug.WriteLine(ex.Message);
+            //}
+            //return nValue;
         }
 
         public static bool ToBoolean(string str)
@@ -643,6 +661,8 @@ namespace QMC.Common
 
         public static bool Machine_HeightMeasure_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
         public static int Machine_HeightMeasure_Count { set; get; } = 1;
+
+        public static bool Machine_PreAlign_First_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
 
         //  Offset Distance
         public struct stOffsetDistanceParameter
@@ -3097,6 +3117,8 @@ namespace QMC.Common
             Equipment.Machine_HeightMeasure_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_Count", "1", temp, 255, strFIle);
             Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "PreAlign_First_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_PreAlign_First_Enable = temp.ToString() == "False" ? false : true;
             //
 
             //  Offset Distance

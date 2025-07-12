@@ -516,7 +516,8 @@ namespace QMC.Common.Modules
                                 CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
                             }
                         }
-                        else if(!workStage.rtc.CtlGetStatus(RtcStatus.Busy))
+                        
+                        if(!workStage.rtc.CtlGetStatus(RtcStatus.Busy))
                         {
                             workStage.m_bLaserBusy = false;
                         }
@@ -725,6 +726,9 @@ namespace QMC.Common.Modules
 
             if (position == DustCollectorController.CollectorPosition.Upper)
             {
+                if (Equipment._InitDeviceStatus.DustCollector_Upper)
+                    return true;
+
                 if (DustCollector_Upper == null)
                 {
                     DustCollector_Upper = new DustCollectorController("Upper", position);
@@ -736,6 +740,9 @@ namespace QMC.Common.Modules
             }
             else if (position == DustCollectorController.CollectorPosition.Lower)
             {
+                if (Equipment._InitDeviceStatus.DustCollector_Lower)
+                    return true;
+
                 if (DustCollector_Lower == null)
                 {
                     DustCollector_Lower = new DustCollectorController("Lower", position);
@@ -758,16 +765,24 @@ namespace QMC.Common.Modules
         {
             if (position == DustCollectorController.CollectorPosition.Upper)
             {
+                if (Equipment._InitDeviceStatus.DustCollector_Upper == false)
+                    return;
+
                 if (DustCollector_Upper == null)
                 {
                     DustCollector_Upper.Disconnect();
+                    Equipment._InitDeviceStatus.DustCollector_Upper = false;
                 }
             }
             else if (position == DustCollectorController.CollectorPosition.Lower)
             {
+                if (Equipment._InitDeviceStatus.DustCollector_Lower == false)
+                    return;
+
                 if (DustCollector_Lower == null)
                 {
                     DustCollector_Lower.Disconnect();
+                    Equipment._InitDeviceStatus.DustCollector_Lower = false;
                 }
             }
         }

@@ -1375,7 +1375,7 @@ namespace QMC.Common.Q_Sequence
                             if (Equipment.Scanner_Vision_Offset_Setting_Use == true)
                             {
                                 //걍 무조건 Closs로
-                                workStage.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                                bds.spiralLabScanner.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
                             }
                             //else
                             //{
@@ -1394,7 +1394,7 @@ namespace QMC.Common.Q_Sequence
                             if (Equipment.Scanner_Vision_Offset_Setting_Use == true)
                             {
                                 //걍 무조건 Closs로
-                                workStage.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                                bds.spiralLabScanner.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
                             }
                             //else
                             //{
