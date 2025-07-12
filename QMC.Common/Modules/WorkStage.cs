@@ -42180,6 +42180,9 @@ namespace QMC.Common.Modules
                 {
                     Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, 가공할 영역에 가공 위치 데이터가 있음");
 
+                    //20250710 :: ...이거 되어야 Recipe 파라미터 변경되는데.. 어쩔..
+                    //m_nLaserDrilling_LayerCount++;
+
                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
                     nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos;
                     //nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Start; // Z 변경하고 가자.
