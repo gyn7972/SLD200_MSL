@@ -9300,8 +9300,8 @@ namespace QMC.Common.Modules
             // 이전 Step과 다를 때만 로그 출력
             if (currentStep != m_prevFindAlignMarkStep)
             {
-                Log.Write("SLD-200", Equipment.User_Name, "FindAlignMark", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
-                Log.Write("Seq_Step", Equipment.User_Name, "FindAlignMark", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
+                Log.Write("SLD-200", Equipment.User_Name, "FindAlignMark", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count + 1}");
+                Log.Write("Seq_Step", Equipment.User_Name, "FindAlignMark", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count + 1}");
                 m_prevFindAlignMarkStep = currentStep;
             }
         }
@@ -15097,8 +15097,8 @@ namespace QMC.Common.Modules
 
             if (currentStep != m_prevSocketAlignStep)
             {
-                Log.Write("SLD-200", Equipment.User_Name, "SocketAlign", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
-                Log.Write("Seq_Step", Equipment.User_Name, "SocketAlign", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
+                Log.Write("SLD-200", Equipment.User_Name, "SocketAlign", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count + 1}");
+                Log.Write("Seq_Step", Equipment.User_Name, "SocketAlign", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count + 1}");
                 m_prevSocketAlignStep = currentStep;
             }
 
@@ -15232,7 +15232,7 @@ namespace QMC.Common.Modules
         {
             int ret = -1;
 
-            int markIndex = 0;
+            //int markIndex = 0;
             int foundMarkIndex = -1;
 
             try
@@ -15395,6 +15395,7 @@ namespace QMC.Common.Modules
                         // 이게 맞나?
                         //if(foundMarkIndex < 0)
                         {
+                            int markIndex = 0;
                             foreach (var mark in Equipment.stVisionRecipeSet.SocketMarkList)
                             {
                                 Log.Write("SLD-200", "SpiralSearch", $"Try Mark {markIndex}");
@@ -15402,6 +15403,7 @@ namespace QMC.Common.Modules
                                 if (mark.MarkType != (int)MarkTypeList.Circle)
                                 {
                                     markIndex++;
+                                    Log.Write("SLD-200", "SpiralSearch", $"MarkTypeList.Circle X");
                                     continue;
                                 }
 
@@ -15420,12 +15422,26 @@ namespace QMC.Common.Modules
                                 MovetoWorkStage_ABS_PositionsZ(dCurrZ, Type_Motor_Speed.Fine);
                                 int tick = 0;
                                 Thread.Sleep(100);
-                                while(!IsWorkStage_Positions(nAxis.Z, dCurrZ))
+                                //while(!IsWorkStage_Positions(nAxis.Z, dCurrZ))
+                                while (true)
                                 {
-                                    tick++;
-                                    Thread.Sleep(10);
-                                    if (tick > 5000)
+                                    if(!IsWorkStage_Positions(nAxis.Z, dCurrZ))
+                                    {
+                                        tick++;
+                                        Thread.Sleep(1);
+                                        if (tick > 500)
+                                        {
+                                            Log.Write("SLD-200", "SpiralSearch", $"Try Mark {markIndex}, PosZ {dCurrZ} :: IsWorkStage_Positions");
+                                            break;
+                                        } 
+                                    }
+                                    else
+                                    {
                                         break;
+                                    }
+
+                                    //if (!Equipment.AutoRunStatus)
+                                    //    break;
                                 }
                                 Thread.Sleep(200);
                                 //while (!MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
@@ -15480,6 +15496,7 @@ namespace QMC.Common.Modules
                                 if (Fiducial_circleFound)
                                 {
                                     foundMarkIndex = markIndex; // 첫 성공 시 저장
+                                    Log.Write("SLD-200", "SpiralSearch", $"Fiducial_circleFound {Fiducial_circleFound}");
                                     break;
                                 }
 
@@ -41607,8 +41624,8 @@ namespace QMC.Common.Modules
 
             if (currentStep != m_prevLaserDrillingStep)
             {
-                Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
-                Log.Write("Seq_Step", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count}");
+                Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count + 1}");
+                Log.Write("Seq_Step", Equipment.User_Name, "LaserDrilling", $"Step: {currentStep}" + $",SocketNumber: {m_nDrillingWork_Group_Count + 1}");
                 m_prevLaserDrillingStep = currentStep;
             }
             return 0;
