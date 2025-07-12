@@ -8011,10 +8011,18 @@ namespace QMC.Common.Modules
                     AlarmPost(AlarmKey.Chiller_Alarm);
                 if (ShouldRaiseAlarm(AlarmKey.Chiller_Stop, !workStageParameter.DI_Chiller_Run()))
                     AlarmPost(AlarmKey.Chiller_Stop);
-                //if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, !workStageParameter.DI_Scanner_Flow_Check()))
-                //    AlarmPost(AlarmKey.Scanner_Flow_Alarm);
-                if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, workStageParameter.DI_Scanner_Flow_Check()))
-                    AlarmPost(AlarmKey.Scanner_Flow_Alarm);
+                
+                if(Equipment.Machine_LaserType_CO2)
+                {
+                    if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, !workStageParameter.DI_Scanner_Flow_Check()))
+                        AlarmPost(AlarmKey.Scanner_Flow_Alarm);
+                }
+                else
+                {
+                    if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, workStageParameter.DI_Scanner_Flow_Check()))
+                        AlarmPost(AlarmKey.Scanner_Flow_Alarm);
+                }
+
                 if (ShouldRaiseAlarm(AlarmKey.Water_In_Leak_Alarm, !workStageParameter.DI_Water_In_Leak_Check()))
                     AlarmPost(AlarmKey.Water_In_Leak_Alarm);
                 if (ShouldRaiseAlarm(AlarmKey.DustCollector_Fan_Fault_Upper_Alarm, workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper)))
