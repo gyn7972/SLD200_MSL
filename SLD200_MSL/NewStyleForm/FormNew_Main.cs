@@ -305,6 +305,7 @@ namespace SLD200_MSL
                 workStage.Comm_Init();
 
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
+            SiriusViewer_Main.GLcontrol.MouseClick += GLcontrol_MouseClick;
 
             numericUpDown_Module_WaitTime_sec.Value = 0;
 
@@ -3925,7 +3926,6 @@ namespace SLD200_MSL
         {
             try
             {
-
                 if (sender is OpenGLControl gl)
                 {
                     ImageViewer_Main_highs.Camera.StartLive();
@@ -3965,7 +3965,6 @@ namespace SLD200_MSL
                             MessageBoxOk messageBoxOk = new MessageBoxOk();
                             messageBoxOk.ShowDialog("Error", "설비가 Manual 상태가 아닙니다.");
                         }
-
                     }
                 }
             }
@@ -3975,6 +3974,175 @@ namespace SLD200_MSL
             }
         }
 
+        private ContextMenuStrip _contextMenu;
+        private Point _mouseDownLocation;
+        private void ContextMenu_MoveToThisPosition_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var Document = this.SiriusViewer_Main.Document;
+                if (Document?.Views.Count > 0)
+                {
+                    var view = Document.Views.Last();
+                    view.Dp2Lp(_mouseDownLocation, out float dX, out float dY);
+                    XyzCoordinate ptReal = new XyzCoordinate(dX, dY, 0);
+
+                    if (Equipment.AutoManualStatus == false)
+                    {
+                        if (Equipment._InitDeviceStatus.MotionIo)
+                        {
+                            // 도면 좌표 → 장비 좌표 변환
+                            var targetPos = workStage.ConvertPointFineCam(ptReal);
+                            workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(targetPos.X, targetPos.Y), Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            new MessageBoxOk().ShowDialog("Error", "초기화 되지 않았습니다.");
+                        }
+                    }
+                    else
+                    {
+                        new MessageBoxOk().ShowDialog("Error", "설비가 Manual 상태가 아닙니다.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
+        private void ContextMenu_MoveToSelectedGroupCenter_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var Document = this.SiriusViewer_Main.Document;
+                if (Document == null)
+                    return;
+
+                foreach (var layer in Document.Layers)
+                {
+                    if (!layer.IsMarkerable || layer.Count == 0)
+                        continue;
+
+                    foreach (var entity in layer)
+                    {
+                        if (entity.EntityType == EType.Group)
+                        {
+                            var group = entity as Group;
+                            if (group != null && group.IsSelected)
+                            {
+                                var ptReal = new XyzCoordinate(group.Location.X, group.Location.Y, 0);
+                                var targetPos = workStage.ConvertPointFineCam(ptReal);
+
+                                if (Equipment.AutoManualStatus == false)
+                                {
+                                    if (Equipment._InitDeviceStatus.MotionIo)
+                                    {
+                                        workStage.MovetoWorkStage_ABS_PositionsXY(
+                                            new XyCoordinate(targetPos.X, targetPos.Y),
+                                            Type_Motor_Speed.Process
+                                        );
+                                    }
+                                    else
+                                    {
+                                        new MessageBoxOk().ShowDialog("Error", "초기화 되지 않았습니다.");
+                                    }
+                                }
+                                else
+                                {
+                                    new MessageBoxOk().ShowDialog("Error", "설비가 Manual 상태가 아닙니다.");
+                                }
+
+                                return; // 첫 번째 선택된 그룹만 처리
+                            }
+                        }
+                        else if (entity.EntityType == EType.Circle)
+                        {
+                            var circle = entity as Circle;
+                            if (circle != null && circle.IsSelected)
+                            {
+                                var ptReal = new XyzCoordinate(circle.Center.X, circle.Center.Y, 0);
+                                var targetPos = workStage.ConvertPointFineCam(ptReal);
+
+                                if (Equipment.AutoManualStatus == false)
+                                {
+                                    if (Equipment._InitDeviceStatus.MotionIo)
+                                    {
+                                        workStage.MovetoWorkStage_ABS_PositionsXY(
+                                            new XyCoordinate(targetPos.X, targetPos.Y),
+                                            Type_Motor_Speed.Process
+                                        );
+                                    }
+                                    else
+                                    {
+                                        new MessageBoxOk().ShowDialog("Error", "초기화 되지 않았습니다.");
+                                    }
+                                }
+                                else
+                                {
+                                    new MessageBoxOk().ShowDialog("Error", "설비가 Manual 상태가 아닙니다.");
+                                }
+
+                                return; // 첫 번째만 처리.
+                            }
+                        }
+                    }
+                }
+
+                new MessageBoxOk().ShowDialog("Info", "선택된 그룹이 없습니다.");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
+        private void GLcontrol_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (Equipment.AutoManualStatus || Equipment.AutoRunStatus)
+                return;
+
+            if (e.Button == MouseButtons.Right)
+            {
+                _mouseDownLocation = e.Location;
+
+                if (_contextMenu == null)
+                {
+                    _contextMenu = new ContextMenuStrip();
+                    _contextMenu.Items.Add("이 위치로 이동", null, ContextMenu_MoveToThisPosition_Click);
+                    _contextMenu.Items.Add("선택된 중심으로 이동", null, ContextMenu_MoveToSelectedGroupCenter_Click);
+                }
+
+                _contextMenu.Show(SiriusViewer_Main.GLcontrol, e.Location);
+            }
+        }
+
+        private XyCoordinate? GetSelectedGroupCenter()
+        {
+            var document = SiriusViewer_Main.Document;
+            if (document == null || document.Layers.Count == 0)
+                return null;
+
+            foreach (var layer in document.Layers)
+            {
+                if (!layer.IsMarkerable || layer.Count == 0)
+                    continue;
+
+                foreach (var entity in layer)
+                {
+                    if (entity.EntityType == EType.Group)
+                    {
+                        var group = entity as Group;
+                        if (group != null && group.IsSelected)
+                        {
+                            // 선택된 Group의 중심 좌표 반환
+                            return new XyCoordinate(group.Location.X, group.Location.Y);
+                        }
+                    }
+                }
+            }
+
+            return null; // 선택된 그룹 없음
+        }
 
         private void UpdateCycleTimerUI()
         {
@@ -4768,6 +4936,8 @@ namespace SLD200_MSL
             Log.Write("SLD-200", Equipment.User_Name, msg);
             new QMC.Core.MessageBoxOk().ShowDialog("Error !", msg);
         }
+
+       
 
 
         //private void button_Main_Reset_Click(object sender, EventArgs e)

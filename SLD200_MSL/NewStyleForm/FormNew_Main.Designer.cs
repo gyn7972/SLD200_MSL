@@ -380,7 +380,7 @@
             this.checkBox_Main_AlignStartSocket_ContinueMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_AlignStartSocket_ContinueMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.checkBox_Main_AlignStartSocket_ContinueMode.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Location = new System.Drawing.Point(1490, 762);
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Location = new System.Drawing.Point(1485, 714);
             this.checkBox_Main_AlignStartSocket_ContinueMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_AlignStartSocket_ContinueMode.Name = "checkBox_Main_AlignStartSocket_ContinueMode";
             this.checkBox_Main_AlignStartSocket_ContinueMode.Size = new System.Drawing.Size(66, 44);
@@ -396,7 +396,7 @@
             this.checkBox_Main_AlignStartSocket_SelectMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_AlignStartSocket_SelectMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.checkBox_Main_AlignStartSocket_SelectMode.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_AlignStartSocket_SelectMode.Location = new System.Drawing.Point(1490, 762);
+            this.checkBox_Main_AlignStartSocket_SelectMode.Location = new System.Drawing.Point(1460, 723);
             this.checkBox_Main_AlignStartSocket_SelectMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_AlignStartSocket_SelectMode.Name = "checkBox_Main_AlignStartSocket_SelectMode";
             this.checkBox_Main_AlignStartSocket_SelectMode.Size = new System.Drawing.Size(66, 44);

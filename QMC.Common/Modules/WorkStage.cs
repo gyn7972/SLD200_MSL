@@ -7877,7 +7877,6 @@ namespace QMC.Common.Modules
             if (!_alarmStartTimes.ContainsKey(key))
                 _alarmStartTimes[key] = DateTime.Now;
 
-            //return (DateTime.Now - _alarmStartTimes[key]) >= holdTime;
             if ((DateTime.Now - _alarmStartTimes[key]) >= holdTime)
             {
                 _alarmStartTimes.Remove(key); // 알람 발생 후 초기화
