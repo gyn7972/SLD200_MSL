@@ -13460,9 +13460,7 @@ namespace QMC.Common.Modules
                                 m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount ||
                                 m_bworkStageVacuumFail ||
                                 m_bForceEjectRequest ||
-                                !m_bSocketAlign_OK ||
                                 !m_bFindLowerAlignMark_OK ||
-                                !m_bPreAlignCompleted ||
                                 anySocketNG;
 
                             Log.Write("DrillStatus", $"최종 결과: {forceNG}");
@@ -15247,7 +15245,7 @@ namespace QMC.Common.Modules
                 XyCoordinate xyFirst = new XyCoordinate(xyCenter.X, xyCenter.Y);
                 // 이동 거리 및 검색 횟수 설정
                 double stepSize = 0.2; // 1mm 이동
-                if(maxSteps < 2)
+                if(maxSteps < 4)
                 {
                     stepSize = 0;
                 }
@@ -15266,7 +15264,7 @@ namespace QMC.Common.Modules
                 };
 
                 bool bFound = false;
-                if(maxSteps <2)
+                if(maxSteps <4)
                 {
                     stepSize = 0;
                 }
