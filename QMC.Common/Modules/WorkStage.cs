@@ -15413,6 +15413,12 @@ namespace QMC.Common.Modules
                                 Thread.Sleep(100); // 100ms 대기
                                 // --------------------------------------------------
 
+
+                                // Z-Axis 변경도 있음.
+
+
+
+
                                 // Circle Color 0: White, 1: Black
                                 if (mark.MarkColor <= 1)
                                 {
@@ -38475,7 +38481,7 @@ namespace QMC.Common.Modules
                                                 socket.SocketTheta = m_dALIGN_FACTOR_Theta;
                                                 socket.IsSocketAligned = m_bSocketAlign_OK;
 
-                                                Log.Write("DrillStatus", $"[Socket] [{GetCurrentLayerEnum(m_LayerType)}][{m_nSocketNum_forAlign}] " +
+                                                Log.Write("DrillStatus", $"[Socket] [{GetCurrentLayerEnum(m_LayerType)}][{m_nSocketNum_forAlign + 1}] " +
                                                     $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
                                                 break;
 
@@ -38487,7 +38493,7 @@ namespace QMC.Common.Modules
                                                 socket.GoldTheta = m_dALIGN_FACTOR_Theta;
                                                 socket.IsGoldPowderAligned = m_bSocketAlign_OK;
 
-                                                Log.Write("DrillStatus", $"[Gold] [{GetCurrentLayerEnum(m_LayerType)}][{m_nSocketNum_forAlign}] " +
+                                                Log.Write("DrillStatus", $"[Gold] [{GetCurrentLayerEnum(m_LayerType)}][{m_nSocketNum_forAlign + 1}] " +
                                                     $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
                                                 break;
                                         }
