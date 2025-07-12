@@ -3924,6 +3924,9 @@ namespace SLD200_MSL
         }
         private void GLcontrol_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            if (Equipment.AutoManualStatus || Equipment.AutoRunStatus)
+                return;
+
             try
             {
                 if (sender is OpenGLControl gl)
