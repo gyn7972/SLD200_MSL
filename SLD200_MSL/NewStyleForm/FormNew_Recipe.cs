@@ -511,7 +511,6 @@ namespace SLD200_MSL
         private void listBox_Recipe_TabRecipe_ListOfDrawingLayer_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  선택된 Layer 데이터를 ListView 에 표시
-
             int m_nIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
             string m_strLayerName = "";
 

@@ -184,7 +184,7 @@ namespace SLD200_MSL
             workStage.Module_Allocation();
             unloader.Module_Allocation();
             loader.Module_Allocation();
-            SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
+            //SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
 
 
             FormNew_Main_Load();

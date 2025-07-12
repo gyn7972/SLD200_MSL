@@ -451,9 +451,12 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             workStage.MovetoWorkStage_ABS_PositionsZ(dZPos, Equipment.Type_Motor_Speed.Fine);
             workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+
+            workStage.Camera_HighRes.StopLive();
+            workStage.Camera_LowRes.StopLive();
         }
 
-        private void button_MotorMove_Stage_ScannerFineCam_Click(object sender, EventArgs e)
+        private async void button_MotorMove_Stage_ScannerFineCam_Click(object sender, EventArgs e)
         {
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "위치로 보내시겠습니까?"))
@@ -481,15 +484,69 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
-            xyInterpolatedCoordinate.X =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            xyInterpolatedCoordinate.Y =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            if(true)
+            {
+                // 현재 위치 구함
+                double currX = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X);
+                double currY = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y);
 
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+                // FineCam 기준 위치 계산 (즉, Scanner 기준에서 Offset 만큼 뺀 위치가 현재 Stage 위치여야 함)
+                double expectedFineCamX = Equipment.StageOffset_forDrilling_X;// - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                double expectedFineCamY = Equipment.StageOffset_forDrilling_Y;// - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
+                // 허용 오차 (척 크기에 따라 ±150mm)
+                double tolerance = 150.0;
+
+                // 기준 위치에서 너무 멀리 떨어진 경우: 경고 후 return
+                if (Math.Abs(currX - expectedFineCamX) > tolerance || Math.Abs(currY - expectedFineCamY) > tolerance)
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "현재 위치는 Stage 기준 위치가 아닙니다. (Stage 위치로 이동 후 재 이동");
+                    new MessageBoxOk().ShowDialog("Warning !", "현재 위치는 Stage 기준 위치가 아닙니다.\n해당 위치에서 이동할 수 없습니다.");
+                    return;
+
+                    // 여기서 Stage Center로 이동 후 진행해 보자.
+                    //XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
+                    //double dZPos = 0.0;
+                    //dZPos = vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z;
+                    //xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                    //xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+
+                    //workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+
+                    //workStage.MovetoWorkStage_ABS_PositionsZ(dZPos, Equipment.Type_Motor_Speed.Fine);
+                    //workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+
+                    //if (!await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Z, dZPos))
+                    //    ShowErrorAndReturn("Stage Z-Axis 이동 실패");
+
+                }
+                else
+                {
+                    // 이동할 목표 위치 (현재 위치에서 Offset 만큼 이동)
+                    XyCoordinate targetPosition = new XyCoordinate
+                    {
+                        X = currX - Equipment.stOffsetDistance.FromScannerToFineCam.X,
+                        Y = currY - Equipment.stOffsetDistance.FromScannerToFineCam.Y
+                    };
+
+                    workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                    workStage.MovetoWorkStage_ABS_PositionsXY(targetPosition, Equipment.Type_Motor_Speed.Coarse);
+
+                    workStage.Camera_HighRes.StartLive();
+                    workStage.Camera_LowRes.StartLive();
+                }
+            }
+            else
+            {
+                XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
+                xyInterpolatedCoordinate.X =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                xyInterpolatedCoordinate.Y =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+            }
         }
 
         private void button_MotorMove_Stage_FineCamScanner_Click(object sender, EventArgs e)
@@ -520,14 +577,52 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
-            xyInterpolatedCoordinate.X =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            xyInterpolatedCoordinate.Y =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            if(true)
+            {
+                // 현재 위치 (FineCam 아래라고 가정)
+                double currX = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X);
+                double currY = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y);
 
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
-            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+                // FineCam 기준 위치 계산 (Scanner 중심에서 Offset 뺀 위치가 FineCam 위치)
+                double expectedScannerPosX = Equipment.StageOffset_forDrilling_X;
+                double expectedScannerPosY = Equipment.StageOffset_forDrilling_Y;
+
+                // 아래 위치가 FineCam 기준 위치임.
+                double expectedFineCamX = expectedScannerPosX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                double expectedFineCamY = expectedScannerPosY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+                // 허용 오차 (Stage 범위 고려)
+                double tolerance = 150.0;
+
+                // 현재 위치가 FineCam 기준 위치인지 확인
+                if (Math.Abs(currX - expectedFineCamX) > tolerance || Math.Abs(currY - expectedFineCamY) > tolerance)
+                {
+                    new MessageBoxOk().ShowDialog("Warning !", "현재 위치는 FineCam 기준 위치가 아닙니다.\n해당 위치에서 이동할 수 없습니다.");
+                    return;
+                }
+
+                // 이동할 위치는 현재 위치에서 Offset 만큼 더한 위치 → Scanner 중심
+                XyCoordinate targetPosition = new XyCoordinate
+                {
+                    X = currX + Equipment.stOffsetDistance.FromScannerToFineCam.X,
+                    Y = currY + Equipment.stOffsetDistance.FromScannerToFineCam.Y
+                };
+
+                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                workStage.MovetoWorkStage_ABS_PositionsXY(targetPosition, Equipment.Type_Motor_Speed.Coarse);
+            }
+            else
+            {
+                XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
+                xyInterpolatedCoordinate.X =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                xyInterpolatedCoordinate.Y =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+            }
+                
         }
 
         private void button_MotorMove_Stage_FineCamHeightSensor_Click(object sender, EventArgs e)
@@ -558,21 +653,65 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
-            xyInterpolatedCoordinate.X =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
-            xyInterpolatedCoordinate.Y =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
-
-            if(Equipment.Machine_LaserType_CO2)
+            if(true)
             {
-                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                // 현재 위치
+                double currX = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X);
+                double currY = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y);
+
+                // FineCam 기준 위치 계산 (Scanner 중심에서 Offset 뺀 위치가 FineCam 위치)
+                double expectedScannerPosX = Equipment.StageOffset_forDrilling_X;
+                double expectedScannerPosY = Equipment.StageOffset_forDrilling_Y;
+
+                // 아래 위치가 FineCam 기준 위치임.
+                double expectedFineCamX = expectedScannerPosX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                double expectedFineCamY = expectedScannerPosY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+                // 허용 오차 (Stage 범위 고려)
+                double tolerance = 150.0;
+
+                // 현재 위치가 FineCam 기준 위치인지 확인
+                if (Math.Abs(currX - expectedFineCamX) > tolerance || Math.Abs(currY - expectedFineCamY) > tolerance)
+                {
+                    new MessageBoxOk().ShowDialog("Warning !", "현재 위치는 FineCam 기준 위치가 아닙니다.\n해당 위치에서 이동할 수 없습니다.");
+                    return;
+                }
+
+                // 이동할 위치는 현재 위치에서 Offset 만큼 더한 위치 → Scanner 중심
+                XyCoordinate targetPosition = new XyCoordinate
+                {
+                    X = currX + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X,
+                    Y = currY + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y
+                };
+
+                if (Equipment.Machine_LaserType_CO2)
+                {
+                    workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                }
+                else
+                {
+                    workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                }
+                workStage.MovetoWorkStage_ABS_PositionsXY(targetPosition, Equipment.Type_Motor_Speed.Coarse);
             }
             else
             {
-                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
+                xyInterpolatedCoordinate.X =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
+                xyInterpolatedCoordinate.Y =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
+
+                if (Equipment.Machine_LaserType_CO2)
+                {
+                    workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                }
+                else
+                {
+                    workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                }
+                workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
             }
-            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
         }
 
         private void button_MotorMove_Stage_HeightSensorFineCam_Click(object sender, EventArgs e)
@@ -595,21 +734,62 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
-            xyInterpolatedCoordinate.X =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
-            xyInterpolatedCoordinate.Y =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
-
-            if (Equipment.Machine_LaserType_CO2)
+            if(true)
             {
-                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                // 현재 위치
+                double currX = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X);
+                double currY = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y);
+
+                // 기준 위치 계산 
+                double expectedScannerPosX = Equipment.StageOffset_forDrilling_X;
+                double expectedScannerPosY = Equipment.StageOffset_forDrilling_Y;
+
+                // 아래 위치가 HeightSensor 기준 위치임.
+                double expectedFineCamX = expectedScannerPosX - 
+                                        Equipment.stOffsetDistance.FromScannerToFineCam.X + 
+                                        Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
+                double expectedFineCamY = expectedScannerPosY - 
+                                        Equipment.stOffsetDistance.FromScannerToFineCam.Y + 
+                                        Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y; 
+
+                // 허용 오차 (Stage 범위 고려)
+                double tolerance = 150.0;
+
+                // 현재 위치가 FineCam 기준 위치인지 확인
+                if (Math.Abs(currX - expectedFineCamX) > tolerance || Math.Abs(currY - expectedFineCamY) > tolerance)
+                {
+                    new MessageBoxOk().ShowDialog("Warning !", "현재 위치는 HeightSensor 기준 위치가 아닙니다.\n해당 위치에서 이동할 수 없습니다.");
+                    return;
+                }
+
+                // 이동할 위치는 현재 위치에서 Offset 만큼 더한 위치 → Scanner 중심
+                XyCoordinate targetPosition = new XyCoordinate
+                {
+                    X = currX - Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X,
+                    Y = currY - Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y
+                };
+
+                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                workStage.MovetoWorkStage_ABS_PositionsXY(targetPosition, Equipment.Type_Motor_Speed.Coarse);
             }
             else
             {
-                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
+                xyInterpolatedCoordinate.X =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
+                xyInterpolatedCoordinate.Y =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
+
+                if (Equipment.Machine_LaserType_CO2)
+                {
+                    workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                }
+                else
+                {
+                    workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                }
+                workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
             }
-            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
         }
 
         private void button_MotorMove_Stage_FineCamCoarseCam_Click(object sender, EventArgs e)
@@ -640,14 +820,51 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
-            xyInterpolatedCoordinate.X =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
-            xyInterpolatedCoordinate.Y =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
+            if(true)
+            {
+                // 현재 위치
+                double currX = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X);
+                double currY = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y);
 
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+                // 기준 위치 계산 
+                double expectedScannerPosX = Equipment.StageOffset_forDrilling_X;
+                double expectedScannerPosY = Equipment.StageOffset_forDrilling_Y;
+
+                // 아래 위치가 FineCam 기준 위치임.
+                double expectedFineCamX = expectedScannerPosX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                double expectedFineCamY = expectedScannerPosY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+                // 허용 오차 (Stage 범위 고려)
+                double tolerance = 150.0;
+
+                // 현재 위치가 FineCam 기준 위치인지 확인
+                if (Math.Abs(currX - expectedFineCamX) > tolerance || Math.Abs(currY - expectedFineCamY) > tolerance)
+                {
+                    new MessageBoxOk().ShowDialog("Warning !", "현재 위치는 FineCam 기준 위치가 아닙니다.\n해당 위치에서 이동할 수 없습니다.");
+                    return;
+                }
+
+                // 이동할 위치는 현재 위치에서 Offset 만큼 더한 위치 → Scanner 중심
+                XyCoordinate targetPosition = new XyCoordinate
+                {
+                    X = currX - Equipment.stOffsetDistance.FromFineCamToCoarseCam.X,
+                    Y = currY - Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y
+                };
+
+                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                workStage.MovetoWorkStage_ABS_PositionsXY(targetPosition, Equipment.Type_Motor_Speed.Coarse);
+            }
+            else
+            {
+                XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
+                xyInterpolatedCoordinate.X =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
+                xyInterpolatedCoordinate.Y =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
+
+                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+            }
         }
 
         private void button_MotorMove_Stage_CoarseCamFineCam_Click(object sender, EventArgs e)
@@ -678,14 +895,55 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
-            xyInterpolatedCoordinate.X =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
-            xyInterpolatedCoordinate.Y =
-                workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
+            if(true)
+            {
+                // 현재 위치
+                double currX = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X);
+                double currY = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y);
 
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+                // 기준 위치 계산 
+                double expectedScannerPosX = Equipment.StageOffset_forDrilling_X;
+                double expectedScannerPosY = Equipment.StageOffset_forDrilling_Y;
+
+                // 아래 위치가 CoarseCam 기준 위치임.
+                double expectedFineCamX = expectedScannerPosX -
+                                        Equipment.stOffsetDistance.FromScannerToFineCam.X -
+                                        Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
+                double expectedFineCamY = expectedScannerPosY -
+                                        Equipment.stOffsetDistance.FromScannerToFineCam.Y -
+                                        Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
+
+                // 허용 오차 (Stage 범위 고려)
+                double tolerance = 150.0;
+
+                // 현재 위치가 FineCam 기준 위치인지 확인
+                if (Math.Abs(currX - expectedFineCamX) > tolerance || Math.Abs(currY - expectedFineCamY) > tolerance)
+                {
+                    new MessageBoxOk().ShowDialog("Warning !", "현재 위치는 CoarseCam 기준 위치가 아닙니다.\n해당 위치에서 이동할 수 없습니다.");
+                    return;
+                }
+
+                // 이동할 위치는 현재 위치에서 Offset 만큼 더한 위치 → Scanner 중심
+                XyCoordinate targetPosition = new XyCoordinate
+                {
+                    X = currX + Equipment.stOffsetDistance.FromFineCamToCoarseCam.X,
+                    Y = currY + Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y
+                };
+
+                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                workStage.MovetoWorkStage_ABS_PositionsXY(targetPosition, Equipment.Type_Motor_Speed.Coarse);
+            }
+            else
+            {
+                XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
+                xyInterpolatedCoordinate.X =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
+                xyInterpolatedCoordinate.Y =
+                    workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
+
+                workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+            }
         }
 
         private void button_MotorMove_Stage_ToUnloading_Click(object sender, EventArgs e)
@@ -712,6 +970,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             motor_Speed = Equipment.Type_Motor_Speed.Coarse;
             int nTeachingPosIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos;
             workStage.MovetoWorkStage_TeachingPositionsXY(nTeachingPosIndex, motor_Speed);
+
+            workStage.Camera_HighRes.StopLive();
+            workStage.Camera_LowRes.StopLive();
         }
 
         private void button_MotorMove_Stage_ToLoading_Click(object sender, EventArgs e)
@@ -738,6 +999,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             motor_Speed = Equipment.Type_Motor_Speed.Coarse;
             int nTeachingPosIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos;
             workStage.MovetoWorkStage_TeachingPositionsXY(nTeachingPosIndex, motor_Speed);
+
+            workStage.Camera_HighRes.StopLive();
+            workStage.Camera_LowRes.StopLive();
         }
 
         private void button_MotorMove_Stage_Vacuum_Click(object sender, EventArgs e)
@@ -783,6 +1047,24 @@ namespace SLD200.NewStyleForm.NewSubForm
                 control.BackColor = Backcolor;
                 control.ForeColor = foreColor;
             }
+        }
+
+        private bool ShowErrorAndReturn(string msg)
+        {
+            ShowError(msg);
+            return false;
+        }
+
+        private void ShowError(string msg)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() => ShowError(msg)));
+                return;
+            }
+
+            Log.Write("SLD-200", Equipment.User_Name, msg);
+            new QMC.Core.MessageBoxOk().ShowDialog("Error !", msg);
         }
     }
 }
