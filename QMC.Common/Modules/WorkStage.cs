@@ -75,6 +75,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using netDxf.Tables;
 using QMC.Common.Q_Sequence;
 using QMC.Common.Q_Config;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
+using static QMC.Common.Q_Sequence.Sequence_VerifyScannerCameraOffset;
 
 
 namespace QMC.Common.Modules
@@ -15270,7 +15272,6 @@ namespace QMC.Common.Modules
                 }
                 for (int i = 0; i < maxSteps; i++)
                 {
-
                     if(Equipment.AutoManualStatus == false)
                     {
                         return 0;
@@ -15394,7 +15395,7 @@ namespace QMC.Common.Modules
                         Fiducial_circlesResult.Clear();
                         
                         // 이게 맞나?
-                        if(foundMarkIndex < 0)
+                        //if(foundMarkIndex < 0)
                         {
                             foreach (var mark in Equipment.stVisionRecipeSet.SocketMarkList)
                             {
@@ -15412,12 +15413,30 @@ namespace QMC.Common.Modules
                                 jigAligner_HighRes.Camera.SetExposureTime(mark.ExposureTime);
                                 Thread.Sleep(100); // 100ms 대기
                                 // --------------------------------------------------
-
-
                                 // Z-Axis 변경도 있음.
-
-
-
+                                double dCurrZ = GetEncWorkStagePos_Motor(nAxis.Z);
+                                double dZPosOffset = mark.AxisZOffset;
+                                dCurrZ += dZPosOffset;
+                                MovetoWorkStage_ABS_PositionsZ(dCurrZ, Type_Motor_Speed.Fine);
+                                int tick = 0;
+                                Thread.Sleep(100);
+                                while(!IsWorkStage_Positions(nAxis.Z, dCurrZ))
+                                {
+                                    tick++;
+                                    Thread.Sleep(10);
+                                    if (tick > 5000)
+                                        break;
+                                }
+                                Thread.Sleep(200);
+                                //while (!MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                                //!MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, dCurrZ))
+                                //{
+                                //    tick++;
+                                //    Thread.Sleep(10);
+                                //    if (tick > 5000)
+                                //        break;
+                                //}
+                                //Thread.Sleep(200);
 
                                 // Circle Color 0: White, 1: Black
                                 if (mark.MarkColor <= 1)
@@ -15460,65 +15479,80 @@ namespace QMC.Common.Modules
                                 // 하나라도 찾았으면 반복 종료
                                 if (Fiducial_circleFound)
                                 {
-                                    foundMarkIndex = markIndex; // ★ 첫 성공 시 저장
+                                    foundMarkIndex = markIndex; // 첫 성공 시 저장
                                     break;
                                 }
 
                                 markIndex++;
                             }
                         }
-                        else
-                        {
-                            var mark = Equipment.stVisionRecipeSet.SocketMarkList[foundMarkIndex];
-                            Log.Write("SLD-200", "SpiralSearch", $"Retry Mark {foundMarkIndex}");
+                        //else
+                        //{
+                        //    var mark = Equipment.stVisionRecipeSet.SocketMarkList[foundMarkIndex];
+                        //    Log.Write("SLD-200", "SpiralSearch", $"Retry Mark {foundMarkIndex}");
 
-                            SetLightingByChannel(LightingChannel.FineCamRed, mark.IllumRed, mark.UseRed);
-                            SetLightingByChannel(LightingChannel.FineCamIR, mark.IllumIR, mark.UseIR);
-                            jigAligner_HighRes.Camera.SetExposureTime(mark.ExposureTime);
-                            Thread.Sleep(100);
+                        //    SetLightingByChannel(LightingChannel.FineCamRed, mark.IllumRed, mark.UseRed);
+                        //    SetLightingByChannel(LightingChannel.FineCamIR, mark.IllumIR, mark.UseIR);
+                        //    jigAligner_HighRes.Camera.SetExposureTime(mark.ExposureTime);
+                        //    Thread.Sleep(100);
 
-                            if (mark.MarkColor <= 1)
-                            {
-                                result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
-                                    Fiducial_circlesResult,
-                                    bm_AlignRawData,
-                                    Camera_HighRes.Resolution.Width,
-                                    Camera_HighRes.Resolution.Height,
-                                    nWidthImageCount,
-                                    mark.MarkSpec,
-                                    ref Fiducial_circleFound,
-                                    0, 0,
-                                    (mark.MarkType == 0),
-                                    mark.MarkScore,
-                                    false);
-                            }
-                            else if (mark.MarkColor == 2)
-                            {
-                                result = Fiducial_aligner.FindCircleForFR4(
-                                    bm_AlignRawData,
-                                    Camera_HighRes.Resolution.Width,
-                                    Camera_HighRes.Resolution.Height,
-                                    nWidthImageCount,
-                                    mark.MarkSpec,
-                                    mark.MarkScore);
+                        //    double dCurrZ = GetEncWorkStagePos_Motor(nAxis.Z);
+                        //    double dZPosOffset = mark.AxisZOffset;
+                        //    dCurrZ += dZPosOffset;
+                        //    MovetoWorkStage_ABS_PositionsZ(dCurrZ, Type_Motor_Speed.Fine);
+                        //    int tick = 0;
+                        //    Thread.Sleep(100);
+                        //    while (!IsWorkStage_Positions(nAxis.Z, dCurrZ))
+                        //    {
+                        //        tick++;
+                        //        Thread.Sleep(10);
+                        //        if (tick > 5000)
+                        //            break;
+                        //    }
+                        //    Thread.Sleep(200);
 
-                                Fiducial_circlesResult.Clear();
-                                foreach (var circle in result.Circles)
-                                {
-                                    Fiducial_circleFound = true;
-                                    Fiducial_circlesResult.Add(circle.GetBoundery());
-                                }
+                        //    if (mark.MarkColor <= 1)
+                        //    {
+                        //        result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
+                        //            Fiducial_circlesResult,
+                        //            bm_AlignRawData,
+                        //            Camera_HighRes.Resolution.Width,
+                        //            Camera_HighRes.Resolution.Height,
+                        //            nWidthImageCount,
+                        //            mark.MarkSpec,
+                        //            ref Fiducial_circleFound,
+                        //            0, 0,
+                        //            (mark.MarkType == 0),
+                        //            mark.MarkScore,
+                        //            false);
+                        //    }
+                        //    else if (mark.MarkColor == 2)
+                        //    {
+                        //        result = Fiducial_aligner.FindCircleForFR4(
+                        //            bm_AlignRawData,
+                        //            Camera_HighRes.Resolution.Width,
+                        //            Camera_HighRes.Resolution.Height,
+                        //            nWidthImageCount,
+                        //            mark.MarkSpec,
+                        //            mark.MarkScore);
 
-                                if (Fiducial_circlesResult.Count == 0)
-                                    Fiducial_circleFound = false;
-                            }
+                        //        Fiducial_circlesResult.Clear();
+                        //        foreach (var circle in result.Circles)
+                        //        {
+                        //            Fiducial_circleFound = true;
+                        //            Fiducial_circlesResult.Add(circle.GetBoundery());
+                        //        }
 
-                            if (!Fiducial_circleFound)
-                            {
-                                Log.Write("SLD-200", "SpiralSearch", $"Retry Mark {foundMarkIndex} 실패 → 전체 탐색으로 전환");
-                                foundMarkIndex = -1; // 리트라이 실패 → 전체 탐색으로 전환
-                            }
-                        }
+                        //        if (Fiducial_circlesResult.Count == 0)
+                        //            Fiducial_circleFound = false;
+                        //    }
+
+                        //    if (!Fiducial_circleFound)
+                        //    {
+                        //        Log.Write("SLD-200", "SpiralSearch", $"Retry Mark {foundMarkIndex} 실패 → 전체 탐색으로 전환");
+                        //        foundMarkIndex = -1; // 리트라이 실패 → 전체 탐색으로 전환
+                        //    }
+                        //}
                     }
 
                     UpdateOverlay(result);
@@ -17311,7 +17345,6 @@ namespace QMC.Common.Modules
             }
 
             double dZPosOffset = 0.0;
-
             if (Equipment.stVisionRecipeSet.bSocketIlluminationRedUse)
             {
                 dZPosOffset = Equipment.stVisionRecipeSet.dSocketAxisZ_Offset;
