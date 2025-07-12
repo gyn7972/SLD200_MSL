@@ -15412,11 +15412,13 @@ namespace QMC.Common.Modules
                                 SetLightingByChannel(LightingChannel.FineCamIR, mark.IllumIR, mark.UseIR);
                                 jigAligner_HighRes.Camera.SetExposureTime(mark.ExposureTime);
                                 Thread.Sleep(100); // 100ms 대기
+
                                 // --------------------------------------------------
                                 // Z-Axis 변경도 있음.
-                                double dCurrZ = GetEncWorkStagePos_Motor(nAxis.Z);
+                                double dCurrZ = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z;//GetEncWorkStagePos_Motor(nAxis.Z);
+                                double dThiknessZ = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness;
                                 double dZPosOffset = mark.AxisZOffset;
-                                dCurrZ += dZPosOffset;
+                                dCurrZ += (dThiknessZ + dZPosOffset + m_dZOffset_SocketHeightCheck);
                                 MovetoWorkStage_ABS_PositionsZ(dCurrZ, Type_Motor_Speed.Fine);
                                 int tick = 0;
                                 Thread.Sleep(100);
@@ -17345,10 +17347,10 @@ namespace QMC.Common.Modules
             }
 
             double dZPosOffset = 0.0;
-            if (Equipment.stVisionRecipeSet.bSocketIlluminationRedUse)
-            {
-                dZPosOffset = Equipment.stVisionRecipeSet.dSocketAxisZ_Offset;
-            }
+            //if (Equipment.stVisionRecipeSet.bSocketIlluminationRedUse)
+            //{
+            //    dZPosOffset = Equipment.stVisionRecipeSet.dSocketAxisZ_Offset;
+            //}
 
             //  좌표계 (기존)
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
