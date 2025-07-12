@@ -33685,7 +33685,7 @@ namespace QMC.Common.Modules
             var socket = DrillingManager.GetSocket(layerName, socketIndex);
             if (socket == null)
             {
-                Log.Write("DrillStatus", $"[오류] Layer '{layerName}', Socket {socketIndex} 찾을 수 없음");
+                Log.Write("DrillStatus", $"[오류] Layer '{layerName}', Socket {socketIndex + 1} 찾을 수 없음");
                 return;
             }
 
@@ -35639,7 +35639,7 @@ namespace QMC.Common.Modules
                     {
                         socket.IsDrilled = true;
                         DrillingManager.MarkAsChanged();
-                        Log.Write("DrillStatus", $"[ThruHole] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 시작됨.");
+                        Log.Write("DrillStatus", $"[ThruHole] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count + 1} 가공 시작됨.");
                     }
 
                     // 여기서만 증가??? 왜? 여기서?? 레이져 쏘고 증가 하던가???
@@ -35956,7 +35956,7 @@ namespace QMC.Common.Modules
                     {
                         socket.IsDrilled = true;
                         DrillingManager.MarkAsChanged();
-                        Log.Write("DrillStatus", $"[OutLine] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 시작됨.");
+                        Log.Write("DrillStatus", $"[OutLine] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count + 1} 가공 시작됨.");
                     }
 
                     // 여기서만 증가??? 왜? 여기서?? 레이져 쏘고 증가 하던가???
@@ -37396,7 +37396,7 @@ namespace QMC.Common.Modules
                                             socket1.IsSocketDisplacement = true;
                                             socket1.DisplacementZ = zOffset;
 
-                                            Log.Write("DrillStatus", $"[Socket {socketIndex} 내부 {layer1.LayerName}] ZOffset 저장 완료: {zOffset:F3}");
+                                            Log.Write("DrillStatus", $"[Socket {socketIndex + 1} 내부 {layer1.LayerName}] ZOffset 저장 완료: {zOffset:F3}");
                                         }
                                     }
                                 }
@@ -37435,7 +37435,7 @@ namespace QMC.Common.Modules
                                         socket.IsSocketDisplacement = true;
                                         socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
                                         DrillingManager.MarkAsChanged();
-                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex + 1}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
                                     }
                                 }
                             }
@@ -37455,7 +37455,7 @@ namespace QMC.Common.Modules
                                         socket.IsSocketDisplacement = true;
                                         socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
                                         DrillingManager.MarkAsChanged();
-                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex + 1}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
                                     }
                                 }
                             }
@@ -37475,7 +37475,7 @@ namespace QMC.Common.Modules
                                         socket.IsSocketDisplacement = true;
                                         socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
                                         DrillingManager.MarkAsChanged();
-                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex + 1}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
                                     }
                                 }
                             }
@@ -37497,7 +37497,7 @@ namespace QMC.Common.Modules
                                         socket.IsSocketDisplacement = true;
                                         socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
                                         DrillingManager.MarkAsChanged();
-                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex + 1}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
                                     }
                                 }
                             }
@@ -37519,7 +37519,7 @@ namespace QMC.Common.Modules
                                         socket.IsSocketDisplacement = true;
                                         socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
                                         DrillingManager.MarkAsChanged();
-                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex + 1}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
                                     }
                                 }
                             }
@@ -37541,7 +37541,7 @@ namespace QMC.Common.Modules
                                         socket.IsSocketDisplacement = true;
                                         socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
                                         DrillingManager.MarkAsChanged();
-                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex + 1}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
                                     }
                                 }
                             }
@@ -38475,7 +38475,7 @@ namespace QMC.Common.Modules
                                                 socket.SocketTheta = m_dALIGN_FACTOR_Theta;
                                                 socket.IsSocketAligned = m_bSocketAlign_OK;
 
-                                                Log.Write("DrillStatus", $"[Socket] [{GetCurrentLayerEnum(m_LayerType)}][{m_nSocketNum_forAlign}] " +
+                                                Log.Write("DrillStatus", $"[Socket] [{GetCurrentLayerEnum(m_LayerType)}][{m_nSocketNum_forAlign + 1}] " +
                                                     $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
                                                 break;
 
@@ -38487,7 +38487,7 @@ namespace QMC.Common.Modules
                                                 socket.GoldTheta = m_dALIGN_FACTOR_Theta;
                                                 socket.IsGoldPowderAligned = m_bSocketAlign_OK;
 
-                                                Log.Write("DrillStatus", $"[Gold] [{GetCurrentLayerEnum(m_LayerType)}][{m_nSocketNum_forAlign}] " +
+                                                Log.Write("DrillStatus", $"[Gold] [{GetCurrentLayerEnum(m_LayerType)}][{m_nSocketNum_forAlign + 1}] " +
                                                     $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
                                                 break;
                                         }
@@ -41288,7 +41288,7 @@ namespace QMC.Common.Modules
                         {
                             socket.IsDrilled = true;
                             DrillingManager.MarkAsChanged();
-                            Log.Write("DrillStatus", $"[Start] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count} 가공 시작됨.");
+                            Log.Write("DrillStatus", $"[Start] {GetCurrentLayerEnum(m_LayerType)} 소켓 {m_nDrillingWork_Group_Count + 1} 가공 시작됨.");
                         }
 
                         Thread.Sleep(200);
