@@ -7231,52 +7231,10 @@ namespace QMC.Common.Modules
                             }
                         }
                         bRtn = true;
-
-                        //if (bSynchronous)
-                        //{
-                        //    bool bTimeout = false;
-                        //    DateTime StartTime = DateTime.Now;
-                        //    TimeSpan ProcessTime;
-                        //    while (true)
-                        //    {
-                        //        if (IsUnloader_TeachingPositionsTransferZ(nTeachingPos))
-                        //            break;
-
-                        //        //Config.TimeOut
-                        //        if (2000 > 0) // 2000 정도면 2초?
-                        //        {
-                        //            ProcessTime = DateTime.Now - StartTime;
-                        //            if (ProcessTime.TotalMilliseconds >= 2000)
-                        //            {
-                        //                bTimeout = true;
-                        //                break;
-                        //            }
-                        //        }
-                        //        Thread.Sleep(1);
-                        //    }
-
-                        //    if (bTimeout)
-                        //    {
-                        //        strTemp = string.Format("MovetoUnloader_TeachingPositionsTransferZ [Fail]: UnloaderTransferZ Axis이 이동 실패.");
-                        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
-
-                        //        Alarm alarm = new Alarm();
-                        //        alarm.Title = "Unloader TransferZ Timeout";
-                        //        alarm.Code = -100;
-                        //        alarm.Grade = "Stop";
-                        //        alarm.Source = this.Name;
-                        //        alarm.Cause = "Unloader TransferZ Timeout이 발생했습니다. Unloader TransferZ을 확인해주세요.";
-                        //        //AlarmPost(AlarmKey.LoaderTransferZTimeout);
-
-                        //        return bRtn = false;
-                        //    }
-                        //}
                     }
 
                     bRtn = true;
                 }
-                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
-                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
             }
             catch (Exception ex)
             {

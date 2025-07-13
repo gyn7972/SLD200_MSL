@@ -308,7 +308,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
                 return;
 
-            if (Equipment.AutoRunStatus)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New)
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");
@@ -329,18 +329,17 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
-            {
-                strTemp = string.Format("ProcessOption_SocketHeightCheck_Use : false");
-                Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
+            //if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+            //{
+            //    strTemp = string.Format("ProcessOption_SocketHeightCheck_Use : false");
+            //    Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
 
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "높이측정 사용 모드가 아닙니다. Data Load 후 정지합니다.");
-            }
+            //    var mb = new MessageBoxOk();
+            //    mb.ShowDialog("Information !", "높이측정 사용 모드가 아닙니다. Data Load 후 정지합니다.");
+            //}
 
             Equipment.LaserDrillingCycStop_Reservation = false;
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
-
 
             Equipment.SemiAutoEnable = true;
             workStage.SetSemiAutoRequest(WorkStage.SemiAutoStep.MeasureHeight);
@@ -355,7 +354,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
                 return;
 
-            if (Equipment.AutoRunStatus)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New)
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");
@@ -376,25 +375,27 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
-            {
-                if (workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight) == false)
-                {
-                    var mb = new MessageBoxOk();
-                    mb.ShowDialog("Information !", "PreAlign 은 Height Sensor 측정 후에만 가능합니다.");
-                    return;
-                }
-            }
-            else
-            {
-                strTemp = string.Format("ProcessOption_SocketAlign_Use : false");
-                Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
+            // 사용 유/무 필요없이 Test 용으로 사용하자. 
+            //if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+            //{
+            //    // 이 조건 빼자.
+            //    // 변위 측정 시에 PreAlign 하고 측정 할 수 있도록.
+            //    //if (workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight) == false)
+            //    //{
+            //    //    var mb = new MessageBoxOk();
+            //    //    mb.ShowDialog("Information !", "PreAlign 은 Height Sensor 측정 후에만 가능합니다.");
+            //    //    return;
+            //    //}
+            //}
+            //else
+            //{
+            //    strTemp = string.Format("ProcessOption_SocketAlign_Use : false");
+            //    Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
 
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "Align 사용 모드가 아닙니다.");
-                return;
-            }
-
+            //    var mb = new MessageBoxOk();
+            //    mb.ShowDialog("Information !", "Align 사용 모드가 아닙니다.");
+            //    return;
+            //}
 
             Equipment.LaserDrillingCycStop_Reservation = false;
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
@@ -413,7 +414,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
                 return;
 
-            if (Equipment.AutoRunStatus)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New)
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");
@@ -434,25 +435,25 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            if(Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
-            {
-                if (workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight) == false &&
-                    workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign) == false)
-                {
-                    var mb = new MessageBoxOk();
-                    mb.ShowDialog("Information !", "Fiducial Align 은 PreAlign 후에만 가능합니다.");
-                    return;
-                }
-            }
-            else
-            {
-                strTemp = string.Format("ProcessOption_SocketAlign_Use : false");
-                Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
+            //if(Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+            //{
+            //    if (workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight) == false &&
+            //        workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign) == false)
+            //    {
+            //        var mb = new MessageBoxOk();
+            //        mb.ShowDialog("Information !", "Fiducial Align 은 PreAlign 후에만 가능합니다.");
+            //        return;
+            //    }
+            //}
+            //else
+            //{
+            //    strTemp = string.Format("ProcessOption_SocketAlign_Use : false");
+            //    Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
 
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "Align 사용 모드가 아닙니다.");
-                return;
-            }
+            //    var mb = new MessageBoxOk();
+            //    mb.ShowDialog("Information !", "Align 사용 모드가 아닙니다.");
+            //    return;
+            //}
 
             Equipment.LaserDrillingCycStop_Reservation = false;
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing

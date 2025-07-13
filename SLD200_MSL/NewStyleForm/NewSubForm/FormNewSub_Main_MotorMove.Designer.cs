@@ -53,6 +53,8 @@
             this.label_MotorMove_heightSensor = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.button_MotorMove_Unloader_ToSafetyZ = new System.Windows.Forms.Button();
+            this.button_MotorMove_Loader_ToSafetyZ = new System.Windows.Forms.Button();
             this.groupBox_MotorMove_Unloader.SuspendLayout();
             this.groupBox_MotorMove_MainStage.SuspendLayout();
             this.groupBox_MotorMove_Loader.SuspendLayout();
@@ -82,7 +84,7 @@
             // 
             // button_MotorMove_Unloader_Vacuum
             // 
-            this.button_MotorMove_Unloader_Vacuum.Location = new System.Drawing.Point(6, 56);
+            this.button_MotorMove_Unloader_Vacuum.Location = new System.Drawing.Point(112, 56);
             this.button_MotorMove_Unloader_Vacuum.Name = "button_MotorMove_Unloader_Vacuum";
             this.button_MotorMove_Unloader_Vacuum.Size = new System.Drawing.Size(100, 30);
             this.button_MotorMove_Unloader_Vacuum.TabIndex = 2;
@@ -242,6 +244,7 @@
             // 
             // groupBox_MotorMove_Unloader
             // 
+            this.groupBox_MotorMove_Unloader.Controls.Add(this.button_MotorMove_Unloader_ToSafetyZ);
             this.groupBox_MotorMove_Unloader.Controls.Add(this.button_MotorMove_Unloader_ToStacker);
             this.groupBox_MotorMove_Unloader.Controls.Add(this.button_MotorMove_Unloader_ToStage);
             this.groupBox_MotorMove_Unloader.Controls.Add(this.button_MotorMove_Unloader_Vacuum);
@@ -275,6 +278,7 @@
             // 
             // groupBox_MotorMove_Loader
             // 
+            this.groupBox_MotorMove_Loader.Controls.Add(this.button_MotorMove_Loader_ToSafetyZ);
             this.groupBox_MotorMove_Loader.Controls.Add(this.button_MotorMove_Loader_ToStage);
             this.groupBox_MotorMove_Loader.Controls.Add(this.button_MotorMove_Loader_ToMAlign);
             this.groupBox_MotorMove_Loader.Controls.Add(this.button_MotorMove_Loader_ToStacker);
@@ -341,6 +345,26 @@
             this.label1.Text = "* Ctrl+J : JogDlg Open";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // button_MotorMove_Unloader_ToSafetyZ
+            // 
+            this.button_MotorMove_Unloader_ToSafetyZ.Location = new System.Drawing.Point(6, 56);
+            this.button_MotorMove_Unloader_ToSafetyZ.Name = "button_MotorMove_Unloader_ToSafetyZ";
+            this.button_MotorMove_Unloader_ToSafetyZ.Size = new System.Drawing.Size(100, 30);
+            this.button_MotorMove_Unloader_ToSafetyZ.TabIndex = 3;
+            this.button_MotorMove_Unloader_ToSafetyZ.Text = "To Safety Z";
+            this.button_MotorMove_Unloader_ToSafetyZ.UseVisualStyleBackColor = true;
+            this.button_MotorMove_Unloader_ToSafetyZ.Click += new System.EventHandler(this.button_MotorMove_Unloader_ToSafetyZ_Click);
+            // 
+            // button_MotorMove_Loader_ToSafetyZ
+            // 
+            this.button_MotorMove_Loader_ToSafetyZ.Location = new System.Drawing.Point(6, 56);
+            this.button_MotorMove_Loader_ToSafetyZ.Name = "button_MotorMove_Loader_ToSafetyZ";
+            this.button_MotorMove_Loader_ToSafetyZ.Size = new System.Drawing.Size(100, 30);
+            this.button_MotorMove_Loader_ToSafetyZ.TabIndex = 4;
+            this.button_MotorMove_Loader_ToSafetyZ.Text = "To Safety Z";
+            this.button_MotorMove_Loader_ToSafetyZ.UseVisualStyleBackColor = true;
+            this.button_MotorMove_Loader_ToSafetyZ.Click += new System.EventHandler(this.button_MotorMove_Loader_ToSafetyZ_Click);
+            // 
             // FormNewSub_Main_MotorMove
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -384,5 +408,7 @@
         private System.Windows.Forms.Label label_MotorMove_heightSensor;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button_MotorMove_Unloader_ToSafetyZ;
+        private System.Windows.Forms.Button button_MotorMove_Loader_ToSafetyZ;
     }
 }

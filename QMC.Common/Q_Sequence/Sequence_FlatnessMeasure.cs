@@ -42,7 +42,6 @@ namespace QMC.Common.Q_Sequence
         }
         public int m_nFlatnessMeasure_Step { set; get; }
 
-
         static QMC.Common.Modules.WorkStage workStage;
         static QMC.Common.Modules.Vision vision;
 
@@ -228,7 +227,7 @@ namespace QMC.Common.Q_Sequence
             {
                 case (int)FlatnessMeasure_Step.Start:
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", "측정 시작.");
+                    Log.Write("FlatnessMeasure", Equipment.User_Name, "측정 시작.");
 
                     m_nFlatnessMeasure_Count = 0;
 
@@ -244,7 +243,7 @@ namespace QMC.Common.Q_Sequence
                     }
                     else
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", "Flatness Measurement Type 을 선택하지 않음.");
+                        Log.Write("FlatnessMeasure", Equipment.User_Name, "Flatness Measurement Type 을 선택하지 않음.");
 
                         m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.None;
                         MessageBox.Show("Flatness Measurement Type 을 선택하지 않음.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -298,14 +297,14 @@ namespace QMC.Common.Q_Sequence
                         if ((Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].StagePos[m_nFlatnessMeasure_Count].X != 0.0) &&
                             (Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].StagePos[m_nFlatnessMeasure_Count].Y != 0.0))
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "FlatnessMeasure", "최대 측정 회수 이내. 측정 위치값 있음.");
+                            Log.Write("FlatnessMeasure", Equipment.User_Name, "최대 측정 회수 이내. 측정 위치값 있음.");
 
                             //  측정 위치로 이동
                             m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_StageXY_MovetoFlatnessMeasurePos;
                         }
                         else
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "FlatnessMeasure", "최대 측정 회수 이내. 측정 위치값 없음. 다음 Position 체크");
+                            Log.Write("FlatnessMeasure", Equipment.User_Name, "최대 측정 회수 이내. 측정 위치값 없음. 다음 Position 체크");
 
                             //  측정 위치가 없으면 다음 포인트로 이동
                             m_nFlatnessMeasure_Count++;
@@ -314,7 +313,7 @@ namespace QMC.Common.Q_Sequence
                     }
                     else
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "FlatnessMeasure", "최대 측정 회수 초과. 결과 계산.");
+                        Log.Write("FlatnessMeasure", Equipment.User_Name, "최대 측정 회수 초과. 결과 계산.");
                         m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.Complete;
                     }
                     break;
@@ -328,7 +327,7 @@ namespace QMC.Common.Q_Sequence
                     {
                         if (TickCount_Elapsed((int)TickType.TICK_FLATNESS_MEASURE) > nLaserPowermeasureTimeout)
                         {
-                            Log.Write("SeqLaserPowerMeasure", "Stage XY Move Power Meter Position Fail.");
+                            Log.Write("FlatnessMeasure", Equipment.User_Name, "Stage XY Move Power Meter Position Fail.");
                             return workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail); // Stage XY 이동 실패
                         }
                     }
@@ -355,7 +354,7 @@ namespace QMC.Common.Q_Sequence
                     {
                         TickCount_Start((int)TickType.TICK_FLATNESS_MEASURE);
                         m_strTemp = "Stage XY 축, Laser Height Check 위치로 이동 완료";
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                        Log.Write("FlatnessMeasure", Equipment.User_Name, m_strTemp);
                         m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_StableTime;
                     }
                     else
@@ -372,13 +371,21 @@ namespace QMC.Common.Q_Sequence
                     {
                         if (TickCount_Elapsed((int)TickType.TICK_FLATNESS_MEASURE) > Equipment.Machine_LaserHeightCheckStableTime)
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", "Stage XY축, Laser Height Check 위치로 이동 후 안정화 시간.");
+                            workStage.m_bSensorRequestPending = true;
+                            workStage.m_bSensorResponseReady = false;
+                            Thread.Sleep(100);
+                            TickCount_Start((int)TickType.TICK_FLATNESS_MEASURE);
+                            Log.Write("FlatnessMeasure", Equipment.User_Name, "Stage XY축, Laser Height Check 위치로 이동 후 안정화 시간.");
                             m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_LaserHeightValue_Get;
                         }
                     }
                     else    //  바로 값 가져오기
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", "Stage XY축, Laser Height Check 위치로 이동 후 안정화 시간 없이 바로 데이터 Get.");
+                        workStage.m_bSensorRequestPending = true;
+                        workStage.m_bSensorResponseReady = false;
+                        Thread.Sleep(100);
+                        TickCount_Start((int)TickType.TICK_FLATNESS_MEASURE);
+                        Log.Write("FlatnessMeasure", Equipment.User_Name, "Stage XY축, Laser Height Check 위치로 이동 후 안정화 시간 없이 바로 데이터 Get.");
                         m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_LaserHeightValue_Get;
                     }
                     break;
@@ -386,9 +393,28 @@ namespace QMC.Common.Q_Sequence
 
                 case (int)FlatnessMeasure_Step.FlatnessMeasure_LaserHeightValue_Get:                                                    //  높이값 가져오기
 
+                    // 응답이 아직 안 왔으면 기다림
+                    if (!workStage.m_bSensorResponseReady)
+                    {
+                        if (TickCount_Elapsed((int)TickType.TICK_FLATNESS_MEASURE) > 1000)
+                        {
+                            Log.Write("FlatnessMeasure", Equipment.User_Name, $"센서 응답 Timeout (1000ms)");
+                            //AlarmPost(AlarmKey.eSensor_Height_Timeout);
+
+                            // 강제 fallback 진입: 센서 응답 없는 상태로 시뮬레이션 강제 진행
+                            workStage.m_bSensorResponseReady = true;
+                        }
+                        break;
+                    }
+
+                    if (workStage.m_bSensorResponseReady)
+                    {
+                        Log.Write("FlatnessMeasure", Equipment.User_Name, $"센서 값 받아오기.");
+                    }
+
                     //  Laser 값 저장
                     Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].LaserHeightValue[m_nFlatnessMeasure_Count] = 
-                        workStage.m_dLaserHeightSensorSocket_Value;
+                    workStage.m_dLaserHeightSensorSocket_Value;
 
                     if ((workStage.m_dLaserHeightSensorSocket_Value < -4.5) || 
                         (workStage.m_dLaserHeightSensorSocket_Value > 5.5) || 
@@ -397,7 +423,7 @@ namespace QMC.Common.Q_Sequence
                         m_strTemp = string.Format("데이터값 NG, Flatness Measurement Type Index ({0}), Position Index ({1}), Laser Height Value ({2:0.000})",
                                                     m_nFlatnessMeasure_Type, m_nFlatnessMeasure_Count, workStage.m_dLaserHeightSensorSocket_Value);
 
-                        Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", m_strTemp);
+                        Log.Write("FlatnessMeasure", Equipment.User_Name, m_strTemp);
                         m_nFlatnessMeasure_Count++;     //  다음 위치
                         m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_RemainedCheck;
                     }
@@ -406,7 +432,7 @@ namespace QMC.Common.Q_Sequence
                         m_strTemp = string.Format("데이터값 OK, Flatness Measurement Type Index ({0}), Position Index ({1}), Laser Height Value ({2:0.000})",
                                                     m_nFlatnessMeasure_Type, m_nFlatnessMeasure_Count, workStage.m_dLaserHeightSensorSocket_Value);
 
-                        Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", m_strTemp);
+                        Log.Write("FlatnessMeasure", Equipment.User_Name, m_strTemp);
 
                         m_nFlatnessMeasure_Count++;     //  다음위치
                         m_nHeightValue_OK_Count++;                                                                                  //  Data OK Count
@@ -435,7 +461,7 @@ namespace QMC.Common.Q_Sequence
 
                 case (int)FlatnessMeasure_Step.Complete:
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", "완료");
+                    Log.Write("FlatnessMeasure", Equipment.User_Name, "완료");
                     m_strTemp = "===  Flatness Measurement 완료  ===";
                     if (m_nHeightValue_OK_Count > 0)
                     {
@@ -460,15 +486,20 @@ namespace QMC.Common.Q_Sequence
                         m_dDeviation = Math.Abs(m_dHeightValue_Max_Value - m_dHeightValue_Min_Value);
                         m_strTemp += string.Format("\r\n   - Min. ({0:0.000})\r\n   - Max. ({1:0.000})\r\n   - Average ({2:0.000}\r\n\r\n   - Deviation ({3:0.000})",
                                                     m_dHeightValue_Min_Value, m_dHeightValue_Max_Value, m_dHeightValue_Avg, m_dDeviation);
+                        Log.Write("FlatnessMeasure", Equipment.User_Name, m_strTemp);
                     }
                     else
                     {
                         m_strTemp += string.Format("\r\n\n   - 측정된 위치값이 없음.");
+                        Log.Write("FlatnessMeasure", Equipment.User_Name, m_strTemp);
                     }
 
                     m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.None;
-                    MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                    if (!Equipment.AutoRunStatus && !Equipment.SelectRunEnable_New && !Equipment.SelectRunEnable)
+                    {
+                        MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                     break;
             }
 
@@ -521,7 +552,7 @@ namespace QMC.Common.Q_Sequence
             else
             {
                 strTemp = string.Format("Stage Z 축, Laser_Sensor_HeightCheckPos 높이로 이동 실패");
-                Log.Write("FlatnessMeasure", "StageZ_Move_ProcessPos_Check", strTemp);
+                Log.Write("FlatnessMeasure", Equipment.User_Name, strTemp);
 
                 nRtn = -1;
                 return workStage.AlarmPost(WorkStage.AlarmKey.eZAxisFail);
