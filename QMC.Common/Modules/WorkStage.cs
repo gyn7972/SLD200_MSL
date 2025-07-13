@@ -15454,7 +15454,6 @@ namespace QMC.Common.Modules
                                 //}
                                 //Thread.Sleep(200);
 
-
                                 // 여기서 이미지를 다시 가져와야지..
                                 Camera_HighRes.Grab();
                                 nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X);
@@ -15482,6 +15481,9 @@ namespace QMC.Common.Modules
                                         (mark.MarkType == 0), // GoldPowder 여부?
                                         mark.MarkScore,
                                         false);
+
+                                    if (Fiducial_circlesResult.Count <= 0)
+                                        Fiducial_circleFound = false;
                                 }
                                 // Circle Color 2: Ignore
                                 else if (mark.MarkColor == 2)
