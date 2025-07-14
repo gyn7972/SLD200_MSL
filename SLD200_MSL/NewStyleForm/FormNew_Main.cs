@@ -3203,6 +3203,8 @@ namespace SLD200_MSL
         
         private async  void button_TEST12_Click(object sender, EventArgs e)
         {
+            workStage.SetStageComplete(WorkStage.SemiAutoStep.PreAlign, true);
+
             return;
 
             workStage.m_Sequence_LaserPowerMeasure.TestLog(); //  테스트용 로그 출력
@@ -4300,6 +4302,9 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            workStage.SetStageComplete(WorkStage.SemiAutoStep.PreAlign, false);
+            workStage.SetSemiAutoRequest(WorkStage.SemiAutoStep.PreAlign);
+
             return;
 
             int nSocket = 0;
