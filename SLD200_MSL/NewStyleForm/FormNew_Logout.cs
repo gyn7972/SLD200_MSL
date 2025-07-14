@@ -85,6 +85,9 @@ namespace SLD200_MSL
 
             //m_Monitoring_CWA150SA.ThreadStop();
 
+            workStage.m_MainStatus_Start = false;
+            workStage.m_Comm_Start = false;
+
             workStage.Device_Close();                           //  2024. 07. 11.  SCH : Close 함수가 호출되지 않아서, 프로그램 종료할 때 카메라가 닫히지 않는 문제가 있었음.
 
             //this.Close();
