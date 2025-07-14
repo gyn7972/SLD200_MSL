@@ -23804,7 +23804,7 @@ namespace QMC.Common.Modules
             Dictionary<string, int> layerSocketCounts = new Dictionary<string, int>();
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
-                     // 중요! Data수집 - 도면 Layer 수집용. ////////
+                // 중요! Data수집 - 도면 Layer 수집용. ////////
                 string name = layer.Name?.Trim();
                 if (!layer.IsMarkerable)
                     continue;
@@ -23856,9 +23856,7 @@ namespace QMC.Common.Modules
                 if (layer.IsMarkerable)
                 {
                     ///////////////////////////
-                    ///                     ///
                     ///     Hole 드릴링     ///
-                    ///                     ///
                     ///////////////////////////
 
                     //  Hole 인지?
@@ -23946,14 +23944,11 @@ namespace QMC.Common.Modules
                             }
 
                             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                            //
                                          //  [드릴링] [syncAxis] [ScannerOnly]
-                            //
                             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                            ///
                             //if (layer.MotionType == MotionType.ScannerOnly)             //  MotionType.ScannerOnly
                             {
-                                                //  Group 개수
+                                //  Group 개수
                                 foreach (var entity in layer)
                                 {
                                     m_nGroupCount++;
@@ -23963,7 +23958,7 @@ namespace QMC.Common.Modules
 
                                 m_nGroupCount = 0;
 
-                                                //  2023. 05. 23.  SCH : Group 객체들 중에 분할 영역을 넘어가는 부분이 하나라도 있으면 전체를 DividedRegion 으로 처리한다.
+                                //  2023. 05. 23.  SCH : Group 객체들 중에 분할 영역을 넘어가는 부분이 하나라도 있으면 전체를 DividedRegion 으로 처리한다.
                                 m_bGroupExist_LargerThanDivideSize = false;
                                 foreach (var entity in layer)
                                 {
@@ -24168,7 +24163,6 @@ namespace QMC.Common.Modules
                                                     //  Drilling 데이터 개수
                                                     //m_nOutlineData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
                                                     m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-
 
                                                     //  Pre-Drilling 추가 시간
                                                     //if (Config.ParamConfig.bPreDrilling_Use)
@@ -24846,11 +24840,8 @@ namespace QMC.Common.Modules
                                                     }
                                                 }
                                             }
-
                                             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                            //
                                             //  [드릴링] [ScannerOnly]  :  Group Data 가 Scanner FOV 를 초과하는 경우 --> 분할 가공
-                                            //
                                             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                                             else
                                             {
@@ -26033,13 +26024,10 @@ namespace QMC.Common.Modules
                                     m_nGroupCount++;
                                     m_stDrilling_LayerData.nRegion_GroupCount++;
 
-
                                     //foreach (var v in m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount - 1].m_stDrilling_ObjectData)
                                     //{
                                     //    Debug.WriteLine("x:" + v.dEdgePoint.Min(tt => tt.X).ToString() + ", Y:" + v.dEdgePoint.Min(tt => tt.Y).ToString());
                                     //}
-
-
                                     //  요건 보고 살리던가 말던가... 살리긴 허야는디..
                                     //  데이터 정렬
                                     //if (Config.ParamConfig.Drilling_DataSort_Use)
@@ -26062,7 +26050,6 @@ namespace QMC.Common.Modules
                         }
                     }
                     //#endregion
-
                     else if (layer.Name == "Rect")                                                                      //  Rect 가공
                     {
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_RECTANGLE;
@@ -28700,7 +28687,6 @@ namespace QMC.Common.Modules
             PointD m_ptSocketCenter = new PointD();
             m_ptSocketCenter.X = 0.0;
             m_ptSocketCenter.Y = 0.0;
-
 
             //  Fiducial 데이터 처리
             if (m_ptFiducial != null)
@@ -34018,7 +34004,7 @@ namespace QMC.Common.Modules
         /// <summary>
         /// 단계별 완료 상태 설정
         /// </summary>
-        private void SetStageComplete(SemiAutoStep step, bool bRtn)
+        public void SetStageComplete(SemiAutoStep step, bool bRtn)
         {
             _stageCompleteMap[step] = bRtn;
         }
@@ -34037,9 +34023,6 @@ namespace QMC.Common.Modules
         {
             _stageCompleteMap.Clear();
         }
-
-
-
 
         public double m_dModuleHeight = 0.0; // 모듈 높이
         public double m_dStageheight = 0.0;
@@ -37080,7 +37063,8 @@ namespace QMC.Common.Modules
                         {
                             if(Equipment.SemiAutoEnable)
                             {
-                                //소켓 선택하고 진행.
+                                // 소켓 선택하고 진행.
+                                // 여기가 문제라는 건데.
                                 if(m_nSelectedSocket_Index < 0)
                                 {
                                     m_nDrillingWork_Group_Count = 0;
@@ -37692,7 +37676,7 @@ namespace QMC.Common.Modules
                         m_MainWork_Start = false;
                         m_SubWork_Start = false;
                         m_ProductAlign_Start = false;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                     }
                     break;
 
@@ -37851,7 +37835,7 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 실패. (Timeout)");
 
                         if (Equipment.SemiAutoEnable &&
-                                        _semiAutoRequest == SemiAutoStep.PreAlign)
+                            _semiAutoRequest == SemiAutoStep.PreAlign)
                         {
                             Equipment.SemiAutoEnable = false;
                             m_LaserDrillingWork_Start = false;
@@ -38359,7 +38343,6 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling Pre Align 보정 완료.");
 
                     SetStageComplete(SemiAutoStep.PreAlign, true);
-
                     if (Equipment.SemiAutoEnable &&
                         _semiAutoRequest == SemiAutoStep.PreAlign)
                     {
@@ -38371,7 +38354,7 @@ namespace QMC.Common.Modules
                         m_ProductAlign_Start = false;
 
                         m_bPreAlignCompleted = true;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction_Complete;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                     }
                     else
                     {
@@ -38509,41 +38492,52 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nSocketNum_forAlign = m_nDrillingWork_Group_Count;  //  Group 이 Socket 이다. (Group 번호가 Socket 번호)
-                            layerEnum = GetCurrentLayerEnum(m_LayerType);
-                            socket = DrillingManager.GetSocket(layerEnum, m_nSocketNum_forAlign);
-                            if (socket != null && socket.IsSocketAligned == false)
+                            if(Equipment.SemiAutoEnable)
                             {
+                                m_nSocketNum_forAlign = m_nDrillingWork_Group_Count;  //  Group 이 Socket 이다. (Group 번호가 Socket 번호)
                                 m_nSocketAlign_MainStep = (int)SocketAlign_Step.Start;
                                 TickCount_Start((int)TickType.TICK_MAIN);
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck;
+                                break;
                             }
                             else
                             {
-                                m_bSocketAlign_OK = true;
-                                m_bAlignCompleted = true;
-
-                                switch (m_LayerType)
+                                m_nSocketNum_forAlign = m_nDrillingWork_Group_Count;  //  Group 이 Socket 이다. (Group 번호가 Socket 번호)
+                                layerEnum = GetCurrentLayerEnum(m_LayerType);
+                                socket = DrillingManager.GetSocket(layerEnum, m_nSocketNum_forAlign);
+                                if (socket != null && socket.IsSocketAligned == false)
                                 {
-                                    case LayerType.LAYER_DRILLING:
-                                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DrillingData_SocketAlign_Start->DividedRegion_DrillingWork_Start");
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                       //  분할 영역 Drilling 작업 시작
-                                        break;
+                                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.Start;
+                                    TickCount_Start((int)TickType.TICK_MAIN);
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck;
+                                }
+                                else
+                                {
+                                    m_bSocketAlign_OK = true;
+                                    m_bAlignCompleted = true;
 
-                                    case LayerType.LAYER_OUTLINE:
-                                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DrillingData_SocketAlign_Start->OutLine_LayerParameter_ZOffset_Move");
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;
-                                        break;
+                                    switch (m_LayerType)
+                                    {
+                                        case LayerType.LAYER_DRILLING:
+                                            Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DrillingData_SocketAlign_Start->DividedRegion_DrillingWork_Start");
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                       //  분할 영역 Drilling 작업 시작
+                                            break;
 
-                                    case LayerType.LAYER_THRUHOLE:
-                                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DrillingData_SocketAlign_Start->ThruHole_LayerParameter_ZOffset_Move");
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
-                                        break;
+                                        case LayerType.LAYER_OUTLINE:
+                                            Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DrillingData_SocketAlign_Start->OutLine_LayerParameter_ZOffset_Move");
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;
+                                            break;
 
-                                    case LayerType.LAYER_MARKING:
-                                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DrillingData_SocketAlign_Start->Marking_LayerParameter_ZOffset_Move");
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
-                                        break;
+                                        case LayerType.LAYER_THRUHOLE:
+                                            Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DrillingData_SocketAlign_Start->ThruHole_LayerParameter_ZOffset_Move");
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
+                                            break;
+
+                                        case LayerType.LAYER_MARKING:
+                                            Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "DrillingData_SocketAlign_Start->Marking_LayerParameter_ZOffset_Move");
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move;
+                                            break;
+                                    }
                                 }
                             }
                         }
@@ -39092,7 +39086,7 @@ namespace QMC.Common.Modules
                     SetStageComplete(SemiAutoStep.FiducialAlign, true);
 
                     if (Equipment.SemiAutoEnable &&
-                        _semiAutoRequest == SemiAutoStep.FiducialAlign)
+                       _semiAutoRequest == SemiAutoStep.FiducialAlign)
                     {
                         Equipment.SemiAutoEnable = false;
 
@@ -39100,7 +39094,7 @@ namespace QMC.Common.Modules
                         m_MainWork_Start = false;
                         m_SubWork_Start = false;
                         m_ProductAlign_Start = false;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Complete;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                     }
 
                     break;
