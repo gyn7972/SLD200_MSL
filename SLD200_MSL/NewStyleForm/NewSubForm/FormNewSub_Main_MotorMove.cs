@@ -143,6 +143,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 button_MotorMove_Loader_ToStacker.Enabled = false;
                 button_MotorMove_Loader_MAlign_Vacuum.Enabled = false;
                 button_MotorMove_Loader_Stacker_Vacuum.Enabled = false;
+                button_MotorMove_Unloader_ToSafetyZ.Enabled = false;
+                button_MotorMove_Loader_ToSafetyZ.Enabled = false;
             }
             else
             {
@@ -164,6 +166,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 button_MotorMove_Loader_ToStacker.Enabled = true;
                 button_MotorMove_Loader_MAlign_Vacuum.Enabled = true;
                 button_MotorMove_Loader_Stacker_Vacuum.Enabled = true;
+                button_MotorMove_Unloader_ToSafetyZ.Enabled = true;
+                button_MotorMove_Loader_ToSafetyZ.Enabled = true;
             }
 
                 //  Laser Height Sensor
