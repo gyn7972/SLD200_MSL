@@ -49,11 +49,15 @@
             this.buttonProcessSelected = new System.Windows.Forms.Button();
             this.label_SocketInfoSummary = new System.Windows.Forms.Label();
             this.listView_LayerDetails = new System.Windows.Forms.ListView();
+            this.Button_SelectAllInLayer_Click = new System.Windows.Forms.Button();
+            this.Button_UnselectAllInLayer_Click = new System.Windows.Forms.Button();
             this.groupBoxModuleStatus.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxModuleStatus
             // 
+            this.groupBoxModuleStatus.Controls.Add(this.Button_UnselectAllInLayer_Click);
+            this.groupBoxModuleStatus.Controls.Add(this.Button_SelectAllInLayer_Click);
             this.groupBoxModuleStatus.Controls.Add(this.buttonProcessStop);
             this.groupBoxModuleStatus.Controls.Add(this.tableLayoutPanelSockets);
             this.groupBoxModuleStatus.Controls.Add(this.listViewLayers);
@@ -70,9 +74,9 @@
             // 
             // buttonProcessStop
             // 
-            this.buttonProcessStop.Location = new System.Drawing.Point(130, 314);
+            this.buttonProcessStop.Location = new System.Drawing.Point(130, 346);
             this.buttonProcessStop.Name = "buttonProcessStop";
-            this.buttonProcessStop.Size = new System.Drawing.Size(90, 60);
+            this.buttonProcessStop.Size = new System.Drawing.Size(90, 30);
             this.buttonProcessStop.TabIndex = 4;
             this.buttonProcessStop.Text = "정지";
             this.buttonProcessStop.UseVisualStyleBackColor = true;
@@ -132,7 +136,7 @@
             // 
             // buttonProcessAll
             // 
-            this.buttonProcessAll.Location = new System.Drawing.Point(20, 248);
+            this.buttonProcessAll.Location = new System.Drawing.Point(20, 281);
             this.buttonProcessAll.Name = "buttonProcessAll";
             this.buttonProcessAll.Size = new System.Drawing.Size(90, 60);
             this.buttonProcessAll.TabIndex = 2;
@@ -142,7 +146,7 @@
             // 
             // buttonProcessSelected
             // 
-            this.buttonProcessSelected.Location = new System.Drawing.Point(130, 248);
+            this.buttonProcessSelected.Location = new System.Drawing.Point(130, 281);
             this.buttonProcessSelected.Name = "buttonProcessSelected";
             this.buttonProcessSelected.Size = new System.Drawing.Size(90, 60);
             this.buttonProcessSelected.TabIndex = 3;
@@ -168,6 +172,26 @@
             this.listView_LayerDetails.UseCompatibleStateImageBehavior = false;
             this.listView_LayerDetails.View = System.Windows.Forms.View.Details;
             // 
+            // Button_SelectAllInLayer_Click
+            // 
+            this.Button_SelectAllInLayer_Click.Location = new System.Drawing.Point(20, 245);
+            this.Button_SelectAllInLayer_Click.Name = "Button_SelectAllInLayer_Click";
+            this.Button_SelectAllInLayer_Click.Size = new System.Drawing.Size(90, 30);
+            this.Button_SelectAllInLayer_Click.TabIndex = 5;
+            this.Button_SelectAllInLayer_Click.Text = "전체 선택";
+            this.Button_SelectAllInLayer_Click.UseVisualStyleBackColor = true;
+            this.Button_SelectAllInLayer_Click.Click += new System.EventHandler(this.Button_SelectAllInLayer_Click_Click);
+            // 
+            // Button_UnselectAllInLayer_Click
+            // 
+            this.Button_UnselectAllInLayer_Click.Location = new System.Drawing.Point(130, 246);
+            this.Button_UnselectAllInLayer_Click.Name = "Button_UnselectAllInLayer_Click";
+            this.Button_UnselectAllInLayer_Click.Size = new System.Drawing.Size(90, 30);
+            this.Button_UnselectAllInLayer_Click.TabIndex = 6;
+            this.Button_UnselectAllInLayer_Click.Text = "전체 해제";
+            this.Button_UnselectAllInLayer_Click.UseVisualStyleBackColor = true;
+            this.Button_UnselectAllInLayer_Click.Click += new System.EventHandler(this.Button_UnselectAllInLayer_Click_Click);
+            // 
             // FormNewSub_SelectProcess
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -185,5 +209,7 @@
         #endregion
 
         private System.Windows.Forms.Button buttonProcessStop;
+        private System.Windows.Forms.Button Button_UnselectAllInLayer_Click;
+        private System.Windows.Forms.Button Button_SelectAllInLayer_Click;
     }
 }

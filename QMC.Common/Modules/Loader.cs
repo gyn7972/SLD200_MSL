@@ -2331,7 +2331,8 @@ namespace QMC.Common.Modules
                         MC_Func.MC_MotorStop((int)nAxis.Z0, 2000);
                         m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType1_Slow2Down;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && 
+                            MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동 완료");
 

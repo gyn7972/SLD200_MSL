@@ -184,8 +184,6 @@ namespace SLD200_MSL
             workStage.Module_Allocation();
             unloader.Module_Allocation();
             loader.Module_Allocation();
-            //SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
-
 
             FormNew_Main_Load();
         }
@@ -1294,6 +1292,8 @@ namespace SLD200_MSL
                 unloader.m_UnloaderWork_Start = false;
 
                 loader.ClearSemiAutoRequest();
+                workStage.ClearSemiAutoRequest();
+                unloader.ClearSemiAutoRequest();
 
                 //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
 
@@ -3203,6 +3203,8 @@ namespace SLD200_MSL
         
         private async  void button_TEST12_Click(object sender, EventArgs e)
         {
+            workStage.SetStageComplete(WorkStage.SemiAutoStep.PreAlign, true);
+
             return;
 
             workStage.m_Sequence_LaserPowerMeasure.TestLog(); //  테스트용 로그 출력
@@ -4099,6 +4101,51 @@ namespace SLD200_MSL
                 Log.Write(ex);
             }
         }
+
+        private void ContextMenu_SelectSocket_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var mb = new MessageBoxOk();
+                var Document = this.SiriusViewer_Main.Document;
+                if (Document == null)
+                    return;
+
+                foreach (var layer in Document.Layers)
+                {
+                    if (!layer.IsMarkerable || layer.Count == 0)
+                        continue;
+
+                    int nIndex = 0;
+                    foreach (var entity in layer)
+                    {
+                        if (layer.Name == "Hole1")
+                        {
+                            if (entity.EntityType == EType.Group)
+                            {
+                                var group = entity as Group;
+                                if (group != null && group.IsSelected)
+                                {
+                                    //workStage.m_nSelectedSocket_Index = group.Index;
+                                    workStage.m_nSelectedSocket_Index = nIndex;
+                                    mb.ShowDialog("Info", $"선택된 Socket Index: {workStage.m_nSelectedSocket_Index + 1}");
+
+                                    return; // 첫 번째 선택된 그룹만 처리
+                                }
+                            }
+                        }
+                        nIndex++;
+                    }
+                }
+                workStage.m_nSelectedSocket_Index = -1;
+                mb.ShowDialog("Info", "선택된 Socket이 없습니다.");
+
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
         private void GLcontrol_MouseClick(object sender, MouseEventArgs e)
         {
             if (Equipment.AutoManualStatus || Equipment.AutoRunStatus)
@@ -4111,6 +4158,7 @@ namespace SLD200_MSL
                 if (_contextMenu == null)
                 {
                     _contextMenu = new ContextMenuStrip();
+                    _contextMenu.Items.Add("Select Socket", null, ContextMenu_SelectSocket_Click);
                     _contextMenu.Items.Add("이 위치로 이동", null, ContextMenu_MoveToThisPosition_Click);
                     _contextMenu.Items.Add("선택된 중심으로 이동", null, ContextMenu_MoveToSelectedGroupCenter_Click);
                 }
@@ -4254,6 +4302,35 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            workStage.SetStageComplete(WorkStage.SemiAutoStep.PreAlign, false);
+            workStage.SetSemiAutoRequest(WorkStage.SemiAutoStep.PreAlign);
+
+            return;
+
+            int nSocket = 0;
+            int nHoleLayer = 0;
+
+            if (!workStage.IsCurrentSocketSelected(LayerType.LAYER_DRILLING, nHoleLayer, nSocket))
+            {
+                Log.Write("선택 가공", $"LAYER_DRILLING: 소켓 {nSocket + 1}, LAYER Hole:{nHoleLayer + 1} 은 선택되지 않음 → SKIP");
+                //nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                //return nNextStep;
+            }
+
+            if (!workStage.IsCurrentSocketSelected(LayerType.LAYER_THRUHOLE, nSocket))
+            {
+                Log.Write("선택 가공", $"LAYER_THRUHOLE: 소켓 {nSocket + 1}은 선택되지 않음 → SKIP");
+                //nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                //return nNextStep;
+            }
+
+            if (!workStage.IsCurrentSocketSelected(LayerType.LAYER_MARKING, nSocket))
+            {
+                Log.Write("선택 가공", $"LAYER_MARKING: 소켓 {nSocket + 1}은 선택되지 않음 → SKIP");
+                //nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                //return nNextStep;
+            }
+
             return;
 
             int m_nMainWorkCycle_ResultOKNG = 1;
@@ -4319,7 +4396,6 @@ namespace SLD200_MSL
 
             return;
 
-            int nSocket = 0;
             nSocket = 0;
 
             m_LayerType = LayerType.LAYER_MARKING;

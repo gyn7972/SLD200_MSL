@@ -765,6 +765,21 @@ namespace QMC.Common.VisionPart
             byte[] pixelData = new byte[imageRaw.Length];
             byte[,] image = new byte[w, h];
             int nSum = 0;
+
+
+            // 1. 폴더 생성 (날짜 기준)
+            string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+            string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
+            if (!Directory.Exists(baseDir))
+                Directory.CreateDirectory(baseDir);
+
+            // 2. 초기 원본 이미지 저장
+            //string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+            string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
+            IsImageSave = false;
+            SaveImage(pixelData, w, h, rawImagePath);
+
             for (int y = 0; y < h; y++)
             {
                 for (int x = 0; x < w; x++)
