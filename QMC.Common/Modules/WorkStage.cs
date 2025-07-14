@@ -35743,7 +35743,7 @@ namespace QMC.Common.Modules
                     break;
 
 
-                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change:                        //  Outline 가공이 없을 경우 Hole1 의 Laser Power 로 변경 
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change:                        //  ThruHole 가공이 없을 경우 Hole1 의 Laser Power 로 변경 
 
                     double m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
 
@@ -35777,7 +35777,7 @@ namespace QMC.Common.Modules
                     }
                     break;
 
-                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck:                     //  Outline 가공이 없을 경우 Hole1 의 Laser Power 로 변경 확인 완료
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck:                     //  ThruHole 가공이 없을 경우 Hole1 의 Laser Power 로 변경 확인 완료
 
                     if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
                         (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
@@ -35950,24 +35950,16 @@ namespace QMC.Common.Modules
                             case (int)ObjectType.OBJECT_POLY:
                                 LaserDrillingStepOutLine_ScannerOnly_ListData_AddPoli();
                                 break;
-
-
                             case (int)ObjectType.OBJECT_CIR:
                                 LaserDrillingStepOutLine_ScannerOnly_ListData_AddCircle();
 
                                 break;
-
-
                             case (int)ObjectType.OBJECT_RECT:
                                 LaserDrillingStepOutLine_ScannerOnly_ListData_AddRect();
                                 break;
-
-
                             case (int)ObjectType.OBJECT_LINE:
                                 LaserDrillingStepOutLine_ScannerOnly_ListData_AddLine();
                                 break;
-
-
                             case (int)ObjectType.OBJECT_ARC:
                                 LaserDrillingStepOutLine_ScannerOnly_ListData_AddArc();
                                 break;
