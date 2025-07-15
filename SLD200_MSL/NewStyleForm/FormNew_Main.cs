@@ -3219,6 +3219,7 @@ namespace SLD200_MSL
         
         private async  void button_TEST12_Click(object sender, EventArgs e)
         {
+            return;
             workStage.SetStageComplete(WorkStage.SemiAutoStep.PreAlign, true);
 
             return;
@@ -4318,6 +4319,7 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            return;
             workStage.SetStageComplete(WorkStage.SemiAutoStep.PreAlign, false);
             workStage.SetSemiAutoRequest(WorkStage.SemiAutoStep.PreAlign);
 
