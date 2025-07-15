@@ -41872,7 +41872,7 @@ namespace QMC.Common.Modules
                            (m_nSocketNum_forFailedSocket_Align != -1) &&
                             m_bRetryAlignSucess == false)            //  가공을 건너 뛴 Socket 이 있고, 건너 뛴 Socket 보정을 위한 Align Socket 위치 번호가 있을 경우
                         {
-                            string m_strTemp = string.Format("Socket Align 실패한 Socket 이 있음. Align 재시도를 위한 Socket 번호 : {0}", m_nSocketNum_forFailedSocket_Align);
+                            string m_strTemp = string.Format("Socket Align 실패한 Socket 이 있음. Align 재시도를 위한 Socket 번호1 : {0}", m_nSocketNum_forFailedSocket_Align);
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
                             nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;                 //  분할 영역 Drilling 작업 시작
@@ -41900,7 +41900,7 @@ namespace QMC.Common.Modules
                             {
                                 m_nSocketNum_forFailedSocket_Align = closestAlignedSocket;
                                 nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                                string m_strTemp = string.Format("Socket Align 실패한 Socket 이 있음. Align 재시도를 위한 Socket 번호 : {0}", m_nSocketNum_forFailedSocket_Align);
+                                string m_strTemp = string.Format("Socket Align 실패한 Socket 이 있음. Align 재시도를 위한 Socket 번호2 : {0}", m_nSocketNum_forFailedSocket_Align);
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                             }
                             else
@@ -41940,7 +41940,7 @@ namespace QMC.Common.Modules
                             {
                                 m_nSocketNum_forFailedSocket_Align = closestAlignedSocket;
                                 nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                                string m_strTemp = string.Format("Socket Align 실패한 Socket 이 있음. Align 재시도를 위한 Socket 번호 : {0}", m_nSocketNum_forFailedSocket_Align);
+                                string m_strTemp = string.Format("Socket Align 실패한 Socket 이 있음. Align 재시도를 위한 Socket 번호3 : {0}", m_nSocketNum_forFailedSocket_Align);
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                             }
                             else
@@ -42749,7 +42749,6 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, " +
                                   "가공할 영역이 남아 있지 않음. 다음 Hole Layer 가 있음. 파라미터 변경하여 가공하러 이동");
-
 
                         if (Equipment.SelectRunEnable_New)
                         {
