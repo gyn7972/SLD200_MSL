@@ -158,6 +158,7 @@
             this.button_Recipe_GoldPowder_Fiducial_FindCount.TabIndex = 234;
             this.button_Recipe_GoldPowder_Fiducial_FindCount.Text = "#";
             this.button_Recipe_GoldPowder_Fiducial_FindCount.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_Fiducial_FindCount.Visible = false;
             // 
             // label_Recipe_GoldPowder_Fiducial_FindCount
             // 
@@ -192,6 +193,7 @@
             this.button_Recipe_GoldPowder_Fiducial_MaxInstance.TabIndex = 231;
             this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Text = "#";
             this.button_Recipe_GoldPowder_Fiducial_MaxInstance.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Visible = false;
             // 
             // label_Recipe_GoldPowder_Fiducial_MaxInstance
             // 
@@ -374,6 +376,7 @@
             this.button_Recipe_GoldPowder_Fiducial_CircleScore.TabIndex = 228;
             this.button_Recipe_GoldPowder_Fiducial_CircleScore.Text = "#";
             this.button_Recipe_GoldPowder_Fiducial_CircleScore.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_Fiducial_CircleScore.Visible = false;
             // 
             // button_Recipe_GoldPowder_Fiducial_Search
             // 
@@ -419,6 +422,7 @@
             this.button_Recipe_GoldPowder_Fiducial_CicleSpec.TabIndex = 211;
             this.button_Recipe_GoldPowder_Fiducial_CicleSpec.Text = "#";
             this.button_Recipe_GoldPowder_Fiducial_CicleSpec.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_Fiducial_CicleSpec.Visible = false;
             // 
             // textBox_Recipe_GoldPowder_Fiducial_CircleSpec
             // 
@@ -465,6 +469,7 @@
             this.button_Recipe_GoldPowder_Fiducial_CicleSize.TabIndex = 208;
             this.button_Recipe_GoldPowder_Fiducial_CicleSize.Text = "#";
             this.button_Recipe_GoldPowder_Fiducial_CicleSize.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_Fiducial_CicleSize.Visible = false;
             // 
             // groupBox_Recipe_GoldPowder_AxisZ_Setting
             // 
@@ -489,6 +494,7 @@
             this.button_Recipe_GoldPowder_AxisZ_Setting.TabIndex = 223;
             this.button_Recipe_GoldPowder_AxisZ_Setting.Text = "#";
             this.button_Recipe_GoldPowder_AxisZ_Setting.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_AxisZ_Setting.Visible = false;
             // 
             // label_Recipe_GoldPowder_AxisZ_Setting
             // 
@@ -840,6 +846,7 @@
             this.button_Recipe_GoldPowder_Illumin_value_Red.TabIndex = 36;
             this.button_Recipe_GoldPowder_Illumin_value_Red.Text = "#";
             this.button_Recipe_GoldPowder_Illumin_value_Red.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_Illumin_value_Red.Visible = false;
             // 
             // textBox_Recipe_GoldPowder_IlluminationValue_Red
             // 
@@ -893,6 +900,7 @@
             this.button_Recipe_GoldPowder_Illumin_value_IR.TabIndex = 28;
             this.button_Recipe_GoldPowder_Illumin_value_IR.Text = "#";
             this.button_Recipe_GoldPowder_Illumin_value_IR.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_Illumin_value_IR.Visible = false;
             // 
             // textBox_Recipe_GoldPowder_IlluminationValue_IR
             // 

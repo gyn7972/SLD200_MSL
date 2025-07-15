@@ -362,6 +362,7 @@
             this.button_RecipeVision_Illumin_value_Red.TabIndex = 36;
             this.button_RecipeVision_Illumin_value_Red.Text = "#";
             this.button_RecipeVision_Illumin_value_Red.UseVisualStyleBackColor = true;
+            this.button_RecipeVision_Illumin_value_Red.Visible = false;
             // 
             // textBox_RecipeVision_IlluminationValue_Red
             // 
@@ -414,6 +415,7 @@
             this.button_RecipeVision_Illumin_value_IR.TabIndex = 28;
             this.button_RecipeVision_Illumin_value_IR.Text = "#";
             this.button_RecipeVision_Illumin_value_IR.UseVisualStyleBackColor = true;
+            this.button_RecipeVision_Illumin_value_IR.Visible = false;
             // 
             // textBox_RecipeVision_IlluminationValue_IR
             // 
@@ -570,6 +572,7 @@
             this.button_KeypadCall_RecipeVision_JogMove_StepSize.TabIndex = 76;
             this.button_KeypadCall_RecipeVision_JogMove_StepSize.Text = "#";
             this.button_KeypadCall_RecipeVision_JogMove_StepSize.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_RecipeVision_JogMove_StepSize.Visible = false;
             // 
             // textBox_RecipeVision_JogMove_StepSize
             // 
@@ -1100,6 +1103,7 @@
             this.button_RecipeVision_Circle_Size.TabIndex = 36;
             this.button_RecipeVision_Circle_Size.Text = "#";
             this.button_RecipeVision_Circle_Size.UseVisualStyleBackColor = true;
+            this.button_RecipeVision_Circle_Size.Visible = false;
             // 
             // textBox_RecipeVision_Circle_Size
             // 
@@ -1145,6 +1149,7 @@
             this.button_RecipeVision_Circle_Spec.TabIndex = 205;
             this.button_RecipeVision_Circle_Spec.Text = "#";
             this.button_RecipeVision_Circle_Spec.UseVisualStyleBackColor = true;
+            this.button_RecipeVision_Circle_Spec.Visible = false;
             // 
             // textBox_RecipeVision_Circle_Spec
             // 
@@ -1179,6 +1184,7 @@
             this.button_Recipe_Fiducial_CicleSpec.TabIndex = 211;
             this.button_Recipe_Fiducial_CicleSpec.Text = "#";
             this.button_Recipe_Fiducial_CicleSpec.UseVisualStyleBackColor = true;
+            this.button_Recipe_Fiducial_CicleSpec.Visible = false;
             // 
             // textBox_Recipe_Fiducial_CircleSpec
             // 
@@ -1213,6 +1219,7 @@
             this.button_Recipe_Fiducial_CicleSize.TabIndex = 208;
             this.button_Recipe_Fiducial_CicleSize.Text = "#";
             this.button_Recipe_Fiducial_CicleSize.UseVisualStyleBackColor = true;
+            this.button_Recipe_Fiducial_CicleSize.Visible = false;
             // 
             // textBox_Recipe_Fiducial_CircleSize
             // 
@@ -1328,6 +1335,7 @@
             this.button_RecipeVision_Circle_Score.TabIndex = 208;
             this.button_RecipeVision_Circle_Score.Text = "#";
             this.button_RecipeVision_Circle_Score.UseVisualStyleBackColor = true;
+            this.button_RecipeVision_Circle_Score.Visible = false;
             // 
             // ImageViewer_RecipeVision_Lows
             // 
@@ -1923,6 +1931,7 @@
             this.button_Recipe_Fiducial_CircleScore.TabIndex = 228;
             this.button_Recipe_Fiducial_CircleScore.Text = "#";
             this.button_Recipe_Fiducial_CircleScore.UseVisualStyleBackColor = true;
+            this.button_Recipe_Fiducial_CircleScore.Visible = false;
             // 
             // button_Recipe_Fiducial_Search
             // 
@@ -2126,6 +2135,7 @@
             this.button_RecipeVision_AxisZ_Setting.TabIndex = 223;
             this.button_RecipeVision_AxisZ_Setting.Text = "#";
             this.button_RecipeVision_AxisZ_Setting.UseVisualStyleBackColor = true;
+            this.button_RecipeVision_AxisZ_Setting.Visible = false;
             this.button_RecipeVision_AxisZ_Setting.Click += new System.EventHandler(this.button_RecipeVision_AxisZ_Setting_Click);
             // 
             // label_RecipeVision_AxisZ_Setting

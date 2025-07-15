@@ -1815,8 +1815,24 @@ namespace SLD200_MSL
                 workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
 
                 //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+                //공용척 사용시.
+                double dScannerCalTeachingPosX = 0.0;
+                double dScannerCalTeachingPosY = 0.0;
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                {
+                    dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                    dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                }
+                else
+                {
+                    dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                    dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+                }
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += dScannerCalTeachingPosX;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += dScannerCalTeachingPosY;
+                //기존코드
+                //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+                //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
                 //  데이터 위치를 Fine 카메라 위치로 변경
                 workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
@@ -1872,7 +1888,6 @@ namespace SLD200_MSL
         private void button_VisionPopup_WorkStage_StageCenter_To_ScannerCenter_Click(object sender, EventArgs e)
         {
             //  Stage Center 위치를 Scanner Center 위치로 이동
-
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
             double lfVelocity_Z = 0.0f;
@@ -1889,36 +1904,17 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "Stage 를 가공 위치로 보내시겠습니까?"))
                 return;
 
-            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
-                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || 
+                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || 
+                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || 
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || 
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
                 return;
             }
-
-            ////  StageZ 한계위치 설정되어 있는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
-            //    return;
-            //}
-
-            ////  StageZ 한계위치를 초과하여 이동하는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이를 초과하여 이동하려고 하였습니다.\r\n\r\n[ Cancel ]");
-            //    return;
-            //}
-
-            ////  맵 데이터를 이원화 할 경우
-            //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
-            //{
-            //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
-            //}
-
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  맵 데이터 변경 (기준위치 : Scanner)
@@ -1927,43 +1923,47 @@ namespace SLD200_MSL
             workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-            //  속도 설정
-            if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
+            //기존 코드
             {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                //if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
+                //{
+                //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
 
-                lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                //    lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                //    lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                //}
+                //else
+                //{
+                //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                //    //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
+                //    //lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
+                //    //lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
+                //    lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                //    lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                //}
+                //xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                //xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z,
+                //                                lfVelocity_Z, lfAccDec_Z, lfAccDec_Z);
             }
-            else
-            {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
-                //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
-                //lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
-                //lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
-                lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-            }
+            Equipment.Type_Motor_Speed motor_Speed;
+            motor_Speed = Equipment.Type_Motor_Speed.Coarse;
+            int nTeachingPosIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos;
+            workStage.MovetoWorkStage_TeachingPositionsXY(nTeachingPosIndex, motor_Speed);
 
-            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,
-            //                                lfVelocity, lfAccDec, lfAccDec);
-            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,
-            //                                lfVelocity, lfAccDec, lfAccDec);
+            nTeachingPosIndex = (int)Vision.Vision_TeachingPosList.Laser_FocusPos;
+            motor_Speed = Equipment.Type_Motor_Speed.Fine;
+            workStage.MovetoWorkStage_TeachingPositionsZ(nTeachingPosIndex, motor_Speed);
 
-            xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-            xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+            workStage.Camera_HighRes.StopLive();
+            workStage.Camera_LowRes.StopLive();
 
 
-
-
-            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-            workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z,
-                                            lfVelocity_Z, lfAccDec_Z, lfAccDec_Z);
 
         }
 
@@ -2677,8 +2677,23 @@ namespace SLD200_MSL
                 workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
 
                 //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+                //공용척 사용시.
+                double dScannerCalTeachingPosX = 0.0;
+                double dScannerCalTeachingPosY = 0.0;
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                {
+                    dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                    dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                }
+                else
+                {
+                    dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                    dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+                }
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += dScannerCalTeachingPosX;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += dScannerCalTeachingPosY;
+                //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+                //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
                 //  데이터 위치를 Fine 카메라 위치로 변경
                 workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;

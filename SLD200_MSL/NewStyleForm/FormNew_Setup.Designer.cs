@@ -428,6 +428,25 @@
             this.label_FlatMeasX_1 = new System.Windows.Forms.Label();
             this.button_Setup_Flatness_MeasurementPosition1_Get = new System.Windows.Forms.Button();
             this.tabPage_Setup_Option = new System.Windows.Forms.TabPage();
+            this.groupBox19 = new System.Windows.Forms.GroupBox();
+            this.textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL = new System.Windows.Forms.TextBox();
+            this.label99 = new System.Windows.Forms.Label();
+            this.button20 = new System.Windows.Forms.Button();
+            this.textBox_Setup_Option_OffsetDistance_Loading_Y_MSL = new System.Windows.Forms.TextBox();
+            this.label98 = new System.Windows.Forms.Label();
+            this.button19 = new System.Windows.Forms.Button();
+            this.textBox_Setup_Option_OffsetDistance_Unloading_X_MSL = new System.Windows.Forms.TextBox();
+            this.label97 = new System.Windows.Forms.Label();
+            this.button18 = new System.Windows.Forms.Button();
+            this.textBox_Setup_Option_OffsetDistance_Loading_X_MSL = new System.Windows.Forms.TextBox();
+            this.label90 = new System.Windows.Forms.Label();
+            this.button17 = new System.Windows.Forms.Button();
+            this.label88 = new System.Windows.Forms.Label();
+            this.button15 = new System.Windows.Forms.Button();
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL = new System.Windows.Forms.TextBox();
+            this.label89 = new System.Windows.Forms.Label();
+            this.button16 = new System.Windows.Forms.Button();
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL = new System.Windows.Forms.TextBox();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.richTextBox_Recipe_TabRecipe_DrawingFileFolder = new System.Windows.Forms.RichTextBox();
             this.groupBox_Recipe_File_Path = new System.Windows.Forms.GroupBox();
@@ -636,6 +655,7 @@
             this.tabPage_Setup_FlatnessMeasurement.SuspendLayout();
             this.groupBox18.SuspendLayout();
             this.tabPage_Setup_Option.SuspendLayout();
+            this.groupBox19.SuspendLayout();
             this.groupBox16.SuspendLayout();
             this.groupBox_Recipe_File_Path.SuspendLayout();
             this.groupBox14.SuspendLayout();
@@ -782,6 +802,7 @@
             this.button_KeypadCall_Setup_Communication_TCPIP_IP.TabIndex = 51;
             this.button_KeypadCall_Setup_Communication_TCPIP_IP.Text = "#";
             this.button_KeypadCall_Setup_Communication_TCPIP_IP.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Setup_Communication_TCPIP_IP.Visible = false;
             // 
             // label_Setup_Communication_TCPIP_IP
             // 
@@ -814,6 +835,7 @@
             this.button_KeypadCall_Setup_Communication_TCPIP_Port.TabIndex = 48;
             this.button_KeypadCall_Setup_Communication_TCPIP_Port.Text = "#";
             this.button_KeypadCall_Setup_Communication_TCPIP_Port.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Setup_Communication_TCPIP_Port.Visible = false;
             // 
             // textBox_Setup_Communication_TCPIP_Port
             // 
@@ -979,6 +1001,7 @@
             this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.TabIndex = 57;
             this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.Text = "#";
             this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.Visible = false;
             // 
             // button_KeypadCall_Setup_Communication_RS232_Timeout
             // 
@@ -990,6 +1013,7 @@
             this.button_KeypadCall_Setup_Communication_RS232_Timeout.TabIndex = 56;
             this.button_KeypadCall_Setup_Communication_RS232_Timeout.Text = "#";
             this.button_KeypadCall_Setup_Communication_RS232_Timeout.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Setup_Communication_RS232_Timeout.Visible = false;
             // 
             // label185
             // 
@@ -3551,6 +3575,7 @@
             this.button_Setup_ScannerCal_Illumin_value.TabIndex = 28;
             this.button_Setup_ScannerCal_Illumin_value.Text = "#";
             this.button_Setup_ScannerCal_Illumin_value.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_Illumin_value.Visible = false;
             // 
             // textBox_Setup_ScannerCal_IlluminationValue
             // 
@@ -3984,6 +4009,7 @@
             this.button_Setup_ScannerCal_VisionZOffset.TabIndex = 158;
             this.button_Setup_ScannerCal_VisionZOffset.Text = "#";
             this.button_Setup_ScannerCal_VisionZOffset.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_VisionZOffset.Visible = false;
             // 
             // label_Recipe_TabRecipe_Miscellaneous_Mask
             // 
@@ -4061,6 +4087,7 @@
             this.button_Setup_ScannerCal_CalAreaWidth.TabIndex = 152;
             this.button_Setup_ScannerCal_CalAreaWidth.Text = "#";
             this.button_Setup_ScannerCal_CalAreaWidth.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_CalAreaWidth.Visible = false;
             // 
             // button_Setup_ScannerCal_PulseWidth
             // 
@@ -4072,6 +4099,7 @@
             this.button_Setup_ScannerCal_PulseWidth.TabIndex = 151;
             this.button_Setup_ScannerCal_PulseWidth.Text = "#";
             this.button_Setup_ScannerCal_PulseWidth.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_PulseWidth.Visible = false;
             // 
             // label_Setup_ScannerCal_PulseWidth
             // 
@@ -4140,6 +4168,7 @@
             this.button_Setup_ScannerCal_CalPitch.TabIndex = 143;
             this.button_Setup_ScannerCal_CalPitch.Text = "#";
             this.button_Setup_ScannerCal_CalPitch.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_CalPitch.Visible = false;
             // 
             // textBox_Setup_ScannerCal_CalAreaHeight
             // 
@@ -4162,6 +4191,7 @@
             this.button_Setup_ScannerCal_CalAreaHeight.TabIndex = 140;
             this.button_Setup_ScannerCal_CalAreaHeight.Text = "#";
             this.button_Setup_ScannerCal_CalAreaHeight.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_CalAreaHeight.Visible = false;
             // 
             // textBox_Setup_ScannerCal_CalAreaWidth
             // 
@@ -4195,6 +4225,7 @@
             this.button_Setup_ScannerCal_PolygonDelay.TabIndex = 134;
             this.button_Setup_ScannerCal_PolygonDelay.Text = "#";
             this.button_Setup_ScannerCal_PolygonDelay.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_PolygonDelay.Visible = false;
             // 
             // label_Setup_ScannerCal_PolygonDelay
             // 
@@ -4228,6 +4259,7 @@
             this.button_Setup_ScannerCal_JumpDelay.TabIndex = 131;
             this.button_Setup_ScannerCal_JumpDelay.Text = "#";
             this.button_Setup_ScannerCal_JumpDelay.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_JumpDelay.Visible = false;
             // 
             // label_Setup_ScannerCal_JumpDelay
             // 
@@ -4261,6 +4293,7 @@
             this.button_Setup_ScannerCal_MarkDelay.TabIndex = 128;
             this.button_Setup_ScannerCal_MarkDelay.Text = "#";
             this.button_Setup_ScannerCal_MarkDelay.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_MarkDelay.Visible = false;
             // 
             // label_Setup_ScannerCal_MarkDelay
             // 
@@ -4294,6 +4327,7 @@
             this.button_Setup_ScannerCal_LaserOffDelay.TabIndex = 125;
             this.button_Setup_ScannerCal_LaserOffDelay.Text = "#";
             this.button_Setup_ScannerCal_LaserOffDelay.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_LaserOffDelay.Visible = false;
             // 
             // label_Setup_ScannerCal_LaserOffDelay
             // 
@@ -4327,6 +4361,7 @@
             this.button_Setup_ScannerCal_LaserOnDelay.TabIndex = 122;
             this.button_Setup_ScannerCal_LaserOnDelay.Text = "#";
             this.button_Setup_ScannerCal_LaserOnDelay.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_LaserOnDelay.Visible = false;
             // 
             // label_Setup_ScannerCal_LaserOnDelay
             // 
@@ -4371,6 +4406,7 @@
             this.button_Setup_ScannerCal_CrossMarkLength.TabIndex = 118;
             this.button_Setup_ScannerCal_CrossMarkLength.Text = "#";
             this.button_Setup_ScannerCal_CrossMarkLength.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_CrossMarkLength.Visible = false;
             // 
             // button_Setup_ScannerCal_JumpSpeed
             // 
@@ -4382,6 +4418,7 @@
             this.button_Setup_ScannerCal_JumpSpeed.TabIndex = 116;
             this.button_Setup_ScannerCal_JumpSpeed.Text = "#";
             this.button_Setup_ScannerCal_JumpSpeed.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_JumpSpeed.Visible = false;
             // 
             // label_Setup_ScannerCal_JumpSpeed
             // 
@@ -4404,6 +4441,7 @@
             this.button_Setup_ScannerCal_MarkingSpeed.TabIndex = 113;
             this.button_Setup_ScannerCal_MarkingSpeed.Text = "#";
             this.button_Setup_ScannerCal_MarkingSpeed.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_MarkingSpeed.Visible = false;
             // 
             // label_Setup_ScannerCal_MarkingSpeed
             // 
@@ -4448,6 +4486,7 @@
             this.button_Setup_ScannerCal_LaserEnergy.TabIndex = 63;
             this.button_Setup_ScannerCal_LaserEnergy.Text = "#";
             this.button_Setup_ScannerCal_LaserEnergy.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_LaserEnergy.Visible = false;
             // 
             // label_Setup_ScannerCal_LaserEnergy
             // 
@@ -4481,6 +4520,7 @@
             this.button_Setup_ScannerCal_LaserFrequency.TabIndex = 54;
             this.button_Setup_ScannerCal_LaserFrequency.Text = "#";
             this.button_Setup_ScannerCal_LaserFrequency.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_LaserFrequency.Visible = false;
             // 
             // label_Setup_ScannerCal_LaserFrequency
             // 
@@ -5664,6 +5704,7 @@
             // 
             // tabPage_Setup_Option
             // 
+            this.tabPage_Setup_Option.Controls.Add(this.groupBox19);
             this.tabPage_Setup_Option.Controls.Add(this.groupBox16);
             this.tabPage_Setup_Option.Controls.Add(this.groupBox_Recipe_File_Path);
             this.tabPage_Setup_Option.Controls.Add(this.groupBox14);
@@ -5683,6 +5724,238 @@
             this.tabPage_Setup_Option.TabIndex = 3;
             this.tabPage_Setup_Option.Text = "Option";
             this.tabPage_Setup_Option.UseVisualStyleBackColor = true;
+            // 
+            // groupBox19
+            // 
+            this.groupBox19.Controls.Add(this.textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL);
+            this.groupBox19.Controls.Add(this.label99);
+            this.groupBox19.Controls.Add(this.button20);
+            this.groupBox19.Controls.Add(this.textBox_Setup_Option_OffsetDistance_Loading_Y_MSL);
+            this.groupBox19.Controls.Add(this.label98);
+            this.groupBox19.Controls.Add(this.button19);
+            this.groupBox19.Controls.Add(this.textBox_Setup_Option_OffsetDistance_Unloading_X_MSL);
+            this.groupBox19.Controls.Add(this.label97);
+            this.groupBox19.Controls.Add(this.button18);
+            this.groupBox19.Controls.Add(this.textBox_Setup_Option_OffsetDistance_Loading_X_MSL);
+            this.groupBox19.Controls.Add(this.label90);
+            this.groupBox19.Controls.Add(this.button17);
+            this.groupBox19.Controls.Add(this.label88);
+            this.groupBox19.Controls.Add(this.button15);
+            this.groupBox19.Controls.Add(this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL);
+            this.groupBox19.Controls.Add(this.label89);
+            this.groupBox19.Controls.Add(this.button16);
+            this.groupBox19.Controls.Add(this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL);
+            this.groupBox19.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.groupBox19.Location = new System.Drawing.Point(1391, 432);
+            this.groupBox19.Name = "groupBox19";
+            this.groupBox19.Size = new System.Drawing.Size(475, 211);
+            this.groupBox19.TabIndex = 84;
+            this.groupBox19.TabStop = false;
+            this.groupBox19.Text = "groupBox19";
+            // 
+            // textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL
+            // 
+            this.textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Location = new System.Drawing.Point(338, 173);
+            this.textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Name = "textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL";
+            this.textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.TabIndex = 94;
+            this.textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.00000";
+            this.textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Text = "0.0";
+            // 
+            // label99
+            // 
+            this.label99.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label99.Location = new System.Drawing.Point(5, 172);
+            this.label99.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label99.Name = "label99";
+            this.label99.Size = new System.Drawing.Size(335, 24);
+            this.label99.TabIndex = 93;
+            this.label99.Text = "To UnLoading_MSL [Y] :";
+            this.label99.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button20
+            // 
+            this.button20.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button20.Location = new System.Drawing.Point(432, 173);
+            this.button20.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button20.Name = "button20";
+            this.button20.Size = new System.Drawing.Size(35, 25);
+            this.button20.TabIndex = 95;
+            this.button20.Text = "#";
+            this.button20.UseVisualStyleBackColor = true;
+            this.button20.Visible = false;
+            // 
+            // textBox_Setup_Option_OffsetDistance_Loading_Y_MSL
+            // 
+            this.textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Location = new System.Drawing.Point(338, 111);
+            this.textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Name = "textBox_Setup_Option_OffsetDistance_Loading_Y_MSL";
+            this.textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.TabIndex = 91;
+            this.textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.00000";
+            this.textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Text = "0.0";
+            // 
+            // label98
+            // 
+            this.label98.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label98.Location = new System.Drawing.Point(5, 110);
+            this.label98.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label98.Name = "label98";
+            this.label98.Size = new System.Drawing.Size(335, 24);
+            this.label98.TabIndex = 90;
+            this.label98.Text = "To Loading_MSL [Y] :";
+            this.label98.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button19
+            // 
+            this.button19.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button19.Location = new System.Drawing.Point(432, 111);
+            this.button19.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button19.Name = "button19";
+            this.button19.Size = new System.Drawing.Size(35, 25);
+            this.button19.TabIndex = 92;
+            this.button19.Text = "#";
+            this.button19.UseVisualStyleBackColor = true;
+            this.button19.Visible = false;
+            // 
+            // textBox_Setup_Option_OffsetDistance_Unloading_X_MSL
+            // 
+            this.textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Location = new System.Drawing.Point(338, 143);
+            this.textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Name = "textBox_Setup_Option_OffsetDistance_Unloading_X_MSL";
+            this.textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.TabIndex = 88;
+            this.textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.00000";
+            this.textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Text = "0.0";
+            // 
+            // label97
+            // 
+            this.label97.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label97.Location = new System.Drawing.Point(5, 142);
+            this.label97.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label97.Name = "label97";
+            this.label97.Size = new System.Drawing.Size(335, 24);
+            this.label97.TabIndex = 87;
+            this.label97.Text = "To UnLoading_MSL [X] :";
+            this.label97.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button18
+            // 
+            this.button18.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button18.Location = new System.Drawing.Point(432, 143);
+            this.button18.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button18.Name = "button18";
+            this.button18.Size = new System.Drawing.Size(35, 25);
+            this.button18.TabIndex = 89;
+            this.button18.Text = "#";
+            this.button18.UseVisualStyleBackColor = true;
+            this.button18.Visible = false;
+            // 
+            // textBox_Setup_Option_OffsetDistance_Loading_X_MSL
+            // 
+            this.textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Location = new System.Drawing.Point(338, 83);
+            this.textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Name = "textBox_Setup_Option_OffsetDistance_Loading_X_MSL";
+            this.textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_Option_OffsetDistance_Loading_X_MSL.TabIndex = 85;
+            this.textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.00000";
+            this.textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Text = "0.0";
+            // 
+            // label90
+            // 
+            this.label90.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label90.Location = new System.Drawing.Point(5, 82);
+            this.label90.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label90.Name = "label90";
+            this.label90.Size = new System.Drawing.Size(335, 24);
+            this.label90.TabIndex = 84;
+            this.label90.Text = "To Loading_MSL [X] :";
+            this.label90.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button17
+            // 
+            this.button17.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button17.Location = new System.Drawing.Point(432, 83);
+            this.button17.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(35, 25);
+            this.button17.TabIndex = 86;
+            this.button17.Text = "#";
+            this.button17.UseVisualStyleBackColor = true;
+            this.button17.Visible = false;
+            // 
+            // label88
+            // 
+            this.label88.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label88.Location = new System.Drawing.Point(5, 53);
+            this.label88.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label88.Name = "label88";
+            this.label88.Size = new System.Drawing.Size(335, 24);
+            this.label88.TabIndex = 81;
+            this.label88.Text = "From Stage Origin Pos. To Scanner Center_MSL [Y] :";
+            this.label88.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button15
+            // 
+            this.button15.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button15.Location = new System.Drawing.Point(432, 54);
+            this.button15.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(35, 25);
+            this.button15.TabIndex = 83;
+            this.button15.Text = "#";
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Visible = false;
+            // 
+            // textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL
+            // 
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Location = new System.Drawing.Point(338, 28);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Name = "textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL";
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.TabIndex = 79;
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.00000";
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Text = "0.0";
+            // 
+            // label89
+            // 
+            this.label89.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label89.Location = new System.Drawing.Point(5, 27);
+            this.label89.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label89.Name = "label89";
+            this.label89.Size = new System.Drawing.Size(335, 24);
+            this.label89.TabIndex = 78;
+            this.label89.Text = "From Stage Origin Pos. To Scanner Center_MSL [X] :";
+            this.label89.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button16
+            // 
+            this.button16.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button16.Location = new System.Drawing.Point(432, 28);
+            this.button16.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(35, 25);
+            this.button16.TabIndex = 80;
+            this.button16.Text = "#";
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Visible = false;
+            // 
+            // textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL
+            // 
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Location = new System.Drawing.Point(338, 54);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Name = "textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL";
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.TabIndex = 82;
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.00000";
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Text = "0.0";
             // 
             // groupBox16
             // 
@@ -5737,11 +6010,11 @@
             this.groupBox14.Controls.Add(this.label64);
             this.groupBox14.Controls.Add(this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition);
             this.groupBox14.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox14.Location = new System.Drawing.Point(1391, 582);
+            this.groupBox14.Location = new System.Drawing.Point(803, 256);
             this.groupBox14.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox14.Size = new System.Drawing.Size(475, 95);
+            this.groupBox14.Size = new System.Drawing.Size(415, 95);
             this.groupBox14.TabIndex = 64;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = " # CAUTION #      Laser Height Sensor Reference Value (mm) ";
@@ -5752,7 +6025,7 @@
             this.label63.Location = new System.Drawing.Point(10, 57);
             this.label63.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(367, 24);
+            this.label63.Size = new System.Drawing.Size(336, 24);
             this.label63.TabIndex = 73;
             this.label63.Text = "Laser Height Sensor Value at Scanner Focus Position :";
             this.label63.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -5760,10 +6033,10 @@
             // textBox_Setup_Option_ReferenceValue_atScannerFocusPosition
             // 
             this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Location = new System.Drawing.Point(383, 58);
+            this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Location = new System.Drawing.Point(346, 58);
             this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Name = "textBox_Setup_Option_ReferenceValue_atScannerFocusPosition";
-            this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Size = new System.Drawing.Size(82, 24);
+            this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Size = new System.Drawing.Size(60, 24);
             this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.TabIndex = 74;
             this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Text = "0.0";
@@ -5774,7 +6047,7 @@
             this.label64.Location = new System.Drawing.Point(10, 29);
             this.label64.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(367, 24);
+            this.label64.Size = new System.Drawing.Size(336, 24);
             this.label64.TabIndex = 70;
             this.label64.Text = "Laser Height Sensor Value at Vision Focus Position :";
             this.label64.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -5782,10 +6055,10 @@
             // textBox_Setup_Option_ReferenceValue_atVisionFocusPosition
             // 
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Location = new System.Drawing.Point(383, 30);
+            this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Location = new System.Drawing.Point(346, 30);
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Name = "textBox_Setup_Option_ReferenceValue_atVisionFocusPosition";
-            this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Size = new System.Drawing.Size(82, 24);
+            this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Size = new System.Drawing.Size(60, 24);
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.TabIndex = 71;
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.000";
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text = "0.0";
@@ -6677,11 +6950,11 @@
             this.groupBox9.Controls.Add(this.label49);
             this.groupBox9.Controls.Add(this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X);
             this.groupBox9.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox9.Location = new System.Drawing.Point(1391, 306);
+            this.groupBox9.Location = new System.Drawing.Point(1391, 294);
             this.groupBox9.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox9.Size = new System.Drawing.Size(475, 136);
+            this.groupBox9.Size = new System.Drawing.Size(475, 134);
             this.groupBox9.TabIndex = 59;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = " # CAUTION #      Offset Distance to the Center of the Scanner (mm) ";
@@ -6718,14 +6991,15 @@
             this.button9.TabIndex = 75;
             this.button9.Text = "#";
             this.button9.UseVisualStyleBackColor = true;
+            this.button9.Visible = false;
             // 
             // label48
             // 
             this.label48.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label48.Location = new System.Drawing.Point(10, 99);
+            this.label48.Location = new System.Drawing.Point(5, 99);
             this.label48.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(301, 24);
+            this.label48.Size = new System.Drawing.Size(335, 24);
             this.label48.TabIndex = 73;
             this.label48.Text = "From Stage Origin Pos. To Scanner Center [Y] :";
             this.label48.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -6733,10 +7007,10 @@
             // textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y
             // 
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Location = new System.Drawing.Point(314, 100);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Location = new System.Drawing.Point(338, 100);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Name = "textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y";
-            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Size = new System.Drawing.Size(114, 24);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Size = new System.Drawing.Size(90, 24);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.TabIndex = 74;
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.00000";
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text = "0.0";
@@ -6751,14 +7025,15 @@
             this.button11.TabIndex = 72;
             this.button11.Text = "#";
             this.button11.UseVisualStyleBackColor = true;
+            this.button11.Visible = false;
             // 
             // label49
             // 
             this.label49.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label49.Location = new System.Drawing.Point(10, 73);
+            this.label49.Location = new System.Drawing.Point(5, 73);
             this.label49.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(301, 24);
+            this.label49.Size = new System.Drawing.Size(335, 24);
             this.label49.TabIndex = 70;
             this.label49.Text = "From Stage Origin Pos. To Scanner Center [X] :";
             this.label49.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -6766,10 +7041,10 @@
             // textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X
             // 
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Location = new System.Drawing.Point(314, 74);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Location = new System.Drawing.Point(338, 74);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Name = "textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X";
-            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Size = new System.Drawing.Size(114, 24);
+            this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Size = new System.Drawing.Size(90, 24);
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.TabIndex = 71;
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Tag = "KeyPad;Min=-9999;Max=9999999;Format=0.00000";
             this.textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text = "0.0";
@@ -6815,6 +7090,7 @@
             this.button12.TabIndex = 75;
             this.button12.Text = "#";
             this.button12.UseVisualStyleBackColor = true;
+            this.button12.Visible = false;
             // 
             // label65
             // 
@@ -6860,6 +7136,7 @@
             this.button14.TabIndex = 72;
             this.button14.Text = "#";
             this.button14.UseVisualStyleBackColor = true;
+            this.button14.Visible = false;
             // 
             // label47
             // 
@@ -7033,7 +7310,7 @@
             this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_11x);
             this.groupBox17.Controls.Add(this.label81);
             this.groupBox17.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox17.Location = new System.Drawing.Point(1391, 452);
+            this.groupBox17.Location = new System.Drawing.Point(1391, 655);
             this.groupBox17.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox17.Name = "groupBox17";
             this.groupBox17.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
@@ -7277,6 +7554,7 @@
             this.button7.TabIndex = 69;
             this.button7.Text = "#";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Visible = false;
             // 
             // label40
             // 
@@ -7310,6 +7588,7 @@
             this.button6.TabIndex = 66;
             this.button6.Text = "#";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Visible = false;
             // 
             // label39
             // 
@@ -7343,6 +7622,7 @@
             this.button5.TabIndex = 63;
             this.button5.Text = "#";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Visible = false;
             // 
             // label38
             // 
@@ -7376,6 +7656,7 @@
             this.button4.TabIndex = 60;
             this.button4.Text = "#";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Visible = false;
             // 
             // label37
             // 
@@ -7409,6 +7690,7 @@
             this.button3.TabIndex = 57;
             this.button3.Text = "#";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Visible = false;
             // 
             // label36
             // 
@@ -7442,6 +7724,7 @@
             this.button1.TabIndex = 54;
             this.button1.Text = "#";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             // 
             // label35
             // 
@@ -7468,18 +7751,19 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button2.Location = new System.Drawing.Point(1747, 719);
+            this.button2.Location = new System.Drawing.Point(1272, 275);
             this.button2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(109, 64);
+            this.button2.Size = new System.Drawing.Size(109, 33);
             this.button2.TabIndex = 55;
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
             // 
             // button_Setup_Option_Save
             // 
             this.button_Setup_Option_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Option_Save.Location = new System.Drawing.Point(1614, 719);
+            this.button_Setup_Option_Save.Location = new System.Drawing.Point(1272, 312);
             this.button_Setup_Option_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Option_Save.Name = "button_Setup_Option_Save";
             this.button_Setup_Option_Save.Size = new System.Drawing.Size(109, 64);
@@ -7623,6 +7907,8 @@
             this.groupBox18.ResumeLayout(false);
             this.groupBox18.PerformLayout();
             this.tabPage_Setup_Option.ResumeLayout(false);
+            this.groupBox19.ResumeLayout(false);
+            this.groupBox19.PerformLayout();
             this.groupBox16.ResumeLayout(false);
             this.groupBox_Recipe_File_Path.ResumeLayout(false);
             this.groupBox14.ResumeLayout(false);
@@ -8204,5 +8490,24 @@
         private System.Windows.Forms.Panel panel_Setup_Communication_DeviceControl;
         private System.Windows.Forms.Button button_Setup_Communication_DeviceControl;
         private System.Windows.Forms.CheckBox checkBox_Setup_Option_PreAlign_First_Enable;
+        private System.Windows.Forms.Button button15;
+        private System.Windows.Forms.Label label88;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL;
+        private System.Windows.Forms.Button button16;
+        private System.Windows.Forms.Label label89;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL;
+        private System.Windows.Forms.GroupBox groupBox19;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetDistance_Unloading_X_MSL;
+        private System.Windows.Forms.Label label97;
+        private System.Windows.Forms.Button button18;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetDistance_Loading_X_MSL;
+        private System.Windows.Forms.Label label90;
+        private System.Windows.Forms.Button button17;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL;
+        private System.Windows.Forms.Label label99;
+        private System.Windows.Forms.Button button20;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetDistance_Loading_Y_MSL;
+        private System.Windows.Forms.Label label98;
+        private System.Windows.Forms.Button button19;
     }
 }

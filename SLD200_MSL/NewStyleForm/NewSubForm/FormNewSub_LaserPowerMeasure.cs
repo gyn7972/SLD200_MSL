@@ -424,7 +424,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 // LaserShutter_Close
                 workStage.workStageParameter.DO_BDS_PowerMeter_BW(false);
-                Thread.Sleep(100); // 잠시 대기
+                Thread.Sleep(200); // 잠시 대기
                 workStage.workStageParameter.DO_BDS_PowerMeter_FW(true);
 
                 // 셔터 닫힘 확인을 최대 5초간 반복 체크
@@ -457,7 +457,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 // LaserShutter_Open
                 workStage.workStageParameter.DO_BDS_PowerMeter_BW(true);
-                Thread.Sleep(100); // 잠시 대기
+                Thread.Sleep(200); // 잠시 대기
                 workStage.workStageParameter.DO_BDS_PowerMeter_FW(false);
 
                 // 셔터 닫힘 확인을 최대 5초간 반복 체크

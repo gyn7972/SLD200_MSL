@@ -77,6 +77,7 @@ using QMC.Common.Q_Sequence;
 using QMC.Common.Q_Config;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using static QMC.Common.Q_Sequence.Sequence_VerifyScannerCameraOffset;
+using System.Reflection;
 
 
 namespace QMC.Common.Modules
@@ -9541,6 +9542,7 @@ namespace QMC.Common.Modules
                 case (int)Home_Step.HomeStep_Vacuum_On:                                     //  각 Parts Vacuum On (Work Stage Vacuum On, EPRO On, M-Aligner On)
                     //  Work Stage Vacuum On
                     workStageParameter.DO_Stage_Blow(false);
+                    Thread.Sleep(100);
                     workStageParameter.DO_Stage_Vacuum(true);
 
                     //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
@@ -9591,6 +9593,7 @@ namespace QMC.Common.Modules
 
                         //  Work Stage Vacuum Off
                         workStageParameter.DO_Stage_Blow(false);
+                        Thread.Sleep(100);
                         workStageParameter.DO_Stage_Vacuum(false);
 
                         //  진공레귤레이터도 Off --> 한번에 꺼질란가???
@@ -9610,6 +9613,7 @@ namespace QMC.Common.Modules
 
                         //  Work Stage Vacuum Off
                         workStageParameter.DO_Stage_Blow(false);
+                        Thread.Sleep(100);
                         workStageParameter.DO_Stage_Vacuum(false);
 
                         //  진공레귤레이터도 Off --> 한번에 꺼질란가???
@@ -9630,6 +9634,7 @@ namespace QMC.Common.Modules
 
                         //  Work Stage Vacuum Off
                         workStageParameter.DO_Stage_Blow(false);
+                        Thread.Sleep(100);
                         workStageParameter.DO_Stage_Vacuum(false);
 
                         //  진공레귤레이터도 Off --> 한번에 꺼질란가???
@@ -9653,6 +9658,7 @@ namespace QMC.Common.Modules
 
                     //  Work Stage Vacuum Off
                     workStageParameter.DO_Stage_Blow(false);
+                    Thread.Sleep(100);
                     workStageParameter.DO_Stage_Vacuum(false);
 
                     //  진공레귤레이터도 Off --> 한번에 꺼질란가???
@@ -9681,6 +9687,7 @@ namespace QMC.Common.Modules
 
                     //  Work Stage Vacuum Off
                     workStageParameter.DO_Stage_Blow(false);
+                    Thread.Sleep(100);
                     workStageParameter.DO_Stage_Vacuum(false);
 
                     //  진공레귤레이터도 Off --> 요번엔 꺼질란가???
@@ -10654,47 +10661,48 @@ namespace QMC.Common.Modules
                 case (int)WorkStage_Move_Step.ToLoadingPos_StageXY_Move_LoadingPos:                            //  Stage XY 축, Module Loading 위치로 이동
 
                     Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Module Loading 위치로 이동 시작");
-                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Module_Loading");
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     //  맵 데이터 변경 (기준위치 : Scanner)
                     //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
                     //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-                    
-                    // 20250609 -> 이게 왜 이걸로 되어있지?
-                    //MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-
-                    //MapData_Stage_Scanner
                     MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
-
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ///
-                    //  Target Position 변경 : Module Loading 위치
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X;
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y;
 
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-                    //  속도 설정
-                    if (false)
-                    {
-                        lfVelocity = m_pProcessConfigData.nSpeedAxisX;
-                        lfAccDec = m_pProcessConfigData.nAccelAxisX;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-                    }
-
-                    xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
-                    xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
-
-                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
+                    int nPosIndex = (int)WorkStage_TeachingPosList.STAGE_LoadingPos;  //  Module Loading Pos Index
+                    xyInterpolatedCoordinate.X = stWorkStageTeachingPos[nPosIndex].Stage_X;
+                    xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[nPosIndex].Stage_Y;
+                    MovetoWorkStage_TeachingPositionsXY(nPosIndex, Type_Motor_Speed.Coarse);
                     TickCount_Start((int)TickType.TICK_STAGE_MOVE);
-
                     m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToLoadingPos_StageXY_Move_LoadingPos_DoneCheck;
+
+                    // 기존 코드
+                    {
+                        //// Target Position 변경 : Module Loading 위치
+                        //workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Module_Loading");
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X;
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y;
+
+                        ////  속도 설정
+                        //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                        ////  속도 설정
+                        //if (false)
+                        //{
+                        //    lfVelocity = m_pProcessConfigData.nSpeedAxisX;
+                        //    lfAccDec = m_pProcessConfigData.nAccelAxisX;
+                        //}
+                        //else
+                        //{
+                        //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                        //}
+                        //xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                        //xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                        //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                        //TickCount_Start((int)TickType.TICK_STAGE_MOVE);
+                        //m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToLoadingPos_StageXY_Move_LoadingPos_DoneCheck;
+                    }
                     break;
 
 
@@ -10829,32 +10837,45 @@ namespace QMC.Common.Modules
                 case (int)WorkStage_Move_Step.ToUnloadingPos_StageXY_Move_UnloadingPos:                            //  Stage XY 축, Module Unloading 위치로 이동
 
                     Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Module Unloading 위치로 이동 시작");
-
-                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Module_Unloading");
-
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     //  맵 데이터 변경 (기준위치 : Scanner)
                     //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
                     //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-                    MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                    MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    //  Target Position 변경 : Module Unloading 위치
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X;
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y;
-
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-                    xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
-                    xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
-
-                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
+                    nPosIndex = (int)WorkStage_TeachingPosList.STAGE_UnloadingPos;  //  Module Loading Pos Index
+                    xyInterpolatedCoordinate.X = stWorkStageTeachingPos[nPosIndex].Stage_X;
+                    xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[nPosIndex].Stage_Y;
+                    MovetoWorkStage_TeachingPositionsXY(nPosIndex, Type_Motor_Speed.Coarse);
                     TickCount_Start((int)TickType.TICK_STAGE_MOVE);
-
                     m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToUnloadingPos_StageXY_Move_UnloadingPos_DoneCheck;
+
+                    //  기존 코드
+                    {
+                        //workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Module_Unloading");
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        ////  맵 데이터 변경 (기준위치 : Scanner)
+                        ////  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+                        ////  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+                        //MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                        ////  Target Position 변경 : Module Unloading 위치
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X;
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y;
+
+                        ////  속도 설정
+                        //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                        //xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                        //xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                        //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                        //TickCount_Start((int)TickType.TICK_STAGE_MOVE);
+                        //m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToUnloadingPos_StageXY_Move_UnloadingPos_DoneCheck;
+                    }
                     break;
 
 
@@ -10992,31 +11013,33 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Scanner Center 위치로 이동 시작");
 
-                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    //  맵 데이터 변경 (기준위치 : Scanner)
-                    //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
-                    //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-                    MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                    //  Target Position 변경 : Module Unloading 위치
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-                    xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
-                    xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
-
-                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
+                    nPosIndex = (int)WorkStage_TeachingPosList.STAGE_ProcessingPos;  //  Module Loading Pos Index
+                    xyInterpolatedCoordinate.X = stWorkStageTeachingPos[nPosIndex].Stage_X;
+                    xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[nPosIndex].Stage_Y;
+                    MovetoWorkStage_TeachingPositionsXY(nPosIndex, Type_Motor_Speed.Coarse);
                     TickCount_Start((int)TickType.TICK_STAGE_MOVE);
-
                     m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToScannerCenterPos_StageXY_Move_StageScannerCenterPos_DoneCheck;
+
+                    //기존 코드
+                    {
+                        //workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        ////  맵 데이터 변경 (기준위치 : Scanner)
+                        ////  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+                        ////  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+                        //MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                        ////  속도 설정
+                        //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                        //xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                        //xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                        //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                        //TickCount_Start((int)TickType.TICK_STAGE_MOVE);
+                        //m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToScannerCenterPos_StageXY_Move_StageScannerCenterPos_DoneCheck;
+                    }
                     break;
 
 
@@ -14409,13 +14432,34 @@ namespace QMC.Common.Modules
                             //    Equipment.stOffsetDistance.FromAlignOffset.Y;
 
                             // 여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
+                            //공용척 사용시.
+                            double dScannerCalTeachingPosX = 0.0;
+                            double dScannerCalTeachingPosY = 0.0;
+                            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                            {
+                                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                            }
+                            else
+                            {
+                                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+                            }
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
-                                Equipment.StageOffset_forDrilling_X -
-                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                                dScannerCalTeachingPosX - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
-                                Equipment.StageOffset_forDrilling_Y -
-                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                                dScannerCalTeachingPosY - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
 
+                            //기존 코드
+                            {
+                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
+                                //Equipment.StageOffset_forDrilling_X -
+                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
+                                //    Equipment.StageOffset_forDrilling_Y -
+                                //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                            }
+                            
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width =
                                 Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height =
@@ -14509,12 +14553,33 @@ namespace QMC.Common.Modules
                                     Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
                                 //  여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
+                                //공용척 사용시.
+                                double dScannerCalTeachingPosX = 0.0;
+                                double dScannerCalTeachingPosY = 0.0;
+                                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                                {
+                                    dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                                    dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                                }
+                                else
+                                {
+                                    dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                                    dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+                                }
                                 m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
-                                    Equipment.StageOffset_forDrilling_X -
-                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                                    dScannerCalTeachingPosX - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
                                 m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
-                                    Equipment.StageOffset_forDrilling_Y -
-                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                                    dScannerCalTeachingPosY - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                                //기존 코드
+                                {
+                                    //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
+                                    //Equipment.StageOffset_forDrilling_X -
+                                    //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                                    //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
+                                    //    Equipment.StageOffset_forDrilling_Y -
+                                    //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                                }
+                                
 
                                 m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width =
                                     Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
@@ -15270,7 +15335,6 @@ namespace QMC.Common.Modules
                 }
                 for (int i = 0; i < maxSteps; i++)
                 {
-
                     if(Equipment.AutoManualStatus == false)
                     {
                         return 0;
@@ -15828,26 +15892,33 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 시작");
 
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
-                    xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-                    xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
+                    int nPosIndex = (int)WorkStage_TeachingPosList.STAGE_ProcessingPos;  //  Module Loading Pos Index
+                    xyInterpolatedCoordinate.X = stWorkStageTeachingPos[nPosIndex].Stage_X;
+                    xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[nPosIndex].Stage_Y;
+                    MovetoWorkStage_TeachingPositionsXY(nPosIndex, Type_Motor_Speed.Coarse);
                     TickCount_Start((int)TickType.TICK_MAIN);
-
                     m_nDryRun_Step = (int)DryRun_Step.StageXY_MoveCenterPos_DoneCheck;
+
+                    //  기존 코드
+                    {
+                        //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                        //xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                        //xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                        //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                        //TickCount_Start((int)TickType.TICK_MAIN);
+                        //m_nDryRun_Step = (int)DryRun_Step.StageXY_MoveCenterPos_DoneCheck;
+                    }
                     break;
 
 
                 case (int)DryRun_Step.StageXY_MoveCenterPos_DoneCheck:                 //  XY 축, Stage Center 위치로 이동 완료 체크           
 
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X) &&
                         MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 완료 확인");
 
@@ -16151,11 +16222,26 @@ namespace QMC.Common.Modules
                 }
             }
 
-            xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X;
-            xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y;
-            MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //  맵 데이터 변경 (기준위치 : Scanner)
+            //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+            //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+            MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            int nPosIndex = (int)WorkStage_TeachingPosList.STAGE_UnloadingPos;  //  Module Loading Pos Index
+            xyInterpolatedCoordinate.X = stWorkStageTeachingPos[nPosIndex].Stage_X;
+            xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[nPosIndex].Stage_Y;
+            MovetoWorkStage_TeachingPositionsXY(nPosIndex, Type_Motor_Speed.Coarse);
             TickCount_Start((int)TickType.TICK_MAIN);
+            
+            // 기존 코드
+            {
+                //xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X;
+                //xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y;
+                //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                //TickCount_Start((int)TickType.TICK_MAIN);
+            }
         }
 
 
@@ -17076,8 +17162,25 @@ namespace QMC.Common.Modules
 
             //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용.
             //  Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+            //공용척 사용시.
+            double dScannerCalTeachingPosX = 0.0;
+            double dScannerCalTeachingPosY = 0.0;
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+            }
+            else
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+            }
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += dScannerCalTeachingPosX;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += dScannerCalTeachingPosY;
+
+            //기존 코드
+            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  속도 설정
             if (true)
@@ -18103,8 +18206,25 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stOutLine_SocketData[m_nOutLine_SocketCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
 
             //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+            //공용척 사용시.
+            double dScannerCalTeachingPosX = 0.0;
+            double dScannerCalTeachingPosY = 0.0;
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+            }
+            else
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+            }
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += dScannerCalTeachingPosX;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += dScannerCalTeachingPosY;
+
+            //기존 코드
+            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  속도 설정
             if (true)
@@ -18490,8 +18610,25 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
             //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+            //공용척 사용시.
+            double dScannerCalTeachingPosX = 0.0;
+            double dScannerCalTeachingPosY = 0.0;
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+            }
+            else
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+            }
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += dScannerCalTeachingPosX;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += dScannerCalTeachingPosY;
+
+            //기존 코드
+            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  속도 설정
             if (true)
@@ -18847,23 +18984,34 @@ namespace QMC.Common.Modules
         private void LaserDrillingStepStageXYMoveCenterPosition(out double lfVelocity, out double lfAccDec)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 시작");
-
-            //  속도 설정
             lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
             lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //  맵 데이터 변경 (기준위치 : Scanner)
-            //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
-            //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+            int nPosIndex = (int)WorkStage_TeachingPosList.STAGE_ProcessingPos;  //  Module Loading Pos Index
+            xyInterpolatedCoordinate.X = stWorkStageTeachingPos[nPosIndex].Stage_X;
+            xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[nPosIndex].Stage_Y;
+            
             MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-            xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-            MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
+            MovetoWorkStage_TeachingPositionsXY(nPosIndex, Type_Motor_Speed.Coarse);
             TickCount_Start((int)TickType.TICK_MAIN);
+
+            // 기존 코드
+            {
+                //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ////  맵 데이터 변경 (기준위치 : Scanner)
+                ////  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+                ////  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+                //MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                //xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                //xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                //TickCount_Start((int)TickType.TICK_MAIN);
+            }
         }
 
         private void LaserDrillingStepMaskChange(out double lfVelocity, out double lfAccDec)
@@ -30524,6 +30672,7 @@ namespace QMC.Common.Modules
                     {
                         //상부 파워메타로 Shutter 사용 중?
                         workStageParameter.DO_BDS_PowerMeter_FW(true);
+                        Thread.Sleep(200);
                         workStageParameter.DO_BDS_PowerMeter_BW(false);
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Close_Check;
@@ -30707,6 +30856,7 @@ namespace QMC.Common.Modules
                     {
                         //상부 파워메타로 Shutter 사용 중?
                         workStageParameter.DO_BDS_PowerMeter_BW(true);
+                        Thread.Sleep(200);
                         workStageParameter.DO_BDS_PowerMeter_FW(false);
 
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
@@ -30928,7 +31078,15 @@ namespace QMC.Common.Modules
                     //StageXY_Move_CenterPos,
                     //StageXY_Move_CenterPos_Check,
                 case (int)ScannerCalibration_Step.StageXY_Move_CenterPos:
-                    MovetoWorkStage_TeachingPositionsXY((int)WorkStage_TeachingPosList.STAGE_ProcessingPos, Type_Motor_Speed.Coarse);
+
+                    int nPosIndex = (int)WorkStage_TeachingPosList.STAGE_ProcessingPos;  //  Module Loading Pos Index
+                    xyInterpolatedCoordinate.X = stWorkStageTeachingPos[nPosIndex].Stage_X;
+                    xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[nPosIndex].Stage_Y;
+                    MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+                    MovetoWorkStage_TeachingPositionsXY(nPosIndex, Type_Motor_Speed.Coarse);
+                    
+                    //MovetoWorkStage_TeachingPositionsXY((int)WorkStage_TeachingPosList.STAGE_ProcessingPos, Type_Motor_Speed.Coarse);
+
                     TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                     m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_CenterPos_Check;
                     break;
@@ -30960,8 +31118,20 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            dScannerCalTeachingPosX = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-                            dScannerCalTeachingPosY = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                            //공용척 사용시.
+                            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                            {
+                                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                            }
+                            else
+                            {
+                                dScannerCalTeachingPosX = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                                dScannerCalTeachingPosY = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                            }
+                            // 기존 코드
+                            //dScannerCalTeachingPosX = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                            //dScannerCalTeachingPosY = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
                         }
 
                         double dScannerCalAreaWidth = Equipment.Scanner_Calibration_CalAreaWidth;
@@ -32844,8 +33014,25 @@ namespace QMC.Common.Modules
             XyCoordinate result = new XyCoordinate();
 
             //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-            result.X -= Equipment.StageOffset_forDrilling_X;
-            result.Y -= Equipment.StageOffset_forDrilling_Y;
+            //공용척 사용시.
+            double dScannerCalTeachingPosX = 0.0;
+            double dScannerCalTeachingPosY = 0.0;
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+            }
+            else
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+            }
+            result.X -= dScannerCalTeachingPosX;
+            result.Y -= dScannerCalTeachingPosY;
+
+            //기존 코드
+            //result.X -= Equipment.StageOffset_forDrilling_X;
+            //result.Y -= Equipment.StageOffset_forDrilling_Y;
 
             //  데이터 위치를 Fine 카메라 위치로 변경
             result.X += Equipment.stOffsetDistance.FromScannerToFineCam.X;
@@ -32863,8 +33050,25 @@ namespace QMC.Common.Modules
             XyCoordinate result = new XyCoordinate(0,0);
 
             // 좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-            result.X += Equipment.StageOffset_forDrilling_X;
-            result.Y += Equipment.StageOffset_forDrilling_Y;
+            //공용척 사용시.
+            double dScannerCalTeachingPosX = 0.0;
+            double dScannerCalTeachingPosY = 0.0;
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+            }
+            else
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+            }
+            result.X += dScannerCalTeachingPosX;
+            result.Y += dScannerCalTeachingPosY;
+
+            //기존 코드
+            //result.X += Equipment.StageOffset_forDrilling_X;
+            //result.Y += Equipment.StageOffset_forDrilling_Y;
 
             //  좌표계 변환 (Scanner 위치 --> Fine Camera 위치)
             result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
@@ -32918,8 +33122,25 @@ namespace QMC.Common.Modules
             XyCoordinate result = new XyCoordinate();
 
             //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-            result.X += Equipment.StageOffset_forDrilling_X;
-            result.Y += Equipment.StageOffset_forDrilling_Y;
+            //공용척 사용시.
+            double dScannerCalTeachingPosX = 0.0;
+            double dScannerCalTeachingPosY = 0.0;
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+            }
+            else
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+            }
+            result.X += dScannerCalTeachingPosX;
+            result.Y += dScannerCalTeachingPosY;
+
+            //기존 코드
+            //result.X += Equipment.StageOffset_forDrilling_X;
+            //result.Y += Equipment.StageOffset_forDrilling_Y;
 
             //  데이터 위치를 Fine 카메라 위치로 변경
             result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
@@ -32946,8 +33167,25 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
 
             //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+            //공용척 사용시.
+            double dScannerCalTeachingPosX = 0.0;
+            double dScannerCalTeachingPosY = 0.0;
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+            }
+            else
+            {
+                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+            }
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += dScannerCalTeachingPosX;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += dScannerCalTeachingPosY;
+
+            //기존 코드
+            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  데이터 위치를 Fine 카메라 위치로 변경
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
@@ -32956,9 +33194,6 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
 
-            //바꿔보자
-            //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
-            //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
 
@@ -33170,11 +33405,38 @@ namespace QMC.Common.Modules
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
                                 break;
                         }
-                        xyInterpolatedCoordinate.X = stWorkStageTeachingPos[nTeachingPos].Stage_X;
-                        xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[nTeachingPos].Stage_Y;
-                        MC_Func.MovePosition(xyInterpolatedCoordinate, dVelocity, dAcc, dAcc);
-                    }
 
+                        double dTeachingPosX = stWorkStageTeachingPos[nTeachingPos].Stage_X;
+                        double dTeachingPosY = stWorkStageTeachingPos[nTeachingPos].Stage_Y;
+                        //공용척 사용시.
+                        if(Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                        {
+                            if (nTeachingPos == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
+                            {
+                                dTeachingPosX = Equipment.LoadingOffset_forDrilling_X_MSL;
+                                dTeachingPosY = Equipment.LoadingOffset_forDrilling_Y_MSL;
+                            }
+                            else if(nTeachingPos == (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos)
+                            {
+                                dTeachingPosX = Equipment.UnloadingOffset_forDrilling_X_MSL;
+                                dTeachingPosY = Equipment.UnloadingOffset_forDrilling_Y_MSL;
+                            }
+                            else if(nTeachingPos == (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos)
+                            {
+                                dTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                                dTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                            }
+                        }
+
+                        xyInterpolatedCoordinate.X = dTeachingPosX;
+                        xyInterpolatedCoordinate.Y = dTeachingPosY;
+                        MC_Func.MovePosition(xyInterpolatedCoordinate, dVelocity, dAcc, dAcc);
+
+                        //기존 코드
+                        //xyInterpolatedCoordinate.X = stWorkStageTeachingPos[nTeachingPos].Stage_X;
+                        //xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[nTeachingPos].Stage_Y;
+                        //MC_Func.MovePosition(xyInterpolatedCoordinate, dVelocity, dAcc, dAcc);
+                    }
                     bRtn = true;
                 }
                 //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
@@ -33191,10 +33453,32 @@ namespace QMC.Common.Modules
         {
             bool bRtn = false;
 
+            double dTeachingPosX = stWorkStageTeachingPos[nTeachingPos].Stage_X;
+            double dTeachingPosY = stWorkStageTeachingPos[nTeachingPos].Stage_Y;
+            //공용척 사용시.
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            {
+                if (nTeachingPos == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
+                {
+                    dTeachingPosX = Equipment.LoadingOffset_forDrilling_X_MSL;
+                    dTeachingPosY = Equipment.LoadingOffset_forDrilling_Y_MSL;
+                }
+                else if (nTeachingPos == (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos)
+                {
+                    dTeachingPosX = Equipment.UnloadingOffset_forDrilling_X_MSL;
+                    dTeachingPosY = Equipment.UnloadingOffset_forDrilling_Y_MSL;
+                }
+                else if (nTeachingPos == (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos)
+                {
+                    dTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                    dTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                }
+            }
+
             if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
-                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[nTeachingPos].Stage_X) &&
+                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, dTeachingPosX) &&
                 MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
-                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[nTeachingPos].Stage_Y))
+                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, dTeachingPosY))
             {
                 bRtn = true;
             }
@@ -34827,7 +35111,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.LaserShutter_Open:                                     //  레이저 Shutter Open
                     workStageParameter.DO_BDS_PowerMeter_BW(true);
-                    Thread.Sleep(1);
+                    Thread.Sleep(200);
                     workStageParameter.DO_BDS_PowerMeter_FW(false);
 
                     Log.Write("SLD-200", "Auto Run", "출사구 셔터 Open");
@@ -34848,9 +35132,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "출사구 셔터 Open 실패");
 
                         return AlarmPost(AlarmKey.eBeamShutterOpenFail);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-                        MessageBox.Show("Laser Shutter Open 실패", "Error");
                     }
                     break;
 
@@ -35060,8 +35341,8 @@ namespace QMC.Common.Modules
 
                     int tempStep = m_nLaserDrilling_MainStep;
                     if (CheckAxesMotionDoneWithRetry(
-                        stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,     /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
-                        stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,     /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.X,     /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                        xyInterpolatedCoordinate.Y,     /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
                         null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
                         60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
                         ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
@@ -36214,8 +36495,24 @@ namespace QMC.Common.Modules
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stMarking_SocketData.m_stMarking_ObjectData[m_nMarking_SocketCount].dObjectCenter.Y;
 
                     //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+                    //공용척 사용시.
+                    double dScannerCalTeachingPosX = 0.0;
+                    double dScannerCalTeachingPosY = 0.0;
+                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                    {
+                        dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                        dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                    }
+                    else
+                    {
+                        dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                        dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+                    }
+
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += dScannerCalTeachingPosX;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += dScannerCalTeachingPosY;
+                    //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+                    //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
                     //  속도 설정
                     if (true)

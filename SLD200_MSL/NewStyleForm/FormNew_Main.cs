@@ -1096,7 +1096,22 @@ namespace SLD200_MSL
                 }
                 
             }
-                        
+
+            //
+            var markingLayer = workStage.DrillingManager.GetLayer(LayerList.Marking);
+            if (markingLayer != null && markingLayer.SocketList.Count > 0)
+            {
+                if ((!Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType) &&                                                                     //  마킹이 고정 Text 가 아닌 Serial Number 마킹인 경우
+                (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType ==
+                (int)nSerialNumber_IncreaseType.forEachModule)) //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
+                {
+                    int nSerialNumber = Equipment.m_nSerialNumberMarkingCount;
+                    string strText1 = string.Format("Serial Number : {0}", nSerialNumber);
+                    SetValue(label_Main_Serial_Number, strText1);
+                    SetColor(label_Main_Serial_Number, Color.Black, Color.Lime);
+                }
+            }
+
             string strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
             SetValue(label_Main_LaserStatus, strText);
             Color backcolor = workStage.GetLaserBusyStatus() ? Color.Red : Color.Black;
@@ -1167,7 +1182,6 @@ namespace SLD200_MSL
             SetColor(label_Main_BET_MradStatus, !((workStage.m_dBET_MradValue > (workStage.m_dBET_MradValue_Recipe - 0.005)) && (workStage.m_dBET_MradValue < (workStage.m_dBET_MradValue_Recipe + 0.005))) ? Color.Red : Color.Black,
                                                 !((workStage.m_dBET_MradValue > (workStage.m_dBET_MradValue_Recipe - 0.005)) && (workStage.m_dBET_MradValue < (workStage.m_dBET_MradValue_Recipe + 0.005))) ? Color.White : Color.Lime);
 
-
             if (Equipment.AutoRunStatus)
             {
                 SetColor(button_Main_Start, Color.Lime, Color.Black);
@@ -1207,8 +1221,12 @@ namespace SLD200_MSL
                 SetEnable(button_Main_Reset, true);
             }
 
-                // 장비 상태 UI에 반영
-                UpdateDeviceStatusImages();
+
+
+
+
+            // 장비 상태 UI에 반영
+            UpdateDeviceStatusImages();
         }
 
         
@@ -4948,13 +4966,13 @@ namespace SLD200_MSL
                     !await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY))
                     return ShowErrorAndReturn("Stage X/Y 축 이동 실패");
 
-
                 // Vacuum 해제
                 if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
                 {
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                     workStage.workStageParameter.DO_Stage_Blow(false);
+                    Thread.Sleep(200);
                     strTemp = "workStage - 자재 확인 바랍니다. Reset";
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
@@ -4963,28 +4981,41 @@ namespace SLD200_MSL
                 foreach (var pos in Enum.GetValues(typeof(LoaderParameter.MAlignerVacuumPos)))
                 {
                     int index = (int)pos;
-                    if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck(index))
+                    //if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck(index)) // 그냥 무조건 OFF
                     {
                         loader.loaderParameter.DO_Loader_Aligner_Vacuum(index, false);
+                        Thread.Sleep(200);
                         loader.loaderParameter.DO_Loader_Aligner_Blow(index, false);
+                        Thread.Sleep(200);
                     }
                 }
 
                 foreach (var pos in Enum.GetValues(typeof(LoaderParameter.PickerVacuumPos)))
                 {
                     int index = (int)pos;
-                    if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck(index))
+                    //if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck(index)) // 그냥 무조건 OFF
                     {
                         loader.loaderParameter.DO_Loader_Picker_Vacuum(index, false);
+                        Thread.Sleep(200);
                         loader.loaderParameter.DO_Loader_Picker_Blow(false);
+                        Thread.Sleep(200);
                     }
-                        
-                    if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index))
+
+                    //if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index)) // 그냥 무조건 OFF
                     {
                         unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
+                        Thread.Sleep(100);
                         unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
+                        Thread.Sleep(200);
                     }
                 }
+
+                //집진기 상/하부 | 이오나이저 Off
+                workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                Thread.Sleep(100);
+                workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                Thread.Sleep(100);
+                loader.loaderParameter.DO_Loader_Ionizer(false);
 
                 return true;
             }

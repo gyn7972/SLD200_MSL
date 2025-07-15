@@ -804,7 +804,13 @@ namespace QMC.Common.Q_Sequence
                     break;
 
                 case (int)VerifyScannerCameraOffset_Step.StageXY_Move_CenterPos:
-                    workStage.MovetoWorkStage_TeachingPositionsXY((int)WorkStage_TeachingPosList.STAGE_ProcessingPos, Type_Motor_Speed.Coarse);
+
+                    Equipment.Type_Motor_Speed motor_Speed;
+                    motor_Speed = Equipment.Type_Motor_Speed.Coarse;
+                    int nTeachingPosIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos;
+                    workStage.MovetoWorkStage_TeachingPositionsXY(nTeachingPosIndex, motor_Speed);
+                    //workStage.MovetoWorkStage_TeachingPositionsXY((int)WorkStage_TeachingPosList.STAGE_ProcessingPos, Type_Motor_Speed.Coarse);
+
                     TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
                     m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.StageXY_Move_CenterPos_Check;
                     break;
@@ -837,8 +843,18 @@ namespace QMC.Common.Q_Sequence
                         }
                         else
                         {
-                            dScannerCalTeachingPosX = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-                            dScannerCalTeachingPosY = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                            //공용척 사용시.
+                            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                            {
+                                dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                                dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                            }
+                            else
+                            {
+                                dScannerCalTeachingPosX = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                                dScannerCalTeachingPosY = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                            }
+                                
                         }
 
                         double dScannerCalAreaWidth = Equipment.Scanner_Calibration_CalAreaWidth;

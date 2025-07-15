@@ -1395,6 +1395,14 @@ namespace SLD200_MSL
             textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text = Equipment.StageOffset_forDrilling_X.ToString();
             textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text = Equipment.StageOffset_forDrilling_Y.ToString();
 
+            textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Text = Equipment.StageOffset_forDrilling_X_MSL.ToString();
+            textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Text = Equipment.StageOffset_forDrilling_Y_MSL.ToString();
+
+            textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Text = Equipment.LoadingOffset_forDrilling_X_MSL.ToString();
+            textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Text = Equipment.LoadingOffset_forDrilling_Y_MSL.ToString();
+
+            textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Text = Equipment.UnloadingOffset_forDrilling_X_MSL.ToString();
+            textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Text = Equipment.UnloadingOffset_forDrilling_Y_MSL.ToString();
 
             //  Keyence Laser Height Sensor 기준값 설정
             textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text = Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition.ToString();
@@ -1995,6 +2003,23 @@ namespace SLD200_MSL
             Equipment.StageOffset_forDrilling_Y = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text);
             NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X", textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y", textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text, strFIle);
+
+            Equipment.StageOffset_forDrilling_X_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Text);
+            Equipment.StageOffset_forDrilling_Y_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Text);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X_MSL", textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y_MSL", textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Text, strFIle);
+
+            Equipment.LoadingOffset_forDrilling_X_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Text);
+            Equipment.LoadingOffset_forDrilling_Y_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Text);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_X_MSL", textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_Y_MSL", textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Text, strFIle);
+
+            Equipment.UnloadingOffset_forDrilling_X_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Text);
+            Equipment.UnloadingOffset_forDrilling_Y_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Text);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_X_MSL", textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_Y_MSL", textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Text, strFIle);
+
+
 
             //  Keyence Laser Height Sensor 기준값 설정
             Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition = Equipment.ToDouble(textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text);

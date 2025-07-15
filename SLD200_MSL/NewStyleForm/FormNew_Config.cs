@@ -1999,17 +1999,44 @@ namespace SLD200_MSL
         }
         private void button_Config_WorkStage_TeachingPositions_Save_Click(object sender, EventArgs e)
         {
-            //workStage.m_dPowerMeterBDS_Value = 123.0;
-            //return;
-            
-
             //  선택된 축에 대한 데이터 갖다 넣기
-            int m_nIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
-
-            if (m_nIndex >= 0)
+            int nPosIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
+            if (nPosIndex >= 0)
             {
-                workStage.stWorkStageTeachingPos[m_nIndex].Stage_X = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
-                workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
+                //workStage.stWorkStageTeachingPos[nPosIndex].Stage_X = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
+                //workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
+                //공용척 사용시.
+                double dTeachingPosX = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
+                double dTeachingPosY = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                {
+                    if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
+                    {
+                        Equipment.LoadingOffset_forDrilling_X_MSL = dTeachingPosX;
+                        Equipment.LoadingOffset_forDrilling_Y_MSL = dTeachingPosY;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos)
+                    {
+                        Equipment.UnloadingOffset_forDrilling_X_MSL = dTeachingPosX;
+                        Equipment.UnloadingOffset_forDrilling_Y_MSL = dTeachingPosY;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos)
+                    {
+                        Equipment.StageOffset_forDrilling_X_MSL = dTeachingPosX;
+                        Equipment.StageOffset_forDrilling_Y_MSL = dTeachingPosY;
+                    }
+                    else
+                    {
+                        workStage.stWorkStageTeachingPos[nPosIndex].Stage_X = dTeachingPosX;
+                        workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y = dTeachingPosY;
+                    }
+                    Machine_ChuckMSL_Save();
+                }
+                else
+                {
+                    workStage.stWorkStageTeachingPos[nPosIndex].Stage_X = dTeachingPosX;
+                    workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y = dTeachingPosY;
+                }
             }
 
             //  리스트 전체 저장
@@ -2019,13 +2046,37 @@ namespace SLD200_MSL
         private void listBox_Config_WorkStage_TeachingPositions_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  Teaching 항목 선택에 따른 Position
-            int m_nIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
+            int nPosIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
 
-            if (m_nIndex >= 0)
+            if (nPosIndex >= 0)
             {
-                //  데이터 표시
-                textBox_Config_WorkStage_TeachingPos_StageX.Text = workStage.stWorkStageTeachingPos[m_nIndex].Stage_X.ToString();
-                textBox_Config_WorkStage_TeachingPos_StageY.Text = workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y.ToString();
+                // 기존 데이터 표시
+                //textBox_Config_WorkStage_TeachingPos_StageX.Text = workStage.stWorkStageTeachingPos[nPosIndex].Stage_X.ToString();
+                //textBox_Config_WorkStage_TeachingPos_StageY.Text = workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y.ToString();
+
+                //공용척 사용시.
+                double dTeachingPosX = workStage.stWorkStageTeachingPos[nPosIndex].Stage_X;
+                double dTeachingPosY = workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y;
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                {
+                    if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
+                    {
+                        dTeachingPosX = Equipment.LoadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.LoadingOffset_forDrilling_Y_MSL;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos)
+                    {
+                        dTeachingPosX = Equipment.UnloadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.UnloadingOffset_forDrilling_Y_MSL;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos)
+                    {
+                        dTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                    }
+                }
+                textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", dTeachingPosX.ToString());
+                textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", dTeachingPosY.ToString());
             }
         }
         private void button_Config_Vision_TeachingPositions_Save_Click(object sender, EventArgs e)
@@ -2116,12 +2167,36 @@ namespace SLD200_MSL
         private void button_Config_WorkStage_GetCurrentPos_ToTeachingPos_Click(object sender, EventArgs e)
         {
             //  현재 위치값을 티칭 위치값으로 설정 (저장은 아님)
-            int m_nIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
-
-            if (m_nIndex >= 0)
+            int nPosIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
+            if (nPosIndex >= 0)
             {
-                textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString());
-                textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString());
+                //공용척 사용시.
+                double dTeachingPosX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X);
+                double dTeachingPosY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y);
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                {
+                    if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
+                    {
+                        dTeachingPosX = Equipment.LoadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.LoadingOffset_forDrilling_Y_MSL;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos)
+                    {
+                        dTeachingPosX = Equipment.UnloadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.UnloadingOffset_forDrilling_Y_MSL;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos)
+                    {
+                        dTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                    }
+                }
+                textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", dTeachingPosX.ToString()); //dTeachingPosX.ToString();
+                textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", dTeachingPosY.ToString()); //dTeachingPosY.ToString();
+
+                //기존
+                //textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString());
+                //textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString());
             }
             else
             {
@@ -2652,54 +2727,33 @@ namespace SLD200_MSL
         private void button_Config_WorkStage_StageCenter_To_ScannerCenter_Click(object sender, EventArgs e)
         {
             //  Stage Center 위치를 Scanner Center 위치로 이동
-
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
             double lfVelocity_Z = 0.0f;
             double lfAccDec_Z = 0.0f;
 
-            //if (!workStage.m_bHomeOK)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-            //    return;
-            //}
+            if (!workStage.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
 
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "Stage 를 가공 위치로 보내시겠습니까?"))
                 return;
             
-            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
-                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || 
+                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || 
+                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || 
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || 
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
                 return;
             }
-
-            ////  StageZ 한계위치 설정되어 있는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
-            //    return;
-            //}
-
-            ////  StageZ 한계위치를 초과하여 이동하는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이를 초과하여 이동하려고 하였습니다.\r\n\r\n[ Cancel ]");
-            //    return;
-            //}
-
-            ////  맵 데이터를 이원화 할 경우
-            //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
-            //{
-            //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
-            //}
-
-
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  맵 데이터 변경 (기준위치 : Scanner)
             //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
@@ -2707,43 +2761,42 @@ namespace SLD200_MSL
             workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            // 기존 코드
+            //if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+            //    lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+            //    lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+            //}
+            //else
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            //    //TEST
+            //    //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+            //    //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            //    //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
+            //    lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+            //    lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+            //}
+            //xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+            //xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+            //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z,
+            //                                lfVelocity_Z, lfAccDec_Z, lfAccDec_Z);
 
-            //  속도 설정
-            if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-            {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+            Equipment.Type_Motor_Speed motor_Speed;
+            motor_Speed = Equipment.Type_Motor_Speed.Coarse;
+            int nTeachingPosIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos;
+            workStage.MovetoWorkStage_TeachingPositionsXY(nTeachingPosIndex, motor_Speed);
 
-                lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-            }
-            else
-            {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            nTeachingPosIndex = (int)Vision.Vision_TeachingPosList.Laser_FocusPos;
+            motor_Speed = Equipment.Type_Motor_Speed.Fine;
+            workStage.MovetoWorkStage_TeachingPositionsZ(nTeachingPosIndex, motor_Speed);
 
-                //TEST
-                //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-                //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
-                //lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
-                //lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
-                lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-            }
-
-            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,
-            //                                lfVelocity, lfAccDec, lfAccDec);
-            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,
-            //                                lfVelocity, lfAccDec, lfAccDec);
-
-            xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-            xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-            workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z,
-                                            lfVelocity_Z, lfAccDec_Z, lfAccDec_Z);
+            workStage.Camera_HighRes.StopLive();
+            workStage.Camera_LowRes.StopLive();
         }
 
         private void button_Config_WorkStage_CurrentScannerPos_To_FineCamPos_Click(object sender, EventArgs e)
@@ -3637,7 +3690,6 @@ namespace SLD200_MSL
         private void button_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue_Click(object sender, EventArgs e)
         {
             //  압력 세팅
-
             double m_dkPa = 0.0;
 
             //  음압이므로 양수가 들어와도 음수로 변경
