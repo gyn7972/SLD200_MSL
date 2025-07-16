@@ -14889,6 +14889,8 @@ namespace QMC.Common.Modules
                         (m_st4PointAlign_Result.dCenterOffsetY == 0.0) &&
                         (m_st4PointAlign_Result.dRotationAngle == 0.0))
                     {
+                        strTemp = string.Format("align Data '0'으로 실패. Socket Index ({0})", nSocketNum);
+                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
                         m_bSocketAlign_OK = false;
                     }
                     else
@@ -38844,6 +38846,12 @@ namespace QMC.Common.Modules
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료");
 
+                                if (m_bPassedSocket_Exist)
+                                {
+                                    m_bRetryAlignSucess = true;
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료 : m_bPassedSocket_Exist, m_bRetryAlignSucess = true");
+                                }
+
                                 //  Align 후 계산된 데이터 가져오기
                                 m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
                                 m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
@@ -38888,6 +38896,12 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
+                                if (m_bPassedSocket_Exist)
+                                {
+                                    m_bRetryAlignSucess = true;
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료 : m_bPassedSocket_Exist, m_bRetryAlignSucess = true");
+                                }
+
                                 m_bSocketAlign_OK = false;
                                 // 소켓 얼라인 실패했으니 화면 갱신해야 한다.
                                 m_nDrillingData_SocketAlign_NGCount++; //소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
@@ -38953,7 +38967,8 @@ namespace QMC.Common.Modules
                                                     }
                                                     else
                                                     {
-                                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 과 Hole 의 Socket 개수가 큽니다.");
+                                                        // 여긴 필요가 없다.
+                                                        //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 과 Hole 의 Socket 개수가 큽니다.");
                                                     }
                                                 }
                                             }
@@ -38980,7 +38995,8 @@ namespace QMC.Common.Modules
                                                     }
                                                     else
                                                     {
-                                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 과 Hole 의 Socket 개수가 큽니다.");
+                                                        // 여긴 필요가 없다.
+                                                        //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 과 Hole 의 Socket 개수가 큽니다.");
                                                     }
                                                 }
                                             }
@@ -39934,8 +39950,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck:
                     {
-                        //Hole 가공 함수 및 시컨스. 
-                        //  가공 할 Region 영역이 남아 있는지 체크 - 영역 확인
+                        // Hole 가공 함수 및 시컨스. 
+                        // 가공 할 Region 영역이 남아 있는지 체크 - 영역 확인.
                         m_nLaserDrilling_MainStep = LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck_Selectmode(
                             ref m_nZigZag_CurrentRow, ref m_nZigZag_CurRow_FirstIndex, ref m_nZigZag_CurRow_CurIndex, ref m_nZigZag_CurRow_LastIndex);
                     }
