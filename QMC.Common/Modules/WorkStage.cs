@@ -15376,8 +15376,7 @@ namespace QMC.Common.Modules
                 }
                 for (int i = 0; i < maxSteps; i++)
                 {
-                    //if(Equipment.AutoManualStatus == false)
-                    if (Equipment.AutoRunStatus == false)
+                    if (Equipment.AutoManualStatus == false)
                     {
                         return 0;
                     }
@@ -15461,8 +15460,6 @@ namespace QMC.Common.Modules
                         {
                             Fiducial_circleFound = false;
                             Fiducial_circlesResult.Clear();
-
-
 
                             nMaxInstance = Equipment.stVisionRecipeSet.nGoldPowderCircleMarkMaxInstance;
                             dWidth = Equipment.stVisionRecipeSet.dGoldPowderCircleMarkRadius;
@@ -38871,6 +38868,13 @@ namespace QMC.Common.Modules
                                 layerEnum = GetCurrentLayerEnum(m_LayerType);
                                 socket = DrillingManager.GetSocket(layerEnum, m_nSocketNum_forAlign);
                                 if (socket != null && socket.IsSocketAligned == false)
+                                {
+                                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.Start;
+                                    TickCount_Start((int)TickType.TICK_MAIN);
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck;
+                                }
+                                else if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use &&
+                                         m_AlignMode == AlignMode.GoldPowder)
                                 {
                                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.Start;
                                     TickCount_Start((int)TickType.TICK_MAIN);
