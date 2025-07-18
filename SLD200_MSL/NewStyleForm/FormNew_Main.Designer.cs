@@ -190,6 +190,7 @@
             this.baseLabel_Module_WaitTime_sec = new SLD200_MSL.BaseLabel();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
+            this.label_Main_Serial_Number = new System.Windows.Forms.Label();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -2371,12 +2372,27 @@
             this.baseLabel5.Text = "(DryRun Time (sec) :";
             this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // label_Main_Serial_Number
+            // 
+            this.label_Main_Serial_Number.BackColor = System.Drawing.Color.Black;
+            this.label_Main_Serial_Number.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_Serial_Number.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Main_Serial_Number.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_Serial_Number.Location = new System.Drawing.Point(1275, 212);
+            this.label_Main_Serial_Number.Name = "label_Main_Serial_Number";
+            this.label_Main_Serial_Number.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Main_Serial_Number.Size = new System.Drawing.Size(380, 26);
+            this.label_Main_Serial_Number.TabIndex = 221;
+            this.label_Main_Serial_Number.Text = "- - - - -";
+            this.label_Main_Serial_Number.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // FormNew_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 875);
             this.ControlBox = false;
+            this.Controls.Add(this.label_Main_Serial_Number);
             this.Controls.Add(this.button_Main_SelectedProcess);
             this.Controls.Add(this.groupBox_ProcessingData);
             this.Controls.Add(this.groupBox_ModuleStatus);
@@ -2648,5 +2664,6 @@
         private System.Windows.Forms.Panel panel_Main_ModuleStatus;
         private System.Windows.Forms.GroupBox groupBox_ModuleStatus;
         private System.Windows.Forms.Button button_Main_SelectedProcess;
+        private System.Windows.Forms.Label label_Main_Serial_Number;
     }
 }

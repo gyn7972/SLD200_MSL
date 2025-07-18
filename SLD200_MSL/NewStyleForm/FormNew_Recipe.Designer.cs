@@ -34,6 +34,7 @@
             this.button_Recipe_Apply = new System.Windows.Forms.Button();
             this.tabControl_Recipe = new System.Windows.Forms.TabControl();
             this.tabPage_Recipe = new System.Windows.Forms.TabPage();
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use = new System.Windows.Forms.CheckBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.button_Marking_SerialNumber_CountReset = new System.Windows.Forms.Button();
             this.button_Marking_SerialNumber_Preview = new System.Windows.Forms.Button();
@@ -92,6 +93,7 @@
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower = new System.Windows.Forms.TextBox();
             this.label48 = new System.Windows.Forms.Label();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore = new System.Windows.Forms.CheckBox();
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer = new System.Windows.Forms.CheckBox();
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center = new System.Windows.Forms.CheckBox();
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner = new System.Windows.Forms.CheckBox();
@@ -148,78 +150,82 @@
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod = new System.Windows.Forms.RadioButton();
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P = new System.Windows.Forms.RadioButton();
             this.groupBox163 = new System.Windows.Forms.GroupBox();
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex = new System.Windows.Forms.Button();
             this.button_Recipe_TabRecipe_Cal_ZAxisOffset = new System.Windows.Forms.Button();
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset = new System.Windows.Forms.RichTextBox();
             this.label_Recipe_TabRecipe_Cal_ZAxisOffset = new System.Windows.Forms.Label();
             this.label86 = new System.Windows.Forms.Label();
-            this.button14 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time = new System.Windows.Forms.RichTextBox();
             this.label87 = new System.Windows.Forms.Label();
-            this.button21 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance = new System.Windows.Forms.RichTextBox();
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance = new System.Windows.Forms.CheckBox();
-            this.button19 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height = new System.Windows.Forms.RichTextBox();
             this.label84 = new System.Windows.Forms.Label();
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType = new System.Windows.Forms.ComboBox();
             this.label38 = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
-            this.button8 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc = new System.Windows.Forms.RichTextBox();
             this.label32 = new System.Windows.Forms.Label();
-            this.button7 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle = new System.Windows.Forms.RichTextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.button_Recipe_TabRecipe_Miscellaneous_DrillingPower = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower = new System.Windows.Forms.RichTextBox();
             this.label_Recipe_TabRecipe_Miscellaneous_DrillingPower = new System.Windows.Forms.Label();
-            this.button32 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay = new System.Windows.Forms.RichTextBox();
             this.label75 = new System.Windows.Forms.Label();
-            this.button31 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay = new System.Windows.Forms.RichTextBox();
             this.label74 = new System.Windows.Forms.Label();
-            this.button30 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay = new System.Windows.Forms.RichTextBox();
             this.label73 = new System.Windows.Forms.Label();
-            this.button29 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay = new System.Windows.Forms.RichTextBox();
             this.label72 = new System.Windows.Forms.Label();
-            this.button25 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay = new System.Windows.Forms.RichTextBox();
             this.label53 = new System.Windows.Forms.Label();
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision = new System.Windows.Forms.ComboBox();
-            this.button28 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize = new System.Windows.Forms.RichTextBox();
             this.label71 = new System.Windows.Forms.Label();
             this.label70 = new System.Windows.Forms.Label();
-            this.button27 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed = new System.Windows.Forms.RichTextBox();
             this.label69 = new System.Windows.Forms.Label();
-            this.button26 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed = new System.Windows.Forms.RichTextBox();
             this.label68 = new System.Windows.Forms.Label();
             this.label67 = new System.Windows.Forms.Label();
             this.label66 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_Resizing = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_Resizing = new System.Windows.Forms.RichTextBox();
             this.label63 = new System.Windows.Forms.Label();
             this.label62 = new System.Windows.Forms.Label();
             this.label61 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance = new System.Windows.Forms.RichTextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance = new System.Windows.Forms.Button();
             this.label51 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer = new System.Windows.Forms.RichTextBox();
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex = new System.Windows.Forms.ComboBox();
             this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex = new System.Windows.Forms.ComboBox();
             this.label_Recipe_TabRecipe_Miscellaneous_BETPosition = new System.Windows.Forms.Label();
             this.label_Recipe_TabRecipe_Miscellaneous_Mask = new System.Windows.Forms.Label();
-            this.button152 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition = new System.Windows.Forms.Button();
             this.label322 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition = new System.Windows.Forms.RichTextBox();
             this.textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance = new System.Windows.Forms.RichTextBox();
             this.label323 = new System.Windows.Forms.Label();
-            this.button153 = new System.Windows.Forms.Button();
+            this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance = new System.Windows.Forms.Button();
             this.groupBox136 = new System.Windows.Forms.GroupBox();
             this.checkBox_MasterView = new System.Windows.Forms.CheckBox();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
@@ -411,6 +417,7 @@
             // 
             // tabPage_Recipe
             // 
+            this.tabPage_Recipe.Controls.Add(this.checkBox_Recipe_TabRecipe_ChuckMSL_Use);
             this.tabPage_Recipe.Controls.Add(this.groupBox6);
             this.tabPage_Recipe.Controls.Add(this.groupBox15);
             this.tabPage_Recipe.Controls.Add(this.groupBox17);
@@ -429,6 +436,17 @@
             this.tabPage_Recipe.TabIndex = 7;
             this.tabPage_Recipe.Text = "Recipe";
             this.tabPage_Recipe.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Recipe_TabRecipe_ChuckMSL_Use
+            // 
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.Location = new System.Drawing.Point(10, 501);
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.Name = "checkBox_Recipe_TabRecipe_ChuckMSL_Use";
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.Size = new System.Drawing.Size(103, 23);
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.TabIndex = 93;
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.Text = "공용척 사용";
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.UseVisualStyleBackColor = true;
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.CheckedChanged += new System.EventHandler(this.checkBox_Stage_Chuck_Use_CheckedChanged);
             // 
             // groupBox6
             // 
@@ -853,14 +871,15 @@
             this.groupBox17.Controls.Add(this.label54);
             this.groupBox17.Controls.Add(this.label2);
             this.groupBox17.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox17.Location = new System.Drawing.Point(10, 509);
+            this.groupBox17.Location = new System.Drawing.Point(10, 720);
             this.groupBox17.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox17.Name = "groupBox17";
             this.groupBox17.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox17.Size = new System.Drawing.Size(305, 240);
+            this.groupBox17.Size = new System.Drawing.Size(305, 32);
             this.groupBox17.TabIndex = 64;
             this.groupBox17.TabStop = false;
             this.groupBox17.Text = " Available Layer Names ";
+            this.groupBox17.Visible = false;
             // 
             // label14
             // 
@@ -1136,6 +1155,7 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore);
             this.groupBox13.Controls.Add(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer);
             this.groupBox13.Controls.Add(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center);
             this.groupBox13.Controls.Add(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner);
@@ -1149,13 +1169,26 @@
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Vacuum position (M - Alignment) ";
             // 
+            // checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore
+            // 
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = true;
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Location = new System.Drawing.Point(8, 27);
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Name = "checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore";
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Size = new System.Drawing.Size(67, 21);
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.TabIndex = 63;
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Text = "Ignore";
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.UseVisualStyleBackColor = true;
+            // 
             // checkBox_Recipe_TabRecipe_MAlignVacuum_Outer
             // 
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.AutoSize = true;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = true;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Location = new System.Drawing.Point(250, 28);
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Location = new System.Drawing.Point(263, 27);
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Name = "checkBox_Recipe_TabRecipe_MAlignVacuum_Outer";
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Size = new System.Drawing.Size(62, 21);
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.TabIndex = 62;
@@ -1168,7 +1201,7 @@
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = true;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Location = new System.Drawing.Point(17, 28);
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Location = new System.Drawing.Point(96, 27);
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Name = "checkBox_Recipe_TabRecipe_MAlignVacuum_Center";
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Size = new System.Drawing.Size(68, 21);
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.TabIndex = 61;
@@ -1181,7 +1214,7 @@
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = true;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Location = new System.Drawing.Point(138, 28);
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Location = new System.Drawing.Point(184, 27);
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Name = "checkBox_Recipe_TabRecipe_MAlignVacuum_Inner";
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Size = new System.Drawing.Size(59, 21);
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.TabIndex = 60;
@@ -1246,6 +1279,7 @@
             this.button17.TabIndex = 32;
             this.button17.Text = "#";
             this.button17.UseVisualStyleBackColor = true;
+            this.button17.Visible = false;
             // 
             // textBox_Recipe_TabRecipe_SpiralParam_AngleFactor
             // 
@@ -1279,6 +1313,7 @@
             this.button12.TabIndex = 29;
             this.button12.Text = "#";
             this.button12.UseVisualStyleBackColor = true;
+            this.button12.Visible = false;
             // 
             // textBox_Recipe_TabRecipe_SpiralParam_Revolutions
             // 
@@ -1312,6 +1347,7 @@
             this.button13.TabIndex = 26;
             this.button13.Text = "#";
             this.button13.UseVisualStyleBackColor = true;
+            this.button13.Visible = false;
             // 
             // textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter
             // 
@@ -1345,6 +1381,7 @@
             this.button16.TabIndex = 23;
             this.button16.Text = "#";
             this.button16.UseVisualStyleBackColor = true;
+            this.button16.Visible = false;
             // 
             // textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter
             // 
@@ -1411,6 +1448,7 @@
             this.button11.TabIndex = 29;
             this.button11.Text = "#";
             this.button11.UseVisualStyleBackColor = true;
+            this.button11.Visible = false;
             // 
             // textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness
             // 
@@ -1444,6 +1482,7 @@
             this.button10.TabIndex = 26;
             this.button10.Text = "#";
             this.button10.UseVisualStyleBackColor = true;
+            this.button10.Visible = false;
             // 
             // textBox_Recipe_TabRecipe_ModuleInformation_Height
             // 
@@ -1477,6 +1516,7 @@
             this.button9.TabIndex = 23;
             this.button9.Text = "#";
             this.button9.UseVisualStyleBackColor = true;
+            this.button9.Visible = false;
             // 
             // textBox_Recipe_TabRecipe_ModuleInformation_Width
             // 
@@ -1532,6 +1572,7 @@
             this.button_GoldPowderThickness.TabIndex = 33;
             this.button_GoldPowderThickness.Text = "#";
             this.button_GoldPowderThickness.UseVisualStyleBackColor = true;
+            this.button_GoldPowderThickness.Visible = false;
             // 
             // checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign
             // 
@@ -1688,6 +1729,7 @@
             this.button34.TabIndex = 20;
             this.button34.Text = "#";
             this.button34.UseVisualStyleBackColor = true;
+            this.button34.Visible = false;
             // 
             // textBox_Recipe_TabRecipe_LaserParam_Frequency
             // 
@@ -1819,78 +1861,82 @@
             // 
             // groupBox163
             // 
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex);
             this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Cal_ZAxisOffset);
             this.groupBox163.Controls.Add(this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset);
             this.groupBox163.Controls.Add(this.label_Recipe_TabRecipe_Cal_ZAxisOffset);
             this.groupBox163.Controls.Add(this.label86);
-            this.groupBox163.Controls.Add(this.button14);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time);
             this.groupBox163.Controls.Add(this.label87);
-            this.groupBox163.Controls.Add(this.button21);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance);
             this.groupBox163.Controls.Add(this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance);
-            this.groupBox163.Controls.Add(this.button19);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height);
             this.groupBox163.Controls.Add(this.label84);
             this.groupBox163.Controls.Add(this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType);
             this.groupBox163.Controls.Add(this.label38);
             this.groupBox163.Controls.Add(this.label33);
-            this.groupBox163.Controls.Add(this.button8);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc);
             this.groupBox163.Controls.Add(this.label32);
-            this.groupBox163.Controls.Add(this.button7);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle);
             this.groupBox163.Controls.Add(this.label8);
             this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_DrillingPower);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower);
             this.groupBox163.Controls.Add(this.label_Recipe_TabRecipe_Miscellaneous_DrillingPower);
-            this.groupBox163.Controls.Add(this.button32);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay);
             this.groupBox163.Controls.Add(this.label75);
-            this.groupBox163.Controls.Add(this.button31);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay);
             this.groupBox163.Controls.Add(this.label74);
-            this.groupBox163.Controls.Add(this.button30);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay);
             this.groupBox163.Controls.Add(this.label73);
-            this.groupBox163.Controls.Add(this.button29);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay);
             this.groupBox163.Controls.Add(this.label72);
-            this.groupBox163.Controls.Add(this.button25);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay);
             this.groupBox163.Controls.Add(this.label53);
             this.groupBox163.Controls.Add(this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision);
-            this.groupBox163.Controls.Add(this.button28);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize);
             this.groupBox163.Controls.Add(this.label71);
             this.groupBox163.Controls.Add(this.label70);
-            this.groupBox163.Controls.Add(this.button27);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed);
             this.groupBox163.Controls.Add(this.label69);
-            this.groupBox163.Controls.Add(this.button26);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed);
             this.groupBox163.Controls.Add(this.label68);
             this.groupBox163.Controls.Add(this.label67);
             this.groupBox163.Controls.Add(this.label66);
-            this.groupBox163.Controls.Add(this.button2);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_Resizing);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_Resizing);
             this.groupBox163.Controls.Add(this.label63);
             this.groupBox163.Controls.Add(this.label62);
             this.groupBox163.Controls.Add(this.label61);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance);
-            this.groupBox163.Controls.Add(this.button1);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance);
             this.groupBox163.Controls.Add(this.label51);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer);
             this.groupBox163.Controls.Add(this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex);
             this.groupBox163.Controls.Add(this.comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex);
             this.groupBox163.Controls.Add(this.label_Recipe_TabRecipe_Miscellaneous_BETPosition);
             this.groupBox163.Controls.Add(this.label_Recipe_TabRecipe_Miscellaneous_Mask);
-            this.groupBox163.Controls.Add(this.button152);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition);
             this.groupBox163.Controls.Add(this.label322);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance);
             this.groupBox163.Controls.Add(this.label323);
-            this.groupBox163.Controls.Add(this.button153);
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance);
             this.groupBox163.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox163.Location = new System.Drawing.Point(1221, 10);
             this.groupBox163.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
@@ -1901,21 +1947,70 @@
             this.groupBox163.TabStop = false;
             this.groupBox163.Text = " Miscellaneous ";
             // 
+            // button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision
+            // 
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Location = new System.Drawing.Point(349, 101);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Name = "button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision";
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.TabIndex = 164;
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision_Click);
+            // 
+            // button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType
+            // 
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Location = new System.Drawing.Point(349, 606);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Name = "button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType";
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.TabIndex = 163;
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType_Click);
+            // 
+            // button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex
+            // 
+            this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Location = new System.Drawing.Point(279, 569);
+            this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Name = "button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex";
+            this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.TabIndex = 162;
+            this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex_Click);
+            // 
+            // button_Recipe_TabRecipe_Miscellaneous_MaskIndex
+            // 
+            this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex.Location = new System.Drawing.Point(392, 541);
+            this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex.Name = "button_Recipe_TabRecipe_Miscellaneous_MaskIndex";
+            this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex.TabIndex = 161;
+            this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_MaskIndex_Click);
+            // 
             // button_Recipe_TabRecipe_Cal_ZAxisOffset
             // 
             this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Location = new System.Drawing.Point(352, 684);
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Location = new System.Drawing.Point(349, 684);
             this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Name = "button_Recipe_TabRecipe_Cal_ZAxisOffset";
             this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Size = new System.Drawing.Size(35, 25);
             this.button_Recipe_TabRecipe_Cal_ZAxisOffset.TabIndex = 159;
             this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Text = "#";
             this.button_Recipe_TabRecipe_Cal_ZAxisOffset.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Cal_ZAxisOffset_Click);
             // 
             // richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset
             // 
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Location = new System.Drawing.Point(201, 684);
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Location = new System.Drawing.Point(198, 684);
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Multiline = false;
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Name = "richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset";
@@ -1937,8 +2032,8 @@
             // 
             // label86
             // 
-            this.label86.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label86.Location = new System.Drawing.Point(385, 510);
+            this.label86.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label86.Location = new System.Drawing.Point(385, 504);
             this.label86.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label86.Name = "label86";
             this.label86.Size = new System.Drawing.Size(115, 35);
@@ -1946,16 +2041,17 @@
             this.label86.Text = "(Circle Processing\r\n  only once)";
             this.label86.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // button14
+            // button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time
             // 
-            this.button14.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button14.Location = new System.Drawing.Point(349, 508);
-            this.button14.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(35, 25);
-            this.button14.TabIndex = 155;
-            this.button14.Text = "#";
-            this.button14.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Location = new System.Drawing.Point(349, 508);
+            this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Name = "button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time";
+            this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.TabIndex = 155;
+            this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time
             // 
@@ -1980,16 +2076,17 @@
             this.label87.Text = "@ Circle Start Angle (˚) :";
             this.label87.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button21
+            // button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance
             // 
-            this.button21.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button21.Location = new System.Drawing.Point(349, 643);
-            this.button21.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button21.Name = "button21";
-            this.button21.Size = new System.Drawing.Size(35, 25);
-            this.button21.TabIndex = 152;
-            this.button21.Text = "#";
-            this.button21.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Location = new System.Drawing.Point(349, 643);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Name = "button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance";
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.TabIndex = 152;
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance
             // 
@@ -2014,16 +2111,17 @@
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.UseVisualStyleBackColor = true;
             // 
-            // button19
+            // button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height
             // 
-            this.button19.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button19.Location = new System.Drawing.Point(349, 155);
-            this.button19.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button19.Name = "button19";
-            this.button19.Size = new System.Drawing.Size(35, 25);
-            this.button19.TabIndex = 149;
-            this.button19.Text = "#";
-            this.button19.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Location = new System.Drawing.Point(349, 155);
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Name = "button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height";
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.TabIndex = 149;
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height
             // 
@@ -2077,7 +2175,7 @@
             // 
             // label33
             // 
-            this.label33.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label33.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label33.Location = new System.Drawing.Point(385, 482);
             this.label33.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label33.Name = "label33";
@@ -2086,16 +2184,17 @@
             this.label33.Text = "(Circle : 360.0)";
             this.label33.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // button8
+            // button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc
             // 
-            this.button8.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button8.Location = new System.Drawing.Point(349, 481);
-            this.button8.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(35, 25);
-            this.button8.TabIndex = 139;
-            this.button8.Text = "#";
-            this.button8.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Location = new System.Drawing.Point(349, 481);
+            this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Name = "button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc";
+            this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.TabIndex = 139;
+            this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc
             // 
@@ -2120,16 +2219,17 @@
             this.label32.Text = "Rotation angle when Arc (˚) :";
             this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button7
+            // button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle
             // 
-            this.button7.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button7.Location = new System.Drawing.Point(349, 455);
-            this.button7.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(35, 25);
-            this.button7.TabIndex = 136;
-            this.button7.Text = "#";
-            this.button7.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Location = new System.Drawing.Point(349, 455);
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Name = "button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle";
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.TabIndex = 136;
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle
             // 
@@ -2164,6 +2264,7 @@
             this.button_Recipe_TabRecipe_Miscellaneous_DrillingPower.TabIndex = 133;
             this.button_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text = "#";
             this.button_Recipe_TabRecipe_Miscellaneous_DrillingPower.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingPower.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_DrillingPower_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower
             // 
@@ -2188,16 +2289,17 @@
             this.label_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text = "Drilling Power (%) :";
             this.label_Recipe_TabRecipe_Miscellaneous_DrillingPower.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button32
+            // button_Recipe_TabRecipe_Miscellaneous_PolygonDelay
             // 
-            this.button32.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button32.Location = new System.Drawing.Point(349, 344);
-            this.button32.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button32.Name = "button32";
-            this.button32.Size = new System.Drawing.Size(35, 25);
-            this.button32.TabIndex = 130;
-            this.button32.Text = "#";
-            this.button32.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Location = new System.Drawing.Point(349, 344);
+            this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Name = "button_Recipe_TabRecipe_Miscellaneous_PolygonDelay";
+            this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay.TabIndex = 130;
+            this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_PolygonDelay_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay
             // 
@@ -2222,16 +2324,17 @@
             this.label75.Text = "Polygon Delay (us) :";
             this.label75.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button31
+            // button_Recipe_TabRecipe_Miscellaneous_JumpDelay
             // 
-            this.button31.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button31.Location = new System.Drawing.Point(349, 318);
-            this.button31.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button31.Name = "button31";
-            this.button31.Size = new System.Drawing.Size(35, 25);
-            this.button31.TabIndex = 127;
-            this.button31.Text = "#";
-            this.button31.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay.Location = new System.Drawing.Point(349, 318);
+            this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay.Name = "button_Recipe_TabRecipe_Miscellaneous_JumpDelay";
+            this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay.TabIndex = 127;
+            this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_JumpDelay_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay
             // 
@@ -2256,16 +2359,17 @@
             this.label74.Text = "Jump Delay (us) :";
             this.label74.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button30
+            // button_Recipe_TabRecipe_Miscellaneous_MarkDelay
             // 
-            this.button30.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button30.Location = new System.Drawing.Point(349, 292);
-            this.button30.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button30.Name = "button30";
-            this.button30.Size = new System.Drawing.Size(35, 25);
-            this.button30.TabIndex = 124;
-            this.button30.Text = "#";
-            this.button30.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay.Location = new System.Drawing.Point(349, 292);
+            this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay.Name = "button_Recipe_TabRecipe_Miscellaneous_MarkDelay";
+            this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay.TabIndex = 124;
+            this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_MarkDelay_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay
             // 
@@ -2290,16 +2394,17 @@
             this.label73.Text = "Mark Delay (us) :";
             this.label73.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button29
+            // button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay
             // 
-            this.button29.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button29.Location = new System.Drawing.Point(349, 266);
-            this.button29.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button29.Name = "button29";
-            this.button29.Size = new System.Drawing.Size(35, 25);
-            this.button29.TabIndex = 121;
-            this.button29.Text = "#";
-            this.button29.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Location = new System.Drawing.Point(349, 266);
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Name = "button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay";
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.TabIndex = 121;
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay
             // 
@@ -2324,16 +2429,17 @@
             this.label72.Text = "Laser Off Delay (us) :";
             this.label72.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button25
+            // button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay
             // 
-            this.button25.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button25.Location = new System.Drawing.Point(349, 240);
-            this.button25.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button25.Name = "button25";
-            this.button25.Size = new System.Drawing.Size(35, 25);
-            this.button25.TabIndex = 118;
-            this.button25.Text = "#";
-            this.button25.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Location = new System.Drawing.Point(349, 240);
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Name = "button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay";
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.TabIndex = 118;
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay
             // 
@@ -2380,16 +2486,17 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Size = new System.Drawing.Size(147, 26);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.TabIndex = 116;
             // 
-            // button28
+            // button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize
             // 
-            this.button28.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button28.Location = new System.Drawing.Point(349, 129);
-            this.button28.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button28.Name = "button28";
-            this.button28.Size = new System.Drawing.Size(35, 25);
-            this.button28.TabIndex = 114;
-            this.button28.Text = "#";
-            this.button28.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Location = new System.Drawing.Point(349, 129);
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Name = "button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize";
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.TabIndex = 114;
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize
             // 
@@ -2425,16 +2532,17 @@
             this.label70.Text = "(Hole Data Layer)";
             this.label70.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // button27
+            // button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed
             // 
-            this.button27.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button27.Location = new System.Drawing.Point(349, 214);
-            this.button27.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button27.Name = "button27";
-            this.button27.Size = new System.Drawing.Size(35, 25);
-            this.button27.TabIndex = 110;
-            this.button27.Text = "#";
-            this.button27.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Location = new System.Drawing.Point(349, 214);
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Name = "button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed";
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.TabIndex = 110;
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed
             // 
@@ -2459,16 +2567,17 @@
             this.label69.Text = "Jump Speed (mm/s) :";
             this.label69.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button26
+            // button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed
             // 
-            this.button26.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button26.Location = new System.Drawing.Point(349, 188);
-            this.button26.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button26.Name = "button26";
-            this.button26.Size = new System.Drawing.Size(35, 25);
-            this.button26.TabIndex = 107;
-            this.button26.Text = "#";
-            this.button26.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Location = new System.Drawing.Point(349, 188);
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Name = "button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed";
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.TabIndex = 107;
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed
             // 
@@ -2515,16 +2624,17 @@
             this.label66.Text = "(+ : Bigger, - : Smaller)";
             this.label66.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // button2
+            // button_Recipe_TabRecipe_Miscellaneous_Resizing
             // 
-            this.button2.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button2.Location = new System.Drawing.Point(310, 77);
-            this.button2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(35, 25);
-            this.button2.TabIndex = 100;
-            this.button2.Text = "#";
-            this.button2.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_Resizing.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_Resizing.Location = new System.Drawing.Point(310, 77);
+            this.button_Recipe_TabRecipe_Miscellaneous_Resizing.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_Resizing.Name = "button_Recipe_TabRecipe_Miscellaneous_Resizing";
+            this.button_Recipe_TabRecipe_Miscellaneous_Resizing.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_Resizing.TabIndex = 100;
+            this.button_Recipe_TabRecipe_Miscellaneous_Resizing.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_Resizing.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_Resizing.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_Resizing_Click);
             // 
             // textBox_Recipe_TabRecipe_Miscellaneous_Resizing
             // 
@@ -2583,16 +2693,17 @@
             this.textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Tag = "KeyPad;Min=-500;Max=500;Format=0.000";
             this.textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = "0.0";
             // 
-            // button1
+            // button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance
             // 
-            this.button1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button1.Location = new System.Drawing.Point(310, 52);
-            this.button1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(35, 25);
-            this.button1.TabIndex = 95;
-            this.button1.Text = "#";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Location = new System.Drawing.Point(310, 52);
+            this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Name = "button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance";
+            this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.TabIndex = 95;
+            this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance_Click);
             // 
             // label51
             // 
@@ -2673,16 +2784,17 @@
             this.label_Recipe_TabRecipe_Miscellaneous_Mask.Text = "Mask Position :";
             this.label_Recipe_TabRecipe_Miscellaneous_Mask.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button152
+            // button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition
             // 
-            this.button152.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button152.Location = new System.Drawing.Point(349, 429);
-            this.button152.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button152.Name = "button152";
-            this.button152.Size = new System.Drawing.Size(35, 25);
-            this.button152.TabIndex = 85;
-            this.button152.Text = "#";
-            this.button152.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Location = new System.Drawing.Point(349, 429);
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Name = "button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition";
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.TabIndex = 85;
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition_Click);
             // 
             // label322
             // 
@@ -2730,16 +2842,17 @@
             this.label323.Text = "No. of Repetition :";
             this.label323.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button153
+            // button_Recipe_TabRecipe_Miscellaneous_P2PDistance
             // 
-            this.button153.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button153.Location = new System.Drawing.Point(349, 403);
-            this.button153.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button153.Name = "button153";
-            this.button153.Size = new System.Drawing.Size(35, 25);
-            this.button153.TabIndex = 81;
-            this.button153.Text = "#";
-            this.button153.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance.Location = new System.Drawing.Point(349, 403);
+            this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance.Name = "button_Recipe_TabRecipe_Miscellaneous_P2PDistance";
+            this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance.TabIndex = 81;
+            this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = "#";
+            this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance.Click += new System.EventHandler(this.button_Recipe_TabRecipe_Miscellaneous_P2PDistance_Click);
             // 
             // groupBox136
             // 
@@ -3004,6 +3117,7 @@
             this.button_Recipe_TabTest_NoRepeat.TabIndex = 85;
             this.button_Recipe_TabTest_NoRepeat.Text = "#";
             this.button_Recipe_TabTest_NoRepeat.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_NoRepeat.Visible = false;
             // 
             // label_Recipe_TabTest_SpaceofP2P
             // 
@@ -3057,6 +3171,7 @@
             this.button_Recipe_TabTest_SpaceofP2P.TabIndex = 81;
             this.button_Recipe_TabTest_SpaceofP2P.Text = "#";
             this.button_Recipe_TabTest_SpaceofP2P.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_SpaceofP2P.Visible = false;
             // 
             // groupBox_Recipe_TabTest_ProcessPriority
             // 
@@ -3189,6 +3304,7 @@
             this.button_Recipe_TabTest_EndRamp.TabIndex = 91;
             this.button_Recipe_TabTest_EndRamp.Text = "#";
             this.button_Recipe_TabTest_EndRamp.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_EndRamp.Visible = false;
             // 
             // label_Recipe_TabTest_EndRamp
             // 
@@ -3221,6 +3337,7 @@
             this.button_Recipe_TabTest_StartRamp.TabIndex = 88;
             this.button_Recipe_TabTest_StartRamp.Text = "#";
             this.button_Recipe_TabTest_StartRamp.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_StartRamp.Visible = false;
             // 
             // label_Recipe_TabTest_StartRamp
             // 
@@ -3264,6 +3381,7 @@
             this.button_Recipe_TabTest_End_Z.TabIndex = 88;
             this.button_Recipe_TabTest_End_Z.Text = "#";
             this.button_Recipe_TabTest_End_Z.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_End_Z.Visible = false;
             // 
             // richTextBox_Recipe_TabTest_End_Z
             // 
@@ -3296,6 +3414,7 @@
             this.button_Recipe_TabTest_End_Y.TabIndex = 85;
             this.button_Recipe_TabTest_End_Y.Text = "#";
             this.button_Recipe_TabTest_End_Y.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_End_Y.Visible = false;
             // 
             // richTextBox_Recipe_TabTest_End_Y
             // 
@@ -3349,6 +3468,7 @@
             this.button_Recipe_TabTest_End_X.TabIndex = 75;
             this.button_Recipe_TabTest_End_X.Text = "#";
             this.button_Recipe_TabTest_End_X.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_End_X.Visible = false;
             // 
             // groupBox_Recipe_TabTest_StartCoordinate
             // 
@@ -3381,6 +3501,7 @@
             this.button_Recipe_TabTest_Start_Z.TabIndex = 88;
             this.button_Recipe_TabTest_Start_Z.Text = "#";
             this.button_Recipe_TabTest_Start_Z.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_Start_Z.Visible = false;
             // 
             // richTextBox_Recipe_TabTest_Start_Z
             // 
@@ -3413,6 +3534,7 @@
             this.button_Recipe_TabTest_Start_Y.TabIndex = 85;
             this.button_Recipe_TabTest_Start_Y.Text = "#";
             this.button_Recipe_TabTest_Start_Y.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_Start_Y.Visible = false;
             // 
             // richTextBox_Recipe_TabTest_Start_Y
             // 
@@ -3466,6 +3588,7 @@
             this.button_Recipe_TabTest_Start_X.TabIndex = 75;
             this.button_Recipe_TabTest_Start_X.Text = "#";
             this.button_Recipe_TabTest_Start_X.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_Start_X.Visible = false;
             // 
             // groupBox_Recipe_TabTest_LaserTriggerModes
             // 
@@ -3533,6 +3656,7 @@
             this.button_Recipe_TabTest_pulsePeriod.TabIndex = 17;
             this.button_Recipe_TabTest_pulsePeriod.Text = "#";
             this.button_Recipe_TabTest_pulsePeriod.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_pulsePeriod.Visible = false;
             // 
             // textBox_Recipe_TabTest_pulsePeriod
             // 
@@ -3554,6 +3678,7 @@
             this.button_Recipe_TabTest_pulseWidth.TabIndex = 15;
             this.button_Recipe_TabTest_pulseWidth.Text = "#";
             this.button_Recipe_TabTest_pulseWidth.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabTest_pulseWidth.Visible = false;
             // 
             // textBox_Recipe_TabTest_pulseWidth
             // 
@@ -3886,6 +4011,7 @@
             this.Shown += new System.EventHandler(this.FormNew_Recipe_Shown);
             this.tabControl_Recipe.ResumeLayout(false);
             this.tabPage_Recipe.ResumeLayout(false);
+            this.tabPage_Recipe.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.groupBox12.ResumeLayout(false);
@@ -3947,12 +4073,12 @@
         private System.Windows.Forms.GroupBox groupBox163;
         private System.Windows.Forms.Label label_Recipe_TabRecipe_Miscellaneous_BETPosition;
         private System.Windows.Forms.Label label_Recipe_TabRecipe_Miscellaneous_Mask;
-        private System.Windows.Forms.Button button152;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition;
         private System.Windows.Forms.Label label322;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance;
         private System.Windows.Forms.Label label323;
-        private System.Windows.Forms.Button button153;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_P2PDistance;
         private System.Windows.Forms.GroupBox groupBox136;
         private System.Windows.Forms.GroupBox groupBox137;
         private System.Windows.Forms.Button button_Recipe_TabRecipe_OpenDwg;
@@ -4059,37 +4185,37 @@
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer;
         private System.Windows.Forms.Label label61;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance;
         private System.Windows.Forms.Label label62;
         private System.Windows.Forms.Label label66;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_Resizing;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_Resizing;
         private System.Windows.Forms.Label label63;
         private System.Windows.Forms.Label label67;
-        private System.Windows.Forms.Button button27;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed;
         private System.Windows.Forms.Label label69;
-        private System.Windows.Forms.Button button26;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed;
         private System.Windows.Forms.Label label68;
         private System.Windows.Forms.Label label70;
-        private System.Windows.Forms.Button button28;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize;
         private System.Windows.Forms.Label label71;
         private System.Windows.Forms.ComboBox comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision;
-        private System.Windows.Forms.Button button31;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_JumpDelay;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay;
         private System.Windows.Forms.Label label74;
-        private System.Windows.Forms.Button button30;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_MarkDelay;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay;
         private System.Windows.Forms.Label label73;
-        private System.Windows.Forms.Button button29;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay;
         private System.Windows.Forms.Label label72;
-        private System.Windows.Forms.Button button25;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay;
         private System.Windows.Forms.Label label53;
-        private System.Windows.Forms.Button button32;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_PolygonDelay;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay;
         private System.Windows.Forms.Label label75;
         private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_DrillingPower;
@@ -4101,10 +4227,10 @@
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc;
         private System.Windows.Forms.Label label32;
         private System.Windows.Forms.Label label33;
@@ -4150,10 +4276,10 @@
         private System.Windows.Forms.Label label81;
         private System.Windows.Forms.Label label82;
         private System.Windows.Forms.TabPage tabPage_RecipeVision;
-        private System.Windows.Forms.Button button19;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height;
         private System.Windows.Forms.Label label84;
-        private System.Windows.Forms.Button button21;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX;
@@ -4161,7 +4287,7 @@
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY;
         private System.Windows.Forms.Label label85;
         private System.Windows.Forms.Label label86;
-        private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time;
         private System.Windows.Forms.Label label87;
         private System.Windows.Forms.GroupBox groupBox15;
@@ -4212,5 +4338,11 @@
         private System.Windows.Forms.Button button_Marking_SerialNumber_CountReset;
         private System.Windows.Forms.Button button_Marking_SerialNumber_Preview;
         private System.Windows.Forms.CheckBox checkBox_MasterView;
+        private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ChuckMSL_Use;
+        private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_MaskIndex;
     }
 }

@@ -530,6 +530,7 @@ namespace QMC.Common
 
             public double EPRO_ModuleAbsorptionLevel;                   //  EPRO Module Absorption Level
 
+            public bool MAligner_VacuumPos_Ignore;
             public bool MAligner_VacuumPos_Center;                      //  M-Aligner Vacuum Position Center (true: Using, false: Not Using)
             public bool MAligner_VacuumPos_Inner;                       //  M-Aligner Vacuum Position Inner (true: Using, false: Not Using)
             public bool MAligner_VacuumPos_Outer;                       //  M-Aligner Vacuum Position Outer (true: Using, false: Not Using)
@@ -558,6 +559,7 @@ namespace QMC.Common
             public int MarkingTemplate_EntityData_SerialNumberIncreaseType;            //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
             public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
+            public bool ChuckMSL_Use;                                   //  Chuck 사용 여부 (true: 사용, false: 미사용)
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
 
@@ -656,13 +658,15 @@ namespace QMC.Common
 
         public static bool Machine_SocketHeight_Batch_Use { set; get; } = false;           //  Socket Height Batch 사용 여부 (true: 사용, false: 미사용)
         public static bool Machine_SocketVision_Batch_Use { set; get; } = false;
-        public static bool Machine_LaserPowerMeasure_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static bool Machine_LaserPowerMeasure_Enable { set; get; } = false;            
         public static int Machine_LaserPowerMeasure_Count { set; get; } = 1;
 
-        public static bool Machine_HeightMeasure_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static bool Machine_HeightMeasure_Enable { set; get; } = false;                
         public static int Machine_HeightMeasure_Count { set; get; } = 1;
+        public static double Machine_HeightMeasure_PosX { set; get; } = 0.0;                     
+        public static double Machine_HeightMeasure_PosY { set; get; } = 0.0;                     
 
-        public static bool Machine_PreAlign_First_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static bool Machine_PreAlign_First_Enable { set; get; } = false;                     
 
         //  Offset Distance
         public struct stOffsetDistanceParameter
@@ -696,6 +700,15 @@ namespace QMC.Common
         //  Offset distance from the stage to the scanner position (스테이지와 스캐너 좌표계를 일치시키지 않는다면, 이 값만큼 이동해서 가공해야 함) - 스테이지 스캐너 좌표계를 일치시키면 이 값은 반드시 0 으로 설정해야 함.
         public static double StageOffset_forDrilling_X { set; get; }
         public static double StageOffset_forDrilling_Y { set; get; }
+
+        public static double StageOffset_forDrilling_X_MSL { set; get; }
+        public static double StageOffset_forDrilling_Y_MSL { set; get; }
+
+        public static double LoadingOffset_forDrilling_X_MSL { set; get; }
+        public static double LoadingOffset_forDrilling_Y_MSL { set; get; }
+
+        public static double UnloadingOffset_forDrilling_X_MSL { set; get; }
+        public static double UnloadingOffset_forDrilling_Y_MSL { set; get; }
 
 
         //  Keyence Laser Height Sensor 기준값 설정
@@ -1275,6 +1288,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = -40.0;                             //  EPRO Module Absorption Level (kPa)
 
                 //  Mechanical-Alignment Vacuum
+                stLayerRecipeSet[i].MAligner_VacuumPos_Ignore = true;
                 stLayerRecipeSet[i].MAligner_VacuumPos_Center = true;                               //  Mechanical-Alignment Center Vacuum Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].MAligner_VacuumPos_Outer = false;                               //  Mechanical-Alignment Outer Vacuum Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].MAligner_VacuumPos_Inner = false;                               //  Mechanical-Alignment Inner Vacuum Use (true: Use, false: Not Use)
@@ -1301,6 +1315,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;        //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
+                stLayerRecipeSet[i].ChuckMSL_Use = false;
             }
 
             //  평탄도 측정 위치 초기화
@@ -1331,6 +1346,13 @@ namespace QMC.Common
             //  Offset distance from the stage to the scanner position (스테이지와 스캐너 좌표계를 일치시키지 않는다면, 이 값만큼 이동해서 가공해야 함) - 스테이지 스캐너 좌표계를 일치시키면 이 값은 반드시 0 으로 설정해야 함.
             StageOffset_forDrilling_X = 0.0;
             StageOffset_forDrilling_Y = 0.0;
+            StageOffset_forDrilling_X_MSL = 0.0;
+            StageOffset_forDrilling_Y_MSL = 0.0;
+
+            LoadingOffset_forDrilling_X_MSL = 0.0;
+            LoadingOffset_forDrilling_Y_MSL = 0.0;
+            UnloadingOffset_forDrilling_X_MSL = 0.0;
+            UnloadingOffset_forDrilling_Y_MSL = 0.0;
 
             //  Keyence Laser Height Sensor 기준값 설정
             LaserHeightSensor_ReferenceValue_atVisionFocusPosition = 0.0;         //  Vision Focus 위치에서의 Keyence Laser Height Sensor 기준값
@@ -3117,6 +3139,10 @@ namespace QMC.Common
             Equipment.Machine_HeightMeasure_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_Count", "1", temp, 255, strFIle);
             Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_PosX", "1.1", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_PosX = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_PosY", "1.1", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_PosY = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "PreAlign_First_Enable", "false", temp, 255, strFIle);
             Equipment.Machine_PreAlign_First_Enable = temp.ToString() == "False" ? false : true;
             //
@@ -3161,6 +3187,22 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y", "0.0", temp, 255, strFIle);
             Equipment.StageOffset_forDrilling_Y = Equipment.ToDouble(temp.ToString());
 
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X_MSL", "0.0", temp, 255, strFIle);
+            Equipment.StageOffset_forDrilling_X_MSL = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y_MSL", "0.0", temp, 255, strFIle);
+            Equipment.StageOffset_forDrilling_Y_MSL = Equipment.ToDouble(temp.ToString());
+
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_X_MSL", "0.0", temp, 255, strFIle);
+            Equipment.LoadingOffset_forDrilling_X_MSL = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_Y_MSL", "0.0", temp, 255, strFIle);
+            Equipment.LoadingOffset_forDrilling_Y_MSL = Equipment.ToDouble(temp.ToString());
+
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_X_MSL", "0.0", temp, 255, strFIle);
+            Equipment.UnloadingOffset_forDrilling_X_MSL = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_Y_MSL", "0.0", temp, 255, strFIle);
+            Equipment.UnloadingOffset_forDrilling_Y_MSL = Equipment.ToDouble(temp.ToString());
+
+
             //  Keyence Laser Height Sensor 기준값 설정
             NativeMethods.GetPrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Vision_Focus_Position", "0.0", temp, 255, strFIle);
             Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition = Equipment.ToDouble(temp.ToString());
@@ -3197,13 +3239,61 @@ namespace QMC.Common
             if (((Equipment.CoordinateMatchingOffset_X != 0.0) || (Equipment.CoordinateMatchingOffset_Y != 0.0)) &&
                 ((Equipment.StageOffset_forDrilling_X != 0.0) || (Equipment.StageOffset_forDrilling_Y != 0.0)))
             {
-                MessageBox.Show("\"Offset Distance for Coordinate Matching\" 과\r\n\"Offset Distance to the Center of the Scanner\" 두 그룹 전체에 값이 들어가면 안됩니다.\n\r\n[두 그룹 중 한쪽에만 값이 들어가거나, 모두 0 이어야 합니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("\"Offset Distance for Coordinate Matching\" 과\r\n\"Offset Distance to the Center of the Scanner\" 두 그룹 전체에 값이 들어가면 안됩니다." +
+                                "\n\r\n[두 그룹 중 한쪽에만 값이 들어가거나, 모두 0 이어야 합니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
             return m_bRet;
         }
 
+        public static void Machine_ChuckMSL_Save()
+        {
+            string strTemp = "";
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            // 백업 처리 추가 시작
+            try
+            {
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+                //return;
+
+                MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X_MSL", Equipment.StageOffset_forDrilling_X_MSL.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y_MSL", Equipment.StageOffset_forDrilling_Y_MSL.ToString(), strFIle);
+
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_X_MSL", Equipment.LoadingOffset_forDrilling_X_MSL.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_Y_MSL", Equipment.LoadingOffset_forDrilling_Y_MSL.ToString(), strFIle);
+
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_X_MSL", Equipment.UnloadingOffset_forDrilling_X_MSL.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_Y_MSL", Equipment.UnloadingOffset_forDrilling_Y_MSL.ToString(), strFIle);
+
+            MessageBox.Show("Machine Option 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
         public static bool NewForm_FlatMeasurePos_Data_Load()
         {

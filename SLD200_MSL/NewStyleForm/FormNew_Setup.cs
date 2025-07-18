@@ -1395,6 +1395,14 @@ namespace SLD200_MSL
             textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text = Equipment.StageOffset_forDrilling_X.ToString();
             textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text = Equipment.StageOffset_forDrilling_Y.ToString();
 
+            textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Text = Equipment.StageOffset_forDrilling_X_MSL.ToString();
+            textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Text = Equipment.StageOffset_forDrilling_Y_MSL.ToString();
+
+            textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Text = Equipment.LoadingOffset_forDrilling_X_MSL.ToString();
+            textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Text = Equipment.LoadingOffset_forDrilling_Y_MSL.ToString();
+
+            textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Text = Equipment.UnloadingOffset_forDrilling_X_MSL.ToString();
+            textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Text = Equipment.UnloadingOffset_forDrilling_Y_MSL.ToString();
 
             //  Keyence Laser Height Sensor 기준값 설정
             textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text = Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition.ToString();
@@ -1472,6 +1480,8 @@ namespace SLD200_MSL
 
             checkBox_Setup_Option_HeightMeasure.Checked = Equipment.Machine_HeightMeasure_Enable;
             textBox_Setup_Option_HeightMeasure.Text = Equipment.Machine_HeightMeasure_Count.ToString();
+            textBox_Setup_Option_HeightMeasure_PosX.Text = Equipment.Machine_HeightMeasure_PosX.ToString();
+            textBox_Setup_Option_HeightMeasure_PosY.Text = Equipment.Machine_HeightMeasure_PosY.ToString();
 
             checkBox_Setup_Option_PreAlign_First_Enable.Checked = Equipment.Machine_PreAlign_First_Enable;
             //NativeMethods.GetPrivateProfileString("Machine_Option", "PreAlign_First_Enable", "false", temp, 255, strFIle);
@@ -1953,6 +1963,12 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_Enable", checkBox_Setup_Option_HeightMeasure.Checked.ToString(), strFIle);
             Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(textBox_Setup_Option_HeightMeasure.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_Count", textBox_Setup_Option_HeightMeasure.Text.ToString(), strFIle);
+            Equipment.Machine_HeightMeasure_PosX = Equipment.ToDouble(textBox_Setup_Option_HeightMeasure_PosX.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_PosX", textBox_Setup_Option_HeightMeasure_PosX.Text.ToString(), strFIle);
+            Equipment.Machine_HeightMeasure_PosY = Equipment.ToDouble(textBox_Setup_Option_HeightMeasure_PosY.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_PosY", textBox_Setup_Option_HeightMeasure_PosY.Text.ToString(), strFIle);
+
+
 
             Equipment.Machine_PreAlign_First_Enable = checkBox_Setup_Option_PreAlign_First_Enable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "PreAlign_First_Enable", checkBox_Setup_Option_PreAlign_First_Enable.Checked.ToString(), strFIle);
@@ -1995,6 +2011,23 @@ namespace SLD200_MSL
             Equipment.StageOffset_forDrilling_Y = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text);
             NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X", textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y", textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text, strFIle);
+
+            Equipment.StageOffset_forDrilling_X_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Text);
+            Equipment.StageOffset_forDrilling_Y_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Text);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X_MSL", textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X_MSL.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y_MSL", textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y_MSL.Text, strFIle);
+
+            Equipment.LoadingOffset_forDrilling_X_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Text);
+            Equipment.LoadingOffset_forDrilling_Y_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Text);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_X_MSL", textBox_Setup_Option_OffsetDistance_Loading_X_MSL.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_Y_MSL", textBox_Setup_Option_OffsetDistance_Loading_Y_MSL.Text, strFIle);
+
+            Equipment.UnloadingOffset_forDrilling_X_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Text);
+            Equipment.UnloadingOffset_forDrilling_Y_MSL = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Text);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_X_MSL", textBox_Setup_Option_OffsetDistance_Unloading_X_MSL.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_Y_MSL", textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL.Text, strFIle);
+
+
 
             //  Keyence Laser Height Sensor 기준값 설정
             Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition = Equipment.ToDouble(textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text);
@@ -2586,11 +2619,16 @@ namespace SLD200_MSL
             {
                 checkBox_Setup_Option_HeightMeasure.Checked = true;
                 textBox_Setup_Option_HeightMeasure.Enabled = true;
+                textBox_Setup_Option_HeightMeasure_PosX.Enabled = true;
+                textBox_Setup_Option_HeightMeasure_PosY.Enabled = true;
+
             }
             else
             {
                 checkBox_Setup_Option_HeightMeasure.Checked = false;
                 textBox_Setup_Option_HeightMeasure.Enabled = false;
+                textBox_Setup_Option_HeightMeasure_PosX.Enabled = false;
+                textBox_Setup_Option_HeightMeasure_PosY.Enabled = false;
             }
 
         }
@@ -4519,11 +4557,15 @@ namespace SLD200_MSL
             {
                 Equipment.Machine_HeightMeasure_Enable = true;
                 textBox_Setup_Option_HeightMeasure.Enabled = true;
+                textBox_Setup_Option_HeightMeasure_PosX.Enabled = true;
+                textBox_Setup_Option_HeightMeasure_PosY.Enabled = true;
             }
             else
             {
                 Equipment.Machine_HeightMeasure_Enable = false;
                 textBox_Setup_Option_HeightMeasure.Enabled = false;
+                textBox_Setup_Option_HeightMeasure_PosX.Enabled = false;
+                textBox_Setup_Option_HeightMeasure_PosY.Enabled = false;
             }
         }
 

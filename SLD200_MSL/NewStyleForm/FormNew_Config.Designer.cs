@@ -1089,6 +1089,7 @@
             this.button87.TabIndex = 56;
             this.button87.Text = "#";
             this.button87.UseVisualStyleBackColor = true;
+            this.button87.Visible = false;
             // 
             // button88
             // 
@@ -1100,6 +1101,7 @@
             this.button88.TabIndex = 55;
             this.button88.Text = "#";
             this.button88.UseVisualStyleBackColor = true;
+            this.button88.Visible = false;
             // 
             // textBox33
             // 
@@ -1157,6 +1159,7 @@
             this.button89.TabIndex = 50;
             this.button89.Text = "#";
             this.button89.UseVisualStyleBackColor = true;
+            this.button89.Visible = false;
             // 
             // textBox35
             // 
@@ -1191,6 +1194,7 @@
             this.button90.TabIndex = 47;
             this.button90.Text = "#";
             this.button90.UseVisualStyleBackColor = true;
+            this.button90.Visible = false;
             // 
             // textBox36
             // 
@@ -1225,6 +1229,7 @@
             this.button91.TabIndex = 44;
             this.button91.Text = "#";
             this.button91.UseVisualStyleBackColor = true;
+            this.button91.Visible = false;
             // 
             // button92
             // 
@@ -1236,6 +1241,7 @@
             this.button92.TabIndex = 43;
             this.button92.Text = "#";
             this.button92.UseVisualStyleBackColor = true;
+            this.button92.Visible = false;
             // 
             // textBox37
             // 
@@ -1365,6 +1371,7 @@
             this.button_KeypadCall_Config_LDUL_JogMove_StepSize.TabIndex = 76;
             this.button_KeypadCall_Config_LDUL_JogMove_StepSize.Text = "#";
             this.button_KeypadCall_Config_LDUL_JogMove_StepSize.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_LDUL_JogMove_StepSize.Visible = false;
             // 
             // textBox_Config_LDUL_JogMove_StepSize
             // 
@@ -2087,6 +2094,7 @@
             this.button_Config_LDUL_Module_Size_Set.TabIndex = 45;
             this.button_Config_LDUL_Module_Size_Set.Text = "#";
             this.button_Config_LDUL_Module_Size_Set.UseVisualStyleBackColor = true;
+            this.button_Config_LDUL_Module_Size_Set.Visible = false;
             // 
             // Button_Config_LDUL_TeachingPositions_Stop
             // 
@@ -2252,6 +2260,7 @@
             this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.TabIndex = 38;
             this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.Text = "#";
             this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.Visible = false;
             // 
             // button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX
             // 
@@ -2263,6 +2272,7 @@
             this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.TabIndex = 37;
             this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.Text = "#";
             this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.Visible = false;
             // 
             // textBox_Config_LDUL_TeachingPos_MAlignerY
             // 
@@ -2320,6 +2330,7 @@
             this.button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.TabIndex = 32;
             this.button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Text = "#";
             this.button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Visible = false;
             // 
             // textBox_Config_LDUL_TeachingPos_LPortZ
             // 
@@ -2354,6 +2365,7 @@
             this.button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.TabIndex = 29;
             this.button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Text = "#";
             this.button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Visible = false;
             // 
             // textBox_Config_LDUL_TeachingPos_RPortZ
             // 
@@ -2388,6 +2400,7 @@
             this.button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.TabIndex = 26;
             this.button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Text = "#";
             this.button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Visible = false;
             // 
             // button_KeypadCall_Config_LDUL_TeachingPos_TransferX
             // 
@@ -2399,6 +2412,7 @@
             this.button_KeypadCall_Config_LDUL_TeachingPos_TransferX.TabIndex = 25;
             this.button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Text = "#";
             this.button_KeypadCall_Config_LDUL_TeachingPos_TransferX.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Visible = false;
             this.button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Click += new System.EventHandler(this.button_KeypadCall_Config_LDUL_TeachingPos_TransferX_Click);
             // 
             // textBox_Config_LDUL_TeachingPos_TransferZ
@@ -3555,6 +3569,7 @@
             this.button13.TabIndex = 47;
             this.button13.Text = "#";
             this.button13.UseVisualStyleBackColor = true;
+            this.button13.Visible = false;
             // 
             // textBox14
             // 
@@ -3589,6 +3604,7 @@
             this.button33.TabIndex = 44;
             this.button33.Text = "#";
             this.button33.UseVisualStyleBackColor = true;
+            this.button33.Visible = false;
             // 
             // button35
             // 
@@ -3600,6 +3616,7 @@
             this.button35.TabIndex = 43;
             this.button35.Text = "#";
             this.button35.UseVisualStyleBackColor = true;
+            this.button35.Visible = false;
             // 
             // textBox15
             // 
@@ -3689,6 +3706,7 @@
             this.button_KeypadCall_Config_WorkStage_JogMove_StepSize.TabIndex = 76;
             this.button_KeypadCall_Config_WorkStage_JogMove_StepSize.Text = "#";
             this.button_KeypadCall_Config_WorkStage_JogMove_StepSize.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_WorkStage_JogMove_StepSize.Visible = false;
             // 
             // textBox_Config_WorkStage_JogMove_StepSize
             // 
@@ -4141,6 +4159,7 @@
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.TabIndex = 48;
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = "#";
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.UseVisualStyleBackColor = true;
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Visible = false;
             // 
             // button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX
             // 
@@ -4152,6 +4171,7 @@
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.TabIndex = 47;
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text = "#";
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.UseVisualStyleBackColor = true;
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Visible = false;
             // 
             // textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY
             // 
@@ -4210,6 +4230,7 @@
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.TabIndex = 26;
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text = "#";
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.UseVisualStyleBackColor = true;
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Visible = false;
             // 
             // button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX
             // 
@@ -4221,6 +4242,7 @@
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.TabIndex = 25;
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = "#";
             this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.UseVisualStyleBackColor = true;
+            this.button_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Visible = false;
             // 
             // textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY
             // 
@@ -4397,6 +4419,7 @@
             this.button_KeypadCall_Config_WorkStage_TeachingPos_StageY.TabIndex = 26;
             this.button_KeypadCall_Config_WorkStage_TeachingPos_StageY.Text = "#";
             this.button_KeypadCall_Config_WorkStage_TeachingPos_StageY.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_WorkStage_TeachingPos_StageY.Visible = false;
             // 
             // button_KeypadCall_Config_WorkStage_TeachingPos_StageX
             // 
@@ -4408,6 +4431,7 @@
             this.button_KeypadCall_Config_WorkStage_TeachingPos_StageX.TabIndex = 25;
             this.button_KeypadCall_Config_WorkStage_TeachingPos_StageX.Text = "#";
             this.button_KeypadCall_Config_WorkStage_TeachingPos_StageX.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_WorkStage_TeachingPos_StageX.Visible = false;
             // 
             // textBox_Config_WorkStage_TeachingPos_StageY
             // 
@@ -4557,6 +4581,7 @@
             this.button_KeypadCall_Config_Vision_JogMove_StepSize.TabIndex = 76;
             this.button_KeypadCall_Config_Vision_JogMove_StepSize.Text = "#";
             this.button_KeypadCall_Config_Vision_JogMove_StepSize.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_Vision_JogMove_StepSize.Visible = false;
             // 
             // textBox_Config_Vision_JogMove_StepSize
             // 
@@ -4926,6 +4951,7 @@
             this.button10.TabIndex = 47;
             this.button10.Text = "#";
             this.button10.UseVisualStyleBackColor = true;
+            this.button10.Visible = false;
             // 
             // textBox7
             // 
@@ -4960,6 +4986,7 @@
             this.button11.TabIndex = 44;
             this.button11.Text = "#";
             this.button11.UseVisualStyleBackColor = true;
+            this.button11.Visible = false;
             // 
             // button16
             // 
@@ -4971,6 +4998,7 @@
             this.button16.TabIndex = 43;
             this.button16.Text = "#";
             this.button16.UseVisualStyleBackColor = true;
+            this.button16.Visible = false;
             // 
             // textBox8
             // 
@@ -5335,6 +5363,7 @@
             this.button_KeypadCall_Config_Vision_TeachingPos_VisionZ.TabIndex = 25;
             this.button_KeypadCall_Config_Vision_TeachingPos_VisionZ.Text = "#";
             this.button_KeypadCall_Config_Vision_TeachingPos_VisionZ.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_Vision_TeachingPos_VisionZ.Visible = false;
             // 
             // textBox_Config_Vision_TeachingPos_VisionZ
             // 
@@ -6842,6 +6871,7 @@
             this.button12.TabIndex = 43;
             this.button12.Text = "#";
             this.button12.UseVisualStyleBackColor = true;
+            this.button12.Visible = false;
             // 
             // textBox3
             // 
@@ -6936,6 +6966,7 @@
             this.button_KeypadCall_Config_BDS_JogMove_StepSize.TabIndex = 76;
             this.button_KeypadCall_Config_BDS_JogMove_StepSize.Text = "#";
             this.button_KeypadCall_Config_BDS_JogMove_StepSize.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_BDS_JogMove_StepSize.Visible = false;
             // 
             // textBox_Config_BDS_JogMove_StepSize
             // 
@@ -7239,6 +7270,7 @@
             this.button_KeypadCall_Config_BDS_TeachingPos_MaskY.TabIndex = 25;
             this.button_KeypadCall_Config_BDS_TeachingPos_MaskY.Text = "#";
             this.button_KeypadCall_Config_BDS_TeachingPos_MaskY.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_Config_BDS_TeachingPos_MaskY.Visible = false;
             // 
             // textBox_Config_BDS_TeachingPos_MaskY
             // 

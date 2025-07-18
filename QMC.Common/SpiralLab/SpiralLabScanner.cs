@@ -552,7 +552,7 @@ namespace QMC.Common.Parts
                 //rtc.CtlFrequency(setting.Frequency, 2);
                 //rtc.CtlLaserOn();
 
-                rtc.CtlLaserMode(LaserMode.Co2);
+                rtc.CtlLaserMode(LaserMode.Co2);    //Laser On은... Co2가 맞겠지? Yag1
 
                 success &= rtc.ListBegin(laser, ListType.Single);
 
@@ -677,7 +677,7 @@ namespace QMC.Common.Parts
 
             var rtcMode = rtc as IRtc;
 
-            rtcMode.CtlLaserMode(LaserMode.Co2);
+            rtcMode.CtlLaserMode(LaserMode.Yag1);
 
             rtcMode.ListBegin(laser, ListType.Auto);
 
