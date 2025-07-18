@@ -34466,6 +34466,13 @@ namespace QMC.Common.Modules
                         break;
                     }
 
+                    //GoldPowder 사용하는 경우 Batch Mode는 사용하지 말자. 안됨!
+                    if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                    {
+                        Equipment.Machine_SocketVision_Batch_Use = false;
+                    }
+
+
                     // 다음 모듈을 진행하기 전에 얼마 동안 대기 하기 위한 구문.
                     if (ShouldDelayNextModule())
                     {

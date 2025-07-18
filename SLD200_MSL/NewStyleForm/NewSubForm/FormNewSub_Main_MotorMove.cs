@@ -183,21 +183,21 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             // MAlign Vacuum 상태 표시
             bool bMAlignVac = loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center);
-            button_MotorMove_Loader_MAlign_Vacuum.Text = $"Vacuum {(bMAlignVac ? "ON" : "OFF")}";
+            button_MotorMove_Loader_MAlign_Vacuum.Text = $"M-Vacuum {(bMAlignVac ? "ON" : "OFF")}";
             SetColor(button_MotorMove_Loader_MAlign_Vacuum,
                      bMAlignVac ? Color.LightGreen : _originalBackColors[button_MotorMove_Loader_MAlign_Vacuum],
                      Color.Black);
 
             // loader Vacuum 상태 표시
             bool bloaderVac = loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner);
-            button_MotorMove_Loader_Stacker_Vacuum.Text = $"Vacuum {(bloaderVac ? "ON" : "OFF")}";
+            button_MotorMove_Loader_Stacker_Vacuum.Text = $"L-Vacuum {(bloaderVac ? "ON" : "OFF")}";
             SetColor(button_MotorMove_Loader_Stacker_Vacuum,
                      bloaderVac ? Color.LightGreen : _originalBackColors[button_MotorMove_Loader_Stacker_Vacuum],
                      Color.Black);
 
             // unloader Vacuum 상태 표시
             bool bunloaderVac = unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner);
-            button_MotorMove_Unloader_Vacuum.Text = $"Vacuum {(bunloaderVac ? "ON" : "OFF")}";
+            button_MotorMove_Unloader_Vacuum.Text = $"Unl-Vacuum {(bunloaderVac ? "ON" : "OFF")}";
             SetColor(button_MotorMove_Unloader_Vacuum,
                      bunloaderVac ? Color.LightGreen : _originalBackColors[button_MotorMove_Unloader_Vacuum],
                      Color.Black);
