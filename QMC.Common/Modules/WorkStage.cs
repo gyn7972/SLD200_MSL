@@ -38546,6 +38546,11 @@ namespace QMC.Common.Modules
                             if (m_bSocketAlign_OK)
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료");
+                                if (m_bPassedSocket_Exist)
+                                {
+                                    m_bRetryAlignSucess = true;
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료 : m_bPassedSocket_Exist, m_bRetryAlignSucess = true");
+                                }
 
                                 //  Align 후 계산된 데이터 가져오기
                                 m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
@@ -38592,6 +38597,11 @@ namespace QMC.Common.Modules
                             else
                             {
                                 m_bSocketAlign_OK = false;
+                                if (m_bPassedSocket_Exist)
+                                {
+                                    m_bRetryAlignSucess = true;
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료 : m_bPassedSocket_Exist, m_bRetryAlignSucess = true");
+                                }
                                 // 소켓 얼라인 실패했으니 화면 갱신해야 한다.
                                 m_nDrillingData_SocketAlign_NGCount++; //소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
                                 switch (m_LayerType)
