@@ -13677,7 +13677,8 @@ namespace QMC.Common.Modules
         public bool m_bCO2_MultyMode = false;
         st4PointPosition_Data[] m_st4Dwg_RepairPos = new st4PointPosition_Data[4];
 
-        public bool m_b3PointAlingMode = true;
+        public bool m_b3PointAlingMode = false;
+        public bool m_bSocketAlign_Fiducial_3PointNg = false; //1개 실패했을때만 넘어가자. 
 
         #region Socket Align
         int ExecuteAlignmentSequence(int nSocketNum, 
@@ -13712,6 +13713,8 @@ namespace QMC.Common.Modules
                 case (int)SocketAlign_Step.Start:
 
                     SocketAlign_Step_Start(nSocketNum, m_LayerType, alignMode);
+
+                    m_bSocketAlign_Fiducial_3PointNg = false;
 
                     // Socket Align 시작시 PreAlign Camera 끄기
                     SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
@@ -14491,86 +14494,100 @@ namespace QMC.Common.Modules
                             {
                                 if(m_b3PointAlingMode)    // 3점마크 사용시 - 마크를 찾던 못찾던 4점에 대해서 전부 서치 한다.
                                 {
-                                    Log.Write("SLD-200", Equipment.User_Name, "Socket Align",
+                                    if(m_bSocketAlign_Fiducial_3PointNg == false)
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align",
                                         $"Socket: {nSocketNum + 1} : Align 마크 찾기 실패 → 다음 마크로 이동 (총 마크 수: {m_nSocketAlign_FiducialCount + 1}");
 
-                                    // 스테이지 현재 위치
-                                    double stageX = MC_Func.MC_GetEncPos((int)nAxis.X);
-                                    double stageY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+                                        // 스테이지 현재 위치
+                                        double stageX = MC_Func.MC_GetEncPos((int)nAxis.X);
+                                        double stageY = MC_Func.MC_GetEncPos((int)nAxis.Y);
 
-                                    // 변환 후 중심 좌표
-                                    double centerX = stageX; //- xOffset;
-                                    double centerY = stageY; //- yOffset;
+                                        // 변환 후 중심 좌표
+                                        double centerX = stageX; //- xOffset;
+                                        double centerY = stageY; //- yOffset;
 
-                                    // 로그 출력
-                                    Log.Write("FineVision Fiducial", $"Stage EncPos X: {stageX:F3}, Y: {stageY:F3}");
-                                    Log.Write("FineVision Fiducial", $"Converted Center X: {centerX:F3}, Y: {centerY:F3}");
+                                        // 로그 출력
+                                        Log.Write("FineVision Fiducial", $"Stage EncPos X: {stageX:F3}, Y: {stageY:F3}");
+                                        Log.Write("FineVision Fiducial", $"Converted Center X: {centerX:F3}, Y: {centerY:F3}");
 
-                                    // 결과 적용
-                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = centerX;
-                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = centerY;
+                                        // 결과 적용
+                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = centerX;
+                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = centerY;
 
-                                    Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() + "  FineVision Fiducial Makr No : " + m_nSocketAlign_FiducialCount.ToString()
-                                        + " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString()
-                                        + ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
+                                        Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() + "  FineVision Fiducial Makr No : " + m_nSocketAlign_FiducialCount.ToString()
+                                            + " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString()
+                                            + ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
 
-                                    Log.Write("SLD-200", " Socket NO : " + nSocketNum.ToString() +
-                                        ", AlignMode.Socket::FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
-                                        " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
-                                        ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
+                                        Log.Write("SLD-200", " Socket NO : " + nSocketNum.ToString() +
+                                            ", AlignMode.Socket::FineVision Fiducial Makr No :" + m_nSocketAlign_FiducialCount.ToString() +
+                                            " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString() +
+                                            ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
 
-                                    xyCoordinateAlignPositionLast = new XyCoordinate(m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
-                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
-                                    xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
+                                        xyCoordinateAlignPositionLast = new XyCoordinate(m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
+                                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
+                                        xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
 
-                                    //  데이터 위치를 Scanner 위치로 변경
-                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
-                                        Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
-                                        Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                                        //  데이터 위치를 Scanner 위치로 변경
+                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
+                                            Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
+                                            Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
-                                    // 여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
-                                    //공용척 사용시.
-                                    double dScannerCalTeachingPosX = 0.0;
-                                    double dScannerCalTeachingPosY = 0.0;
-                                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
-                                    {
-                                        dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
-                                        dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                                        // 여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
+                                        //공용척 사용시.
+                                        double dScannerCalTeachingPosX = 0.0;
+                                        double dScannerCalTeachingPosY = 0.0;
+                                        if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                                        {
+                                            dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                                            dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                                        }
+                                        else
+                                        {
+                                            dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                                            dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+                                        }
+                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
+                                            dScannerCalTeachingPosX - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
+                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
+                                            dScannerCalTeachingPosY - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+
+                                        //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width =
+                                        //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount-1].dFiducial_Width;
+                                        //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height =
+                                        //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount-1].dFiducial_Height;
+
+                                        //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width; //=
+                                        //Equipment.stVisionRecipeSet.SocketMarkList[0].MarkRadius * 2;
+                                        //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height; //=
+                                        //Equipment.stVisionRecipeSet.SocketMarkList[0].MarkRadius * 2;
+
+                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width =
+                                            m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width * 2;
+                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height =
+                                            m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Height * 2;
+
+                                        m_bSocketAlign_Fiducial_3PointNg = true;
+                                        m_nSocketAlign_FiducialCount++;
+                                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RemainedCheck;
                                     }
                                     else
                                     {
-                                        dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
-                                        dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+                                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align",
+                                        $"Socket: {nSocketNum + 1} : Align 마크 찾기 실패 → 다음 마크로 이동 (총 마크 수: {m_nSocketAlign_FiducialCount + 1}");
+                                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "마크 2개 못찾음. - m_bSocketAlign_Fiducial_3PointNg = true");
+                                        m_bAlignCompleted = true;
+                                        m_bSocketAlign_OK = false;
+                                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                                     }
-                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X =
-                                        dScannerCalTeachingPosX - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
-                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
-                                        dScannerCalTeachingPosY - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
-
-                                    //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width =
-                                    //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount-1].dFiducial_Width;
-                                    //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height =
-                                    //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount-1].dFiducial_Height;
-
-                                    //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width; //=
-                                    //Equipment.stVisionRecipeSet.SocketMarkList[0].MarkRadius * 2;
-                                    //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height; //=
-                                    //Equipment.stVisionRecipeSet.SocketMarkList[0].MarkRadius * 2;
-
-                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width =
-                                        m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width * 2;
-                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height =
-                                        m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Height * 2;
-
-                                    m_nSocketAlign_FiducialCount++;
-                                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RemainedCheck;
                                 }
                                 else
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
                                     m_bAlignCompleted = true;
                                     m_bSocketAlign_OK = false;
+                                    m_bSocketAlign_Fiducial_3PointNg = false;
                                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                                 } 
                             }
@@ -30225,7 +30242,7 @@ namespace QMC.Common.Modules
                     dOffsetX1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
                     dOffsetY1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.Y;
 
-                    if (Math.Abs(dOffsetX1) < 0.03 && Math.Abs(dOffsetY1) < 0.03)
+                    if (Math.Abs(dOffsetX1) < 0.025 && Math.Abs(dOffsetY1) < 0.025)
                     {
                         dSumOffsetX += dOffsetX1;
                         dSumOffsetY += dOffsetY1;
@@ -30242,7 +30259,8 @@ namespace QMC.Common.Modules
                     double dOffsetX = dSumOffsetX / nSumCount;
                     double dOffsetY = dSumOffsetY / nSumCount;
 
-                    double dpercent = 85; //%
+                    double dpercent = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent; //85%
+                    Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::dpercent: {dpercent:F1}");
                     dOffsetX = dOffsetX * (dpercent / 100);
                     dOffsetY = dOffsetY * (dpercent / 100);
 
@@ -35031,6 +35049,7 @@ namespace QMC.Common.Modules
                                                         dTeachingPosZ, dHeightOffset, dPosZ, m_dStageheight);
                                 Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_HeightMeasure_Check", strTemp);
 
+                                Log.Write("SocketHeight", strTemp);
 
                                 m_Sequence_FlatnessMeasure.m_MainTick_Start = false;
                                 m_Sequence_FlatnessMeasure.Reset();
@@ -37908,6 +37927,8 @@ namespace QMC.Common.Modules
                     strTemp = string.Format("HeightMeasure 결과 - dTeachingPosZ: {0:F3}, dHeightOffset: {1:F3}, dPosModuleZ: {2:F3}, ModuleHeight: {3:F3}",
                                             dTeachingPosZ, m_dZOffset_SocketHeightCheck, dPosModuleZ, m_dModuleHeight);
                     Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_HeightMeasure_Check", strTemp);
+
+                    Log.Write("SocketHeight", strTemp);
 
                     // Layer별 소켓 데이터에 저장
                     // hol가공시에..하니깐 Layer구분없이 전부 다 측정data 넣어야 하는거 아닌가?

@@ -191,6 +191,11 @@
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.label_Main_Serial_Number = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label_Main_Height_Module = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label_Main_Height_Stage = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -236,6 +241,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Lower)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Upper)).BeginInit();
             this.groupBox_ModuleStatus.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SiriusViewer_Main
@@ -1737,10 +1743,10 @@
             this.groupBox70.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox70.Name = "groupBox70";
             this.groupBox70.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox70.Size = new System.Drawing.Size(312, 85);
+            this.groupBox70.Size = new System.Drawing.Size(227, 85);
             this.groupBox70.TabIndex = 211;
             this.groupBox70.TabStop = false;
-            this.groupBox70.Text = " Stage Vacuum (use with Stage Vac. On Sig.) ";
+            this.groupBox70.Text = " Stage Vacuum";
             // 
             // label_Main_EPRO_Absorption_Judgment_Pressure
             // 
@@ -1748,7 +1754,7 @@
             this.label_Main_EPRO_Absorption_Judgment_Pressure.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Main_EPRO_Absorption_Judgment_Pressure.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_Main_EPRO_Absorption_Judgment_Pressure.ForeColor = System.Drawing.Color.Lime;
-            this.label_Main_EPRO_Absorption_Judgment_Pressure.Location = new System.Drawing.Point(209, 51);
+            this.label_Main_EPRO_Absorption_Judgment_Pressure.Location = new System.Drawing.Point(134, 51);
             this.label_Main_EPRO_Absorption_Judgment_Pressure.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_Main_EPRO_Absorption_Judgment_Pressure.Name = "label_Main_EPRO_Absorption_Judgment_Pressure";
             this.label_Main_EPRO_Absorption_Judgment_Pressure.Size = new System.Drawing.Size(90, 27);
@@ -1762,9 +1768,9 @@
             this.label41.Location = new System.Drawing.Point(7, 49);
             this.label41.Margin = new System.Windows.Forms.Padding(6);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(195, 27);
+            this.label41.Size = new System.Drawing.Size(128, 27);
             this.label41.TabIndex = 51;
-            this.label41.Text = "Judgment Pressure (kPa) :";
+            this.label41.Text = "Judgment(kPa) :";
             this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_Main_EPRO_Current_Pressure
@@ -1773,7 +1779,7 @@
             this.label_Main_EPRO_Current_Pressure.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Main_EPRO_Current_Pressure.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_Main_EPRO_Current_Pressure.ForeColor = System.Drawing.Color.Lime;
-            this.label_Main_EPRO_Current_Pressure.Location = new System.Drawing.Point(209, 21);
+            this.label_Main_EPRO_Current_Pressure.Location = new System.Drawing.Point(134, 21);
             this.label_Main_EPRO_Current_Pressure.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_Main_EPRO_Current_Pressure.Name = "label_Main_EPRO_Current_Pressure";
             this.label_Main_EPRO_Current_Pressure.Size = new System.Drawing.Size(90, 27);
@@ -1787,9 +1793,9 @@
             this.label72.Location = new System.Drawing.Point(7, 19);
             this.label72.Margin = new System.Windows.Forms.Padding(6);
             this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(195, 27);
+            this.label72.Size = new System.Drawing.Size(128, 27);
             this.label72.TabIndex = 49;
-            this.label72.Text = "Current Pressure (kPa) :";
+            this.label72.Text = "Current(kPa) :";
             this.label72.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button_TEST2
@@ -1814,7 +1820,7 @@
             this.groupBox_BET_Status.Controls.Add(this.label_Main_BET_ZoomStatus);
             this.groupBox_BET_Status.Controls.Add(this.label4);
             this.groupBox_BET_Status.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox_BET_Status.Location = new System.Drawing.Point(1203, 265);
+            this.groupBox_BET_Status.Location = new System.Drawing.Point(1352, 264);
             this.groupBox_BET_Status.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_BET_Status.Name = "groupBox_BET_Status";
             this.groupBox_BET_Status.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -2386,12 +2392,79 @@
             this.label_Main_Serial_Number.Text = "- - - - -";
             this.label_Main_Serial_Number.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label_Main_Height_Module);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.label_Main_Height_Stage);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(1115, 267);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox1.Size = new System.Drawing.Size(228, 85);
+            this.groupBox1.TabIndex = 212;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Height";
+            // 
+            // label_Main_Height_Module
+            // 
+            this.label_Main_Height_Module.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_Height_Module.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_Height_Module.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_Height_Module.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_Height_Module.Location = new System.Drawing.Point(134, 51);
+            this.label_Main_Height_Module.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Main_Height_Module.Name = "label_Main_Height_Module";
+            this.label_Main_Height_Module.Size = new System.Drawing.Size(90, 27);
+            this.label_Main_Height_Module.TabIndex = 52;
+            this.label_Main_Height_Module.Text = "0";
+            this.label_Main_Height_Module.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            this.label3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label3.Location = new System.Drawing.Point(7, 49);
+            this.label3.Margin = new System.Windows.Forms.Padding(6);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(128, 27);
+            this.label3.TabIndex = 51;
+            this.label3.Text = "Module (um) :";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_Height_Stage
+            // 
+            this.label_Main_Height_Stage.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_Height_Stage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_Height_Stage.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_Height_Stage.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_Height_Stage.Location = new System.Drawing.Point(134, 21);
+            this.label_Main_Height_Stage.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Main_Height_Stage.Name = "label_Main_Height_Stage";
+            this.label_Main_Height_Stage.Size = new System.Drawing.Size(90, 27);
+            this.label_Main_Height_Stage.TabIndex = 50;
+            this.label_Main_Height_Stage.Text = "0";
+            this.label_Main_Height_Stage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label6
+            // 
+            this.label6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label6.Location = new System.Drawing.Point(7, 19);
+            this.label6.Margin = new System.Windows.Forms.Padding(6);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(128, 27);
+            this.label6.TabIndex = 49;
+            this.label6.Text = "Stage (um) :";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormNew_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 875);
             this.ControlBox = false;
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label_Main_Serial_Number);
             this.Controls.Add(this.button_Main_SelectedProcess);
             this.Controls.Add(this.groupBox_ProcessingData);
@@ -2496,6 +2569,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Lower)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Upper)).EndInit();
             this.groupBox_ModuleStatus.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2665,5 +2739,10 @@
         private System.Windows.Forms.GroupBox groupBox_ModuleStatus;
         private System.Windows.Forms.Button button_Main_SelectedProcess;
         private System.Windows.Forms.Label label_Main_Serial_Number;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label_Main_Height_Module;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label_Main_Height_Stage;
+        private System.Windows.Forms.Label label6;
     }
 }
