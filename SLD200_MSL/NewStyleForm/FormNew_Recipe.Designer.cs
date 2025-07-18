@@ -316,6 +316,7 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent = new System.Windows.Forms.TextBox();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -1542,6 +1543,7 @@
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent);
             this.groupBox9.Controls.Add(this.button_GoldPowderThickness);
             this.groupBox9.Controls.Add(this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign);
             this.groupBox9.Controls.Add(this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness);
@@ -1580,9 +1582,9 @@
             this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Font = new System.Drawing.Font("Tahoma", 10F);
             this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Location = new System.Drawing.Point(17, 155);
             this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Name = "checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign";
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Size = new System.Drawing.Size(132, 21);
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Size = new System.Drawing.Size(165, 21);
             this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.TabIndex = 66;
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Text = "GoldPowder Align";
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Text = "GoldPowder Align (%):";
             this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.UseVisualStyleBackColor = true;
             // 
             // textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness
@@ -1599,7 +1601,7 @@
             // textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY
             // 
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Location = new System.Drawing.Point(155, 90);
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Location = new System.Drawing.Point(179, 90);
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Name = "textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY";
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Size = new System.Drawing.Size(45, 24);
@@ -1632,7 +1634,7 @@
             // textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX
             // 
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Location = new System.Drawing.Point(155, 64);
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Location = new System.Drawing.Point(179, 64);
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Name = "textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX";
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Size = new System.Drawing.Size(45, 24);
@@ -3986,6 +3988,17 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
+            // textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent
+            // 
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Location = new System.Drawing.Point(179, 153);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Name = "textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent";
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Size = new System.Drawing.Size(45, 24);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.TabIndex = 67;
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text = "0.0";
+            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -4344,5 +4357,6 @@
         private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType;
         private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex;
         private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_MaskIndex;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent;
     }
 }

@@ -1174,6 +1174,10 @@ namespace SLD200_MSL
             SetValue(label_Main_EPRO_Current_Pressure, workStage.m_dEPRO_Value.ToString("0.0000"));
             SetValue(label_Main_EPRO_Absorption_Judgment_Pressure, Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString("0.0000"));
 
+            // Height
+            SetValue(label_Main_Height_Stage, workStage.m_dStageheight.ToString("0.000"));
+            SetValue(label_Main_Height_Module, workStage.m_dModuleHeight.ToString("0.000"));
+
             //  BET 상태 업데이트
             SetValue(label_Main_BET_ZoomStatus, string.Format("{0:0.000}  /  {1:0.000}", workStage.m_dBET_ZoomValue, workStage.m_dBET_ZoomValue_Recipe));
             SetColor(label_Main_BET_ZoomStatus, !((workStage.m_dBET_ZoomValue > (workStage.m_dBET_ZoomValue_Recipe - 0.005)) && (workStage.m_dBET_ZoomValue < (workStage.m_dBET_ZoomValue_Recipe + 0.005))) ? Color.Red : Color.Black, 
@@ -4319,6 +4323,10 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            return;
+            workStage.m_dStageheight = 1.567;
+            workStage.m_dModuleHeight = 0.590;
+
             return;
             workStage.SetStageComplete(WorkStage.SemiAutoStep.PreAlign, false);
             workStage.SetSemiAutoRequest(WorkStage.SemiAutoStep.PreAlign);
