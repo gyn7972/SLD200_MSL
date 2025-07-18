@@ -13677,7 +13677,7 @@ namespace QMC.Common.Modules
         public bool m_bCO2_MultyMode = false;
         st4PointPosition_Data[] m_st4Dwg_RepairPos = new st4PointPosition_Data[4];
 
-        public bool m_b3PointAlingMode = true;
+        public bool m_b3PointAlingMode = false;
 
         #region Socket Align
         int ExecuteAlignmentSequence(int nSocketNum, 
