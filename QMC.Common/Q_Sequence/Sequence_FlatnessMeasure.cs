@@ -293,22 +293,30 @@ namespace QMC.Common.Q_Sequence
 
                     if (m_nFlatnessMeasure_Count < 9) //  최대 9 포인트로 고정되어 있음.
                     {
-                        //  측정 위치값이 있는지 체크
-                        if ((Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].StagePos[m_nFlatnessMeasure_Count].X != 0.0) &&
-                            (Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].StagePos[m_nFlatnessMeasure_Count].Y != 0.0))
+                        if (Equipment.Machine_HeightMeasure_Enable)
                         {
-                            Log.Write("FlatnessMeasure", Equipment.User_Name, "최대 측정 회수 이내. 측정 위치값 있음.");
-
-                            //  측정 위치로 이동
+                            Log.Write("FlatnessMeasure", Equipment.User_Name, "Machine_HeightMeasure_Enable. 측정 위치 이동.");
                             m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_StageXY_MovetoFlatnessMeasurePos;
                         }
                         else
                         {
-                            Log.Write("FlatnessMeasure", Equipment.User_Name, "최대 측정 회수 이내. 측정 위치값 없음. 다음 Position 체크");
+                            //  측정 위치값이 있는지 체크
+                            if ((Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].StagePos[m_nFlatnessMeasure_Count].X != 0.0) &&
+                                (Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].StagePos[m_nFlatnessMeasure_Count].Y != 0.0))
+                            {
+                                Log.Write("FlatnessMeasure", Equipment.User_Name, "최대 측정 회수 이내. 측정 위치값 있음.");
 
-                            //  측정 위치가 없으면 다음 포인트로 이동
-                            m_nFlatnessMeasure_Count++;
-                            m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_RemainedCheck;
+                                //  측정 위치로 이동
+                                m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_StageXY_MovetoFlatnessMeasurePos;
+                            }
+                            else
+                            {
+                                Log.Write("FlatnessMeasure", Equipment.User_Name, "최대 측정 회수 이내. 측정 위치값 없음. 다음 Position 체크");
+
+                                //  측정 위치가 없으면 다음 포인트로 이동
+                                m_nFlatnessMeasure_Count++;
+                                m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_RemainedCheck;
+                            }
                         }
                     }
                     else
@@ -321,8 +329,20 @@ namespace QMC.Common.Q_Sequence
 
                 case (int)FlatnessMeasure_Step.FlatnessMeasure_StageXY_MovetoFlatnessMeasurePos:                 //  Stage XY, Laser Height Sensor 를 측정 위치로 이동
 
-                    double dPosX = Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].StagePos[m_nFlatnessMeasure_Count].X;
-                    double dPosY = Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].StagePos[m_nFlatnessMeasure_Count].Y;
+                    double dPosX = 0.0;
+                    double dPosY = 0.0;
+
+                    if(Equipment.Machine_HeightMeasure_Enable)
+                    {
+                        dPosX = Equipment.Machine_HeightMeasure_PosX;
+                        dPosY = Equipment.Machine_HeightMeasure_PosY;
+                    }
+                    else
+                    {
+                        dPosX = Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].StagePos[m_nFlatnessMeasure_Count].X;
+                        dPosY = Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].StagePos[m_nFlatnessMeasure_Count].Y;
+                    }
+
                     if (StageXY_Move_HeightCheckPos(dPosX, dPosY) != 0)
                     {
                         if (TickCount_Elapsed((int)TickType.TICK_FLATNESS_MEASURE) > nLaserPowermeasureTimeout)
@@ -361,7 +381,6 @@ namespace QMC.Common.Q_Sequence
                     {
                         m_nFlatnessMeasure_Step = tempStep;  // 다시 반영
                     }
-
                     break;
 
 

@@ -658,13 +658,15 @@ namespace QMC.Common
 
         public static bool Machine_SocketHeight_Batch_Use { set; get; } = false;           //  Socket Height Batch 사용 여부 (true: 사용, false: 미사용)
         public static bool Machine_SocketVision_Batch_Use { set; get; } = false;
-        public static bool Machine_LaserPowerMeasure_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static bool Machine_LaserPowerMeasure_Enable { set; get; } = false;            
         public static int Machine_LaserPowerMeasure_Count { set; get; } = 1;
 
-        public static bool Machine_HeightMeasure_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static bool Machine_HeightMeasure_Enable { set; get; } = false;                
         public static int Machine_HeightMeasure_Count { set; get; } = 1;
+        public static double Machine_HeightMeasure_PosX { set; get; } = 0.0;                     
+        public static double Machine_HeightMeasure_PosY { set; get; } = 0.0;                     
 
-        public static bool Machine_PreAlign_First_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static bool Machine_PreAlign_First_Enable { set; get; } = false;                     
 
         //  Offset Distance
         public struct stOffsetDistanceParameter
@@ -3137,6 +3139,10 @@ namespace QMC.Common
             Equipment.Machine_HeightMeasure_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_Count", "1", temp, 255, strFIle);
             Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_PosX", "1.1", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_PosX = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_PosY", "1.1", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_PosY = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "PreAlign_First_Enable", "false", temp, 255, strFIle);
             Equipment.Machine_PreAlign_First_Enable = temp.ToString() == "False" ? false : true;
             //

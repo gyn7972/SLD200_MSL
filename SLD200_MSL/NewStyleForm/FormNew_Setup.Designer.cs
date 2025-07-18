@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.panel_Setup_Communication_DeviceControl = new System.Windows.Forms.Panel();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
@@ -602,6 +602,10 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_HeightMeasure_PosX = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_Option_HeightMeasure_PosY = new System.Windows.Forms.TextBox();
+            this.label100 = new System.Windows.Forms.Label();
+            this.label101 = new System.Windows.Forms.Label();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -1305,14 +1309,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1365,14 +1369,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -6065,6 +6069,10 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.label101);
+            this.groupBox13.Controls.Add(this.label100);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_HeightMeasure_PosY);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_HeightMeasure_PosX);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_PreAlign_First_Enable);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_HeightMeasure);
             this.groupBox13.Controls.Add(this.textBox_Setup_Option_HeightMeasure);
@@ -6148,7 +6156,7 @@
             // 
             // checkBox_Setup_Option_PreAlign_First_Enable
             // 
-            this.checkBox_Setup_Option_PreAlign_First_Enable.Location = new System.Drawing.Point(1024, 311);
+            this.checkBox_Setup_Option_PreAlign_First_Enable.Location = new System.Drawing.Point(1024, 275);
             this.checkBox_Setup_Option_PreAlign_First_Enable.Name = "checkBox_Setup_Option_PreAlign_First_Enable";
             this.checkBox_Setup_Option_PreAlign_First_Enable.Size = new System.Drawing.Size(221, 24);
             this.checkBox_Setup_Option_PreAlign_First_Enable.TabIndex = 134;
@@ -6157,7 +6165,7 @@
             // 
             // checkBox_Setup_Option_HeightMeasure
             // 
-            this.checkBox_Setup_Option_HeightMeasure.Location = new System.Drawing.Point(1024, 279);
+            this.checkBox_Setup_Option_HeightMeasure.Location = new System.Drawing.Point(1024, 305);
             this.checkBox_Setup_Option_HeightMeasure.Name = "checkBox_Setup_Option_HeightMeasure";
             this.checkBox_Setup_Option_HeightMeasure.Size = new System.Drawing.Size(221, 24);
             this.checkBox_Setup_Option_HeightMeasure.TabIndex = 133;
@@ -6168,7 +6176,7 @@
             // textBox_Setup_Option_HeightMeasure
             // 
             this.textBox_Setup_Option_HeightMeasure.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_HeightMeasure.Location = new System.Drawing.Point(1246, 279);
+            this.textBox_Setup_Option_HeightMeasure.Location = new System.Drawing.Point(1246, 305);
             this.textBox_Setup_Option_HeightMeasure.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_HeightMeasure.Name = "textBox_Setup_Option_HeightMeasure";
             this.textBox_Setup_Option_HeightMeasure.Size = new System.Drawing.Size(50, 24);
@@ -7823,6 +7831,50 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // textBox_Setup_Option_HeightMeasure_PosX
+            // 
+            this.textBox_Setup_Option_HeightMeasure_PosX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_HeightMeasure_PosX.Location = new System.Drawing.Point(1246, 334);
+            this.textBox_Setup_Option_HeightMeasure_PosX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_HeightMeasure_PosX.Name = "textBox_Setup_Option_HeightMeasure_PosX";
+            this.textBox_Setup_Option_HeightMeasure_PosX.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_HeightMeasure_PosX.TabIndex = 135;
+            this.textBox_Setup_Option_HeightMeasure_PosX.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
+            this.textBox_Setup_Option_HeightMeasure_PosX.Text = "1";
+            // 
+            // textBox_Setup_Option_HeightMeasure_PosY
+            // 
+            this.textBox_Setup_Option_HeightMeasure_PosY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_HeightMeasure_PosY.Location = new System.Drawing.Point(1246, 362);
+            this.textBox_Setup_Option_HeightMeasure_PosY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_HeightMeasure_PosY.Name = "textBox_Setup_Option_HeightMeasure_PosY";
+            this.textBox_Setup_Option_HeightMeasure_PosY.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_HeightMeasure_PosY.TabIndex = 136;
+            this.textBox_Setup_Option_HeightMeasure_PosY.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
+            this.textBox_Setup_Option_HeightMeasure_PosY.Text = "1";
+            // 
+            // label100
+            // 
+            this.label100.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label100.Location = new System.Drawing.Point(1020, 338);
+            this.label100.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label100.Name = "label100";
+            this.label100.Size = new System.Drawing.Size(220, 20);
+            this.label100.TabIndex = 137;
+            this.label100.Text = "PositionX :";
+            this.label100.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label101
+            // 
+            this.label101.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label101.Location = new System.Drawing.Point(1020, 366);
+            this.label101.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label101.Name = "label101";
+            this.label101.Size = new System.Drawing.Size(220, 20);
+            this.label101.TabIndex = 138;
+            this.label101.Text = "PositionY :";
+            this.label101.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -8509,5 +8561,9 @@
         private System.Windows.Forms.TextBox textBox_Setup_Option_OffsetDistance_Loading_Y_MSL;
         private System.Windows.Forms.Label label98;
         private System.Windows.Forms.Button button19;
+        private System.Windows.Forms.Label label101;
+        private System.Windows.Forms.Label label100;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_HeightMeasure_PosY;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_HeightMeasure_PosX;
     }
 }
