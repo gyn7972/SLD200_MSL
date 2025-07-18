@@ -176,7 +176,7 @@ namespace QMC.Common.Q_Sequence
 
         #region Flatness Measurement 
 
-        public bool IsCompleted { get; private set; } = false;
+        public bool IsCompleted { get; set; } = false;
         public void Start()
         {
             IsCompleted = false;
@@ -502,6 +502,8 @@ namespace QMC.Common.Q_Sequence
                             }
                         }
 
+                        IsCompleted = true;
+
                         m_dDeviation = Math.Abs(m_dHeightValue_Max_Value - m_dHeightValue_Min_Value);
                         m_strTemp += string.Format("\r\n   - Min. ({0:0.000})\r\n   - Max. ({1:0.000})\r\n   - Average ({2:0.000}\r\n\r\n   - Deviation ({3:0.000})",
                                                     m_dHeightValue_Min_Value, m_dHeightValue_Max_Value, m_dHeightValue_Avg, m_dDeviation);
@@ -570,11 +572,11 @@ namespace QMC.Common.Q_Sequence
             }
             else
             {
-                strTemp = string.Format("Stage Z 축, Laser_Sensor_HeightCheckPos 높이로 이동 실패");
-                Log.Write("FlatnessMeasure", Equipment.User_Name, strTemp);
-
                 nRtn = -1;
-                return workStage.AlarmPost(WorkStage.AlarmKey.eZAxisFail);
+
+                //strTemp = string.Format("Stage Z 축, Laser_Sensor_HeightCheckPos 높이로 이동 실패");
+                //Log.Write("FlatnessMeasure", Equipment.User_Name, strTemp);
+                //return workStage.AlarmPost(WorkStage.AlarmKey.eZAxisFail);
             }
 
             return nRtn;

@@ -2086,7 +2086,8 @@ namespace QMC.Common.VisionPart
             //int yEnd = Math.Min(h - radius, roi.Bottom);
 
             // ROI 고정 사용 (roiRect 무시)
-            Rectangle roi = new Rectangle(924, 0, 300, 2048);
+            //Rectangle roi = new Rectangle(924, 0, 300, 2048);
+            Rectangle roi = new Rectangle(700, 0, 600, 2048);
 
             // 이후 루프
             int xStart = Math.Max(radius, roi.Left);

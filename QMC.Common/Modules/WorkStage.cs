@@ -14339,14 +14339,14 @@ namespace QMC.Common.Modules
                     //this.jigAligner_HighRes.Work();
                     // Todo: 구분자 추가  Fiducial 찾기 or GoldPowder 찾기
                     // 굳이 분기 안해도 되긴 하는데... SpiralSearch -> 내부에서 구분자 처리.
-                    int retryCount = 3; //2 -> 3 으로 2025-05-25
+                    int retryCount = 2; //2 -> 3 으로 2025-05-25
                     if (alignMode == AlignMode.Socket)
                     {
                         ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount, alignMode);
                     }
                     else if (alignMode == AlignMode.GoldPowder)
                     {
-                        retryCount = 3; //겁나 잘찾아야한다.
+                        retryCount = 2; //겁나 잘찾아야한다.
                         ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount, alignMode);
                     }
 
@@ -30175,7 +30175,7 @@ namespace QMC.Common.Modules
                     double dOffsetX = dSumOffsetX / nSumCount;
                     double dOffsetY = dSumOffsetY / nSumCount;
 
-                    double dpercent = 40; //%
+                    double dpercent = 60; //%
                     dOffsetX = dOffsetX * (dpercent / 100);
                     dOffsetY = dOffsetY * (dpercent / 100);
 
@@ -34509,7 +34509,13 @@ namespace QMC.Common.Modules
 
                     if (Equipment.Machine_LaserType_CO2)
                     {
-                        if(!Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
+                        // 이거 최종적으로만 하고 .. 경고로 메인에 표기해놓자.
+                        //if (!workStageParameter.IsDO_Laser_Enable())
+                        //{
+                        //    workStageParameter.DO_Laser_Enable(true);
+                        //}
+
+                        if (!Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
                         {
                             //20250706::우선 - Laser On/Off Check는 AutoCrossCheck시에 하자. 
                             if (Equipment.Machine_AutoCrossCheck_Enable)
@@ -34852,7 +34858,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Step_HeightMeasure_Enable:
 
-                    if (!Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
+                    //if (!Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
                     {
                         if (Equipment.Machine_HeightMeasure_Enable)
                         {
@@ -34893,24 +34899,26 @@ namespace QMC.Common.Modules
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
                         }
                     }
-                    else
-                    {
-                        TickCount_Start((int)TickType.TICK_MAIN);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
-                    }
+                    //else
+                    //{
+                    //    TickCount_Start((int)TickType.TICK_MAIN);
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                    //}
                     
                     break;
 
                 case (int)LaserDrilling_Step.Step_HeightMeasure:
 
-                    if (!Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
+                    //if (!Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
                     {
+                        m_Sequence_FlatnessMeasure.IsCompleted = false;
                         // m_Sequence_FlatnessMeasure. 이 신호가 // 무조건 false 여야 정상임.
                         if (m_Sequence_FlatnessMeasure.IsCompleted == false)
                         {
                             //Stage Auto Measure
                             m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Type = (int)FlatMeasureList.Auto_Stage;
                             m_Sequence_FlatnessMeasure.Start();
+                            m_Sequence_FlatnessMeasure.m_MainTick_Start = true;
                             TickCount_Start((int)TickType.TICK_MAIN);
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_HeightMeasure_Check;
                         }
@@ -34920,11 +34928,11 @@ namespace QMC.Common.Modules
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
                         }
                     }
-                    else
-                    {
-                        TickCount_Start((int)TickType.TICK_MAIN);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
-                    }
+                    //else
+                    //{
+                    //    TickCount_Start((int)TickType.TICK_MAIN);
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                    //}
                         
                     break;
 
@@ -34949,6 +34957,9 @@ namespace QMC.Common.Modules
                                                         dTeachingPosZ, dHeightOffset, dPosZ, m_dStageheight);
                                 Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_HeightMeasure_Check", strTemp);
 
+
+                                m_Sequence_FlatnessMeasure.m_MainTick_Start = false;
+                                m_Sequence_FlatnessMeasure.Reset();
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
                             }
                         }
