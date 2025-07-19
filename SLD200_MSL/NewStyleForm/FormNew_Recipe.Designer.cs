@@ -124,6 +124,7 @@
             this.textBox_Recipe_TabRecipe_ModuleInformation_Width = new System.Windows.Forms.TextBox();
             this.label34 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent = new System.Windows.Forms.TextBox();
             this.button_GoldPowderThickness = new System.Windows.Forms.Button();
             this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign = new System.Windows.Forms.CheckBox();
             this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness = new System.Windows.Forms.TextBox();
@@ -316,7 +317,9 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent = new System.Windows.Forms.TextBox();
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch = new System.Windows.Forms.Button();
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -1182,6 +1185,7 @@
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.TabIndex = 63;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Text = "Ignore";
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.UseVisualStyleBackColor = true;
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.CheckedChanged += new System.EventHandler(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore_CheckedChanged);
             // 
             // checkBox_Recipe_TabRecipe_MAlignVacuum_Outer
             // 
@@ -1195,6 +1199,7 @@
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.TabIndex = 62;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Text = "Outer";
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.UseVisualStyleBackColor = true;
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.CheckedChanged += new System.EventHandler(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer_CheckedChanged);
             // 
             // checkBox_Recipe_TabRecipe_MAlignVacuum_Center
             // 
@@ -1208,6 +1213,7 @@
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.TabIndex = 61;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Text = "Center";
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.UseVisualStyleBackColor = true;
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center.CheckedChanged += new System.EventHandler(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center_CheckedChanged);
             // 
             // checkBox_Recipe_TabRecipe_MAlignVacuum_Inner
             // 
@@ -1221,10 +1227,14 @@
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.TabIndex = 60;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Text = "Inner";
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.UseVisualStyleBackColor = true;
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.CheckedChanged += new System.EventHandler(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner_CheckedChanged);
             // 
             // groupBox11
             // 
+            this.groupBox11.Controls.Add(this.label3);
+            this.groupBox11.Controls.Add(this.button_Recipe_TabRecipe_SpiralParam_Pitch);
             this.groupBox11.Controls.Add(this.label44);
+            this.groupBox11.Controls.Add(this.label_Recipe_TabRecipe_SpiralParam_Pitch);
             this.groupBox11.Controls.Add(this.label43);
             this.groupBox11.Controls.Add(this.button17);
             this.groupBox11.Controls.Add(this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor);
@@ -1250,22 +1260,22 @@
             // 
             // label44
             // 
-            this.label44.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label44.Location = new System.Drawing.Point(317, 25);
+            this.label44.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label44.Location = new System.Drawing.Point(325, 27);
             this.label44.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(169, 54);
+            this.label44.Size = new System.Drawing.Size(169, 39);
             this.label44.TabIndex = 34;
             this.label44.Text = "(When processing a Hole into a Spiral, the number of repetitions becomes 1.)";
             this.label44.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label43
             // 
-            this.label43.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label43.Location = new System.Drawing.Point(263, 92);
+            this.label43.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label43.Location = new System.Drawing.Point(325, 67);
             this.label43.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(237, 36);
+            this.label43.Size = new System.Drawing.Size(169, 39);
             this.label43.TabIndex = 33;
             this.label43.Text = "(Angle Factor : The smaller the value, the smoother the spiral.)";
             this.label43.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1563,6 +1573,17 @@
             this.groupBox9.TabIndex = 87;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = " Process Options ";
+            // 
+            // textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent
+            // 
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Location = new System.Drawing.Point(179, 153);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Name = "textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent";
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Size = new System.Drawing.Size(45, 24);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.TabIndex = 67;
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text = "0.0";
             // 
             // button_GoldPowderThickness
             // 
@@ -3988,16 +4009,41 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
-            // textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent
+            // button_Recipe_TabRecipe_SpiralParam_Pitch
             // 
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Location = new System.Drawing.Point(179, 153);
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Name = "textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent";
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Size = new System.Drawing.Size(45, 24);
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.TabIndex = 67;
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text = "0.0";
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Location = new System.Drawing.Point(432, 103);
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Name = "button_Recipe_TabRecipe_SpiralParam_Pitch";
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Size = new System.Drawing.Size(65, 25);
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.TabIndex = 141;
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Text = "Preview";
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Click += new System.EventHandler(this.button_Recipe_TabRecipe_SpiralParam_Pitch_Click);
+            // 
+            // label_Recipe_TabRecipe_SpiralParam_Pitch
+            // 
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.ForeColor = System.Drawing.Color.Lime;
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Location = new System.Drawing.Point(328, 103);
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Name = "label_Recipe_TabRecipe_SpiralParam_Pitch";
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Size = new System.Drawing.Size(99, 25);
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.TabIndex = 140;
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            this.label3.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(287, 103);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(40, 25);
+            this.label3.TabIndex = 142;
+            this.label3.Text = "Pitch :";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Recipe
             // 
@@ -4358,5 +4404,8 @@
         private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex;
         private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_MaskIndex;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_SpiralParam_Pitch;
+        private System.Windows.Forms.Label label_Recipe_TabRecipe_SpiralParam_Pitch;
     }
 }

@@ -8180,11 +8180,9 @@ namespace QMC.Common.Modules
                     //장비 시작하고 10초 후 부터 확인.
                     if ((DateTime.Now - m_StartProcessTime).TotalSeconds > 10)
                     {
-                        if (loader.m_bStackerZ0_DownWhenEmpty && loader.m_bStackerZ1_DownWhenEmpty &&
-                            m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None &&
-                            loader.m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
-                            unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None)
+                        if (IsSystemIdle())
                         {
+                            CommonModule.Instance.TowerLamp.Buzzer_On();
                             // 장비 정지.
                             StopProcess();
                             if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
@@ -8210,9 +8208,11 @@ namespace QMC.Common.Modules
                             CommonModule.Instance.OperationButtons.ResetLamp(false);
 
                             CommonModule.Instance.TowerLamp_BuzzerStop = false;
+
+                            Thread.Sleep(1000);
+                            CommonModule.Instance.TowerLamp.Buzzer_Off();
                         }
                     }
-                        
 
                     // 장비 시작하고 Step에서 상부 집진기 ON 하는데...
                     //if (!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper))
@@ -8229,7 +8229,6 @@ namespace QMC.Common.Modules
                     //    DustCollector_Off((int)nDustCollector.DustCollector_Upper);
                     //}
                 }
-
             }
             catch (Exception ex)
             {
@@ -8241,7 +8240,6 @@ namespace QMC.Common.Modules
                 _isMainStatusRunning = false; // 플래그 해제
             }
         }
-
 
         private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
         {
@@ -8678,7 +8676,6 @@ namespace QMC.Common.Modules
                 _isSubWorkRunning = false; // 플래그 해제
             }
         }
-
         private void Timer_SubWork_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -8693,7 +8690,6 @@ namespace QMC.Common.Modules
                 timer_SubWork.Enabled = true;
             }
         }
-
         private void Timer_Comm_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -8714,7 +8710,6 @@ namespace QMC.Common.Modules
                 timer_Comm.Enabled = true;
             }
         }
-
         private void Timer_Comm_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -8744,7 +8739,6 @@ namespace QMC.Common.Modules
                 _isCommRunning = false; // 플래그 해제
             }
         }
-
         private void Timer_ProductAlign_tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -13507,14 +13501,18 @@ namespace QMC.Common.Modules
                             Log.Write("DrillStatus", $"최종 결과: {forceNG}");
 
                             int nTargetCount = Equipment.DrillModuleTargetCount - 1;
-                            //if (forceNG)
-                            //if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
-                            //    m_bworkStageVacuumFail ||
-                            //    m_bForceEjectRequest ||
-                            //    !m_bSocketAlign_OK ||
-                            //    !m_bFindLowerAlignMark_OK ||
-                            //    !m_bPreAlignCompleted)
-                            if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
+
+                            bool bSocketAlignOK = false;
+                            if(Equipment.Machine_VisionNG_OKPort_Enable)
+                            {
+                                bSocketAlignOK = true;
+                            }
+                            else
+                            {
+                                bSocketAlignOK = (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount);
+                            }
+
+                            if (bSocketAlignOK ||
                                 m_bworkStageVacuumFail ||
                                 m_bForceEjectRequest ||
                                 !m_bFindLowerAlignMark_OK)
@@ -13556,7 +13554,7 @@ namespace QMC.Common.Modules
                                                         nTargetCount,
                                                         DrillingManager.CycleTimer_DoneModuleCount);
                                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
-                                        
+
                                     }
                                 }
                             }
@@ -13595,7 +13593,7 @@ namespace QMC.Common.Modules
                                                         nTargetCount,
                                                         DrillingManager.CycleTimer_DoneModuleCount);
                                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
-                                       
+
                                     }
                                 }
                             }                            
@@ -16231,7 +16229,7 @@ namespace QMC.Common.Modules
             return rData;
         }
 
-        private void MarkSpiralArc(double outDia, double innerDia,int turn,  double m_dTemp_AngleFactor, PointD center)
+        public void MarkSpiralArc(double outDia, double innerDia,int turn,  double m_dTemp_AngleFactor, PointD center, out double pitch)
         {
             innerDia /= 2;
             outDia /= 2;
@@ -16245,6 +16243,7 @@ namespace QMC.Common.Modules
                 turn = 1;
             }
             double rStep = (outDia - innerDia) / (360.0 * turn / sweepAngle); // 반지름 증가량 계산
+            pitch = rStep;
 
             double dLastX = 0;
             double dLastY = 0;
@@ -16298,19 +16297,21 @@ namespace QMC.Common.Modules
             
         }
 
-        private void MarkSpiralCircle(double outDia, double innerDia, int turn, double m_dTemp_AngleFactor, PointD center)
+        //private void MarkSpiralCircle(double outDia, double innerDia, int turn, double m_dTemp_AngleFactor, PointD center)
+        public void MarkSpiralCircle(double outDia, double innerDia, int turn, double m_dTemp_AngleFactor, PointD center, out double pitch)
         {
-
             innerDia /= 2;
             outDia /= 2;
             double centerX = center.X;
             double centerY = center.Y;
             double rStep = (outDia - innerDia) / (turn-1); // 반지름 증가량 계산
+            pitch = 2 * Math.PI * rStep; // pitch 거리 = 두 원 사이 거리 차이 (둘레 기준)
+            pitch = rStep;
+
             double dStartAngle = 360.0 / turn;
             double currentRadius = innerDia;
             for (double i = 0; i < turn; i++) // 360도 회전
             {
-
                 double StartX = currentRadius * Math.Cos((i* dStartAngle) / 180 * Math.PI);
                 double StartY = currentRadius * Math.Sin((i * dStartAngle) / 180 * Math.PI);
                 rtc.ListJump(new Vector2((float)(center.X + StartX), (float)(center.Y + StartY)));
@@ -30259,7 +30260,7 @@ namespace QMC.Common.Modules
                     double dOffsetX = dSumOffsetX / nSumCount;
                     double dOffsetY = dSumOffsetY / nSumCount;
 
-                    double dpercent = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent; //85%
+                    double dpercent = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent; //75%
                     Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::dpercent: {dpercent:F1}");
                     dOffsetX = dOffsetX * (dpercent / 100);
                     dOffsetY = dOffsetY * (dpercent / 100);
@@ -41136,12 +41137,10 @@ namespace QMC.Common.Modules
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
-
-                                    MarkSpiralArc(m_dTemp_InnerDiameter, m_dTemp_OuterDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
-
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
-
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
+                                    double pitch = 0.0;
+                                    MarkSpiralArc(m_dTemp_InnerDiameter, m_dTemp_OuterDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot, out pitch);
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
                                 }
                                 //  Hole : Spiral Circle 타입으로 가공
                                 else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Circle)
@@ -41167,8 +41166,8 @@ namespace QMC.Common.Modules
 
                                     //TEST 완료. 이정도면 충분하다.
                                     //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
-
-                                    MarkSpiralCircle(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                    double pitch = 0.0;
+                                    MarkSpiralCircle(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot, out pitch);
 
                                     //TEST 완료. 이정도면 충분하다.
                                     //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
@@ -41335,7 +41334,8 @@ namespace QMC.Common.Modules
                                     else
                                     {
                                         var spiralData = lwPolyLineSpiral.Items;
-                                        MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                        double dPitch = 0.0;
+                                        MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot, out dPitch);
 
                                     }
                                 }
@@ -41361,11 +41361,10 @@ namespace QMC.Common.Modules
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
-
-                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
-
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
+                                    double dPitch = 0.0;
+                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot, out dPitch);
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
 
                                     ////  데이터 검증용 코드
                                     //if (Config.ParamConfig.DrillingData_SaveToLogFile)
@@ -41403,7 +41402,8 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
 
-                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                    double dPitch = 0.0;
+                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot, out dPitch);
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
 
@@ -43674,8 +43674,7 @@ namespace QMC.Common.Modules
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
             DrillingManager.CycleTimer_LaserDrilling.SaveToIni("LaserDrilling", strPath);
 
-
-            //집진기 상/하부 | 이오나이저 Off
+            //집진기 상/하부. | 이오나이저 Off.
             DustCollector_Off((int)nDustCollector.DustCollector_Upper);
             Thread.Sleep(1);
             DustCollector_Off((int)nDustCollector.DustCollector_Lower);
@@ -43683,7 +43682,6 @@ namespace QMC.Common.Modules
             loader.loaderParameter.DO_Loader_Ionizer(false);
             Thread.Sleep(100);
         }
-
 
         private int m_nLaserPowerRetryCount = 0;
         private const int MAX_LASER_POWER_RETRY = 3;
@@ -43783,6 +43781,48 @@ namespace QMC.Common.Modules
             {
                 Camera_LowRes.Close();
                 Equipment._InitDeviceStatus.CameraPre = false;
+            }
+        }
+
+        /// <summary>
+        /// 모든 장비 진공 상태가 꺼져 있는지 확인
+        /// </summary>
+        private bool IsAllVacuumOff()
+        {
+            bool bLoaderPickerVac = loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner);
+            bool bAlignerVac = loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center);
+            bool bStageVac = workStageParameter.DI_Stage_Vacuum_Check();
+            bool bUnloaderPickerVac = unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner);
+
+            if (!bLoaderPickerVac && !bAlignerVac && !bStageVac && !bUnloaderPickerVac)
+                return true;
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// 장비가 Idle 상태이며 진공도 모두 해제되었는지 확인
+        /// </summary>
+        private bool IsSystemIdle()
+        {
+            bool bStackerZ0Idle = loader.m_bStackerZ0_DownWhenEmpty;
+            bool bStackerZ1Idle = loader.m_bStackerZ1_DownWhenEmpty;
+            bool bLaserIdle = m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None;
+            bool bLoaderTransferIdle = loader.m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None;
+            bool bUnloaderTransferIdle = unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None;
+
+            if (bStackerZ0Idle &&
+                bStackerZ1Idle &&
+                bLaserIdle &&
+                bLoaderTransferIdle &&
+                bUnloaderTransferIdle &&
+                IsAllVacuumOff())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

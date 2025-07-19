@@ -269,6 +269,7 @@
             this.groupBoxMain_ModuleProcessingStatus.Controls.Add(this.pictureBox3);
             this.groupBoxMain_ModuleProcessingStatus.Controls.Add(this.pictureBox2);
             this.groupBoxMain_ModuleProcessingStatus.Controls.Add(this.pictureBox1);
+            this.groupBoxMain_ModuleProcessingStatus.Controls.Add(this.baseLabel_LaserShot_TotalTime);
             this.groupBoxMain_ModuleProcessingStatus.Controls.Add(this.pictureBox_Socket_Before);
             this.groupBoxMain_ModuleProcessingStatus.Controls.Add(this.pictureBox_ModuleProcessingStatus);
             this.groupBoxMain_ModuleProcessingStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -387,7 +388,7 @@
             this.checkBox_Main_AlignStartSocket_ContinueMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_AlignStartSocket_ContinueMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.checkBox_Main_AlignStartSocket_ContinueMode.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Location = new System.Drawing.Point(1485, 714);
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Location = new System.Drawing.Point(1490, 723);
             this.checkBox_Main_AlignStartSocket_ContinueMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_AlignStartSocket_ContinueMode.Name = "checkBox_Main_AlignStartSocket_ContinueMode";
             this.checkBox_Main_AlignStartSocket_ContinueMode.Size = new System.Drawing.Size(66, 44);
@@ -420,7 +421,7 @@
             this.groupBoxMain_ProcessingStatus.Controls.Add(this.baseGroupBox_WorkingTime);
             this.groupBoxMain_ProcessingStatus.Controls.Add(this.groupBox18);
             this.groupBoxMain_ProcessingStatus.Controls.Add(this.groupBoxMain_MaterialInformation);
-            this.groupBoxMain_ProcessingStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxMain_ProcessingStatus.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBoxMain_ProcessingStatus.Location = new System.Drawing.Point(412, 9);
             this.groupBoxMain_ProcessingStatus.Name = "groupBoxMain_ProcessingStatus";
             this.groupBoxMain_ProcessingStatus.Size = new System.Drawing.Size(860, 250);
@@ -617,7 +618,6 @@
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_Total_RemainedTime);
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_TotalRemain_Time);
             this.baseGroupBox_WorkingTime.Controls.Add(this.progressBar_OneCycle_Time);
-            this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_LaserShot_TotalTime);
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_CurrentOneCycle_ElapsedTime);
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_CurrentOneCycle_Time);
             this.baseGroupBox_WorkingTime.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -718,12 +718,13 @@
             this.baseLabel_LaserShot_TotalTime.AutoSize = true;
             this.baseLabel_LaserShot_TotalTime.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.baseLabel_LaserShot_TotalTime.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_LaserShot_TotalTime.Location = new System.Drawing.Point(346, 34);
+            this.baseLabel_LaserShot_TotalTime.Location = new System.Drawing.Point(18, 3);
             this.baseLabel_LaserShot_TotalTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_LaserShot_TotalTime.Name = "baseLabel_LaserShot_TotalTime";
             this.baseLabel_LaserShot_TotalTime.Size = new System.Drawing.Size(72, 17);
             this.baseLabel_LaserShot_TotalTime.TabIndex = 111;
             this.baseLabel_LaserShot_TotalTime.Text = "00:00:00";
+            this.baseLabel_LaserShot_TotalTime.Visible = false;
             // 
             // baseLabel_CurrentOneCycle_ElapsedTime
             // 
@@ -1170,7 +1171,7 @@
             this.label_Title_Stacker_LPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Title_Stacker_LPort.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title_Stacker_LPort.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_Stacker_LPort.Location = new System.Drawing.Point(1275, 147);
+            this.label_Title_Stacker_LPort.Location = new System.Drawing.Point(1275, 106);
             this.label_Title_Stacker_LPort.Name = "label_Title_Stacker_LPort";
             this.label_Title_Stacker_LPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(380, 26);
@@ -1184,7 +1185,7 @@
             this.label_Title_Stacker_RPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Title_Stacker_RPort.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title_Stacker_RPort.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_Stacker_RPort.Location = new System.Drawing.Point(1275, 179);
+            this.label_Title_Stacker_RPort.Location = new System.Drawing.Point(1275, 138);
             this.label_Title_Stacker_RPort.Name = "label_Title_Stacker_RPort";
             this.label_Title_Stacker_RPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_RPort.Size = new System.Drawing.Size(380, 28);
@@ -1211,14 +1212,15 @@
             this.checkBox_Main_SocketDrilling_Pass.BackColor = System.Drawing.Color.LightGreen;
             this.checkBox_Main_SocketDrilling_Pass.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.checkBox_Main_SocketDrilling_Pass.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox_Main_SocketDrilling_Pass.Location = new System.Drawing.Point(1457, 549);
+            this.checkBox_Main_SocketDrilling_Pass.Location = new System.Drawing.Point(1490, 723);
             this.checkBox_Main_SocketDrilling_Pass.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_SocketDrilling_Pass.Name = "checkBox_Main_SocketDrilling_Pass";
-            this.checkBox_Main_SocketDrilling_Pass.Size = new System.Drawing.Size(94, 92);
+            this.checkBox_Main_SocketDrilling_Pass.Size = new System.Drawing.Size(66, 44);
             this.checkBox_Main_SocketDrilling_Pass.TabIndex = 209;
             this.checkBox_Main_SocketDrilling_Pass.Text = "소켓 가공 건너뛰기\r\n(얼라인 후 소켓을 제외한\r\n나머지 Layer 가공)";
             this.checkBox_Main_SocketDrilling_Pass.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_Main_SocketDrilling_Pass.UseVisualStyleBackColor = false;
+            this.checkBox_Main_SocketDrilling_Pass.Visible = false;
             this.checkBox_Main_SocketDrilling_Pass.CheckedChanged += new System.EventHandler(this.checkBox_Main_SocketDrilling_Pass_CheckedChanged);
             // 
             // checkBox_Test_LaserDrillingCycle
@@ -2285,7 +2287,7 @@
             this.label_Main_Title_Status.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Main_Title_Status.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Main_Title_Status.ForeColor = System.Drawing.Color.Lime;
-            this.label_Main_Title_Status.Location = new System.Drawing.Point(1275, 115);
+            this.label_Main_Title_Status.Location = new System.Drawing.Point(1275, 202);
             this.label_Main_Title_Status.Name = "label_Main_Title_Status";
             this.label_Main_Title_Status.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Main_Title_Status.Size = new System.Drawing.Size(380, 26);
@@ -2384,7 +2386,7 @@
             this.label_Main_Serial_Number.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Main_Serial_Number.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Main_Serial_Number.ForeColor = System.Drawing.Color.Lime;
-            this.label_Main_Serial_Number.Location = new System.Drawing.Point(1275, 212);
+            this.label_Main_Serial_Number.Location = new System.Drawing.Point(1275, 171);
             this.label_Main_Serial_Number.Name = "label_Main_Serial_Number";
             this.label_Main_Serial_Number.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Main_Serial_Number.Size = new System.Drawing.Size(380, 26);

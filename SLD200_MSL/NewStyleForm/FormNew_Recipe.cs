@@ -956,8 +956,10 @@ namespace SLD200_MSL
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_SiliconThickness", "0.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = Equipment.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_GoldPowderThickness", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent = Equipment.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness = Equipment.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_GoldPowderPercent", "75.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent = Equipment.ToDouble(temp.ToString());
+
 
                 //  Spiral Parameter
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_OuterDiameter", "0.0", temp, 255, strFIle);
@@ -4305,5 +4307,75 @@ namespace SLD200_MSL
             MessageBox.Show("HoleProcessingType 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore = false;
+
+            if(checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked)
+            {
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = false;
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = false;
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = false;
+
+                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore = true;
+            }
+        }
+
+        private void checkBox_Recipe_TabRecipe_MAlignVacuum_Center_CheckedChanged(object sender, EventArgs e)
+        {
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+        }
+
+        private void checkBox_Recipe_TabRecipe_MAlignVacuum_Inner_CheckedChanged(object sender, EventArgs e)
+        {
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+        }
+
+        private void checkBox_Recipe_TabRecipe_MAlignVacuum_Outer_CheckedChanged(object sender, EventArgs e)
+        {
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+        }
+
+        private void button_Recipe_TabRecipe_SpiralParam_Pitch_Click(object sender, EventArgs e)
+        {
+            int nIndex = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
+            double m_dTemp_OuterDiameter = 0.0;
+            double m_dTemp_InnerDiameter = 0.0;
+            double m_dTemp_Revolutions = 0.0;
+            double m_dTemp_AngleFactor = 0.0;
+            m_dTemp_OuterDiameter = Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text);
+            m_dTemp_InnerDiameter = Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text);
+            m_dTemp_Revolutions = Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text);
+            m_dTemp_AngleFactor = Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text);
+            // Hole Center
+            //entity_Position.X = m_stLaserDrilling_SocketData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+            //                    m_stLaserDrilling_SocketData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+            //entity_Position.Y = m_stLaserDrilling_SocketData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+            //                    m_stLaserDrilling_SocketData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+            //double entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+            PointD center = new PointD(0.0, 0.0);
+            double pitch = 0.0;
+
+            switch (nIndex)
+            {
+                case (int)HoleProcessingType.Circle:
+                    label_Recipe_TabRecipe_SpiralParam_Pitch.Text = string.Format("---");
+                    break;
+                case (int)HoleProcessingType.Spiral_Polyline:
+                    label_Recipe_TabRecipe_SpiralParam_Pitch.Text = string.Format("---");
+                    break;
+                case (int)HoleProcessingType.Spiral_Arc: // Spiral Arc Circle
+                    workStage.MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, center, out pitch);
+                    label_Recipe_TabRecipe_SpiralParam_Pitch.Text = string.Format("{0:F5}", pitch);
+                    break;
+                case (int)HoleProcessingType.Spiral_Circle: // Spiral
+                    workStage.MarkSpiralCircle(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, center, out pitch);
+                    label_Recipe_TabRecipe_SpiralParam_Pitch.Text = string.Format("{0:F5}", pitch);
+                    break;
+                default:
+                    MessageBox.Show("Spiral Hole Processing Type이 아닙니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+            }
+        }
     }
 }

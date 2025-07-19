@@ -368,27 +368,9 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             try
             {
-                drillingProcessManager.ResetAll();
-
-                foreach (var layer in drillingProcessManager.LayerList)
-                {
-                    foreach (var socket in layer.SocketList)
-                        socket.IsSelected = true;
-                }
-                this.Refresh();
-
-                Log.Write("ModuleStatus", "전체 소켓이 선택됨.");
-
-                string msg = "모든 소켓이 선택되었습니다.\r\n" +
-                             "장비를 시작하면 전체 가공됩니다.";
-
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information!", msg);
-
+                string msg = string.Empty;
                 if (Equipment.AutoRunStatus)
                     return;
-
-                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "선택 가공 버튼");
 
                 if (workStage.CheckAllInterlock(out msg) == false)
                 {
@@ -404,8 +386,29 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Thread.Sleep(1);
                 loader.loaderParameter.DO_Loader_Ionizer(true);
 
+                drillingProcessManager.ResetAll();
+
+                foreach (var layer in drillingProcessManager.LayerList)
+                {
+                    foreach (var socket in layer.SocketList)
+                        socket.IsSelected = true;
+                }
+                this.Refresh();
+
+                msg = "모든 소켓이 선택되었습니다.\r\n" +
+                      "장비를 시작하면 전체 가공됩니다.";
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information!", msg);
+
                 if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
                 {
+                    Log.Write("ModuleStatus", "전체 소켓이 선택됨.");
+                    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "전체 가공 버튼");
+                    var mbQ = new MessageBoxYesNo();
+                    if (DialogResult.Yes != mbQ.ShowDialog("Question?", "가공 시작 하시겠습니까?"))
+                        return;
+
                     Equipment.LaserDrillingCycStop_Reservation = false;
                     workStage.m_bLaserDrilling_SocketStopped = false;
                     Equipment.SocketStopped = false;
@@ -438,6 +441,17 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void ButtonProcessSelected_Click(object sender, EventArgs e)
         {
             drillingProcessManager.ResetAll();
+
+            if (Equipment.AutoRunStatus)
+                return;
+
+            string msg = "";
+            if (workStage.CheckAllInterlock(out msg) == false)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Error", msg);
+                return;
+            }
 
             var selectedPerLayer = drillingProcessManager.LayerList
                 .Where(layer => layer.LayerType != LayerType.LAYER_FIDUCIAL && layer.LayerType != LayerType.LAYER_PREALIGN)
@@ -474,23 +488,14 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             var mb = new MessageBoxOk();
             mb.ShowDialog("Information!", sb.ToString());
-
-
-            if (Equipment.AutoRunStatus)
-                return;
-
-            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "선택 가공 버튼");
-
-            string msg = "";
-            if (workStage.CheckAllInterlock(out msg) == false)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Error", msg);
-                return;
-            }
-
+            
             if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
             {
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "선택 가공 버튼");
+                var mbQ = new MessageBoxYesNo();
+                if (DialogResult.Yes != mbQ.ShowDialog("Question?", "가공 시작 하시겠습니까?"))
+                    return;
+
                 Equipment.LaserDrillingCycStop_Reservation = false;
                 workStage.m_bLaserDrilling_SocketStopped = false;
                 Equipment.SocketStopped = false;
@@ -732,7 +737,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             Equipment.SelectRunEnable_New = false; //  수동 가공 시작
 
             workStage.StopProcess();
-
         }
 
         private void Button_SelectAllInLayer_Click_Click(object sender, EventArgs e)

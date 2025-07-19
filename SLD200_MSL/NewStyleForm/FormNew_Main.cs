@@ -59,6 +59,7 @@ using System.Windows.Interop;
 using Control = System.Windows.Forms.Control;
 using TextBox = System.Windows.Forms.TextBox;
 using RichTextBox = System.Windows.Forms.RichTextBox;
+using Microsoft.SqlServer.Server;
 
 namespace SLD200_MSL
 {
@@ -1009,6 +1010,7 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
+            string strText = string.Empty;
             //TEST
             if (workStage.ShouldDelayNextModule())
             {
@@ -1055,7 +1057,6 @@ namespace SLD200_MSL
                 m_NeedDocumentSync = false;
                 try
                 {
-
                     if (SiriusViewer_Main.Document.Views != null)
                     {
                         if (SiriusViewer_Main.InvokeRequired)
@@ -1069,10 +1070,8 @@ namespace SLD200_MSL
                         }
                         else
                         {
-
                             SiriusViewer_Main.Document.Views.Clear();
                         }
-                        
                     }
                 }
                 catch (Exception ex)
@@ -1106,13 +1105,26 @@ namespace SLD200_MSL
                 (int)nSerialNumber_IncreaseType.forEachModule)) //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
                 {
                     int nSerialNumber = Equipment.m_nSerialNumberMarkingCount;
-                    string strText1 = string.Format("Serial Number : {0}", nSerialNumber);
-                    SetValue(label_Main_Serial_Number, strText1);
+                    strText = string.Format("Serial Number : {0}", nSerialNumber);
+                    SetValue(label_Main_Serial_Number, strText);
                     SetColor(label_Main_Serial_Number, Color.Black, Color.Lime);
                 }
             }
 
-            string strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
+            if(workStage.m_stLaserDrilling_SocketData != null)
+            {
+                SetValue(baseTextBox_SocketCountPerModule, workStage.m_stLaserDrilling_SocketData.Length.ToString());
+                strText = string.Format("{0}", workStage.m_nSelectedSocket_Index + 1);
+                SetValue(baseTextBox_Socket_Index, strText);
+            }
+            else
+            {
+                SetValue(baseTextBox_SocketCountPerModule, "0");
+                strText = string.Format("{0}", workStage.m_nSelectedSocket_Index + 1);
+                SetValue(baseTextBox_Socket_Index, strText);
+            }
+
+                strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
             SetValue(label_Main_LaserStatus, strText);
             Color backcolor = workStage.GetLaserBusyStatus() ? Color.Red : Color.Black;
             Color foreColor = workStage.GetLaserBusyStatus() ? Color.White : Color.Lime;
@@ -3764,6 +3776,8 @@ namespace SLD200_MSL
 
         private void button_TestbyUser_LPort_Start_Click(object sender, EventArgs e)
         {
+            return;
+
             if (!workStage.m_bHomeOK || Equipment.AutoRunStatus)
                 return;
 
@@ -4275,11 +4289,11 @@ namespace SLD200_MSL
                 SetValue(baseTextBox_TotalSocketCount, nSocketTotalCnt.ToString());
                 SetValue(baseTextBox_NGSocketCount, (nSocketTotalCnt - NGCount).ToString());
 
-
-
-                //SetValue(baseLabel_CurrentOneCycle_ElapsedTime, oneCycle.ToString(@"hh\:mm\:ss"));
-                TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
-                SetValue(baseLabel_LaserShot_TotalTime, LaserTotalCycle.ToString(@"hh\:mm\:ss"));
+                // Config Laser Tab으로 이동.
+                //TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
+                //int totalHours = (int)LaserTotalCycle.TotalHours;
+                //string formatted = $"{totalHours:D2}:{LaserTotalCycle.Minutes:D2}:{LaserTotalCycle.Seconds:D2}";
+                //SetValue(baseLabel_LaserShot_TotalTime, formatted);
             }
             catch (Exception ex)
             {

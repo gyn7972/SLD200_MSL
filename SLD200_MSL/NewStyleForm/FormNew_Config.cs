@@ -792,9 +792,33 @@ namespace SLD200_MSL
                 {
                     label_Config_Laser_Laser_warning.Text = "Laser System Fault";
                 }
+
+                TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
+                int totalHours = (int)LaserTotalCycle.TotalHours;
+                string formatted = $"{totalHours:D2}:{LaserTotalCycle.Minutes:D2}:{LaserTotalCycle.Seconds:D2}";
+                SetValue(label_Config_Laser_Laser_TotalTime, formatted);
+
             }
 
             timer_Status.Enabled = true;
+        }
+
+        void SetValue(Label control, string text, bool isVisible = true)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetValue(control, text, isVisible);
+                }));
+
+            }
+            else
+            {
+                control.Text = text;
+                control.Visible = isVisible;
+            }
         }
 
         private void UpdateSeqStatus()

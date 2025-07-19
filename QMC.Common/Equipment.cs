@@ -667,7 +667,8 @@ namespace QMC.Common
         public static double Machine_HeightMeasure_PosX { set; get; } = 0.0;                     
         public static double Machine_HeightMeasure_PosY { set; get; } = 0.0;                     
 
-        public static bool Machine_PreAlign_First_Enable { set; get; } = false;                     
+        public static bool Machine_PreAlign_First_Enable { set; get; } = false;    
+        public static bool Machine_VisionNG_OKPort_Enable { set; get; } = false;
 
         //  Offset Distance
         public struct stOffsetDistanceParameter
@@ -3147,6 +3148,8 @@ namespace QMC.Common
             Equipment.Machine_HeightMeasure_PosY = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "PreAlign_First_Enable", "false", temp, 255, strFIle);
             Equipment.Machine_PreAlign_First_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VisionNG_OKPort_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_VisionNG_OKPort_Enable = temp.ToString() == "False" ? false : true;
             //
 
             //  Offset Distance
