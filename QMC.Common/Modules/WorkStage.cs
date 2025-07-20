@@ -35046,6 +35046,8 @@ namespace QMC.Common.Modules
                                 dPosZ = dTeachingPosZ + dHeightOffset;
                                 m_dStageheight = dPosZ;
 
+                                m_Sequence_FlatnessMeasure.SaveStageZMeasureHeight(m_dStageheight);
+
                                 strTemp = string.Format("HeightMeasure 결과 - dTeachingPosZ: {0:F3}, dHeightOffset: {1:F3}, dPosZ: {2:F3}, Stageheight: {3:F3}",
                                                         dTeachingPosZ, dHeightOffset, dPosZ, m_dStageheight);
                                 Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_HeightMeasure_Check", strTemp);
@@ -37923,13 +37925,18 @@ namespace QMC.Common.Modules
                     // 이 값이랑 제품 높이에서 측정후 변위센서값을 뺸 PosZ과 계산하면 제품 높이를 구할 수 있다.
                     dTeachingPosZ = (int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos;
                     double dPosModuleZ = dTeachingPosZ + m_dZOffset_SocketHeightCheck;
+
+                    m_dStageheight = m_Sequence_FlatnessMeasure.LoadStageZMeasureHeight();
+
                     m_dModuleHeight = m_dStageheight - dPosModuleZ;
+                    m_dModuleHeight = Math.Abs(m_dModuleHeight);
 
-                    strTemp = string.Format("HeightMeasure 결과 - dTeachingPosZ: {0:F3}, dHeightOffset: {1:F3}, dPosModuleZ: {2:F3}, ModuleHeight: {3:F3}",
-                                            dTeachingPosZ, m_dZOffset_SocketHeightCheck, dPosModuleZ, m_dModuleHeight);
-                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_HeightMeasure_Check", strTemp);
-
+                    strTemp = string.Format("HeightMeasure 결과 - dStagePosZ: {0:F3}, dHeightOffset: {1:F3}, dPosModuleZ: {2:F3}, ModuleHeight: {3:F3}",
+                                            m_dStageheight, m_dZOffset_SocketHeightCheck, dPosModuleZ, m_dModuleHeight);
                     Log.Write("SocketHeight", strTemp);
+
+                    string strSocket = string.Format("Socket{0}", m_nDrillingWork_Group_Count + 1);
+                    m_Sequence_FlatnessMeasure.SaveHeightMeasureLog(m_dStageheight, m_dZOffset_SocketHeightCheck, dPosModuleZ, m_dModuleHeight, strSocket);
 
                     // Layer별 소켓 데이터에 저장
                     // hol가공시에..하니깐 Layer구분없이 전부 다 측정data 넣어야 하는거 아닌가?
@@ -43825,6 +43832,7 @@ namespace QMC.Common.Modules
                 return false;
             }
         }
+
     }
 }
 #endregion

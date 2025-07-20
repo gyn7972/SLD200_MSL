@@ -183,7 +183,8 @@ namespace SpiralLab.Sirius
                     }
                     break;
 
-                case Keys.Control | Keys.Alt | Keys.M:
+                //case Keys.Control | Keys.Alt | Keys.M:
+                case Keys.Alt | Keys.M:
                     {
                         MoveToMarking();
                     }

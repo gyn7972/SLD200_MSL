@@ -38,6 +38,7 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.baseLabel_LaserShot_TotalTime = new SLD200_MSL.BaseLabel();
             this.pictureBox_Socket_Before = new System.Windows.Forms.PictureBox();
             this.pictureBox_ModuleProcessingStatus = new System.Windows.Forms.PictureBox();
             this.checkBox_Main_AlignStartSocket_ContinueMode = new System.Windows.Forms.CheckBox();
@@ -63,7 +64,6 @@
             this.baseLabel_Total_RemainedTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_TotalRemain_Time = new SLD200_MSL.BaseLabel();
             this.progressBar_OneCycle_Time = new System.Windows.Forms.ProgressBar();
-            this.baseLabel_LaserShot_TotalTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_CurrentOneCycle_ElapsedTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_CurrentOneCycle_Time = new SLD200_MSL.BaseLabel();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
@@ -362,6 +362,19 @@
             this.pictureBox1.Size = new System.Drawing.Size(24, 20);
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
+            // 
+            // baseLabel_LaserShot_TotalTime
+            // 
+            this.baseLabel_LaserShot_TotalTime.AutoSize = true;
+            this.baseLabel_LaserShot_TotalTime.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_LaserShot_TotalTime.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_LaserShot_TotalTime.Location = new System.Drawing.Point(18, 3);
+            this.baseLabel_LaserShot_TotalTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel_LaserShot_TotalTime.Name = "baseLabel_LaserShot_TotalTime";
+            this.baseLabel_LaserShot_TotalTime.Size = new System.Drawing.Size(72, 17);
+            this.baseLabel_LaserShot_TotalTime.TabIndex = 111;
+            this.baseLabel_LaserShot_TotalTime.Text = "00:00:00";
+            this.baseLabel_LaserShot_TotalTime.Visible = false;
             // 
             // pictureBox_Socket_Before
             // 
@@ -712,19 +725,6 @@
             this.progressBar_OneCycle_Time.Size = new System.Drawing.Size(403, 21);
             this.progressBar_OneCycle_Time.TabIndex = 112;
             this.progressBar_OneCycle_Time.Value = 50;
-            // 
-            // baseLabel_LaserShot_TotalTime
-            // 
-            this.baseLabel_LaserShot_TotalTime.AutoSize = true;
-            this.baseLabel_LaserShot_TotalTime.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_LaserShot_TotalTime.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_LaserShot_TotalTime.Location = new System.Drawing.Point(18, 3);
-            this.baseLabel_LaserShot_TotalTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabel_LaserShot_TotalTime.Name = "baseLabel_LaserShot_TotalTime";
-            this.baseLabel_LaserShot_TotalTime.Size = new System.Drawing.Size(72, 17);
-            this.baseLabel_LaserShot_TotalTime.TabIndex = 111;
-            this.baseLabel_LaserShot_TotalTime.Text = "00:00:00";
-            this.baseLabel_LaserShot_TotalTime.Visible = false;
             // 
             // baseLabel_CurrentOneCycle_ElapsedTime
             // 
@@ -2432,7 +2432,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(128, 27);
             this.label3.TabIndex = 51;
-            this.label3.Text = "Module (um) :";
+            this.label3.Text = "Module (mm) :";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_Main_Height_Stage
@@ -2457,7 +2457,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(128, 27);
             this.label6.TabIndex = 49;
-            this.label6.Text = "Stage (um) :";
+            this.label6.Text = "Stage (mm) :";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNew_Main

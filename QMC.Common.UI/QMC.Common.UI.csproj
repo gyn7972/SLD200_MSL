@@ -87,6 +87,7 @@
     <Compile Include="ClockControl.Designer.cs">
       <DependentUpon>ClockControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="ControlTooltipHelper.cs" />
     <Compile Include="ConveyorStateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

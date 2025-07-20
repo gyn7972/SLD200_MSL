@@ -133,6 +133,7 @@ namespace SLD200_MSL
             checkBox_MasterView.Checked = false;
 
             InitRecipeUI_KeyPad();
+            ApplyTooltips();
         }
 
         private void MachineType_Component_Enable(bool m_bLaserType)
@@ -2578,7 +2579,7 @@ namespace SLD200_MSL
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[m_nIndex].CalfileOffsetZAxismm.ToString();
 
             //  Chuck MSL 사용 여부
-            checkBox_Recipe_TabRecipe_ChuckMSL_Use.Checked = Equipment.stLayerRecipeSet[m_nIndex].ChuckMSL_Use;
+            checkBox_Recipe_TabRecipe_ChuckMSL_Use.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Use;
 
         }
         public void Recipe_Open(string strRecipeFile)
@@ -3416,6 +3417,7 @@ namespace SLD200_MSL
                 button_Recipe_TabRecipe_Cal_ZAxisOffset,
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
                 textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore,
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Outer,
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Center,
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Inner,
@@ -3433,6 +3435,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_ModuleInformation_Width,
                 button_GoldPowderThickness,
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent,
                 checkBox_Recipe_TabRecipe_ChuckMSL_Use,
                 
                 //공정 Param
@@ -3500,6 +3503,7 @@ namespace SLD200_MSL
                 button_Recipe_TabRecipe_Cal_ZAxisOffset,
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
                 textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore,
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Outer,
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Center,
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Inner,
@@ -3517,6 +3521,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_ModuleInformation_Width,
                 button_GoldPowderThickness,
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent,
                 checkBox_Recipe_TabRecipe_ChuckMSL_Use,
                 
                 //공정 Param
@@ -4376,6 +4381,23 @@ namespace SLD200_MSL
                     MessageBox.Show("Spiral Hole Processing Type이 아닙니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
             }
+        }
+
+        private void ApplyTooltips()
+        {
+            var tooltipHelper = new QMC.Common.UI.ControlTooltipHelper();
+            tooltipHelper.AddTooltips(new Dictionary<Control, string>
+            {
+                { button_Recipe_New, "Create a new recipe file." },
+                { button_Recipe_Apply, "Apply the current recipe settings to the system." },
+                { button_Recipe_Save, "Save changes to the current recipe." },
+                { button_Recipe_SaveAs, "Save current settings as a new recipe." },
+                { button_Recipe_Open, "Open a saved recipe file." },
+                { checkBox_Recipe_TabRecipe_ChuckMSL_Use, "Enable if MSL chuck should be used." },
+                { textBox_Recipe_TabRecipe_LaserParam_Frequency, "Laser repetition rate in kHz." },
+                { textBox_Recipe_TabRecipe_LaserParam_PulseWidth, "Laser pulse width in ns." },
+                { comboBox_Recipe_TabRecipe_CustomMarking_DataType, "Choose data type: Date, Serial, or Custom Text." },
+            });
         }
     }
 }

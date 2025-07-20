@@ -98,7 +98,10 @@
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center = new System.Windows.Forms.CheckBox();
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner = new System.Windows.Forms.CheckBox();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch = new System.Windows.Forms.Button();
             this.label44 = new System.Windows.Forms.Label();
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch = new System.Windows.Forms.Label();
             this.label43 = new System.Windows.Forms.Label();
             this.button17 = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_SpiralParam_AngleFactor = new System.Windows.Forms.TextBox();
@@ -317,9 +320,6 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.button_Recipe_TabRecipe_SpiralParam_Pitch = new System.Windows.Forms.Button();
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -1258,6 +1258,29 @@
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = " Parameters for processing by converting a Hole into a Spiral ";
             // 
+            // label3
+            // 
+            this.label3.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(269, 102);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(72, 25);
+            this.label3.TabIndex = 142;
+            this.label3.Text = "Pitch (mm) :";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // button_Recipe_TabRecipe_SpiralParam_Pitch
+            // 
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Location = new System.Drawing.Point(432, 103);
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Name = "button_Recipe_TabRecipe_SpiralParam_Pitch";
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Size = new System.Drawing.Size(65, 25);
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.TabIndex = 141;
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Text = "Preview";
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Click += new System.EventHandler(this.button_Recipe_TabRecipe_SpiralParam_Pitch_Click);
+            // 
             // label44
             // 
             this.label44.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1268,6 +1291,19 @@
             this.label44.TabIndex = 34;
             this.label44.Text = "(When processing a Hole into a Spiral, the number of repetitions becomes 1.)";
             this.label44.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label_Recipe_TabRecipe_SpiralParam_Pitch
+            // 
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.ForeColor = System.Drawing.Color.Lime;
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Location = new System.Drawing.Point(336, 103);
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Name = "label_Recipe_TabRecipe_SpiralParam_Pitch";
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Size = new System.Drawing.Size(91, 25);
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.TabIndex = 140;
+            this.label_Recipe_TabRecipe_SpiralParam_Pitch.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label43
             // 
@@ -4008,42 +4044,6 @@
             this.button_Recipe_Cancel.TabIndex = 20;
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
-            // 
-            // button_Recipe_TabRecipe_SpiralParam_Pitch
-            // 
-            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Location = new System.Drawing.Point(432, 103);
-            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Name = "button_Recipe_TabRecipe_SpiralParam_Pitch";
-            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Size = new System.Drawing.Size(65, 25);
-            this.button_Recipe_TabRecipe_SpiralParam_Pitch.TabIndex = 141;
-            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Text = "Preview";
-            this.button_Recipe_TabRecipe_SpiralParam_Pitch.UseVisualStyleBackColor = true;
-            this.button_Recipe_TabRecipe_SpiralParam_Pitch.Click += new System.EventHandler(this.button_Recipe_TabRecipe_SpiralParam_Pitch_Click);
-            // 
-            // label_Recipe_TabRecipe_SpiralParam_Pitch
-            // 
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch.ForeColor = System.Drawing.Color.Lime;
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Location = new System.Drawing.Point(328, 103);
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Name = "label_Recipe_TabRecipe_SpiralParam_Pitch";
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch.Size = new System.Drawing.Size(99, 25);
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch.TabIndex = 140;
-            this.label_Recipe_TabRecipe_SpiralParam_Pitch.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label3
-            // 
-            this.label3.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(287, 103);
-            this.label3.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(40, 25);
-            this.label3.TabIndex = 142;
-            this.label3.Text = "Pitch :";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Recipe
             // 
