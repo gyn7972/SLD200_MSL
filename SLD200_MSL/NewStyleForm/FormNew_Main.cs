@@ -3202,6 +3202,8 @@ namespace SLD200_MSL
         
         private async  void button_TEST12_Click(object sender, EventArgs e)
         {
+            return;
+
             workStage.m_Sequence_LaserPowerMeasure.TestLog(); //  테스트용 로그 출력
             return;
 
@@ -4081,6 +4083,8 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            return;
+
             int m_nMainWorkCycle_ResultOKNG = 1;
 
             string message = string.Format(
