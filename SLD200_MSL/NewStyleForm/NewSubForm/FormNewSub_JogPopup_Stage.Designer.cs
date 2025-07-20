@@ -187,6 +187,7 @@
             this.button_KeypadCall_jogPopup_Stage_JogMove_StepSize.TabIndex = 76;
             this.button_KeypadCall_jogPopup_Stage_JogMove_StepSize.Text = "#";
             this.button_KeypadCall_jogPopup_Stage_JogMove_StepSize.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_jogPopup_Stage_JogMove_StepSize.Visible = false;
             // 
             // textBox_jogPopup_Stage_JogMove_StepSize
             // 

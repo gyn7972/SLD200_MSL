@@ -20,6 +20,10 @@ namespace SLD200_MSL
         private bool m_bFormVisible = false; // 실제 Show 상태 여부
 
         static WorkStage workStage;
+        static Loader loader;
+        static Unloader unloader;
+        static Vision vision;
+        static Bds bds;
 
         //private Monitoring_CWA150SA m_Monitoring_CWA150SA;
         private FormLogIn m_formLogIn;
@@ -30,13 +34,27 @@ namespace SLD200_MSL
 
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
-
-            foreach (Module module in m_collectionModules)
+            foreach (QMC.Common.Module module in m_collectionModules)
             {
-                //if (module.Name == "WorkStage")
                 if (module.Name == "WorkStage")
                 {
                     workStage = module as WorkStage;
+                }
+                if (module.Name == "Loader")
+                {
+                    loader = module as Loader;
+                }
+                if (module.Name == "Unloader")
+                {
+                    unloader = module as Unloader;
+                }
+                if (module.Name == "Vision")
+                {
+                    vision = module as Vision;
+                }
+                if (module.Name == "BDS")
+                {
+                    bds = module as Bds;
                 }
             }
 
@@ -80,12 +98,25 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "프로그램을 종료하시겠습니까?"))
                 return;
 
-            //  Lamp 다 끄기
-            CommonModule.Instance.TowerLamp.AllLamp_Off();
+            
 
             //m_Monitoring_CWA150SA.ThreadStop();
 
-            workStage.Device_Close();                           //  2024. 07. 11.  SCH : Close 함수가 호출되지 않아서, 프로그램 종료할 때 카메라가 닫히지 않는 문제가 있었음.
+            workStage.m_MainStatus_Start = false;
+            workStage.m_Comm_Start = false;
+
+            workStage.Close();
+            //workStage.Device_Close();                           //  2024. 07. 11.  SCH : Close 함수가 호출되지 않아서, 프로그램 종료할 때 카메라가 닫히지 않는 문제가 있었음.
+
+            loader.Close();
+            unloader.Close();
+            vision.Close();
+            bds.Close();
+
+
+            //  Lamp 다 끄기
+            CommonModule.Instance.TowerLamp.AllLamp_Off();
+            CommonModule.Instance.TowerLamp.Buzzer_Off();
 
             //this.Close();
             Application.Exit();

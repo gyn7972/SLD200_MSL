@@ -239,15 +239,38 @@ namespace QMC.Common.VisionPart
             }
             SaveImage(images, w, h, filename);
         }
+
+        private byte[] ExtractROI(byte[] src, int srcWidth, int srcHeight, int roiX, int roiY, int roiWidth, int roiHeight)
+        {
+            byte[] roi = new byte[roiWidth * roiHeight];
+            for (int y = 0; y < roiHeight; y++)
+            {
+                for (int x = 0; x < roiWidth; x++)
+                {
+                    int srcIndex = (roiY + y) * srcWidth + (roiX + x);
+                    int dstIndex = y * roiWidth + x;
+                    roi[dstIndex] = src[srcIndex];
+                }
+            }
+            return roi;
+        }
+
         public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult,
             byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound,
             int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true
             , double miscellaneous_FiducialMarkSocre = 0.7
             , bool bSpiralSearch = true)
         {
-            //string strFileName = "d:\\TempGoldpowder\\AlignGoldPowder" + DateTime.Now.Ticks.ToString() + ".bmp";
-            //IsImageSave = true;
-            //SaveImage(pixelData, w, h, strFileName);
+            // ROI 설정: 중앙 300x300
+            int roiWidth = 300;
+            int roiHeight = 300;
+            int roiX = Math.Max(0, w / 2 - roiWidth / 2);
+            int roiY = Math.Max(0, h / 2 - roiHeight / 2);
+
+            // ROI 픽셀 데이터 추출
+            byte[] roiPixelData = ExtractROI(pixelData, w, h, roiX, roiY, roiWidth, roiHeight);
+            bool bRoiUse = false;
+
             // 1. 폴더 생성 (날짜 기준)
             string dateFolder = DateTime.Now.ToString("yyyyMMdd");
             string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
@@ -267,6 +290,7 @@ namespace QMC.Common.VisionPart
                 //MeanFilter(pixelData, w, h, 10, 10);
                 //SaveImage(pixelData, w, h, "polygonMeanFilter.bmp");
             }
+
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
             int nDivideCount = (int)(w / radius);
@@ -283,175 +307,574 @@ namespace QMC.Common.VisionPart
             int stepsInCurrentDirection = 1;
             int stepsTaken = 0;
             int directionChangeCount = 0;
-            PointF currentPosition = new PointF
-            {
-                X = w / 2,
-                Y = h / 2
-            };
-            if (bSpiralSearch == false)
-            {
-                nDivideCount = 3;
-            }
-            for (int y = 0; y < nDivideCount; y++)
-            {
-                if (bFindCircle)
-                    break;
-                int nShiftY = nDirectionY % 2 == 0 ? nStepY : -nStepY;
-                nShiftY *= y;
 
-                int nCy = h / 2 + nShiftY;
-                nDirectionX = 0;
-                for (int x = 0; x < nDivideCount; x++)
+            PointF currentPosition;
+            if (bRoiUse)
+            {
+                currentPosition = new PointF
                 {
-                    int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
-                    nShiftX *= x;
-                    int nCx = w / 2 + nShiftX;
+                    X = roiWidth / 2,
+                    Y = roiHeight / 2
+                };
+            }
+            else
+            {
+                currentPosition = new PointF
+                {
+                    X = w / 2,
+                    Y = h / 2
+                };
+            }
 
-                    nCx = (int)currentPosition.X;
-                    nCy = (int)currentPosition.Y;
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+            if (bRoiUse)
+            {
+                // Spiral 탐색
+                for (int y = 0; y < nDivideCount; y++)
+                {
+                    if (bFindCircle) break;
 
-                    int nMaxCircle = (int)(radius * (1 + dSpec));
-                    int nMinCircle = (int)(radius * (1 - dSpec));
-
-                    double dFirstSpec = dSpec * 3;
-                    if (dFirstSpec > 0.5)
+                    for (int x = 0; x < nDivideCount; x++)
                     {
-                        dFirstSpec = 0.5;
-                    }
-                    int nMaxCircleFirst = (int)(radius * 2);
-                    int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
+                        int nCx = (int)currentPosition.X;
+                        int nCy = (int)currentPosition.Y;
 
-                    if (nMaxCircleFirst > 2000)
-                    {
-                        nMaxCircleFirst = 2000;
-                    }
-                    double dAngleStep = 2;
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius / 2), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
-                    points = polygon;
-                    circlesResult.Clear();
-                    FindCircleFitter(circlesResult, points, out dRadius, 5, radius, dSpec);
+                        int nMaxCircle = (int)(radius * (1 + dSpec));
+                        int nMinCircle = (int)(radius * (1 - dSpec));
 
-                    if (nCenterX == 0 || nCenterY == 0)
-                    {
-                        cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
-                        cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
-                    }
-                    else
-                    {
-                        cx = (float)nCenterX;
-                        cy = (float)nCenterY;
-                    }
+                        double dFirstSpec = Math.Min(dSpec * 3, 0.5);
+                        int nMaxCircleFirst = Math.Min((int)(radius * 2), 2000);
+                        int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
-                    if (dRadius < nMaxCircle && dRadius > nMinCircle && cx > 0 && cx < w
-                        && cy < h && cy > 0)
-                    {
-                        cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
-                        cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
-                        dErrorRatio = dSpec * 2;
-                        if (dErrorRatio < 0.2)
-                        {
-                            dErrorRatio = 0.2;
-                        }
-                        polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
+                        double dAngleStep = 2;
+
+                        // ROI 기반 원 경계 탐색
+                        polygon = FindCircleBoundary(roiPixelData, roiWidth, roiHeight, nCx, nCy,
+                            (int)(radius / 2), nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
 
                         points = polygon;
-
                         circlesResult.Clear();
-                        double dRadius2 = 0;
-                        Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2, radius, dSpec);
+                        FindCircleFitter(circlesResult, points, out dRadius, 5, radius, dSpec);
 
-                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.05)
+                        if (nCenterX == 0 || nCenterY == 0)
                         {
-                            //허상을 찾아는지 검사 한다.
-                            double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
-                            if (dScoreCheck > 0.8)
+                            cx = circlesResult.Count > 0
+                                ? circlesResult[0].X + circlesResult[0].Width / 2
+                                : roiWidth / 2;
+                            cy = circlesResult.Count > 0
+                                ? circlesResult[0].Y + circlesResult[0].Height / 2
+                                : roiHeight / 2;
+                        }
+                        else
+                        {
+                            cx = (float)nCenterX;
+                            cy = (float)nCenterY;
+                        }
+
+                        if (dRadius < nMaxCircle && dRadius > nMinCircle && cx > 0 && cx < roiWidth
+                            && cy < roiHeight && cy > 0)
+                        {
+                            dErrorRatio = Math.Max(dSpec * 2, 0.2);
+
+                            // 정밀 탐색
+                            polygon = FindCircleBoundary(roiPixelData, roiWidth, roiHeight,
+                                (int)cx, (int)cy,
+                                (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)),
+                                1, 2, bIsDarkCircleSearch);
+
+                            points = polygon;
+
+                            circlesResult.Clear();
+                            double dRadius2 = 0;
+                            Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2, radius, dSpec);
+
+                            if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.05)
                             {
-                                bFindCircle = true;
-                                break;
+                                double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
+                                //if (dScoreCheck > 0.8)
+                                if (dScoreCheck > 0.8)
+                                {
+                                    bFindCircle = true;
+                                    break;
+                                }
                             }
                         }
-                        //return circlesResult;
-                    }
-                    switch (direction)
-                    {
-                        case 0: // 오른쪽
-                            currentPosition.X += nStepX;
-                            break;
-                        case 1: // 위
-                            currentPosition.Y += nStepX;
-                            break;
-                        case 2: // 왼쪽
-                            currentPosition.X -= nStepX;
-                            break;
-                        case 3: // 아래
-                            currentPosition.Y -= nStepX;
-                            break;
-                    }
 
-                    stepsTaken++;
-                    if (stepsTaken == stepsInCurrentDirection)
-                    {
-                        stepsTaken = 0;
-                        direction = (direction + 1) % 4; // 방향 전환
-                        directionChangeCount++;
-
-                        if (directionChangeCount % 2 == 0)
+                        // Spiral 이동
+                        switch (direction)
                         {
-                            stepsInCurrentDirection++; // 두 번 방향 전환 후 이동 거리 증가
+                            case 0: currentPosition.X += nStepX; break; // 오른쪽
+                            case 1: currentPosition.Y -= nStepX; break; // 위
+                            case 2: currentPosition.X -= nStepX; break; // 왼쪽
+                            case 3: currentPosition.Y += nStepX; break; // 아래
+                        }
+
+                        stepsTaken++;
+                        if (stepsTaken == stepsInCurrentDirection)
+                        {
+                            stepsTaken = 0;
+                            direction = (direction + 1) % 4;
+                            directionChangeCount++;
+                            if (directionChangeCount % 2 == 0) stepsInCurrentDirection++;
                         }
                     }
                 }
 
-            }
+                // ROI에서 찾은 좌표를 원본 기준으로 보정
+                cx += roiX;
+                cy += roiY;
 
-            //  원을 찾았는지 여부 Ref.
-            circleFound = bFindCircle;
+                circleFound = bFindCircle;
 
-            if (bFindCircle == false)
-            {
+                if (!bFindCircle)
+                {
+                    circlesResult.Clear();
+                    timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
+                    rawImagePath = Path.Combine(baseDir, $"AlignFail_{timestamp}.bmp");
+                    IsImageSave = true;
+                    SaveImage(pixelData, w, h, rawImagePath);
+                    return new QMC_ImageProcessFindAlignResult();
+                }
+
+                // 마지막 정밀 탐색
+                polygon = FindCircleBoundary(roiPixelData, roiWidth, roiHeight,
+                    (int)(cx - roiX), (int)(cy - roiY),
+                    (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)),
+                    0.25, 1, bIsDarkCircleSearch);
+
+                points = polygon;
                 circlesResult.Clear();
-                //strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
-                //IsImageSave = true;
-                //SaveImage(pixelData, w, h, strFileName);
-                //string failPath = Path.Combine(baseDir, $"AlignFail_{DateTime.Now.Ticks}.bmp");
-                timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
-                rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
-                IsImageSave = true;
-                SaveImage(pixelData, w, h, rawImagePath);
-                return new QMC_ImageProcessFindAlignResult();
-            }
+                Circle resultCircle = FindCircleFitter(circlesResult, points, out dRadius, 4, radius, dSpec);
 
-            cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
-            cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
-            //SaveOutLine(polygon, w, h, "polygon.bmp");
-            polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.25, 1, bIsDarkCircleSearch);
-            //(polygon, w, h, "polygon2.bmp");
+                double dScore = IsRealCircle(resultCircle, dRadius, points, dSpec);
+                if (dScore > miscellaneous_FiducialMarkSocre)
+                {
+                    bFindCircle = true;
 
-            points = polygon;
+                    // ROI → 원본 좌표계로 보정
+                    resultCircle.CenterX += roiX;
+                    resultCircle.CenterY += roiY;
+                    for (int i = 0; i < circlesResult.Count; i++)
+                    {
+                        RectangleF rc = circlesResult[i];
+                        circlesResult[i] = new RectangleF(
+                            rc.X + roiX,
+                            rc.Y + roiY,
+                            rc.Width,
+                            rc.Height);
+                    }
 
-            circlesResult.Clear();
-            Circle resultCircle = FindCircleFitter(circlesResult, points, out dRadius, 4, radius, dSpec);
-            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
-
-            double dScore = IsRealCircle(resultCircle, dRadius, points, dSpec);
-            if (dScore > miscellaneous_FiducialMarkSocre)
-            {
-                bFindCircle = true;
-                result.Circles.Add(resultCircle);
-                result.ScoreCollection.Add(dScore);
-
-                // 최종 결과 이미지 저장 (오버레이 포함)
-                //string overlayPath = Path.Combine(baseDir, $"AlignSuccess_{DateTime.Now.Ticks}.bmp");
-                timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
-                rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
-                //SaveImageWithOverlay(pixelData, w, h, points, resultCircle, overlayPath);
+                    result.Circles.Add(resultCircle);
+                    result.ScoreCollection.Add(dScore);
+                }
+                else
+                {
+                    circlesResult.Clear();
+                }
             }
             else
             {
+                if (bSpiralSearch == false)
+                {
+                    nDivideCount = 3;
+                }
+                for (int y = 0; y < nDivideCount; y++)
+                {
+                    if (bFindCircle)
+                        break;
+                    int nShiftY = nDirectionY % 2 == 0 ? nStepY : -nStepY;
+                    nShiftY *= y;
+
+                    int nCy = h / 2 + nShiftY;
+                    nDirectionX = 0;
+                    for (int x = 0; x < nDivideCount; x++)
+                    {
+                        int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
+                        nShiftX *= x;
+                        int nCx = w / 2 + nShiftX;
+
+                        nCx = (int)currentPosition.X;
+                        nCy = (int)currentPosition.Y;
+
+                        int nMaxCircle = (int)(radius * (1 + dSpec));
+                        int nMinCircle = (int)(radius * (1 - dSpec));
+
+                        double dFirstSpec = dSpec * 3;
+                        if (dFirstSpec > 0.5)
+                        {
+                            dFirstSpec = 0.5;
+                        }
+                        int nMaxCircleFirst = (int)(radius * 2);
+                        int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
+
+                        if (nMaxCircleFirst > 2000)
+                        {
+                            nMaxCircleFirst = 2000;
+                        }
+                        double dAngleStep = 2;
+
+                        if (bRoiUse)
+                        {
+                            polygon = FindCircleBoundary(roiPixelData, roiWidth, roiHeight, nCx, nCy, (int)(radius / 2), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
+                        }
+                        else
+                        {
+                            polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius / 2), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
+                        }
+
+                        points = polygon;
+                        circlesResult.Clear();
+                        FindCircleFitter(circlesResult, points, out dRadius, 5, radius, dSpec);
+
+                        if (nCenterX == 0 || nCenterY == 0)
+                        {
+                            cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
+                            cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
+                        }
+                        else
+                        {
+                            cx = (float)nCenterX;
+                            cy = (float)nCenterY;
+                        }
+
+                        if (dRadius < nMaxCircle && dRadius > nMinCircle && cx > 0 && cx < w
+                            && cy < h && cy > 0)
+                        {
+                            cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
+                            cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
+                            dErrorRatio = dSpec * 2;
+                            if (dErrorRatio < 0.2)
+                            {
+                                dErrorRatio = 0.2;
+                            }
+
+                            if (bRoiUse)
+                            {
+                                polygon = FindCircleBoundary(roiPixelData, roiWidth, roiHeight, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
+                            }
+                            else
+                            {
+                                polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
+                            }
+
+
+                            points = polygon;
+
+                            circlesResult.Clear();
+                            double dRadius2 = 0;
+                            Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2, radius, dSpec);
+
+                            if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.05)
+                            {
+                                //허상을 찾아는지 검사 한다.
+                                double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
+                                if (dScoreCheck > 0.8)
+                                {
+                                    bFindCircle = true;
+                                    break;
+                                }
+                            }
+                            //return circlesResult;
+                        }
+                        switch (direction)
+                        {
+                            case 0: // 오른쪽
+                                currentPosition.X += nStepX;
+                                break;
+                            case 1: // 위
+                                currentPosition.Y += nStepX;
+                                break;
+                            case 2: // 왼쪽
+                                currentPosition.X -= nStepX;
+                                break;
+                            case 3: // 아래
+                                currentPosition.Y -= nStepX;
+                                break;
+                        }
+
+                        stepsTaken++;
+                        if (stepsTaken == stepsInCurrentDirection)
+                        {
+                            stepsTaken = 0;
+                            direction = (direction + 1) % 4; // 방향 전환
+                            directionChangeCount++;
+
+                            if (directionChangeCount % 2 == 0)
+                            {
+                                stepsInCurrentDirection++; // 두 번 방향 전환 후 이동 거리 증가
+                            }
+                        }
+                    }
+
+                }
+
+                //  원을 찾았는지 여부 Ref.
+                circleFound = bFindCircle;
+
+                if (bFindCircle == false)
+                {
+                    circlesResult.Clear();
+                    //strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
+                    //IsImageSave = true;
+                    //SaveImage(pixelData, w, h, strFileName);
+                    //string failPath = Path.Combine(baseDir, $"AlignFail_{DateTime.Now.Ticks}.bmp");
+                    timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+                    rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
+                    IsImageSave = true;
+                    SaveImage(pixelData, w, h, rawImagePath);
+                    return new QMC_ImageProcessFindAlignResult();
+                }
+
+                cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
+                cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
+                //SaveOutLine(polygon, w, h, "polygon.bmp");
+
+                if (bRoiUse)
+                {
+                    polygon = FindCircleBoundary(roiPixelData, roiWidth, roiHeight, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.25, 1, bIsDarkCircleSearch);
+                }
+                else
+                {
+                    polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.25, 1, bIsDarkCircleSearch);
+                }
+                //(polygon, w, h, "polygon2.bmp");
+
+                points = polygon;
+
                 circlesResult.Clear();
+                Circle resultCircle = FindCircleFitter(circlesResult, points, out dRadius, 4, radius, dSpec);
+                
+                double dScore = IsRealCircle(resultCircle, dRadius, points, dSpec);
+                if (dScore > miscellaneous_FiducialMarkSocre)
+                {
+                    bFindCircle = true;
+                    result.Circles.Add(resultCircle);
+                    result.ScoreCollection.Add(dScore);
+
+                    // 최종 결과 이미지 저장 (오버레이 포함)
+                    //string overlayPath = Path.Combine(baseDir, $"AlignSuccess_{DateTime.Now.Ticks}.bmp");
+                    timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+                    rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
+                    //SaveImageWithOverlay(pixelData, w, h, points, resultCircle, overlayPath);
+                }
+                else
+                {
+                    circlesResult.Clear();
+                }
             }
 
             return result;
+
+
+            //기존 코드
+            {
+                //// 1. 폴더 생성 (날짜 기준)
+                //string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+                //string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
+                //if (!Directory.Exists(baseDir))
+                //    Directory.CreateDirectory(baseDir);
+
+                //// 2. 초기 원본 이미지 저장
+                ////string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
+                //string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+                //string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
+                //IsImageSave = false;
+                //SaveImage(pixelData, w, h, rawImagePath);
+
+                //if (bIsDarkCircleSearch == false)
+                //{
+                //    //pixelData = InversImage(pixelData);
+                //    //MeanFilter(pixelData, w, h, 10, 10);
+                //    //SaveImage(pixelData, w, h, "polygonMeanFilter.bmp");
+                //}
+
+                //List<PointF> polygon = new List<PointF>();
+                //List<PointF> points = new List<PointF>();
+                //int nDivideCount = (int)(w / radius);
+                //int nStepX = (int)(radius / 2);
+                //int nStepY = (int)(radius / 2);
+                //int nDirectionX = 0;
+                //int nDirectionY = 0;
+                //bool bFindCircle = false;
+                //double dRadius = 0;
+                //float cx = 0;
+                //float cy = 0;
+                //double dErrorRatio = 0.2;
+                //int direction = 0; // 0: 오른쪽, 1: 위, 2: 왼쪽, 3: 아래
+                //int stepsInCurrentDirection = 1;
+                //int stepsTaken = 0;
+                //int directionChangeCount = 0;
+                //PointF currentPosition = new PointF
+                //{
+                //    X = w / 2,
+                //    Y = h / 2
+                //};
+                //if (bSpiralSearch == false)
+                //{
+                //    nDivideCount = 3;
+                //}
+                //for (int y = 0; y < nDivideCount; y++)
+                //{
+                //    if (bFindCircle)
+                //        break;
+                //    int nShiftY = nDirectionY % 2 == 0 ? nStepY : -nStepY;
+                //    nShiftY *= y;
+
+                //    int nCy = h / 2 + nShiftY;
+                //    nDirectionX = 0;
+                //    for (int x = 0; x < nDivideCount; x++)
+                //    {
+                //        int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
+                //        nShiftX *= x;
+                //        int nCx = w / 2 + nShiftX;
+
+                //        nCx = (int)currentPosition.X;
+                //        nCy = (int)currentPosition.Y;
+
+                //        int nMaxCircle = (int)(radius * (1 + dSpec));
+                //        int nMinCircle = (int)(radius * (1 - dSpec));
+
+                //        double dFirstSpec = dSpec * 3;
+                //        if (dFirstSpec > 0.5)
+                //        {
+                //            dFirstSpec = 0.5;
+                //        }
+                //        int nMaxCircleFirst = (int)(radius * 2);
+                //        int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
+
+                //        if (nMaxCircleFirst > 2000)
+                //        {
+                //            nMaxCircleFirst = 2000;
+                //        }
+                //        double dAngleStep = 2;
+                //        polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius / 2), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
+                //        points = polygon;
+                //        circlesResult.Clear();
+                //        FindCircleFitter(circlesResult, points, out dRadius, 5, radius, dSpec);
+
+                //        if (nCenterX == 0 || nCenterY == 0)
+                //        {
+                //            cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
+                //            cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
+                //        }
+                //        else
+                //        {
+                //            cx = (float)nCenterX;
+                //            cy = (float)nCenterY;
+                //        }
+
+                //        if (dRadius < nMaxCircle && dRadius > nMinCircle && cx > 0 && cx < w
+                //            && cy < h && cy > 0)
+                //        {
+                //            cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
+                //            cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
+                //            dErrorRatio = dSpec * 2;
+                //            if (dErrorRatio < 0.2)
+                //            {
+                //                dErrorRatio = 0.2;
+                //            }
+                //            polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
+
+                //            points = polygon;
+
+                //            circlesResult.Clear();
+                //            double dRadius2 = 0;
+                //            Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2, radius, dSpec);
+
+                //            if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.05)
+                //            {
+                //                //허상을 찾아는지 검사 한다.
+                //                double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
+                //                if (dScoreCheck > 0.8)
+                //                {
+                //                    bFindCircle = true;
+                //                    break;
+                //                }
+                //            }
+                //            //return circlesResult;
+                //        }
+                //        switch (direction)
+                //        {
+                //            case 0: // 오른쪽
+                //                currentPosition.X += nStepX;
+                //                break;
+                //            case 1: // 위
+                //                currentPosition.Y += nStepX;
+                //                break;
+                //            case 2: // 왼쪽
+                //                currentPosition.X -= nStepX;
+                //                break;
+                //            case 3: // 아래
+                //                currentPosition.Y -= nStepX;
+                //                break;
+                //        }
+
+                //        stepsTaken++;
+                //        if (stepsTaken == stepsInCurrentDirection)
+                //        {
+                //            stepsTaken = 0;
+                //            direction = (direction + 1) % 4; // 방향 전환
+                //            directionChangeCount++;
+
+                //            if (directionChangeCount % 2 == 0)
+                //            {
+                //                stepsInCurrentDirection++; // 두 번 방향 전환 후 이동 거리 증가
+                //            }
+                //        }
+                //    }
+
+                //}
+
+                ////  원을 찾았는지 여부 Ref.
+                //circleFound = bFindCircle;
+
+                //if (bFindCircle == false)
+                //{
+                //    circlesResult.Clear();
+                //    //strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
+                //    //IsImageSave = true;
+                //    //SaveImage(pixelData, w, h, strFileName);
+                //    //string failPath = Path.Combine(baseDir, $"AlignFail_{DateTime.Now.Ticks}.bmp");
+                //    timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+                //    rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
+                //    IsImageSave = true;
+                //    SaveImage(pixelData, w, h, rawImagePath);
+                //    return new QMC_ImageProcessFindAlignResult();
+                //}
+
+                //cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
+                //cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
+                ////SaveOutLine(polygon, w, h, "polygon.bmp");
+                //polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.25, 1, bIsDarkCircleSearch);
+                ////(polygon, w, h, "polygon2.bmp");
+
+                //points = polygon;
+
+                //circlesResult.Clear();
+                //Circle resultCircle = FindCircleFitter(circlesResult, points, out dRadius, 4, radius, dSpec);
+                //QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+
+                //double dScore = IsRealCircle(resultCircle, dRadius, points, dSpec);
+                //if (dScore > miscellaneous_FiducialMarkSocre)
+                //{
+                //    bFindCircle = true;
+                //    result.Circles.Add(resultCircle);
+                //    result.ScoreCollection.Add(dScore);
+
+                //    // 최종 결과 이미지 저장 (오버레이 포함)
+                //    //string overlayPath = Path.Combine(baseDir, $"AlignSuccess_{DateTime.Now.Ticks}.bmp");
+                //    timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+                //    rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
+                //    //SaveImageWithOverlay(pixelData, w, h, points, resultCircle, overlayPath);
+                //}
+                //else
+                //{
+                //    circlesResult.Clear();
+                //}
+
+                //return result;
+            }
+
         }
 
         private double IsRealCircle(Circle center, double dRadius, List<PointF> points, double dSpec)
@@ -765,6 +1188,21 @@ namespace QMC.Common.VisionPart
             byte[] pixelData = new byte[imageRaw.Length];
             byte[,] image = new byte[w, h];
             int nSum = 0;
+
+
+            // 1. 폴더 생성 (날짜 기준)
+            string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+            string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
+            if (!Directory.Exists(baseDir))
+                Directory.CreateDirectory(baseDir);
+
+            // 2. 초기 원본 이미지 저장
+            //string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+            string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
+            IsImageSave = false;
+            SaveImage(pixelData, w, h, rawImagePath);
+
             for (int y = 0; y < h; y++)
             {
                 for (int x = 0; x < w; x++)
@@ -2071,7 +2509,8 @@ namespace QMC.Common.VisionPart
             //int yEnd = Math.Min(h - radius, roi.Bottom);
 
             // ROI 고정 사용 (roiRect 무시)
-            Rectangle roi = new Rectangle(924, 0, 300, 2048);
+            //Rectangle roi = new Rectangle(924, 0, 300, 2048);
+            Rectangle roi = new Rectangle(700, 0, 600, 2048);
 
             // 이후 루프
             int xStart = Math.Max(radius, roi.Left);

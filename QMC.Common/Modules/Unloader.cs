@@ -3071,40 +3071,95 @@ namespace QMC.Common.Modules
                     break;
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_WorkStageCycle_UnloadingPos_Start:                            //  Work Stage, Unloading 위치로 이동 Cycle 시작
 
-                    //if (!workStage.m_bWorkStageMove_Complete)
-                    if ((workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_UnloadingZone) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X - 0.1)) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X + 0.1)) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y - 0.1)) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y + 0.1)))
+                    // 기준 위치 설정
+                    double dTeachingPosX = 0.0;
+                    double dTeachingPosY = 0.0;
+                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치로 이동이 완료된 상태이므로 Pick Up 진행");
+                        dTeachingPosX = Equipment.UnloadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.UnloadingOffset_forDrilling_Y_MSL;
+                    }
+                    else
+                    {
+                        var pos = workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos];
+                        dTeachingPosX = pos.Stage_X;
+                        dTeachingPosY = pos.Stage_Y;
+                    }
+                    
+                    // 현재 위치가 기준 위치 ±0.1 이내인지 확인
+                    bool isAtUnloadingPosition =
+                        Math.Abs(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - dTeachingPosX) < 0.1 &&
+                        Math.Abs(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - dTeachingPosY) < 0.1;
+
+                    // 추가 조건
+                    bool isWorkStageIdle = workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None;
+                    bool isLaserIdle = workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None;
+                    bool isUnloadingZone = workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_UnloadingZone;
+
+                    if (isUnloadingZone && isAtUnloadingPosition)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle",
+                            "Work Stage, Module Unloading 위치로 이동이 완료된 상태이므로 Pick Up 진행");
 
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferX_Move_WorkStagePos;
                     }
-                    else if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
-                            (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X - 0.1)) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X + 0.1)) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y - 0.1)) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y + 0.1)))
+                    else if (isWorkStageIdle && isLaserIdle && isAtUnloadingPosition)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치에 있으므로 Pick Up 진행, (위치 및 로딩 조건 OK)");
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle",
+                            "Work Stage, Module Unloading 위치에 있으므로 Pick Up 진행, (위치 및 로딩 조건 OK)");
 
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferX_Move_WorkStagePos;
                     }
                     else
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치로 이동 시작");
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle",
+                            "Work Stage, Module Unloading 위치로 이동 시작");
 
                         TickCount_Start((int)TickType.TICK_ULTR);
 
-                        //  Work Stage 이동 시작
                         workStage.m_nWorkStageMoveType = (int)WorkStage.WorkStageMoveType.MoveTo_UnloadingPos;
                         workStage.m_nWorkStage_Move_Step = (int)WorkStage.WorkStage_Move_Step.Start;
 
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_WorkStageCycle_UnloadingPos_CompleteCheck;
                     }
+
+                    // 기존 코드
+                    {
+                        //if ((workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_UnloadingZone) &&
+                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X - 0.1)) &&
+                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X + 0.1)) &&
+                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y - 0.1)) &&
+                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y + 0.1)))
+                        //{
+                        //    Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치로 이동이 완료된 상태이므로 Pick Up 진행");
+
+                        //    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferX_Move_WorkStagePos;
+                        //}
+                        //else if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
+                        //        (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&
+                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X - 0.1)) &&
+                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X + 0.1)) &&
+                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y - 0.1)) &&
+                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y + 0.1)))
+                        //{
+                        //    Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치에 있으므로 Pick Up 진행, (위치 및 로딩 조건 OK)");
+
+                        //    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferX_Move_WorkStagePos;
+                        //}
+                        //else
+                        //{
+                        //    Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치로 이동 시작");
+
+                        //    TickCount_Start((int)TickType.TICK_ULTR);
+
+                        //    //  Work Stage 이동 시작
+                        //    workStage.m_nWorkStageMoveType = (int)WorkStage.WorkStageMoveType.MoveTo_UnloadingPos;
+                        //    workStage.m_nWorkStage_Move_Step = (int)WorkStage.WorkStage_Move_Step.Start;
+
+                        //    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_WorkStageCycle_UnloadingPos_CompleteCheck;
+                        //}
+                    }
+                    
                     break;
 
 
@@ -3348,12 +3403,12 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Vacuum Off");
 
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
-                    Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
+                    Thread.Sleep(100); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                     workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
                     // Todo : 수정 필요
                     //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다.
-                    Thread.Sleep(10);
+                    Thread.Sleep(100);
                     workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
 
                     TickCount_Start((int)TickType.TICK_ULTR);
@@ -3366,7 +3421,7 @@ namespace QMC.Common.Modules
 
                     //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
-                    Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
+                    Thread.Sleep(100); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                     workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
                     if (((!Equipment.Machine_VacuumSensor_Enable && (TickCount_Elapsed((int)TickType.TICK_ULTR) > Equipment.Machine_SignalHoldTime)) ||
@@ -3383,7 +3438,7 @@ namespace QMC.Common.Modules
 
                         //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.workStageParameter.DO_Stage_Vacuum(false);
-                        Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
+                        Thread.Sleep(100); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
                         Thread.Sleep(10);
@@ -3415,7 +3470,7 @@ namespace QMC.Common.Modules
 
                     //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
-                    Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
+                    Thread.Sleep(100); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                     workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck;
@@ -7231,52 +7286,10 @@ namespace QMC.Common.Modules
                             }
                         }
                         bRtn = true;
-
-                        //if (bSynchronous)
-                        //{
-                        //    bool bTimeout = false;
-                        //    DateTime StartTime = DateTime.Now;
-                        //    TimeSpan ProcessTime;
-                        //    while (true)
-                        //    {
-                        //        if (IsUnloader_TeachingPositionsTransferZ(nTeachingPos))
-                        //            break;
-
-                        //        //Config.TimeOut
-                        //        if (2000 > 0) // 2000 정도면 2초?
-                        //        {
-                        //            ProcessTime = DateTime.Now - StartTime;
-                        //            if (ProcessTime.TotalMilliseconds >= 2000)
-                        //            {
-                        //                bTimeout = true;
-                        //                break;
-                        //            }
-                        //        }
-                        //        Thread.Sleep(1);
-                        //    }
-
-                        //    if (bTimeout)
-                        //    {
-                        //        strTemp = string.Format("MovetoUnloader_TeachingPositionsTransferZ [Fail]: UnloaderTransferZ Axis이 이동 실패.");
-                        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
-
-                        //        Alarm alarm = new Alarm();
-                        //        alarm.Title = "Unloader TransferZ Timeout";
-                        //        alarm.Code = -100;
-                        //        alarm.Grade = "Stop";
-                        //        alarm.Source = this.Name;
-                        //        alarm.Cause = "Unloader TransferZ Timeout이 발생했습니다. Unloader TransferZ을 확인해주세요.";
-                        //        //AlarmPost(AlarmKey.LoaderTransferZTimeout);
-
-                        //        return bRtn = false;
-                        //    }
-                        //}
                     }
 
                     bRtn = true;
                 }
-                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
-                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
             }
             catch (Exception ex)
             {

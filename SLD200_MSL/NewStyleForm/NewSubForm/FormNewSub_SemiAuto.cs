@@ -815,7 +815,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (workStage == null) return;
 
             // 시컨스 정지
-            workStage.m_LaserDrillingWork_Start = false;
+            workStage.StopProcess();
 
             workStage.ClearSemiAutoRequest();
             lblCurrentStep_Stage.Text = "[SemiAuto] Stop";

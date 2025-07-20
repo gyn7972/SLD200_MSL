@@ -56,6 +56,10 @@ namespace SLD200_MSL
             this.label1 = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tabPage_MarkFind_CircleFind = new System.Windows.Forms.TabPage();
+            this.comboBox_VisionPopup_FiducialColor = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.textBox_VisionPopup_FiducialSize_Width = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.button_VisionPopup_FindMetalPowder_Search = new System.Windows.Forms.Button();
             this.listBox_FindCircle_Result = new System.Windows.Forms.ListBox();
             this.button_VisionPopup_FindCircle_GrabImage = new System.Windows.Forms.Button();
@@ -158,10 +162,6 @@ namespace SLD200_MSL
             this.button43 = new System.Windows.Forms.Button();
             this.button47 = new System.Windows.Forms.Button();
             this.button48 = new System.Windows.Forms.Button();
-            this.textBox_VisionPopup_FiducialSize_Width = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.comboBox_VisionPopup_FiducialColor = new System.Windows.Forms.ComboBox();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -519,6 +519,51 @@ namespace SLD200_MSL
             this.tabPage_MarkFind_CircleFind.TabIndex = 1;
             this.tabPage_MarkFind_CircleFind.Text = "Find Circle";
             this.tabPage_MarkFind_CircleFind.UseVisualStyleBackColor = true;
+            // 
+            // comboBox_VisionPopup_FiducialColor
+            // 
+            this.comboBox_VisionPopup_FiducialColor.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.comboBox_VisionPopup_FiducialColor.FormattingEnabled = true;
+            this.comboBox_VisionPopup_FiducialColor.Items.AddRange(new object[] {
+            "Black",
+            "White"});
+            this.comboBox_VisionPopup_FiducialColor.Location = new System.Drawing.Point(372, 29);
+            this.comboBox_VisionPopup_FiducialColor.Name = "comboBox_VisionPopup_FiducialColor";
+            this.comboBox_VisionPopup_FiducialColor.Size = new System.Drawing.Size(64, 24);
+            this.comboBox_VisionPopup_FiducialColor.TabIndex = 79;
+            this.comboBox_VisionPopup_FiducialColor.Text = "Black";
+            // 
+            // label8
+            // 
+            this.label8.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label8.Location = new System.Drawing.Point(251, 29);
+            this.label8.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(52, 24);
+            this.label8.TabIndex = 78;
+            this.label8.Text = "Radius";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // textBox_VisionPopup_FiducialSize_Width
+            // 
+            this.textBox_VisionPopup_FiducialSize_Width.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_VisionPopup_FiducialSize_Width.Location = new System.Drawing.Point(304, 29);
+            this.textBox_VisionPopup_FiducialSize_Width.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_VisionPopup_FiducialSize_Width.Name = "textBox_VisionPopup_FiducialSize_Width";
+            this.textBox_VisionPopup_FiducialSize_Width.Size = new System.Drawing.Size(56, 24);
+            this.textBox_VisionPopup_FiducialSize_Width.TabIndex = 77;
+            this.textBox_VisionPopup_FiducialSize_Width.Text = "1.000";
+            // 
+            // label7
+            // 
+            this.label7.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label7.Location = new System.Drawing.Point(247, 7);
+            this.label7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(189, 18);
+            this.label7.TabIndex = 76;
+            this.label7.Text = "Target Size (mm)      Color";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // button_VisionPopup_FindMetalPowder_Search
             // 
@@ -894,6 +939,7 @@ namespace SLD200_MSL
             this.button_KeypadCall_VisionPopup_JogMove_StepSize.TabIndex = 76;
             this.button_KeypadCall_VisionPopup_JogMove_StepSize.Text = "#";
             this.button_KeypadCall_VisionPopup_JogMove_StepSize.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_VisionPopup_JogMove_StepSize.Visible = false;
             // 
             // textBox_VisionPopup_JogMove_StepSize
             // 
@@ -1842,51 +1888,6 @@ namespace SLD200_MSL
             this.button48.TabIndex = 29;
             this.button48.Text = "Apply";
             this.button48.UseVisualStyleBackColor = true;
-            // 
-            // textBox_VisionPopup_FiducialSize_Width
-            // 
-            this.textBox_VisionPopup_FiducialSize_Width.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_VisionPopup_FiducialSize_Width.Location = new System.Drawing.Point(304, 29);
-            this.textBox_VisionPopup_FiducialSize_Width.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_VisionPopup_FiducialSize_Width.Name = "textBox_VisionPopup_FiducialSize_Width";
-            this.textBox_VisionPopup_FiducialSize_Width.Size = new System.Drawing.Size(56, 24);
-            this.textBox_VisionPopup_FiducialSize_Width.TabIndex = 77;
-            this.textBox_VisionPopup_FiducialSize_Width.Text = "1.000";
-            // 
-            // label7
-            // 
-            this.label7.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label7.Location = new System.Drawing.Point(247, 7);
-            this.label7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(189, 18);
-            this.label7.TabIndex = 76;
-            this.label7.Text = "Target Size (mm)      Color";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label8
-            // 
-            this.label8.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label8.Location = new System.Drawing.Point(251, 29);
-            this.label8.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(52, 24);
-            this.label8.TabIndex = 78;
-            this.label8.Text = "Radius";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comboBox_VisionPopup_FiducialColor
-            // 
-            this.comboBox_VisionPopup_FiducialColor.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.comboBox_VisionPopup_FiducialColor.FormattingEnabled = true;
-            this.comboBox_VisionPopup_FiducialColor.Items.AddRange(new object[] {
-            "Black",
-            "White"});
-            this.comboBox_VisionPopup_FiducialColor.Location = new System.Drawing.Point(372, 29);
-            this.comboBox_VisionPopup_FiducialColor.Name = "comboBox_VisionPopup_FiducialColor";
-            this.comboBox_VisionPopup_FiducialColor.Size = new System.Drawing.Size(64, 24);
-            this.comboBox_VisionPopup_FiducialColor.TabIndex = 79;
-            this.comboBox_VisionPopup_FiducialColor.Text = "Black";
             // 
             // FormNew_VisionPopup
             // 

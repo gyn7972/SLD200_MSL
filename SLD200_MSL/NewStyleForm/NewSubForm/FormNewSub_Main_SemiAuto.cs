@@ -47,7 +47,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             timerSemiAuto = new System.Windows.Forms.Timer();
-            timerSemiAuto.Interval = 200;
+            timerSemiAuto.Interval = 500;
             timerSemiAuto.Tick += TimerSemiAuto_Tick;
             timerSemiAuto.Start();
 
@@ -139,32 +139,42 @@ namespace SLD200.NewStyleForm.NewSubForm
                 button_SemiAuto_Unload_Reset.Enabled = true;
             }
 
+            UpdateButtonStatusByState(button_SemiAuto_Loading, loader.m_LoaderWork_Start, loader.IsLoaderComplete());
 
+            //Clear
+            UpdateButtonStatusByState(button_SemiAuto_HeightSensor, false, false);
+            UpdateButtonStatusByState(button_SemiAuto_PreAlign, false, false);
+            UpdateButtonStatusByState(button_SemiAuto_FiducialAlign, false, false);
+            UpdateButtonStatusByState(button_SemiAuto_LaserDrilling, false, false);
 
-
-                UpdateButtonStatusByState(button_SemiAuto_Loading, loader.m_LoaderWork_Start, loader.IsLoaderComplete());
-
-            UpdateButtonStatusByState(
-                button_SemiAuto_HeightSensor,
-                workStage._semiAutoRequest == WorkStage.SemiAutoStep.MeasureHeight,
-                workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight));
-
-            UpdateButtonStatusByState(
-                button_SemiAuto_PreAlign,
-                workStage._semiAutoRequest == WorkStage.SemiAutoStep.PreAlign,
-                workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign));
-
-            UpdateButtonStatusByState(
-                button_SemiAuto_FiducialAlign,
-                workStage._semiAutoRequest == WorkStage.SemiAutoStep.FiducialAlign,
-                workStage.IsStageComplete(WorkStage.SemiAutoStep.FiducialAlign));
-
-            UpdateButtonStatusByState(
-                button_SemiAuto_LaserDrilling,
-                workStage._semiAutoRequest == WorkStage.SemiAutoStep.Drilling,
-                workStage.IsStageComplete(WorkStage.SemiAutoStep.Drilling));
-
-
+            switch (workStage._semiAutoRequest)
+            {
+                case WorkStage.SemiAutoStep.MeasureHeight:
+                    UpdateButtonStatusByState(
+                        button_SemiAuto_HeightSensor,
+                        (workStage._semiAutoRequest == WorkStage.SemiAutoStep.MeasureHeight),
+                        workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight));
+                    break;
+                case WorkStage.SemiAutoStep.PreAlign:
+                    UpdateButtonStatusByState(
+                        button_SemiAuto_PreAlign,
+                        (workStage._semiAutoRequest == WorkStage.SemiAutoStep.PreAlign),
+                        workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign));
+                    break;
+                case WorkStage.SemiAutoStep.FiducialAlign:
+                    UpdateButtonStatusByState(
+                        button_SemiAuto_FiducialAlign,
+                        (workStage._semiAutoRequest == WorkStage.SemiAutoStep.FiducialAlign),
+                        workStage.IsStageComplete(WorkStage.SemiAutoStep.FiducialAlign));
+                    break;
+                case WorkStage.SemiAutoStep.Drilling:
+                    UpdateButtonStatusByState(
+                        button_SemiAuto_LaserDrilling,
+                        (workStage._semiAutoRequest == WorkStage.SemiAutoStep.Drilling),
+                        workStage.IsStageComplete(WorkStage.SemiAutoStep.Drilling));
+                    break;
+            }
+            
             UpdateButtonStatusByState(button_SemiAuto_Unloading, unloader.m_UnloaderWork_Start, unloader.IsUnloaderComplete());
         }
 
@@ -308,7 +318,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
                 return;
 
-            if (Equipment.AutoRunStatus)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New)
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");
@@ -329,18 +339,17 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
-            {
-                strTemp = string.Format("ProcessOption_SocketHeightCheck_Use : false");
-                Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
+            //if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+            //{
+            //    strTemp = string.Format("ProcessOption_SocketHeightCheck_Use : false");
+            //    Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
 
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "높이측정 사용 모드가 아닙니다. Data Load 후 정지합니다.");
-            }
+            //    var mb = new MessageBoxOk();
+            //    mb.ShowDialog("Information !", "높이측정 사용 모드가 아닙니다. Data Load 후 정지합니다.");
+            //}
 
             Equipment.LaserDrillingCycStop_Reservation = false;
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
-
 
             Equipment.SemiAutoEnable = true;
             workStage.SetSemiAutoRequest(WorkStage.SemiAutoStep.MeasureHeight);
@@ -355,7 +364,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
                 return;
 
-            if (Equipment.AutoRunStatus)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New)
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");
@@ -376,25 +385,27 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
-            {
-                if (workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight) == false)
-                {
-                    var mb = new MessageBoxOk();
-                    mb.ShowDialog("Information !", "PreAlign 은 Height Sensor 측정 후에만 가능합니다.");
-                    return;
-                }
-            }
-            else
-            {
-                strTemp = string.Format("ProcessOption_SocketAlign_Use : false");
-                Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
+            // 사용 유/무 필요없이 사용하자. 
+            //if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+            //{
+            //    // 이 조건 빼자.
+            //    // 변위 측정 시에 PreAlign 하고 측정 할 수 있도록.
+            //    //if (workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight) == false)
+            //    //{
+            //    //    var mb = new MessageBoxOk();
+            //    //    mb.ShowDialog("Information !", "PreAlign 은 Height Sensor 측정 후에만 가능합니다.");
+            //    //    return;
+            //    //}
+            //}
+            //else
+            //{
+            //    strTemp = string.Format("ProcessOption_SocketAlign_Use : false");
+            //    Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
 
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "Align 사용 모드가 아닙니다.");
-                return;
-            }
-
+            //    var mb = new MessageBoxOk();
+            //    mb.ShowDialog("Information !", "Align 사용 모드가 아닙니다.");
+            //    return;
+            //}
 
             Equipment.LaserDrillingCycStop_Reservation = false;
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
@@ -413,7 +424,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
                 return;
 
-            if (Equipment.AutoRunStatus)
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New)
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");
@@ -434,25 +445,25 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            if(Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
-            {
-                if (workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight) == false &&
-                    workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign) == false)
-                {
-                    var mb = new MessageBoxOk();
-                    mb.ShowDialog("Information !", "Fiducial Align 은 PreAlign 후에만 가능합니다.");
-                    return;
-                }
-            }
-            else
-            {
-                strTemp = string.Format("ProcessOption_SocketAlign_Use : false");
-                Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
+            //if(Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+            //{
+            //    if (workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight) == false &&
+            //        workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign) == false)
+            //    {
+            //        var mb = new MessageBoxOk();
+            //        mb.ShowDialog("Information !", "Fiducial Align 은 PreAlign 후에만 가능합니다.");
+            //        return;
+            //    }
+            //}
+            //else
+            //{
+            //    strTemp = string.Format("ProcessOption_SocketAlign_Use : false");
+            //    Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
 
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "Align 사용 모드가 아닙니다.");
-                return;
-            }
+            //    var mb = new MessageBoxOk();
+            //    mb.ShowDialog("Information !", "Align 사용 모드가 아닙니다.");
+            //    return;
+            //}
 
             Equipment.LaserDrillingCycStop_Reservation = false;
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing

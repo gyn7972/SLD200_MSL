@@ -2331,7 +2331,8 @@ namespace QMC.Common.Modules
                         MC_Func.MC_MotorStop((int)nAxis.Z0, 2000);
                         m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType1_Slow2Down;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && 
+                            MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동 완료");
 
@@ -4237,7 +4238,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         m_bMLoader_LogOnce = true;
                     }
-
                 }
             }
 
@@ -5652,41 +5652,49 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.MAlignerPickUp_Retry_MAligner_Vacuum_OnCheck:                            //  Transfer Picker Vacuum On Check, M-Aligner Vacuum Off Check
 
-                    if ((Equipment.Machine_VacuumSensor_Enable &&
+                    if(Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Retry, M-Aligner Vacuum Ignore");
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPickUp_Retry_TransferZ_Move_ReadyPos2_1stStep;
+                    }
+                    else
+                    {
+                        if ((Equipment.Machine_VacuumSensor_Enable &&
 
-                        ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center && 
+                        ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center &&
                         loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center)) ||
                         !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center) &&
 
-                        ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && 
+                        ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner &&
                         loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner)) ||
                         !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner) &&
 
-                        ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer && 
+                        ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer &&
                         loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)) ||
                         !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)) ||
 
-                        (!Equipment.Machine_VacuumSensor_Enable && 
+                        (!Equipment.Machine_VacuumSensor_Enable &&
                         (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_SignalHoldTime)))
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Retry, M-Aligner Vacuum On 완료");
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Retry, M-Aligner Vacuum On 완료");
 
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPickUp_Retry_TransferZ_Move_ReadyPos2_1stStep;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
-                    {
-                        //////////////////////////////////////////////////////////////////////////////////////////
-                        //  복원 지점 체크용 (M-Aligner 에 Module Put Down 실패)
-                        //  - M-Aligner 에 공압이 형성되지 않았거나, Picker 공압이 파기되지 않았음.
-                        m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag = false;
-                        //  복원 지점 체크용 (M-Aligner 에 Module Put Down 실패)
-                        //////////////////////////////////////////////////////////////////////////////////////////
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPickUp_Retry_TransferZ_Move_ReadyPos2_1stStep;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                        {
+                            //////////////////////////////////////////////////////////////////////////////////////////
+                            //  복원 지점 체크용 (M-Aligner 에 Module Put Down 실패)
+                            //  - M-Aligner 에 공압이 형성되지 않았거나, Picker 공압이 파기되지 않았음.
+                            m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag = false;
+                            //  복원 지점 체크용 (M-Aligner 에 Module Put Down 실패)
+                            //////////////////////////////////////////////////////////////////////////////////////////
 
-                        Loader_CurrentStatus_Save_StopedByTimeout();
+                            Loader_CurrentStatus_Save_StopedByTimeout();
 
-                        m_strTemp = "Transfer 축, Retry,, M-Aligner Vacuum On 실패. (Timeout)";
-                        Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
-                        return AlarmPost(AlarmKey.LD_Transfer_MAlignerVacuumOn_Timeout);
+                            m_strTemp = "Transfer 축, Retry,, M-Aligner Vacuum On 실패. (Timeout)";
+                            Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                            return AlarmPost(AlarmKey.LD_Transfer_MAlignerVacuumOn_Timeout);
+                        }
                     }
                     break;
 
@@ -5861,13 +5869,16 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.MAlignerPickUp_Transfer_PickerVacuum_OnCheck:                                //  Transfer, Module Picker Vacuum On 확인
 
-                    if ((Equipment.Machine_VacuumSensor_Enable && (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
-                                                                loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
+                    if ((Equipment.Machine_VacuumSensor_Enable && 
+                        (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                         loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
 
                         (!Equipment.Machine_VacuumStableTime_Enable ||
-                        (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime)))) ||
+                        (Equipment.Machine_VacuumStableTime_Enable && 
+                        (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime)))) ||
 
-                        (!Equipment.Machine_VacuumSensor_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_SignalHoldTime)))
+                        (!Equipment.Machine_VacuumSensor_Enable && 
+                        (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_SignalHoldTime)))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On 완료");
 
@@ -6179,51 +6190,103 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_Start:                            //  Work Stage, Loading 위치로 이동 Cycle 시작
 
-                    //if (!workStage.m_bWorkStageMove_Complete)
-                    if ((workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_LoadingZone) &&
-                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > 
-                        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
-                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < 
-                        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
-                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > 
-                        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
-                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < 
-                        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
+                    double dTeachingPosX = 0.0, dTeachingPosY = 0.0;
+                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치로 이동이 완료된 상태이므로 PutDown 진행");
+                        dTeachingPosX = Equipment.LoadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.LoadingOffset_forDrilling_Y_MSL;
+                    }
+                    else
+                    {
+                        dTeachingPosX = workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X;
+                        dTeachingPosY = workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y;
+                    }
+
+                    // 위치 비교 (±0.1mm 허용)
+                    bool isAtLoadingPosition =
+                        Math.Abs(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - dTeachingPosX) < 0.1 &&
+                        Math.Abs(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - dTeachingPosY) < 0.1;
+
+                    bool isWorkStageReady = (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
+                                            (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None);
+
+                    if (workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_LoadingZone && isAtLoadingPosition)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle",
+                            "Work Stage, Module Loading 위치로 이동이 완료된 상태이므로 PutDown 진행");
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
                     }
-                    else if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
-                            (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > 
-                            (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < 
-                            (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > 
-                            (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
-                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < 
-                            (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
+                    else if (isWorkStageReady && isAtLoadingPosition)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치에 있으므로 PutDown 진행, (위치 및 로딩 조건 OK)");
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle",
+                            "Work Stage, Module Loading 위치에 있으므로 PutDown 진행, (위치 및 로딩 조건 OK)");
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
                     }
                     else
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치로 이동 시작");
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle",
+                            "Work Stage, Module Loading 위치로 이동 시작");
 
                         TickCount_Start((int)TickType.TICK_LDTR);
 
-                        // Todo: Work Stage 이동 시작을 여기서 한다.
-                        //  Work Stage 이동 시작 
                         workStage.m_nWorkStageMoveType = (int)WorkStage.WorkStageMoveType.MoveTo_LoadingPos;
                         workStage.m_nWorkStage_Move_Step = (int)WorkStage.WorkStage_Move_Step.Start;
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_CompleteCheck;
 
-                        //  Unloading 위치에 있는 Work Stage 를, Loading 위치로 보냄과 동시에 Loader Transfer 를 Loading 위치로 이동시키려면, 윗줄 주석으로 변경, 아랫줄 주석해제
-                        //m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
+                        // WorkStage 이동과 Transfer 동시 진행할 경우 아래 라인 사용
+                        // m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
+                    }
+
+                    // 기존 코드
+                    {
+                        //if ((workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_LoadingZone) &&
+                        //(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) >
+                        //(workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
+                        //(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) <
+                        //(workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
+                        //(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) >
+                        //(workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
+                        //(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) <
+                        //(workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
+                        //{
+                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치로 이동이 완료된 상태이므로 PutDown 진행");
+
+                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
+                        //}
+                        //else if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
+                        //        (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&
+                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) >
+                        //        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
+                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) <
+                        //        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
+                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) >
+                        //        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
+                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) <
+                        //        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
+                        //{
+                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치에 있으므로 PutDown 진행, (위치 및 로딩 조건 OK)");
+
+                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
+                        //}
+                        //else
+                        //{
+                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치로 이동 시작");
+
+                        //    TickCount_Start((int)TickType.TICK_LDTR);
+
+                        //    // Todo: Work Stage 이동 시작을 여기서 한다.
+                        //    //  Work Stage 이동 시작 
+                        //    workStage.m_nWorkStageMoveType = (int)WorkStage.WorkStageMoveType.MoveTo_LoadingPos;
+                        //    workStage.m_nWorkStage_Move_Step = (int)WorkStage.WorkStage_Move_Step.Start;
+
+                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_CompleteCheck;
+
+                        //    //  Unloading 위치에 있는 Work Stage 를, Loading 위치로 보냄과 동시에 Loader Transfer 를 Loading 위치로 이동시키려면, 윗줄 주석으로 변경, 아랫줄 주석해제
+                        //    //m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
+                        //}
                     }
                     break;
 
@@ -6272,31 +6335,74 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep:                            //  Transfer Z 축, Module Put Down 위치로 이동 (1단계, 최종 위치에서 위로 10 mm)
 
-                    //  Stage 가 Module Put Down 위치에 있는지 한번더 체크
-                    //  (Work Stage 와 Loader Transfer 가 동시에 움직이도록 할 경우 인터락)
-                    if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
-
-                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > 
-                        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
-                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < 
-                        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
-                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > 
-                        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
-                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < 
-                        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
+                    // 기준 위치 설정
+                    dTeachingPosX = 0.0;
+                    dTeachingPosY = 0.0;
+                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage 가 Module Loading 위치에 있음");
+                        dTeachingPosX = Equipment.LoadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.LoadingOffset_forDrilling_Y_MSL;
+                    }
+                    else
+                    {
+                        var pos = workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos];
+                        dTeachingPosX = pos.Stage_X;
+                        dTeachingPosY = pos.Stage_Y;
+                    }
 
-                        // 내부에서 10mm 위로 들어올림.
+                    // 현재 위치가 기준 위치 ± 0.1 이내인지 확인
+                    isAtLoadingPosition =
+                        Math.Abs(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - dTeachingPosX) < 0.1 &&
+                        Math.Abs(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - dTeachingPosY) < 0.1;
+
+                    // 이동이 끝난 상태인지 확인
+                    bool isWorkStageIdle = workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None;
+
+                    if (isWorkStageIdle && isAtLoadingPosition)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle",
+                            "Transfer X 축, Work Stage 가 Module Loading 위치에 있음");
+
                         Loader_Transfer_Step_WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep(out m_dSpeed, out m_dAccDec);
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage 가 Module Loading 위치에 있지 않음");
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle",
+                            "Transfer X 축, Work Stage 가 Module Loading 위치에 있지 않음");
 
                         return AlarmPost(AlarmKey.LD_TransferX_Move_LoadingPos_Timeout);
+                    }
+
+                    // 기존 코드
+                    {
+                        ////  Stage 가 Module Put Down 위치에 있는지 한번더 체크
+                        ////  (Work Stage 와 Loader Transfer 가 동시에 움직이도록 할 경우 인터락)
+                        //if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
+
+                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) >
+                        //    (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
+                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) <
+                        //    (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
+                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) >
+                        //    (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
+                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) <
+                        //    (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
+                        //{
+                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage 가 Module Loading 위치에 있음");
+
+                        //    // 내부에서 10mm 위로 들어올림.
+                        //    Loader_Transfer_Step_WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep(out m_dSpeed, out m_dAccDec);
+
+                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck;
+                        //}
+                        //else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                        //{
+                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage 가 Module Loading 위치에 있지 않음");
+
+                        //    return AlarmPost(AlarmKey.LD_TransferX_Move_LoadingPos_Timeout);
+                        //}
                     }
                     break;
 
@@ -6763,25 +6869,32 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.MAlignerPutDown_MAligner_Vacuum_On:                                     //  M-Aligner, Vacuum On
 
-                    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On");
-
-                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center)
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore)
                     {
-                        loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum Ignore");
                     }
-
-                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner)
+                    else
                     {
-                        loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
-                    }
+                        if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center)
+                        {
+                            loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
+                            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On - Center");
+                        }
 
-                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)
-                    {
-                        loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+                        if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner)
+                        {
+                            loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
+                            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On - Inner");
+                        }
+
+                        if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)
+                        {
+                            loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+                            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On - Outer");
+                        }
                     }
 
                     //TickCount_Start((int)TickType.TICK_LDTR);
-
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPutDown_Transfer_PickerVacuum_Off;
                     break;
 
@@ -6803,31 +6916,42 @@ namespace QMC.Common.Modules
                 case (int)Loader_Transfer_Step.MAlignerPutDown_Transfer_PickerVacuum_OffCheck:                                //  Transfer, Module Picker Vacuum Off 확인 (and M-Aligner Vacuum On 확인)
 
                     bool bRtn = true;
+
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore)
+                    {
+                        bRtn = true;
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On Check - Ignore");
+                    }
                     if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center)
                     {
                         bRtn = bRtn && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center);
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On Check - Center");
 
                     }
-
                     if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner)
                     {
                         bRtn = bRtn && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner);
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On Check - Inner");
                     }
-
                     if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)
                     {
                         bRtn = bRtn && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer);
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On Check - Outer");
                     }
 
                     if (bRtn &&
                         (!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
                         !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
-
+                        
                         (!Equipment.Machine_VacuumStableTime_Enable ||
-                        (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime))) &&
 
+                        (Equipment.Machine_VacuumStableTime_Enable && 
+                        (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime))) &&
+                        
                         (!Equipment.Machine_VacuumBlowTime_Enable ||
-                        (Equipment.Machine_VacuumBlowTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumBlowTime))) )
+
+                        (Equipment.Machine_VacuumBlowTime_Enable && 
+                        (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumBlowTime))) )
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off 완료");
 
@@ -6835,9 +6959,7 @@ namespace QMC.Common.Modules
 
                         //////////////////////////////////////////////////////////////////////////////////////////
                         //  복원 지점 체크용 (M-Aligner 에 Module Put Down 완료) - Picker 공압이 파기되었으므로, 자재가 M-Aligner 에 안착되었다고 본다.
-                        //
                         m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag = true;
-                        //
                         //  복원 지점 체크용 (M-Aligner 에 Module Put Down 완료)
                         //////////////////////////////////////////////////////////////////////////////////////////
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPutDown_TransferZ_Move_ReadyPos2_1stStep;
@@ -6909,42 +7031,56 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.MAlignerPutDown_PickerVacuum_MAlignerVacuum_Check:                            //  Transfer Picker Vacuum On Check, M-Aligner Vacuum Off Check
 
-                    if ((!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
-                        !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
-
-                        ((Equipment.Machine_VacuumSensor_Enable &&
-
-                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center)) ||
-                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center) &&
-
-                            //((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner)) ||
-                            //!Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner) &&
-                            //  아래 임시 코드 -> 임시면 다시 원복이 되어야지..
-                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
-                                                                                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center) ||
-                                                                                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))) ||
-                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner) &&
-
-                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)) ||
-                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)) ||
-                            
-                        !Equipment.Machine_VacuumSensor_Enable))
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore &&
+                        (!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
+                         !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off, M-Aligner Vacuum On 완료");
-
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off, M-Aligner Vacuum On 완료 - Ignore");
 
                         //////////////////////////////////////////////////////////////////////////////////////////
                         //  복원 지점 체크용 (M-Aligner 에 Module Put Down 완료) - M-Aligner 에 공압이 형성되었고, Picker 공압이 파기되었으므로, 자재가 M-Aligner 에 안착되었다고 본다.
-                        //
                         m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag = true;
-                        //
                         //  복원 지점 체크용 (M-Aligner 에 Module Put Down 완료)
                         //////////////
                         m_bMAlign_Complete = false;
                         m_bMAlign_Retry = false;
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPutDown_MAlign_Start;
-                       
+                    }
+                    else if ((!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
+                             !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
+
+                            ((Equipment.Machine_VacuumSensor_Enable &&
+
+                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center && 
+                                loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center)) ||
+                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center) &&
+
+                            //((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner &&
+                            //loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner)) ||
+                            //!Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner) &&
+                            //  아래 임시 코드 -> 임시면 다시 원복이 되어야지..
+                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && 
+                            (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
+                            loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center) ||
+                            loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))) ||
+                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner) &&
+                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer && 
+                            loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)) ||
+                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)) ||
+                            !Equipment.Machine_VacuumSensor_Enable))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off, M-Aligner Vacuum On 완료");
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  복원 지점 체크용 (M-Aligner 에 Module Put Down 완료) - M-Aligner 에 공압이 형성되었고, Picker 공압이 파기되었으므로, 자재가 M-Aligner 에 안착되었다고 본다.
+                        m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag = true;
+                        //  복원 지점 체크용 (M-Aligner 에 Module Put Down 완료)
+                        //////////////
+                        m_bMAlign_Complete = false;
+                        m_bMAlign_Retry = false;
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPutDown_MAlign_Start;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
@@ -6959,6 +7095,7 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOff_MAlignerVacuumOn_Timeout);
                     }
+
                     break;
 
                 case (int)Loader_Transfer_Step.MAlignerPutDown_MAlign_Start:                            //  M-Aligner 에서 Align 시작
@@ -7803,20 +7940,26 @@ namespace QMC.Common.Modules
 
         private void Loader_Transfer_Step_MAlignerPickUp_Retry_MAligner_Vacuum_On()
         {
-            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Retry, Module Vacuum On");
+            if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum Ignore");
+            }
 
             if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center)
             {
+                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On - Center");
                 loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
             }
 
             if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner)
             {
+                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On - Inner");
                 loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
             }
 
             if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)
             {
+                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On - Outer");
                 loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
             }
         }
@@ -7951,26 +8094,32 @@ namespace QMC.Common.Modules
 
         private void Loader_Transfer_Step_MAligner_MAlign_Start()
         {
-            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner, Align 시작");
-
             loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Center, false);
             loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
             loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
 
             //  얼라인을 진행해야 하니 다시 Vacuum 을 잡는다.
+            if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner, Align 시작 - Ignore");
+            }
+
             if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center)
             {
                 loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
+                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner, Align 시작 - Center");
             }
 
             if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner)
             {
                 loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
+                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner, Align 시작 - Inner");
             }
 
             if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)
             {
                 loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner, Align 시작 - Outer");
             }
 
             TickCount_Start((int)TickType.TICK_LDTR);
@@ -8653,7 +8802,6 @@ namespace QMC.Common.Modules
                 case (int)MAlign_Step.MAligner_ModuleVacuum_OnCheck:                                //  Module Vacuum On 확인
                     
                     bool bVaccum = (!Equipment.Machine_VacuumSensor_Enable || 
-
                                     (Equipment.Machine_VacuumSensor_Enable && 
                                     (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center) ||
                                     loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
@@ -8682,16 +8830,24 @@ namespace QMC.Common.Modules
                     bool bMAlignerSensorHold = (!Equipment.Machine_VacuumSensor_Enable && 
                         (TickCount_Elapsed((int)TickType.TICK_ALIGN) > Equipment.Machine_SignalHoldTime));
 
-                    if (bVaccum && bMAlingerCenter && bMAlingerInner && bMAlingerOuter  && (bMAlignerStableTime || bMAlignerSensorHold))
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On 완료");
+                        Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On 완료 - Ignore");
                         m_nMAlign_Step = (int)MAlign_Step.MAligner_MoveXY_Narrowly;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) > 60000)
+                    else
                     {
-                        m_strTemp = "Module Vacuum On 실패. (Timeout)";
-                        Log.Write("SLD-200", Equipment.User_Name, "MAlign_Step", m_strTemp);
-                        return AlarmPost(AlarmKey.MAligner_VacuumOn_Fail);
+                        if (bVaccum && bMAlingerCenter && bMAlingerInner && bMAlingerOuter && (bMAlignerStableTime || bMAlignerSensorHold))
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On 완료");
+                            m_nMAlign_Step = (int)MAlign_Step.MAligner_MoveXY_Narrowly;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) > 60000)
+                        {
+                            m_strTemp = "Module Vacuum On 실패. (Timeout)";
+                            Log.Write("SLD-200", Equipment.User_Name, "MAlign_Step", m_strTemp);
+                            return AlarmPost(AlarmKey.MAligner_VacuumOn_Fail);
+                        }
                     }
                     break;
 
@@ -8866,22 +9022,29 @@ namespace QMC.Common.Modules
 
         private void MAlign_Step_MAligner_ModuleVacuum_On()
         {
-            Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On");
+            if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On - Ignore");
+            }
 
             if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center)
             {
                 loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
+                Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On - Center");
             }
 
             if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner)
             {
                 loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
+                Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On - Inner");
             }
 
             if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)
             {
                 loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+                Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On - Outer");
             }
+
             TickCount_Start((int)TickType.TICK_ALIGN);
         }
 

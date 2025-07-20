@@ -249,6 +249,7 @@
             this.button_KeypadCall_JogPopup_Loader_JogMove_StepSize.TabIndex = 76;
             this.button_KeypadCall_JogPopup_Loader_JogMove_StepSize.Text = "#";
             this.button_KeypadCall_JogPopup_Loader_JogMove_StepSize.UseVisualStyleBackColor = true;
+            this.button_KeypadCall_JogPopup_Loader_JogMove_StepSize.Visible = false;
             // 
             // textBox_JogPopup_Loader_JogMove_StepSize
             // 

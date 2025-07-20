@@ -512,8 +512,8 @@ namespace QMC.Common.Parts
 
                     position = workstage.ConvertPointCoarseCam(position);
 
-                    xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-                    xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                    xyInterpolatedCoordinate.X = position.X;
+                    xyInterpolatedCoordinate.Y = position.Y;
 
                     Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX2:{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY2:{xyInterpolatedCoordinate.Y}"));
 

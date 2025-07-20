@@ -61,15 +61,16 @@ namespace SLD200_MSL
             this.button_SiriusEditor_Divided = new System.Windows.Forms.Button();
             this.checkBox_SiriusEditor_Divided = new System.Windows.Forms.CheckBox();
             this.SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
+            this.button_UserGuide = new System.Windows.Forms.Button();
             this.groupBox167.SuspendLayout();
             this.SuspendLayout();
             // 
             // button_DataParsing
             // 
             this.button_DataParsing.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_DataParsing.Location = new System.Drawing.Point(1300, 234);
+            this.button_DataParsing.Location = new System.Drawing.Point(1300, 230);
             this.button_DataParsing.Name = "button_DataParsing";
-            this.button_DataParsing.Size = new System.Drawing.Size(141, 60);
+            this.button_DataParsing.Size = new System.Drawing.Size(110, 60);
             this.button_DataParsing.TabIndex = 2;
             this.button_DataParsing.Text = "Data Parsing";
             this.button_DataParsing.UseVisualStyleBackColor = true;
@@ -78,7 +79,7 @@ namespace SLD200_MSL
             // button_Rotate
             // 
             this.button_Rotate.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Rotate.Location = new System.Drawing.Point(1324, 560);
+            this.button_Rotate.Location = new System.Drawing.Point(1298, 539);
             this.button_Rotate.Name = "button_Rotate";
             this.button_Rotate.Size = new System.Drawing.Size(153, 32);
             this.button_Rotate.TabIndex = 2;
@@ -99,7 +100,7 @@ namespace SLD200_MSL
             this.groupBox167.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox167.Name = "groupBox167";
             this.groupBox167.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox167.Size = new System.Drawing.Size(141, 214);
+            this.groupBox167.Size = new System.Drawing.Size(151, 215);
             this.groupBox167.TabIndex = 84;
             this.groupBox167.TabStop = false;
             this.groupBox167.Text = " Available Layer ";
@@ -173,7 +174,7 @@ namespace SLD200_MSL
             // button_Test_OffsetAngle_Calc
             // 
             this.button_Test_OffsetAngle_Calc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_OffsetAngle_Calc.Location = new System.Drawing.Point(1324, 595);
+            this.button_Test_OffsetAngle_Calc.Location = new System.Drawing.Point(1298, 574);
             this.button_Test_OffsetAngle_Calc.Name = "button_Test_OffsetAngle_Calc";
             this.button_Test_OffsetAngle_Calc.Size = new System.Drawing.Size(153, 45);
             this.button_Test_OffsetAngle_Calc.TabIndex = 85;
@@ -184,7 +185,7 @@ namespace SLD200_MSL
             // tb_ScannerOffset_Angle
             // 
             this.tb_ScannerOffset_Angle.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tb_ScannerOffset_Angle.Location = new System.Drawing.Point(1400, 789);
+            this.tb_ScannerOffset_Angle.Location = new System.Drawing.Point(1374, 768);
             this.tb_ScannerOffset_Angle.Name = "tb_ScannerOffset_Angle";
             this.tb_ScannerOffset_Angle.Size = new System.Drawing.Size(77, 27);
             this.tb_ScannerOffset_Angle.TabIndex = 94;
@@ -194,7 +195,7 @@ namespace SLD200_MSL
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.Color.Black;
-            this.label4.Location = new System.Drawing.Point(1321, 795);
+            this.label4.Location = new System.Drawing.Point(1295, 774);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(77, 16);
             this.label4.TabIndex = 93;
@@ -203,7 +204,7 @@ namespace SLD200_MSL
             // tb_ScannerOffset_Y
             // 
             this.tb_ScannerOffset_Y.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tb_ScannerOffset_Y.Location = new System.Drawing.Point(1407, 759);
+            this.tb_ScannerOffset_Y.Location = new System.Drawing.Point(1381, 738);
             this.tb_ScannerOffset_Y.Name = "tb_ScannerOffset_Y";
             this.tb_ScannerOffset_Y.Size = new System.Drawing.Size(70, 27);
             this.tb_ScannerOffset_Y.TabIndex = 92;
@@ -213,7 +214,7 @@ namespace SLD200_MSL
             // 
             this.lbl_ScannerOffset_Y.AutoSize = true;
             this.lbl_ScannerOffset_Y.ForeColor = System.Drawing.Color.Black;
-            this.lbl_ScannerOffset_Y.Location = new System.Drawing.Point(1322, 764);
+            this.lbl_ScannerOffset_Y.Location = new System.Drawing.Point(1296, 743);
             this.lbl_ScannerOffset_Y.Name = "lbl_ScannerOffset_Y";
             this.lbl_ScannerOffset_Y.Size = new System.Drawing.Size(81, 16);
             this.lbl_ScannerOffset_Y.TabIndex = 91;
@@ -227,7 +228,7 @@ namespace SLD200_MSL
             this.btnScannerOffset_Set.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnScannerOffset_Set.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnScannerOffset_Set.ForeColor = System.Drawing.Color.Black;
-            this.btnScannerOffset_Set.Location = new System.Drawing.Point(1324, 825);
+            this.btnScannerOffset_Set.Location = new System.Drawing.Point(1298, 804);
             this.btnScannerOffset_Set.Name = "btnScannerOffset_Set";
             this.btnScannerOffset_Set.Size = new System.Drawing.Size(153, 44);
             this.btnScannerOffset_Set.TabIndex = 90;
@@ -238,7 +239,7 @@ namespace SLD200_MSL
             // tb_ScannerOffset_X
             // 
             this.tb_ScannerOffset_X.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tb_ScannerOffset_X.Location = new System.Drawing.Point(1407, 729);
+            this.tb_ScannerOffset_X.Location = new System.Drawing.Point(1381, 708);
             this.tb_ScannerOffset_X.Name = "tb_ScannerOffset_X";
             this.tb_ScannerOffset_X.Size = new System.Drawing.Size(70, 27);
             this.tb_ScannerOffset_X.TabIndex = 89;
@@ -248,7 +249,7 @@ namespace SLD200_MSL
             // 
             this.lbl_ScannerOffset_X.AutoSize = true;
             this.lbl_ScannerOffset_X.ForeColor = System.Drawing.Color.Black;
-            this.lbl_ScannerOffset_X.Location = new System.Drawing.Point(1322, 734);
+            this.lbl_ScannerOffset_X.Location = new System.Drawing.Point(1296, 713);
             this.lbl_ScannerOffset_X.Name = "lbl_ScannerOffset_X";
             this.lbl_ScannerOffset_X.Size = new System.Drawing.Size(82, 16);
             this.lbl_ScannerOffset_X.TabIndex = 88;
@@ -257,7 +258,7 @@ namespace SLD200_MSL
             // tb_SelectSocketNumber
             // 
             this.tb_SelectSocketNumber.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.tb_SelectSocketNumber.Location = new System.Drawing.Point(1446, 531);
+            this.tb_SelectSocketNumber.Location = new System.Drawing.Point(1420, 510);
             this.tb_SelectSocketNumber.Name = "tb_SelectSocketNumber";
             this.tb_SelectSocketNumber.Size = new System.Drawing.Size(31, 24);
             this.tb_SelectSocketNumber.TabIndex = 96;
@@ -267,7 +268,7 @@ namespace SLD200_MSL
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.Color.Black;
-            this.label5.Location = new System.Drawing.Point(1323, 535);
+            this.label5.Location = new System.Drawing.Point(1297, 514);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(118, 16);
             this.label5.TabIndex = 95;
@@ -277,7 +278,7 @@ namespace SLD200_MSL
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.Color.Black;
-            this.label6.Location = new System.Drawing.Point(1322, 701);
+            this.label6.Location = new System.Drawing.Point(1296, 680);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(67, 16);
             this.label6.TabIndex = 88;
@@ -286,7 +287,7 @@ namespace SLD200_MSL
             // textBoxCorY
             // 
             this.textBoxCorY.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxCorY.Location = new System.Drawing.Point(1407, 696);
+            this.textBoxCorY.Location = new System.Drawing.Point(1381, 675);
             this.textBoxCorY.Name = "textBoxCorY";
             this.textBoxCorY.Size = new System.Drawing.Size(70, 27);
             this.textBoxCorY.TabIndex = 89;
@@ -296,7 +297,7 @@ namespace SLD200_MSL
             // 
             this.label7.AutoSize = true;
             this.label7.ForeColor = System.Drawing.Color.Black;
-            this.label7.Location = new System.Drawing.Point(1322, 668);
+            this.label7.Location = new System.Drawing.Point(1296, 647);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(68, 16);
             this.label7.TabIndex = 88;
@@ -305,7 +306,7 @@ namespace SLD200_MSL
             // textboxCorX
             // 
             this.textboxCorX.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textboxCorX.Location = new System.Drawing.Point(1407, 663);
+            this.textboxCorX.Location = new System.Drawing.Point(1381, 642);
             this.textboxCorX.Name = "textboxCorX";
             this.textboxCorX.Size = new System.Drawing.Size(70, 27);
             this.textboxCorX.TabIndex = 89;
@@ -314,7 +315,7 @@ namespace SLD200_MSL
             // textBox_SiriusEditor_Divided_W
             // 
             this.textBox_SiriusEditor_Divided_W.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_SiriusEditor_Divided_W.Location = new System.Drawing.Point(1413, 362);
+            this.textBox_SiriusEditor_Divided_W.Location = new System.Drawing.Point(1410, 362);
             this.textBox_SiriusEditor_Divided_W.Name = "textBox_SiriusEditor_Divided_W";
             this.textBox_SiriusEditor_Divided_W.Size = new System.Drawing.Size(41, 23);
             this.textBox_SiriusEditor_Divided_W.TabIndex = 98;
@@ -335,7 +336,7 @@ namespace SLD200_MSL
             // textBox_SiriusEditor_Divided_H
             // 
             this.textBox_SiriusEditor_Divided_H.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_SiriusEditor_Divided_H.Location = new System.Drawing.Point(1413, 391);
+            this.textBox_SiriusEditor_Divided_H.Location = new System.Drawing.Point(1410, 391);
             this.textBox_SiriusEditor_Divided_H.Name = "textBox_SiriusEditor_Divided_H";
             this.textBox_SiriusEditor_Divided_H.Size = new System.Drawing.Size(41, 23);
             this.textBox_SiriusEditor_Divided_H.TabIndex = 100;
@@ -358,7 +359,7 @@ namespace SLD200_MSL
             this.button_SiriusEditor_Divided.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.button_SiriusEditor_Divided.Location = new System.Drawing.Point(1300, 417);
             this.button_SiriusEditor_Divided.Name = "button_SiriusEditor_Divided";
-            this.button_SiriusEditor_Divided.Size = new System.Drawing.Size(154, 34);
+            this.button_SiriusEditor_Divided.Size = new System.Drawing.Size(151, 34);
             this.button_SiriusEditor_Divided.TabIndex = 101;
             this.button_SiriusEditor_Divided.Text = "Divided적용";
             this.button_SiriusEditor_Divided.UseVisualStyleBackColor = true;
@@ -407,11 +408,23 @@ namespace SLD200_MSL
             this.SiriusEditor.OnDocumentSave += new SpiralLab.Sirius.SiriusDocumentSave(this.SiriusEditor_OnDocumentSave);
             this.SiriusEditor.CausesValidationChanged += new System.EventHandler(this.SiriusEditor_CausesValidationChanged);
             // 
+            // button_UserGuide
+            // 
+            this.button_UserGuide.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_UserGuide.Location = new System.Drawing.Point(1413, 230);
+            this.button_UserGuide.Name = "button_UserGuide";
+            this.button_UserGuide.Size = new System.Drawing.Size(38, 36);
+            this.button_UserGuide.TabIndex = 103;
+            this.button_UserGuide.Text = "?";
+            this.button_UserGuide.UseVisualStyleBackColor = true;
+            this.button_UserGuide.Click += new System.EventHandler(this.button_UserGuide_Click);
+            // 
             // FormNew_SiriusEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1489, 881);
+            this.ClientSize = new System.Drawing.Size(1459, 881);
+            this.Controls.Add(this.button_UserGuide);
             this.Controls.Add(this.checkBox_SiriusEditor_Divided);
             this.Controls.Add(this.button_SiriusEditor_Divided);
             this.Controls.Add(this.textBox_SiriusEditor_Divided_H);
@@ -483,5 +496,6 @@ namespace SLD200_MSL
         private Label label_SiriusEditor_Divided_H;
         private Button button_SiriusEditor_Divided;
         private CheckBox checkBox_SiriusEditor_Divided;
+        private Button button_UserGuide;
     }
 }

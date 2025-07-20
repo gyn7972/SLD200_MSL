@@ -232,7 +232,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             for (int i = 0; i < rowCount; i++)
                 tableLayoutPanelSockets.RowStyles.Add(new RowStyle(SizeType.Percent, 100f / rowCount));
 
-
             for (int i = 0; i < socketCount; i++)
             {
                 var socket = selectedLayer.SocketList[i];
@@ -276,7 +275,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
                 socketToolTip.SetToolTip(btn, statusText.ToString());
 
-
                 // 좌클릭 동작
                 btn.Click += (s, e) =>
                 {
@@ -286,44 +284,36 @@ namespace SLD200.NewStyleForm.NewSubForm
                     bool isFullySelected = drillingProcessManager.LayerList
                         .All(layer => layer.SocketList.Any(sckt => sckt.SocketNumber == socketNo && sckt.IsSelected));
 
-                    if (!isFullySelected)
-                    {
-                        // 처음 선택: 모든 레이어에서 선택
-                        foreach (var layer in drillingProcessManager.LayerList)
-                        {
-                            foreach (var sckt in layer.SocketList)
-                            {
-                                if (sckt.SocketNumber == socketNo)
-                                    sckt.IsSelected = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // 토글: 현재 선택된 레이어만 반전
-                        var targetSocket = selectedLayer.SocketList.FirstOrDefault(sckt => sckt.SocketNumber == socketNo);
-                        if (targetSocket != null)
-                            targetSocket.IsSelected = !targetSocket.IsSelected;
-                    }
+                    // 현재 선택된 레이어만 선택/해제
+                    var targetSocket = selectedLayer.SocketList.FirstOrDefault(sckt => sckt.SocketNumber == socketNo);
+                    if (targetSocket != null)
+                        targetSocket.IsSelected = !targetSocket.IsSelected;
 
                     CreateSocketButtons(selectedLayer.SocketList.Count);
                     LoadLayerList();
+
+                    //if (!isFullySelected)
+                    //{
+                    //    // 처음 선택: 모든 레이어에서 선택
+                    //    foreach (var layer in drillingProcessManager.LayerList)
+                    //    {
+                    //        foreach (var sckt in layer.SocketList)
+                    //        {
+                    //            if (sckt.SocketNumber == socketNo)
+                    //                sckt.IsSelected = true;
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    // 토글: 현재 선택된 레이어만 반전
+                    //    var targetSocket = selectedLayer.SocketList.FirstOrDefault(sckt => sckt.SocketNumber == socketNo);
+                    //    if (targetSocket != null)
+                    //        targetSocket.IsSelected = !targetSocket.IsSelected;
+                    //}
+                    //CreateSocketButtons(selectedLayer.SocketList.Count);
+                    //LoadLayerList();
                 };
-                //btn.Click += (s, e) =>
-                //{
-                //    int socketNo = socket.SocketNumber;
-                //    bool nextState = !socket.IsSelected;
-                //    foreach (var layer in drillingProcessManager.LayerList)
-                //    {
-                //        foreach (var sckt in layer.SocketList)
-                //        {
-                //            if (sckt.SocketNumber == socketNo)
-                //                sckt.IsSelected = nextState;
-                //        }
-                //    }
-                //    CreateSocketButtons(socketCount);
-                //    LoadLayerList();
-                //};
 
                 // 우클릭 메뉴
                 var contextMenu = new ContextMenuStrip();
@@ -358,7 +348,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
         }
 
-
         private Color GetSocketColor(SocketProcessData socket)
         {
             if (selectedLayer == null)
@@ -379,27 +368,9 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             try
             {
-                drillingProcessManager.ResetAll();
-
-                foreach (var layer in drillingProcessManager.LayerList)
-                {
-                    foreach (var socket in layer.SocketList)
-                        socket.IsSelected = true;
-                }
-                this.Refresh();
-
-                Log.Write("ModuleStatus", "전체 소켓이 선택됨.");
-
-                string msg = "모든 소켓이 선택되었습니다.\r\n" +
-                             "장비를 시작하면 전체 가공됩니다.";
-
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information!", msg);
-
+                string msg = string.Empty;
                 if (Equipment.AutoRunStatus)
                     return;
-
-                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "선택 가공 버튼");
 
                 if (workStage.CheckAllInterlock(out msg) == false)
                 {
@@ -415,8 +386,29 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Thread.Sleep(1);
                 loader.loaderParameter.DO_Loader_Ionizer(true);
 
+                drillingProcessManager.ResetAll();
+
+                foreach (var layer in drillingProcessManager.LayerList)
+                {
+                    foreach (var socket in layer.SocketList)
+                        socket.IsSelected = true;
+                }
+                this.Refresh();
+
+                msg = "모든 소켓이 선택되었습니다.\r\n" +
+                      "장비를 시작하면 전체 가공됩니다.";
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information!", msg);
+
                 if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
                 {
+                    Log.Write("ModuleStatus", "전체 소켓이 선택됨.");
+                    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "전체 가공 버튼");
+                    var mbQ = new MessageBoxYesNo();
+                    if (DialogResult.Yes != mbQ.ShowDialog("Question?", "가공 시작 하시겠습니까?"))
+                        return;
+
                     Equipment.LaserDrillingCycStop_Reservation = false;
                     workStage.m_bLaserDrilling_SocketStopped = false;
                     Equipment.SocketStopped = false;
@@ -450,6 +442,17 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             drillingProcessManager.ResetAll();
 
+            if (Equipment.AutoRunStatus)
+                return;
+
+            string msg = "";
+            if (workStage.CheckAllInterlock(out msg) == false)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Error", msg);
+                return;
+            }
+
             var selectedPerLayer = drillingProcessManager.LayerList
                 .Where(layer => layer.LayerType != LayerType.LAYER_FIDUCIAL && layer.LayerType != LayerType.LAYER_PREALIGN)
                 .Select(layer => new
@@ -465,8 +468,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 .Where(x => x.Sockets.Count > 0)
                 .ToList();
 
-            
-
             if (selectedPerLayer.Count == 0)
             {
                 MessageBox.Show("선택된 소켓이 없습니다.", "선택 가공 실패", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -480,30 +481,21 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             foreach (var entry in selectedPerLayer)
             {
-                sb.AppendLine($"[{entry.LayerType}] → 소켓: {string.Join(", ", entry.Sockets)}");
+                sb.AppendLine($"[{entry.LayerName}] → 소켓: {string.Join(", ", entry.Sockets)}");
             }
 
             Log.Write("ModuleStatus", $"선택 가공 준비 완료 - {selectedPerLayer.Count}개 레이어");
 
             var mb = new MessageBoxOk();
             mb.ShowDialog("Information!", sb.ToString());
-
-
-            if (Equipment.AutoRunStatus)
-                return;
-
-            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "선택 가공 버튼");
-
-            string msg = "";
-            if (workStage.CheckAllInterlock(out msg) == false)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Error", msg);
-                return;
-            }
-
+            
             if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
             {
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "선택 가공 버튼");
+                var mbQ = new MessageBoxYesNo();
+                if (DialogResult.Yes != mbQ.ShowDialog("Question?", "가공 시작 하시겠습니까?"))
+                    return;
+
                 Equipment.LaserDrillingCycStop_Reservation = false;
                 workStage.m_bLaserDrilling_SocketStopped = false;
                 Equipment.SocketStopped = false;
@@ -512,7 +504,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 //Signal On 시키고 돌아갈 시간 벌기... ㅡㅡ
                 Thread.Sleep(500); // 500ms 대기
 
-                SelectRunEnable_New = true;
+                Equipment.SelectRunEnable_New = true;
                 workStage.m_nDrillingWork_Group_Count = 0;
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
                 workStage.m_LaserDrillingWork_Start = true;
@@ -590,26 +582,51 @@ namespace SLD200.NewStyleForm.NewSubForm
                 LayerType type = kvp.Key;
                 Rectangle subRect = kvp.Value;
 
-                var layer = drillingProcessManager.LayerList.FirstOrDefault(l => l.LayerType == type);
-                if (layer == null)
-                    continue;
-
-                var sckt = layer.SocketList.FirstOrDefault(s => s.SocketNumber == socket.SocketNumber);
-                if (sckt == null)
-                    continue;
-
-                // 선택된 레이어만 색으로 표시
-                Brush brush = Brushes.White;  // 기본 흰색
+                // 선택된 레이어가 현재 사분면 타입과 같을 때만 그리기
                 if (selectedLayer != null && selectedLayer.LayerType == type)
                 {
-                    brush = sckt.IsSelected ? Brushes.LightGreen : Brushes.LightGray;
+                    var sckt = selectedLayer.SocketList.FirstOrDefault(s => s.SocketNumber == socket.SocketNumber);
+                    if (sckt == null)
+                        continue;
+
+                    Brush brush = sckt.IsSelected ? Brushes.LightGreen : Brushes.LightGray;
+
+                    g.FillRectangle(brush, subRect);
+                    g.DrawRectangle(Pens.Black, subRect);
+
+                    if (textMap.TryGetValue(type, out string label))
+                        DrawCenteredText(g, subRect, label);
+                }
+                else
+                {
+                    // 비선택 레이어는 흰색 처리
+                    g.FillRectangle(Brushes.White, subRect);
+                    g.DrawRectangle(Pens.Black, subRect);
+
+                    if (textMap.TryGetValue(type, out string label))
+                        DrawCenteredText(g, subRect, label);
                 }
 
-                g.FillRectangle(brush, subRect);
-                g.DrawRectangle(Pens.Black, subRect);
+                //var layer = drillingProcessManager.LayerList.FirstOrDefault(l => l.LayerType == type);
+                //if (layer == null)
+                //    continue;
 
-                if (textMap.TryGetValue(type, out string label))
-                    DrawCenteredText(g, subRect, label);
+                //var sckt = layer.SocketList.FirstOrDefault(s => s.SocketNumber == socket.SocketNumber);
+                //if (sckt == null)
+                //    continue;
+
+                //// 선택된 레이어만 색으로 표시
+                //Brush brush = Brushes.White;  // 기본 흰색
+                //if (selectedLayer != null && selectedLayer.LayerType == type)
+                //{
+                //    brush = sckt.IsSelected ? Brushes.LightGreen : Brushes.LightGray;
+                //}
+
+                //g.FillRectangle(brush, subRect);
+                //g.DrawRectangle(Pens.Black, subRect);
+
+                //if (textMap.TryGetValue(type, out string label))
+                //    DrawCenteredText(g, subRect, label);
             }
 
             // 중앙 소켓 번호
@@ -720,7 +737,52 @@ namespace SLD200.NewStyleForm.NewSubForm
             Equipment.SelectRunEnable_New = false; //  수동 가공 시작
 
             workStage.StopProcess();
+        }
 
+        private void Button_SelectAllInLayer_Click_Click(object sender, EventArgs e)
+        {
+            if (selectedLayer == null) return;
+
+            // 현재 선택된 레이어에서 선택된 소켓만 가져옴
+            var selectedSocketNos = selectedLayer.SocketList
+                                        .Where(s => s.IsSelected)
+                                        .Select(s => s.SocketNumber)
+                                        .ToList();
+
+            // 모든 레이어에 대해 동일 소켓 번호 선택
+            foreach (var layer in drillingProcessManager.LayerList)
+            {
+                foreach (var socket in layer.SocketList)
+                {
+                    if (selectedSocketNos.Contains(socket.SocketNumber))
+                        socket.IsSelected = true;
+                }
+            }
+
+            CreateSocketButtons(selectedLayer.SocketList.Count);
+            LoadLayerList();
+        }
+
+        private void Button_UnselectAllInLayer_Click_Click(object sender, EventArgs e)
+        {
+            if (selectedLayer == null) return;
+
+            var selectedSocketNos = selectedLayer.SocketList
+                                        .Where(s => s.IsSelected)
+                                        .Select(s => s.SocketNumber)
+                                        .ToList();
+
+            foreach (var layer in drillingProcessManager.LayerList)
+            {
+                foreach (var socket in layer.SocketList)
+                {
+                    if (selectedSocketNos.Contains(socket.SocketNumber))
+                        socket.IsSelected = false;
+                }
+            }
+
+            CreateSocketButtons(selectedLayer.SocketList.Count);
+            LoadLayerList();
         }
     }
 }
