@@ -4289,7 +4289,7 @@ namespace SLD200_MSL
                 int nSocketCnt = inputText == "" ? 0 : ToInt(inputText);
                 int nSocketTotalCnt = doneCount * nSocketCnt;   //totalCount * nSocketCnt;
                 SetValue(baseTextBox_TotalSocketCount, nSocketTotalCnt.ToString());
-                SetValue(baseTextBox_NGSocketCount, (nSocketTotalCnt - NGCount).ToString());
+                SetValue(baseTextBox_NGSocketCount, (NGCount).ToString());
 
                 // Config Laser Tab으로 이동.
                 //TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();

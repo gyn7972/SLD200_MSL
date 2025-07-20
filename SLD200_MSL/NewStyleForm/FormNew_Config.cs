@@ -792,13 +792,12 @@ namespace SLD200_MSL
                 {
                     label_Config_Laser_Laser_warning.Text = "Laser System Fault";
                 }
-
-                TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
-                int totalHours = (int)LaserTotalCycle.TotalHours;
-                string formatted = $"{totalHours:D2}:{LaserTotalCycle.Minutes:D2}:{LaserTotalCycle.Seconds:D2}";
-                SetValue(label_Config_Laser_Laser_TotalTime, formatted);
-
             }
+
+            TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
+            int totalHours = (int)LaserTotalCycle.TotalHours;
+            string formatted = $"{totalHours:D2}:{LaserTotalCycle.Minutes:D2}:{LaserTotalCycle.Seconds:D2}";
+            SetValue(label_Config_Laser_Laser_TotalTime, formatted);
 
             timer_Status.Enabled = true;
         }
