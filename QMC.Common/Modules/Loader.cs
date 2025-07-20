@@ -1613,10 +1613,10 @@ namespace QMC.Common.Modules
             }
             base.Close();
 
-            if (Stage != null)
-            {
-                Stage.Close();
-            }
+            //if (Stage != null)
+            //{
+            //    Stage.Close();
+            //}
 
             //if (ACS_Motion != null)
             //{
@@ -10708,7 +10708,7 @@ namespace QMC.Common.Modules
             //false: 구동 중, 
             return bRtn;
         }
-        public Task<bool> WaitUntilLoaderInPositionAsync(Loader.nAxis axis, double targetPos, int timeoutMs = 20000)
+        public Task<bool> WaitUntilLoaderInPositionAsync(Loader.nAxis axis, double targetPos, int timeoutMs = 6000)
         {
             return Task.Run(() =>
             {

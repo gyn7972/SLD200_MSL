@@ -142,10 +142,10 @@ namespace SLD200.NewStyleForm.NewSubForm
             UpdateButtonStatusByState(button_SemiAuto_Loading, loader.m_LoaderWork_Start, loader.IsLoaderComplete());
 
             //Clear
-            UpdateButtonStatusByState(button_SemiAuto_HeightSensor, false, false);
-            UpdateButtonStatusByState(button_SemiAuto_PreAlign, false, false);
-            UpdateButtonStatusByState(button_SemiAuto_FiducialAlign, false, false);
-            UpdateButtonStatusByState(button_SemiAuto_LaserDrilling, false, false);
+            //UpdateButtonStatusByState(button_SemiAuto_HeightSensor, false, false);
+            //UpdateButtonStatusByState(button_SemiAuto_PreAlign, false, false);
+            //UpdateButtonStatusByState(button_SemiAuto_FiducialAlign, false, false);
+            //UpdateButtonStatusByState(button_SemiAuto_LaserDrilling, false, false);
 
             switch (workStage._semiAutoRequest)
             {

@@ -7662,7 +7662,7 @@ namespace QMC.Common.Modules
             //false: 구동 중, 
             return bRtn;
         }
-        public Task<bool> WaitUntilUnloaderInPositionAsync(Unloader.nAxis axis, double targetPos, int timeoutMs = 20000)
+        public Task<bool> WaitUntilUnloaderInPositionAsync(Unloader.nAxis axis, double targetPos, int timeoutMs = 6000)
         {
             return Task.Run(() =>
             {

@@ -4589,11 +4589,12 @@ namespace QMC.Common.Modules
             m_taskTimer_MainWork_Tick = null;
             m_taskTimer_MainStatus_Tick = null;
 
-            //Motion/IO Off인데.. 
-            if (Stage != null)
-            {
-                Stage.Close();
-            }
+            // Motion/IO Off인데.. 
+            // 막아보자.
+            //if (Stage != null)
+            //{
+            //    Stage.Close();
+            //}
 
             if (Equipment.Machine_LaserType_CO2)
             {
@@ -11328,7 +11329,7 @@ namespace QMC.Common.Modules
                     {
                         m_nPowerMeterBDSCommStep = (int)PowerMeterBDSComm_Step.None;
 
-                        MessageBox.Show("Laser PowerMeter-1 Comm. Failed.", "Error");
+                        //MessageBox.Show("Laser PowerMeter-1 Comm. Failed.", "Error");
                     }
                     break;
 
@@ -11460,7 +11461,7 @@ namespace QMC.Common.Modules
                     {
                         m_nPowerMeterStageCommStep = (int)PowerMeterStageComm_Step.None;
 
-                        MessageBox.Show("Laser PowerMeter-2 Comm. Failed.", "Error");
+                        //MessageBox.Show("Laser PowerMeter-2 Comm. Failed.", "Error");
                     }
                     break;
 
@@ -11599,7 +11600,7 @@ namespace QMC.Common.Modules
                     {
                         m_nBETCommStep = (int)BETComm_Step.None;
 
-                        MessageBox.Show("BET Comm. Failed.", "Error");
+                        //MessageBox.Show("BET Comm. Failed.", "Error");
                     }
                     break;
 
@@ -15306,7 +15307,7 @@ namespace QMC.Common.Modules
 
             // 굳이 첫번째 소켓일때만..m_bIsFirstAlign = false로 해야 하나?
             if (nSocketNum == 0)
-            //if (nSocketNum > 0) // 모든 소켓일때 해도.. 상관없을거 같은데.. 밑에 구조상. 선택 가공할때도 문제가 되고.
+            //if (nSocketNum >= 0) // 모든 소켓일때 해도.. 상관없을거 같은데.. 밑에 구조상. 선택 가공할때도 문제가 되고.
             {
                 // TODO : 여기 변수 바꿔 주세요!! 구영남 부장님~~ 성공 실패..
                 // m_bFindLowerAlignMark_OK : 성공/실패 변수 추가.
@@ -15317,7 +15318,7 @@ namespace QMC.Common.Modules
             }
 
             // 선택 가공할때는 무조건 m_bIsFirstAlign = false로 해보자.
-            if (Equipment.SelectRunEnable_New)
+            if (Equipment.SelectRunEnable_New || Equipment.SemiAutoEnable)
             {
                 if (m_bPreAlignCompleted && m_bFindLowerAlignMark_OK)
                 {
@@ -34039,7 +34040,7 @@ namespace QMC.Common.Modules
         }
 
         // 축 위치 대기 함수
-        public Task<bool> WaitUntilInPositionAsync(WorkStage.nAxis axis, double targetPos, int timeoutMs = 50000)
+        public Task<bool> WaitUntilInPositionAsync(WorkStage.nAxis axis, double targetPos, int timeoutMs = 6000)
         {
             return Task.Run(() =>
             {
@@ -37548,6 +37549,10 @@ namespace QMC.Common.Modules
                         switch (_semiAutoRequest)
                         {
                             case SemiAutoStep.MeasureHeight:
+                                if (IsStageComplete(SemiAutoStep.PreAlign))
+                                {
+                                    m_bPreAlignCompleted = true;
+                                }
                                 SetStageComplete(SemiAutoStep.MeasureHeight, false);
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;
                                 break;
@@ -37556,10 +37561,19 @@ namespace QMC.Common.Modules
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
                                 break;
                             case SemiAutoStep.FiducialAlign:
+                                if (IsStageComplete(SemiAutoStep.PreAlign))
+                                {
+                                    m_bPreAlignCompleted = true;
+                                }
                                 SetStageComplete(SemiAutoStep.FiducialAlign, false);
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
                                 break;
                             case SemiAutoStep.Drilling:
+                                if (IsStageComplete(SemiAutoStep.PreAlign))
+                                {
+                                    m_bPreAlignCompleted = true;
+                                }
+
                                 // 고민 필요. 
                                 SetStageComplete(SemiAutoStep.Drilling, false);
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;
