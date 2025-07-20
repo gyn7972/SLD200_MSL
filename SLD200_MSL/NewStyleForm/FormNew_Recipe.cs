@@ -26,6 +26,7 @@ using QMC.Common.Vision.Cameras;
 using SLD200.NewStyleForm.NewSubForm;
 using SLD200.NewStyleForm;
 using QMC.Common.Recipe;
+using System.Threading;
 
 namespace SLD200_MSL
 {
@@ -45,6 +46,8 @@ namespace SLD200_MSL
         public FormNewSub_Recipe_Vision userform_RecipeVision { get; set; }
         public FormNewSub_Recipe_GoldPowder userform_RecipeGoldPowder { get; set; }
 
+        public Action<bool> ActionLoadRecipe;
+
         public FormNew_Recipe()
         {
             InitializeComponent();
@@ -59,6 +62,15 @@ namespace SLD200_MSL
             this.tabControl_Recipe.SelectedIndexChanged += new System.EventHandler(this.tabControl_Recipe_SelectedIndexChanged);
 
             FormNewSub_Recipe_Load();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         public void SetRecipeTabs(FormNewSub_Recipe_Vision vision, FormNewSub_Recipe_GoldPowder gold)
@@ -86,6 +98,8 @@ namespace SLD200_MSL
             MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
 
             m_formSiriusEditor = new FormNew_SiriusEditor();
+            m_formSiriusEditor.CreateSiriusEditor();
+            m_formSiriusEditor.Owner = this;
 
             //  Layer Data 를 보여주는 ListView 설정
             listView_Recipe_TabRecipe_LayerData.View = View.Details;
@@ -94,7 +108,7 @@ namespace SLD200_MSL
 
             //  Recipe Open 타이머
             timer_Recipe_Open = new System.Windows.Forms.Timer();
-            timer_Recipe_Open.Interval = 50;
+            timer_Recipe_Open.Interval = 200;
             timer_Recipe_Open.Tick += new System.EventHandler(Timer_RecipeOpen_Func);
             timer_Recipe_Open.Enabled = true;
 
@@ -103,9 +117,23 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = false;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = false;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Enabled = false;
 
             //  Recipe Open 전에는 Hatch 모드가 Disable 이므로 Hatch Spacing 을 비활성화 한다.
             textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
+
+            //  Recipe Open 전에는 Marking Data 가 Text 이므로, Serial Number 를 초기화 하는 Reset 버튼은 비활성화 한다.
+            button_Marking_SerialNumber_CountReset.Enabled = false;
+
+            listBox_Recipe_TabRecipe_ListOfDrawingLayer.DrawMode = DrawMode.OwnerDrawFixed;
+            listBox_Recipe_TabRecipe_ListOfDrawingLayer.ItemHeight = 24;
+
+            checkBox_MasterView.Checked = false;
+
+            InitRecipeUI_KeyPad();
+            ApplyTooltips();
         }
 
         private void MachineType_Component_Enable(bool m_bLaserType)
@@ -196,7 +224,11 @@ namespace SLD200_MSL
 
         private void tabControl_Recipe_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControl_Recipe.SelectedTab == tabPage_RecipeVision) // "RecipeVision" 탭을 선택했을 때
+            if(tabControl_Recipe.SelectedTab == tabPage_Recipe)
+            {
+                OnShowRecipeForm();
+            }
+            else if (tabControl_Recipe.SelectedTab == tabPage_RecipeVision) // "RecipeVision" 탭을 선택했을 때
             {
                 // RecipeVision 탭일 때만 표시
                 if (userform_RecipeVision != null && 
@@ -257,6 +289,15 @@ namespace SLD200_MSL
                 button_Recipe_TabRecipe_OpenEditor.Enabled = true;
                 button_Recipe_TabRecipe_OpenDwg.Enabled = true;
                 button_Recipe_TabRecipe_LayerImport.Enabled = true;
+
+                if (listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Count > 0)
+                {
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = -1;  // 선택 해제
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = 0;   // 다시 선택 → 이벤트 발생
+                    //listBox_Recipe_TabRecipe_ListOfDrawingLayer_SelectedIndexChanged // <- 자동 실행
+                    // 레시피 데이터 새로고침
+                    //Recipe_Data_Refresh("Hole1");
+                }
             }
         }
 
@@ -319,9 +360,6 @@ namespace SLD200_MSL
         private void button_Recipe_TabRecipe_OpenEditor_Click(object sender, EventArgs e)
         {
             //  Sirius Editor 창을 연다.
-
-           
-
             if (workStage.rtc == null)
             {
                 var mb = new MessageBoxOk();
@@ -329,59 +367,49 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (m_formSiriusEditor == null)
+            if (m_formSiriusEditor == null || m_formSiriusEditor.IsDisposed)
             {
+                m_formSiriusEditor = new FormNew_SiriusEditor();
                 m_formSiriusEditor.CreateSiriusEditor();
+                Thread.Sleep(500);
             }
 
-            foreach ( Form openForm in Application.OpenForms)
+            //창이 열려있을때 새로 눌렀을 경우. ( 창이 아래에 숨는경우 )
+            // 도면이 다르면 새로 Import
+            string newPath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
+            if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(newPath))
             {
-                if (openForm.Name == m_formSiriusEditor.Name)
+                // Document가 null이면 새로 생성
+                if (m_formSiriusEditor.SiriusEditor.Document == null)
                 {
-                    //  Sirius Edit 창을 열 때, 무조건 도면파일을 다시 불러오도록 변경. (얼라인 된 도면을 그대로 저장하는 경우가 있어서)
-                    //if (!m_formSiriusEditor.Imported_DrawingFile_SameCheck(richTextBox_Recipe_TabRecipe_DrawingFile.Text))
-                    {
-                        m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-                    }
+                    m_formSiriusEditor.SiriusEditor.Document = new DocumentDefault();
+                    m_formSiriusEditor.SiriusEditor.Document.FileName = "NewDocument";
+                    m_formSiriusEditor.SiriusEditor.Document.Action.ActNew();
 
-                    openForm.BringToFront();
-                    openForm.Show();
-                    return;
+                    Log.Write("SiriusEditor_Info", "Button Click", "Document was null. Created new document.");
                 }
             }
 
-            if (richTextBox_Recipe_TabRecipe_DrawingFile.Text.Length != 0)
+            // 새 도면 불러오기
+            m_formSiriusEditor.Import_DrawingFile(newPath);
+
+            // 이미 열려 있으면 앞으로 가져오기
+            if (!m_formSiriusEditor.Visible)
             {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Drawing File 을 Open 하시겠습니까?\r\n\r\n[No : 마지막 작업하던 도면으로 Editor Open]"))
-                {
-                    //  해당 위치에 파일이 존재하는지 확인
-                    if (File.Exists(richTextBox_Recipe_TabRecipe_DrawingFile.Text) == false)
-                    {
-                        var mb1 = new MessageBoxOk();
-                        mb1.ShowDialog("Error !!", "도면 파일이 없습니다.\r\n\r\n[마지막 작업하던 도면으로 Editor Open]");
-                        //return;
-                    }
-                    else
-                    {
-                        //  확장자가 도면인지 확인 (.sirius2, .dwg, .dxf)
-                        string m_strExt = Path.GetExtension(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-
-                        if ((m_strExt.ToUpper() == ".SIRIUS") || (m_strExt.ToUpper() == ".DXF"))
-                        {
-                            m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-                        }
-                        else
-                        {
-                            var mb1 = new MessageBoxOk();
-                            mb1.ShowDialog("Error !!", "도면 파일 형식이 아닙니다. (*.sirius, *.dxf)\r\n\r\n[마지막 작업하던 도면으로 Editor Open]");
-                            //return;
-                        }
-                    }
-                }
+                m_formSiriusEditor.BringToFront();
+                m_formSiriusEditor.Show();
             }
+            else
+            {
+                if (m_formSiriusEditor.WindowState == FormWindowState.Minimized)
+                {
+                    m_formSiriusEditor.WindowState = FormWindowState.Normal;
+                }
 
-            m_formSiriusEditor.Show();
+                m_formSiriusEditor.BringToFront();
+                m_formSiriusEditor.Focus();
+            }
+            return;
         }
 
         private void button_Recipe_TabRecipe_OpenDwg_Click(object sender, EventArgs e)
@@ -444,29 +472,6 @@ namespace SLD200_MSL
                 //  확장자가 도면인지 확인 (.sirius, .dxf)
                 string m_strExt = Path.GetExtension(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
 
-                //if ((m_strExt.ToUpper() == ".SIRIUS2") || (m_strExt.ToUpper() == ".DWG") || (m_strExt.ToUpper() == ".DXF"))           //  Sirius2
-                //{
-                //    var doc = DocumentFactory.CreateDefault();
-                //    doc.ActOpen(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-                //    workStage.siriusEditorUserControl_WorkStage.Document = doc;
-                //    workStage.MainSiriusViewer.Document = doc;
-
-                //    workStage.DrillingData_Parsing();
-
-                //    //SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl siriusEditor_Temp = new SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl();
-
-                //    //var doc = DocumentFactory.CreateDefault();
-                //    //doc.ActOpen(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-                //    //siriusEditor_Temp.Document = doc;
-
-                //    foreach (var layer in workStage.siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
-                //    {
-                //        if (layer.IsMarkerable)
-                //        {
-                //            listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
-                //        }
-                //    }
-                //}
                 if (m_strExt.ToUpper() == ".DXF")
                 {
                     //SiriusEditor.Document.New();
@@ -490,14 +495,7 @@ namespace SLD200_MSL
                     return;
                 }
 
-                //SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl siriusEditor_Temp = new SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl();
-
-                //var doc = DocumentFactory.CreateDefault();
-                //doc.ActOpen(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-                //siriusEditor_Temp.Document = doc;
-
                 Equipment.SetEqpSiriusViewerDocument(m_formSiriusEditor.SiriusEditor.Document);
-
                 if (workStage.DrillingData_Parsing())
                 {
                     foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
@@ -514,7 +512,6 @@ namespace SLD200_MSL
         private void listBox_Recipe_TabRecipe_ListOfDrawingLayer_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  선택된 Layer 데이터를 ListView 에 표시
-
             int m_nIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
             string m_strLayerName = "";
 
@@ -583,6 +580,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole2")
             {
@@ -599,6 +597,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole3")
             {
@@ -615,6 +614,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole4")
             {
@@ -631,6 +631,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole5")
             {
@@ -647,6 +648,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole6")
             {
@@ -663,6 +665,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole7")
             {
@@ -679,6 +682,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole8")
             {
@@ -695,6 +699,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole9")
             {
@@ -711,6 +716,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Hole10")
             {
@@ -727,6 +733,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Thruhole")
             {
@@ -743,6 +750,7 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Rect")
             {
@@ -760,14 +768,15 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Outline")
             {
-
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Marking")
             {
-
+                SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Fiducial")
             {
@@ -784,13 +793,22 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
+
+                SetRecipeTabControlsVisible(m_strLayerName, false);
+            }
+            else if (m_strLayerName == "PreAlign")
+            {
+                SetRecipeTabControlsVisible(m_strLayerName, false);
+            }
+            else
+            {
+
             }
 
-            // 리스트뷰를 Refresh하여 보여줌
-            listView_Recipe_TabRecipe_LayerData.EndUpdate();
+                // 리스트뷰를 Refresh하여 보여줌
+                listView_Recipe_TabRecipe_LayerData.EndUpdate();
 
-
-            //  Layer 에 대한 Miscellaneous Data 표시
+            // Layer 에 대한 Miscellaneous Data 표시
             Recipe_Data_Refresh(m_strLayerName);
         }
 
@@ -940,6 +958,9 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = Equipment.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_GoldPowderThickness", "0.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "Module_GoldPowderPercent", "75.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent = Equipment.ToDouble(temp.ToString());
+
 
                 //  Spiral Parameter
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_OuterDiameter", "0.0", temp, 255, strFIle);
@@ -956,22 +977,14 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = Equipment.ToDouble(temp.ToString());
 
                 //  M-Aligner Vacuum Use
+                NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Ignore", "true", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Ignore = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Center", "true", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Inner", "false", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Outer", "false", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer = Convert.ToBoolean(temp.ToString());
-
-                //  Fine Cam. Red
-                //NativeMethods.GetPrivateProfileString(strTemp, "FineCam_Red", "0", temp, 255, strFIle);
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = Equipment.ToInt(temp.ToString());
-                //  Fine Cam. IR
-                //NativeMethods.GetPrivateProfileString(strTemp, "FineCam_IR", "0", temp, 255, strFIle);
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = Equipment.ToInt(temp.ToString());
-                //  Coarse Cam. IR
-                //NativeMethods.GetPrivateProfileString(strTemp, "CoarseCam_IR", "0", temp, 255, strFIle);
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = Equipment.ToInt(temp.ToString());
 
                 //  Dust Collector
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", "false", temp, 255, strFIle);
@@ -996,21 +1009,26 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_TextType = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_PrefixData", "", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_PrefixData = temp.ToString();
-                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_StartNumber", "0", temp, 255, strFIle);
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_StartNumber", "1", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber = Equipment.ToInt(temp.ToString());
-                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Digits", "0", temp, 255, strFIle);
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Digits", "3", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits = Equipment.ToInt(temp.ToString());
-                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_IncreaseStep", "0", temp, 255, strFIle);
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_IncreaseStep", "1", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep = Equipment.ToInt(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_SuffixData", "", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData = temp.ToString();
-                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Use", "false", temp, 255, strFIle);
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Use", "true", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use = Convert.ToBoolean(temp.ToString());
-                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Spacing", "0.2", temp, 255, strFIle);
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Spacing", "0.1", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = Equipment.ToInt(temp.ToString());
 
                 NativeMethods.GetPrivateProfileString(strTemp, "ZCalFile_OffsetZ", "0.0", temp, 255, strFIle);
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = Equipment.ToDouble(temp.ToString());
+
+                NativeMethods.GetPrivateProfileString(strTemp, "ChuckMSL_Use", "0.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].ChuckMSL_Use = Equipment.ToBoolean(temp.ToString());
             }
 
             return m_bRet;
@@ -1106,6 +1124,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height = ReadDouble(data, "Module_Height", 120.0);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = ReadDouble(data, "Module_SiliconThickness", 0.0);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness = ReadDouble(data, "Module_GoldPowderThickness", 0.0);
+                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent = ReadDouble(data, "Module_GoldPowderPercent", 0.0);
 
                 Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter = ReadDouble(data, "Spiral_OuterDiameter", 0.0);
                 Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter = ReadDouble(data, "Spiral_InnerDiameter", 0.0);
@@ -1114,19 +1133,17 @@ namespace SLD200_MSL
 
                 Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = ReadDouble(data, "EPRO_ModuleAbsorptionLevel", -40.0);
 
+                Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Ignore = ReadBool(data, "MAlignerVacuumUse_Ignore", false);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center = ReadBool(data, "MAlignerVacuumUse_Center", true);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner = ReadBool(data, "MAlignerVacuumUse_Inner", false);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer = ReadBool(data, "MAlignerVacuumUse_Outer", false);
-
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = ReadInt(data, "FineCam_Red", 0);
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = ReadInt(data, "FineCam_IR", 0);
-                //Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = ReadInt(data, "CoarseCam_IR", 0);
 
                 Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use = ReadBool(data, "DustCollector_RemoteMode_Use", false);
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper = ReadDouble(data, "DustCollector_Frequency_Upper", 20.0);
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = ReadDouble(data, "DustCollector_Frequency_Lower", 20.0);
                 Equipment.stLayerRecipeSet[i].DustCollectorLower_Disable = ReadBool(data, "DustCollector_Lower_Disable", false);
                 Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm = ReadDouble(data, "ZCalFile_OffsetZ", 0.0);
+                Equipment.stLayerRecipeSet[i].ChuckMSL_Use = ReadBool(data, "ChuckMSL_Use", false);
 
                 //  Marking Template
                 Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use = ReadBool(data, "MarkingData_SiriusTemplate_Use", false);
@@ -1135,12 +1152,13 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Height = ReadDouble(data, "MarkingData_SiriusTemplate_EntityData_Height", 5.0);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_TextType = ReadBool(data, "MarkingData_SiriusTemplate_EntityData_TextType", true);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_PrefixData = ReadValue(data, "MarkingData_SiriusTemplate_EntityData_PrefixData", "");
-                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_StartNumber", 0);
-                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_Digits", 0);
-                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_IncreaseStep", 0);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_StartNumber", 1);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_Digits", 3);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_IncreaseStep", 1);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData = ReadValue(data, "MarkingData_SiriusTemplate_EntityData_SuffixData", "");
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use = ReadBool(data, "MarkingData_SiriusTemplate_Hatch_Use", false);
-                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = ReadDouble(data, "MarkingData_SiriusTemplate_Hatch_Spacing", 0.2);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = ReadDouble(data, "MarkingData_SiriusTemplate_Hatch_Spacing", 0.1);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType", 0);
             }
             
             return true;
@@ -1247,7 +1265,7 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "RotationStartAngle_Circle1time", Equipment.stLayerRecipeSet[i].Miscellaneous_CircleStartAngleCircle1time.ToString(), strFIle);
                 //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
                 NativeMethods.WritePrivateProfileString(strTemp, "MaskIndex", Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex.ToString(), strFIle);
-                //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
+                //  BET Position Index (0:0.8x, 1:0.9x, 2:1.0x, 3:1.1x, 4:1.2x)
                 NativeMethods.WritePrivateProfileString(strTemp, "BETPositionIndex", Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex.ToString(), strFIle);
                 //  Hole Processing Type (0:Circle, 1:Spiral)
                 NativeMethods.WritePrivateProfileString(strTemp, "HoleProcessingType", Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType.ToString(), strFIle);
@@ -1273,6 +1291,7 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_Height", Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_SiliconThickness", Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_GoldPowderThickness", Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Module_GoldPowderPercent", Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent.ToString(), strFIle);
 
 
                 //  Spiral Parameter
@@ -1283,18 +1302,12 @@ namespace SLD200_MSL
 
                 //  EPRO Module Absorption Level
                 NativeMethods.WritePrivateProfileString(strTemp, "EPRO_ModuleAbsorptionLevel", Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel.ToString(), strFIle);
-                
+
                 //  M-Aligner Vacuum Use
+                NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Ignore", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Ignore.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Center", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Inner", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Outer", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer.ToString(), strFIle);
-
-                //  Fine Cam. Red
-                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
-                //  Fine Cam. IR
-                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
-                //  Coarse Cam. IR
-                //NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
 
                 //  Dust Collector
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use.ToString(), strFIle);
@@ -1315,9 +1328,12 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_SuffixData", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Use", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Hatch_Spacing", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType.ToString(), strFIle);
                 
                 //  ZCalFile Offset Z Axis (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "ZCalFile_OffsetZ", Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString(), strFIle);
+                //  Chuck MSL Use
+                NativeMethods.WritePrivateProfileString(strTemp, "ChuckMSL_Use", Equipment.stLayerRecipeSet[i].ChuckMSL_Use.ToString(), strFIle);
             }
         }
 
@@ -1391,6 +1407,7 @@ namespace SLD200_MSL
                 layerDict["Module_Height"] = Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height.ToString();
                 layerDict["Module_SiliconThickness"] = Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness.ToString();
                 layerDict["Module_GoldPowderThickness"] = Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness.ToString();
+                layerDict["Module_GoldPowderPercent"] = Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent.ToString();
 
                 layerDict["Spiral_OuterDiameter"] = Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter.ToString();
                 layerDict["Spiral_InnerDiameter"] = Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter.ToString();
@@ -1399,13 +1416,10 @@ namespace SLD200_MSL
 
                 layerDict["EPRO_ModuleAbsorptionLevel"] = Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel.ToString();
 
+                layerDict["MAlignerVacuumUse_Ignore"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Ignore.ToString();
                 layerDict["MAlignerVacuumUse_Center"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center.ToString();
                 layerDict["MAlignerVacuumUse_Inner"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner.ToString();
                 layerDict["MAlignerVacuumUse_Outer"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer.ToString();
-
-                //layerDict["FineCam_Red"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString();
-                //layerDict["FineCam_IR"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString();
-                //layerDict["CoarseCam_IR"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString();
 
                 layerDict["DustCollector_RemoteMode_Use"] = Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use.ToString();
                 layerDict["DustCollector_Frequency_Upper"] = Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper.ToString();
@@ -1425,8 +1439,10 @@ namespace SLD200_MSL
                 layerDict["MarkingData_SiriusTemplate_EntityData_SuffixData"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData.ToString();
                 layerDict["MarkingData_SiriusTemplate_Hatch_Use"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use.ToString();
                 layerDict["MarkingData_SiriusTemplate_Hatch_Spacing"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType.ToString();
 
                 layerDict["ZCalFile_OffsetZ"] = Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString();
+                layerDict["ChuckMSL_Use"] = Equipment.stLayerRecipeSet[i].ChuckMSL_Use.ToString();
 
                 iniData[section] = layerDict;
             }
@@ -1479,7 +1495,6 @@ namespace SLD200_MSL
         }
         #endregion
 
-
         private void button_Recipe_Save_Click(object sender, EventArgs e)
         {
             string fileName;
@@ -1531,8 +1546,6 @@ namespace SLD200_MSL
                     }
                 }
 
-                
-
                 //  Recipe Data 저장
                 //Recipe_Data_Save(fileName);
                 Recipe_Data_Save_Refactory(fileName);
@@ -1556,25 +1569,17 @@ namespace SLD200_MSL
         private void button_Recipe_Apply_Click(object sender, EventArgs e)
         {
             //  Recipe 창의 데이터를 Equipment Recipe Set에 적용
-
             //  Layer Index 확인
             int m_nLayerIndex = -1; 
             int m_nIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
             string m_strLayerName = "";
-            
             if (m_nIndex < 0)
             {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Layer 를 선택하지 않았습니다.\r\n\r\nLayer \"Hole1\" 의 파라미터로 설정하시겠습니까?"))
-                    return;
-
-                m_nLayerIndex = 0;
-                m_strLayerName = "Hole1";
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "Layer 를 선택하지 않았습니다.");
+                return;
             }
-            else
-            {
-                m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
-            }
+            m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
 
             //  도면 확인
             if (richTextBox_Recipe_TabRecipe_DrawingFile.Text.Length <= 0)
@@ -1585,10 +1590,8 @@ namespace SLD200_MSL
             }
 
             //  Layer Index 확인
-
             //  Hole 인지?
             string m_strLayer = m_strLayerName.Length > 4 ? m_strLayerName.Substring(0, 4) : m_strLayerName;
-
             if (m_strLayer == "Hole")                   //  Layer 가 Hole 이면?
             {
                 //  Hole 로 시작하는 Layer 이면, 뒤에 숫자를 가져온다.
@@ -1673,6 +1676,12 @@ namespace SLD200_MSL
             {
                 m_nLayerIndex = (int)LayerList.PreAlign;
             }
+            else
+            {
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "잘못된 Layer Name 입니다.");
+                return;
+            }
 
             //  사용 되지 않는 Layer (Layer 이름이 잘못되었을 경우)
             if (m_nLayerIndex == -1)
@@ -1683,7 +1692,7 @@ namespace SLD200_MSL
             }
 
             //  Drawing File
-            Equipment.stLayerRecipeSet[m_nLayerIndex].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
+            Equipment.stLayerRecipeSet[0].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
             Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
             //  Laser Parameter
@@ -1718,7 +1727,7 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_CircleStartAngleCircle1time = textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text) : 0.0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_P2PDistance = textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_MaskIndex = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_BETPositionIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
+            Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleProcessingType = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
             //Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_FiducialAlignType = comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex;
             //Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_FiducialMarkType = comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex;
@@ -1742,6 +1751,7 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height = textBox_Recipe_TabRecipe_ModuleInformation_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Height.Text) : 120.0;
             Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text) : 0.0;
             Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text) : 0.0;
+            Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text) : 0.0;
 
             //  Spiral Parameter
             Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_OuterDiameter = textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text) : 0.0;
@@ -1755,14 +1765,10 @@ namespace SLD200_MSL
 
             //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
             //  M-Aligner Vacuum Use
+            Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore = checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked;         //  Ignore
             Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center = checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked;     //  Center
             Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner = checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked;       //  Inner
             Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer = checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked;       //  Outer
-
-            //  조명값 (Fiducial Layer 의 것만 사용한다)
-            //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text) : 0;
-            //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text) : 0;
-            //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text) : 0;
 
             //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
             //  집진기 주파수
@@ -1772,27 +1778,68 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable = checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked;                                        //  하부 집진기 사용 여부
 
             //  Marking Template
-            Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use = checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_DataType = comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text) : 5.0;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text) : 5.0;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType = radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked;                         //  true : Fixed Text, false : Serial Number
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData = textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber = textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text) : 1;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits = textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text) : 4;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep = textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text) : 1;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData = textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use = checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing = textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text) : 0.2;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingData_SiriusTemplate_Use = checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_DataType = comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex;
+            //Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_Width = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text) : 5.0;
+            //Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_Height = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text) : 5.0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_TextType = radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked;                         //  true : Fixed Text, false : Serial Number
+            Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_PrefixData = textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_StartNumber = textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text) : 1;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_Digits = textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text) : 3;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_IncreaseStep = textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text) : 1;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_SuffixData = textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_Hatch_Use = checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_Hatch_Spacing = textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text) : 0.2;
+
+            if (radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked)
+            {
+                Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachModule;
+            }
+            else if (radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked)
+            {
+                Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket;
+            }
+            else
+            {
+                Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous;
+            }
 
             // 
             Equipment.stLayerRecipeSet[m_nLayerIndex].CalfileOffsetZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text) : 0.0;     //  Z-Axis Offset mm
+            Equipment.stLayerRecipeSet[0].ChuckMSL_Use = checkBox_Recipe_TabRecipe_ChuckMSL_Use.Checked; //  Chuck MSL 사용 여부
+
+            //  선택한 BET 
+            switch (Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex)
+            {
+                case 0:
+                    workStage.m_dBET_ZoomValue_Recipe = 0.8;
+                    workStage.m_dBET_MradValue_Recipe = Equipment.BET_0_8X_Mrad;
+                    break;
+
+                case 1:
+                    workStage.m_dBET_ZoomValue_Recipe = 0.9;
+                    workStage.m_dBET_MradValue_Recipe = Equipment.BET_0_9X_Mrad;
+                    break;
+
+                case 2:
+                    workStage.m_dBET_ZoomValue_Recipe = 1.0;
+                    workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_0X_Mrad;
+                    break;
+
+                case 3:
+                    workStage.m_dBET_ZoomValue_Recipe = 1.1;
+                    workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_1X_Mrad;
+                    break;
+
+                case 4:
+                    workStage.m_dBET_ZoomValue_Recipe = 1.2;
+                    workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_2X_Mrad;
+                    break;
+            }  
 
 
-
-            //  도면 데이터를 가공용 Document 에 적용
+            //  도면 데이터를 가공용 Document에 적용
             Equipment.SetEqpSiriusViewerDocument(m_formSiriusEditor.SiriusEditor.Document);
-
             //  Frequency 데이터가 있는지 체크
             if (m_nLayerIndex == (int)LayerList.Hole1)
             {
@@ -1818,6 +1865,9 @@ namespace SLD200_MSL
                     mb3.ShowDialog("Information !", "\"Outline\" Layer 의 Frequency 가 0 입니다.");
                 }
             }
+
+            //  도면 데이터 체크
+            workStage.DrillingData_Verification();
 
             var mb4 = new MessageBoxOk();
             mb4.ShowDialog("Recipe Data Apply !", "Recipe Data Apply");
@@ -1899,7 +1949,6 @@ namespace SLD200_MSL
                     workStage.jigAligner_LowRes.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation;
                 }
 
-
                 //  Recipe 창에 데이터 표시
                 //  Drawing File
                 richTextBox_Recipe_TabRecipe_DrawingFile.Text = Equipment.stLayerRecipeSet[0].DrawingFile;
@@ -1909,7 +1958,6 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[0].LaserParam_PulsePeriod.ToString();
                 textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = Equipment.stLayerRecipeSet[0].LaserParam_Frequency.ToString();
                 textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[0].LaserParam_DutyCycle.ToString();
-
                 //if (Equipment.stLayerRecipeSet[0].LaserParam_TriggerMode_External)
                 //{
                 //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
@@ -1979,6 +2027,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString();
                 textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString();
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness.ToString();
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent.ToString();
 
                 //  Spiral Parameter
                 textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter.ToString();
@@ -1990,14 +2039,10 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString();
 
                 //  M-Aligner Vacuum Use
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore;         //  Ignore
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
-
-                //  Illuminator
-                //textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
-                //textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
-                //textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
 
                 //  집진기 주파수
                 checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                          //  집진기 Remote Mode 사용 여부
@@ -2006,12 +2051,11 @@ namespace SLD200_MSL
                 checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked = Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable;                                        //  하부 집진기 사용 여부
 
                 //  Marking Template
-                checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
-                comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_DataType.ToString());
-                textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width.ToString();
-                textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height.ToString();
-
-                if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)
+                checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingData_SiriusTemplate_Use;
+                comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_DataType.ToString());
+                //textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width.ToString();
+                //textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height.ToString();
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType)
                 {
                     radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked = true;
 
@@ -2019,6 +2063,10 @@ namespace SLD200_MSL
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = false;
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = false;
+                    button_Marking_SerialNumber_CountReset.Enabled = false;
                 }
                 else
                 {
@@ -2028,20 +2076,37 @@ namespace SLD200_MSL
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
                     textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = true;
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = true;
+                    button_Marking_SerialNumber_CountReset.Enabled = true;
                 }
 
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
-                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber.ToString();
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits.ToString();
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep.ToString();
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
+                switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+                {
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                        break;
 
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                        break;
+
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                        break;
+                }
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_IncreaseStep.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData;
                 if (comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex == 0)            //  True Type Font 일 때만 Hatch 활성화
                 {
                     checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = true;
                     textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
 
-                    if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use)
+                    if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Use)
                     {
                         checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = true;
 
@@ -2059,30 +2124,92 @@ namespace SLD200_MSL
                     checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = false;
                     textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
                 }
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
 
-                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
+                //  BET, Mrad
+                switch (Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex)
+                {
+                    case 0:             //  BET 0.8X
+                        workStage.m_dBET_ZoomValue_Recipe = 0.8;
+                        workStage.m_dBET_MradValue_Recipe = Equipment.BET_0_8X_Mrad;
+                        label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_0_8X_Mrad.ToString();
+                        break;
 
+                    case 1:             //  BET 0.9X
+                        workStage.m_dBET_ZoomValue_Recipe = 0.9;
+                        workStage.m_dBET_MradValue_Recipe = Equipment.BET_0_9X_Mrad;
+                        label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_0_9X_Mrad.ToString();
+                        break;
 
+                    case 2:             //  BET 1.0X
+                        workStage.m_dBET_ZoomValue_Recipe = 1.0;
+                        workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_0X_Mrad;
+                        label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_0X_Mrad.ToString();
+                        break;
+
+                    case 3:             //  BET 1.1X
+                        workStage.m_dBET_ZoomValue_Recipe = 1.1;
+                        workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_1X_Mrad;
+                        label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_1X_Mrad.ToString();
+                        break;
+
+                    case 4:             //  BET 1.2X
+                        workStage.m_dBET_ZoomValue_Recipe = 1.2;
+                        workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_2X_Mrad;
+                        label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_2X_Mrad.ToString();
+                        break;
+                }
+
+                if (workStage.m_beamExpander_Comm != null)
+                {
+                    if (workStage.m_beamExpander_Comm.IsOpen)
+                    {
+                        //  Recipe 에 설정된 BET 설정과 현재 설정이 다르면 변경
+                        if ((workStage.m_dBET_ZoomValue < (workStage.m_dBET_ZoomValue_Recipe - 0.005)) || (workStage.m_dBET_ZoomValue > (workStage.m_dBET_ZoomValue_Recipe + 0.005)))
+                        {
+                            workStage.BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.ZoomMotor, workStage.m_dBET_ZoomValue_Recipe);
+                            Thread.Sleep(500);
+                        }
+
+                        if ((workStage.m_dBET_MradValue < (workStage.m_dBET_MradValue_Recipe - 0.005)) || (workStage.m_dBET_MradValue > (workStage.m_dBET_MradValue_Recipe + 0.005)))
+                        {
+                            workStage.BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor, workStage.m_dBET_MradValue_Recipe);
+                        }
+                    }
+                }
+
+                switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+                {
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                        break;
+
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                        break;
+
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                        break;
+                }
+                
                 //  Z-Axis Offset mm
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
+                //  Chuck MSL 사용 여부
+                checkBox_Recipe_TabRecipe_ChuckMSL_Use.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Use;
 
                 int m_nCount = 0;
-
                 do
                 {
                     m_nCount++;
                 } while (m_nCount < 1000);
                 
-                
                 //  도면 Import
                 m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-
                 Equipment.SetEqpSiriusViewerDocument( m_formSiriusEditor.SiriusEditor.Document);
                 //Equipment.EqpSiriusViewer_Origin.Document = m_formSiriusEditor.SiriusEditor.Document;
-
                 //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
                 Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
-
                 if (workStage.DrillingData_Parsing())
                 {
                     //  Layer List 전체 삭제
@@ -2099,18 +2226,22 @@ namespace SLD200_MSL
                         }
                     }
 
-
                     // 다른 곳 사용시!!! 아래 switch 구문 messagebox Log 등으로 수정 필요.!
                     // 선택 가공을 위해 Drilling Data Parsing 도 해준다.
                     var mb = new MessageBoxOk();
-                    int m_nReturn = workStage.GetDrillingData();
+                    //int m_nReturn = workStage.GetDrillingData();
+                    int m_nReturn = workStage.GetDrillingData(true);
                     switch (m_nReturn)
                     {
                         case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
 
-                            Equipment.CycleTimer_LaserDrilling.Clear();
-                            Equipment.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
-                            Equipment.CycleTimer_DoneModuleCount = 0;
+                            workStage.DrillingManager.CycleTimer_LaserDrilling.Clear();
+                            workStage.DrillingManager.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
+                            workStage.DrillingManager.CycleTimer_TargetModuleCount = 0;
+                            workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
+                            workStage.DrillingManager.CycleTimer_NGModuleCount = 0;
+                            workStage.DrillingManager.CycleTimer_DoneSocketCount = 0;
+                            workStage.DrillingManager.CycleTimer_NGSocketCount = 0;
 
                             //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
                             workStage.GetDrillingData_ProcessingFlagCheck();
@@ -2159,6 +2290,16 @@ namespace SLD200_MSL
                     var mb = new MessageBoxOk();
                     mb.ShowDialog("Error !!", "Recipe Data를 로드하지 못했습니다.");
                 }
+
+                if (listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Count > 0)
+                {
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = -1;  // 선택 해제
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = 0;   // 다시 선택 → 이벤트 발생
+
+                }
+
+                workStage.ResetProcess();
+                
             }
         }
 
@@ -2265,6 +2406,13 @@ namespace SLD200_MSL
                 m_nIndex = (int)LayerList.PreAlign;
             }
 
+            if(m_nIndex < 0)
+            {
+
+                Log.Write("SLD-200", Equipment.User_Name, "Recipe_Data_Refresh - Fail.");
+                return;
+            }
+
             //  Laser Parameter
             textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = Equipment.stLayerRecipeSet[m_nIndex].LaserParam_PulseWidth.ToString();
             textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[m_nIndex].LaserParam_PulsePeriod.ToString();
@@ -2310,10 +2458,10 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_RotationAngleArc.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_CircleStartAngleCircle1time.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_P2PDistance.ToString();
-            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString();
-            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString();
+            //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString();
+            //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString();
             comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleProcessingType.ToString());
             //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialAlignType.ToString());
             //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialMarkType.ToString());
@@ -2333,6 +2481,7 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString();
             textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString();
             textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness.ToString();
+            textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent.ToString();
 
             //  Spiral Parameter
             textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_OuterDiameter.ToString();
@@ -2344,14 +2493,10 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString();
 
             //  M-Aligner Vacuum Use
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore;         //  Ignore
             checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
             checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
             checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
-
-            //  Illuminator
-            //textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
-            //textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
-            //textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
 
             //  집진기 주파수
             checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                          //  집진기 Remote Mode 사용 여부
@@ -2360,12 +2505,12 @@ namespace SLD200_MSL
             checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked = Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable;
 
             //  Marking Template
-            checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
-            comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_DataType.ToString());
-            textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width.ToString();
-            textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height.ToString();
+            checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingData_SiriusTemplate_Use;
+            comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_DataType.ToString());
+            //textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width.ToString();
+            //textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height.ToString();
 
-            if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)
+            if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType)
             {
                 radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked = true;
 
@@ -2373,6 +2518,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = false;
             }
             else
             {
@@ -2382,29 +2528,41 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
                 textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
             }
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
+            textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_IncreaseStep.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData;
 
-            textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
-            textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber.ToString();
-            textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits.ToString();
-            textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep.ToString();
-            textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
+            switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+            {
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                    break;
 
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                    break;
+
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                    break;
+            }
             if (comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex == 0)            //  True Type Font 일 때만 Hatch 활성화
             {
                 checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = true;
                 textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
 
-                if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use)
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Use)
                 {
                     checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = true;
-
                     textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
                 }
                 else
                 {
                     checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = false;
-
                     textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
                 }
             }
@@ -2414,278 +2572,417 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
             }
 
-            textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
 
 
-            richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[m_nIndex].CalfileOffsetZAxismm.ToString();//  하부 집진기 사용 여부
+            //m_nIndex <- 이거 먹나?
+            richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[m_nIndex].CalfileOffsetZAxismm.ToString();
+
+            //  Chuck MSL 사용 여부
+            checkBox_Recipe_TabRecipe_ChuckMSL_Use.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Use;
+
         }
-
-        public void Recipe_Open(string m_strRecipeFile)
+        public void Recipe_Open(string strRecipeFile)
         {
-            string fileName;
+            string fileName = string.Empty;
 
-            fileName = m_strRecipeFile;
-
-            if (Equipment.GetEqpSiriusViewerDocument() == null)
+            //if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
-                return;
-            }
+                fileName = strRecipeFile;
 
-            if (workStage.rtc == null)
-            {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
-                return;
-            }
+                //  Recipe Data 로드
+                Recipe_Data_Load_Refactory(fileName);
+                Equipment.Current_Recipe = fileName;
+                Equipment.Current_DrawingFileName = System.IO.Path.GetFileName(Equipment.stLayerRecipeSet[0].DrawingFile);
 
-            //  Recipe Data 로드
-            //Recipe_Data_Load(fileName);
-            Recipe_Data_Load_Refactory(fileName);
-            Equipment.Current_Recipe = fileName;
-            Equipment.Current_DrawingFileName = System.IO.Path.GetFileName(Equipment.stLayerRecipeSet[0].DrawingFile);
+                //  Recipe 명 표시
+                label_Recipe_FileName.Text = System.IO.Path.GetFileName(fileName);
 
-            //  Recipe 명 표시
-            label_Recipe_FileName.Text = System.IO.Path.GetFileName(fileName);
-
-            // Recipe Vision Load
-            string iniPath = fileName;  //ConfigManager.GetRecipeDataPath() + "\\RecipeVisionData.ini";
-            stVisionRecipeSet = VisionRecipeData.LoadFromIni(iniPath);
-            if (workStage.jigAligner_LowRes != null)
-            {
-                workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = stVisionRecipeSet.LoadTrainImage(); //Bitmap.FromFile(m_strFile);
-                workStage.jigAligner_LowRes.TrainImage = stVisionRecipeSet.LoadTrainImage(); //이거 사용중.
-            }
-
-            //workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = 
-            if (Equipment.stVisionRecipeSet.PrePatternMatching != null)
-            {
-                workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxTolerance = Equipment.stVisionRecipeSet.PrePatternMatching.MaxTolerance;
-                workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = Equipment.stVisionRecipeSet.PrePatternMatching.MaxInstance;
-                workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MinScore = Equipment.stVisionRecipeSet.PrePatternMatching.MinScore;
-                workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.DuplicateChecked = Equipment.stVisionRecipeSet.PrePatternMatching.DuplicateChecked;
-                workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.UseMaskImage = Equipment.stVisionRecipeSet.PrePatternMatching.UseMaskImage;
-
-                if (workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage != null)
+                // Recipe Vision Load
+                string iniPath = fileName;  //ConfigManager.GetRecipeDataPath() + "\\RecipeVisionData.ini";
+                Equipment.stVisionRecipeSet = VisionRecipeData.LoadFromIni(iniPath);
+                if (workStage.jigAligner_LowRes != null)
                 {
-                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage(); //Bitmap.FromFile(m_strFile);
+                    workStage.jigAligner_LowRes.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage(); //이거 사용중.
                 }
 
-                workStage.jigAligner_LowRes.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation;
-                workStage.jigAligner_LowRes.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation;
-                workStage.jigAligner_LowRes.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation;
-                workStage.jigAligner_LowRes.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation;
-            }
-
-
-            //  Recipe 창에 데이터 표시
-            //  Drawing File
-            richTextBox_Recipe_TabRecipe_DrawingFile.Text = Equipment.stLayerRecipeSet[0].DrawingFile;
-
-            //  Laser Parameter
-            textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = Equipment.stLayerRecipeSet[0].LaserParam_PulseWidth.ToString();
-            textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[0].LaserParam_PulsePeriod.ToString();
-            textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = Equipment.stLayerRecipeSet[0].LaserParam_Frequency.ToString();
-            textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[0].LaserParam_DutyCycle.ToString();
-
-            //if (Equipment.stLayerRecipeSet[0].LaserParam_TriggerMode_External)
-            //{
-            //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
-            //}
-            //else
-            //{
-            //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Checked = true;
-            //}
-
-            //  Process Priority
-            if (Equipment.stLayerRecipeSet[0].ProcessPriority_P2P)
-            {
-                radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true; ;
-            }
-            else
-            {
-                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked = true; ;
-            }
-
-            //  Miscellaneous
-            textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ReferenceLayer;
-            textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DefocusingDistance.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_Resizing.ToString();
-            comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize.ToString();
-
-            //  Scan Field Height Size 가 0일 경우, Width 값을 사용한다.
-            if (Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height == 0)
-            {
-                Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize;
-            }
-            textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height.ToString();
-
-            textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ScannerDrillingSpeed.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ScannerJumpSpeed.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_LaserOnDelay.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_LaserOffDelay.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_MarkDelay.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_JumpDelay.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_PolygonDelay.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_Drilling_Power.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DrillingRepetition.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DrillingRepetitionBundle.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_RotationAngleArc.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_CircleStartAngleCircle1time.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_P2PDistance.ToString();
-            //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString();
-            //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString();
-            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
-            //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
-            //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
-            checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use;
-            textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance.ToString();
-
-            //  process Options
-            checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
-            checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;             //  Socket Height Check 기능 사용 여부
-            textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX.ToString();
-            textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY.ToString();
-
-            checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use;
-
-            //  Module Information
-            textBox_Recipe_TabRecipe_ModuleInformation_Width.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width.ToString();
-            textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString();
-            textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString();
-            textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness.ToString();
-
-            //  Spiral Parameter
-            textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter.ToString();
-            textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_InnerDiameter.ToString();
-            textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = Equipment.stLayerRecipeSet[0].SpiralParam_Revolutions.ToString();
-            textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = Equipment.stLayerRecipeSet[0].SpiralParam_AngleFactor.ToString();
-
-            //  EPRO Module Absorption Level
-            textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString();
-
-            //  M-Aligner Vacuum Use
-            checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
-            checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
-            checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
-
-            //  Illuminator
-            //textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
-            //textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
-            //textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
-
-            //  집진기 주파수
-            checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                          //  집진기 Remote Mode 사용 여부
-            textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
-            textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
-            checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked = Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable;                                        //  하부 집진기 사용 여부
-
-            //  Marking Template
-            checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
-            comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_DataType.ToString());
-            textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width.ToString();
-            textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height.ToString();
-
-            if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_TextType)
-            {
-                radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked = true;
-
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Enabled = false;
-                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = false;
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
-            }
-            else
-            {
-                radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Checked = true;
-
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Enabled = true;
-                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = true;
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
-                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
-            }
-
-            textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_PrefixData;
-            textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_StartNumber.ToString();
-            textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Digits.ToString();
-            textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_IncreaseStep.ToString();
-            textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_SuffixData;
-
-            if (comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex == 0)            //  True Type Font 일 때만 Hatch 활성화
-            {
-                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = true;
-                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
-
-                if (Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Use)
+                //workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = 
+                if (Equipment.stVisionRecipeSet.PrePatternMatching != null)
                 {
-                    checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = true;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxTolerance = Equipment.stVisionRecipeSet.PrePatternMatching.MaxTolerance;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = Equipment.stVisionRecipeSet.PrePatternMatching.MaxInstance;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MinScore = Equipment.stVisionRecipeSet.PrePatternMatching.MinScore;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.DuplicateChecked = Equipment.stVisionRecipeSet.PrePatternMatching.DuplicateChecked;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.UseMaskImage = Equipment.stVisionRecipeSet.PrePatternMatching.UseMaskImage;
 
-                    textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
+                    if (workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage != null)
+                    {
+                        workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                    }
+
+                    workStage.jigAligner_LowRes.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation;
+                    workStage.jigAligner_LowRes.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation;
+                    workStage.jigAligner_LowRes.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation;
+                    workStage.jigAligner_LowRes.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation;
+                }
+
+                //  Recipe 창에 데이터 표시
+                //  Drawing File
+                richTextBox_Recipe_TabRecipe_DrawingFile.Text = Equipment.stLayerRecipeSet[0].DrawingFile;
+
+                //  Laser Parameter
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = Equipment.stLayerRecipeSet[0].LaserParam_PulseWidth.ToString();
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[0].LaserParam_PulsePeriod.ToString();
+                textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = Equipment.stLayerRecipeSet[0].LaserParam_Frequency.ToString();
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[0].LaserParam_DutyCycle.ToString();
+                //if (Equipment.stLayerRecipeSet[0].LaserParam_TriggerMode_External)
+                //{
+                //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
+                //}
+                //else
+                //{
+                //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Checked = true;
+                //}
+
+                //  Process Priority
+                if (Equipment.stLayerRecipeSet[0].ProcessPriority_P2P)
+                {
+                    radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true; ;
                 }
                 else
                 {
-                    checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = false;
+                    radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked = true; ;
+                }
 
+                //  Miscellaneous
+                textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ReferenceLayer;
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DefocusingDistance.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_Resizing.ToString();
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize.ToString();
+
+                //  Scan Field Height Size 가 0일 경우, Width 값을 사용한다.
+                if (Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height == 0)
+                {
+                    Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize;
+                }
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height.ToString();
+
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ScannerDrillingSpeed.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ScannerJumpSpeed.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_LaserOnDelay.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_LaserOffDelay.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_MarkDelay.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_JumpDelay.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_PolygonDelay.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_Drilling_Power.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DrillingRepetition.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DrillingRepetitionBundle.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_RotationAngleArc.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_CircleStartAngleCircle1time.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_P2PDistance.ToString();
+                //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString();
+                //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString();
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
+                //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
+                //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
+                checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use;
+                textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance.ToString();
+
+                //  process Options
+                checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
+                checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;             //  Socket Height Check 기능 사용 여부
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX.ToString();
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY.ToString();
+
+                checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use;
+
+                //  Module Information
+                textBox_Recipe_TabRecipe_ModuleInformation_Width.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width.ToString();
+                textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString();
+                textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString();
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness.ToString();
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent.ToString();
+
+                //  Spiral Parameter
+                textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter.ToString();
+                textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_InnerDiameter.ToString();
+                textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = Equipment.stLayerRecipeSet[0].SpiralParam_Revolutions.ToString();
+                textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = Equipment.stLayerRecipeSet[0].SpiralParam_AngleFactor.ToString();
+
+                //  EPRO Module Absorption Level
+                textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString();
+
+                //  M-Aligner Vacuum Use
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore;         //  Ignore
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
+
+                //  집진기 주파수
+                checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                          //  집진기 Remote Mode 사용 여부
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
+                checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked = Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable;                                        //  하부 집진기 사용 여부
+
+                //  Marking Template
+                checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingData_SiriusTemplate_Use;
+                comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_DataType.ToString());
+                //textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width.ToString();
+                //textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height.ToString();
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType)
+                {
+                    radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked = true;
+
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = false;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = false;
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = false;
+                    button_Marking_SerialNumber_CountReset.Enabled = false;
+                }
+                else
+                {
+                    radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Checked = true;
+
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Enabled = true;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
+
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = true;
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = true;
+                    button_Marking_SerialNumber_CountReset.Enabled = true;
+                }
+
+                switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+                {
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                        break;
+
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                        break;
+
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                        break;
+                }
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_PrefixData;
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_StartNumber.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Digits.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_IncreaseStep.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SuffixData;
+                if (comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex == 0)            //  True Type Font 일 때만 Hatch 활성화
+                {
+                    checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = true;
+                    textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
+
+                    if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Use)
+                    {
+                        checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = true;
+
+                        textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = true;
+                    }
+                    else
+                    {
+                        checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked = false;
+
+                        textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
+                    }
+                }
+                else                                                                                //  그 외에는 비활성화
+                {
+                    checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = false;
                     textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
                 }
-            }
-            else                                                                                //  그 외에는 비활성화
-            {
-                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Enabled = false;
-                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
-            }
-            
-            textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
 
-            richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
-
-            int m_nCount = 0;
-            do
-            {
-                m_nCount++;
-            } while (m_nCount < 1000);
-
-
-            //  도면 Import
-            m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-
-            Equipment.SetEqpSiriusViewerDocument( m_formSiriusEditor.SiriusEditor.Document);
-            //Equipment.EqpSiriusViewer_Origin.Document = m_formSiriusEditor.SiriusEditor.Document;
-
-            //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
-            Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
-
-            if (workStage.DrillingData_Parsing())
-            {
-                //  Layer List 전체 삭제
-                listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Clear();
-
-                // Todo : 20250426 확인
-                if (m_formSiriusEditor.SiriusEditor.Document != null)
+                //  BET, Mrad
+                switch (Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex)
                 {
-                    foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
+                    case 0:             //  BET 0.8X
+                        workStage.m_dBET_ZoomValue_Recipe = 0.8;
+                        workStage.m_dBET_MradValue_Recipe = Equipment.BET_0_8X_Mrad;
+                        label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_0_8X_Mrad.ToString();
+                        break;
+
+                    case 1:             //  BET 0.9X
+                        workStage.m_dBET_ZoomValue_Recipe = 0.9;
+                        workStage.m_dBET_MradValue_Recipe = Equipment.BET_0_9X_Mrad;
+                        label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_0_9X_Mrad.ToString();
+                        break;
+
+                    case 2:             //  BET 1.0X
+                        workStage.m_dBET_ZoomValue_Recipe = 1.0;
+                        workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_0X_Mrad;
+                        label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_0X_Mrad.ToString();
+                        break;
+
+                    case 3:             //  BET 1.1X
+                        workStage.m_dBET_ZoomValue_Recipe = 1.1;
+                        workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_1X_Mrad;
+                        label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_1X_Mrad.ToString();
+                        break;
+
+                    case 4:             //  BET 1.2X
+                        workStage.m_dBET_ZoomValue_Recipe = 1.2;
+                        workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_2X_Mrad;
+                        label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_2X_Mrad.ToString();
+                        break;
+                }
+
+                if (workStage.m_beamExpander_Comm != null)
+                {
+                    if (workStage.m_beamExpander_Comm.IsOpen)
                     {
-                        if (layer.IsMarkerable)
+                        //  Recipe 에 설정된 BET 설정과 현재 설정이 다르면 변경
+                        if ((workStage.m_dBET_ZoomValue < (workStage.m_dBET_ZoomValue_Recipe - 0.005)) || (workStage.m_dBET_ZoomValue > (workStage.m_dBET_ZoomValue_Recipe + 0.005)))
                         {
-                            listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
+                            workStage.BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.ZoomMotor, workStage.m_dBET_ZoomValue_Recipe);
+                            Thread.Sleep(500);
+                        }
+
+                        if ((workStage.m_dBET_MradValue < (workStage.m_dBET_MradValue_Recipe - 0.005)) || (workStage.m_dBET_MradValue > (workStage.m_dBET_MradValue_Recipe + 0.005)))
+                        {
+                            workStage.BeamExpander_Send_Motor_SetPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor, workStage.m_dBET_MradValue_Recipe);
                         }
                     }
                 }
 
-                MessageBox.Show("Recipe Data를 로드하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("Recipe Data를 로드하지 못했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+                {
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                        break;
+
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                        break;
+
+                    case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
+                        radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                        break;
+                }
+
+                //  Z-Axis Offset mm
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
+
+                //  Chuck MSL 사용 여부
+                checkBox_Recipe_TabRecipe_ChuckMSL_Use.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Use;
+
+                int m_nCount = 0;
+                do
+                {
+                    m_nCount++;
+                } while (m_nCount < 1000);
+
+                //  도면 Import
+                m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
+                Equipment.SetEqpSiriusViewerDocument(m_formSiriusEditor.SiriusEditor.Document);
+                //Equipment.EqpSiriusViewer_Origin.Document = m_formSiriusEditor.SiriusEditor.Document;
+                //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
+                Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
+                if (workStage.DrillingData_Parsing())
+                {
+                    //  Layer List 전체 삭제
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Clear();
+                    // Todo : 20250426 확인
+                    if (m_formSiriusEditor.SiriusEditor.Document != null)
+                    {
+                        foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
+                        {
+                            if (layer.IsMarkerable)
+                            {
+                                listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
+                            }
+                        }
+                    }
+
+                    // 다른 곳 사용시!!! 아래 switch 구문 messagebox Log 등으로 수정 필요.!
+                    // 선택 가공을 위해 Drilling Data Parsing 도 해준다.
+                    var mb = new MessageBoxOk();
+                    //int m_nReturn = workStage.GetDrillingData();
+                    int m_nReturn = workStage.GetDrillingData(true);
+                    switch (m_nReturn)
+                    {
+                        case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
+
+                            workStage.DrillingManager.CycleTimer_LaserDrilling.Clear();
+                            workStage.DrillingManager.CycleTimer_LaserDrilling.TotalElapsed = TimeSpan.Zero;
+                            workStage.DrillingManager.CycleTimer_TargetModuleCount = 0;
+                            workStage.DrillingManager.CycleTimer_DoneModuleCount = 0;
+                            workStage.DrillingManager.CycleTimer_NGModuleCount = 0;
+                            workStage.DrillingManager.CycleTimer_DoneSocketCount = 0;
+                            workStage.DrillingManager.CycleTimer_NGSocketCount = 0;
+
+                            //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
+                            workStage.GetDrillingData_ProcessingFlagCheck();
+                            mb.ShowDialog("Information !!", "가공 데이터 Parsing 성공 및 Recipe Data를 로드 성공.");
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
+                            mb.ShowDialog("Error !!", "데이터가 정상적으로 로드 되지 않았습니다.");
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
+                            mb.ShowDialog("Error !!", "데이터가 Group 이 아닙니다.");
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
+                            mb.ShowDialog("Error !!", "데이터를 Group 해제 해야 합니다.");
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
+                            mb.ShowDialog("Error !!", "Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.");
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
+                            mb.ShowDialog("Error !!", "Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.");
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
+                            mb.ShowDialog("Error !!", "Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지 데이터로만 구성되어야 합니다.");
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
+                            mb.ShowDialog("Error !!", "Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다.");
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
+                            mb.ShowDialog("Error !!", "Line 으로 이루어진 Drilling Data 가 닫힌 도형이 아닙니다.");
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
+                            mb.ShowDialog("Error !!", "RTC 보드가 초기화 되지 않았습니다.");
+                            break;
+                    }
+                }
+                else
+                {
+                    var mb = new MessageBoxOk();
+                    mb.ShowDialog("Error !!", "Recipe Data를 로드하지 못했습니다.");
+                }
+
+                if (listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Count > 0)
+                {
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = -1;  // 선택 해제
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex = 0;   // 다시 선택 → 이벤트 발생
+
+                }
+
+                workStage.ResetProcess();
+
             }
 
             return;
         }
-
         private void button_DutyCycle_Calc_Click(object sender, EventArgs e)
         {
             try
@@ -2708,7 +3005,6 @@ namespace SLD200_MSL
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
         private void button_PulseWidth_Calc_Click(object sender, EventArgs e)
         {
             try
@@ -2726,8 +3022,6 @@ namespace SLD200_MSL
                 // 결과 출력
                 textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = pulseWidthUs.ToString("F2"); // 소수점 2자리까지 표시
 
-
-
                 // PulseWidth Min Max 계산
                 double pulseWidthUs_Min = (0 * periodSeconds / 100) * 1_000_000;
                 double pulseWidthUs_Max = (100 * periodSeconds / 100) * 1_000_000;
@@ -2740,7 +3034,6 @@ namespace SLD200_MSL
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
         private void button_Recipe_SaveAs_Click(object sender, EventArgs e)
         {
             string fileName;
@@ -2793,9 +3086,10 @@ namespace SLD200_MSL
 
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !!", "Recipe Data를 저장하였습니다.");
+
+                Recipe_Open(fileName); // Recipe Open
             }
         }
-
         private void radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText_CheckedChanged(object sender, EventArgs e)
         {
             //  Fixed Text
@@ -2805,10 +3099,31 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = false;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = false;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = false;
+
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = false;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = false;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Enabled = false;
+            button_Marking_SerialNumber_CountReset.Enabled = false;
+
+
+            switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+            {
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                    break;
+
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                    break;
+
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                    break;
+            }
         }
         private void radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber_CheckedChanged(object sender, EventArgs e)
         {
-            //  Serial Number
+            //  Serial Number;
 
             textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Enabled = true;
 
@@ -2816,8 +3131,39 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Enabled = true;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Enabled = true;
             textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Enabled = true;
-        }
 
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Enabled = true;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Enabled = true;
+            radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Enabled = true;
+            button_Marking_SerialNumber_CountReset.Enabled = true;
+
+            switch (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType)
+            {
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachModule:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked = true;
+                    break;
+
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked = true;
+                    break;
+
+                case (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous:
+                    radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous.Checked = true;
+                    break;
+            }
+
+            if(radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Checked)
+            {
+                int nIncrease = 0;
+                nIncrease = Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text);
+                if (nIncrease <= 0)
+                {
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = "1";
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Refresh();
+                }
+            }
+            
+        }
         private void comboBox_Recipe_TabRecipe_CustomMarking_DataType_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  True Type Font 일 때만 Hatch 활성화
@@ -2843,7 +3189,6 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
             }
         }
-
         private void checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable_CheckedChanged(object sender, EventArgs e)
         {
             //  Hatch Enable
@@ -2856,6 +3201,1203 @@ namespace SLD200_MSL
             {
                 textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Enabled = false;
             }
+        }
+        private void comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //  BET Zoom 배율에 따라 Mrad 값 변경
+            // 
+
+            int m_nIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
+
+            if (m_nIndex < 0)
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "BET Zoom 배율을 선택해야 합니다.");
+
+                return;
+            }
+
+            switch( m_nIndex)
+            {
+                case 0:                 //  0.8x
+                    label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_0_8X_Mrad.ToString();
+                    break;
+
+                case 1:                 //  0.9x
+                    label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_0_9X_Mrad.ToString();
+                    break;
+
+                case 2:                 //  1.0x
+                    label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_0X_Mrad.ToString();
+                    break;
+
+                case 3:                 //  1.1x
+                    label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_1X_Mrad.ToString();
+                    break;
+
+                case 4:                 //  1.2x
+                    label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_2X_Mrad.ToString();
+                    break;
+            }
+        }
+        
+        private void radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachModule;
+        }
+
+        private void radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket;
+        }
+
+        private void radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous;
+        }
+        
+        private void FormNew_Recipe_Shown(object sender, EventArgs e)
+        {
+            //  화면이 처음 표시될 때 보여지는 Recipe Data
+
+            //  BET, Mrad
+
+            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
+
+            switch (Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex)
+            {
+                case 0:             //  BET 0.8X
+                    workStage.m_dBET_ZoomValue_Recipe = 0.8;
+                    workStage.m_dBET_MradValue_Recipe = Equipment.BET_0_8X_Mrad;
+                    label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_0_8X_Mrad.ToString();
+                    break;
+
+                case 1:             //  BET 0.9X
+                    workStage.m_dBET_ZoomValue_Recipe = 0.9;
+                    workStage.m_dBET_MradValue_Recipe = Equipment.BET_0_9X_Mrad;
+                    label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_0_9X_Mrad.ToString();
+                    break;
+
+                case 2:             //  BET 1.0X
+                    workStage.m_dBET_ZoomValue_Recipe = 1.0;
+                    workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_0X_Mrad;
+                    label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_0X_Mrad.ToString();
+                    break;
+
+                case 3:             //  BET 1.1X
+                    workStage.m_dBET_ZoomValue_Recipe = 1.1;
+                    workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_1X_Mrad;
+                    label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_1X_Mrad.ToString();
+                    break;
+
+                case 4:             //  BET 1.2X
+                    workStage.m_dBET_ZoomValue_Recipe = 1.2;
+                    workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_2X_Mrad;
+                    label_Recipe_TabRecipe_Miscellaneous_ZoomPosition.Text = Equipment.BET_1_2X_Mrad.ToString();
+                    break;
+            }
+        }
+
+        private void button_Marking_SerialNumber_Preview_Click(object sender, EventArgs e)
+        {
+            //  마킹 데이터 미리보기
+
+            string m_strMarkingData = "";
+
+            int m_nStartNumber = Equipment.m_nSerialNumberMarkingCount;             //  미리 보기에서는 다음번 마킹시 가공 될 번호를 보여준다. (현재 Count + Increase Step)
+            int m_nDigits = Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text) < 0 ? 1 : Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text);
+            int m_nIncreaseStep = Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text);
+
+            if (radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked)          //  고정 Text Data
+            {
+                m_strMarkingData = textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text;
+            }
+            else                                                                            //  Serial Number Data
+            {
+                //  Prefix 있으면 붙이고
+                if (textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text.Length > 0)
+                {
+                    m_strMarkingData = textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text;
+                }
+
+                //  Serial Number 계산해서 만들고
+                m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", m_nStartNumber);             //  다음꺼가 아니라 지금 마킹될 데이터
+
+                //  Suffix 있으면 붙이고
+                if (textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text.Length > 0)
+                {
+                    m_strMarkingData += textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text;
+                }
+            }
+
+            label_Recipe_Marking_SerialNumber_Current.Text = m_strMarkingData;
+        }
+
+        private void button_Marking_SerialNumber_CountReset_Click(object sender, EventArgs e)
+        {
+            if (radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber.Checked)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "시리얼 넘버를 초기화 하시겠습니까?\r\n\r\n[Start Number 부터 다시 시작됩니다.]"))
+                    return;
+
+                Equipment.m_nSerialNumberMarkingCount = Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text);
+
+                string m_strMarkingData = "";
+
+                int m_nStartNumber = Equipment.m_nSerialNumberMarkingCount;             //  미리 보기에서는 다음번 마킹시 가공 될 번호를 보여준다. (현재 Count + Increase Step)
+                int m_nDigits = Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text) < 0 ? 1 : Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text);
+                int m_nIncreaseStep = Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text);
+
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType)          //  고정 Text Data
+                {
+                    m_strMarkingData = textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text;
+                }
+                else                                                                            //  Serial Number Data
+                {
+                    //  Prefix 있으면 붙이고
+                    if (textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text.Length > 0)
+                    {
+                        m_strMarkingData = textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text;
+                    }
+
+                    //  Serial Number 계산해서 만들고
+                    m_strMarkingData += string.Format("{0:D" + m_nDigits.ToString() + "}", m_nStartNumber + m_nIncreaseStep);
+
+                    //  Suffix 있으면 붙이고
+                    if (textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text.Length > 0)
+                    {
+                        m_strMarkingData += textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text;
+                    }
+                }
+                label_Recipe_Marking_SerialNumber_Current.Text = m_strMarkingData;
+
+                int nIncrease = 0;
+                nIncrease = Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text);
+                if (nIncrease <= 0)
+                {
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text = "1";
+                    textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Refresh();
+                }
+            }
+        }
+
+        private void listBox_Recipe_TabRecipe_ListOfDrawingLayer_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0) return;
+
+            ListBox listBox = sender as ListBox;
+            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+
+            // 선택 여부에 따라 배경색 변경
+            Color backColor = isSelected ? Color.DodgerBlue : Color.White;
+            Color textColor = isSelected ? Color.White : Color.Black;
+
+            using (SolidBrush backgroundBrush = new SolidBrush(backColor))
+            using (SolidBrush textBrush = new SolidBrush(textColor))
+            {
+                // 배경
+                e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
+
+                // 텍스트
+                string itemText = listBox.Items[e.Index].ToString();
+                e.Graphics.DrawString(itemText, e.Font, textBrush, e.Bounds);
+            }
+
+            // 포커스 테두리 제거
+            e.DrawFocusRectangle();
+        }
+
+
+        private void SetRecipeTabControlsVisible(string strLayerName, bool bEnabled)
+        {
+            Control[] targetControls = new Control[]
+            {
+                // 공통 //Hole1에서 설정.
+                button_Recipe_TabRecipe_Cal_ZAxisOffset,
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
+                textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Outer,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Center,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Inner,
+                checkBox_Recipe_TabRecipe_LowerDustCollector_Disable,
+                checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode,
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper,
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower,
+                checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck,
+                checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign,
+                checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign,
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY,
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX,
+                textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_Height,
+                textBox_Recipe_TabRecipe_ModuleInformation_Width,
+                button_GoldPowderThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent,
+                checkBox_Recipe_TabRecipe_ChuckMSL_Use,
+                
+                //공정 Param
+                textBox_Recipe_TabRecipe_LaserParam_Frequency,
+                button_PulseWidth_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
+                button_DutyCycle_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth,
+                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod,
+                radioButton_Recipe_TabRecipe_ProcessPriority_P2P,
+                textBox_Recipe_TabRecipe_SpiralParam_AngleFactor,
+                textBox_Recipe_TabRecipe_SpiralParam_Revolutions,
+                textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter,
+                textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter,
+                textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time,
+                textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance,
+                checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType,
+                textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle,
+                button_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_Resizing,
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer,
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex,
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition,
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance,
+                
+                //Marking
+                button_Marking_SerialNumber_CountReset,
+                button_Marking_SerialNumber_Preview,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase,
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing,
+                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable,
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber,
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber,
+                comboBox_Recipe_TabRecipe_CustomMarking_DataType,
+                checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode,
+
+                groupBox6
+            };
+
+            Control[] targetControlsHole1 = new Control[]
+            {
+                // 공통 //Hole1에서 설정.
+                button_Recipe_TabRecipe_Cal_ZAxisOffset,
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
+                textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Outer,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Center,
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Inner,
+                checkBox_Recipe_TabRecipe_LowerDustCollector_Disable,
+                checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode,
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper,
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower,
+                checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck,
+                checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign,
+                checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign,
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY,
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX,
+                textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_Height,
+                textBox_Recipe_TabRecipe_ModuleInformation_Width,
+                button_GoldPowderThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness,
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent,
+                checkBox_Recipe_TabRecipe_ChuckMSL_Use,
+                
+                //공정 Param
+                textBox_Recipe_TabRecipe_LaserParam_Frequency,
+                button_PulseWidth_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
+                button_DutyCycle_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth,
+                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod,
+                radioButton_Recipe_TabRecipe_ProcessPriority_P2P,
+                textBox_Recipe_TabRecipe_SpiralParam_AngleFactor,
+                textBox_Recipe_TabRecipe_SpiralParam_Revolutions,
+                textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter,
+                textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter,
+                textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time,
+                textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance,
+                checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType,
+                textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle,
+                button_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                label_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_Resizing,
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer,
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex,
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition,
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance
+            };
+
+            Control[] targetControlsMarking = new Control[]
+            {
+                //공정 Param
+                textBox_Recipe_TabRecipe_LaserParam_Frequency,
+                button_PulseWidth_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
+                button_DutyCycle_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth,
+                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod,
+                radioButton_Recipe_TabRecipe_ProcessPriority_P2P,
+                textBox_Recipe_TabRecipe_SpiralParam_AngleFactor,
+                textBox_Recipe_TabRecipe_SpiralParam_Revolutions,
+                textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter,
+                textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter,
+                textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time,
+                textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance,
+                checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType,
+                textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle,
+                button_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                label_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_Resizing,
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer,
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex,
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition,
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance,
+                
+               //Marking
+                button_Marking_SerialNumber_CountReset,
+                button_Marking_SerialNumber_Preview,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Continuous,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module,
+                radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Increase,
+                textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing,
+                checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable,
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_SerialNumber,
+                radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_Digits,
+                textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber,
+                comboBox_Recipe_TabRecipe_CustomMarking_DataType,
+                checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode,
+                groupBox6
+           };
+
+            Control[] targetControlsThruhole = new Control[]
+            {
+                //공정 Param
+                textBox_Recipe_TabRecipe_LaserParam_Frequency,
+                button_PulseWidth_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
+                button_DutyCycle_Calc,
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth,
+                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod,
+                radioButton_Recipe_TabRecipe_ProcessPriority_P2P,
+                textBox_Recipe_TabRecipe_SpiralParam_AngleFactor,
+                textBox_Recipe_TabRecipe_SpiralParam_Revolutions,
+                textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter,
+                textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter,
+                textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time,
+                textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance,
+                checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType,
+                textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle,
+                button_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                label_Recipe_TabRecipe_Miscellaneous_DrillingPower,
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay,
+                textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay,
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision,
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed,
+                textBox_Recipe_TabRecipe_Miscellaneous_Resizing,
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance,
+                textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer,
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex,
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex,
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition,
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance
+           };
+
+            if (checkBox_MasterView.Checked)
+            {
+                foreach (var control in targetControls)
+                {
+                    control.Enabled = true;
+                }
+                return;
+            }
+
+
+            foreach (var control in targetControls)
+            {
+                control.Enabled = false;
+            }
+
+            //  ListView Column 설정
+            if ((strLayerName == "Hole1"))
+            {
+                foreach (var control in targetControlsHole1)
+                {
+                    control.Enabled = bEnabled;
+                }
+                MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+            }
+            else if ((strLayerName == "Hole2") ||
+                (strLayerName == "Hole3") ||
+                (strLayerName == "Hole4") ||
+                (strLayerName == "Hole5") ||
+                (strLayerName == "Hole6") ||
+                (strLayerName == "Hole7") ||
+                (strLayerName == "Hole8") ||
+                (strLayerName == "Hole9") ||
+                (strLayerName == "Hole10") ||
+                (strLayerName == "Thruhole") ||
+                (strLayerName == "Rect") ||
+                (strLayerName == "Outline"))
+            {
+                foreach (var control in targetControlsThruhole)
+                {
+                    control.Enabled = bEnabled;
+                }
+                MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+            }
+            else if (strLayerName == "Marking")
+            {
+                foreach (var control in targetControlsMarking)
+                {
+                    control.Enabled = bEnabled;
+                }
+                MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+            }
+            else if (strLayerName == "PreAlign" || strLayerName == "Fiducial")
+            {
+                MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+                foreach (var control in targetControls)
+                {
+                    control.Enabled = bEnabled;
+                }
+            }
+
+            
+        }
+
+        private void button_Recipe_New_Click(object sender, EventArgs e)
+        {
+            string folderPath = string.Empty;
+            string defaultRecipeFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Recipe");
+            if (string.IsNullOrWhiteSpace(Equipment.Current_Recipe))
+            {
+                // 기본 폴더 사용
+                folderPath = defaultRecipeFolder;
+            }
+            else
+            {
+                folderPath = Path.GetDirectoryName(Equipment.Current_Recipe);
+            }
+
+            // 폴더 없으면 생성
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            // 새 파일명 설정
+            string ext = ".ini";  // 확장자 필요시 조정
+            string fileName = Path.Combine(folderPath, "NewRecipe" + ext);
+            {
+                if (File.Exists(fileName) == false)
+                {
+                    using (FileStream fs = File.Create(fileName))
+                    {
+                        // 파일만 생성하고 바로 닫음
+                    }
+                }
+
+                //  Recipe Data 저장
+                Recipe_Data_Save_Refactory(fileName);
+                Equipment.Current_Recipe = fileName;
+                // Vision Data 저장
+                stVisionRecipeSet.SaveToIni(fileName);
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "Recipe Data를 새로 생성하였습니다.");
+
+                Recipe_Open(fileName); // Recipe Open
+            }
+        }
+
+
+        // 이거 각각 폼에 만들어야함.
+        private void InitRecipeUI_KeyPad()
+        {
+            RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행
+        }
+        private void RegisterKeyPadDoubleClickHandlers(Control parent)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                // 조건: 숫자 입력용 TextBox 또는 RichTextBox만
+                bool isTargetTextBox = ctrl is TextBox || ctrl is RichTextBox;
+
+                if (isTargetTextBox && ctrl.Tag?.ToString().Contains("KeyPad") == true)
+                {
+                    ctrl.DoubleClick -= textBox_DoubleClick_OpenKeyPad; // 중복 연결 방지
+                    ctrl.DoubleClick += textBox_DoubleClick_OpenKeyPad;
+
+                    // 키보드 입력 제한용 Validating 연결
+                    ctrl.Validating -= textBox_Validate_KeyPadRange;
+                    ctrl.Validating += textBox_Validate_KeyPadRange;
+                }
+
+                // 하위 컨트롤 재귀 탐색
+                if (ctrl.HasChildren)
+                    RegisterKeyPadDoubleClickHandlers(ctrl);
+            }
+        }
+        private void textBox_DoubleClick_OpenKeyPad(object sender, EventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                string currentText = ctrl.Text ?? "0";
+                var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
+
+                if (double.TryParse(currentText, out double value))
+                    dlg.SetInitialValue(value);
+                else
+                    dlg.SetInitialValue(0);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string result = dlg.EnteredValue.ToString(meta.Format);
+                    ctrl.Text = result;
+                }
+            }
+        }
+        private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
+        {
+            if (sender is TextBoxBase tb && tb.Tag != null)
+            {
+                var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
+
+                if (double.TryParse(tb.Text, out double val))
+                {
+                    if (val < meta.Min)
+                    {
+                        tb.Text = meta.Min.ToString(meta.Format);
+                        //MessageBox.Show($"최소값 {meta.Min}보다 작습니다."); // 또는 자동 보정만
+                    }
+                    else if (val > meta.Max)
+                    {
+                        tb.Text = meta.Max.ToString(meta.Format);
+                        //MessageBox.Show($"최대값 {meta.Max}보다 큽니다.");
+                    }
+                    else
+                    {
+                        tb.Text = val.ToString(meta.Format);
+                    }
+                }
+                else
+                {
+                    // 숫자 아님 → 초기화
+                    tb.Text = meta.Min.ToString(meta.Format);
+                }
+            }
+        }
+
+        private void checkBox_Stage_Chuck_Use_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_DefocusingDistance_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text.Length == 0)
+                return;
+
+            double defocusValue = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = defocusValue;
+            }
+
+            MessageBox.Show("Hole1 ~ Hole50 레이어에 Defocusing Distance가 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void button_Recipe_TabRecipe_Miscellaneous_Resizing_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text.Length == 0)
+                return;
+
+            double defocusValue = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing = defocusValue;
+            }
+
+            MessageBox.Show("Hole1 ~ Hole50 레이어에 Resizing 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = value;
+            }
+
+            MessageBox.Show("GroupSplitSize가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize_Height = value;
+            }
+
+            MessageBox.Show("GroupSplitSize_Height가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed = value;
+            }
+
+            MessageBox.Show("ScannerDrillingSpeed가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerJumpSpeed = value;
+            }
+
+            MessageBox.Show("ScannerJumpSpeed가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_LaserOnDelay_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOnDelay = value;
+            }
+
+            MessageBox.Show("LaserOnDelay가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_LaserOffDelay_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOffDelay = value;
+            }
+
+            MessageBox.Show("LaserOffDelay가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_MarkDelay_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_MarkDelay = value;
+            }
+
+            MessageBox.Show("MarkDelay가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_JumpDelay_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_JumpDelay = value;
+            }
+
+            MessageBox.Show("JumpDelay가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_PolygonDelay_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_PolygonDelay = value;
+            }
+
+            MessageBox.Show("PolygonDelay가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_DrillingPower_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_Drilling_Power = value;
+            }
+
+            MessageBox.Show("DrillingPower가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_P2PDistance_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_P2PDistance = value;
+            }
+
+            MessageBox.Show("P2PDistance가 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_DrillingRepetition_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text.Length == 0)
+                return;
+
+            int value = Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = value;
+            }
+
+            MessageBox.Show("DrillingRepetition 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text.Length == 0)
+                return;
+
+            int value = Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = value;
+            }
+
+            MessageBox.Show("DrillingRepetitionBundle 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = value;
+            }
+
+            MessageBox.Show("RotationAngleWhenArc 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_CircleStartAngleCircle1time = value;
+            }
+
+            MessageBox.Show("CircleStartAngleWhenCircle1time 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSortingDistance = value;
+            }
+
+            MessageBox.Show("HoleSortingDistance 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Cal_ZAxisOffset_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm = value;
+            }
+
+            MessageBox.Show("CalfileOffsetZAxismm 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+
+            if (comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text.Length == 0)
+                return;
+
+            int value = Equipment.ToInt(comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = value;
+            }
+
+            MessageBox.Show("HoleDrilling_StartPosDivision 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        }
+
+        private void button_Recipe_TabRecipe_Miscellaneous_MaskIndex_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            int value = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex = value;
+            }
+
+            MessageBox.Show("MaskIndex 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_BETPositionIndex_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            int value = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = value;
+            }
+
+            MessageBox.Show("BETPositionIndex 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            int value = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = value;
+            }
+
+            MessageBox.Show("HoleProcessingType 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore = false;
+
+            if(checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked)
+            {
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = false;
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = false;
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = false;
+
+                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore = true;
+            }
+        }
+
+        private void checkBox_Recipe_TabRecipe_MAlignVacuum_Center_CheckedChanged(object sender, EventArgs e)
+        {
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+        }
+
+        private void checkBox_Recipe_TabRecipe_MAlignVacuum_Inner_CheckedChanged(object sender, EventArgs e)
+        {
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+        }
+
+        private void checkBox_Recipe_TabRecipe_MAlignVacuum_Outer_CheckedChanged(object sender, EventArgs e)
+        {
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+        }
+
+        private void button_Recipe_TabRecipe_SpiralParam_Pitch_Click(object sender, EventArgs e)
+        {
+            int nIndex = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
+            double m_dTemp_OuterDiameter = 0.0;
+            double m_dTemp_InnerDiameter = 0.0;
+            double m_dTemp_Revolutions = 0.0;
+            double m_dTemp_AngleFactor = 0.0;
+            m_dTemp_OuterDiameter = Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text);
+            m_dTemp_InnerDiameter = Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text);
+            m_dTemp_Revolutions = Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text);
+            m_dTemp_AngleFactor = Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text);
+            // Hole Center
+            //entity_Position.X = m_stLaserDrilling_SocketData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+            //                    m_stLaserDrilling_SocketData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+            //entity_Position.Y = m_stLaserDrilling_SocketData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+            //                    m_stLaserDrilling_SocketData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+            //double entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+            PointD center = new PointD(0.0, 0.0);
+            double pitch = 0.0;
+
+            switch (nIndex)
+            {
+                case (int)HoleProcessingType.Circle:
+                    label_Recipe_TabRecipe_SpiralParam_Pitch.Text = string.Format("---");
+                    break;
+                case (int)HoleProcessingType.Spiral_Polyline:
+                    label_Recipe_TabRecipe_SpiralParam_Pitch.Text = string.Format("---");
+                    break;
+                case (int)HoleProcessingType.Spiral_Arc: // Spiral Arc Circle
+                    workStage.MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, center, out pitch);
+                    label_Recipe_TabRecipe_SpiralParam_Pitch.Text = string.Format("{0:F5}", pitch);
+                    break;
+                case (int)HoleProcessingType.Spiral_Circle: // Spiral
+                    workStage.MarkSpiralCircle(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, center, out pitch);
+                    label_Recipe_TabRecipe_SpiralParam_Pitch.Text = string.Format("{0:F5}", pitch);
+                    break;
+                default:
+                    MessageBox.Show("Spiral Hole Processing Type이 아닙니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+            }
+        }
+
+        private void ApplyTooltips()
+        {
+            var tooltipHelper = new QMC.Common.UI.ControlTooltipHelper();
+            tooltipHelper.AddTooltips(new Dictionary<Control, string>
+            {
+                { button_Recipe_New, "Create a new recipe file." },
+                { button_Recipe_Apply, "Apply the current recipe settings to the system." },
+                { button_Recipe_Save, "Save changes to the current recipe." },
+                { button_Recipe_SaveAs, "Save current settings as a new recipe." },
+                { button_Recipe_Open, "Open a saved recipe file." },
+                { checkBox_Recipe_TabRecipe_ChuckMSL_Use, "Enable if MSL chuck should be used." },
+                { textBox_Recipe_TabRecipe_LaserParam_Frequency, "Laser repetition rate in kHz." },
+                { textBox_Recipe_TabRecipe_LaserParam_PulseWidth, "Laser pulse width in ns." },
+                { comboBox_Recipe_TabRecipe_CustomMarking_DataType, "Choose data type: Date, Serial, or Custom Text." },
+            });
         }
     }
 }

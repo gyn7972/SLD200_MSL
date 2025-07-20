@@ -96,6 +96,15 @@ namespace SLD200_MSL
             radioButton_VisionPopup_Move_MoveMode_Coarse.Checked = true;
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         public FormNew_VisionPopup CreateSiriusEditor()
         {
             if (m_formVisionPopup == null)
@@ -108,11 +117,11 @@ namespace SLD200_MSL
 
         public void Socket_List_Set()
         {
-            if (workStage.m_stDividedRegion_GroupData != null)
+            if (workStage.m_stLaserDrilling_SocketData != null)
             {
                 comboBox_Config_VisionPopup_AlignTest_SocketList.Items.Clear();
 
-                for (int i = 0; i < workStage.m_stDividedRegion_GroupData[0].nGroup_Num; i++)
+                for (int i = 0; i < workStage.m_stLaserDrilling_SocketData[0].nGroup_Num; i++)
                 {
                     comboBox_Config_VisionPopup_AlignTest_SocketList.Items.Add(i);
                 }
@@ -143,9 +152,19 @@ namespace SLD200_MSL
 
         private void hScrollBarIlluminator_Red_ValueChanged(object sender, System.EventArgs e)
         {
-            workStage.Config.ListIlluminationChannel[0].Value = hScrollBarIlluminator_Red.Value;
-            this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
-            CommonModule.Instance.Illuminator.SetVolume(this.hScrollBarIlluminator_Red.Value, 1);
+            if (radioButton_VisionPopup_CameraSelection_LowMag.Checked)
+            {
+                workStage.Config.ListIlluminationChannel[3].Value = hScrollBarIlluminator_Red.Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+                CommonModule.Instance.Illuminator.SetVolume(this.hScrollBarIlluminator_Red.Value, 4);
+            }
+            else
+            {
+                workStage.Config.ListIlluminationChannel[0].Value = hScrollBarIlluminator_Red.Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+                CommonModule.Instance.Illuminator.SetVolume(this.hScrollBarIlluminator_Red.Value, 1);
+            }
+                
         }
 
         private void Timer_Status_Func(object sender, EventArgs e)
@@ -356,12 +375,21 @@ namespace SLD200_MSL
             }
             else
             {
-                //  Red 조명부분 Hide
-                textBox_IlluminationValue_Red.Visible = false;
-                hScrollBarIlluminator_Red.Visible = false;
-                baseLabel_Red.Visible = false;
-                baseLabelMin_Red.Visible = false;
-                baseLabelMax_Red.Visible = false;
+                //  Red 조명부분 Show
+                textBox_IlluminationValue_Red.Visible = true;
+                hScrollBarIlluminator_Red.Visible = true;
+                baseLabel_Red.Visible = true;
+                baseLabelMin_Red.Visible = true;
+                baseLabelMax_Red.Visible = true;
+
+                hScrollBarIlluminator_Red.Minimum = (int)workStage.Config.ListIlluminationChannel[3].Min;
+                hScrollBarIlluminator_Red.Maximum = (int)workStage.Config.ListIlluminationChannel[3].Max;
+                baseLabelMin_Red.Text = hScrollBarIlluminator_Red.Minimum.ToString();
+                baseLabelMax_Red.Text = hScrollBarIlluminator_Red.Maximum.ToString();
+                //  조명값 변경
+                hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[3].Value;            //  고해상도 카메라 조명은 채널 1번, 2번
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
 
                 hScrollBarIlluminator_IR.Minimum = (int)workStage.Config.ListIlluminationChannel[2].Min;
                 hScrollBarIlluminator_IR.Maximum = (int)workStage.Config.ListIlluminationChannel[2].Max;
@@ -431,7 +459,11 @@ namespace SLD200_MSL
             hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[2].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
             this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
+            hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[3].Value;                //  저해상도 카메라 IR 조명 (4번, Index 는 3번)
+            this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, hScrollBarIlluminator_IR.Value);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, hScrollBarIlluminator_Red.Value);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 0, false);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
@@ -474,6 +506,7 @@ namespace SLD200_MSL
             this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
 
             workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
             Thread.Sleep(100);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_Red.Value);
             workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBarIlluminator_IR.Value);
@@ -1279,8 +1312,6 @@ namespace SLD200_MSL
 
         public void Scanner_FineCam_Offset_Save()
         {
-            string strTemp = "";
-
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
 
@@ -1297,7 +1328,6 @@ namespace SLD200_MSL
             //  Offset Distance
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_Y", Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString(), strFIle);
-
 
             //MessageBox.Show("Scanner 와 Fine Camera 간 Offset 데이터를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -1576,11 +1606,6 @@ namespace SLD200_MSL
 
             if (Equipment.Current_Recipe.Length > 0)
             {
-                //  현재 조명값을 얼라인 조명값으로 설정
-                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = workStage.Config.ListIlluminationChannel[0].Value;      //  Fine Camera Red
-                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = workStage.Config.ListIlluminationChannel[1].Value;       //  Fine Camera IR
-                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = workStage.Config.ListIlluminationChannel[2].Value;     //  Coarse Camera IR
-
                 //  리스트 전체 저장
                 Recipe_Data_Save_LightValue(Equipment.Current_Recipe);
 
@@ -1611,18 +1636,11 @@ namespace SLD200_MSL
                 return;
             }
 
-
             //  Recipe Parameter 저장
             for (int i = 0; i < (int)System.Enum.GetValues(typeof(LayerList)).Length; i++)
             {
                 strTemp = string.Format("Layer_{0}", i);
 
-                //  Fine Cam. Red
-                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
-                //  Fine Cam. IR
-                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
-                //  Coarse Cam. IR
-                //NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
             }
         }
 
@@ -1635,7 +1653,11 @@ namespace SLD200_MSL
                 hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[2].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
                 this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
+                hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[3].Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
                 workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, hScrollBarIlluminator_IR.Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, hScrollBarIlluminator_Red.Value);
                 Thread.Sleep(100);
                 workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 0, false);
                 workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
@@ -1644,12 +1666,16 @@ namespace SLD200_MSL
             {
                 SetScroll(1);
 
+                hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[0].Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
                 hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[1].Value;                //  고해상도 카메라 IR 조명 (2번, Index 는 1번)
                 this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
                 workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
                 Thread.Sleep(100);
-                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, workStage.Config.ListIlluminationChannel[0].Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_Red.Value);
                 workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBarIlluminator_IR.Value);
             }
         }
@@ -1660,13 +1686,33 @@ namespace SLD200_MSL
             {
                 SetScroll(0);
 
-                hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[0].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
+                hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[0].Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
+                hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[1].Value;
                 this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
 
                 workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
                 Thread.Sleep(100);
-                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_IR.Value);
-                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, workStage.Config.ListIlluminationChannel[1].Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_Red.Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBarIlluminator_IR.Value);
+            }
+            else
+            {
+                SetScroll(3);
+
+                hScrollBarIlluminator_Red.Value = workStage.Config.ListIlluminationChannel[0].Value;
+                this.textBox_IlluminationValue_Red.Text = hScrollBarIlluminator_Red.Value.ToString();
+
+                hScrollBarIlluminator_IR.Value = workStage.Config.ListIlluminationChannel[1].Value;
+                this.textBox_IlluminationValue_IR.Text = hScrollBarIlluminator_IR.Value.ToString();
+
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamRed, 0, false);
+                Thread.Sleep(100);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBarIlluminator_Red.Value);
+                workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBarIlluminator_IR.Value);
             }
         }
 
@@ -1724,15 +1770,15 @@ namespace SLD200_MSL
                 return;
             }
 
-            textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Text = workStage.m_stDividedRegion_GroupData[m_nIndex].dGroupCenter.X.ToString();
-            textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Text = workStage.m_stDividedRegion_GroupData[m_nIndex].dGroupCenter.Y.ToString();
+            textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Text = workStage.m_stLaserDrilling_SocketData[m_nIndex].dGroupCenter.X.ToString();
+            textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Text = workStage.m_stLaserDrilling_SocketData[m_nIndex].dGroupCenter.Y.ToString();
 
             //  Fiducial Mark Pos 등록
-            if (workStage.m_stDividedRegion_GroupData[m_nIndex].dFiducialPos.Length > 0)
+            if (workStage.m_stLaserDrilling_SocketData[m_nIndex].dFiducialPos.Length > 0)
             {
                 comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Items.Clear();
 
-                for (int i = 0; i < workStage.m_stDividedRegion_GroupData[m_nIndex].dFiducialPos.Length; i++)
+                for (int i = 0; i < workStage.m_stLaserDrilling_SocketData[m_nIndex].dFiducialPos.Length; i++)
                 {
                     comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Items.Add(i);
                 }
@@ -1760,7 +1806,7 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (m_nFiducialIndex < workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos.Length)
+            if (m_nFiducialIndex < workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos.Length)
             {
                 workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("Processing");
 
@@ -1769,8 +1815,24 @@ namespace SLD200_MSL
                 workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
 
                 //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+                //공용척 사용시.
+                double dScannerCalTeachingPosX = 0.0;
+                double dScannerCalTeachingPosY = 0.0;
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                {
+                    dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                    dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                }
+                else
+                {
+                    dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                    dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+                }
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += dScannerCalTeachingPosX;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += dScannerCalTeachingPosY;
+                //기존코드
+                //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+                //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
                 //  데이터 위치를 Fine 카메라 위치로 변경
                 workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
@@ -1785,8 +1847,8 @@ namespace SLD200_MSL
                 }
 
                 //  Fiducial 위치 반영
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
 
                 //  속도 설정
                 if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
@@ -1826,7 +1888,6 @@ namespace SLD200_MSL
         private void button_VisionPopup_WorkStage_StageCenter_To_ScannerCenter_Click(object sender, EventArgs e)
         {
             //  Stage Center 위치를 Scanner Center 위치로 이동
-
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
             double lfVelocity_Z = 0.0f;
@@ -1843,36 +1904,17 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "Stage 를 가공 위치로 보내시겠습니까?"))
                 return;
 
-            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
-                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || 
+                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || 
+                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || 
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || 
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
                 return;
             }
-
-            ////  StageZ 한계위치 설정되어 있는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
-            //    return;
-            //}
-
-            ////  StageZ 한계위치를 초과하여 이동하는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이를 초과하여 이동하려고 하였습니다.\r\n\r\n[ Cancel ]");
-            //    return;
-            //}
-
-            ////  맵 데이터를 이원화 할 경우
-            //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
-            //{
-            //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
-            //}
-
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  맵 데이터 변경 (기준위치 : Scanner)
@@ -1881,39 +1923,47 @@ namespace SLD200_MSL
             workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-            //  속도 설정
-            if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
+            //기존 코드
             {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                //if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
+                //{
+                //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
 
-                lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                //    lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                //    lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                //}
+                //else
+                //{
+                //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                //    //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
+                //    //lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
+                //    //lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
+                //    lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                //    lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                //}
+                //xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                //xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z,
+                //                                lfVelocity_Z, lfAccDec_Z, lfAccDec_Z);
             }
-            else
-            {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
-                //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
-                //lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
-                //lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
-                lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-            }
+            Equipment.Type_Motor_Speed motor_Speed;
+            motor_Speed = Equipment.Type_Motor_Speed.Coarse;
+            int nTeachingPosIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos;
+            workStage.MovetoWorkStage_TeachingPositionsXY(nTeachingPosIndex, motor_Speed);
 
-            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,
-            //                                lfVelocity, lfAccDec, lfAccDec);
-            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,
-            //                                lfVelocity, lfAccDec, lfAccDec);
+            nTeachingPosIndex = (int)Vision.Vision_TeachingPosList.Laser_FocusPos;
+            motor_Speed = Equipment.Type_Motor_Speed.Fine;
+            workStage.MovetoWorkStage_TeachingPositionsZ(nTeachingPosIndex, motor_Speed);
 
-            xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-            xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+            workStage.Camera_HighRes.StopLive();
+            workStage.Camera_LowRes.StopLive();
 
-            workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z,
-                                            lfVelocity_Z, lfAccDec_Z, lfAccDec_Z);
+
 
         }
 
@@ -2069,8 +2119,6 @@ namespace SLD200_MSL
             //  Target 위치 계산
             lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
             lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
-
-
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  맵 데이터 변경 (기준위치 : Scanner)
@@ -2620,7 +2668,7 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (m_nFiducialIndex < workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos.Length)
+            if (m_nFiducialIndex < workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos.Length)
             {
                 workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("Processing");
 
@@ -2629,8 +2677,23 @@ namespace SLD200_MSL
                 workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
 
                 //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+                //공용척 사용시.
+                double dScannerCalTeachingPosX = 0.0;
+                double dScannerCalTeachingPosY = 0.0;
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                {
+                    dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                    dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                }
+                else
+                {
+                    dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X;
+                    dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y;
+                }
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += dScannerCalTeachingPosX;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += dScannerCalTeachingPosY;
+                //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+                //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
                 //  데이터 위치를 Fine 카메라 위치로 변경
                 workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
@@ -2645,13 +2708,13 @@ namespace SLD200_MSL
                 }
 
                 //  Fiducial 위치 반영
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X;
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y;
 
                 //  보정량 반영
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += (workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X - 
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += (workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].X - 
                                                                                                                 workStage.m_st4PointPosition_InspectedPos[m_nFiducialIndex].ptFiducial_Center.X) ;
-                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += (workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y -
+                workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += (workStage.m_stLaserDrilling_SocketData[m_nSocketIndex].dFiducialPos[m_nFiducialIndex].Y -
                                                                                                                 workStage.m_st4PointPosition_InspectedPos[m_nFiducialIndex].ptFiducial_Center.Y) ;
 
                 //  속도 설정
@@ -2922,6 +2985,89 @@ namespace SLD200_MSL
                     e.Graphics.DrawRectangle(pen, detectedCircle);
                 }
                 nIndex++;
+            }
+        }
+
+        // 이거 각각 폼에 만들어야함.
+        private void InitRecipeUI_KeyPad()
+        {
+            RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행
+        }
+        private void RegisterKeyPadDoubleClickHandlers(Control parent)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                // 조건: 숫자 입력용 TextBox 또는 RichTextBox만
+                bool isTargetTextBox = ctrl is TextBox || ctrl is RichTextBox;
+
+                if (isTargetTextBox && ctrl.Tag?.ToString().Contains("KeyPad") == true)
+                {
+                    ctrl.DoubleClick -= textBox_DoubleClick_OpenKeyPad; // 중복 연결 방지
+                    ctrl.DoubleClick += textBox_DoubleClick_OpenKeyPad;
+
+                    // 키보드 입력 제한용 Validating 연결
+                    ctrl.Validating -= textBox_Validate_KeyPadRange;
+                    ctrl.Validating += textBox_Validate_KeyPadRange;
+                }
+
+                // 하위 컨트롤 재귀 탐색
+                if (ctrl.HasChildren)
+                    RegisterKeyPadDoubleClickHandlers(ctrl);
+            }
+        }
+        private void textBox_DoubleClick_OpenKeyPad(object sender, EventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                string currentText = ctrl.Text ?? "0";
+                var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
+
+                if (double.TryParse(currentText, out double value))
+                    dlg.SetInitialValue(value);
+                else
+                    dlg.SetInitialValue(0);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string result = dlg.EnteredValue.ToString(meta.Format);
+                    ctrl.Text = result;
+                }
+            }
+        }
+        private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
+        {
+            if (sender is TextBox tb && tb.Tag != null)
+            {
+                var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
+
+                if (double.TryParse(tb.Text, out double val))
+                {
+                    if (val < meta.Min)
+                    {
+                        tb.Text = meta.Min.ToString(meta.Format);
+                        //MessageBox.Show($"최소값 {meta.Min}보다 작습니다."); // 또는 자동 보정만
+                    }
+                    else if (val > meta.Max)
+                    {
+                        tb.Text = meta.Max.ToString(meta.Format);
+                        //MessageBox.Show($"최대값 {meta.Max}보다 큽니다.");
+                    }
+                    else
+                    {
+                        tb.Text = val.ToString(meta.Format);
+                    }
+                }
+                else
+                {
+                    // 숫자 아님 → 초기화
+                    tb.Text = meta.Min.ToString(meta.Format);
+                }
             }
         }
     }

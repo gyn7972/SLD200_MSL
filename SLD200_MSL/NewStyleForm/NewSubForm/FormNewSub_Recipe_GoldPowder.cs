@@ -3,6 +3,7 @@ using QMC.Common.Modules;
 using QMC.Common.Parts;
 using QMC.Common.Recipe;
 using QMC.Common.VisionPart;
+using SLD200_MSL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -51,6 +52,14 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
         private void FormNewSub_Recipe_GoldPowder_Load(object sender, EventArgs e)
         {
             if(m_bInitialized)
@@ -78,6 +87,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             this.hScrollBar_Recipe_GoldPowder_Illuminator_IR.ValueChanged += new System.EventHandler(this.hScrollBarIlluminator_ValueChanged_IR);
             this.hScrollBar_Recipe_GoldPowder_Illuminator_Red.ValueChanged += new System.EventHandler(this.hScrollBarIlluminator_ValueChanged_Red);
             SetScroll();
+
+            InitRecipeUI_KeyPad();
 
             m_bInitialized = true;
         }
@@ -131,6 +142,17 @@ namespace SLD200.NewStyleForm.NewSubForm
                 //}
             }
         }
+
+
+
+
+
+
+
+
+
+
+
 
         private void button_Recipe_GoldPowder_Save_Click(object sender, EventArgs e)
         {
@@ -196,13 +218,13 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 hScrollBar_Recipe_GoldPowder_Illuminator_Red.Minimum = (int)workStage.Config.ListIlluminationChannel[0].Min;
                 hScrollBar_Recipe_GoldPowder_Illuminator_Red.Maximum = (int)workStage.Config.ListIlluminationChannel[0].Max;
-                hScrollBar_Recipe_GoldPowder_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
+                hScrollBar_Recipe_GoldPowder_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed;
                 baseLabel_Recipe_GoldPowder_Min_Red.Text = hScrollBar_Recipe_GoldPowder_Illuminator_Red.Minimum.ToString();
                 baseLabel_Recipe_GoldPowder_Max_Red.Text = hScrollBar_Recipe_GoldPowder_Illuminator_Red.Maximum.ToString();
 
                 hScrollBar_Recipe_GoldPowder_Illuminator_IR.Minimum = (int)workStage.Config.ListIlluminationChannel[1].Min;
                 hScrollBar_Recipe_GoldPowder_Illuminator_IR.Maximum = (int)workStage.Config.ListIlluminationChannel[1].Max;
-                hScrollBar_Recipe_GoldPowder_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
+                hScrollBar_Recipe_GoldPowder_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR;
                 baseLabel_Recipe_GoldPowder_Min_IR.Text = hScrollBar_Recipe_GoldPowder_Illuminator_IR.Minimum.ToString();
                 baseLabel_Recipe_GoldPowder_Max_IR.Text = hScrollBar_Recipe_GoldPowder_Illuminator_IR.Maximum.ToString();
             }
@@ -269,8 +291,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = true;
             }
 
-
-
             // 마크 타입
             if (m_recipe.dGoldPowderMarkType == 0)
             {
@@ -331,8 +351,10 @@ namespace SLD200.NewStyleForm.NewSubForm
             textBox_Recipe_GoldPowder_AxisZ_Setting.Text = m_recipe.dGoldPowderAxisZ_Offset.ToString("F3");
 
             // 조명 세기
-            textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = m_recipe.nGoldPowderIlluminationIR.ToString();
+            Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed = m_recipe.nGoldPowderIlluminationRed;
+            Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR = m_recipe.nGoldPowderIlluminationIR;
             textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text = m_recipe.nGoldPowderIlluminationRed.ToString();
+            textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = m_recipe.nGoldPowderIlluminationIR.ToString();
 
             SetScroll();
         }
@@ -448,7 +470,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.Camera_HighRes.LatestImage = ImageViewer_Recipe_GoldPowder_highs.InputImage;
             }
 
-
             dSpec = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text); //  Fiducial 마크 Spec
             dTargetSize_Radius = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text); //  Fiducial 마크 크기
             dScore = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text); //  Fiducial 마크 Score
@@ -464,7 +485,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 nTargetColor = 0;          //  Fiducial 마크 색깔 //  0: Black, 1: White
             }
 
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             QMC_ImageProcessFindAlign aligner = new QMC_ImageProcessFindAlign();
+            
             List<RectangleF> circlesResult = new List<RectangleF>();
             {
                 int w = workStage.Camera_HighRes.Resolution.Width;
@@ -474,13 +497,41 @@ namespace SLD200.NewStyleForm.NewSubForm
                 double m_dradius = 0.0;
                 m_dradius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
 
-                QMC_ImageProcessFindAlignResult result = aligner.FindGoldPowderForAutoTreshold(circlesResult,
-                                                    workStage.Camera_HighRes.LatestImage.RawData,
-                                                    w, h, (int)m_dradius, dScore, dSpec);
-                
-                if (circlesResult.Count > 3 )
+                if(workStage.m_bCO2_repairMode)
                 {
-                    bFindCircle = true;
+                    result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
+                                                    workStage.Camera_HighRes.LatestImage.RawData,
+                                                    w, h, (int)m_dradius, dSpec,
+                                                    ref bFindCircle, 0, 0, nTargetColor == 0,
+                                                    Equipment.stVisionRecipeSet.dGoldPowderCircleMarkScore,
+                                                                            false);
+                }
+                else
+                {
+                    if(workStage.m_bCO2_MultyMode)
+                    {
+                        result = aligner.FindCirclesWidthCircleBoundaryMultipleCircles(
+                                        circlesResult,
+                                        workStage.Camera_HighRes.LatestImage.RawData,
+                                        w, h,
+                                        (int)m_dradius,
+                                        dSpec,
+                                        nMaxInstance,                     // 최대 20개 원 탐색
+                                        true,                  // 검은 원
+                                        dScore
+                                    );
+                    }
+                    else
+                    {
+                        result = aligner.FindGoldPowderForAutoTreshold(circlesResult,
+                                                            workStage.Camera_HighRes.LatestImage.RawData,
+                                                            w, h, (int)m_dradius, dScore, dSpec);
+                    }
+                        
+                    if (circlesResult.Count > 3)
+                    {
+                        bFindCircle = true;
+                    }
                 }
                 workStage.UpdateOverlay(result);
             }
@@ -516,5 +567,98 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.Camera_HighRes.StartLive();
             }
         }
+
+        private void button_Recipe_GoldPowder_Camera_ExposureTime_Click(object sender, EventArgs e)
+        {
+            double dExposureTime = Equipment.ToDouble(textBox_Recipe_GoldPowder_Camera_ExposureTime.Text);
+            if (workStage.jigAligner_HighRes.Camera.Opened)
+            {
+                workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
+            }
+        }
+
+        // 이거 각각 폼에 만들어야함.
+        private void InitRecipeUI_KeyPad()
+        {
+            RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행
+        }
+        private void RegisterKeyPadDoubleClickHandlers(Control parent)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                // 조건: 숫자 입력용 TextBox 또는 RichTextBox만
+                bool isTargetTextBox = ctrl is TextBox || ctrl is RichTextBox;
+
+                if (isTargetTextBox && ctrl.Tag?.ToString().Contains("KeyPad") == true)
+                {
+                    ctrl.DoubleClick -= textBox_DoubleClick_OpenKeyPad; // 중복 연결 방지
+                    ctrl.DoubleClick += textBox_DoubleClick_OpenKeyPad;
+
+                    // 키보드 입력 제한용 Validating 연결
+                    ctrl.Validating -= textBox_Validate_KeyPadRange;
+                    ctrl.Validating += textBox_Validate_KeyPadRange;
+                }
+
+                // 하위 컨트롤 재귀 탐색
+                if (ctrl.HasChildren)
+                    RegisterKeyPadDoubleClickHandlers(ctrl);
+            }
+        }
+        private void textBox_DoubleClick_OpenKeyPad(object sender, EventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                string currentText = ctrl.Text ?? "0";
+                var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
+
+                if (double.TryParse(currentText, out double value))
+                    dlg.SetInitialValue(value);
+                else
+                    dlg.SetInitialValue(0);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string result = dlg.EnteredValue.ToString(meta.Format);
+                    ctrl.Text = result;
+                }
+            }
+        }
+        private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
+        {
+            if (sender is TextBox tb && tb.Tag != null)
+            {
+                var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
+
+                if (double.TryParse(tb.Text, out double val))
+                {
+                    if (val < meta.Min)
+                    {
+                        tb.Text = meta.Min.ToString(meta.Format);
+                        //MessageBox.Show($"최소값 {meta.Min}보다 작습니다."); // 또는 자동 보정만
+                    }
+                    else if (val > meta.Max)
+                    {
+                        tb.Text = meta.Max.ToString(meta.Format);
+                        //MessageBox.Show($"최대값 {meta.Max}보다 큽니다.");
+                    }
+                    else
+                    {
+                        tb.Text = val.ToString(meta.Format);
+                    }
+                }
+                else
+                {
+                    // 숫자 아님 → 초기화
+                    tb.Text = meta.Min.ToString(meta.Format);
+                }
+            }
+        }
+
     }
 }

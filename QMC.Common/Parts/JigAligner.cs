@@ -18,6 +18,7 @@ using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.Net.Http.Headers;
 using QMC.Common.Motion.Ajin.Motions;
 using QMC.Common.Hmi;
+using static QMC.Common.Equipment;
 
 namespace QMC.Common.Parts
 {
@@ -406,7 +407,7 @@ namespace QMC.Common.Parts
 
                         //도면 좌표 불러옴 
                         position = new XyzCoordinate(m_AlignPositions[0].X, m_AlignPositions[0].Y, 0.0);
-                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX1{position.X}, positionY1{position.Y}"));
+                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX1: {position.X}, positionY1: {position.Y}"));
 
                         //  속도 설정
                         //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
@@ -416,10 +417,18 @@ namespace QMC.Common.Parts
 
                         xyInterpolatedCoordinate.X = position.X;
                         xyInterpolatedCoordinate.Y = position.Y;
-                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX1{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY1{xyInterpolatedCoordinate.Y}"));
+                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX1:{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY1:{xyInterpolatedCoordinate.Y}"));
 
-                        m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
-                        //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                        //  속도 설정
+                        if (false)
+                        {
+                            m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Process);
+                        }
+                        else
+                        {
+                            m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+                        }
+                        //m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
 
                         Thread.Sleep(100);
                         Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
@@ -450,7 +459,6 @@ namespace QMC.Common.Parts
                         }
                         else if(Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                         {
-
                             double dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
                             double dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
                             double dRadius = m_dRadius[0];
@@ -466,7 +474,7 @@ namespace QMC.Common.Parts
                         }
                     }
 
-                    if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
+                    if (m_Status == RunStatus.Stop) return 1; //  마크 찾다가 중지 하면 빠져나가자
 
                     if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_1STMARK)                                                      //  1번 Align Mark 만 찾을 경우, 여기서 Out
                     {
@@ -496,6 +504,7 @@ namespace QMC.Common.Parts
                     //두번째 위치 Search
                     //this.Stage.MovePosition(m_AlignPositions[1]);
                     position = new XyzCoordinate(m_AlignPositions[1].X, m_AlignPositions[1].Y, 0.0);
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX2: {position.X}, positionY2: {position.Y}"));
 
                     //  속도 설정
                     //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
@@ -503,13 +512,21 @@ namespace QMC.Common.Parts
 
                     position = workstage.ConvertPointCoarseCam(position);
 
-                    xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-                    xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                    xyInterpolatedCoordinate.X = position.X;
+                    xyInterpolatedCoordinate.Y = position.Y;
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX2{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY2{xyInterpolatedCoordinate.Y}"));
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX2:{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY2:{xyInterpolatedCoordinate.Y}"));
 
-                    m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
-                    //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                    //  속도 설정
+                    if (false)
+                    {
+                        m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Process);
+                    }
+                    else
+                    {
+                        m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+                    }
+                    //m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
 
                     Thread.Sleep(100);
 

@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.ServiceModel.Syndication;
 using static QMC.Common.Equipment;
+using QMC.Common.Global;
 
 namespace QMC.Common.Parts
 {
@@ -409,20 +410,20 @@ namespace QMC.Common.Parts
             XyCoordinate resultPosition = new XyCoordinate();
 
             patternMatchingResult = Search();
-
             if(patternMatchingResult == null)
             {
-                MessageBox.Show("Can not Search Center Mark");
-
+                //MessageBox.Show("Can not Search Center Mark");
                 return -1;
             }
 
             if (patternMatchingResult.Values.Count <= 0)
             {
-                MessageBox.Show("Can not Search Center Mark");
-
+                //MessageBox.Show("Can not Search Center Mark");
                 return -1;
             }
+
+            //Test 필요.
+            FireUpdateResult(patternMatchingResult);
 
             this.Stage.GetCommandPosition(ref currentPos);
 
@@ -614,7 +615,16 @@ namespace QMC.Common.Parts
                     xyInterpolatedCoordinate.X = position.X;
                     xyInterpolatedCoordinate.Y = position.Y;
 
-                    m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                    //  속도 설정
+                    if (true)
+                    {
+                        m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process, 1);
+                    }
+                    else
+                    {
+                        m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse, 1);
+                    }
+                    //m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse, 1);
                     
                     Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
                     Task<bool> resultY1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
@@ -686,6 +696,10 @@ namespace QMC.Common.Parts
                                     pmrv.Score = pmr.Values[0].Score;
 
                                     pmrAll.Values.Add(pmrv);
+
+                                    //Test 필요.
+                                    FireUpdateResult(pmrAll);
+
                                     Log.Write("SLD-200", Equipment.User_Name, "Scanner Cal.", "OnSearch OK.");
                                 }
                                 else

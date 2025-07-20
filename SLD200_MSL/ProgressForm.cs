@@ -45,7 +45,7 @@ namespace SLD200_MSL
 
             if (m_listAsyncResults != null)
             {
-                timerCheckProcess.Interval = 50;
+                timerCheckProcess.Interval = 100;
                 timerCheckProcess.Tick += TimerCheckProcess_Tick;
                 timerCheckProcess.Start();
             }
@@ -61,18 +61,31 @@ namespace SLD200_MSL
             
             InitializeComponent();
 
+            // 엔터/스페이스 키 기본 버튼 동작 방지
+            this.AcceptButton = null;
+            this.CancelButton = null;
+
             m_AsyncResult = param;
             labelTitle.Text = strTitle;
             labelContent.Text = strMessage;
             m_listAsyncResults = null;
             if (m_AsyncResult != null)
             {
-                timerCheckProcess.Interval = 50;
+                timerCheckProcess.Interval = 100;
                 timerCheckProcess.Tick += TimerCheckProcess_Tick;
                 timerCheckProcess.Start();
             }
             m_obj = target;
 
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void TimerCheckProcess_Tick(object sender, EventArgs e)

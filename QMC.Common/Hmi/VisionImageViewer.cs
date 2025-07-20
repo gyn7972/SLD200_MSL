@@ -1153,9 +1153,11 @@ namespace QMC.Common.Hmi
                             this.InputImage.Load(openFileDialog.FileName, selectedFilter.Value);
                         }
 
+                        Simulated = true;
+
                         StartUpdateTask();
 
-                        Simulated = true;
+                        
                         Display();
                         Refresh();
                     }
@@ -1699,7 +1701,17 @@ namespace QMC.Common.Hmi
                                 try
                                 {
                                     bmpCutImage = (Bitmap)visionImage.CutImage(point, (Size)size);
+
+                                    if (bmpCutImage == null)
+                                    {
+                                        Log.Write("VisionViewer", $"CutImage() 실패 - Point: {point}, Size: {size}");
+                                        return;
+                                    }
                                     bmpCutImage = new Bitmap(bmpCutImage, this.Width, this.Height);
+
+                                    //여기서 계속 Exeption 발생함.
+                                    //bmpCutImage = (Bitmap)visionImage.CutImage(point, (Size)size);
+                                    //bmpCutImage = new Bitmap(bmpCutImage, this.Width, this.Height);
                                 }
                                 catch (Exception ex)
                                 {
@@ -2103,9 +2115,45 @@ namespace QMC.Common.Hmi
                                 //this.Refresh();
                             }
                         }
+                        else if(Simulated)
+                        {
+                            if (this.m_InputImage != Camera.LatestImage)
+                            {
+                                if (this.m_InputImage != null && Camera.LatestImage != null)
+                                {
+                                    if (this.m_InputImage.Header.Width != Camera.LatestImage.Header.Width)
+                                    {
+
+                                        //Scale.Scale.Y = this.Height/ Camera.LatestImage.Header.Height;
+                                        Scale.SetMousePoint(new Point(Camera.LatestImage.Header.Width / 2, Camera.LatestImage.Header.Height / 2));
+                                    }
+                                }
+                                if (this.m_InputImage != null && Camera.LatestImage != null)
+                                {
+                                    if (this.m_InputImage.Header.Width != Camera.LatestImage.Header.Width)
+                                    {
+                                        int nX = Camera.LatestImage.Header.Width;
+                                        int nY = Camera.LatestImage.Header.Height;
+
+                                        m_HorizentalLine.StartLocation = new Point(0, nY / 2);
+                                        m_HorizentalLine.EndLocation = new Point(nX, nY / 2);
+
+                                        m_VerticalLine.StartLocation = new Point(nX / 2, 0);
+                                        m_VerticalLine.EndLocation = new Point(nX / 2, nY);
+                                    }
+                                }
+                                //this.Scale = new ImageScale(this.Width / this.m_InputImage.Header.Width, this.Height / this.m_InputImage.Header.Height);
+                            }
+
+                            //this.m_InputImage = Camera.LatestImage;
+
+                            this.m_IsChanged = true;
+                            UpdateOverlay(false);
+                            this.DrawToBuffer(this.m_Graphics);
+                            this.RenderForDisplay(this.m_Graphics);
+                        }
                     }
 
-                    
                     Thread.Sleep(UpdateDelayTime);
                 }
             });

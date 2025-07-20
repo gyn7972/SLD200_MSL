@@ -18,8 +18,6 @@ namespace QMC.Common.Global
             {
                 Keys key = (Keys)(int)m.WParam | Control.ModifierKeys;
 
-                //Console.WriteLine($"[GlobalHotkey] Pressed: {key}"); // 로그 찍어보기
-
                 if (OnKeyPressed != null)
                     return OnKeyPressed.Invoke(key);  // true: 메시지 처리 완료
             }

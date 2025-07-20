@@ -41,6 +41,8 @@ using QMC.Common.Vision;
 using Cognex.VisionPro;
 using System.ServiceModel.Syndication;
 using QMC.Common.Recipe;
+using System.IO.Ports;
+using QMC.Common.Global;
 
 
 
@@ -54,7 +56,8 @@ namespace QMC.Common
         {
             FineCamRed = 1,
             FineCamIR = 2,
-            CoarseCamIR = 3
+            CoarseCamIR = 3,
+            CoarseCamRed = 4
         }
 
         public enum AlignMode
@@ -112,14 +115,32 @@ namespace QMC.Common
             int nValue = 0;
             try
             {
-                int.TryParse(str, out nValue);
+                if (double.TryParse(str, out double dValue))
+                {
+                    nValue = (int)dValue; // 소수점 이하 버림
+                }
+                else
+                {
+                    int.TryParse(str, out nValue);
+                }
             }
             catch (Exception ex)
             {
                 Log.Write(ex);
-                //Debug.WriteLine(ex.Message);
             }
             return nValue;
+
+            //int nValue = 0;
+            //try
+            //{
+            //    int.TryParse(str, out nValue);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Write(ex);
+            //    //Debug.WriteLine(ex.Message);
+            //}
+            //return nValue;
         }
 
         public static bool ToBoolean(string str)
@@ -209,7 +230,9 @@ namespace QMC.Common
             Water_Leak = m_bLeak;
         }
 
+        
         public static int ScannerMode_Change_byUser { set; get; }           //  0: None         1: Change To RTC6       2: Change to syncAxis
+        public static bool FormNew_SiriusEditor_TimerStart { set; get; }           //  Scanner Mode가 변경되었는지 여부. (RTC6, syncAxis)
 
         public static bool m_bWorkTotalTime_Changed { set; get; }
         public static bool m_bWorkElapsedTime_Changed { set; get; }
@@ -242,15 +265,6 @@ namespace QMC.Common
         public static double WorkTotalTime_Marking_AdditionalTime { set; get; }        //  Marking 추가 시간 (sec)
 
         public static double MainCycle_Interval { set; get; }                           //  Main Cycle 타이머의 Interval. 
-
-
-        public static int CycleTimer_TargetModuleCount = 0;
-        public static int CycleTimer_DoneModuleCount = 0;
-        public static int CycleTimer_NGSocketCount = 0;
-        //  workStage 가공시간 계산을 위해 사용되는 변수
-        public static CycleTimer CycleTimer_LaserDrilling = new CycleTimer();
-
-
 
         //  Auto-Focus 에 실패했을 때 사용자가 수동으로 카메라 초점을 조작하기 위한 Flag
         public static bool AutoFocus_Failed { set; get; }
@@ -325,6 +339,7 @@ namespace QMC.Common
         {
             Fine = 0,
             Coarse,
+            Process
         }
 
         //  Communication 장치 파라미터
@@ -339,6 +354,8 @@ namespace QMC.Common
             ElectroPneumaticRegulator,
             Laser,
             LaserHeightSensor,
+            D_U,
+            D_L
         }
 
         public struct stCommParameter
@@ -428,6 +445,18 @@ namespace QMC.Common
             PreAlign,
         }
 
+        public enum LayerType : int
+        {
+            LAYER_DRILLING = 0,
+            LAYER_OUTLINE = 1,
+            LAYER_THRUHOLE = 2,
+            LAYER_MARKING = 3,
+            LAYER_FIDUCIAL = 4,
+            LAYER_RECTANGLE = 5,
+            LAYER_PREALIGN = 6,
+        }
+        public static LayerType m_LayerType = LayerType.LAYER_DRILLING;
+
         public enum MarkTypeList : int
         {
             Circle = 0,
@@ -475,7 +504,7 @@ namespace QMC.Common
             public double Miscellaneous_CircleStartAngleCircle1time;  //  Rotation Start Angle Circle 1 time (degree)
             public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
             public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
-            public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.8X, 1:1.0X, 2:1.1X, 3:1.2X)
+            public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.8x, 1:0.9x, 2:1.0x, 3:1.1x, 4:1.2x)
             public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral_Polyline, 2:Spiral_Arc, 3:Spiral_Circle)
             public bool Miscellaneous_HoleSortByDistance_Use;               //  Sort By Distance Use (true: Use, false: Not Use)
             public double Miscellaneous_HoleSortingDistance;            //  Hole Sorting Distance (mm)
@@ -492,7 +521,8 @@ namespace QMC.Common
             public double ModuleInformation_Module_Height;              //  Module Height (mm)
             public double ModuleInformation_Silicon_Thickness;          //  Silicon Thickness (mm)
 
-            public double ModuleInformation_GoldPowder_Thickness;          //  Silicon Thickness (mm)
+            public double ModuleInformation_GoldPowder_Thickness;          
+            public double ModuleInformation_GoldPowder_Percent;         
 
             public double SpiralParam_OuterDiameter;                    //  Spiral Outer Diameter (mm)
             public double SpiralParam_InnerDiameter;                    //  Spiral Inner Diameter (mm)
@@ -501,6 +531,7 @@ namespace QMC.Common
 
             public double EPRO_ModuleAbsorptionLevel;                   //  EPRO Module Absorption Level
 
+            public bool MAligner_VacuumPos_Ignore;
             public bool MAligner_VacuumPos_Center;                      //  M-Aligner Vacuum Position Center (true: Using, false: Not Using)
             public bool MAligner_VacuumPos_Inner;                       //  M-Aligner Vacuum Position Inner (true: Using, false: Not Using)
             public bool MAligner_VacuumPos_Outer;                       //  M-Aligner Vacuum Position Outer (true: Using, false: Not Using)
@@ -526,11 +557,14 @@ namespace QMC.Common
             public string MarkingTemplate_EntityData_SuffixData;        //  Marking Template Entity Suffix Data
             public bool MarkingTemplate_EntityData_Hatch_Use;           //  Marking Template Entity Hatch Use (true: Use, false: Not Use)
             public double MarkingTemplate_EntityData_Hatch_Spacing;     //  Marking Template Entity Hatch Spacing
+            public int MarkingTemplate_EntityData_SerialNumberIncreaseType;            //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
             public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
+            public bool ChuckMSL_Use;                                   //  Chuck 사용 여부 (true: 사용, false: 미사용)
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
-        
+
+
         public enum VisionAlgorithmType
         {
             PatternMatching = 0,
@@ -613,6 +647,28 @@ namespace QMC.Common
         public static int Machine_LoaderStacker_NoMaterialDetectTime { set; get; } = 10;                    //  Loader Stacker No Material Detect Time
         public static int Machine_PolylineCurve_Resolution { set; get; } = 100;                             //  Polyline Curve Resolution
 
+        public static bool Machine_AutoCrossCheck_Enable { set; get; } = false;                     //  Socket Align Use (true: Use, false: Not Use)
+        public static int Machine_AutoCrossCheck_Count { set; get; } = 1;                    
+        public static bool Machine_HeightSensorRetry_Enable { set; get; } = false;                    
+        public static int Machine_HeightSensorRetry_Count { set; get; } = 5;
+
+        public static bool Machine_Hole02_50_Wait_Enable { set; get; } = false;
+        public static int Machine_Hole02_50_Wait_Time { set; get; } = 0;                     //  Hole 02 50 Wait Time (ms)
+
+        public static bool Machine_HoleCenter_Enable { set; get; } = false;                     //  Thruhole Use (true: Use, false: Not Use)
+
+        public static bool Machine_SocketHeight_Batch_Use { set; get; } = false;           //  Socket Height Batch 사용 여부 (true: 사용, false: 미사용)
+        public static bool Machine_SocketVision_Batch_Use { set; get; } = false;
+        public static bool Machine_LaserPowerMeasure_Enable { set; get; } = false;            
+        public static int Machine_LaserPowerMeasure_Count { set; get; } = 1;
+
+        public static bool Machine_HeightMeasure_Enable { set; get; } = false;                
+        public static int Machine_HeightMeasure_Count { set; get; } = 1;
+        public static double Machine_HeightMeasure_PosX { set; get; } = 0.0;                     
+        public static double Machine_HeightMeasure_PosY { set; get; } = 0.0;                     
+
+        public static bool Machine_PreAlign_First_Enable { set; get; } = false;    
+        public static bool Machine_VisionNG_OKPort_Enable { set; get; } = false;
 
         //  Offset Distance
         public struct stOffsetDistanceParameter
@@ -620,6 +676,8 @@ namespace QMC.Common
             public PointD FromScannerToFineCam;             //  Scanner to Fine Camera
             public PointD FromFineCamToCoarseCam;           //  Fine Camera to Coarse Camera
             public PointD FromFineCamToLaserHeightSensor;   //  Fine Camera to Laser Height Sensor (Keyence)
+
+            public PointD FromAlignOffset;              //  ....
         }
         public static stOffsetDistanceParameter stOffsetDistance = new stOffsetDistanceParameter();
 
@@ -645,6 +703,15 @@ namespace QMC.Common
         public static double StageOffset_forDrilling_X { set; get; }
         public static double StageOffset_forDrilling_Y { set; get; }
 
+        public static double StageOffset_forDrilling_X_MSL { set; get; }
+        public static double StageOffset_forDrilling_Y_MSL { set; get; }
+
+        public static double LoadingOffset_forDrilling_X_MSL { set; get; }
+        public static double LoadingOffset_forDrilling_Y_MSL { set; get; }
+
+        public static double UnloadingOffset_forDrilling_X_MSL { set; get; }
+        public static double UnloadingOffset_forDrilling_Y_MSL { set; get; }
+
 
         //  Keyence Laser Height Sensor 기준값 설정
         public static double LaserHeightSensor_ReferenceValue_atVisionFocusPosition { set; get; } = 0.0;         //  Vision Focus 위치에서의 Keyence Laser Height Sensor 기준값
@@ -665,7 +732,8 @@ namespace QMC.Common
 
 
         //  BET Zoom 별 Mrad 위치값
-        public static double BET_0_8X_Mrad { set; get; } = 0.5;            //  BET 0.8X Zoom
+        public static double BET_0_8X_Mrad { set; get; } = 0.5;             //  BET 0.8X Zoom
+        public static double BET_0_9X_Mrad { set; get; } = 0.37;            //  BET 0.9X Zoom
         public static double BET_1_0X_Mrad { set; get; } = 0.24;            //  BET 1.0X Zoom
         public static double BET_1_1X_Mrad { set; get; } = 0.11;            //  BET 1.1X Zoom
         public static double BET_1_2X_Mrad { set; get; } = 0.02;            //  BET 1.2X Zoom
@@ -688,7 +756,8 @@ namespace QMC.Common
         public static double Scanner_Calibration_CalPitch   { set; get; } = 0.0;
         public static double Scanner_Calibration_PosX_Last { set; get; } = 0.0;
         public static double Scanner_Calibration_PosY_Last { set; get; } = 0.0;
-
+        public static int Scanner_Calibration_MaskIndex { set; get; } = 0;
+        public static int Scanner_Calibration_BETPositionIndex { set; get; } = 0;         //  Scanner Calibration Miscellaneous BET Position Index (0:0.8x, 1:0.9x, 2:1.0x, 3:1.1x, 4:1.2x)
 
 
         public static double Scanner_Calibration_TrainRoiStartLocation_X { set; get; } = 0.0;         //  Scanner Calibration Train Roi Start Location
@@ -704,8 +773,9 @@ namespace QMC.Common
         public static BlobVisionToolParameter Scanner_Calibration_BlobVisionToolParameter { set; get; } = new BlobVisionToolParameter();         //  Scanner Calibration Blob Vision Tool Parameter
         //public static IlluminationDataSet Scanner_Calibration_IlluminationDataSet { set; get; } = new IlluminationDataSet(part);         //  Scanner Calibration Illumination Data Set
         
-        public static int Scanner_Calibration_Illumination_channel_01_Value { set; get; } = 0;
-        public static int Scanner_Calibration_Illumination_channel_02_Value { set; get; } = 0;
+        public static int Scanner_Calibration_Illumination_Red_Value { set; get; } = 0;
+        public static int Scanner_Calibration_Illumination_IR_Value { set; get; } = 0;
+        public static int Scanner_Calibration_ExposureTime_High { set; get; } = 0;
         //public static double Scanner_Calibration_AngleTolerance { set; get; } = 0.0;            //  Scanner Calibration Angle Tolerance (degree)
         //public static double Scanner_Calibration_MaxInstance { set; get; } = 0.0;            //  Scanner Calibration Offset X
         //public static double Scanner_Calibration_MinScore { set; get; } = 0.0;            //  Scanner Calibration Offset Y
@@ -716,19 +786,19 @@ namespace QMC.Common
         public static bool Scanner_Calibration_MarkType_Cross { set; get; } = false;
         public static bool Scanner_Calibration_MarkType_Circlle { set; get; } = false;
 
-
-
         //Status로 사용
+        //  Scanner Calibration Position Enable true: calPan, false: Stage Center
+        public static bool Scanner_Calibration_Position_Enable { set; get; } = false;            //  Scanner Calibration Position Enable (true: Enable, false: Disable)
         public static bool Scanner_Calibration_Change { set; get; } = false;
 
         public static int Scanner_Calibration_Convert { set; get; } = 0;            //  Scanner Calibration Use (true: Use, false: Not Use)
 
         public static bool Scanner_Vision_Offset_Setting_Use { set; get; } = false;            //  Scanner Calibration Use (true: Use, false: Not Use)
 
-        public static double Scanner_Vision_Offset_Setting_X { set; get; } = 0.0;            //  Scanner Calibration Use (true: Use, false: Not Use)
-        public static double Scanner_Vision_Offset_Setting_Y { set; get; } = 0.0;            //  Scanner Calibration Use (true: Use, false: Not Use)
-
-
+        public static double Scanner_Vision_Offset_Setting_X { set; get; } = 0.0;            //  Scanner Calibration OffsetX(mm) (X축 Offset)
+        public static double Scanner_Vision_Offset_Setting_Y { set; get; } = 0.0;            //  Scanner Calibration OffsetY(mm) (Y축 Offset)
+        public static double Scanner_Calibration_VisionZOffset { set; get; } = 0.0;
+        
         //  Scanner Calibration RTC 및 구동 변수
         public static string Scanner_Calibration_srcFilePath { set; get; } = "";            //  Scanner Calibration Source File Path
         public static string Scanner_Calibration_targetFilePath { set; get; } = "";            //  Scanner Calibration Destination File Path
@@ -767,27 +837,24 @@ namespace QMC.Common
 
         //  Auto/Manual 상태 확인
         // 현재 장비의 준비 상태를 관리 할것.! " Auto인 경우에만 시컨스와 같은 동작 가능 하도록 "
-        public static bool AutoManualStatus { set; get; }
+        // Auto : 자동 운전 모드, Manual : 수동 운전 모드
+        public static bool ResetProcess { set; get; } = false;
+        public static bool AutoManualStatus { set; get; } = false;
 
         // 장비 구동 유/무 변수 : 장비 시컨스 구동 유/무 변수 :: 실제로 장비 구동 확인 
-        // true: Auto Run // false : Manual Run
+        // 장비 구동 상태 체크 : true: 장비 구동 중, false: 장비 정지 중
         // 위와 같이 구분하여 장비 관리 할것!
-        public static bool AutoRunStatus { set; get; } // 장비 상태: Auto / Manul 상태 표시 
+        public static bool AutoRunStatus { set; get; } = false;
+        public static bool SelectRunEnable { set; get; } = false;   // 기존 사용 변수
 
-        // Drilling Cycle Stop 예약 변수 : 장비 Stop 시 가공중이던 부분은 완료 되고 Stop 하도록 하기 위함
-        // true : Stop 예약
-        // _isLaserDrillingWorkRunning 을 false 로 만드는 경우(Stop 하는 경우), 곧바로 false 로 변경하지 않고 Laser 가공이 완료된 후에 false 로 변경
-        public static bool LaserDrillingCycStop_Reservation { set; get; } // 장비 Stop 예약
+        // 신규 사용 변수 - 기존꺼가 너무 여러곳에 되어있어서 새로 작성하여 진행.
+        public static bool SelectRunEnable_New { set; get; } = false;   
 
-        //  Loading 에 사용하던 Port 를 기억하기 위한 변수
-        //  Pick Up 하던 Port 에서만 계속 진행하기 위한 Port Index
-        public static int Loader_ActivatePort { set; get; } = 0;            //  Loader Port Activate (0: RPort, 1: LPort)
+        public static bool SemiAutoEnable { set; get; } = false;
 
-
-        public static int DryRun_ProcessingTime { set; get; } = 5;
-
-
-        public static bool SocketDrilling_Skip { set; get; } = false;            //  Socket Drilling Skip (true: Skip, false: Not Skip)
+        //  Cycle Stop
+        public static bool CycleModuleStop { set; get; } = false;
+        public static bool CycleSocketStop { set; get; } = false;
 
         public enum SelectedSocketStartModeList : int
         {
@@ -796,6 +863,25 @@ namespace QMC.Common
             SelectedSocketContinue,
         }
         public static int SelectedSocketStartMode { set; get; } = (int)SelectedSocketStartModeList.All;                //  소켓 가공 시작 모드 (0:None, 1:단일 선택 가공,  2:선택 이후 나머지 가공)
+
+
+        // Drilling Cycle Stop 예약 변수 : 장비 Stop 시 가공중이던 부분은 완료 되고 Stop 하도록 하기 위함
+        // true : Stop 예약
+        // _isLaserDrillingWorkRunning 을 false 로 만드는 경우(Stop 하는 경우), 곧바로 false 로 변경하지 않고 Laser 가공이 완료된 후에 false 로 변경
+        public static bool LaserDrillingCycStop_Reservation { set; get; } // 장비 Stop 예약
+
+        public static double DrillModuleDelaySeconds = 0.0; // 예: 60초 (1분)
+        public static int DrillModuleTargetCount = 0; // 예: 60초 (1분) 동안 1초마다 카운트
+
+        //  Loading 에 사용하던 Port 를 기억하기 위한 변수
+        //  Pick Up 하던 Port 에서만 계속 진행하기 위한 Port Index
+        public static int Loader_ActivatePort { set; get; } = 0;            //  Loader Port Activate (0: RPort, 1: LPort)
+
+        public static int DryRun_ProcessingTime { set; get; } = 5;
+
+
+        public static bool SocketDrilling_Skip { set; get; } = false;            //  Socket Drilling Skip (true: Skip, false: Not Skip)
+
         
 
         public enum LoaderPortList : int
@@ -826,10 +912,9 @@ namespace QMC.Common
         public static bool Loader_LPort_Empty { set; get; } = false;
         public static bool Loader_RPort_Empty { set; get; } = false;
 
-        //  Cycle Stop
-        public static bool SocketStop { set; get; } = false;
+
+
         public static bool SocketStopped { set; get; } = false;
-        public static bool CycleStop { set; get; } = false;
         public static bool CycleStopped_LoaderTransfer { set; get; } = false;
         public static bool CycleStopped_UnloaderTransfer { set; get; } = false;
         public static bool CycleStopped_MainWork { set; get; } = false;
@@ -847,41 +932,6 @@ namespace QMC.Common
 
         //  레이저 공정 테스트를 위한 변수
         public static bool LaserDrillingCycleEnable_Manual { set; get; } = false;
-
-
-
-
-        ////  Recipe Data
-        //public struct stRecipeParameter
-        //{
-        //    public string DrawingFile;                                  //  Drawing File Path and Name
-
-        //    public int LaserParam_PulseWidth;                           //  Laser Pulse Width (us)
-        //    public int LaserParam_PulsePeriod;                          //  Laser Pulse Period (us)
-        //    public int LaserParam_Frequency;                            //  Laser Frequency (Hz)
-        //    public bool LaserParam_TriggerMode_External;                //  Laser Trigger Mode (true: External, false: Internal)
-
-        //    public bool ProcessPriority_P2P;                            //  Process Priority (true: Space of P2P, false: Pulse Period)
-
-        //    public string Miscellaneous_ReferenceLayer;                 //  Reference Layer
-        //    public double Miscellaneous_DefocusingDistance;             //  Defocusing Distance (mm)
-        //    public double Miscellaneous_Resizing;                       //  Resizing (mm)
-        //    public int Miscellaneous_HoleDrilling_StartPosDivision;     //  Hole Drilling Start Position Division (등분)
-        //    public double Miscellaneous_GroupSplitSize;                 //  Group Split Size (mm)
-        //    public double Miscellaneous_ScannerDrillingSpeed;           //  Scanner Drilling Speed (mm/s)
-        //    public double Miscellaneous_ScannerJumpSpeed;               //  Scanner Jump Speed (mm/s)
-        //    public double Miscellaneous_LaserOnDelay;                   //  Laser On Delay (us)
-        //    public double Miscellaneous_LaserOffDelay;                  //  Laser Off Delay (us)
-        //    public double Miscellaneous_MarkDelay;                      //  Mark Delay (us)
-        //    public double Miscellaneous_JumpDelay;                      //  Jump Delay (us)
-        //    public double Miscellaneous_PolygonDelay;                   //  Polygon Delay (us)
-        //    public int Miscellaneous_DrillingRepetation;                //  Drilling Repetation
-        //    public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
-        //    public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
-        //    public double Miscellaneous_BETPositionIndex;               //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
-        //}
-        //public static stRecipeParameter stRecipeSet = new stRecipeParameter();
-
 
         //  Vision Popup 창 Open 모드 (true: Scanner FineCam Offset Change)
         public static bool m_bVisionFormOpenMode_ScannerFineCamOffsetChange { set; get; }
@@ -997,12 +1047,21 @@ namespace QMC.Common
         public static bool m_bMainProcessStatus_UL_Module_PortPutDown_Complete { set; get; } = false;       //  Unloader Port 에 Module Put Down 완료
 
 
+        // Serial Number 마킹 시 증가되는 Count 확인용. (프로그램 재시작, Count Clear 시에는 초기화 됨)
+        // 무조건 1번 부터 시작.
+        public static int m_nSerialNumberMarkingCount = 1;            //  Serial Number 마킹 Count
+
+
+        //  텍스트 마킹 시, 마킹 Entity 가 1개일 경우 소켓 얼라인과 함께 한번만 얼라인 하기 위한 Flag 
+        public static bool m_bOneMarkingData_AlignCompleted { set; get; } = false;
+
+
         //  평탄도 특정 위치
         public enum FlatMeasureList : int
         {
             Stage = 0,
             CalPos,
-            User1,
+            Auto_Stage,
             User2,
             User3,
         }
@@ -1157,6 +1216,8 @@ namespace QMC.Common
             stOffsetDistance.FromFineCamToCoarseCam.Y = 0;
             stOffsetDistance.FromFineCamToLaserHeightSensor.X = 0;
             stOffsetDistance.FromFineCamToLaserHeightSensor.Y = 0;
+            stOffsetDistance.FromAlignOffset.X = 0;                     //  Align Offset X
+            stOffsetDistance.FromAlignOffset.Y = 0;                     //  Align Offset Y
 
 
             //  Layer Recipe 파라미터 초기화
@@ -1218,6 +1279,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = 0.0;                      //  Silicon Thickness (mm)
                 
                 stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness = 0.0;
+                stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent = 0.0;
 
                 //  Spiral Parameter
                 stLayerRecipeSet[i].SpiralParam_OuterDiameter = 0.0;                                //  Spiral Outer Diameter Resizing (mm)
@@ -1229,6 +1291,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = -40.0;                             //  EPRO Module Absorption Level (kPa)
 
                 //  Mechanical-Alignment Vacuum
+                stLayerRecipeSet[i].MAligner_VacuumPos_Ignore = true;
                 stLayerRecipeSet[i].MAligner_VacuumPos_Center = true;                               //  Mechanical-Alignment Center Vacuum Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].MAligner_VacuumPos_Outer = false;                               //  Mechanical-Alignment Outer Vacuum Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].MAligner_VacuumPos_Inner = false;                               //  Mechanical-Alignment Inner Vacuum Use (true: Use, false: Not Use)
@@ -1246,16 +1309,17 @@ namespace QMC.Common
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_Height = 0.0;                        //  Marking Template Entity Height
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_TextType = true;                     //  Marking Template Entity Data Text Type (true: Fixed Text, false: Serial Number)
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_PrefixData = "";                     //  Marking Template Entity Prefix Data
-                stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber = 0;                     //  Marking Template Entity Start Number
-                stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits = 0;                          //  Marking Template Entity Digits
-                stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep = 0;                    //  Marking Template Entity Increase Step (or Decrease)
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_StartNumber = 1;                     //  Marking Template Entity Start Number
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_Digits = 3;                          //  Marking Template Entity Digits
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_IncreaseStep = 1;                    //  Marking Template Entity Increase Step (or Decrease)
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_SuffixData = "";                     //  Marking Template Entity Suffix Data
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Use = false;                   //  Marking Template Entity Hatch Use (true: Use, false: Not Use)
-                stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = 0.2;                 //  Marking Template Entity Hatch Spacing
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = 0.1;                 //  Marking Template Entity Hatch Spacing
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;        //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
+                stLayerRecipeSet[i].ChuckMSL_Use = false;
             }
-
 
             //  평탄도 측정 위치 초기화
             for (int i = 0; i < System.Enum.GetValues(typeof(FlatMeasureList)).Length; i++)
@@ -1278,41 +1342,41 @@ namespace QMC.Common
             Scanner_HeadOffset_Y = 0;
             Scanner_HeadOffset_Angle = 0;
 
-
             //  Coordinate System Matching Offset (Stage Origin Pos. to Scanner Center Pos.)
             CoordinateMatchingOffset_X = 0.0;
             CoordinateMatchingOffset_Y = 0.0;
 
-
             //  Offset distance from the stage to the scanner position (스테이지와 스캐너 좌표계를 일치시키지 않는다면, 이 값만큼 이동해서 가공해야 함) - 스테이지 스캐너 좌표계를 일치시키면 이 값은 반드시 0 으로 설정해야 함.
             StageOffset_forDrilling_X = 0.0;
             StageOffset_forDrilling_Y = 0.0;
+            StageOffset_forDrilling_X_MSL = 0.0;
+            StageOffset_forDrilling_Y_MSL = 0.0;
 
+            LoadingOffset_forDrilling_X_MSL = 0.0;
+            LoadingOffset_forDrilling_Y_MSL = 0.0;
+            UnloadingOffset_forDrilling_X_MSL = 0.0;
+            UnloadingOffset_forDrilling_Y_MSL = 0.0;
 
             //  Keyence Laser Height Sensor 기준값 설정
             LaserHeightSensor_ReferenceValue_atVisionFocusPosition = 0.0;         //  Vision Focus 위치에서의 Keyence Laser Height Sensor 기준값
             LaserHeightSensor_ReferenceValue_atScannerFocusPosition = 0.0;        //  Scanner Focus 위치에서의 Keyence Laser Height Sensor 기준값
 
-
             //  집진기 대기 시간
             DustCollector_TurnOn_AfterStableTime = 1000.0;                        //  Dust Collector On 시 안정화 시간 (sec)
-
 
             //  파일 저장 위치
             RecipeFilePath = "";
             DrawingFilePath = "";
 
-
             //  도면 렌더링  분해능
             SiriusDrawing_Rendering_Resolution = 50;
 
-
             //  BET 별 Mrad
             BET_0_8X_Mrad = 0.5;                //  BET 0.8X Zoom
+            BET_0_9X_Mrad = 0.37;               //  BET 0.9X Zoom
             BET_1_0X_Mrad = 0.24;               //  BET 1.0X Zoom
             BET_1_1X_Mrad = 0.11;               //  BET 1.1X Zoom
             BET_1_2X_Mrad = 0.02;               //  BET 1.2X Zoom
-
 
             Scanner_Calibration_LaserFrequency = 0.0;            //  Scanner Calibration Laser Frequency
             Scanner_Calibration_LaserPulseWidth = 0.0;
@@ -1330,13 +1394,16 @@ namespace QMC.Common
             Scanner_Calibration_CalPitch = 0.0;               //  Scanner Calibration Area Pitch (mm)
             Scanner_Calibration_PosX_Last = 0.0;
             Scanner_Calibration_PosY_Last = 0.0;
+            Scanner_Calibration_MaskIndex = 0;
+            Scanner_Calibration_BETPositionIndex = 0;
 
             //Scanner_Calibration_TrainRoiStartLocation     //  Scanner Calibration Train ROI Start Location
 
 
             //  자동운전 상태 확인
             AutoRunStatus = false;
-
+            SelectRunEnable = false;
+            SelectRunEnable_New = false;
 
             m_bVisionFormOpenMode_ScannerFineCamOffsetChange = false;
 
@@ -1347,7 +1414,6 @@ namespace QMC.Common
             RecipeName_fromMainForm = "";
 
             MapDataStatus_Activate = false;
-
 
             m_nLastDioUID = 0;
             m_nLastAxisUID = 0;
@@ -1362,8 +1428,10 @@ namespace QMC.Common
             LoadingQueue = new LoadingQueue();
             ConfigManager.SetEquipmentName(Name);
 
-            
             CreateModules();    //오래걸리는부분.
+
+            LoadMachineAxis();  //장비 Axis Setting
+
             LoadMotionBoards();
             LoadIOBoards();
             //LoadModuleCollection();
@@ -1388,6 +1456,7 @@ namespace QMC.Common
             {
                 m_nBoardOpened = board.Open();
             }
+
             foreach (var board in IOBoards)
             {
                 board.Open();
@@ -1459,6 +1528,13 @@ namespace QMC.Common
             Bds bds = new Bds("BDS");
             bds.Create();
             Modules.Add(bds);
+
+
+            //전부 생성한 후 Init하자
+            workStage.m_ScannerCameraOffsetSequence.Init();
+            workStage.m_Sequence_LaserPowerMeasure.Init();
+            workStage.m_Sequence_FlatnessMeasure.Init();
+
 
             // 여기때문에 시작이 느림. 
             // 재 확인 후 연결 시도 하자.
@@ -2868,6 +2944,14 @@ namespace QMC.Common
             Equipment.Scanner_Calibration_PosX_Last = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_PosY_Last = Equipment.ToDouble(temp.ToString());
+            
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "VisionZOffset", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_VisionZOffset = Equipment.ToDouble(temp.ToString());
+
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MaskIndex", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_MaskIndex = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "BETPositionIndex", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_BETPositionIndex = Equipment.ToInt(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_X", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_TrainRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
@@ -2898,9 +2982,11 @@ namespace QMC.Common
             Equipment.Scanner_Calibration_PatternMatchingParameters.UseMaskImage = Convert.ToBoolean(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_01", "0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_Illumination_channel_01_Value = Equipment.ToInt(temp.ToString());
+            Equipment.Scanner_Calibration_Illumination_Red_Value = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_02", "0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_Illumination_channel_02_Value = Equipment.ToInt(temp.ToString());
+            Equipment.Scanner_Calibration_Illumination_IR_Value = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "ExposureTime_High", "0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_ExposureTime_High = Equipment.ToInt(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "UsePatternMatching", "false", temp, 255, strFIle);
             Equipment.Scanner_Calibration_UsePatternMatching = Convert.ToBoolean(temp.ToString());
@@ -3030,6 +3116,41 @@ namespace QMC.Common
             Equipment.Machine_LoaderStacker_NoMaterialDetectTime = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "PolylineCurve_Resolution", "100", temp, 255, strFIle);
             Equipment.Machine_PolylineCurve_Resolution = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "AutoCrossCheck_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_AutoCrossCheck_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "AutoCrossCheck_Count", "1", temp, 255, strFIle);
+            Equipment.Machine_AutoCrossCheck_Count = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightSensorRetry_Enable", "true", temp, 255, strFIle);
+            Equipment.Machine_HeightSensorRetry_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightSensorRetry_Count", "5", temp, 255, strFIle);
+            Equipment.Machine_HeightSensorRetry_Count = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "Hole02_50_Wait_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_Hole02_50_Wait_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "Hole02_50_Wait_Time", "5000", temp, 255, strFIle);
+            Equipment.Machine_Hole02_50_Wait_Time = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HoleCenter_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_HoleCenter_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "SocketHeight_Batch_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_SocketHeight_Batch_Use = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "SocketVision_Batch_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_SocketVision_Batch_Use = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LaserPowerMeasure_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_LaserPowerMeasure_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LaserPowerMeasure_Count", "1", temp, 255, strFIle);
+            Equipment.Machine_LaserPowerMeasure_Count = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_Count", "1", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_Count = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_PosX", "1.1", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_PosX = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "HeightMeasure_PosY", "1.1", temp, 255, strFIle);
+            Equipment.Machine_HeightMeasure_PosY = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "PreAlign_First_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_PreAlign_First_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VisionNG_OKPort_Enable", "false", temp, 255, strFIle);
+            Equipment.Machine_VisionNG_OKPort_Enable = temp.ToString() == "False" ? false : true;
+            //
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);
@@ -3044,6 +3165,12 @@ namespace QMC.Common
             Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_Y", "0.0", temp, 255, strFIle);
             Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y = Equipment.ToDouble(temp.ToString());
+
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_AlignOffset_X", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromAlignOffset.X = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_AlignOffset_Y", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromAlignOffset.Y = Equipment.ToDouble(temp.ToString());
+
 
             //  Scanner Head Offset
             NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_X", "0.0", temp, 255, strFIle);
@@ -3064,6 +3191,22 @@ namespace QMC.Common
             Equipment.StageOffset_forDrilling_X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y", "0.0", temp, 255, strFIle);
             Equipment.StageOffset_forDrilling_Y = Equipment.ToDouble(temp.ToString());
+
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X_MSL", "0.0", temp, 255, strFIle);
+            Equipment.StageOffset_forDrilling_X_MSL = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y_MSL", "0.0", temp, 255, strFIle);
+            Equipment.StageOffset_forDrilling_Y_MSL = Equipment.ToDouble(temp.ToString());
+
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_X_MSL", "0.0", temp, 255, strFIle);
+            Equipment.LoadingOffset_forDrilling_X_MSL = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_Y_MSL", "0.0", temp, 255, strFIle);
+            Equipment.LoadingOffset_forDrilling_Y_MSL = Equipment.ToDouble(temp.ToString());
+
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_X_MSL", "0.0", temp, 255, strFIle);
+            Equipment.UnloadingOffset_forDrilling_X_MSL = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_Y_MSL", "0.0", temp, 255, strFIle);
+            Equipment.UnloadingOffset_forDrilling_Y_MSL = Equipment.ToDouble(temp.ToString());
+
 
             //  Keyence Laser Height Sensor 기준값 설정
             NativeMethods.GetPrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Vision_Focus_Position", "0.0", temp, 255, strFIle);
@@ -3088,6 +3231,8 @@ namespace QMC.Common
             //  BET 별 Mrad
             NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_08X", "0.5", temp, 255, strFIle);
             Equipment.BET_0_8X_Mrad = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_09X", "0.37", temp, 255, strFIle);
+            Equipment.BET_0_9X_Mrad = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_10X", "0.24", temp, 255, strFIle);
             Equipment.BET_1_0X_Mrad = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_11X", "0.11", temp, 255, strFIle);
@@ -3095,130 +3240,65 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("BET_Mrad", "Mag_12X", "0.02", temp, 255, strFIle);
             Equipment.BET_1_2X_Mrad = Equipment.ToDouble(temp.ToString());
             
-
-            ////  Scanner Calibration parameter
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", "5000.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(temp.ToString());
-            ////Scanner_Calibration_LaserPulseWidth
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Pulse_Width", "1.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserPulseWidth = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Energy", "1.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserEnergy = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "CrossMark_Length", "0.5", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CrossMarkLength = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Marking_Speed", "500.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserMarkSpeed = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", "500.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserJumpSpeed = Equipment.ToDouble(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "LaserOn_Delay", "10.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserOnDelay = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "LaserOff_Delay", "10.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserOffDelay = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Mark_Delay", "50.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_MarkDelay = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Jump_Delay", "200.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_JumpDelay = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Polygon_Delay", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PolygonDelay = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Width", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CalAreaWidth = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", "2.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PosX_Last = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PosY_Last = Equipment.ToDouble(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiStartLocation_Y = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiEndLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiEndLocation_X = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiEndLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiEndLocation_Y = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiStartLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiStartLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiStartLocation_Y = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiEndLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiEndLocation_X = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiEndLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiEndLocation_Y = Equipment.ToDouble(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "AngleTolerance", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PatternMatchingParameters.MaxTolerance = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MaxInstance", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PatternMatchingParameters.MaxInstance = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MinScore", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PatternMatchingParameters.MinScore = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "DuplicateCheck", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PatternMatchingParameters.DuplicateChecked = Convert.ToBoolean(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "UseMaskImage", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PatternMatchingParameters.UseMaskImage = Convert.ToBoolean(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_01", "0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_Illumination_channel_01_Value = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Illumination_channel_02", "0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_Illumination_channel_02_Value = Equipment.ToInt(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "UsePatternMatching", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_UsePatternMatching = Convert.ToBoolean(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "UseBlobVisionTool", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_UseBlobVisionTool = Convert.ToBoolean(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MarkType_Cross", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_MarkType_Cross = Convert.ToBoolean(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MarkType_Circlle", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_MarkType_Circlle = Convert.ToBoolean(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "HardThreshold", "0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.HardThreshold = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MinPixels", "0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.MinPixels = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Polarity", "0", temp, 255, strFIle);
-            //int nVel = ToInt(temp.ToString());
-            //Polarity polarity;
-            //if (nVel == 0)
-            //    polarity = Polarity.LightBlobs;
-            //else
-            //    polarity = Polarity.DarkBlobs;
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.Polarity = polarity;
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "RepeatCount", "0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.RepeatCount = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "HasChanged", "false", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.HasChanged = Convert.ToBoolean(temp.ToString());
-
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "srcFilePath", "", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_srcFilePath = temp.ToString();
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "targetFilePath", "", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_targetFilePath = temp.ToString();
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "FieldSize", "55", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_FieldSize = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "rowInterval", "2", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_rowInterval = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "colInterval", "2", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_colInterval = Equipment.ToDouble(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "rowCount", "3", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_rowCount = Equipment.ToInt(temp.ToString());
-            //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "colCount", "3", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_colCount = Equipment.ToInt(temp.ToString());
-
-
-
             //  체크 포인트
             if (((Equipment.CoordinateMatchingOffset_X != 0.0) || (Equipment.CoordinateMatchingOffset_Y != 0.0)) &&
                 ((Equipment.StageOffset_forDrilling_X != 0.0) || (Equipment.StageOffset_forDrilling_Y != 0.0)))
             {
-                MessageBox.Show("\"Offset Distance for Coordinate Matching\" 과\r\n\"Offset Distance to the Center of the Scanner\" 두 그룹 전체에 값이 들어가면 안됩니다.\n\r\n[두 그룹 중 한쪽에만 값이 들어가거나, 모두 0 이어야 합니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("\"Offset Distance for Coordinate Matching\" 과\r\n\"Offset Distance to the Center of the Scanner\" 두 그룹 전체에 값이 들어가면 안됩니다." +
+                                "\n\r\n[두 그룹 중 한쪽에만 값이 들어가거나, 모두 0 이어야 합니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
             return m_bRet;
         }
 
+        public static void Machine_ChuckMSL_Save()
+        {
+            string strTemp = "";
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            // 백업 처리 추가 시작
+            try
+            {
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+                //return;
+
+                MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X_MSL", Equipment.StageOffset_forDrilling_X_MSL.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y_MSL", Equipment.StageOffset_forDrilling_Y_MSL.ToString(), strFIle);
+
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_X_MSL", Equipment.LoadingOffset_forDrilling_X_MSL.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Loading_Y_MSL", Equipment.LoadingOffset_forDrilling_Y_MSL.ToString(), strFIle);
+
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_X_MSL", Equipment.UnloadingOffset_forDrilling_X_MSL.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Unloading_Y_MSL", Equipment.UnloadingOffset_forDrilling_Y_MSL.ToString(), strFIle);
+
+            MessageBox.Show("Machine Option 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
         public static bool NewForm_FlatMeasurePos_Data_Load()
         {
@@ -3319,5 +3399,157 @@ namespace QMC.Common
         }
         public static bool m_bworkStageVacuumFail = false;
 
+        public static void GetSerialPortConfig(Equipment.CommList comm,
+                                                out string portName, out int baudRate, out int dataBits,
+                                                out StopBits stopBits, out Parity parity, out Handshake handshake)
+        {
+            var setting = Equipment.stCommunicationSet[(int)comm];
+
+            // 포트 이름
+            portName = $"COM{setting.Serial_CommPort + 1}";
+
+            // BaudRate 설정
+            switch (setting.Serial_CommBaudRate)
+            {
+                case 0: baudRate = 1200; break;
+                case 1: baudRate = 2400; break;
+                case 2: baudRate = 4800; break;
+                case 3: baudRate = 9600; break;
+                case 4: baudRate = 19200; break;
+                case 5: baudRate = 38400; break;
+                case 6: baudRate = 57600; break;
+                case 7: baudRate = 115200; break;
+                default: baudRate = 9600; break;
+            }
+
+            // DataBits 설정
+            switch (setting.Serial_CommDataBits)
+            {
+                case 0: dataBits = 5; break;
+                case 1: dataBits = 6; break;
+                case 2: dataBits = 7; break;
+                case 3: dataBits = 8; break;
+                default: dataBits = 8; break;
+            }
+
+            // StopBits 설정
+            switch (setting.Serial_CommStopBits)
+            {
+                case 0: stopBits = StopBits.One; break;
+                case 1: stopBits = StopBits.OnePointFive; break;
+                case 2: stopBits = StopBits.Two; break;
+                default: stopBits = StopBits.One; break;
+            }
+
+            // Parity 설정
+            switch (setting.Serial_CommParity)
+            {
+                case 0: parity = Parity.None; break;
+                case 1: parity = Parity.Odd; break;
+                case 2: parity = Parity.Even; break;
+                default: parity = Parity.None; break;
+            }
+
+            // Handshake 설정
+            switch (setting.Serial_CommFlowControl)
+            {
+                case 0: handshake = Handshake.None; break;
+                case 1: handshake = Handshake.XOnXOff; break;
+                case 2: handshake = Handshake.RequestToSend; break;
+                case 3: handshake = Handshake.RequestToSendXOnXOff; break;
+                default: handshake = Handshake.None; break;
+            }
+        }
+
+        public static float m_fDividedX { set; get; } = 0.0f;
+        public static float m_fDividedY { set; get; } = 0.0f;
+        public static bool m_bDivided { set; get; } = false;
+
+        public static List<BoundRect> LastDividedRects = new List<BoundRect>();
+
+
+        public static void Scanner_FineCam_Offset_Save()
+        {
+            string strTemp = "";
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            // 백업 처리 추가 시작
+            try
+            {
+                if (File.Exists(strFIle))
+                {
+                    string backupFolder = Path.Combine(ConfigManager.GetConfigPath(), "BackUp");
+                    if (!Directory.Exists(backupFolder))
+                        Directory.CreateDirectory(backupFolder);
+
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string backupFileName = $"Machine Option ({timeStamp}).ini";
+                    string backupFilePath = Path.Combine(backupFolder, backupFileName);
+
+                    File.Copy(strFIle, backupFilePath, true); // 기존 파일을 백업 복사
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"백업 생성 중 오류 발생: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            // 백업 처리 추가 끝
+
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+                //return;
+
+                //MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
+            }
+
+            //  Offset Distance
+            NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_Y", Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString(), strFIle);
+            //MessageBox.Show("Scanner 와 Fine Camera 간 Offset 데이터를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public static bool m_bCheckAxesMotionDoneWithRetry = false;
+
+        public static bool LoadMachineAxis()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Machine Option 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  Machine Option  로드
+            //  Machine Name
+            NativeMethods.GetPrivateProfileString("Machine_Option", "Machine_Name", "SLD-200", temp, 255, strFIle);
+            Equipment.Machine_Name = temp.ToString();
+
+            //  Laser Type                                                                            //  True : CO₂,    False : UV
+            NativeMethods.GetPrivateProfileString("Machine_Option", "Laser_Type", "True", temp, 255, strFIle);
+            Equipment.Machine_LaserType_CO2 = temp.ToString() == "False" ? false : true;
+
+
+            // Axis Setting
+            // AxisMap 초기화
+            AxisMap.Init(Equipment.Machine_LaserType_CO2);
+
+            return m_bRet;
+        }
+
+        public static int Axis_Test(AxisMap.AxisKey key)
+        {
+            return AxisMap.Get(key);
+        }
     }
 }

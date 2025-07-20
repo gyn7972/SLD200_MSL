@@ -71,22 +71,30 @@ namespace QMC.Common
             // 2. PostAlarm 이벤트 (UI 스레드에서 실행)
             if (PostAlarm != null)
             {
-                if (Application.OpenForms.Count > 0)
+                if(true)
                 {
-                    var form = Application.OpenForms[0];
-                    if (form.InvokeRequired)
-                    {
-                        form.BeginInvoke(new Action(() => PostAlarm?.Invoke(alarm)));
-                    }
-                    else
-                    {
-                        PostAlarm?.Invoke(alarm);
-                    }
+                    // UI 폼이 없이 알람 발생.
+                    PostAlarm?.Invoke(alarm);
                 }
                 else
                 {
-                    // UI 폼이 없으면 그냥 호출 (예: 콘솔 앱)
-                    PostAlarm?.Invoke(alarm);
+                    if (Application.OpenForms.Count > 0)
+                    {
+                        var form = Application.OpenForms[0];
+                        if (form.InvokeRequired)
+                        {
+                            form.BeginInvoke(new Action(() => PostAlarm?.Invoke(alarm)));
+                        }
+                        else
+                        {
+                            PostAlarm?.Invoke(alarm);
+                        }
+                    }
+                    else
+                    {
+                        // UI 폼이 없으면 그냥 호출 (예: 콘솔 앱)
+                        PostAlarm?.Invoke(alarm);
+                    }
                 }
             }
 
@@ -98,13 +106,38 @@ namespace QMC.Common
             }
 
             // 4. 마지막 알람 메세지를 Title bar 에 보이게
-
-
             //m_Alarms.Add(alarm);
             //if (PostAlarm != null)
             //{
             //    PostAlarm(alarm);
             //}
+        }
+
+        /// <summary>
+        /// 지정한 알람을 리스트에서 제거하고 알림을 갱신합니다.
+        /// </summary>
+        /// <param name="alarm">해제할 알람</param>
+        public void ClearAlarm(Alarm alarm)
+        {
+            if (alarm == null) return;
+
+            lock (_lock)
+            {
+                if (m_Alarms.Contains(alarm))
+                {
+                    m_Alarms.Remove(alarm);
+                }
+            }
+
+            // PostAlarm 호출은 필요 시 추가 가능
+        }
+
+        public void ClearAllAlarms()
+        {
+            lock (_lock)
+            {
+                m_Alarms.Clear();
+            }
         }
 
 

@@ -1,49 +1,20 @@
-﻿using netDxf.Entities;
-using QMC.Common;
-using QMC.Common.Modules;
-using QMC.Common.Motion.ACS.Motions;
-using QMC.Common.Parts;
-using QMC.Common.Vision.Optics;
-using QMC.Common.Vision.Tools;
-using QMC.Common.VisionPart;
-using QMC.Core;
-using SLD200_MSL;
-using SpiralLab.Sirius;
+﻿using QMC.Common;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static QMC.Common.Equipment;
-using static QMC.Common.Modules.Vision;
-using static QMC.Common.Modules.WorkStage;
-using Bitmap = System.Drawing.Bitmap;
-using Image = System.Drawing.Image;
-using Rectangle = System.Drawing.Rectangle;
 
 namespace SLD200_MSL
 {
     public partial class FormNew_AlarmLog : Form
-    {        
-        Alarm Alarm { get; set; }
-
-        private Size ConfirmButton = new Size(220, 130);
-        protected Size m_imagesize = new Size(30, 25);
-
-        protected BaseButton m_BaseButton;
-
+    {
         public FormNew_AlarmLog()
         {
             InitializeComponent();
-
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            m_AlarmLogOptionControl = new AlarmLogOptionControl();
+            //m_AlarmLogOptionControl = new AlarmLogOptionControl();
             m_AlarmLogOptionControl.SearchClick += SearchClick;
             m_AlarmLogOptionControl.DataSaveClick += SaveDataClick;
 
@@ -51,137 +22,133 @@ namespace SLD200_MSL
             m_DataGridViewAlarmLog.RowHeadersVisible = false;
             m_DataGridViewAlarmLog.ReadOnly = true;
             m_DataGridViewAlarmLog.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            m_DataGridViewAlarmLog.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            m_DataGridViewAlarmLog.AutoGenerateColumns = false;
 
-            this.m_DataGridViewAlarmLog.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.baseDataGridViewAlarm_CellClick);
             InitGrid();
+            m_DataGridViewAlarmLog.CellClick += baseDataGridViewAlarm_CellClick;
         }
 
-        public void InitGrid()
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void InitGrid()
+        {
+            m_DataGridViewAlarmLog.Columns.Clear(); // 중복 방지
+
             m_DataGridViewAlarmLog.AutoGenerateColumns = false;
             m_DataGridViewAlarmLog.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             m_DataGridViewAlarmLog.ReadOnly = true;
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = "Date";
-                column.HeaderText = "Date";
-                column.DataPropertyName = "Date";
-                m_DataGridViewAlarmLog.Columns.Add(column);
-            }
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = "Title";
-                column.HeaderText = "Title";
-                column.DataPropertyName = "Title";
-                m_DataGridViewAlarmLog.Columns.Add(column);
-            }
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = "Grade";
-                column.HeaderText = "Grade";
-                column.DataPropertyName = "Grade";
-                m_DataGridViewAlarmLog.Columns.Add(column);
-            }
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = "Source";
-                column.HeaderText = "Source";
-                column.DataPropertyName = "Source";
-                m_DataGridViewAlarmLog.Columns.Add(column);
-            }
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = "Cause";
-                column.HeaderText = "Cause";
-                column.DataPropertyName = "Cause";
-                m_DataGridViewAlarmLog.Columns.Add(column);
-            }
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = "Code";
-                column.HeaderText = "Code";
-                column.DataPropertyName = "Code";
-                m_DataGridViewAlarmLog.Columns.Add(column);
-            }
 
+            AddGridColumn("Date", "Date");
+            AddGridColumn("Title", "Title");
+            AddGridColumn("Grade", "Grade");
+            AddGridColumn("Source", "Source");
+            AddGridColumn("Cause", "Cause");
+            AddGridColumn("Code", "Code");
         }
 
-        protected void SearchClick(DateTime startTime, DateTime endTime)
+        private void AddGridColumn(string name, string headerText)
         {
-            OnSearchClick(startTime, endTime);
-        }
-
-        protected void OnSearchClick(DateTime startTime, DateTime endTime)
-        {
-            AlarmSaver alarmSaver = AlarmManager.Instance.Saver;
-            List<Alarm> Alarms = alarmSaver.GetAlarms(startTime, endTime);
-            SetData(Alarms);
-        }
-
-        protected void SetData(List<Alarm> listAlarm)
-        {
-            m_DataGridViewAlarmLog.DataSource = null;
-            //m_DataGridViewAlarmLog.DataSource = datas;
-            if (listAlarm.Count != 0)
+            var column = new DataGridViewTextBoxColumn
             {
-                for (int i = 0; i < listAlarm.Count; i++)
+                Name = name,
+                HeaderText = headerText,
+                DataPropertyName = name
+            };
+            m_DataGridViewAlarmLog.Columns.Add(column);
+        }
+
+        private void SearchClick(DateTime startTime, DateTime endTime)
+        {
+            m_DataGridViewAlarmLog.Rows.Clear();
+
+            string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AlarmLog");
+
+            for (var day = startTime.Date; day <= endTime.Date; day = day.AddDays(1))
+            {
+                string logFile = Path.Combine(logFolder, $"AlarmLog_{day:yyyyMMdd}.csv");
+                if (!File.Exists(logFile)) continue;
+
+                try
                 {
-                    m_DataGridViewAlarmLog.Rows.Add();
+                    using (var fs = new FileStream(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (var reader = new StreamReader(fs, new UTF8Encoding(true)))
+                    {
+                        while (!reader.EndOfStream)
+                        {
+                            var line = reader.ReadLine();
+                            var parts = line.Split(',');
+                            if (parts.Length < 6) continue;
 
-                    this.m_DataGridViewAlarmLog["Date", i].Value = listAlarm[i].GeneratedTime;
-                    this.m_DataGridViewAlarmLog["Title", i].Value = listAlarm[i].Title;
-                    this.m_DataGridViewAlarmLog["Grade", i].Value = listAlarm[i].Grade;
-                    this.m_DataGridViewAlarmLog["Source", i].Value = listAlarm[i].Source;
-                    this.m_DataGridViewAlarmLog["Cause", i].Value = listAlarm[i].Cause;
-                    this.m_DataGridViewAlarmLog["Code", i].Value = listAlarm[i].Code;
+                            try
+                            {
+                                int rowIndex = m_DataGridViewAlarmLog.Rows.Add();
+                                m_DataGridViewAlarmLog.Rows[rowIndex].SetValues(parts);
+                            }
+                            catch (Exception exRow)
+                            {
+                                Log.Write("AlarmLogViewer", $"Row 추가 실패: {exRow.Message}");
+                            }
+                        }
+                    }
+                }
+                catch (Exception exFile)
+                {
+                    Log.Write("AlarmLogViewer", $"파일 열기 실패: {exFile.Message}");
                 }
             }
         }
 
-        protected void SaveDataClick()
+        private void SaveDataClick()
         {
-            OnSaveDataClick();
-        }
+            if (m_DataGridViewAlarmLog.Rows.Count == 0) return;
 
-        protected void OnSaveDataClick()
-        {
-            //List<Alarm> datas = this.GetCurrentData() as List<Alarm>;
-            //SaveFileDialog dialog = new SaveFileDialog();
-            //dialog.InitialDirectory = Environment.SpecialFolder.Desktop.ToString();
-            //dialog.DefaultExt = "csv";
-            //dialog.Filter = "CSV files(*.csv)|*.csv";
+            using (var dialog = new SaveFileDialog
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                DefaultExt = "csv",
+                Filter = "CSV files (*.csv)|*.csv"
+            })
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    using (StreamWriter sw = new StreamWriter(dialog.FileName, false, new UTF8Encoding(true)))
+                    {
+                        sw.WriteLine("Date,Title,Grade,Source,Cause,Code");
+                        foreach (DataGridViewRow row in m_DataGridViewAlarmLog.Rows)
+                        {
+                            if (row.IsNewRow) continue;
 
-            //if (dialog.ShowDialog() == DialogResult.OK)
-            //{
-            //    string path = dialog.FileName;
+                            string[] values = new string[6];
+                            for (int i = 0; i < 6; i++)
+                                values[i] = row.Cells[i].Value?.ToString() ?? "";
 
-            //    using (StreamWriter sw = new StreamWriter(path, false, Encoding.Default))
-            //    {
-            //        sw.WriteLine("Date,Location NO,CarrierID,UnitID,Force,Depth");
-
-            //        foreach (var data in datas)
-            //        {
-            //            sw.WriteLine(data.SaveCSVFormat());
-            //        }
-            //    }
-            //}
+                            sw.WriteLine(string.Join(",", values));
+                        }
+                    }
+                }
+            }
         }
 
         private void baseDataGridViewAlarm_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex < 0 || e.RowIndex < 0)
-            {
-                return;
-            }
-            if (e.RowIndex < m_DataGridViewAlarmLog.Rows.Count - 1)
-            {
-                string strTitle = this.m_DataGridViewAlarmLog["Title", e.RowIndex].Value.ToString();
-                string strCause = this.m_DataGridViewAlarmLog["Cause", e.RowIndex].Value.ToString();
-                string strCode = this.m_DataGridViewAlarmLog["Code", e.RowIndex].Value.ToString();
-                string strGrade = this.m_DataGridViewAlarmLog["Grade", e.RowIndex].Value.ToString();
-                string strSource = this.m_DataGridViewAlarmLog["Source", e.RowIndex].Value.ToString();
-                m_AlarmInfoControl.SetInfo(strTitle, strCause, strCode, strGrade, strSource);
-            }
+            if (e.RowIndex < 0 || e.RowIndex >= m_DataGridViewAlarmLog.Rows.Count) return;
+
+            var row = m_DataGridViewAlarmLog.Rows[e.RowIndex];
+            string strTitle = row.Cells["Title"].Value?.ToString() ?? "";
+            string strCause = row.Cells["Cause"].Value?.ToString() ?? "";
+            string strCode = row.Cells["Code"].Value?.ToString() ?? "";
+            string strGrade = row.Cells["Grade"].Value?.ToString() ?? "";
+            string strSource = row.Cells["Source"].Value?.ToString() ?? "";
+
+            m_AlarmInfoControl.SetInfo(strTitle, strCause, strCode, strGrade, strSource);
         }
     }
 }

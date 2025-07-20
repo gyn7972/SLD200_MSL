@@ -2400,11 +2400,6 @@ namespace SLD200_MSL
 
                 Equipment.MachineStop_byUser = true;
 
-
-                //  Main Work 타이머
-                workStage.m_btimer_MainWork_Stop = true;
-                workStage.timer_MainWork.Enabled = false;
-
                 //  Sub Work 타이머
                 workStage.m_btimer_SubWork_Stop = true;
                 workStage.timer_SubWork.Enabled = false;
@@ -2818,7 +2813,6 @@ namespace SLD200_MSL
                 workStage.m_bInCycleMoving_SafetySensor_Detected = false;
 
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
-                workStage.timer_MainWork.Enabled = true;
 
                 Log.Write("CWA150SA", Equipment.User_Name, "Button Click", "프로브 카드 & 웨이퍼 얼라인 시작");
             }
@@ -2830,8 +2824,6 @@ namespace SLD200_MSL
 
                 Equipment.MachineStop_byUser = true;
 
-                workStage.m_btimer_MainWork_Stop = true;
-                workStage.timer_MainWork.Enabled = false;
                 workStage.m_btimer_SubWork_Stop = true;
                 workStage.timer_SubWork.Enabled = false;
 
@@ -2850,9 +2842,7 @@ namespace SLD200_MSL
             //  테스트 코드
 
             //workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-79.9);
-
             workStage.DustCollectorComm_Send_Read((int)nDustCollector.DustCollector_Upper, "3000", 1);
-
             return;
 
             //workStage.m_bHomeOK = true;

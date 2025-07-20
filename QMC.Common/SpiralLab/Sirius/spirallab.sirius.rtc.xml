@@ -3759,9 +3759,20 @@
             <para>X,Y location of scanner when power mapping</para>
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.IPowerMapArg.MinWatt">
+            <summary>
+            최소 출력(W)
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.IPowerMapArg.MaxWatt">
             <summary>
             최대 출력(W)
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.IPowerMapArg.SetupTimeMsec">
+            <summary>
+            측정간 대기 시간 (msec)
+            <para>Setup time(msec) when power mapping</para>
             </summary>
         </member>
         <member name="P:SpiralLab.Sirius.IPowerMapArg.HoldTimeMsec">
@@ -3811,7 +3822,13 @@
         <member name="P:SpiralLab.Sirius.PowerMapStartDefaultArg.Location">
             <inheritdoc/>  
         </member>
+        <member name="P:SpiralLab.Sirius.PowerMapStartDefaultArg.MinWatt">
+            <inheritdoc/>  
+        </member>
         <member name="P:SpiralLab.Sirius.PowerMapStartDefaultArg.MaxWatt">
+            <inheritdoc/>  
+        </member>
+        <member name="P:SpiralLab.Sirius.PowerMapStartDefaultArg.SetupTimeMsec">
             <inheritdoc/>  
         </member>
         <member name="P:SpiralLab.Sirius.PowerMapStartDefaultArg.HoldTimeMsec">
@@ -3861,6 +3878,12 @@
             <para>X,Y location of scanner when power verifying</para>
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.IPowerVerifyArg.SetupTimeMsec">
+            <summary>
+            측정간 대기 시간 (msec)
+            <para>Setup time(msec) when power mapping</para>
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.IPowerVerifyArg.HoldTimeMsec">
             <summary>
             측정을 위한 레이저 출사 시간 (msec)
@@ -3903,6 +3926,9 @@
             <inheritdoc/>  
         </member>
         <member name="P:SpiralLab.Sirius.PowerMapVerifyDefaultArg.Location">
+            <inheritdoc/>  
+        </member>
+        <member name="P:SpiralLab.Sirius.PowerMapVerifyDefaultArg.SetupTimeMsec">
             <inheritdoc/>  
         </member>
         <member name="P:SpiralLab.Sirius.PowerMapVerifyDefaultArg.HoldTimeMsec">
@@ -3954,8 +3980,14 @@
         </member>
         <member name="P:SpiralLab.Sirius.IPowerCompensateArg.PreHeatTimeMsec">
             <summary>
-            측정을 위한 레이저 출사 예열 시간 (msec)
+            레이저 출사 예열 시간 (msec)
             <para>Preheat time(msec) when power mapping</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.IPowerCompensateArg.SetupTimeMsec">
+            <summary>
+            레이저 출사 대기 시간 (msec)
+            <para>Setup time(msec) when power mapping</para>
             </summary>
         </member>
         <member name="P:SpiralLab.Sirius.IPowerCompensateArg.HoldTimeMsec">

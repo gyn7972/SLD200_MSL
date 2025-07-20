@@ -17,6 +17,10 @@ using System.Runtime.InteropServices;
 using static QMC.Common.Equipment;
 using SpiralLab.Sirius;
 using static QMC.Common.Modules.WorkStage;
+using static QMC.Common.Parts.DustCollectorController;
+using static System.Windows.Forms.AxHost;
+using static SpiralLab.Sirius.JPTTypeE;
+using System.Threading;
 
 namespace SLD200_MSL
 {
@@ -25,6 +29,7 @@ namespace SLD200_MSL
         private static FormNew_CommunicationTerminal m_formCommTerminal = null;
 
         static WorkStage workStage;
+        static Bds bds;
 
         public System.Windows.Forms.Timer timer_Status;
 
@@ -56,16 +61,29 @@ namespace SLD200_MSL
                 {
                     workStage = module as WorkStage;
                 }
+
+                if (module.Name == "BDS")
+                {
+                    bds = module as Bds;
+                }
             }
 
             hScrollBarIlluminator.ValueChanged += new System.EventHandler(hScrollBarIlluminator_ValueChanged);
 
             //  Status 타이머
             timer_Status = new System.Windows.Forms.Timer();
-            timer_Status.Interval = 100;
+            timer_Status.Interval = 200;
             timer_Status.Tick += new System.EventHandler(Timer_Status_Func);
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
         public FormNew_CommunicationTerminal CreateCommTerminal()
         {
             if (m_formCommTerminal == null)
@@ -455,6 +473,8 @@ namespace SLD200_MSL
                 //case 7: workStage.Laser_Socket_Connect();               break;
                 case 7: workStage.RapidLxLaser_Comm_Init();             break;
                 case 8: workStage.LaserSensor_Socket_Connect();         break;
+                case 9: bds.InitDustCollector(DustCollectorController.CollectorPosition.Upper); break;
+                case 10: bds.InitDustCollector(DustCollectorController.CollectorPosition.Lower); break;
                 default: label_Activated_Unit.Text = "No units selected"; break;
             }
 
@@ -598,11 +618,15 @@ namespace SLD200_MSL
         private void button_DustCollector_Upper_Write_Click(object sender, EventArgs e)
         {
             //byte m_bData = getHex(textBox_DustCollector_Upper_Address.Text);
-
             if ((workStage.m_dustCollector_UpperPos_Comm != null) &&
                 (textBox_DustCollector_Upper_Address.Text != "") && (textBox_DustCollector_Upper_Address.Text.Length == 4))
             {
-                workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, textBox_DustCollector_Upper_Address.Text, 1, textBox_DustCollector_Upper_Data.Text);
+                // write command 함수 만들어서 적용.
+                //double dFreq = Equipment.ToDouble(textBox_DustCollector_Upper_Frequency.Text);
+                //workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, dFreq);
+
+                //workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, 
+                //    textBox_DustCollector_Upper_Address.Text, 1, textBox_DustCollector_Upper_Data.Text);
             }
         }
 
@@ -611,7 +635,8 @@ namespace SLD200_MSL
             if ((workStage.m_dustCollector_LowerPos_Comm != null) &&
                 (textBox_DustCollector_Lower_Address.Text != "") && (textBox_DustCollector_Lower_Address.Text.Length == 4))
             {
-                workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, textBox_DustCollector_Lower_Address.Text, 1, textBox_DustCollector_Lower_Data.Text);
+                //workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower,
+                //                                      textBox_DustCollector_Lower_Address.Text, 1, textBox_DustCollector_Lower_Data.Text);
             }
         }
 
@@ -719,5 +744,47 @@ namespace SLD200_MSL
 
             workStage.BeamExpander_Send_Motor_InitialPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor);
         }
+
+        private void button_TEST1_Click(object sender, EventArgs e)
+        {
+            bool bOn = bds.DustCollector_Upper.Start();
+
+            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
+            if (runState == CollectorRunState.Running)
+                Log.Write("DustCollector", "집진기 상태: 운전 중");
+            else if (runState == CollectorRunState.Stopped)
+                Log.Write("DustCollector", "집진기 상태: 정지");
+            else
+                Log.Write("DustCollector", "집진기 상태: 알 수 없음");
+
+        }
+
+        private void button_Test2_Click(object sender, EventArgs e)
+        {
+            bool bOn = bds.DustCollector_Upper.Stop();
+
+            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
+            if (runState == CollectorRunState.Running)
+                Log.Write("DustCollector", "집진기 상태: 운전 중");
+            else if (runState == CollectorRunState.Stopped)
+                Log.Write("DustCollector", "집진기 상태: 정지");
+            else
+                Log.Write("DustCollector", "집진기 상태: 알 수 없음");
+        }
+
+        private void button_Test3_Click(object sender, EventArgs e)
+        {
+            //string strFrequency = "";
+            double dFrequency = 0.0;
+            bds.DustCollector_Upper.GetFrequency(out dFrequency);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //Thread.Sleep(100);
+            bds.DustCollector_Upper.SetFrequency(10);
+        }
+
+
     }
 }

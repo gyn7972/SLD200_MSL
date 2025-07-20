@@ -21,6 +21,7 @@ using QMC.Common.Parts;
 using QMC.Common.VisionPart;
 using QMC.Core;
 using SLD200.NewStyleForm;
+using SLD200.NewStyleForm.NewSubForm;
 using SpiralLab.Sirius;
 using static QMC.Common.Equipment;
 using static QMC.Common.Modules.Loader;
@@ -55,6 +56,15 @@ namespace SLD200_MSL
             set { m_FormcalfilePopup = value; }
         }
 
+        FormNew_VerifyScannerCameraOffset m_FormVerifyScannerVisionOffsetPopup;
+        public FormNew_VerifyScannerCameraOffset FormVerifyScannerVisionOffsetPopup
+        {
+            get { return m_FormVerifyScannerVisionOffsetPopup; }
+            set { m_FormVerifyScannerVisionOffsetPopup = value; }
+        }
+
+        private bool m_bBET_Status_1time = false;               //  프로그램 구동 후 BET Zoom, Mrad 위치값을 세팅 edit 에 1회만 표시하기 위한 Flag
+
         private bool m_bEmgBtn_Clicked = false;
 
         //  Motion 이동량 표시를 위한 Zero Pos. 변수
@@ -63,6 +73,13 @@ namespace SLD200_MSL
         private double[] m_dMotionSetZeroPos_Vision = new double[(int)WorkStageParameter.MotionKey.Max];
         private double[] m_dMotionSetZeroPos_Unloader = new double[(int)UnloaderParameter.MotionKey.Max];
         private double[] m_dMotionSetZeroPos_Bds = new double[(int)BdsParameter.MotionKey.Max];
+
+        FormNewSub_LaserPowerMeasure m_FormLaserPowerMeasure;
+        public FormNewSub_LaserPowerMeasure FormLaserPowerMeasure
+        {
+            get { return m_FormLaserPowerMeasure; }
+            set { m_FormLaserPowerMeasure = value; }
+        }
 
         private FormNew_KeyPad m_keyPad;
         public System.Windows.Forms.Timer timer_Status;
@@ -102,6 +119,9 @@ namespace SLD200_MSL
             m_FormcalfilePopup = new FormNew_CalFilePopup();
             m_FormcalfilePopup.Owner = this;
 
+            m_FormVerifyScannerVisionOffsetPopup = new FormNew_VerifyScannerCameraOffset();
+            m_FormVerifyScannerVisionOffsetPopup.Owner = this;
+
             m_keyPad = new FormNew_KeyPad();
 
             ModuleCollection m_collectionModules;
@@ -136,6 +156,15 @@ namespace SLD200_MSL
             }
 
             FormNew_Config_Load();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 엔터 또는 스페이스 키 눌렀을 때 무시
+            if (keyData == Keys.Enter || keyData == Keys.Space)
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         //private void FormNew_Config_Load(object sender, EventArgs e)
@@ -180,7 +209,36 @@ namespace SLD200_MSL
             radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked = false;
             radioButton_Config_WorkStage_Move_MoveMode_Coarse.Checked = true;
 
+            textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
+            textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";
+
+            //  Work Stage Process Speed
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+            workStage.m_pProcessConfigData.LoadFromIni(strFIle);
+
+            string strTemp = string.Empty;
+            //workStage Page
+            strTemp = workStage.m_pProcessConfigData.nSpeedAxisX.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = strTemp;
+            strTemp = workStage.m_pProcessConfigData.nSpeedAxisY.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text = strTemp;
+            strTemp = workStage.m_pProcessConfigData.nAccelAxisX.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text = strTemp;
+            strTemp = workStage.m_pProcessConfigData.nAccelAxisY.ToString();
+            textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = strTemp;
+
+            //loader Page
+            strTemp = workStage.m_pProcessConfigData.dModuleSizeSet.ToString();
+            textBox_Config_LDUL_Module_Size_Set.Text = strTemp;
+
             InitializeJogButtons();
+
+            m_FormLaserPowerMeasure = new FormNewSub_LaserPowerMeasure(bds.spiralLabScanner);
+            m_FormLaserPowerMeasure.Owner = this;
+
+
+            InitRecipeUI_KeyPad();
         }
 
 
@@ -197,6 +255,35 @@ namespace SLD200_MSL
                 m_bFormVisible = true;
                 timer_Status.Enabled = true;
                 InitializeJogButtons();
+
+                if (Equipment.stLayerRecipeSet != null &&
+                    Equipment.stLayerRecipeSet.Length > 0)
+                {
+                    double width = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width;
+                    double height = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height;
+
+                    if (!double.IsNaN(width) && width >= 0 &&
+                        !double.IsNaN(height) && height >= 0)
+                    {
+                        textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = string.Format("{0:0.000}", width * -1);
+                        textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = string.Format("{0:0.000}", height * -1);
+                    }
+                    else
+                    {
+                        textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = "0.000";
+                        textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = "0.000";
+                        Log.Write("Config", "[경고] Recipe의 모듈 크기 값이 유효하지 않습니다.");
+                    }
+                }
+                else
+                {
+                    textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = "0.000";
+                    textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = "0.000";
+                    Log.Write("Config", "[오류] stLayerRecipeSet[0] 접근 불가");
+                }
+                //textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = string.Format("{0:0.000}", Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width);
+                //textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = string.Format("{0:0.000}", Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height);
+
             }
             else if (!this.Visible && m_bFormVisible)
             {
@@ -378,9 +465,6 @@ namespace SLD200_MSL
             //  비상 정지 시
             if (CommonModule.Instance.OperationButtons.IsEMG())
             {
-                //  Main Work 타이머
-                workStage.timer_MainWork.Enabled = false;
-
                 //  Sub Work 타이머
                 workStage.timer_SubWork.Enabled = false;
 
@@ -391,8 +475,21 @@ namespace SLD200_MSL
                 workStage.timer_Motion_Home.Enabled = false;
 
                 workStage.m_nHomeStep = (int)WorkStage.Home_Step.None;
+
+                loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.None;
+                loader.m_nMAlign_Step = (int)Loader.MAlign_Step.None;
+                loader.m_nStacker0_ModulePickupWaitingPos_Step = (int)Loader.StackerModulePickupWaitingPos_Step.None;
+                loader.m_nStacker1_ModulePickupWaitingPos_Step = (int)Loader.StackerModulePickupWaitingPos_Step.None;
+                unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
+                unloader.m_nStacker0_ModulePutdownWaitingPos_Step = (int)Unloader.StackerModulePutdownWaitingPos_Step.None;
+                unloader.m_nStacker1_ModulePutdownWaitingPos_Step = (int)Unloader.StackerModulePutdownWaitingPos_Step.None;
+
+
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                 workStage.m_nFindAlignMark_Step = (int)WorkStage.FindAlignMark_Step.None;
+                workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
+
+
                 workStage.m_nReticleCheck_HighResCam_Step = (int)WorkStage.ReticleCheck_HighResCam_Step.None;
                 workStage.m_nReticleCheck_LowResCam_Step = (int)WorkStage.ReticleCheck_LowResCam_Step.None;
                 workStage.m_nSafetyPos_Move_Step = (int)WorkStage.SafetyPos_Move_Step.None;
@@ -440,7 +537,7 @@ namespace SLD200_MSL
 
             DIO_Status();
             Motor_Position();
-            AIO_Status();
+            //AIO_Status(); // Data가 정확하지 않아서 사용 안함. - 20250611
             UpdateSeqStatus();
 
             /////////////////////////////////////////////////////////////////////////////////////
@@ -448,6 +545,34 @@ namespace SLD200_MSL
             label_Config_Laser_PowerMeterValue_BDS.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterBDS_Value);
             label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
             label_Config_WorkStage_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
+
+            /////////////////
+            /// 집진기
+            if(m_bDustCollectorSetFreqOK_Upper)
+            {
+                label_Config_TabWorkStage_DustCollector0_Freq_Value.Text = string.Format("{0:0.0}", textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
+            }
+            else
+            {
+                label_Config_TabWorkStage_DustCollector0_Freq_Value.Text = "0.0";
+            }
+
+            if (m_bDustCollectorSetFreqOK_Lower)
+            {
+                label_Config_TabWorkStage_DustCollector1_Freq_Value.Text = string.Format("{0:0.0}", textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
+            }
+            else
+            {
+                label_Config_TabWorkStage_DustCollector1_Freq_Value.Text = "0.0";
+            }
+
+            /////////////////////////////////////////////////////////////////////////////////////
+            /// VarioScan
+            float? zOffset = bds.CurrentRtcZOffset;
+            float? zDefocus = bds.CurrentRtcZDefocus;
+            label_VarioScan_Z_Offset_Pos.Text = string.Format("{0:0.00000}", zOffset.HasValue ? zOffset.Value : 0.0f);
+            label_VarioScan_Z_Defocus_Pos.Text = string.Format("{0:0.00000}", zDefocus.HasValue ? zDefocus.Value : 0.0f);
+
 
             //  Laser Height Sensor
             label_Config_WorkStage_LaserHeightSensorValue.Text = string.Format("{0:0.00000}", workStage.m_dLaserHeightSensorSocket_Value);
@@ -641,18 +766,59 @@ namespace SLD200_MSL
             }
 
 
-            //  BET
-            if (workStage.m_beamExpander_Comm != null)
+            if (Equipment.Machine_LaserType_CO2)
             {
-                if (workStage.m_beamExpander_Comm.IsOpen)
+                //  BET
+                if (workStage.m_beamExpander_Comm != null)
                 {
-                    textBox_Config_BDS_BET_Zoom.Text = workStage.m_dBET_ZoomValue.ToString();
-                    textBox_Config_BDS_BET_Mrad.Text = workStage.m_dBET_MradValue.ToString();
+                    if (workStage.m_beamExpander_Comm.IsOpen)
+                    {
+                        textBox_Config_BDS_BET_Zoom.Text = workStage.m_dBET_ZoomValue.ToString();
+                        textBox_Config_BDS_BET_Mrad.Text = workStage.m_dBET_MradValue.ToString();
+
+
+                        //  프로그램 구동 후 BET Zoom, Mrad 위치값을 세팅 edit 에 1회만 표시하기 위한 Flag
+                        if (!m_bBET_Status_1time)
+                        {
+                            m_bBET_Status_1time = true;
+
+                            textBox_Config_BDS_BET_Zoom_Position.Text = workStage.m_dBET_ZoomValue.ToString();
+                            textBox_Config_BDS_BET_Mrad_Position.Text = workStage.m_dBET_MradValue.ToString();
+                        }
+                    }
                 }
+
+                if (workStage.workStageParameter.DI_Laser_System_Fault())
+                {
+                    label_Config_Laser_Laser_warning.Text = "Laser System Fault";
+                }
+
+                TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
+                int totalHours = (int)LaserTotalCycle.TotalHours;
+                string formatted = $"{totalHours:D2}:{LaserTotalCycle.Minutes:D2}:{LaserTotalCycle.Seconds:D2}";
+                SetValue(label_Config_Laser_Laser_TotalTime, formatted);
+
             }
 
-
             timer_Status.Enabled = true;
+        }
+
+        void SetValue(Label control, string text, bool isVisible = true)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetValue(control, text, isVisible);
+                }));
+
+            }
+            else
+            {
+                control.Text = text;
+                control.Visible = isVisible;
+            }
         }
 
         private void UpdateSeqStatus()
@@ -1035,7 +1201,6 @@ namespace SLD200_MSL
                     textBox_Config_BDS_Movement_MaskY.Text = string.Format("{0:F3}", 0.0);
                 }
             }
-
 
             //for (int i = 0; i < (int)LoaderParameter.MotionKey.Max; i++)
             //{
@@ -1858,17 +2023,44 @@ namespace SLD200_MSL
         }
         private void button_Config_WorkStage_TeachingPositions_Save_Click(object sender, EventArgs e)
         {
-            //workStage.m_dPowerMeterBDS_Value = 123.0;
-            //return;
-            
-
             //  선택된 축에 대한 데이터 갖다 넣기
-            int m_nIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
-
-            if (m_nIndex >= 0)
+            int nPosIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
+            if (nPosIndex >= 0)
             {
-                workStage.stWorkStageTeachingPos[m_nIndex].Stage_X = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
-                workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
+                //workStage.stWorkStageTeachingPos[nPosIndex].Stage_X = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
+                //workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
+                //공용척 사용시.
+                double dTeachingPosX = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
+                double dTeachingPosY = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                {
+                    if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
+                    {
+                        Equipment.LoadingOffset_forDrilling_X_MSL = dTeachingPosX;
+                        Equipment.LoadingOffset_forDrilling_Y_MSL = dTeachingPosY;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos)
+                    {
+                        Equipment.UnloadingOffset_forDrilling_X_MSL = dTeachingPosX;
+                        Equipment.UnloadingOffset_forDrilling_Y_MSL = dTeachingPosY;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos)
+                    {
+                        Equipment.StageOffset_forDrilling_X_MSL = dTeachingPosX;
+                        Equipment.StageOffset_forDrilling_Y_MSL = dTeachingPosY;
+                    }
+                    else
+                    {
+                        workStage.stWorkStageTeachingPos[nPosIndex].Stage_X = dTeachingPosX;
+                        workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y = dTeachingPosY;
+                    }
+                    Machine_ChuckMSL_Save();
+                }
+                else
+                {
+                    workStage.stWorkStageTeachingPos[nPosIndex].Stage_X = dTeachingPosX;
+                    workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y = dTeachingPosY;
+                }
             }
 
             //  리스트 전체 저장
@@ -1878,13 +2070,37 @@ namespace SLD200_MSL
         private void listBox_Config_WorkStage_TeachingPositions_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  Teaching 항목 선택에 따른 Position
-            int m_nIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
+            int nPosIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
 
-            if (m_nIndex >= 0)
+            if (nPosIndex >= 0)
             {
-                //  데이터 표시
-                textBox_Config_WorkStage_TeachingPos_StageX.Text = workStage.stWorkStageTeachingPos[m_nIndex].Stage_X.ToString();
-                textBox_Config_WorkStage_TeachingPos_StageY.Text = workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y.ToString();
+                // 기존 데이터 표시
+                //textBox_Config_WorkStage_TeachingPos_StageX.Text = workStage.stWorkStageTeachingPos[nPosIndex].Stage_X.ToString();
+                //textBox_Config_WorkStage_TeachingPos_StageY.Text = workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y.ToString();
+
+                //공용척 사용시.
+                double dTeachingPosX = workStage.stWorkStageTeachingPos[nPosIndex].Stage_X;
+                double dTeachingPosY = workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y;
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                {
+                    if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
+                    {
+                        dTeachingPosX = Equipment.LoadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.LoadingOffset_forDrilling_Y_MSL;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos)
+                    {
+                        dTeachingPosX = Equipment.UnloadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.UnloadingOffset_forDrilling_Y_MSL;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos)
+                    {
+                        dTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                    }
+                }
+                textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", dTeachingPosX.ToString());
+                textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", dTeachingPosY.ToString());
             }
         }
         private void button_Config_Vision_TeachingPositions_Save_Click(object sender, EventArgs e)
@@ -1975,12 +2191,36 @@ namespace SLD200_MSL
         private void button_Config_WorkStage_GetCurrentPos_ToTeachingPos_Click(object sender, EventArgs e)
         {
             //  현재 위치값을 티칭 위치값으로 설정 (저장은 아님)
-            int m_nIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
-
-            if (m_nIndex >= 0)
+            int nPosIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
+            if (nPosIndex >= 0)
             {
-                textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString());
-                textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString());
+                //공용척 사용시.
+                double dTeachingPosX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X);
+                double dTeachingPosY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y);
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                {
+                    if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
+                    {
+                        dTeachingPosX = Equipment.LoadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.LoadingOffset_forDrilling_Y_MSL;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos)
+                    {
+                        dTeachingPosX = Equipment.UnloadingOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.UnloadingOffset_forDrilling_Y_MSL;
+                    }
+                    else if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos)
+                    {
+                        dTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
+                        dTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
+                    }
+                }
+                textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", dTeachingPosX.ToString()); //dTeachingPosX.ToString();
+                textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", dTeachingPosY.ToString()); //dTeachingPosY.ToString();
+
+                //기존
+                //textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString());
+                //textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString());
             }
             else
             {
@@ -2511,54 +2751,33 @@ namespace SLD200_MSL
         private void button_Config_WorkStage_StageCenter_To_ScannerCenter_Click(object sender, EventArgs e)
         {
             //  Stage Center 위치를 Scanner Center 위치로 이동
-
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
             double lfVelocity_Z = 0.0f;
             double lfAccDec_Z = 0.0f;
 
-            //if (!workStage.m_bHomeOK)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-            //    return;
-            //}
+            if (!workStage.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
 
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "Stage 를 가공 위치로 보내시겠습니까?"))
                 return;
             
-            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
-                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || 
+                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || 
+                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || 
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || 
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
                 return;
             }
-
-            ////  StageZ 한계위치 설정되어 있는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
-            //    return;
-            //}
-
-            ////  StageZ 한계위치를 초과하여 이동하는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이를 초과하여 이동하려고 하였습니다.\r\n\r\n[ Cancel ]");
-            //    return;
-            //}
-
-            ////  맵 데이터를 이원화 할 경우
-            //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
-            //{
-            //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
-            //}
-
-
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  맵 데이터 변경 (기준위치 : Scanner)
             //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
@@ -2566,39 +2785,42 @@ namespace SLD200_MSL
             workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            // 기존 코드
+            //if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+            //    lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+            //    lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+            //}
+            //else
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            //    //TEST
+            //    //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+            //    //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            //    //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
+            //    lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+            //    lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+            //}
+            //xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+            //xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+            //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z,
+            //                                lfVelocity_Z, lfAccDec_Z, lfAccDec_Z);
 
-            //  속도 설정
-            if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-            {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+            Equipment.Type_Motor_Speed motor_Speed;
+            motor_Speed = Equipment.Type_Motor_Speed.Coarse;
+            int nTeachingPosIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos;
+            workStage.MovetoWorkStage_TeachingPositionsXY(nTeachingPosIndex, motor_Speed);
 
-                lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-            }
-            else
-            {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            nTeachingPosIndex = (int)Vision.Vision_TeachingPosList.Laser_FocusPos;
+            motor_Speed = Equipment.Type_Motor_Speed.Fine;
+            workStage.MovetoWorkStage_TeachingPositionsZ(nTeachingPosIndex, motor_Speed);
 
-                //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
-                //lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
-                //lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
-                lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-            }
-
-            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,
-            //                                lfVelocity, lfAccDec, lfAccDec);
-            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,
-            //                                lfVelocity, lfAccDec, lfAccDec);
-
-            xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-            xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-            workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z,
-                                            lfVelocity_Z, lfAccDec_Z, lfAccDec_Z);
+            workStage.Camera_HighRes.StopLive();
+            workStage.Camera_LowRes.StopLive();
         }
 
         private void button_Config_WorkStage_CurrentScannerPos_To_FineCamPos_Click(object sender, EventArgs e)
@@ -2767,7 +2989,7 @@ namespace SLD200_MSL
             //  맵 데이터 변경 (기준위치 : Scanner)
             //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
             //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+            //workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -2786,6 +3008,13 @@ namespace SLD200_MSL
                 lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
                 lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
             }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //  맵 데이터 변경 (기준위치 : Scanner)
+            //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+            //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, lfTargetX, lfVelocity, lfAccDec, lfAccDec);
             //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, lfTargetY, lfVelocity, lfAccDec, lfAccDec);
@@ -2812,19 +3041,19 @@ namespace SLD200_MSL
 
             //  Temp Position 저장
 
-            //  Temp1 Stage X
+            //  Temp1 Stage
+            NativeMethods.WritePrivateProfileString("TempPos1", "StageName", textBox_Config_WorkStage_TempPos1_StageName.Text.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("TempPos1", "StageX", textBox_Config_WorkStage_TempPos1_StageX.Text.ToString(), strFIle);
-            //  Temp1 Stage Y
             NativeMethods.WritePrivateProfileString("TempPos1", "StageY", textBox_Config_WorkStage_TempPos1_StageY.Text.ToString(), strFIle);
 
-            //  Temp2 Stage X
+            //  Temp2 Stage
+            NativeMethods.WritePrivateProfileString("TempPos2", "StageName", textBox_Config_WorkStage_TempPos2_StageName.Text.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("TempPos2", "StageX", textBox_Config_WorkStage_TempPos2_StageX.Text.ToString(), strFIle);
-            //  Temp2 Stage Y
             NativeMethods.WritePrivateProfileString("TempPos2", "StageY", textBox_Config_WorkStage_TempPos2_StageY.Text.ToString(), strFIle);
 
-            //  Temp3 Stage X
+            //  Temp3 Stage
+            NativeMethods.WritePrivateProfileString("TempPos3", "StageName", textBox_Config_WorkStage_TempPos3_StageName.Text.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("TempPos3", "StageX", textBox_Config_WorkStage_TempPos3_StageX.Text.ToString(), strFIle);
-            //  Temp3 Stage Y
             NativeMethods.WritePrivateProfileString("TempPos3", "StageY", textBox_Config_WorkStage_TempPos3_StageY.Text.ToString(), strFIle);
         }
 
@@ -2845,25 +3074,24 @@ namespace SLD200_MSL
             }
 
             //  Temp Position 데이터 로드
-
-            //  Temp1 Stage X
+            NativeMethods.GetPrivateProfileString("TempPos1", "StageName", "TempPos", temp, 255, strFIle);
+            textBox_Config_WorkStage_TempPos1_StageName.Text = temp.ToString();
             NativeMethods.GetPrivateProfileString("TempPos1", "StageX", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos1_StageX.Text = temp.ToString();
-            //  Temp1 Stage Y
             NativeMethods.GetPrivateProfileString("TempPos1", "StageY", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos1_StageY.Text = temp.ToString();
 
-            //  Temp2 Stage X
+            NativeMethods.GetPrivateProfileString("TempPos2", "StageName", "TempPos", temp, 255, strFIle);
+            textBox_Config_WorkStage_TempPos2_StageName.Text = temp.ToString();
             NativeMethods.GetPrivateProfileString("TempPos2", "StageX", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos2_StageX.Text = temp.ToString();
-            //  Temp2 Stage Y
             NativeMethods.GetPrivateProfileString("TempPos2", "StageY", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos2_StageY.Text = temp.ToString();
 
-            //  Temp3 Stage X
+            NativeMethods.GetPrivateProfileString("TempPos3", "StageName", "TempPos", temp, 255, strFIle);
+            textBox_Config_WorkStage_TempPos3_StageName.Text = temp.ToString();
             NativeMethods.GetPrivateProfileString("TempPos3", "StageX", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos3_StageX.Text = temp.ToString();
-            //  Temp3 Stage Y
             NativeMethods.GetPrivateProfileString("TempPos3", "StageY", "0", temp, 255, strFIle);
             textBox_Config_WorkStage_TempPos3_StageY.Text = temp.ToString();
 
@@ -2904,14 +3132,17 @@ namespace SLD200_MSL
         {
             Temp_Position_Load();
 
-            //  UV Laser 일 때만 보이는 Laser
             if (Equipment.Machine_LaserType_CO2)
             {
                 groupBox_Config_Laser_UVLaser.Visible = false;
+                groupBox_MotorizedBET.Visible = true;
+                groupBox_VarioScan.Visible = true;
             }
             else
             {
                 groupBox_Config_Laser_UVLaser.Visible = true;
+                groupBox_MotorizedBET.Visible = false;
+                groupBox_VarioScan.Visible = false;
             }
         }
 
@@ -3483,13 +3714,13 @@ namespace SLD200_MSL
         private void button_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue_Click(object sender, EventArgs e)
         {
             //  압력 세팅
-
             double m_dkPa = 0.0;
 
             //  음압이므로 양수가 들어와도 음수로 변경
             m_dkPa = Math.Abs(Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text));
 
-            //if ((Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) > -1.3) || (Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
+            //if ((Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) > -1.3) ||
+            //(Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
 
             if (m_dkPa == 0.0)
             {
@@ -3504,7 +3735,6 @@ namespace SLD200_MSL
             m_dkPa *= -1.0;         //  음압으로 변경
 
             workStage.m_bElectroRegulator_CommData_Received = false;
-
             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(m_dkPa);
         }
 
@@ -3566,41 +3796,40 @@ namespace SLD200_MSL
         private void button_Config_TabWorkStage_DustCollector0_Run_Click(object sender, EventArgs e)
         {
             //  집진기0 켜기
-
             workStage.DustCollector_On((int)nDustCollector.DustCollector_Upper);
         }
 
         private void button_Config_TabWorkStage_DustCollector0_Stop_Click(object sender, EventArgs e)
         {
             //  집진기0 끄기
-
             workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
         }
+
+        private bool m_bDustCollectorSetFreqOK_Upper = false;
+        private bool m_bDustCollectorSetFreqOK_Lower = false;
 
         private void button_Config_TabWorkStage_DustCollector0_Freq_Set_Click(object sender, EventArgs e)
         {
             //  집진기0 주파수 세팅
-
             double m_dFreq = Equipment.ToDouble(textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
+            
+            bool bRtn = workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Upper, m_dFreq);
 
-            //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
-            double m_dRet_Freq = GetClosestValue_DustCollector(m_dFreq);
+            m_bDustCollectorSetFreqOK_Upper = bRtn;
 
-            //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            m_dRet_Freq *= 100.0;
-
-            //  숫자를 4자리 숫자로 고정
-            string m_strFreq = m_dRet_Freq.ToString("0000");
-
-            string m_strRet = workStage.ConvertDecimalToHex(m_strFreq);
-
-            if (m_strRet != "NG")
-            {
-                workStage.m_bDustCollector_UpperPos_CommData_Received = false;
-                workStage.m_strDustCollector_UpperPos_Comm_ReceivedData = "";
-
-                workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet);
-            }
+            ////  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
+            //double m_dRet_Freq = GetClosestValue_DustCollector(m_dFreq);
+            ////  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
+            //m_dRet_Freq *= 100.0;
+            ////  숫자를 4자리 숫자로 고정
+            //string m_strFreq = m_dRet_Freq.ToString("0000");
+            //string m_strRet = workStage.ConvertDecimalToHex(m_strFreq);
+            //if (m_strRet != "NG")
+            //{
+            //    workStage.m_bDustCollector_UpperPos_CommData_Received = false;
+            //    workStage.m_strDustCollector_UpperPos_Comm_ReceivedData = "";
+            //    workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Upper, "0005", 1, m_strRet);
+            //}
         }
 
         private void button_Config_TabWorkStage_DustCollector1_Run_Click(object sender, EventArgs e)
@@ -3620,12 +3849,17 @@ namespace SLD200_MSL
         private void button_Config_TabWorkStage_DustCollector1_Freq_Set_Click(object sender, EventArgs e)
         {
             //  집진기1 주파수 세팅
+            bool bRtn = false;
 
             double dFreq = Equipment.ToDouble(textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
 
             //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
-            double dRet_Freq = GetClosestValue_DustCollector(dFreq);
-            dRet_Freq = workStage.DustCollector_SetFrequence(dRet_Freq);
+            //double dRet_Freq = GetClosestValue_DustCollector(dFreq);
+            //dRet_Freq = workStage.DustCollector_SetFrequence(dRet_Freq);
+            bRtn = workStage.DustCollector_SetFrequence((int)nDustCollector.DustCollector_Lower, dFreq);
+
+            m_bDustCollectorSetFreqOK_Lower = bRtn;
+
         }
 
         
@@ -4135,7 +4369,6 @@ namespace SLD200_MSL
         private void button_Test_LDTransfer_PickupRPortPos_Cyc_Click(object sender, EventArgs e)
         {
             //  LDTransfer, Module Pickup from R Port Position Cycle
-
             if (!Equipment.AjinBoard_Opened)
             {
                 var mb1 = new MessageBoxOk();
@@ -4193,11 +4426,6 @@ namespace SLD200_MSL
         
         private async void Button_Config_LDUL_TeachingPositions_Move_Click(object sender, EventArgs e)
         {
-            //  Loader Unloader Teaching Position 이동
-            //var mb = new MessageBoxOk();
-            //mb.ShowDialog("Information !", "미구현 기능.");
-            //return;
-
             int nIndex = listBox_Config_LDUL_TeachingPositions.SelectedIndex;
             if (nIndex < 0)
             {
@@ -5796,6 +6024,336 @@ namespace SLD200_MSL
             //  BET Mrad Init
 
             workStage.BeamExpander_Send_Motor_InitialPosition((int)WorkStage.nMotorizedBET.BeamExpansionMotor);
+        }
+        private void Button_Config_BDS_BeamShutter_Open_Click(object sender, EventArgs e)
+        {
+            //  Beam Shtter Open (BW)
+
+            bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
+            bds.bdsParameter.DO_BDS_PowerMeter_BW(true);            
+        }
+
+        private void Button_Config_BDS_BeamShutter_Close_Click(object sender, EventArgs e)
+        {
+            //  Beam Shtter Close (FW)
+
+            bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+            bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
+        }
+
+        private void Button_Config_Laser_BeamShutter_Open_Click(object sender, EventArgs e)
+        {
+            //  Beam Shtter Open (BW)
+
+            bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
+            bds.bdsParameter.DO_BDS_PowerMeter_BW(true);
+        }
+
+        private void Button_Config_Laser_BeamShutter_Close_Click(object sender, EventArgs e)
+        {
+            //  Beam Shtter Close (FW)
+
+            bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+            bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
+        }
+
+        private void Button_Config_VarioScan_ZOffset_Set_Click(object sender, EventArgs e)
+        {
+            //  Vario Scan - Z Offset Setting
+            
+
+            float zOffset = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZOffset.Text);
+            bds.spiralLabVario.SetZOffset(zOffset);
+
+            //var rtc3D = workStage.rtc as IRtc3D;
+            //rtc3D.CtlZOffset(zOffset);
+
+            MessageBox.Show($"Vario Scan - Z Offset 설정 값 : {zOffset} mm", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void Button_Config_VarioScan_ZDefocua_Set_Click(object sender, EventArgs e)
+        {
+            //  Vario Scan - Z Defocus Setting
+            float zDefocus = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZDefocus.Text);
+            bds.spiralLabVario.SetZDefocus(zDefocus);
+
+            //var rtc3D = workStage.rtc as IRtc3D;
+            //rtc3D.CtlZDefocus(zDefocus);
+
+            MessageBox.Show($"Vario Scan - Z Defocus 설정 값 : {zDefocus} mm", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void Button_Config_VarioScan_ZOffsetZDefocus_Reset_Click(object sender, EventArgs e)
+        {
+            //  Vario Scan - Z Offset & Z Defocus Reset
+            //var rtc3D = workStage.rtc as IRtc3D;
+            //rtc3D.CtlZOffset(0.0f);
+            //rtc3D.CtlZDefocus(0.0f);
+
+            bds.spiralLabVario.SetZDefocus(0.0f);
+            bds.spiralLabVario.SetZOffset(0.0f);
+
+            textBox_Config_TabLaser_VarioScan_ZOffset.Text = "0.0";
+            textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "0.0";
+            MessageBox.Show("Vario Scan - Z Offset & Z Defocus 값이 초기화 되었습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void button_Config_TabLaser_ScannerVisionOffset_Click(object sender, EventArgs e)
+        {
+            if (!FormVerifyScannerVisionOffsetPopup.Visible)
+            {
+                FormVerifyScannerVisionOffsetPopup.Show();
+                FormVerifyScannerVisionOffsetPopup.Activate();
+            }
+        }
+
+        private void button_Config_WorkStage_TeachingPositions_ProcessSpeed_Save_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string strFIle = "";
+                strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+                if (File.Exists(strFIle) == false)
+                {
+                    MessageBox.Show("ConfigFile 파일이 없습니다.\r\n\r\n[Default값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (File.Exists(strFIle) == false)
+                {
+                    File.Create(strFIle);
+                }
+
+                // 값 가져오기
+                string strTemp = string.Empty;
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text;
+                workStage.m_pProcessConfigData.nSpeedAxisX = Equipment.ToInt(strTemp);
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text;
+                workStage.m_pProcessConfigData.nSpeedAxisY = Equipment.ToInt(strTemp);
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text;
+                workStage.m_pProcessConfigData.nAccelAxisX = Equipment.ToInt(strTemp);
+                strTemp = textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text;
+                workStage.m_pProcessConfigData.nAccelAxisY = Equipment.ToInt(strTemp);
+
+                workStage.m_pProcessConfigData.SaveToIni(strFIle);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
+
+        private void Button_Config_LDUL_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            loader.StoptoLoader_Motor(Loader.nAxis.Z0);
+            loader.StoptoLoader_Motor(Loader.nAxis.Z1);
+            loader.StoptoLoader_Motor(Loader.nAxis.TR_X);
+            loader.StoptoLoader_Motor(Loader.nAxis.TR_Z);
+            loader.StoptoLoader_Motor(Loader.nAxis.ALN_X);
+            loader.StoptoLoader_Motor(Loader.nAxis.ALN_Y);
+
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.Z0);
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.Z1);
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.TR_X);
+            unloader.StoptoUnloader_Motor(Unloader.nAxis.TR_Z);
+        }
+
+        private void button_Config_WorkStage_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            // Head도 같이 정지.
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.X);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Y);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Z);
+        }
+
+        private void button_Config_Vision_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            // Stage도 같이 정지.
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.X);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Y);
+            workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Z);
+        }
+
+        private void button_Config_BDS_TeachingPositions_Stop_Click(object sender, EventArgs e)
+        {
+            if (!Equipment.Machine_LaserType_CO2)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "UV Laser System 에는 Mask 가 없습니다.");
+                return;
+            }
+
+            bds.MC_Func.MC_MotorStop((int)Bds.nAxis.MASK_Y, 2000);
+        }
+
+        private void button_Config_LDUL_Module_Size_Save_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string strFIle = "";
+                strFIle = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+                if (File.Exists(strFIle) == false)
+                {
+                    MessageBox.Show("ConfigFile 파일이 없습니다.\r\n\r\n[Default값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (File.Exists(strFIle) == false)
+                {
+                    File.Create(strFIle);
+                }
+
+                // 값 가져오기
+                string strTemp = string.Empty;
+                strTemp = textBox_Config_LDUL_Module_Size_Set.Text;
+                workStage.m_pProcessConfigData.dModuleSizeSet = Equipment.ToDouble(strTemp);
+
+                workStage.m_pProcessConfigData.SaveToIni(strFIle);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
+
+        private void button_Config_LDUL_Move_Recipe_Move_Click(object sender, EventArgs e)
+        {
+            string strTemp = string.Empty;
+            string strPosX = textBox_Config_LDUL_Move_Recipe_MAlignerX.Text;
+            string strPosY = textBox_Config_LDUL_Move_Recipe_MAlignerY.Text;
+            double dPosX = Equipment.ToDouble(strPosX);
+            double dPosY = Equipment.ToDouble(strPosY);
+
+            var mb = new MessageBoxYesNo();
+            Equipment.Type_Motor_Speed motor_Speed;
+
+            //  속도 설정
+            if (radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Checked)
+            {
+                motor_Speed = Equipment.Type_Motor_Speed.Fine;
+            }
+            else
+            {
+                motor_Speed = Equipment.Type_Motor_Speed.Coarse;
+            }
+
+            mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "위치로 보내시겠습니까?"))
+                return;
+
+            loader.MovetoLoader_ABS_Positions(Loader.nAxis.ALN_X, dPosX, motor_Speed);
+            loader.MovetoLoader_ABS_Positions(Loader.nAxis.ALN_Y, dPosY, motor_Speed);
+
+            Thread.Sleep(500);
+            bool bWaitX = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.ALN_X, dPosX).Result;
+            if (!bWaitX)
+            {
+                strTemp = string.Format("X-Axis이 이동 실패.");
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Error !", strTemp);
+                return;
+            }
+            bool bWaitY = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.ALN_Y, dPosY).Result;
+            if (!bWaitY)
+            {
+                strTemp = string.Format("Y-Axis이 이동 실패.");
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Error !", strTemp);
+                return;
+            }
+        }
+
+        private void button_Config_TabLaser_LaserPowerMeasure_Click(object sender, EventArgs e)
+        {
+            //InitspiralLabScanner
+            FormLaserPowerMeasure.InitSpiralLab(bds.spiralLabScanner);
+            FormLaserPowerMeasure.m_bReadyLaserPowerMeasure = false;
+            FormLaserPowerMeasure.Show();
+        }
+
+        // 이거 각각 폼에 만들어야함.
+        private void InitRecipeUI_KeyPad()
+        {
+            RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행
+        }
+        private void RegisterKeyPadDoubleClickHandlers(Control parent)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                // 조건: 숫자 입력용 TextBox 또는 RichTextBox만
+                bool isTargetTextBox = ctrl is TextBox || ctrl is RichTextBox;
+
+                if (isTargetTextBox && ctrl.Tag?.ToString().Contains("KeyPad") == true)
+                {
+                    ctrl.DoubleClick -= textBox_DoubleClick_OpenKeyPad; // 중복 연결 방지
+                    ctrl.DoubleClick += textBox_DoubleClick_OpenKeyPad;
+
+                    // 키보드 입력 제한용 Validating 연결
+                    ctrl.Validating -= textBox_Validate_KeyPadRange;
+                    ctrl.Validating += textBox_Validate_KeyPadRange;
+                }
+
+                // 하위 컨트롤 재귀 탐색
+                if (ctrl.HasChildren)
+                    RegisterKeyPadDoubleClickHandlers(ctrl);
+            }
+        }
+        private void textBox_DoubleClick_OpenKeyPad(object sender, EventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                string currentText = ctrl.Text ?? "0";
+                var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
+
+                if (double.TryParse(currentText, out double value))
+                    dlg.SetInitialValue(value);
+                else
+                    dlg.SetInitialValue(0);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string result = dlg.EnteredValue.ToString(meta.Format);
+                    ctrl.Text = result;
+                }
+            }
+        }
+        private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
+        {
+            if (sender is TextBox tb && tb.Tag != null)
+            {
+                var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
+
+                if (double.TryParse(tb.Text, out double val))
+                {
+                    if (val < meta.Min)
+                    {
+                        tb.Text = meta.Min.ToString(meta.Format);
+                        //MessageBox.Show($"최소값 {meta.Min}보다 작습니다."); // 또는 자동 보정만
+                    }
+                    else if (val > meta.Max)
+                    {
+                        tb.Text = meta.Max.ToString(meta.Format);
+                        //MessageBox.Show($"최대값 {meta.Max}보다 큽니다.");
+                    }
+                    else
+                    {
+                        tb.Text = val.ToString(meta.Format);
+                    }
+                }
+                else
+                {
+                    // 숫자 아님 → 초기화
+                    tb.Text = meta.Min.ToString(meta.Format);
+                }
+            }
         }
     }
 }

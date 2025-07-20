@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -186,7 +186,10 @@
     <Compile Include="CircularButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DustCollectorController\DustCollectorController.cs" />
     <Compile Include="Global\AreaInfo.cs" />
+    <Compile Include="Global\AxisMap.cs" />
+    <Compile Include="Global\DrillingProcessManager.cs" />
     <Compile Include="Global\GlobalHotkeyMessageFilter.cs" />
     <Compile Include="Global\HoleAlignHelper.cs" />
     <Compile Include="Global\LayerInfo.cs" />
@@ -194,6 +197,10 @@
     <Compile Include="Global\ProcessManagerExtended.cs" />
     <Compile Include="Global\SocketInfo.cs" />
     <Compile Include="Interpolator\DrawingResizeForPerspectiveProjection.cs" />
+    <Compile Include="Laser\Coherent_CO2\LaserDiagnosticInterface.cs" />
+    <Compile Include="Laser\Coherent_CO2\LaserDiagnosticManager.cs" />
+    <Compile Include="Laser\Coherent_CO2\LaserResponseParser.cs" />
+    <Compile Include="Laser\Coherent_CO2\LaserTcpClient.cs" />
     <Compile Include="ListParam.cs" />
     <Compile Include="Modules\DeviceConnectionModule.cs" />
     <Compile Include="Modules\Laser.cs" />
@@ -203,13 +210,19 @@
     <Compile Include="Modules\Scanner.cs" />
     <Compile Include="Modules\LaserConfig.cs" />
     <Compile Include="Modules\LaserRecipe.cs" />
-    <Compile Include="Recipe\ScannerCalManager.cs" />
-    <Compile Include="Recipe\VisionRecipeData.cs" />
+    <Compile Include="Q_Config\ProcessConfigData.cs" />
+    <Compile Include="Q_Config\ScannerCalConfigData.cs" />
+    <Compile Include="Q_Recipe\ScannerCalManager.cs" />
+    <Compile Include="Q_Recipe\VisionRecipeData.cs" />
+    <Compile Include="Q_Sequence\Sequence_FlatnessMeasure.cs" />
+    <Compile Include="Q_Sequence\Sequence_LaserPowerMeasure.cs" />
+    <Compile Include="Q_Sequence\Sequence_VerifyScannerCameraOffset.cs" />
     <Compile Include="SpiralLab\Sirius\QMCSiriusEditorForm.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SpiralLab\SpialData.cs" />
     <Compile Include="SpiralLab\SpiralDataCollector.cs" />
+    <Compile Include="SpiralLab\SpiralLabVario.cs" />
     <Compile Include="SpiralLab\SpiralLabScanner.cs" />
     <Compile Include="Modules\Unloader.cs" />
     <Compile Include="Modules\Loader.cs" />
@@ -701,7 +714,11 @@
     <None Include="syncAXIS\bin64\lib\syncAXIS.lib" />
     <None Include="syncAXIS\bin\lib\syncAXIS.lib" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="SpiralLab\Sirius\QMCSiriusEditorForm.resx">
+      <DependentUpon>QMCSiriusEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "C:\Program Files\QMC\SLD200_MSL\"

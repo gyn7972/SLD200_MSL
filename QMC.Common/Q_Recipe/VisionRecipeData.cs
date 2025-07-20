@@ -11,6 +11,41 @@ using static QMC.Common.Equipment;
 
 namespace QMC.Common.Recipe
 {
+    public class SocketMarkInfo
+    {
+        public int AlignType { get; set; } = 0;
+        public int MarkType { get; set; } = 0;
+        public int MarkColor { get; set; } = 0;
+        public double MarkRadius { get; set; } = 0.0;
+        public double MarkSpec { get; set; } = 0.0;
+        public double MarkScore { get; set; } = 0.0;
+        public int IllumRed { get; set; } = 0;
+        public int IllumIR { get; set; } = 0;
+        public bool UseRed { get; set; } = false;
+        public bool UseIR { get; set; } = false;
+        public double ExposureTime { get; set; } = 0.0;
+        public double AxisZOffset { get; set; } = 0.0;
+
+        public SocketMarkInfo Clone()
+        {
+            return new SocketMarkInfo
+            {
+                AlignType = this.AlignType,
+                MarkType = this.MarkType,
+                MarkColor = this.MarkColor,
+                MarkRadius = this.MarkRadius,
+                MarkSpec = this.MarkSpec,
+                MarkScore = this.MarkScore,
+                UseIR = this.UseIR,
+                UseRed = this.UseRed,
+                ExposureTime = this.ExposureTime,
+                AxisZOffset = this.AxisZOffset,
+                IllumIR = this.IllumIR,
+                IllumRed = this.IllumRed
+            };
+        }
+    }
+
     public class VisionRecipeData
     {
         
@@ -24,22 +59,38 @@ namespace QMC.Common.Recipe
         }
 
         //Socket
-        public int nSocketAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
-        public int nSocketMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+        public List<SocketMarkInfo> SocketMarkList { get; private set; } = new List<SocketMarkInfo>();
 
-        /// <summary>
-        /// Mark Color  0: White, 1: Black, 2: Ignore
-        /// </summary>
-        public int nSocketCircleColor;               //  0: White, 1: Black, 2: Ignore
-        public double dSocketCircleMarkRadius;                  //  Fiducial Mark Size (mm)
-        public double dSocketCircleMarkSpec;                  //  Fiducial Mark Spec
-        public double dSocketCircleMarkScore;         //circle score
-        public int nSocketIlluminationIR;
-        public int nSocketIlluminationRed;
-        public bool bSocketIlluminationIRUse;
-        public bool bSocketIlluminationRedUse;
-        public double dSocketIlluminationExposureTime;
-        public double dSocketAxisZ_Offset;
+        // 기존과의 호환을 위한 속성 매핑 (SocketMarkList[0] 기반)
+        public int nSocketAlignType => SocketMarkList.Count > 0 ? SocketMarkList[0].AlignType : 0;
+        public int nSocketMarkType => SocketMarkList.Count > 0 ? SocketMarkList[0].MarkType : 0;
+        public int nSocketCircleColor => SocketMarkList.Count > 0 ? SocketMarkList[0].MarkColor : 0;
+        public double dSocketCircleMarkRadius => SocketMarkList.Count > 0 ? SocketMarkList[0].MarkRadius : 0.0;
+        public double dSocketCircleMarkSpec => SocketMarkList.Count > 0 ? SocketMarkList[0].MarkSpec : 0.0;
+        public double dSocketCircleMarkScore => SocketMarkList.Count > 0 ? SocketMarkList[0].MarkScore : 0.0;
+        public int nSocketIlluminationRed => SocketMarkList.Count > 0 ? SocketMarkList[0].IllumRed : 0;
+        public int nSocketIlluminationIR => SocketMarkList.Count > 0 ? SocketMarkList[0].IllumIR : 0;
+        public bool bSocketIlluminationRedUse => SocketMarkList.Count > 0 ? SocketMarkList[0].UseRed : false;
+        public bool bSocketIlluminationIRUse => SocketMarkList.Count > 0 ? SocketMarkList[0].UseIR : false;
+        public double dSocketIlluminationExposureTime => SocketMarkList.Count > 0 ? SocketMarkList[0].ExposureTime : 0.0;
+        public double dSocketAxisZ_Offset => SocketMarkList.Count > 0 ? SocketMarkList[0].AxisZOffset : 0.0;
+
+        //기존코드
+        //{
+        //public int nSocketAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
+        //public int nSocketMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+        //public int nSocketCircleColor;               //  0: White, 1: Black, 2: Ignore
+        //public double dSocketCircleMarkRadius;                  //  Fiducial Mark Size (mm)
+        //public double dSocketCircleMarkSpec;                  //  Fiducial Mark Spec
+        //public double dSocketCircleMarkScore;         //circle score
+        //public int nSocketIlluminationIR;
+        //public int nSocketIlluminationRed;
+        //public bool bSocketIlluminationIRUse;
+        //public bool bSocketIlluminationRedUse;
+        //public double dSocketIlluminationExposureTime;
+        //public double dSocketAxisZ_Offset;
+        //}
+
 
         //PreAlign
         public PatternMatchingParameters PrePatternMatching;
@@ -48,6 +99,7 @@ namespace QMC.Common.Recipe
         public System.Drawing.Point pointPreInspectRoiStartLocation;
         public System.Drawing.Point pointPreInspectRoiEndLocation;
         public int nPreIlluminationIR;
+        public int nPreIlluminationRed;
         public string pointPreTrainImagePath;
 
         public int nPreCircleColor;  //0: White, 1: Black, 2: Ignore
@@ -79,21 +131,40 @@ namespace QMC.Common.Recipe
         {
             bool bRet = false;
 
-            NativeMethods.WritePrivateProfileString("SocketAlign", "Aligntype", nSocketAlignType.ToString(), path);
-            NativeMethods.WritePrivateProfileString("SocketAlign", "MarkType", nSocketMarkType.ToString(), path);
+            // SocketAlign
+            NativeMethods.WritePrivateProfileString("SocketAlign", "Count", SocketMarkList.Count.ToString(), path);
 
-            NativeMethods.WritePrivateProfileString("SocketAlign", "MarkColor", nSocketCircleColor.ToString(), path);
-            NativeMethods.WritePrivateProfileString("SocketAlign", "MarkSize", dSocketCircleMarkRadius.ToString(), path);
-            NativeMethods.WritePrivateProfileString("SocketAlign", "MarkSpec", dSocketCircleMarkSpec.ToString(), path);
-            NativeMethods.WritePrivateProfileString("SocketAlign", "MarkScore", dSocketCircleMarkScore.ToString(), path);
+            for (int i = 0; i < SocketMarkList.Count; i++)
+            {
+                string section = $"SocketMark_{i}";
+                var mark = SocketMarkList[i];
 
-            NativeMethods.WritePrivateProfileString("SocketAlign", "IR", nSocketIlluminationIR.ToString(), path);
-            NativeMethods.WritePrivateProfileString("SocketAlign", "Red", nSocketIlluminationRed.ToString(), path);
-
-            NativeMethods.WritePrivateProfileString("SocketAlign", "IRUse", bSocketIlluminationIRUse.ToString(), path);
-            NativeMethods.WritePrivateProfileString("SocketAlign", "RedUse", bSocketIlluminationRedUse.ToString(), path);
-            NativeMethods.WritePrivateProfileString("SocketAlign", "ExposureTime", dSocketIlluminationExposureTime.ToString(), path);
-            NativeMethods.WritePrivateProfileString("SocketAlign", "AxisZ_Offset", dSocketAxisZ_Offset.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "AlignType", mark.AlignType.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "MarkType", mark.MarkType.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "MarkColor", mark.MarkColor.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "MarkRadius", mark.MarkRadius.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "MarkSpec", mark.MarkSpec.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "MarkScore", mark.MarkScore.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "IllumRed", mark.IllumRed.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "IllumIR", mark.IllumIR.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "UseRed", mark.UseRed.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "UseIR", mark.UseIR.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "ExposureTime", mark.ExposureTime.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "AxisZOffset", mark.AxisZOffset.ToString(), path);
+            }
+            // 기존 코드 호환을 위한 속성 매핑 (SocketMarkList[0] 기준)
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "Aligntype", nSocketAlignType.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "MarkType", nSocketMarkType.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "MarkColor", nSocketCircleColor.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "MarkSize", dSocketCircleMarkRadius.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "MarkSpec", dSocketCircleMarkSpec.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "MarkScore", dSocketCircleMarkScore.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "IR", nSocketIlluminationIR.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "Red", nSocketIlluminationRed.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "IRUse", bSocketIlluminationIRUse.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "RedUse", bSocketIlluminationRedUse.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "ExposureTime", dSocketIlluminationExposureTime.ToString(), path);
+            //NativeMethods.WritePrivateProfileString("SocketAlign", "AxisZ_Offset", dSocketAxisZ_Offset.ToString(), path);
 
 
             if (PrePatternMatching != null)
@@ -118,6 +189,7 @@ namespace QMC.Common.Recipe
                 NativeMethods.WritePrivateProfileString("Vision", "PatternShape", ((int)ePreMarkType).ToString(), path);
 
                 NativeMethods.WritePrivateProfileString("PreAlign_llumination", "IR", nPreIlluminationIR.ToString(), path);
+                NativeMethods.WritePrivateProfileString("PreAlign_llumination", "Red", nPreIlluminationRed.ToString(), path);
 
                 NativeMethods.WritePrivateProfileString("CircleDetection", "Color", nPreCircleColor.ToString(), path);
                 NativeMethods.WritePrivateProfileString("CircleDetection", "SizeW", dPreCircleMarkRadius.ToString(), path);
@@ -165,7 +237,6 @@ namespace QMC.Common.Recipe
             NativeMethods.WritePrivateProfileString("GoldPowder", "CircleMarkMaxInstance", nGoldPowderCircleMarkMaxInstance.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "CircleMarkFindCount", nGoldPowderCircleMarkFindCount.ToString(), path);
 
-
             return bRet;
         }
 
@@ -177,34 +248,123 @@ namespace QMC.Common.Recipe
 
             try
             {
-                // SocketAlign
-                NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "1", sb, sb.Capacity, path);
-                data.nSocketAlignType = 1;  // Equipment.ToInt(sb.ToString());
-                NativeMethods.GetPrivateProfileString("SocketAlign", "MarkType", "0", sb, sb.Capacity, path);
-                data.nSocketMarkType = 0; // Equipment.ToInt(sb.ToString());
-                NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "true", sb, sb.Capacity, path);
-                data.nSocketCircleColor = Equipment.ToInt(sb.ToString());
+                // SocketMarkList.Clear(); // 기존 리스트 초기화
+                NativeMethods.GetPrivateProfileString("SocketAlign", "Count", "0", sb, sb.Capacity, path);
+                int count = Equipment.ToInt(sb.ToString());
 
-                NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSize", "0.5", sb, sb.Capacity, path);
-                data.dSocketCircleMarkRadius = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.05", sb, sb.Capacity, path);
-                data.dSocketCircleMarkSpec = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("SocketAlign", "MarkScore", "0.7", sb, sb.Capacity, path);
-                data.dSocketCircleMarkScore = Equipment.ToDouble(sb.ToString());
+                for (int i = 0; i < count; i++)
+                {
+                    string section = $"SocketMark_{i}";
+                    SocketMarkInfo mark = new SocketMarkInfo();
 
-                NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "250", sb, sb.Capacity, path);
-                data.nSocketIlluminationIR = Equipment.ToInt(sb.ToString());
-                NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "0", sb, sb.Capacity, path);
-                data.nSocketIlluminationRed = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString(section, "AlignType", "0", sb, sb.Capacity, path);
+                    mark.AlignType = Equipment.ToInt(sb.ToString());
 
-                NativeMethods.GetPrivateProfileString("SocketAlign", "IRUse", "True", sb, sb.Capacity, path);
-                data.bSocketIlluminationIRUse = Equipment.ToBoolean(sb.ToString());
-                NativeMethods.GetPrivateProfileString("SocketAlign", "RedUse", "True", sb, sb.Capacity, path);
-                data.bSocketIlluminationRedUse = Equipment.ToBoolean(sb.ToString());
-                NativeMethods.GetPrivateProfileString("SocketAlign", "ExposureTime", "20000", sb, sb.Capacity, path);
-                data.dSocketIlluminationExposureTime = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("SocketAlign", "AxisZ_Offset", "0.0", sb, sb.Capacity, path);
-                data.dSocketAxisZ_Offset = Equipment.ToDouble(sb.ToString());
+                    NativeMethods.GetPrivateProfileString(section, "MarkType", "0", sb, sb.Capacity, path);
+                    mark.MarkType = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString(section, "MarkColor", "0", sb, sb.Capacity, path);
+                    mark.MarkColor = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString(section, "MarkRadius", "0", sb, sb.Capacity, path);
+                    mark.MarkRadius = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString(section, "MarkSpec", "0", sb, sb.Capacity, path);
+                    mark.MarkSpec = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString(section, "MarkScore", "0", sb, sb.Capacity, path);
+                    mark.MarkScore = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString(section, "IllumRed", "0", sb, sb.Capacity, path);
+                    mark.IllumRed = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString(section, "IllumIR", "0", sb, sb.Capacity, path);
+                    mark.IllumIR = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString(section, "UseRed", "False", sb, sb.Capacity, path);
+                    mark.UseRed = Equipment.ToBoolean(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString(section, "UseIR", "False", sb, sb.Capacity, path);
+                    mark.UseIR = Equipment.ToBoolean(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString(section, "ExposureTime", "0.0", sb, sb.Capacity, path);
+                    mark.ExposureTime = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString(section, "AxisZOffset", "0.0", sb, sb.Capacity, path);
+                    mark.AxisZOffset = Equipment.ToDouble(sb.ToString());
+
+                    data.SocketMarkList.Add(mark);
+                }
+
+                // 마이그레이션: SocketAlign 섹션만 존재할 경우 → SocketMarkList[0]에 자동 등록
+                if (count == 0)
+                {
+                    SocketMarkInfo mark = new SocketMarkInfo();
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "0", sb, sb.Capacity, path);
+                    mark.AlignType = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkType", "0", sb, sb.Capacity, path);
+                    mark.MarkType = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "0", sb, sb.Capacity, path);
+                    mark.MarkColor = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSize", "0.0", sb, sb.Capacity, path);
+                    mark.MarkRadius = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.0", sb, sb.Capacity, path);
+                    mark.MarkSpec = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkScore", "0.0", sb, sb.Capacity, path);
+                    mark.MarkScore = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "0", sb, sb.Capacity, path);
+                    mark.IllumRed = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "0", sb, sb.Capacity, path);
+                    mark.IllumIR = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "RedUse", "False", sb, sb.Capacity, path);
+                    mark.UseRed = Equipment.ToBoolean(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "IRUse", "False", sb, sb.Capacity, path);
+                    mark.UseIR = Equipment.ToBoolean(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "ExposureTime", "0.0", sb, sb.Capacity, path);
+                    mark.ExposureTime = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "AxisZ_Offset", "0.0", sb, sb.Capacity, path);
+                    mark.AxisZOffset = Equipment.ToDouble(sb.ToString());
+
+                    data.SocketMarkList.Add(mark);
+                }
+
+                //// SocketAlign //기존 코드
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "1", sb, sb.Capacity, path);
+                //data.nSocketAlignType = 1;  // Equipment.ToInt(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "MarkType", "0", sb, sb.Capacity, path);
+                //data.nSocketMarkType = 0; // Equipment.ToInt(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "true", sb, sb.Capacity, path);
+                //data.nSocketCircleColor = Equipment.ToInt(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSize", "0.5", sb, sb.Capacity, path);
+                //data.dSocketCircleMarkRadius = Equipment.ToDouble(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.05", sb, sb.Capacity, path);
+                //data.dSocketCircleMarkSpec = Equipment.ToDouble(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "MarkScore", "0.7", sb, sb.Capacity, path);
+                //data.dSocketCircleMarkScore = Equipment.ToDouble(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "250", sb, sb.Capacity, path);
+                //data.nSocketIlluminationIR = Equipment.ToInt(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "0", sb, sb.Capacity, path);
+                //data.nSocketIlluminationRed = Equipment.ToInt(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "IRUse", "True", sb, sb.Capacity, path);
+                //data.bSocketIlluminationIRUse = Equipment.ToBoolean(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "RedUse", "True", sb, sb.Capacity, path);
+                //data.bSocketIlluminationRedUse = Equipment.ToBoolean(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "ExposureTime", "20000", sb, sb.Capacity, path);
+                //data.dSocketIlluminationExposureTime = Equipment.ToDouble(sb.ToString());
+                //NativeMethods.GetPrivateProfileString("SocketAlign", "AxisZ_Offset", "0.0", sb, sb.Capacity, path);
+                //data.dSocketAxisZ_Offset = Equipment.ToDouble(sb.ToString());
 
 
                 //PreAlign
@@ -250,6 +410,9 @@ namespace QMC.Common.Recipe
 
                 NativeMethods.GetPrivateProfileString("PreAlign_llumination", "IR", "3000", sb, sb.Capacity, path);
                 data.nPreIlluminationIR = Equipment.ToInt(sb.ToString());
+
+                NativeMethods.GetPrivateProfileString("PreAlign_llumination", "Red", "0", sb, sb.Capacity, path);
+                data.nPreIlluminationRed = Equipment.ToInt(sb.ToString());
 
                 NativeMethods.GetPrivateProfileString("CircleDetection", "Color", "true", sb, sb.Capacity, path);
                 data.nPreCircleColor = Equipment.ToInt(sb.ToString());
@@ -312,6 +475,7 @@ namespace QMC.Common.Recipe
                 data.nGoldPowderCircleMarkMaxInstance = Equipment.ToInt(sb.ToString());
                 NativeMethods.GetPrivateProfileString("GoldPowder", "CircleMarkFindCount", "7", sb, sb.Capacity, path);
                 data.nGoldPowderCircleMarkFindCount = Equipment.ToInt(sb.ToString());
+
 
 
             }
