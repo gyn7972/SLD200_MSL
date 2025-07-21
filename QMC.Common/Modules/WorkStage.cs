@@ -8048,8 +8048,10 @@ namespace QMC.Common.Modules
                 }
                 else
                 {
-                    if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, workStageParameter.DI_Scanner_Flow_Check()))
+                    if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, !workStageParameter.DI_Scanner_Flow_Check()))
                         AlarmPost(AlarmKey.Scanner_Flow_Alarm);
+                    //if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, workStageParameter.DI_Scanner_Flow_Check()))
+                    //    AlarmPost(AlarmKey.Scanner_Flow_Alarm);
                 }
 
                 if (ShouldRaiseAlarm(AlarmKey.Water_In_Leak_Alarm, !workStageParameter.DI_Water_In_Leak_Check()))
