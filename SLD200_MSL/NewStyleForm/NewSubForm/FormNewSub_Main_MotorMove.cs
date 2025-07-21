@@ -541,7 +541,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             // Stage 기준 위치 (기존 코드)
             double expectedStageX = Equipment.StageOffset_forDrilling_X;
             double expectedStageY = Equipment.StageOffset_forDrilling_Y;
-            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
             {
                 expectedStageX = Equipment.StageOffset_forDrilling_X_MSL;
                 expectedStageY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -639,7 +639,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 // FineCam 기준 위치 계산 (Scanner 중심에서 Offset 뺀 위치가 FineCam 위치)
                 double expectedScannerPosX = Equipment.StageOffset_forDrilling_X;
                 double expectedScannerPosY = Equipment.StageOffset_forDrilling_Y;
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     expectedScannerPosX = Equipment.StageOffset_forDrilling_X_MSL;
                     expectedScannerPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -653,7 +653,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 // Stage 기준 위치 (기존 코드)
                 double expectedStageX = Equipment.StageOffset_forDrilling_X;
                 double expectedStageY = Equipment.StageOffset_forDrilling_Y;
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     expectedStageX = Equipment.StageOffset_forDrilling_X_MSL;
                     expectedStageY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -750,7 +750,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 // Stage 기준 위치 (기존 코드)
                 double expectedStageX = Equipment.StageOffset_forDrilling_X;
                 double expectedStageY = Equipment.StageOffset_forDrilling_Y;
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     expectedStageX = Equipment.StageOffset_forDrilling_X_MSL;
                     expectedStageY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -855,7 +855,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 // 기준 위치 계산 
                 double expectedStageX = Equipment.StageOffset_forDrilling_X;
                 double expectedStageY = Equipment.StageOffset_forDrilling_Y;
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     expectedStageX = Equipment.StageOffset_forDrilling_X_MSL;
                     expectedStageY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -968,7 +968,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 // Stage 기준 위치 (기존 코드)
                 double expectedStageX = Equipment.StageOffset_forDrilling_X;
                 double expectedStageY = Equipment.StageOffset_forDrilling_Y;
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     expectedStageX = Equipment.StageOffset_forDrilling_X_MSL;
                     expectedStageY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -1067,7 +1067,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 // Stage 기준 위치 (기존 코드)
                 double expectedStageX = Equipment.StageOffset_forDrilling_X;
                 double expectedStageY = Equipment.StageOffset_forDrilling_Y;
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     expectedStageX = Equipment.StageOffset_forDrilling_X_MSL;
                     expectedStageY = Equipment.StageOffset_forDrilling_Y_MSL;

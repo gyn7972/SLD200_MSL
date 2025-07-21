@@ -1027,8 +1027,10 @@ namespace SLD200_MSL
                 NativeMethods.GetPrivateProfileString(strTemp, "ZCalFile_OffsetZ", "0.0", temp, 255, strFIle);
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = Equipment.ToDouble(temp.ToString());
 
-                NativeMethods.GetPrivateProfileString(strTemp, "ChuckMSL_Use", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].ChuckMSL_Use = Equipment.ToBoolean(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "ChuckMSL_Use", "false", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].ChuckMSL_Enable = Equipment.ToBoolean(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "Align3Point_Enable", "false", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].Align3Point_Enable = Equipment.ToBoolean(temp.ToString());
             }
 
             return m_bRet;
@@ -1143,7 +1145,8 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = ReadDouble(data, "DustCollector_Frequency_Lower", 20.0);
                 Equipment.stLayerRecipeSet[i].DustCollectorLower_Disable = ReadBool(data, "DustCollector_Lower_Disable", false);
                 Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm = ReadDouble(data, "ZCalFile_OffsetZ", 0.0);
-                Equipment.stLayerRecipeSet[i].ChuckMSL_Use = ReadBool(data, "ChuckMSL_Use", false);
+                Equipment.stLayerRecipeSet[i].ChuckMSL_Enable = ReadBool(data, "ChuckMSL_Use", false);
+                Equipment.stLayerRecipeSet[i].Align3Point_Enable = ReadBool(data, "Align3Point_Enable", false);
 
                 //  Marking Template
                 Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use = ReadBool(data, "MarkingData_SiriusTemplate_Use", false);
@@ -1333,7 +1336,9 @@ namespace SLD200_MSL
                 //  ZCalFile Offset Z Axis (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "ZCalFile_OffsetZ", Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString(), strFIle);
                 //  Chuck MSL Use
-                NativeMethods.WritePrivateProfileString(strTemp, "ChuckMSL_Use", Equipment.stLayerRecipeSet[i].ChuckMSL_Use.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "ChuckMSL_Use", Equipment.stLayerRecipeSet[i].ChuckMSL_Enable.ToString(), strFIle);
+                //  Align 3 Point Use
+                NativeMethods.WritePrivateProfileString(strTemp, "Align3Point_Enable", Equipment.stLayerRecipeSet[i].Align3Point_Enable.ToString(), strFIle);
             }
         }
 
@@ -1442,7 +1447,8 @@ namespace SLD200_MSL
                 layerDict["MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType.ToString();
 
                 layerDict["ZCalFile_OffsetZ"] = Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString();
-                layerDict["ChuckMSL_Use"] = Equipment.stLayerRecipeSet[i].ChuckMSL_Use.ToString();
+                layerDict["ChuckMSL_Use"] = Equipment.stLayerRecipeSet[i].ChuckMSL_Enable.ToString();
+                layerDict["Align3Point_Enable"] = Equipment.stLayerRecipeSet[i].Align3Point_Enable.ToString();
 
                 iniData[section] = layerDict;
             }
@@ -1806,7 +1812,8 @@ namespace SLD200_MSL
 
             // 
             Equipment.stLayerRecipeSet[m_nLayerIndex].CalfileOffsetZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text) : 0.0;     //  Z-Axis Offset mm
-            Equipment.stLayerRecipeSet[0].ChuckMSL_Use = checkBox_Recipe_TabRecipe_ChuckMSL_Use.Checked; //  Chuck MSL 사용 여부
+            Equipment.stLayerRecipeSet[0].ChuckMSL_Enable = checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked; //  Chuck MSL 사용 여부
+            Equipment.stLayerRecipeSet[0].Align3Point_Enable = checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked; //  3-Point Align 사용 여부
 
             //  선택한 BET 
             switch (Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex)
@@ -2196,7 +2203,9 @@ namespace SLD200_MSL
                 //  Z-Axis Offset mm
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
                 //  Chuck MSL 사용 여부
-                checkBox_Recipe_TabRecipe_ChuckMSL_Use.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Use;
+                checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Enable;
+                //  3-Point Align 사용 여부
+                checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked = Equipment.stLayerRecipeSet[0].Align3Point_Enable;
 
                 int m_nCount = 0;
                 do
@@ -2579,7 +2588,10 @@ namespace SLD200_MSL
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[m_nIndex].CalfileOffsetZAxismm.ToString();
 
             //  Chuck MSL 사용 여부
-            checkBox_Recipe_TabRecipe_ChuckMSL_Use.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Use;
+            checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Enable;
+
+            //  3-Point Align 사용 여부
+            checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked = Equipment.stLayerRecipeSet[0].Align3Point_Enable;
 
         }
         public void Recipe_Open(string strRecipeFile)
@@ -2875,7 +2887,9 @@ namespace SLD200_MSL
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
 
                 //  Chuck MSL 사용 여부
-                checkBox_Recipe_TabRecipe_ChuckMSL_Use.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Use;
+                checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Enable;
+                //  3-Point Align 사용 여부
+                checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked = Equipment.stLayerRecipeSet[0].Align3Point_Enable;
 
                 int m_nCount = 0;
                 do
@@ -3436,7 +3450,8 @@ namespace SLD200_MSL
                 button_GoldPowderThickness,
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness,
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent,
-                checkBox_Recipe_TabRecipe_ChuckMSL_Use,
+                checkBox_Recipe_TabRecipe_ChuckMSL_Enable,
+                checkBox_Recipe_TabRecipe_3PointAlign_Enable,
                 
                 //공정 Param
                 textBox_Recipe_TabRecipe_LaserParam_Frequency,
@@ -3522,7 +3537,8 @@ namespace SLD200_MSL
                 button_GoldPowderThickness,
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness,
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent,
-                checkBox_Recipe_TabRecipe_ChuckMSL_Use,
+                checkBox_Recipe_TabRecipe_ChuckMSL_Enable,
+                checkBox_Recipe_TabRecipe_3PointAlign_Enable,
                 
                 //공정 Param
                 textBox_Recipe_TabRecipe_LaserParam_Frequency,
@@ -4393,10 +4409,11 @@ namespace SLD200_MSL
                 { button_Recipe_Save, "Save changes to the current recipe." },
                 { button_Recipe_SaveAs, "Save current settings as a new recipe." },
                 { button_Recipe_Open, "Open a saved recipe file." },
-                { checkBox_Recipe_TabRecipe_ChuckMSL_Use, "Enable if MSL chuck should be used." },
                 { textBox_Recipe_TabRecipe_LaserParam_Frequency, "Laser repetition rate in kHz." },
                 { textBox_Recipe_TabRecipe_LaserParam_PulseWidth, "Laser pulse width in ns." },
                 { comboBox_Recipe_TabRecipe_CustomMarking_DataType, "Choose data type: Date, Serial, or Custom Text." },
+                { checkBox_Recipe_TabRecipe_ChuckMSL_Enable, "Enable if MSL chuck should be used." },
+                {checkBox_Recipe_TabRecipe_3PointAlign_Enable, "Socket Align - 3점으로 적용시 사용 (정밀도 낮아짐)" },
             });
         }
     }
