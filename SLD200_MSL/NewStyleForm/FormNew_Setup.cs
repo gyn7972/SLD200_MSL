@@ -1484,8 +1484,8 @@ namespace SLD200_MSL
             textBox_Setup_Option_HeightMeasure_PosY.Text = Equipment.Machine_HeightMeasure_PosY.ToString();
 
             checkBox_Setup_Option_PreAlign_First_Enable.Checked = Equipment.Machine_PreAlign_First_Enable;
-            //NativeMethods.GetPrivateProfileString("Machine_Option", "PreAlign_First_Enable", "false", temp, 255, strFIle);
-            //Equipment.Machine_PreAlign_First_Enable = temp.ToString() == "False" ? false : true;
+
+            checkBox_Setup_Option_VisionNG_OKPort.Checked = Equipment.Machine_VisionNG_OKPort_Enable;
 
             if (Equipment.Machine_FiducialImageSave_Always)
             {
@@ -1968,10 +1968,11 @@ namespace SLD200_MSL
             Equipment.Machine_HeightMeasure_PosY = Equipment.ToDouble(textBox_Setup_Option_HeightMeasure_PosY.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "HeightMeasure_PosY", textBox_Setup_Option_HeightMeasure_PosY.Text.ToString(), strFIle);
 
-
-
             Equipment.Machine_PreAlign_First_Enable = checkBox_Setup_Option_PreAlign_First_Enable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "PreAlign_First_Enable", checkBox_Setup_Option_PreAlign_First_Enable.Checked.ToString(), strFIle);
+
+            Equipment.Machine_VisionNG_OKPort_Enable = checkBox_Setup_Option_VisionNG_OKPort.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "VisionNG_OKPort_Enable", checkBox_Setup_Option_VisionNG_OKPort.Checked.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);

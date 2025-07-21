@@ -3074,7 +3074,7 @@ namespace QMC.Common.Modules
                     // 기준 위치 설정
                     double dTeachingPosX = 0.0;
                     double dTeachingPosY = 0.0;
-                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                     {
                         dTeachingPosX = Equipment.UnloadingOffset_forDrilling_X_MSL;
                         dTeachingPosY = Equipment.UnloadingOffset_forDrilling_Y_MSL;
@@ -7662,7 +7662,7 @@ namespace QMC.Common.Modules
             //false: 구동 중, 
             return bRtn;
         }
-        public Task<bool> WaitUntilUnloaderInPositionAsync(Unloader.nAxis axis, double targetPos, int timeoutMs = 20000)
+        public Task<bool> WaitUntilUnloaderInPositionAsync(Unloader.nAxis axis, double targetPos, int timeoutMs = 6000)
         {
             return Task.Run(() =>
             {

@@ -15,7 +15,7 @@ namespace SLD200_MSL
         [STAThread]
         static void Main()
         {
-             Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetCompatibleTextRenderingDefault(false);
             Equipment.CreateInstance("SLD200_MSL");
             Application.EnableVisualStyles();
             //   Application.Run(new Form1());

@@ -1223,8 +1223,6 @@ namespace QMC.Common.Q_Sequence
                 string avgLine = $"{timestamp},{targetType},Average,{avg:F2}," +
                                  $"{powerPercent:F1},{frequency:F1},{pulseWidth:F2},{dutyCycle:F2}";
                 lines.Add(avgLine);
-
-
             }
 
             try
@@ -1244,44 +1242,6 @@ namespace QMC.Common.Q_Sequence
                 Log.Write("LaserPowerMeasure", $"파워 측정 로그 저장 실패: {ex.Message}");
             }
         }
-
-        // 기존 코드 (주석 처리)
-        //public void SavePowerMeasureLogList(string targetType)
-        //{
-        //    string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LaserPowerLog");
-        //    if (!Directory.Exists(logFolder))
-        //        Directory.CreateDirectory(logFolder);
-
-        //    string logFile = Path.Combine(logFolder, $"LaserPowerMeasureLog_{DateTime.Now:yyyyMMdd}.csv");
-        //    List<string> lines = new List<string>();
-
-        //    string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-        //    // 10개 측정값 저장
-        //    for (int i = 0; i < _measuredPowerList.Count; i++)
-        //    {
-        //        string line = $"{timestamp},{targetType},Count_{i + 1},{_measuredPowerList[i]:F2}";
-        //        lines.Add(line);
-        //    }
-
-        //    // 평균값 저장
-        //    if (_measuredPowerList.Count > 0)
-        //    {
-        //        double avg = _measuredPowerList.Average();
-        //        string avgLine = $"{timestamp},{targetType},Average,{avg:F2}";
-        //        lines.Add(avgLine);
-        //    }
-
-        //    try
-        //    {
-        //        File.AppendAllLines(logFile, lines, new UTF8Encoding(true));
-        //        Log.Write("LaserPowerMeasure", $"파워 측정 로그 {lines.Count}줄 저장 완료 (대상: {targetType})");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Write("LaserPowerMeasure", $"파워 측정 로그 저장 실패: {ex.Message}");
-        //    }
-        //}
 
         private void AppendPowerMeasure(double currentPower)
         {

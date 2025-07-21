@@ -1,7 +1,9 @@
 ﻿using QMC.Common.Modules;
 using QMC.Common.Parts;
+using QMC.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -592,6 +594,72 @@ namespace QMC.Common.Q_Sequence
             return nRtn;
         }
 
+        public void SaveHeightMeasureLog(double dStagePosZ, double dHeightOffset, double dPosModuleZ, double dModuleHeight, string targetType = "Stage")
+        {
+            string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HeightMeasureLog");
+            if (!Directory.Exists(logFolder))
+                Directory.CreateDirectory(logFolder);
 
+            string logFile = Path.Combine(logFolder, $"HeightMeasureLog_{DateTime.Now:yyyyMMdd}.csv");
+            List<string> lines = new List<string>();
+
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+            // 파일이 없으면 헤더 생성
+            if (!File.Exists(logFile))
+            {
+                string header = "Timestamp,TargetType,StagePosZ,HeightOffset,ModulePosZ,ModuleHeight";
+                lines.Add(header);
+            }
+
+            // 측정 결과 저장
+            string line = string.Format("{0},{1},{2:F3},{3:F3},{4:F3},{5:F3}",
+                timestamp, targetType, dStagePosZ, dHeightOffset, dPosModuleZ, dModuleHeight);
+            lines.Add(line);
+
+            try
+            {
+                using (FileStream fs = new FileStream(logFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                using (StreamWriter writer = new StreamWriter(fs, new UTF8Encoding(true)))
+                {
+                    foreach (string l in lines)
+                        writer.WriteLine(l);
+                }
+
+                // 로그 텍스트도 동일 형식으로 출력
+                string logText = string.Format("HeightMeasure 결과 - StagePosZ: {0:F3}, HeightOffset: {1:F3}, ModulePosZ: {2:F3}, ModuleHeight: {3:F3}",
+                    dStagePosZ, dHeightOffset, dPosModuleZ, dModuleHeight);
+                Log.Write("SocketHeight", $"로그 저장 완료 - {logText}");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                Log.Write("SocketHeight", $"로그 저장 실패: {ex.Message}");
+            }
+        }
+
+        public void SaveStageZMeasureHeight(double dMeasurePosZ)
+        {
+            string iniPath = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+            NativeMethods.WritePrivateProfileString("Stage", "MeasurePosZ", dMeasurePosZ.ToString("F3"), iniPath);
+            Log.Write("HeightMeasure", $"Teaching Z 위치 저장 완료: {dMeasurePosZ:F3}");
+        }
+
+        public double LoadStageZMeasureHeight()
+        {
+            string iniPath = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+            StringBuilder temp = new StringBuilder(255);
+
+            if (!File.Exists(iniPath))
+            {
+                Log.Write("HeightMeasure", "Teaching Z 설정 파일이 없어 기본값 0.0 반환");
+                return 0.0;
+            }
+
+            NativeMethods.GetPrivateProfileString("Stage", "MeasurePosZ", "0.0", temp, 255, iniPath);
+            double dMeasurePosZ = Equipment.ToDouble(temp.ToString());
+            Log.Write("HeightMeasure", $"Teaching Z 위치 불러오기 완료: {dMeasurePosZ:F3}");
+            return dMeasurePosZ;
+        }
     }
 }

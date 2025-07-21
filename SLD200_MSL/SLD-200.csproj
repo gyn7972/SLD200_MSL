@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SLD_200C</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -46,7 +46,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;SLD_200C</DefineConstants>
+    <DefineConstants>TRACE;SLD_200U</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>5</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -346,6 +346,12 @@
     </Compile>
     <Compile Include="NewStyleForm\FormNew_JogPopup.Designer.cs">
       <DependentUpon>FormNew_JogPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_QMCSiriusEditorStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_QMCSiriusEditorStatus.Designer.cs">
+      <DependentUpon>FormNew_QMCSiriusEditorStatus.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\FormNew_SiriusEditor.cs">
       <SubType>Form</SubType>
@@ -1460,6 +1466,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_JogPopup.resx">
       <DependentUpon>FormNew_JogPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\FormNew_QMCSiriusEditorStatus.resx">
+      <DependentUpon>FormNew_QMCSiriusEditorStatus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_SiriusEditor.resx">
       <DependentUpon>FormNew_SiriusEditor.cs</DependentUpon>

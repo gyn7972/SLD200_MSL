@@ -59,6 +59,7 @@ using System.Windows.Interop;
 using Control = System.Windows.Forms.Control;
 using TextBox = System.Windows.Forms.TextBox;
 using RichTextBox = System.Windows.Forms.RichTextBox;
+using Microsoft.SqlServer.Server;
 
 namespace SLD200_MSL
 {
@@ -323,9 +324,11 @@ namespace SLD200_MSL
             ShowModuleMonitorControl();
 
             workStage.ActionProcessStop += OnProcssStop;
+
+            checkBox_Main_Loader_LPort_Pause.Checked = false;
+            checkBox_Main_Loader_RPort_Pause.Checked = false;
         }
 
-        
 
         private void FormNew_Main_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -1009,6 +1012,7 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
+            string strText = string.Empty;
             //TEST
             if (workStage.ShouldDelayNextModule())
             {
@@ -1055,7 +1059,6 @@ namespace SLD200_MSL
                 m_NeedDocumentSync = false;
                 try
                 {
-
                     if (SiriusViewer_Main.Document.Views != null)
                     {
                         if (SiriusViewer_Main.InvokeRequired)
@@ -1069,10 +1072,8 @@ namespace SLD200_MSL
                         }
                         else
                         {
-
                             SiriusViewer_Main.Document.Views.Clear();
                         }
-                        
                     }
                 }
                 catch (Exception ex)
@@ -1106,13 +1107,26 @@ namespace SLD200_MSL
                 (int)nSerialNumber_IncreaseType.forEachModule)) //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
                 {
                     int nSerialNumber = Equipment.m_nSerialNumberMarkingCount;
-                    string strText1 = string.Format("Serial Number : {0}", nSerialNumber);
-                    SetValue(label_Main_Serial_Number, strText1);
+                    strText = string.Format("Serial Number : {0}", nSerialNumber);
+                    SetValue(label_Main_Serial_Number, strText);
                     SetColor(label_Main_Serial_Number, Color.Black, Color.Lime);
                 }
             }
 
-            string strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
+            if(workStage.m_stLaserDrilling_SocketData != null)
+            {
+                SetValue(baseTextBox_SocketCountPerModule, workStage.m_stLaserDrilling_SocketData.Length.ToString());
+                strText = string.Format("{0}", workStage.m_nSelectedSocket_Index + 1);
+                SetValue(baseTextBox_Socket_Index, strText);
+            }
+            else
+            {
+                SetValue(baseTextBox_SocketCountPerModule, "0");
+                strText = string.Format("{0}", workStage.m_nSelectedSocket_Index + 1);
+                SetValue(baseTextBox_Socket_Index, strText);
+            }
+
+                strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
             SetValue(label_Main_LaserStatus, strText);
             Color backcolor = workStage.GetLaserBusyStatus() ? Color.Red : Color.Black;
             Color foreColor = workStage.GetLaserBusyStatus() ? Color.White : Color.Lime;
@@ -1384,7 +1398,6 @@ namespace SLD200_MSL
                 {
                     if (SiriusViewer_Main.Document.Views != null)
                     {
-
                         SiriusViewer_Main.Document.Views.Clear();
                     }
                     
@@ -3764,6 +3777,8 @@ namespace SLD200_MSL
 
         private void button_TestbyUser_LPort_Start_Click(object sender, EventArgs e)
         {
+            return;
+
             if (!workStage.m_bHomeOK || Equipment.AutoRunStatus)
                 return;
 
@@ -4169,7 +4184,8 @@ namespace SLD200_MSL
         }
         private void GLcontrol_MouseClick(object sender, MouseEventArgs e)
         {
-            if (Equipment.AutoManualStatus || Equipment.AutoRunStatus)
+            //if (Equipment.AutoManualStatus || Equipment.AutoRunStatus)
+            if(Equipment.AutoRunStatus)
                 return;
 
             if (e.Button == MouseButtons.Right)
@@ -4273,13 +4289,13 @@ namespace SLD200_MSL
                 int nSocketCnt = inputText == "" ? 0 : ToInt(inputText);
                 int nSocketTotalCnt = doneCount * nSocketCnt;   //totalCount * nSocketCnt;
                 SetValue(baseTextBox_TotalSocketCount, nSocketTotalCnt.ToString());
-                SetValue(baseTextBox_NGSocketCount, (nSocketTotalCnt - NGCount).ToString());
+                SetValue(baseTextBox_NGSocketCount, (NGCount).ToString());
 
-
-
-                //SetValue(baseLabel_CurrentOneCycle_ElapsedTime, oneCycle.ToString(@"hh\:mm\:ss"));
-                TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
-                SetValue(baseLabel_LaserShot_TotalTime, LaserTotalCycle.ToString(@"hh\:mm\:ss"));
+                // Config Laser Tab으로 이동.
+                //TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
+                //int totalHours = (int)LaserTotalCycle.TotalHours;
+                //string formatted = $"{totalHours:D2}:{LaserTotalCycle.Minutes:D2}:{LaserTotalCycle.Seconds:D2}";
+                //SetValue(baseLabel_LaserShot_TotalTime, formatted);
             }
             catch (Exception ex)
             {
@@ -4807,7 +4823,6 @@ namespace SLD200_MSL
                 button_Main_Start.BackColor = Color.LightGray;
                 button_Main_Start.ForeColor = Color.Black;
 
-
                 strTemp = "Reset이 중단되었습니다.";
                 new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
                 button_Main_Reset.Enabled = true;
@@ -4987,6 +5002,11 @@ namespace SLD200_MSL
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
                 }
+                else
+                {
+                    workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    workStage.workStageParameter.DO_Stage_Blow(false);
+                }
 
                 foreach (var pos in Enum.GetValues(typeof(LoaderParameter.MAlignerVacuumPos)))
                 {
@@ -5026,6 +5046,7 @@ namespace SLD200_MSL
                 workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                 Thread.Sleep(100);
                 loader.loaderParameter.DO_Loader_Ionizer(false);
+                Thread.Sleep(100);
 
                 return true;
             }
@@ -5055,218 +5076,6 @@ namespace SLD200_MSL
             new QMC.Core.MessageBoxOk().ShowDialog("Error !", msg);
         }
 
-       
-
-
-        //private void button_Main_Reset_Click(object sender, EventArgs e)
-        //{
-        //    var mb = new MessageBoxYesNo();
-        //    if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
-        //        return;
-
-        //    if (Equipment.ResetProcess)
-        //    {
-        //        return;
-        //    }
-
-        //    Equipment.ResetProcess = true;
-
-        //    //Main화면 - 변수 == 필요한가.. 흠..
-        //    checkBox_Main_SocketDrilling_Pass.Checked = false;
-        //    selectedRow = -1;
-        //    selectedColumn = -1;
-        //    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
-        //    checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
-
-        //    workStage.ResetProcess();
-
-        //    // 아래 구문.. 함수로 만드나.. 여기에 그냥 놔두나...
-        //    // Reset하면 Laser Shot 끄자.
-        //    var mb2 = new QMC.Core.MessageBoxOk();
-        //    string strTemp = string.Empty;
-        //    if (!workStage.m_bHomeOK)
-        //    {
-        //        Equipment.ResetProcess = false;
-        //        strTemp = string.Format("초기화 진행 바랍니다.");
-        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
-        //        mb2.ShowDialog("Error !", strTemp);
-        //        return;
-        //    }
-
-        //    if (workStage.rtc != null)
-        //    {
-        //        workStage.rtc.CtlAbort(); //  RTC Abort
-        //        Thread.Sleep(1000);
-        //        workStage.rtc.CtlReset(); //  RTC Reset
-        //    }
-
-        //    if (workStage.m_bHomeOK)
-        //    {
-        //        // Axis - 대기위치 이동
-
-        //        //  속도 설정
-        //        Equipment.Type_Motor_Speed motor_Speed;
-        //        motor_Speed = Equipment.Type_Motor_Speed.Coarse;
-        //        int nIndex = 0; //Teaching Position Index
-
-        //        nIndex = (int)Vision.Vision_TeachingPosList.Vision_SafetyPos;
-        //        workStage.MovetoWorkStage_TeachingPositionsZ(nIndex, motor_Speed);
-        //        double dPosZ = vision.stVisionTeachingPos[nIndex].Vision_Z;
-
-        //        nIndex = (int)Loader.LDUL_TeachingPosList.LD_TR_SafetyPos;
-        //        loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-        //        double dPosZ_Loader = loader.stLDULTeachingPos[nIndex].LD_Transfer_Z;
-
-        //        nIndex = (int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos;
-        //        unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-        //        double dPosZ_Unloader = loader.stLDULTeachingPos[nIndex].UL_Transfer_Z;
-        //        Thread.Sleep(500);
-
-        //        bool bWaitZ = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Z, dPosZ).Result;
-        //        if (!bWaitZ)
-        //        {
-        //            Equipment.ResetProcess = false;
-        //            strTemp = string.Format("Stage Z-Axis이 이동 실패.");
-        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
-        //            mb2.ShowDialog("Error !", strTemp);
-        //            return;
-        //        }
-        //        bool bWaitZ_Loader = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_Z, dPosZ_Loader).Result;
-        //        if (!bWaitZ_Loader)
-        //        {
-        //            Equipment.ResetProcess = false;
-        //            strTemp = string.Format("Loader Z-Axis이 이동 실패.");
-        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
-        //            mb2.ShowDialog("Error !", strTemp);
-        //            return;
-        //        }
-        //        bool bWaitZ_Unloader = unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, dPosZ_Unloader).Result;
-        //        if (!bWaitZ_Unloader)
-        //        {
-        //            Equipment.ResetProcess = false;
-        //            strTemp = string.Format("Unloader Z-Axis이 이동 실패.");
-        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
-        //            mb2.ShowDialog("Error !", strTemp);
-        //            return;
-        //        }
-
-        //        nIndex = (int)Loader.LDUL_TeachingPosList.LD_RPort_ReadyPos;
-        //        loader.MovetoLoader_TeachingPositionsPortR(nIndex, motor_Speed);
-        //        double dPosZ_PortR = loader.stLDULTeachingPos[nIndex].LD_Stacker_Z0;
-
-        //        nIndex = (int)Loader.LDUL_TeachingPosList.LD_LPort_ReadyPos;
-        //        loader.MovetoLoader_TeachingPositionsPortL(nIndex, motor_Speed);
-        //        double dPosZ_PortL = loader.stLDULTeachingPos[nIndex].LD_Stacker_Z1;
-
-        //        nIndex = (int)Loader.LDUL_TeachingPosList.UL_RPort_ReadyPos;
-        //        unloader.MovetoUnloader_TeachingPositionsPortR(nIndex, motor_Speed);
-        //        double dPosZ_UnPortR = loader.stLDULTeachingPos[nIndex].UL_Stacker_Z0;
-
-        //        nIndex = (int)Loader.LDUL_TeachingPosList.UL_LPort_ReadyPos;
-        //        unloader.MovetoUnloader_TeachingPositionsPortL(nIndex, motor_Speed);
-        //        double dPosZ_UnPortL = loader.stLDULTeachingPos[nIndex].UL_Stacker_Z1;
-
-        //        Thread.Sleep(500);
-        //        bool bWaitZ_PortR = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z0, dPosZ_PortR).Result;
-        //        if (!bWaitZ_PortR)
-        //        {
-        //            Equipment.ResetProcess = false;
-        //            strTemp = string.Format("Loader PortR Z-Axis이 이동 실패.");
-        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
-        //            mb2.ShowDialog("Error !", strTemp);
-        //            return;
-        //        }
-        //        bool bWaitZ_PortL = loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z1, dPosZ_PortL).Result;
-        //        if (!bWaitZ_PortL)
-        //        {
-        //            Equipment.ResetProcess = false;
-        //            strTemp = string.Format("Loader PortL Z-Axis이 이동 실패.");
-        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
-        //            mb2.ShowDialog("Error !", strTemp);
-        //            return;
-        //        }
-        //        bool bWaitZ_UnPortR = unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z0, dPosZ_UnPortR).Result;
-        //        if (!bWaitZ_UnPortR)
-        //        {
-        //            Equipment.ResetProcess = false;
-        //            strTemp = string.Format("Unloader PortR Z-Axis이 이동 실패.");
-        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
-        //            mb2.ShowDialog("Error !", strTemp);
-        //            return;
-        //        }
-        //        bool bWaitZ_UnPortL = unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z1, dPosZ_UnPortL).Result;
-        //        if (!bWaitZ_UnPortL)
-        //        {
-        //            Equipment.ResetProcess = false;
-        //            strTemp = string.Format("Unloader PortL Z-Axis이 이동 실패.");
-        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
-        //            mb2.ShowDialog("Error !", strTemp);
-        //            return;
-        //        }
-
-        //        // Stage Position Reset : Unloader Pos으로?
-        //        nIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_SafetyPos;
-        //        workStage.MovetoWorkStage_TeachingPositionsXY(nIndex, motor_Speed);
-        //        double dPosX = workStage.stWorkStageTeachingPos[nIndex].Stage_X;
-        //        double dPosY = workStage.stWorkStageTeachingPos[nIndex].Stage_Y;
-        //        Thread.Sleep(500);
-        //        bool bWaitX = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, dPosX).Result;
-        //        bool bWaitY = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY).Result;
-        //        if (!bWaitX || !bWaitY)
-        //        {
-        //            Equipment.ResetProcess = false;
-        //            strTemp = string.Format("X-Axis 또는 Y-Axis이 이동 실패.");
-        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
-        //            mb2.ShowDialog("Error !", strTemp);
-        //            return;
-        //        }
-
-        //        //I/O - Off
-        //        if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
-        //        {
-        //            workStage.workStageParameter.DO_Stage_Vacuum(false);
-        //            mb2.ShowDialog("Reset", "workStage - 자재 확인 바랍니다.");
-        //        }
-
-        //        if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
-        //        {
-        //            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, false);
-
-        //            mb2.ShowDialog("Reset", "Loader_Aligner - 자재 확인 바랍니다.");
-        //        }
-        //        if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner))
-        //            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
-
-        //        if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))
-        //            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
-
-
-        //        if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
-        //            loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
-        //        {
-        //            //loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, false);
-        //            //loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, false);
-
-        //            mb2.ShowDialog("Reset", "Loader Picker - 자재 확인 및 버큠 Off 바랍니다.");
-        //        }
-
-        //        if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
-        //            unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
-        //        {
-        //            //unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, false);
-        //            //unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, false);
-
-        //            mb2.ShowDialog("Reset", "Unloader Picker - 자재 확인 및 버큠 Off 바랍니다.");
-        //        }
-
-        //        Equipment.ResetProcess = false;
-        //        strTemp = string.Format("Reset Complete");
-        //        mb2.ShowDialog("Complete !", strTemp);
-        //        return;
-        //    }
-        //}
-
-        // 이거 각각 폼에 만들어야함.
         private void InitRecipeUI_KeyPad()
         {
             RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행

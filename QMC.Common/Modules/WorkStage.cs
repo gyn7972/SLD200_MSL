@@ -1685,6 +1685,7 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.Water_In_Leak_Alarm;
             alarm.Title = "Water_In_Leak";
@@ -4588,11 +4589,12 @@ namespace QMC.Common.Modules
             m_taskTimer_MainWork_Tick = null;
             m_taskTimer_MainStatus_Tick = null;
 
-            //Motion/IO Off인데.. 
-            if (Stage != null)
-            {
-                Stage.Close();
-            }
+            // Motion/IO Off인데.. 
+            // 막아보자.
+            //if (Stage != null)
+            //{
+            //    Stage.Close();
+            //}
 
             if (Equipment.Machine_LaserType_CO2)
             {
@@ -8046,7 +8048,9 @@ namespace QMC.Common.Modules
                 }
                 else
                 {
-                    if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, workStageParameter.DI_Scanner_Flow_Check()))
+                    //if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, workStageParameter.DI_Scanner_Flow_Check()))
+                    //    AlarmPost(AlarmKey.Scanner_Flow_Alarm);
+                    if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, !workStageParameter.DI_Scanner_Flow_Check()))
                         AlarmPost(AlarmKey.Scanner_Flow_Alarm);
                 }
 
@@ -8180,11 +8184,9 @@ namespace QMC.Common.Modules
                     //장비 시작하고 10초 후 부터 확인.
                     if ((DateTime.Now - m_StartProcessTime).TotalSeconds > 10)
                     {
-                        if (loader.m_bStackerZ0_DownWhenEmpty && loader.m_bStackerZ1_DownWhenEmpty &&
-                            m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None &&
-                            loader.m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
-                            unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None)
+                        if (IsSystemIdle())
                         {
+                            CommonModule.Instance.TowerLamp.Buzzer_On();
                             // 장비 정지.
                             StopProcess();
                             if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
@@ -8210,9 +8212,11 @@ namespace QMC.Common.Modules
                             CommonModule.Instance.OperationButtons.ResetLamp(false);
 
                             CommonModule.Instance.TowerLamp_BuzzerStop = false;
+
+                            Thread.Sleep(1000);
+                            CommonModule.Instance.TowerLamp.Buzzer_Off();
                         }
                     }
-                        
 
                     // 장비 시작하고 Step에서 상부 집진기 ON 하는데...
                     //if (!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper))
@@ -8229,7 +8233,6 @@ namespace QMC.Common.Modules
                     //    DustCollector_Off((int)nDustCollector.DustCollector_Upper);
                     //}
                 }
-
             }
             catch (Exception ex)
             {
@@ -8241,7 +8244,6 @@ namespace QMC.Common.Modules
                 _isMainStatusRunning = false; // 플래그 해제
             }
         }
-
 
         private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
         {
@@ -8678,7 +8680,6 @@ namespace QMC.Common.Modules
                 _isSubWorkRunning = false; // 플래그 해제
             }
         }
-
         private void Timer_SubWork_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -8693,7 +8694,6 @@ namespace QMC.Common.Modules
                 timer_SubWork.Enabled = true;
             }
         }
-
         private void Timer_Comm_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -8714,7 +8714,6 @@ namespace QMC.Common.Modules
                 timer_Comm.Enabled = true;
             }
         }
-
         private void Timer_Comm_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -8744,7 +8743,6 @@ namespace QMC.Common.Modules
                 _isCommRunning = false; // 플래그 해제
             }
         }
-
         private void Timer_ProductAlign_tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -11333,7 +11331,7 @@ namespace QMC.Common.Modules
                     {
                         m_nPowerMeterBDSCommStep = (int)PowerMeterBDSComm_Step.None;
 
-                        MessageBox.Show("Laser PowerMeter-1 Comm. Failed.", "Error");
+                        //MessageBox.Show("Laser PowerMeter-1 Comm. Failed.", "Error");
                     }
                     break;
 
@@ -11465,7 +11463,7 @@ namespace QMC.Common.Modules
                     {
                         m_nPowerMeterStageCommStep = (int)PowerMeterStageComm_Step.None;
 
-                        MessageBox.Show("Laser PowerMeter-2 Comm. Failed.", "Error");
+                        //MessageBox.Show("Laser PowerMeter-2 Comm. Failed.", "Error");
                     }
                     break;
 
@@ -11604,7 +11602,7 @@ namespace QMC.Common.Modules
                     {
                         m_nBETCommStep = (int)BETComm_Step.None;
 
-                        MessageBox.Show("BET Comm. Failed.", "Error");
+                        //MessageBox.Show("BET Comm. Failed.", "Error");
                     }
                     break;
 
@@ -13507,14 +13505,18 @@ namespace QMC.Common.Modules
                             Log.Write("DrillStatus", $"최종 결과: {forceNG}");
 
                             int nTargetCount = Equipment.DrillModuleTargetCount - 1;
-                            //if (forceNG)
-                            //if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
-                            //    m_bworkStageVacuumFail ||
-                            //    m_bForceEjectRequest ||
-                            //    !m_bSocketAlign_OK ||
-                            //    !m_bFindLowerAlignMark_OK ||
-                            //    !m_bPreAlignCompleted)
-                            if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
+
+                            bool bSocketAlignOK = false;
+                            if(Equipment.Machine_VisionNG_OKPort_Enable)
+                            {
+                                bSocketAlignOK = true;
+                            }
+                            else
+                            {
+                                bSocketAlignOK = (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount);
+                            }
+
+                            if (bSocketAlignOK ||
                                 m_bworkStageVacuumFail ||
                                 m_bForceEjectRequest ||
                                 !m_bFindLowerAlignMark_OK)
@@ -13556,7 +13558,7 @@ namespace QMC.Common.Modules
                                                         nTargetCount,
                                                         DrillingManager.CycleTimer_DoneModuleCount);
                                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
-                                        
+
                                     }
                                 }
                             }
@@ -13595,7 +13597,7 @@ namespace QMC.Common.Modules
                                                         nTargetCount,
                                                         DrillingManager.CycleTimer_DoneModuleCount);
                                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
-                                       
+
                                     }
                                 }
                             }                            
@@ -13706,6 +13708,8 @@ namespace QMC.Common.Modules
                 m_bCO2_repairMode = false;
                 m_bCO2_MultyMode = false;
             }
+
+            m_b3PointAlingMode = Equipment.stLayerRecipeSet[0].Align3Point_Enable; // 3-Point 얼라인 모드 여부
 
             SocketAlign_Step currentStep = (SocketAlign_Step)m_nSocketAlign_MainStep;
             switch (m_nSocketAlign_MainStep)
@@ -14456,7 +14460,7 @@ namespace QMC.Common.Modules
                             //공용척 사용시.
                             double dScannerCalTeachingPosX = 0.0;
                             double dScannerCalTeachingPosY = 0.0;
-                            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                             {
                                 dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                                 dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -14538,7 +14542,7 @@ namespace QMC.Common.Modules
                                         //공용척 사용시.
                                         double dScannerCalTeachingPosX = 0.0;
                                         double dScannerCalTeachingPosY = 0.0;
-                                        if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                                        if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                                         {
                                             dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                                             dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -14660,7 +14664,7 @@ namespace QMC.Common.Modules
                                 //공용척 사용시.
                                 double dScannerCalTeachingPosX = 0.0;
                                 double dScannerCalTeachingPosY = 0.0;
-                                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                                 {
                                     dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                                     dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -15307,7 +15311,7 @@ namespace QMC.Common.Modules
 
             // 굳이 첫번째 소켓일때만..m_bIsFirstAlign = false로 해야 하나?
             if (nSocketNum == 0)
-            //if (nSocketNum > 0) // 모든 소켓일때 해도.. 상관없을거 같은데.. 밑에 구조상. 선택 가공할때도 문제가 되고.
+            //if (nSocketNum >= 0) // 모든 소켓일때 해도.. 상관없을거 같은데.. 밑에 구조상. 선택 가공할때도 문제가 되고.
             {
                 // TODO : 여기 변수 바꿔 주세요!! 구영남 부장님~~ 성공 실패..
                 // m_bFindLowerAlignMark_OK : 성공/실패 변수 추가.
@@ -15318,7 +15322,7 @@ namespace QMC.Common.Modules
             }
 
             // 선택 가공할때는 무조건 m_bIsFirstAlign = false로 해보자.
-            if (Equipment.SelectRunEnable_New)
+            if (Equipment.SelectRunEnable_New || Equipment.SemiAutoEnable)
             {
                 if (m_bPreAlignCompleted && m_bFindLowerAlignMark_OK)
                 {
@@ -16231,7 +16235,7 @@ namespace QMC.Common.Modules
             return rData;
         }
 
-        private void MarkSpiralArc(double outDia, double innerDia,int turn,  double m_dTemp_AngleFactor, PointD center)
+        public void MarkSpiralArc(double outDia, double innerDia,int turn,  double m_dTemp_AngleFactor, PointD center, out double pitch)
         {
             innerDia /= 2;
             outDia /= 2;
@@ -16245,6 +16249,7 @@ namespace QMC.Common.Modules
                 turn = 1;
             }
             double rStep = (outDia - innerDia) / (360.0 * turn / sweepAngle); // 반지름 증가량 계산
+            pitch = rStep;
 
             double dLastX = 0;
             double dLastY = 0;
@@ -16298,19 +16303,21 @@ namespace QMC.Common.Modules
             
         }
 
-        private void MarkSpiralCircle(double outDia, double innerDia, int turn, double m_dTemp_AngleFactor, PointD center)
+        //private void MarkSpiralCircle(double outDia, double innerDia, int turn, double m_dTemp_AngleFactor, PointD center)
+        public void MarkSpiralCircle(double outDia, double innerDia, int turn, double m_dTemp_AngleFactor, PointD center, out double pitch)
         {
-
             innerDia /= 2;
             outDia /= 2;
             double centerX = center.X;
             double centerY = center.Y;
             double rStep = (outDia - innerDia) / (turn-1); // 반지름 증가량 계산
+            pitch = 2 * Math.PI * rStep; // pitch 거리 = 두 원 사이 거리 차이 (둘레 기준)
+            pitch = rStep;
+
             double dStartAngle = 360.0 / turn;
             double currentRadius = innerDia;
             for (double i = 0; i < turn; i++) // 360도 회전
             {
-
                 double StartX = currentRadius * Math.Cos((i* dStartAngle) / 180 * Math.PI);
                 double StartY = currentRadius * Math.Sin((i * dStartAngle) / 180 * Math.PI);
                 rtc.ListJump(new Vector2((float)(center.X + StartX), (float)(center.Y + StartY)));
@@ -17293,7 +17300,7 @@ namespace QMC.Common.Modules
             //공용척 사용시.
             double dScannerCalTeachingPosX = 0.0;
             double dScannerCalTeachingPosY = 0.0;
-            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
             {
                 dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                 dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -18337,7 +18344,7 @@ namespace QMC.Common.Modules
             //공용척 사용시.
             double dScannerCalTeachingPosX = 0.0;
             double dScannerCalTeachingPosY = 0.0;
-            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
             {
                 dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                 dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -18741,7 +18748,7 @@ namespace QMC.Common.Modules
             //공용척 사용시.
             double dScannerCalTeachingPosX = 0.0;
             double dScannerCalTeachingPosY = 0.0;
-            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
             {
                 dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                 dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -30259,7 +30266,7 @@ namespace QMC.Common.Modules
                     double dOffsetX = dSumOffsetX / nSumCount;
                     double dOffsetY = dSumOffsetY / nSumCount;
 
-                    double dpercent = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent; //85%
+                    double dpercent = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent; //75%
                     Log.Write("SLD-200", "Align", $"AlignMode.GoldPowder::dpercent: {dpercent:F1}");
                     dOffsetX = dOffsetX * (dpercent / 100);
                     dOffsetY = dOffsetY * (dpercent / 100);
@@ -31282,7 +31289,7 @@ namespace QMC.Common.Modules
                         else
                         {
                             //공용척 사용시.
-                            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                             {
                                 dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                                 dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -33180,7 +33187,7 @@ namespace QMC.Common.Modules
             //공용척 사용시.
             double dScannerCalTeachingPosX = 0.0;
             double dScannerCalTeachingPosY = 0.0;
-            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
             {
                 dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                 dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -33216,7 +33223,7 @@ namespace QMC.Common.Modules
             //공용척 사용시.
             double dScannerCalTeachingPosX = 0.0;
             double dScannerCalTeachingPosY = 0.0;
-            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
             {
                 dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                 dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -33247,7 +33254,6 @@ namespace QMC.Common.Modules
 
             result.X -= position.X;
             result.Y -= position.Y;
-
 
             // PreAlign Data 적용/미적용
             if(Equipment.Machine_PreAlign_First_Enable)
@@ -33288,7 +33294,7 @@ namespace QMC.Common.Modules
             //공용척 사용시.
             double dScannerCalTeachingPosX = 0.0;
             double dScannerCalTeachingPosY = 0.0;
-            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
             {
                 dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                 dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -33333,7 +33339,7 @@ namespace QMC.Common.Modules
             //공용척 사용시.
             double dScannerCalTeachingPosX = 0.0;
             double dScannerCalTeachingPosY = 0.0;
-            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
             {
                 dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                 dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -33572,7 +33578,7 @@ namespace QMC.Common.Modules
                         double dTeachingPosX = stWorkStageTeachingPos[nTeachingPos].Stage_X;
                         double dTeachingPosY = stWorkStageTeachingPos[nTeachingPos].Stage_Y;
                         //공용척 사용시.
-                        if(Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                        if(Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                         {
                             if (nTeachingPos == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
                             {
@@ -33619,7 +33625,7 @@ namespace QMC.Common.Modules
             double dTeachingPosX = stWorkStageTeachingPos[nTeachingPos].Stage_X;
             double dTeachingPosY = stWorkStageTeachingPos[nTeachingPos].Stage_Y;
             //공용척 사용시.
-            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
             {
                 if (nTeachingPos == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
                 {
@@ -34037,7 +34043,7 @@ namespace QMC.Common.Modules
         }
 
         // 축 위치 대기 함수
-        public Task<bool> WaitUntilInPositionAsync(WorkStage.nAxis axis, double targetPos, int timeoutMs = 50000)
+        public Task<bool> WaitUntilInPositionAsync(WorkStage.nAxis axis, double targetPos, int timeoutMs = 6000)
         {
             return Task.Run(() =>
             {
@@ -34203,7 +34209,7 @@ namespace QMC.Common.Modules
                 DrillingManager.MarkAsChanged();
 
                 string result = isOK ? "성공" : "실패";
-                Log.Write("DrillStatus", $"[SetDrillResult] {layerName} 소켓 {socket.SocketNumber} 가공 결과: {result}");
+                Log.Write("DrillStatus", $"[SetDrillResult] {layerName} 소켓 {socket.SocketNumber + 1} 가공 결과: {result}");
             }
             //else
             //{
@@ -35045,6 +35051,8 @@ namespace QMC.Common.Modules
                                 dPosZ = dTeachingPosZ + dHeightOffset;
                                 m_dStageheight = dPosZ;
 
+                                m_Sequence_FlatnessMeasure.SaveStageZMeasureHeight(m_dStageheight);
+
                                 strTemp = string.Format("HeightMeasure 결과 - dTeachingPosZ: {0:F3}, dHeightOffset: {1:F3}, dPosZ: {2:F3}, Stageheight: {3:F3}",
                                                         dTeachingPosZ, dHeightOffset, dPosZ, m_dStageheight);
                                 Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_HeightMeasure_Check", strTemp);
@@ -35697,8 +35705,8 @@ namespace QMC.Common.Modules
                                 {
                                     if (m_nDrillingWork_Group_Count <= m_stLaserDrilling_SocketData.Length)
                                     {
-                                        Log.Write("선택 가공", $"LAYER_THRUHOLE:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                         m_nDrillingWork_Group_Count++;
+                                        Log.Write("선택 가공", $"LAYER_THRUHOLE:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                         break;
                                     }
                                     else
@@ -35711,7 +35719,6 @@ namespace QMC.Common.Modules
                             }
 
                             //// Hole2 ~ 50까지:: Hole1을 가공 안하는경우... 넣어야함.
-
                             m_LayerType = LayerType.LAYER_DRILLING;
                             strTemp = LaserDrillingStepSetDrillingParam_SelectMode();
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;                       //  Drilling 가공 Layer 파라미터로 변경 시작
@@ -35791,8 +35798,8 @@ namespace QMC.Common.Modules
                                 {
                                     if (m_nDrillingWork_Group_Count <= m_stOutLine_SocketData.Length)
                                     {
-                                        Log.Write("선택 가공", $"LAYER_OUTLINE:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                         m_nDrillingWork_Group_Count++;
+                                        Log.Write("선택 가공", $"LAYER_OUTLINE:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                         break;
                                     }
                                     else
@@ -35864,8 +35871,8 @@ namespace QMC.Common.Modules
                                 {
                                     if (m_nDrillingWork_Group_Count <= m_stMarking_SocketData.m_stMarking_ObjectData.Length)
                                     {
-                                        Log.Write("선택 가공", $"LAYER_MARKING:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                         m_nDrillingWork_Group_Count++;
+                                        Log.Write("선택 가공", $"LAYER_MARKING:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
                                         break;
                                     }
                                     else
@@ -36014,7 +36021,7 @@ namespace QMC.Common.Modules
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber+1} 가공 완료됨");
                             }
                         }
 
@@ -36262,7 +36269,7 @@ namespace QMC.Common.Modules
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                             }
                         }
 
@@ -36279,7 +36286,7 @@ namespace QMC.Common.Modules
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                             }
                         }
 
@@ -36596,7 +36603,7 @@ namespace QMC.Common.Modules
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                             }
                         }
 
@@ -36614,7 +36621,7 @@ namespace QMC.Common.Modules
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                             }
                         }
 
@@ -36682,7 +36689,7 @@ namespace QMC.Common.Modules
                     //공용척 사용시.
                     double dScannerCalTeachingPosX = 0.0;
                     double dScannerCalTeachingPosY = 0.0;
-                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                     {
                         dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                         dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
@@ -37142,7 +37149,7 @@ namespace QMC.Common.Modules
                                 if (layer != null && socket != null)
                                 {
                                     SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                                 }
                             }
 
@@ -37159,7 +37166,7 @@ namespace QMC.Common.Modules
                                 if (layer != null && socket != null)
                                 {
                                     SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                                 }
                             }
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -37317,7 +37324,7 @@ namespace QMC.Common.Modules
                                 if (layer != null && socket != null)
                                 {
                                     SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                                 }
                             }
 
@@ -37334,7 +37341,7 @@ namespace QMC.Common.Modules
                                 if (layer != null && socket != null)
                                 {
                                     SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                                 }
                             }
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -37544,6 +37551,10 @@ namespace QMC.Common.Modules
                         switch (_semiAutoRequest)
                         {
                             case SemiAutoStep.MeasureHeight:
+                                if (IsStageComplete(SemiAutoStep.PreAlign))
+                                {
+                                    m_bPreAlignCompleted = true;
+                                }
                                 SetStageComplete(SemiAutoStep.MeasureHeight, false);
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;
                                 break;
@@ -37552,10 +37563,19 @@ namespace QMC.Common.Modules
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
                                 break;
                             case SemiAutoStep.FiducialAlign:
+                                if (IsStageComplete(SemiAutoStep.PreAlign))
+                                {
+                                    m_bPreAlignCompleted = true;
+                                }
                                 SetStageComplete(SemiAutoStep.FiducialAlign, false);
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
                                 break;
                             case SemiAutoStep.Drilling:
+                                if (IsStageComplete(SemiAutoStep.PreAlign))
+                                {
+                                    m_bPreAlignCompleted = true;
+                                }
+
                                 // 고민 필요. 
                                 SetStageComplete(SemiAutoStep.Drilling, false);
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;
@@ -37922,13 +37942,18 @@ namespace QMC.Common.Modules
                     // 이 값이랑 제품 높이에서 측정후 변위센서값을 뺸 PosZ과 계산하면 제품 높이를 구할 수 있다.
                     dTeachingPosZ = (int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos;
                     double dPosModuleZ = dTeachingPosZ + m_dZOffset_SocketHeightCheck;
+
+                    m_dStageheight = m_Sequence_FlatnessMeasure.LoadStageZMeasureHeight();
+
                     m_dModuleHeight = m_dStageheight - dPosModuleZ;
+                    m_dModuleHeight = Math.Abs(m_dModuleHeight);
 
-                    strTemp = string.Format("HeightMeasure 결과 - dTeachingPosZ: {0:F3}, dHeightOffset: {1:F3}, dPosModuleZ: {2:F3}, ModuleHeight: {3:F3}",
-                                            dTeachingPosZ, m_dZOffset_SocketHeightCheck, dPosModuleZ, m_dModuleHeight);
-                    Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_HeightMeasure_Check", strTemp);
-
+                    strTemp = string.Format("HeightMeasure 결과 - dStagePosZ: {0:F3}, dHeightOffset: {1:F3}, dPosModuleZ: {2:F3}, ModuleHeight: {3:F3}",
+                                            m_dStageheight, m_dZOffset_SocketHeightCheck, dPosModuleZ, m_dModuleHeight);
                     Log.Write("SocketHeight", strTemp);
+
+                    string strSocket = string.Format("Socket{0}", m_nDrillingWork_Group_Count + 1);
+                    m_Sequence_FlatnessMeasure.SaveHeightMeasureLog(m_dStageheight, m_dZOffset_SocketHeightCheck, dPosModuleZ, m_dModuleHeight, strSocket);
 
                     // Layer별 소켓 데이터에 저장
                     // hol가공시에..하니깐 Layer구분없이 전부 다 측정data 넣어야 하는거 아닌가?
@@ -39060,7 +39085,7 @@ namespace QMC.Common.Modules
                                                 socket.SocketTheta = m_dALIGN_FACTOR_Theta;
                                                 socket.IsSocketAligned = m_bSocketAlign_OK;
 
-                                                Log.Write("DrillStatus", $"[Socket] [{GetCurrentLayerEnum(m_LayerType)}][{m_nSocketNum_forAlign + 1}] " +
+                                                Log.Write("DrillStatus", $"[Socket_Align] [{m_nSocketNum_forAlign + 1}][{GetCurrentLayerEnum(m_LayerType)}] " +
                                                     $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
                                                 break;
 
@@ -39072,7 +39097,7 @@ namespace QMC.Common.Modules
                                                 socket.GoldTheta = m_dALIGN_FACTOR_Theta;
                                                 socket.IsGoldPowderAligned = m_bSocketAlign_OK;
 
-                                                Log.Write("DrillStatus", $"[Gold] [{GetCurrentLayerEnum(m_LayerType)}][{m_nSocketNum_forAlign + 1}] " +
+                                                Log.Write("DrillStatus", $"[Gold_Align] [{m_nSocketNum_forAlign + 1}][{GetCurrentLayerEnum(m_LayerType)}] " +
                                                     $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
                                                 break;
                                         }
@@ -39083,18 +39108,45 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                if (m_bPassedSocket_Exist)
-                                {
-                                    m_bRetryAlignSucess = true;
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료 : m_bPassedSocket_Exist, m_bRetryAlignSucess = true");
-                                }
-
                                 m_bSocketAlign_OK = false;
                                 if (m_bPassedSocket_Exist)
                                 {
                                     m_bRetryAlignSucess = true;
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료 : m_bPassedSocket_Exist, m_bRetryAlignSucess = true");
                                 }
+
+                                socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nSocketNum_forAlign);
+                                if (socket != null)
+                                {
+                                    switch (m_AlignMode)
+                                    {
+                                        case AlignMode.Socket:
+                                            socket.SocketRotationCenterX = 0;
+                                            socket.SocketRotationCenterY = 0;
+                                            socket.SocketOffsetX = 0;
+                                            socket.SocketOffsetY = 0;
+                                            socket.SocketTheta = 0;
+                                            socket.IsSocketAligned = m_bSocketAlign_OK;
+
+                                            Log.Write("DrillStatus", $"[Socket_Align] [{m_nSocketNum_forAlign + 1}][{GetCurrentLayerEnum(m_LayerType)}] " +
+                                                $"X=0, Y=0, T=0");
+                                            break;
+
+                                        case AlignMode.GoldPowder:
+                                            socket.GoldRotationCenterX = 0;
+                                            socket.GoldRotationCenterY = 0;
+                                            socket.GoldOffsetX = 0;
+                                            socket.GoldOffsetY = 0;
+                                            socket.GoldTheta = 0;
+                                            socket.IsGoldPowderAligned = m_bSocketAlign_OK;
+
+                                            Log.Write("DrillStatus", $"[Gold_Align] [{m_nSocketNum_forAlign + 1}][{GetCurrentLayerEnum(m_LayerType)}] " +
+                                                $"X=0, Y=0, T=0");
+                                            break;
+                                    }
+                                    DrillingManager.MarkAsChanged();
+                                }
+
                                 // 소켓 얼라인 실패했으니 화면 갱신해야 한다.
                                 m_nDrillingData_SocketAlign_NGCount++; //소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
                                 switch (m_LayerType)
@@ -39213,7 +39265,6 @@ namespace QMC.Common.Modules
                                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                                         }
                                         break;
-
                                     case LayerType.LAYER_THRUHOLE:
 
                                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
@@ -39229,7 +39280,6 @@ namespace QMC.Common.Modules
                                             //  Thruhole 은 기본적으로 전부 가공한다고는 했는데, 단독으로 Thruhole 가공하는 제품도 그렇게 해야 하는지는 확인이 필요
                                         }
                                         break;
-
                                     case LayerType.LAYER_MARKING:
                                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
                                         Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
@@ -41136,12 +41186,10 @@ namespace QMC.Common.Modules
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
-
-                                    MarkSpiralArc(m_dTemp_InnerDiameter, m_dTemp_OuterDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
-
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
-
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
+                                    double pitch = 0.0;
+                                    MarkSpiralArc(m_dTemp_InnerDiameter, m_dTemp_OuterDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot, out pitch);
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
                                 }
                                 //  Hole : Spiral Circle 타입으로 가공
                                 else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Circle)
@@ -41167,8 +41215,8 @@ namespace QMC.Common.Modules
 
                                     //TEST 완료. 이정도면 충분하다.
                                     //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
-
-                                    MarkSpiralCircle(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                    double pitch = 0.0;
+                                    MarkSpiralCircle(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot, out pitch);
 
                                     //TEST 완료. 이정도면 충분하다.
                                     //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
@@ -41335,7 +41383,8 @@ namespace QMC.Common.Modules
                                     else
                                     {
                                         var spiralData = lwPolyLineSpiral.Items;
-                                        MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                        double dPitch = 0.0;
+                                        MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot, out dPitch);
 
                                     }
                                 }
@@ -41361,11 +41410,10 @@ namespace QMC.Common.Modules
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
-
-                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
-
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
+                                    double dPitch = 0.0;
+                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot, out dPitch);
+                                    //Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
 
                                     ////  데이터 검증용 코드
                                     //if (Config.ParamConfig.DrillingData_SaveToLogFile)
@@ -41403,7 +41451,8 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
 
-                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                    double dPitch = 0.0;
+                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot, out dPitch);
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
 
@@ -42524,7 +42573,7 @@ namespace QMC.Common.Modules
                                 if (layer != null && socket != null)
                                 {
                                     SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                    Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                                 }
                             }
 
@@ -43337,7 +43386,7 @@ namespace QMC.Common.Modules
                         nNextStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
                     }
                 }
-                else //  Hole Layer 가 없을 경우, 다음 소켓으로 이동
+                else // Hole Layer 가 없을 경우, 다음 소켓으로 이동
                 {
                     if (Equipment.SelectRunEnable_New)
                     {
@@ -43352,7 +43401,7 @@ namespace QMC.Common.Modules
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                             }
                         }
 
@@ -43375,7 +43424,7 @@ namespace QMC.Common.Modules
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber} 가공 완료됨");
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                             }
                         }
 
@@ -43674,8 +43723,7 @@ namespace QMC.Common.Modules
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
             DrillingManager.CycleTimer_LaserDrilling.SaveToIni("LaserDrilling", strPath);
 
-
-            //집진기 상/하부 | 이오나이저 Off
+            //집진기 상/하부. | 이오나이저 Off.
             DustCollector_Off((int)nDustCollector.DustCollector_Upper);
             Thread.Sleep(1);
             DustCollector_Off((int)nDustCollector.DustCollector_Lower);
@@ -43683,7 +43731,6 @@ namespace QMC.Common.Modules
             loader.loaderParameter.DO_Loader_Ionizer(false);
             Thread.Sleep(100);
         }
-
 
         private int m_nLaserPowerRetryCount = 0;
         private const int MAX_LASER_POWER_RETRY = 3;
@@ -43785,6 +43832,49 @@ namespace QMC.Common.Modules
                 Equipment._InitDeviceStatus.CameraPre = false;
             }
         }
+
+        /// <summary>
+        /// 모든 장비 진공 상태가 꺼져 있는지 확인
+        /// </summary>
+        private bool IsAllVacuumOff()
+        {
+            bool bLoaderPickerVac = loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner);
+            bool bAlignerVac = loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center);
+            bool bStageVac = workStageParameter.DI_Stage_Vacuum_Check();
+            bool bUnloaderPickerVac = unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner);
+
+            if (!bLoaderPickerVac && !bAlignerVac && !bStageVac && !bUnloaderPickerVac)
+                return true;
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// 장비가 Idle 상태이며 진공도 모두 해제되었는지 확인
+        /// </summary>
+        private bool IsSystemIdle()
+        {
+            bool bStackerZ0Idle = loader.m_bStackerZ0_DownWhenEmpty;
+            bool bStackerZ1Idle = loader.m_bStackerZ1_DownWhenEmpty;
+            bool bLaserIdle = m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None;
+            bool bLoaderTransferIdle = loader.m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None;
+            bool bUnloaderTransferIdle = unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None;
+
+            if (bStackerZ0Idle &&
+                bStackerZ1Idle &&
+                bLaserIdle &&
+                bLoaderTransferIdle &&
+                bUnloaderTransferIdle &&
+                IsAllVacuumOff())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }
 #endregion

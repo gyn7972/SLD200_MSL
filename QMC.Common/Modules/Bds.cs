@@ -55,7 +55,7 @@ namespace QMC.Common.Modules
             //  축 번호 변경 전 (MASK_Y:3)
             //  축 번호 변경 후 (MASK_Y:0)
 
-            MASK_Y = 0,                                                         //  있긴 하지만 사용하지 않는 축. (SLD-200U 에서는 Mask Y 축이 없음)
+            MASK_Y = 13,    //  있긴 하지만 사용하지 않는 축. (SLD-200U 에서는 Mask Y 축이 없음)
         }
 #endif
 
@@ -768,7 +768,7 @@ namespace QMC.Common.Modules
                 if (Equipment._InitDeviceStatus.DustCollector_Upper == false)
                     return;
 
-                if (DustCollector_Upper == null)
+                if (DustCollector_Upper != null)
                 {
                     DustCollector_Upper.Disconnect();
                     Equipment._InitDeviceStatus.DustCollector_Upper = false;
@@ -779,7 +779,7 @@ namespace QMC.Common.Modules
                 if (Equipment._InitDeviceStatus.DustCollector_Lower == false)
                     return;
 
-                if (DustCollector_Lower == null)
+                if (DustCollector_Lower != null)
                 {
                     DustCollector_Lower.Disconnect();
                     Equipment._InitDeviceStatus.DustCollector_Lower = false;
@@ -866,10 +866,10 @@ namespace QMC.Common.Modules
 
             base.Close();
 
-            if (Stage != null)
-            {
-                Stage.Close();
-            }
+            //if (Stage != null)
+            //{
+            //    Stage.Close();
+            //}
 
             DustCollector_Upper?.Close();
             DustCollector_Lower?.Close();

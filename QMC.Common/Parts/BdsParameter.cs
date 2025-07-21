@@ -32,7 +32,7 @@ namespace QMC.Common.Parts
             //  축 번호 변경 전 (MASK_Y:3)
             //  축 번호 변경 후 (MASK_Y:0)
 
-            MASK_Y = 0,                                                                 //  SLD-200U 에서는 없는 축. 
+            MASK_Y = 13,                                                                 //  SLD-200U 에서는 없는 축. 
         }
 #endif
 

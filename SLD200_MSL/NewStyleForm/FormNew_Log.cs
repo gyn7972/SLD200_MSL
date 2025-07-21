@@ -42,9 +42,18 @@ namespace SLD200_MSL
             dataGridView_Log_AutoCross.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView_Log_AutoCross.AutoGenerateColumns = false;
 
+            dataGridView_Log_Height.AllowUserToResizeRows = false;
+            dataGridView_Log_Height.RowHeadersVisible = false;
+            dataGridView_Log_Height.ReadOnly = true;
+            dataGridView_Log_Height.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView_Log_Height.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView_Log_Height.AutoGenerateColumns = false;
+
+
             InitGrid();
             InitGrid_LaserPower();
             InitGrid_AutoCross();
+            InitGrid_HeightMeasure();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -149,6 +158,28 @@ namespace SLD200_MSL
 
         }
 
+        private void InitGrid_HeightMeasure()
+        {
+            dataGridView_Log_Height.Columns.Clear(); // 중복 방지
+
+            dataGridView_Log_Height.AutoGenerateColumns = false;
+            dataGridView_Log_Height.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView_Log_Height.ReadOnly = true;
+
+            // 셀 크기 자동 조정
+            dataGridView_Log_Height.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dataGridView_Log_Height.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            dataGridView_Log_Height.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+
+            AddGridColumn_HeightMeasure_Fill("Time", "Time", 150);
+            AddGridColumn_HeightMeasure_Fill("Target", "Target", 100);
+            AddGridColumn_HeightMeasure_Fill("StagePosZ", "StagePosZ", 100);
+            AddGridColumn_HeightMeasure_Fill("HeightOffset", "HeightOffset", 100);
+            AddGridColumn_HeightMeasure_Fill("ModulePosZ", "ModulePosZ", 100);
+            AddGridColumn_HeightMeasure_Fill("ModuleHeight", "ModuleHeight", 100);
+        }
+
+
         private void AddGridColumn(string name, string headerText)
         {
             var column = new DataGridViewTextBoxColumn
@@ -199,6 +230,21 @@ namespace SLD200_MSL
             };
             dataGridView_Log_AutoCross.Columns.Add(col);
         }
+
+        private void AddGridColumn_HeightMeasure_Fill(string name, string header, int minWidth)
+        {
+            var col = new DataGridViewTextBoxColumn
+            {
+                Name = name,
+                HeaderText = header,
+                DataPropertyName = name,
+                SortMode = DataGridViewColumnSortMode.NotSortable,
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                MinimumWidth = minWidth
+            };
+            dataGridView_Log_Height.Columns.Add(col);
+        }
+
 
         private void tabPage_LOT_Click(object sender, EventArgs e)
         {
@@ -368,6 +414,43 @@ namespace SLD200_MSL
 
             Log.Write("ScannerCameraOffset", "자동 교차 오프셋 보정 로그 조회 완료");
         }
+        private void SearchClick_HeightMeasure(DateTime startTime, DateTime endTime)
+        {
+            dataGridView_Log_Height.Rows.Clear();
+
+            string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HeightMeasureLog");
+
+            for (var day = startTime.Date; day <= endTime.Date; day = day.AddDays(1))
+            {
+                string logFile = Path.Combine(logFolder, $"HeightMeasureLog_{day:yyyyMMdd}.csv");
+                if (!File.Exists(logFile)) continue;
+
+                using (var fs = new FileStream(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var reader = new StreamReader(fs, new UTF8Encoding(true)))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var line = reader.ReadLine();
+                        if (line.StartsWith("Timestamp")) continue;
+
+                        var parts = line.Split(',');
+                        if (parts.Length < 6) continue;
+
+                        int row = dataGridView_Log_Height.Rows.Add();
+                        var rowCells = dataGridView_Log_Height.Rows[row].Cells;
+
+                        rowCells["Time"].Value = parts[0];
+                        rowCells["Target"].Value = parts[1];
+                        rowCells["StagePosZ"].Value = parts[2];
+                        rowCells["HeightOffset"].Value = parts[3];
+                        rowCells["ModulePosZ"].Value = parts[4];
+                        rowCells["ModuleHeight"].Value = parts[5];
+                    }
+                }
+            }
+
+            Log.Write("SocketHeight", "Height 측정 로그 조회 완료");
+        }
 
         private void baseButton_Log_LaserPower_Search_Click(object sender, EventArgs e)
         {
@@ -383,6 +466,14 @@ namespace SLD200_MSL
             DateTime endTime = dateTimePicker_Log_AutoCross_EndTime.Value;
 
             SearchClick_AutoCross(startTime, endTime);
+        }
+
+        private void baseButton_Log_Height_Search_Click(object sender, EventArgs e)
+        {
+            DateTime startTime = dateTimePicker_Log_Height_StartTime.Value;
+            DateTime endTime = dateTimePicker_Log_Height_EndTime.Value;
+
+            SearchClick_HeightMeasure(startTime, endTime);
         }
     }
 }

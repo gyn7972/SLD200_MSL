@@ -10,7 +10,6 @@ namespace QMC.Common.Parts
     public class DustCollectorController : Part
     {
         public enum CollectorPosition { Upper, Lower }
-
         public enum CollectorRunState { Unknown, Stopped, Running }
 
         private SerialPort _serialPort;
@@ -27,18 +26,15 @@ namespace QMC.Common.Parts
         {
             _stationId = stationId;
         }
-
         public void Close()
         {
             Disconnect();
         }
-
         public bool Connect(Equipment.CommList comm)
         {
             Equipment.GetSerialPortConfig(comm, out string strPortName, out int baudRate, out int dataBits, out StopBits stopBits, out Parity parity, out Handshake handshake);
             return Connect(strPortName, baudRate, dataBits, stopBits, parity, handshake);
         }
-
         public bool Connect(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity, Handshake handshake)
         {
             try
@@ -59,7 +55,6 @@ namespace QMC.Common.Parts
                 return false;
             }
         }
-
         public void Disconnect()
         {
             if (_serialPort?.IsOpen == true)
@@ -67,7 +62,6 @@ namespace QMC.Common.Parts
             _serialPort?.Dispose();
             _serialPort = null;
         }
-
         public bool Start()
         {
             bool ok = true;

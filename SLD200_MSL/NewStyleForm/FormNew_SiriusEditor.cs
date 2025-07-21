@@ -27,6 +27,7 @@ using SharpGL;
 using System.Xml.Linq;
 using SpiralLab;
 using System.Threading;
+using SLD200.NewStyleForm;
 
 //using OpenTK;
 //using OpenTK.Graphics.OpenGL;
@@ -51,6 +52,8 @@ namespace SLD200_MSL
 
         private System.Windows.Forms.Timer timer_Status;
         public System.Windows.Forms.Timer timer_RtcInit;
+
+        private static FormNew_QMCSiriusEditorStatus m_formUserGuide = null;
 
         public FormNew_SiriusEditor()
         {
@@ -90,6 +93,8 @@ namespace SLD200_MSL
             textBox_SiriusEditor_Divided_W.Text = Equipment.m_fDividedX.ToString();
             textBox_SiriusEditor_Divided_H.Text = Equipment.m_fDividedY.ToString();
             checkBox_SiriusEditor_Divided.Checked = false;
+
+            m_formUserGuide = new FormNew_QMCSiriusEditorStatus();
 
             //HookEditorToolbarButtons();
             //this.Load += (s, e) => HookEditorToolbarButtons(); // Load 이후 실행
@@ -2511,5 +2516,10 @@ namespace SLD200_MSL
             }
         }
 
+        private void button_UserGuide_Click(object sender, EventArgs e)
+        {
+            m_formUserGuide.Owner = this;
+            m_formUserGuide.Show();
+        }
     }
 }

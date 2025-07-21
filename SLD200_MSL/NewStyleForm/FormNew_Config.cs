@@ -794,7 +794,30 @@ namespace SLD200_MSL
                 }
             }
 
+            TimeSpan LaserTotalCycle = bds.GetLaserAccumulatedTime();
+            int totalHours = (int)LaserTotalCycle.TotalHours;
+            string formatted = $"{totalHours:D2}:{LaserTotalCycle.Minutes:D2}:{LaserTotalCycle.Seconds:D2}";
+            SetValue(label_Config_Laser_Laser_TotalTime, formatted);
+
             timer_Status.Enabled = true;
+        }
+
+        void SetValue(Label control, string text, bool isVisible = true)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetValue(control, text, isVisible);
+                }));
+
+            }
+            else
+            {
+                control.Text = text;
+                control.Visible = isVisible;
+            }
         }
 
         private void UpdateSeqStatus()
@@ -2008,7 +2031,7 @@ namespace SLD200_MSL
                 //공용척 사용시.
                 double dTeachingPosX = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
                 double dTeachingPosY = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
                     {
@@ -2057,7 +2080,7 @@ namespace SLD200_MSL
                 //공용척 사용시.
                 double dTeachingPosX = workStage.stWorkStageTeachingPos[nPosIndex].Stage_X;
                 double dTeachingPosY = workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y;
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
                     {
@@ -2173,7 +2196,7 @@ namespace SLD200_MSL
                 //공용척 사용시.
                 double dTeachingPosX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X);
                 double dTeachingPosY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y);
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
                     {

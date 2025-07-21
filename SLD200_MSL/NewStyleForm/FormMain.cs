@@ -301,7 +301,6 @@ namespace SLD200_MSL
         #region Method
         public void HideShowAlarm()
         {
-            
             //  2025. 02. 04.  SCH : 새로운 Alarm Form 추가
             if (this.FormNew_Alarm.Visible)
             {
