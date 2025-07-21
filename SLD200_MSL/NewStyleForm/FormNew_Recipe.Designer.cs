@@ -34,7 +34,7 @@
             this.button_Recipe_Apply = new System.Windows.Forms.Button();
             this.tabControl_Recipe = new System.Windows.Forms.TabControl();
             this.tabPage_Recipe = new System.Windows.Forms.TabPage();
-            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use = new System.Windows.Forms.CheckBox();
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable = new System.Windows.Forms.CheckBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.button_Marking_SerialNumber_CountReset = new System.Windows.Forms.Button();
             this.button_Marking_SerialNumber_Preview = new System.Windows.Forms.Button();
@@ -320,6 +320,7 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable = new System.Windows.Forms.CheckBox();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -421,7 +422,8 @@
             // 
             // tabPage_Recipe
             // 
-            this.tabPage_Recipe.Controls.Add(this.checkBox_Recipe_TabRecipe_ChuckMSL_Use);
+            this.tabPage_Recipe.Controls.Add(this.checkBox_Recipe_TabRecipe_3PointAlign_Enable);
+            this.tabPage_Recipe.Controls.Add(this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable);
             this.tabPage_Recipe.Controls.Add(this.groupBox6);
             this.tabPage_Recipe.Controls.Add(this.groupBox15);
             this.tabPage_Recipe.Controls.Add(this.groupBox17);
@@ -443,14 +445,14 @@
             // 
             // checkBox_Recipe_TabRecipe_ChuckMSL_Use
             // 
-            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.AutoSize = true;
-            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.Location = new System.Drawing.Point(10, 501);
-            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.Name = "checkBox_Recipe_TabRecipe_ChuckMSL_Use";
-            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.Size = new System.Drawing.Size(103, 23);
-            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.TabIndex = 93;
-            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.Text = "공용척 사용";
-            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.UseVisualStyleBackColor = true;
-            this.checkBox_Recipe_TabRecipe_ChuckMSL_Use.CheckedChanged += new System.EventHandler(this.checkBox_Stage_Chuck_Use_CheckedChanged);
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Location = new System.Drawing.Point(10, 501);
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Name = "checkBox_Recipe_TabRecipe_ChuckMSL_Use";
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Size = new System.Drawing.Size(103, 23);
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.TabIndex = 93;
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Text = "공용척 사용";
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.UseVisualStyleBackColor = true;
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Stage_Chuck_Use_CheckedChanged);
             // 
             // groupBox6
             // 
@@ -4045,6 +4047,16 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
+            // checkBox_Recipe_TabRecipe_3PointAlign_Enable
+            // 
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Location = new System.Drawing.Point(10, 696);
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Name = "checkBox_Recipe_TabRecipe_3PointAlign_Enable";
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Size = new System.Drawing.Size(94, 23);
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.TabIndex = 94;
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Text = "3점얼라인";
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.UseVisualStyleBackColor = true;
+            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -4397,7 +4409,7 @@
         private System.Windows.Forms.Button button_Marking_SerialNumber_CountReset;
         private System.Windows.Forms.Button button_Marking_SerialNumber_Preview;
         private System.Windows.Forms.CheckBox checkBox_MasterView;
-        private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ChuckMSL_Use;
+        private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ChuckMSL_Enable;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore;
         private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision;
         private System.Windows.Forms.Button button_Recipe_TabRecipe_Miscellaneous_HoleProcessingType;
@@ -4407,5 +4419,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button_Recipe_TabRecipe_SpiralParam_Pitch;
         private System.Windows.Forms.Label label_Recipe_TabRecipe_SpiralParam_Pitch;
+        private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_3PointAlign_Enable;
     }
 }

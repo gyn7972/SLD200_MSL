@@ -2031,7 +2031,7 @@ namespace SLD200_MSL
                 //공용척 사용시.
                 double dTeachingPosX = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
                 double dTeachingPosY = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
                     {
@@ -2080,7 +2080,7 @@ namespace SLD200_MSL
                 //공용척 사용시.
                 double dTeachingPosX = workStage.stWorkStageTeachingPos[nPosIndex].Stage_X;
                 double dTeachingPosY = workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y;
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
                     {
@@ -2196,7 +2196,7 @@ namespace SLD200_MSL
                 //공용척 사용시.
                 double dTeachingPosX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X);
                 double dTeachingPosY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y);
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
                     {

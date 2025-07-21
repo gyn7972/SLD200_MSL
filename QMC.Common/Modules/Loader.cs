@@ -6191,7 +6191,7 @@ namespace QMC.Common.Modules
                 case (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_Start:                            //  Work Stage, Loading 위치로 이동 Cycle 시작
 
                     double dTeachingPosX = 0.0, dTeachingPosY = 0.0;
-                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                     {
                         dTeachingPosX = Equipment.LoadingOffset_forDrilling_X_MSL;
                         dTeachingPosY = Equipment.LoadingOffset_forDrilling_Y_MSL;
@@ -6338,7 +6338,7 @@ namespace QMC.Common.Modules
                     // 기준 위치 설정
                     dTeachingPosX = 0.0;
                     dTeachingPosY = 0.0;
-                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                    if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                     {
                         dTeachingPosX = Equipment.LoadingOffset_forDrilling_X_MSL;
                         dTeachingPosY = Equipment.LoadingOffset_forDrilling_Y_MSL;

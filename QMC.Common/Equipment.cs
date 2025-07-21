@@ -560,7 +560,8 @@ namespace QMC.Common
             public int MarkingTemplate_EntityData_SerialNumberIncreaseType;            //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
             public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
-            public bool ChuckMSL_Use;                                   //  Chuck 사용 여부 (true: 사용, false: 미사용)
+            public bool ChuckMSL_Enable;                                   //  Chuck 사용 여부 (true: 사용, false: 미사용)
+            public bool Align3Point_Enable;                             //  3-Point Align Enable (true: Enable, false: Disable)
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
 
@@ -1318,7 +1319,8 @@ namespace QMC.Common
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;        //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
-                stLayerRecipeSet[i].ChuckMSL_Use = false;
+                stLayerRecipeSet[i].ChuckMSL_Enable = false;
+                stLayerRecipeSet[i].Align3Point_Enable = false;
             }
 
             //  평탄도 측정 위치 초기화

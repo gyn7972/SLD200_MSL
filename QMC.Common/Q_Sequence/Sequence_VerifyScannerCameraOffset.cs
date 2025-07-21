@@ -844,7 +844,7 @@ namespace QMC.Common.Q_Sequence
                         else
                         {
                             //공용척 사용시.
-                            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Use)
+                            if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                             {
                                 dScannerCalTeachingPosX = Equipment.StageOffset_forDrilling_X_MSL;
                                 dScannerCalTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
