@@ -53,7 +53,7 @@ namespace QMC.Common.Motion.ACS.Motions
                     if (this.Configuration.Address != null)
                     {
                         Api.OpenCommEthernetTCP(
-                         this.Configuration.Address.ToString(),                             // IP Address (Default : 10.0.0.100)
+                         this.Configuration.Address.ToString(),                           // IP Address (Default : 10.0.0.100)
                          this.Configuration.Port//Convert.ToInt32(txtPort.Text.Trim())    // TCP/IP Port nubmer (default : 701)
                          );
 
@@ -70,15 +70,12 @@ namespace QMC.Common.Motion.ACS.Motions
 
             //bool bIsOpen = AXL.IsOpened();
             //ret = AXL.Open();
-
             //bIsOpen = AXL.IsOpened();
-
             //if (ret == 0)
             //{
             //    ret = (int)AXM.AxmMotLoadParaAll("D:\\SLD-100.mot");
             //    bIsOpen = AXL.IsOpened();
             //}
-
             ////if(!bIsOpen)
             ////{
             ////    ret = (int)AXM.AxmMotLoadParaAll(ConfigManager.GetAjinMotorParameterFile());

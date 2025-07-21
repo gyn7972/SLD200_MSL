@@ -51,7 +51,6 @@ namespace QMC.Common.Motion.Ajin.Motions
                 //  Laser Type                                                                            //  True : CO₂,    False : UV
                 NativeMethods.GetPrivateProfileString("Machine_Option", "Laser_Type", "True", temp, 255, strFIle);
                 m_bCurrentLaserType = temp.ToString() == "False" ? false : true;
-
                 if (m_bCurrentLaserType)        //  CO₂
                 {
                     strParameterFile = string.Format("D:\\SLD-200_Parameter\\SLD-200C.mot");
@@ -60,9 +59,6 @@ namespace QMC.Common.Motion.Ajin.Motions
                 {
                     strParameterFile = string.Format("D:\\SLD-200_Parameter\\SLD-200U.mot");
                 }
-
-
-
             }
 
             int ret = 0;
