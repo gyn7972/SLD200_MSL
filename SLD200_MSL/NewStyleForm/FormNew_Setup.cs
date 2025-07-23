@@ -423,6 +423,31 @@ namespace SLD200_MSL
 
             InitRecipeUI_KeyPad();
 
+
+            if (Equipment.Machine_LaserType_CO2)
+            {
+                groupBox_Setup_Option_BET.Visible = true;
+                groupBox_Config_AxisPositions_Mask.Visible = true;
+
+                label_Recipe_TabRecipe_Miscellaneous_Mask.Visible = true;
+                comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Visible = true;
+
+                label_Recipe_TabRecipe_Miscellaneous_BETPosition.Visible = true;
+                comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Visible = true;
+            }
+            else
+            {
+                groupBox_Setup_Option_BET.Visible = false;
+                groupBox_Config_AxisPositions_Mask.Visible = false;
+
+                label_Recipe_TabRecipe_Miscellaneous_Mask.Visible = false;
+                comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Visible = false;
+
+                label_Recipe_TabRecipe_Miscellaneous_BETPosition.Visible = false;
+                comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Visible = false;
+            }
+
+
             this.Refresh();
         }
 

@@ -71,7 +71,6 @@ namespace QMC.Common.Motion.Ajin.IO
                 this.Modules.Add(module);
             }
  
-
             return ret;
         }
         #endregion

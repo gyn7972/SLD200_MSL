@@ -97,6 +97,7 @@ namespace SLD200_MSL
             AddGridColumn("DrawingName", "DrawingName");
             AddGridColumn("CompletedCount", "CompletedCount");
             AddGridColumn("NG_Count", "NG_Count");
+            AddGridColumn("AverageTime", "AverageTime");
         }
 
         private void InitGrid_LaserPower()
@@ -276,7 +277,7 @@ namespace SLD200_MSL
                     {
                         var line = reader.ReadLine();
                         var parts = line.Split(',');
-                        if (parts.Length < 6) continue;
+                        if (parts.Length < 5) continue;
 
                         int rowIndex = dataGridView_Log.Rows.Add();
                         dataGridView_Log.Rows[rowIndex].Cells["StartTime"].Value = parts[0];
@@ -284,7 +285,18 @@ namespace SLD200_MSL
                         dataGridView_Log.Rows[rowIndex].Cells["RecipeName"].Value = parts[2];
                         dataGridView_Log.Rows[rowIndex].Cells["DrawingName"].Value = parts[3];
                         dataGridView_Log.Rows[rowIndex].Cells["CompletedCount"].Value = parts[4];
-                        dataGridView_Log.Rows[rowIndex].Cells["NG_Count"].Value = parts[5];
+                        //dataGridView_Log.Rows[rowIndex].Cells["NG_Count"].Value = parts[5];
+                        if (parts.Length >= 6)
+                            dataGridView_Log.Rows[rowIndex].Cells["NG_Count"].Value = parts[5];
+                        else
+                            dataGridView_Log.Rows[rowIndex].Cells["NG_Count"].Value = "N/A"; // 또는 "N/A"
+
+                        //dataGridView_Log.Rows[rowIndex].Cells["AverageTime"].Value = parts[6];
+                        // AverageTime이 있으면 넣고, 없으면 빈 문자열
+                        if (parts.Length >= 7)
+                            dataGridView_Log.Rows[rowIndex].Cells["AverageTime"].Value = parts[6];
+                        else
+                            dataGridView_Log.Rows[rowIndex].Cells["AverageTime"].Value = "N/A"; // 또는 "N/A"
                     }
                 }
             }

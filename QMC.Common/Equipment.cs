@@ -3553,5 +3553,35 @@ namespace QMC.Common
         {
             return AxisMap.Get(key);
         }
+
+        //2025-07-22 I/O Read.
+        public static void PollingAllInputModules()
+        {
+            foreach (var board in IOBoards)
+            {
+                foreach (var module in board.Modules)
+                {
+                    if (module is DioModule dioModule)
+                    {
+                        bool hasInput = false;
+
+                        foreach (var point in dioModule.Points)
+                        {
+                            if (point is DioPoint dioPoint &&
+                                dioPoint.Configuration.IoType == IoType.Input)
+                            {
+                                hasInput = true;
+                                break;
+                            }
+                        }
+
+                        if (hasInput)
+                        {
+                            dioModule.Read(); // InputBuffer 업데이트
+                        }
+                    }
+                }
+            }
+        }
     }
 }

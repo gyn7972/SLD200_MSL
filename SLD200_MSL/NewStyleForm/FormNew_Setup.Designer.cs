@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.panel_Setup_Communication_DeviceControl = new System.Windows.Forms.Panel();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
@@ -457,6 +457,7 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.checkBox_Setup_Option_VisionNG_OKPort = new System.Windows.Forms.CheckBox();
             this.label101 = new System.Windows.Forms.Label();
             this.label100 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_HeightMeasure_PosY = new System.Windows.Forms.TextBox();
@@ -563,7 +564,7 @@
             this.button13 = new System.Windows.Forms.Button();
             this.label46 = new System.Windows.Forms.Label();
             this.textBox_ScannerOffset_X = new System.Windows.Forms.TextBox();
-            this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.groupBox_Setup_Option_BET = new System.Windows.Forms.GroupBox();
             this.textBox_Setup_Option_BET_Mrad_09x = new System.Windows.Forms.TextBox();
             this.label84 = new System.Windows.Forms.Label();
             this.label83 = new System.Windows.Forms.Label();
@@ -606,7 +607,6 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.checkBox_Setup_Option_VisionNG_OKPort = new System.Windows.Forms.CheckBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -669,7 +669,7 @@
             this.groupBox9.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
-            this.groupBox17.SuspendLayout();
+            this.groupBox_Setup_Option_BET.SuspendLayout();
             this.groupBox_Offset.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.SuspendLayout();
@@ -1310,14 +1310,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1370,14 +1370,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -5718,7 +5718,7 @@
             this.tabPage_Setup_Option.Controls.Add(this.groupBox9);
             this.tabPage_Setup_Option.Controls.Add(this.groupBox8);
             this.tabPage_Setup_Option.Controls.Add(this.groupBox7);
-            this.tabPage_Setup_Option.Controls.Add(this.groupBox17);
+            this.tabPage_Setup_Option.Controls.Add(this.groupBox_Setup_Option_BET);
             this.tabPage_Setup_Option.Controls.Add(this.groupBox_Offset);
             this.tabPage_Setup_Option.Controls.Add(this.button2);
             this.tabPage_Setup_Option.Controls.Add(this.button_Setup_Option_Save);
@@ -5756,7 +5756,7 @@
             this.groupBox19.Size = new System.Drawing.Size(475, 211);
             this.groupBox19.TabIndex = 84;
             this.groupBox19.TabStop = false;
-            this.groupBox19.Text = "groupBox19";
+            this.groupBox19.Text = " # CAUTION #      MSL 공용척 (mm) ";
             // 
             // textBox_Setup_Option_OffsetDistance_Unloading_Y_MSL
             // 
@@ -6155,6 +6155,15 @@
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
+            // 
+            // checkBox_Setup_Option_VisionNG_OKPort
+            // 
+            this.checkBox_Setup_Option_VisionNG_OKPort.Location = new System.Drawing.Point(1024, 405);
+            this.checkBox_Setup_Option_VisionNG_OKPort.Name = "checkBox_Setup_Option_VisionNG_OKPort";
+            this.checkBox_Setup_Option_VisionNG_OKPort.Size = new System.Drawing.Size(221, 24);
+            this.checkBox_Setup_Option_VisionNG_OKPort.TabIndex = 139;
+            this.checkBox_Setup_Option_VisionNG_OKPort.Text = "Vision NG -> OK Port Enable";
+            this.checkBox_Setup_Option_VisionNG_OKPort.UseVisualStyleBackColor = true;
             // 
             // label101
             // 
@@ -7351,27 +7360,27 @@
             this.textBox_ScannerOffset_X.Tag = "KeyPad;Min=-9999999;Max=9999999;Format=0.000000000";
             this.textBox_ScannerOffset_X.Text = "0.0";
             // 
-            // groupBox17
+            // groupBox_Setup_Option_BET
             // 
-            this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_09x);
-            this.groupBox17.Controls.Add(this.label84);
-            this.groupBox17.Controls.Add(this.label83);
-            this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_08x);
-            this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_12x);
-            this.groupBox17.Controls.Add(this.label80);
-            this.groupBox17.Controls.Add(this.label82);
-            this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_10x);
-            this.groupBox17.Controls.Add(this.textBox_Setup_Option_BET_Mrad_11x);
-            this.groupBox17.Controls.Add(this.label81);
-            this.groupBox17.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox17.Location = new System.Drawing.Point(1391, 655);
-            this.groupBox17.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox17.Name = "groupBox17";
-            this.groupBox17.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox17.Size = new System.Drawing.Size(475, 118);
-            this.groupBox17.TabIndex = 67;
-            this.groupBox17.TabStop = false;
-            this.groupBox17.Text = " # CAUTION #      BET Mrad Position ";
+            this.groupBox_Setup_Option_BET.Controls.Add(this.textBox_Setup_Option_BET_Mrad_09x);
+            this.groupBox_Setup_Option_BET.Controls.Add(this.label84);
+            this.groupBox_Setup_Option_BET.Controls.Add(this.label83);
+            this.groupBox_Setup_Option_BET.Controls.Add(this.textBox_Setup_Option_BET_Mrad_08x);
+            this.groupBox_Setup_Option_BET.Controls.Add(this.textBox_Setup_Option_BET_Mrad_12x);
+            this.groupBox_Setup_Option_BET.Controls.Add(this.label80);
+            this.groupBox_Setup_Option_BET.Controls.Add(this.label82);
+            this.groupBox_Setup_Option_BET.Controls.Add(this.textBox_Setup_Option_BET_Mrad_10x);
+            this.groupBox_Setup_Option_BET.Controls.Add(this.textBox_Setup_Option_BET_Mrad_11x);
+            this.groupBox_Setup_Option_BET.Controls.Add(this.label81);
+            this.groupBox_Setup_Option_BET.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox_Setup_Option_BET.Location = new System.Drawing.Point(1391, 655);
+            this.groupBox_Setup_Option_BET.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox_Setup_Option_BET.Name = "groupBox_Setup_Option_BET";
+            this.groupBox_Setup_Option_BET.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox_Setup_Option_BET.Size = new System.Drawing.Size(475, 118);
+            this.groupBox_Setup_Option_BET.TabIndex = 67;
+            this.groupBox_Setup_Option_BET.TabStop = false;
+            this.groupBox_Setup_Option_BET.Text = " # CAUTION #      BET Mrad Position ";
             // 
             // textBox_Setup_Option_BET_Mrad_09x
             // 
@@ -7877,15 +7886,6 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox_Setup_Option_VisionNG_OKPort
-            // 
-            this.checkBox_Setup_Option_VisionNG_OKPort.Location = new System.Drawing.Point(1024, 405);
-            this.checkBox_Setup_Option_VisionNG_OKPort.Name = "checkBox_Setup_Option_VisionNG_OKPort";
-            this.checkBox_Setup_Option_VisionNG_OKPort.Size = new System.Drawing.Size(221, 24);
-            this.checkBox_Setup_Option_VisionNG_OKPort.TabIndex = 139;
-            this.checkBox_Setup_Option_VisionNG_OKPort.Text = "Vision NG -> OK Port Enable";
-            this.checkBox_Setup_Option_VisionNG_OKPort.UseVisualStyleBackColor = true;
-            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -7986,8 +7986,8 @@
             this.groupBox8.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
-            this.groupBox17.ResumeLayout(false);
-            this.groupBox17.PerformLayout();
+            this.groupBox_Setup_Option_BET.ResumeLayout(false);
+            this.groupBox_Setup_Option_BET.PerformLayout();
             this.groupBox_Offset.ResumeLayout(false);
             this.groupBox_Offset.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -8511,7 +8511,7 @@
         private System.Windows.Forms.TextBox textBox_Setup_Option_BET_Mrad_08x;
         private System.Windows.Forms.Label label83;
         private System.Windows.Forms.TextBox textBox_Setup_Option_BET_Mrad_12x;
-        private System.Windows.Forms.GroupBox groupBox17;
+        private System.Windows.Forms.GroupBox groupBox_Setup_Option_BET;
         private System.Windows.Forms.TextBox textBox_Setup_Option_BET_Mrad_09x;
         private System.Windows.Forms.Label label84;
         private System.Windows.Forms.CheckBox checkBox_Setup_ScannerCal_Position;

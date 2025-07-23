@@ -3990,7 +3990,7 @@ namespace QMC.Common.Modules
                 Thread.CurrentThread.Name = "m_taskTimer_Comm_Tick";
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                     //Alarm 발생해도 계속 돌아야 함. 
                     //if (IsAlarm())
                     //{
@@ -4011,7 +4011,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                     
                     if (IsModuleClose)
                     {
@@ -4028,7 +4028,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                     //Alarm 발생해도 계속 돌아야 함. 
                     //if (IsAlarm())
                     //{
@@ -4049,7 +4049,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
 
                     //if(!m_bLaserBusy)
                     //{
@@ -4078,7 +4078,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                     if (IsAlarm())
                     {
                         continue;
@@ -4097,7 +4097,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                     if (IsAlarm())
                     {
                         continue;
@@ -4117,7 +4117,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                     if (IsAlarm())
                     {
                         continue;
@@ -4136,7 +4136,7 @@ namespace QMC.Common.Modules
                 Thread.CurrentThread.Name = "m_taskTimer_ScannerCalibration_Tick";
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                     if (IsAlarm())
                     {
                         continue;
@@ -7927,6 +7927,10 @@ namespace QMC.Common.Modules
             try
             {
                 _isMainStatusRunning = true;
+
+                // I/O - Read 분할
+                Equipment.PollingAllInputModules();
+
 
                 if (!m_MainStatus_Start)
                 {
@@ -13483,29 +13487,6 @@ namespace QMC.Common.Modules
 
                             m_bMainWorkCycle_Complete = true;
 
-                            //m_bMainWorkCycle_ResultOK = true;
-                            //  Laser Drilling 결과에 따라 OK/NG 다르게 해야 함.
-                            //  소켓 얼라인 결과가 NG 이면 NG 로 (설정 개수 이상 NG 일 경우에)
-                            //m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
-                            var activeLayers = DrillingManager.LayerList
-                                                .Where(l => l.SocketList.Any(s => s.IsDrilled))   // 실제 가공된 소켓이 있는 Layer만
-                                                .ToList();
-
-                            bool anySocketNG = activeLayers
-                                                .SelectMany(l => l.SocketList)
-                                                .Any(s => s.IsDrilled && !s.IsSuccess);
-
-                            bool forceNG =
-                                m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount ||
-                                m_bworkStageVacuumFail ||
-                                m_bForceEjectRequest ||
-                                !m_bFindLowerAlignMark_OK ||
-                                anySocketNG;
-
-                            Log.Write("DrillStatus", $"최종 결과: {forceNG}");
-
-                            int nTargetCount = Equipment.DrillModuleTargetCount - 1;
-
                             bool bSocketAlignOK = false;
                             if(Equipment.Machine_VisionNG_OKPort_Enable)
                             {
@@ -13516,19 +13497,54 @@ namespace QMC.Common.Modules
                                 bSocketAlignOK = (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount);
                             }
 
-                            if (bSocketAlignOK ||
+                            //m_bMainWorkCycle_ResultOK = true;
+                            //  Laser Drilling 결과에 따라 OK/NG 다르게 해야 함.
+                            //  소켓 얼라인 결과가 NG 이면 NG 로 (설정 개수 이상 NG 일 경우에)
+                            //m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
+                            var activeLayers = DrillingManager.LayerList
+                                                .Where(l => l.SocketList.Any(s => s.IsDrilled))   // 실제 가공된 소켓이 있는 Layer만
+                                                .ToList();
+                            bool anySocketNG = activeLayers
+                                                .SelectMany(l => l.SocketList)
+                                                .Any(s => s.IsDrilled && !s.IsSuccess);
+
+                            bool forceNG =
+                                !bSocketAlignOK ||
+                                m_bworkStageVacuumFail ||
+                                m_bForceEjectRequest ||
+                                !m_bFindLowerAlignMark_OK ||
+                                anySocketNG;
+
+                            Log.Write("DrillStatus", $"최종 결과: {forceNG}");
+
+                            int nTargetCount = Equipment.DrillModuleTargetCount - 1;
+                            if (!bSocketAlignOK ||
                                 m_bworkStageVacuumFail ||
                                 m_bForceEjectRequest ||
                                 !m_bFindLowerAlignMark_OK)
                             {
-                                DrillingManager.CycleTimer_NGModuleCount++;
-                                m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
+                                if(m_bForceEjectRequest)
+                                {
+                                    foreach (var layerList in DrillingManager.LayerList)
+                                    {
+                                        bool isSingleSocket = layerList.SocketList.Count == 1;
+
+                                        foreach (var socketList in layerList.SocketList)
+                                        {
+                                            if (isSingleSocket || !socketList.IsDrilled)
+                                            {
+                                                SetDrillResult(layerList.LayerName, socketList.SocketNumber, false);
+                                            }
+                                        }
+                                    }
+                                }
                                 m_bworkStageVacuumFail = false;
                                 m_bForceEjectRequest = false;
-                                //if (Equipment.AutoRunStatus) // 이게 아니어도.. 되야지?
                                 {
-                                    //Cycle Time
+                                    m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
                                     DrillingManager.CycleTimer_DoneModuleCount++;
+                                    DrillingManager.CycleTimer_NGModuleCount++;
+                                    //Cycle Time
                                     DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
                                     DrillingManager.SaveLotLog(false);                     // 최신 로그 저장
 
@@ -13537,7 +13553,6 @@ namespace QMC.Common.Modules
                                                         m_nMainWorkCycle_ResultOKNG,
                                                         Equipment.m_nSerialNumberMarkingCount);
                                     Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
-
 
                                     //TargetCount가 0이면 멈추지 않고 돌아야 한다.
                                     if (Equipment.DrillModuleTargetCount != 0 &&
@@ -13558,7 +13573,6 @@ namespace QMC.Common.Modules
                                                         nTargetCount,
                                                         DrillingManager.CycleTimer_DoneModuleCount);
                                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
-
                                     }
                                 }
                             }
@@ -15625,7 +15639,7 @@ namespace QMC.Common.Modules
                                     if(!IsWorkStage_Positions(nAxis.Z, dCurrZ))
                                     {
                                         tick++;
-                                        Thread.Sleep(1);
+                                        Thread.Sleep(10);
                                         if (tick > 500)
                                         {
                                             Log.Write("SLD-200", "SpiralSearch", $"Try Mark {markIndex}, PosZ {dCurrZ} :: IsWorkStage_Positions");
@@ -33904,7 +33918,7 @@ namespace QMC.Common.Modules
             //if(bDone && bInposition)  // <- 이거여야 하는건데..?
             {
                 //true: 구동 안함.
-                Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
+                Thread.Sleep(10); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
                 return bRtn = true;
             }
 
@@ -33938,7 +33952,7 @@ namespace QMC.Common.Modules
             if (bDone && bInposition && bPosTolerance)
             {
                 //true: 구동 안함.
-                Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
+                Thread.Sleep(10); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
                 return bRtn = true;
             }
             //false: 구동 중, 
@@ -34049,13 +34063,13 @@ namespace QMC.Common.Modules
             {
                 Thread.Sleep(100);  //처음 동작 후 바로 확인 할 수도 있기 때문에 Sleep 좀 주자.
                 int wait = 0;
-                const int interval = 5;
+                const int interval = 10;
                 while (wait < timeoutMs)
                 {
                     Thread.Sleep(interval);
                     if(IsWorkStage_Positions(axis, targetPos))
                     {
-                        Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
+                        Thread.Sleep(10); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
                         return true;
                     }
                     wait += interval;
@@ -43664,10 +43678,6 @@ namespace QMC.Common.Modules
             loader.m_LoaderWork_Start = false;
             unloader.m_UnloaderWork_Start = false;
 
-            //button_Main_Start.BackColor = Color.LightGray;
-            //button_Main_Start.ForeColor = Color.Black;
-            //checkBox_Main_AutoRun.Checked = false;
-
             // 장비 정지 시 그냥 정지 시킨다.
             m_ScannerCameraOffsetSequence.Reset();
             scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
@@ -43725,9 +43735,9 @@ namespace QMC.Common.Modules
 
             //집진기 상/하부. | 이오나이저 Off.
             DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-            Thread.Sleep(1);
+            Thread.Sleep(10);
             DustCollector_Off((int)nDustCollector.DustCollector_Lower);
-            Thread.Sleep(1);
+            Thread.Sleep(10);
             loader.loaderParameter.DO_Loader_Ionizer(false);
             Thread.Sleep(100);
         }

@@ -1564,6 +1564,8 @@ namespace SLD200_MSL
 
                 var mb2 = new MessageBoxOk();
                 mb2.ShowDialog("Information !", "Recipe Data를 저장하였습니다.");
+
+                Recipe_Open(fileName); // Recipe Open
             }
         }
 
