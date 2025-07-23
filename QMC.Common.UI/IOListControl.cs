@@ -177,6 +177,7 @@ namespace QMC.Common.UI
         private void Update(object sender, EventArgs e)
         {
             timerIO.Stop();
+
             for (int i = 0; i < DataGridView.Rows.Count; i++)
             {
                 DioPoint dioPoint = DataGridView.Rows[i].DataBoundItem as DioPoint;

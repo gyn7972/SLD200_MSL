@@ -287,6 +287,7 @@ namespace SLD200_MSL
                 pictureBox_Main_DiviceStatus_Powermeter_bds.Enabled = false;
 
                 groupBox_BET_Status.Visible = true;
+                groupBox_Main_AxisPositions_Mask.Visible = true;
             }
             else
             {
@@ -296,6 +297,7 @@ namespace SLD200_MSL
                 pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
 
                 groupBox_BET_Status.Visible = false;
+                groupBox_Main_AxisPositions_Mask.Visible = false;
             }
             this.FormClosing += FormNew_Main_FormClosing;
 

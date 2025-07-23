@@ -178,6 +178,9 @@ namespace SLD200_MSL
         {
             timerIO.Stop();
 
+            //20250722 IO TEST.
+            PollingAllInputModules();
+
             for (int i = 0; i < DataGridView.Rows.Count; i++)
             {
                 DioPoint dioPoint = DataGridView.Rows[i].DataBoundItem as DioPoint;
@@ -220,6 +223,19 @@ namespace SLD200_MSL
         private static Image resizeImage(Image image, Size size)
         {
             return (Image)new Bitmap(image, size);
+        }
+
+
+        public void PollingAllInputModules()
+        {
+            var modules = m_DioPoint
+                    .Where(p => p.IoType == IoType.Input) // DioPoint의 IoType 사용
+                    .Select(p => p.Module as DioModule)   // Module 캐스팅
+                    .Where(m => m != null)                // null 필터링
+                    .Distinct();                          // 중복 제거
+
+            foreach (var module in modules)
+                module.Read(); // 1회만 Read
         }
     }
 }
