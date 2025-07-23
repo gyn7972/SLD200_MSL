@@ -2274,11 +2274,11 @@ namespace SLD200_MSL
             }
 
             //  Chiller 가 알람 상태인지 체크
-            if (!workStage.workStageParameter.DI_Chiller_Alarm_Check())
-            {
-                workStage.AlarmPost(WorkStage.AlarmKey.Chiller_Alarm);
-                return;
-            }
+            //if (!workStage.workStageParameter.DI_Chiller_Alarm_Check())
+            //{
+            //    workStage.AlarmPost(WorkStage.AlarmKey.Chiller_Alarm);
+            //    return;
+            //}
 
             //  Chiller 동작 신호가 On 인데 Chiller 가 동작하지 않을경우
             if (workStage.workStageParameter.IsDO_Chiller_Run() &&
