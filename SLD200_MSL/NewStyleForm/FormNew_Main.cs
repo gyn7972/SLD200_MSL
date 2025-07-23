@@ -4341,6 +4341,22 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            foreach (var layerList in workStage.DrillingManager.LayerList)
+            {
+                if (!layerList.LayerEnum.ToString().StartsWith("Hole1"))
+                    continue;
+
+                bool isSingleSocket = layerList.SocketList.Count == 1;
+
+                foreach (var socketList in layerList.SocketList)
+                {
+                    if (isSingleSocket || !socketList.IsDrilled)
+                    {
+                        workStage.SetDrillResult(layerList.LayerName, socketList.SocketNumber, false);
+                    }
+                }
+            }
+
             return;
             workStage.m_dStageheight = 1.567;
             workStage.m_dModuleHeight = 0.590;

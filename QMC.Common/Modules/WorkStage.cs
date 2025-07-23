@@ -13529,6 +13529,9 @@ namespace QMC.Common.Modules
                                 {
                                     foreach (var layerList in DrillingManager.LayerList)
                                     {
+                                        if (!layerList.LayerEnum.ToString().StartsWith("Hole1"))
+                                            continue;
+
                                         bool isSingleSocket = layerList.SocketList.Count == 1;
 
                                         foreach (var socketList in layerList.SocketList)
@@ -34216,7 +34219,7 @@ namespace QMC.Common.Modules
 
             //if (!socket.IsDrilled)
             {
-                socket.IsDrilled = true;
+                //socket.IsDrilled = true;  // 이걸왜 true 하지?
                 socket.IsSuccess = isOK;
 
                 if (!isOK)
@@ -43455,7 +43458,6 @@ namespace QMC.Common.Modules
 
             return nNextStep;
         }
-
 
         public void ResetProcess()
         {
