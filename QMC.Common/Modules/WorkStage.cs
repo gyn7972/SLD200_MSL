@@ -13515,10 +13515,18 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                bSocketAlignOK = (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount);
+                                if (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount)
+                                {
+                                    bSocketAlignOK = false;
+                                }
+                                else
+                                {
+                                    bSocketAlignOK = true;
+                                }
+                                //bSocketAlignOK = (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount);
                             }
 
-                            if (bSocketAlignOK ||
+                            if (!bSocketAlignOK ||
                                 m_bworkStageVacuumFail ||
                                 m_bForceEjectRequest ||
                                 !m_bFindLowerAlignMark_OK)
