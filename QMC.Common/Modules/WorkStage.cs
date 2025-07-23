@@ -9546,11 +9546,12 @@ namespace QMC.Common.Modules
                     loader.loaderParameter.DO_Loader_Ionizer(true);
 
                     //  홈 실행할 때 냉각수 밸브를 열어준다. (닫지 않음. 상시 Open)
-                    workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
+                    //workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
                     workStageParameter.DO_Scanner_Coolant_Supply(true);                     //  Scanner Cooling Valve Open
 
                     if (Equipment.Machine_LaserType_CO2)
                     {
+                        workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
                         workStageParameter.DO_Mask_Coolant_Supply(true);                    //  Beam Mask 
                         workStageParameter.DO_VarioScan_Coolant_Supply(true);
                     }
