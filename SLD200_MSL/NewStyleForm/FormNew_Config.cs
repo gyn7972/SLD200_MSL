@@ -4833,11 +4833,15 @@ namespace SLD200_MSL
                 m_nShutterCloseCount++;
 
                 //  BDS Power Meter 셔터 닫기
-                bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
-                bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+                //bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
+                //bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+                workStage.workStageParameter.DO_BDS_PowerMeter_FW(true);
+                workStage.workStageParameter.DO_BDS_PowerMeter_BW(false);
+                
+
 
                 //  BDS Power Meter 셔터 닫기 확인
-                if (bds.bdsParameter.DI_BDS_PowerMeter_FW() && !bds.bdsParameter.DI_BDS_PowerMeter_BW())
+                if (workStage.workStageParameter.DI_BDS_PowerMeter_FW_Check() && !workStage.workStageParameter.DI_BDS_PowerMeter_BW_Check())
                 {
                     m_bShutterClosed = true;
                 }
@@ -6079,33 +6083,42 @@ namespace SLD200_MSL
         private void Button_Config_BDS_BeamShutter_Open_Click(object sender, EventArgs e)
         {
             //  Beam Shtter Open (BW)
+            workStage.workStageParameter.DO_BDS_PowerMeter_FW(false);
+            //Thread.Sleep(200);
+            workStage.workStageParameter.DO_BDS_PowerMeter_BW(true);
 
-            bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
-            bds.bdsParameter.DO_BDS_PowerMeter_BW(true);            
+            //bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
+            //bds.bdsParameter.DO_BDS_PowerMeter_BW(true);            
         }
 
         private void Button_Config_BDS_BeamShutter_Close_Click(object sender, EventArgs e)
         {
             //  Beam Shtter Close (FW)
+            workStage.workStageParameter.DO_BDS_PowerMeter_FW(true);
+            //Thread.Sleep(200);
+            workStage.workStageParameter.DO_BDS_PowerMeter_BW(false);
 
-            bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
-            bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
+            //bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+            //bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
         }
 
         private void Button_Config_Laser_BeamShutter_Open_Click(object sender, EventArgs e)
         {
             //  Beam Shtter Open (BW)
+            workStage.workStageParameter.DO_BDS_PowerMeter_FW(false);
+            workStage.workStageParameter.DO_BDS_PowerMeter_BW(true);
 
-            bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
-            bds.bdsParameter.DO_BDS_PowerMeter_BW(true);
+            //bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
+            //bds.bdsParameter.DO_BDS_PowerMeter_BW(true);
         }
 
         private void Button_Config_Laser_BeamShutter_Close_Click(object sender, EventArgs e)
         {
             //  Beam Shtter Close (FW)
-
-            bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
-            bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
+            workStage.workStageParameter.DO_BDS_PowerMeter_FW(true);
+            workStage.workStageParameter.DO_BDS_PowerMeter_BW(false);
+            //bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+            //bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
         }
 
         private void Button_Config_VarioScan_ZOffset_Set_Click(object sender, EventArgs e)

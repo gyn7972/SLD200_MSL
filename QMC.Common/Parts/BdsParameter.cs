@@ -717,7 +717,6 @@ namespace QMC.Common.Parts
 
             //  해당 채널 출력 성공 여부 리턴
             dioString = m_dicDioPoints[DioPointKey.Output_BDS_PowerMeter_BW.ToString()];
-
             if (dioString == null) return -1;
 
             if (m_bOnOff) nRet = dioString.Write(DioValue.On);

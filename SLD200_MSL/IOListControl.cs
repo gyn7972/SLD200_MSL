@@ -179,7 +179,7 @@ namespace SLD200_MSL
             timerIO.Stop();
 
             //20250722 IO TEST.
-            PollingAllInputModules();
+            //PollingAllInputModules();
 
             for (int i = 0; i < DataGridView.Rows.Count; i++)
             {
