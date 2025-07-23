@@ -307,7 +307,7 @@ namespace QMC.Common
             if (module != null)
             {
                 //20250722 IO TEST 여기 제거.
-                module.Read();
+                //module.Read();
                 return module.GetValue(this.Configuration.Simulated, this.Configuration.Address, this.Configuration.IoType);
             }
             else

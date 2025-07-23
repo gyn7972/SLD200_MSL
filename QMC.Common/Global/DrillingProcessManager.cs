@@ -438,7 +438,9 @@ namespace QMC.Common.Global
 
             string startTime = CycleTimer_LaserDrilling.ProcessStartTime.ToString("yyyy-MM-dd HH:mm:ss");
             string endTime = CycleTimer_LaserDrilling.ProcessEndTime.ToString("yyyy-MM-dd HH:mm:ss");
-            string averageTime = CycleTimer_LaserDrilling.Average.ToString("HH:mm:ss");
+            TimeSpan avg = CycleTimer_LaserDrilling.Average;
+            string averageTime = string.Format("{0:D2}:{1:D2}:{2:D2}",
+                (int)avg.TotalHours, avg.Minutes, avg.Seconds);
             string recipeName = Path.GetFileName(Equipment.Current_Recipe);
             string drawingName = Path.GetFileName(Equipment.Current_DrawingFileName);
             int count = 0;      // 전체 제품 수
