@@ -245,6 +245,7 @@ namespace QMC.Common.Motion.Ajin.Motions
 
         //    return false;            
         //}
+
         //public override bool MC_MoveRelPosition(int Axis, double position, double vel, double accel, double decel)
         //{
         //    lock (_axisLocks[Axis])
@@ -333,6 +334,7 @@ namespace QMC.Common.Motion.Ajin.Motions
 
         //    return false;
         //}
+
         //public bool MovePosition(XyCoordinate destPosition, double vel, double accel, double decel)
         //{
         //    bool bRet = false;
@@ -380,22 +382,110 @@ namespace QMC.Common.Motion.Ajin.Motions
         //}
 
         // 캐시 필드 추가
+        //private DateTime _lastEncUpdateTimeX = DateTime.MinValue;
+        //private DateTime _lastEncUpdateTimeY = DateTime.MinValue;
+        //private double _cachedEncPosX = 0.0;
+        //private double _cachedEncPosY = 0.0;
+        //private readonly TimeSpan _encUpdateInterval = TimeSpan.FromMilliseconds(50);
+
+        //public override double MC_GetEncPos(int nAxis)
+        //{
+        //    int ret = 0;
+        //    double dPos = 0.0;
+
+        //    if (Equipment.MapDataStatus_Activate && workStage.Stage.Interpolator != null)
+        //    {
+        //        if (nAxis == (int)WorkStage.nAxis.X)
+        //        {
+        //            if ((DateTime.Now - _lastEncUpdateTimeX) > _encUpdateInterval)
+        //            {
+        //                double x = 0, y = 0;
+        //                AXM.GetActualPosition((int)WorkStage.nAxis.X, ref x);
+        //                AXM.GetActualPosition((int)WorkStage.nAxis.Y, ref y);
+
+        //                XyCoordinate dest = new XyCoordinate { X = x, Y = y };
+        //                XyCoordinate source = new XyCoordinate();
+        //                ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source);
+
+        //                if (ret == 0)
+        //                    _cachedEncPosX = source.X;
+        //                else
+        //                    Log.Write("StageScannerPos", "MC_GetEncPos", $"[오류] ReverseInterpolate 실패 (축 X) → Code: {ret}");
+
+        //                _lastEncUpdateTimeX = DateTime.Now;
+
+        //                if (Equipment.m_bCheckAxesMotionDoneWithRetry)
+        //                {
+        //                    Log.Write("StageScannerPos", "MC_GetEncPos", $"XAxis 보정 위치: {_cachedEncPosX:F3}");
+        //                    Equipment.m_bCheckAxesMotionDoneWithRetry = false;
+        //                }
+        //            }
+        //            dPos = _cachedEncPosX;
+        //        }
+        //        else if (nAxis == (int)WorkStage.nAxis.Y)
+        //        {
+        //            if ((DateTime.Now - _lastEncUpdateTimeY) > _encUpdateInterval)
+        //            {
+        //                double x = 0, y = 0;
+        //                AXM.GetActualPosition((int)WorkStage.nAxis.X, ref x);
+        //                AXM.GetActualPosition((int)WorkStage.nAxis.Y, ref y);
+
+        //                XyCoordinate dest = new XyCoordinate { X = x, Y = y };
+        //                XyCoordinate source = new XyCoordinate();
+        //                ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source);
+
+        //                if (ret == 0)
+        //                    _cachedEncPosY = source.Y;
+        //                else
+        //                    Log.Write("StageScannerPos", "MC_GetEncPos", $"[오류] ReverseInterpolate 실패 (축 Y) → Code: {ret}");
+
+        //                _lastEncUpdateTimeY = DateTime.Now;
+
+        //                if (Equipment.m_bCheckAxesMotionDoneWithRetry)
+        //                {
+        //                    Log.Write("StageScannerPos", "MC_GetEncPos", $"YAxis 보정 위치: {_cachedEncPosY:F3}");
+        //                    Equipment.m_bCheckAxesMotionDoneWithRetry = false;
+        //                }
+        //            }
+        //            dPos = _cachedEncPosY;
+        //        }
+        //        else
+        //        {
+        //            if ((DateTime.Now - _lastEncUpdateTimeY) > _encUpdateInterval)
+        //            {
+        //                AXM.GetActualPosition(nAxis, ref dPos); // Z축 같은 기타 축
+        //                _lastEncUpdateTimeY = DateTime.Now;
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return base.MC_GetEncPos(nAxis);
+        //    }
+
+        //    return dPos;
+        //}
+
         private DateTime _lastEncUpdateTimeX = DateTime.MinValue;
         private DateTime _lastEncUpdateTimeY = DateTime.MinValue;
         private double _cachedEncPosX = 0.0;
         private double _cachedEncPosY = 0.0;
+        private Dictionary<int, DateTime> _lastEncUpdateTimeDict = new Dictionary<int, DateTime>();
+        private Dictionary<int, double> _cachedEncPosDict = new Dictionary<int, double>();
         private readonly TimeSpan _encUpdateInterval = TimeSpan.FromMilliseconds(50);
-
         public override double MC_GetEncPos(int nAxis)
         {
-            int ret = 0;
             double dPos = 0.0;
+            int ret;
 
             if (Equipment.MapDataStatus_Activate && workStage.Stage.Interpolator != null)
             {
-                if (nAxis == (int)WorkStage.nAxis.X)
+                if (nAxis == (int)WorkStage.nAxis.X || nAxis == (int)WorkStage.nAxis.Y)
                 {
-                    if ((DateTime.Now - _lastEncUpdateTimeX) > _encUpdateInterval)
+                    bool isX = (nAxis == (int)WorkStage.nAxis.X);
+                    var lastTime = isX ? _lastEncUpdateTimeX : _lastEncUpdateTimeY;
+
+                    if ((DateTime.Now - lastTime) > _encUpdateInterval)
                     {
                         double x = 0, y = 0;
                         AXM.GetActualPosition((int)WorkStage.nAxis.X, ref x);
@@ -406,59 +496,69 @@ namespace QMC.Common.Motion.Ajin.Motions
                         ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source);
 
                         if (ret == 0)
-                            _cachedEncPosX = source.X;
+                        {
+                            if (isX)
+                            {
+                                _cachedEncPosX = source.X;
+                                _lastEncUpdateTimeX = DateTime.Now;
+                                dPos = _cachedEncPosX;
+                            }
+                            else
+                            {
+                                _cachedEncPosY = source.Y;
+                                _lastEncUpdateTimeY = DateTime.Now;
+                                dPos = _cachedEncPosY;
+                            }
+                        }
                         else
-                            Log.Write("StageScannerPos", "MC_GetEncPos", $"[오류] ReverseInterpolate 실패 (축 X) → Code: {ret}");
-
-                        _lastEncUpdateTimeX = DateTime.Now;
+                        {
+                            Log.Write("StageScannerPos", "MC_GetEncPos", $"[오류] ReverseInterpolate 실패 (축 {(isX ? "X" : "Y")}) → Code: {ret}");
+                        }
 
                         if (Equipment.m_bCheckAxesMotionDoneWithRetry)
                         {
-                            Log.Write("StageScannerPos", "MC_GetEncPos", $"XAxis 보정 위치: {_cachedEncPosX:F3}");
+                            Log.Write("StageScannerPos", "MC_GetEncPos", $"{(isX ? "X" : "Y")}Axis 보정 위치: {dPos:F3}");
                             Equipment.m_bCheckAxesMotionDoneWithRetry = false;
                         }
                     }
-                    dPos = _cachedEncPosX;
-                }
-                else if (nAxis == (int)WorkStage.nAxis.Y)
-                {
-                    if ((DateTime.Now - _lastEncUpdateTimeY) > _encUpdateInterval)
+                    else
                     {
-                        double x = 0, y = 0;
-                        AXM.GetActualPosition((int)WorkStage.nAxis.X, ref x);
-                        AXM.GetActualPosition((int)WorkStage.nAxis.Y, ref y);
-
-                        XyCoordinate dest = new XyCoordinate { X = x, Y = y };
-                        XyCoordinate source = new XyCoordinate();
-                        ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source);
-
-                        if (ret == 0)
-                            _cachedEncPosY = source.Y;
-                        else
-                            Log.Write("StageScannerPos", "MC_GetEncPos", $"[오류] ReverseInterpolate 실패 (축 Y) → Code: {ret}");
-
-                        _lastEncUpdateTimeY = DateTime.Now;
-
-                        if (Equipment.m_bCheckAxesMotionDoneWithRetry)
-                        {
-                            Log.Write("StageScannerPos", "MC_GetEncPos", $"YAxis 보정 위치: {_cachedEncPosY:F3}");
-                            Equipment.m_bCheckAxesMotionDoneWithRetry = false;
-                        }
+                        dPos = isX ? _cachedEncPosX : _cachedEncPosY;
                     }
-                    dPos = _cachedEncPosY;
                 }
                 else
                 {
-                    AXM.GetActualPosition(nAxis, ref dPos); // Z축 같은 기타 축
+                    // 기타 모든 축 처리 (Z, U, A 등)
+                    if (!_lastEncUpdateTimeDict.ContainsKey(nAxis) || (DateTime.Now - _lastEncUpdateTimeDict[nAxis]) > _encUpdateInterval)
+                    {
+                        AXM.GetActualPosition(nAxis, ref dPos);
+                        _cachedEncPosDict[nAxis] = dPos;
+                        _lastEncUpdateTimeDict[nAxis] = DateTime.Now;
+                    }
+                    else
+                    {
+                        dPos = _cachedEncPosDict[nAxis];
+                    }
                 }
             }
             else
             {
-                return base.MC_GetEncPos(nAxis);
+                if (!_lastEncUpdateTimeDict.ContainsKey(nAxis) || (DateTime.Now - _lastEncUpdateTimeDict[nAxis]) > _encUpdateInterval)
+                {
+                    dPos = base.MC_GetEncPos(nAxis);
+                    _cachedEncPosDict[nAxis] = dPos;
+                    _lastEncUpdateTimeDict[nAxis] = DateTime.Now;
+                }
+                else
+                {
+                    dPos = _cachedEncPosDict[nAxis];
+                }
             }
 
             return dPos;
         }
+
+
 
 
 
