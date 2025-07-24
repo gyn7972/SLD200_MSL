@@ -549,14 +549,14 @@ namespace SLD200_MSL
             //label_Config_WorkStage_PowerMeterValue_Stage.Text = string.Format("{0:F2}", workStage.m_dPowerMeterStage_Value);
             double valBDS = workStage.m_dPowerMeterBDS_Value;
             label_Config_Laser_PowerMeterValue_BDS.Text =
-                (double.IsNaN(valBDS) || double.IsInfinity(valBDS)) ? "-" : valBDS.ToString("F2");
+                (double.IsNaN(valBDS) || double.IsInfinity(valBDS)) ? "-" : valBDS.ToString("F3");
 
             double valStage = workStage.m_dPowerMeterStage_Value;
             label_Config_Laser_PowerMeterValue_Stage.Text =
-                (double.IsNaN(valStage) || double.IsInfinity(valStage)) ? "-" : valStage.ToString("F2");
+                (double.IsNaN(valStage) || double.IsInfinity(valStage)) ? "-" : valStage.ToString("F3");
 
             label_Config_WorkStage_PowerMeterValue_Stage.Text =
-                (double.IsNaN(valStage) || double.IsInfinity(valStage)) ? "-" : valStage.ToString("F2");
+                (double.IsNaN(valStage) || double.IsInfinity(valStage)) ? "-" : valStage.ToString("F3");
 
             /////////////////
             /// 집진기
