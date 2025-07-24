@@ -4095,7 +4095,7 @@ namespace SLD200_MSL
                             if (group != null && group.IsSelected)
                             {
                                 var ptReal = new XyzCoordinate(group.Location.X, group.Location.Y, 0);
-                                var targetPos = workStage.ConvertPointFineCam(ptReal);
+                                XyzCoordinate targetPos = workStage.ConvertPointFineCam(ptReal);
 
                                 if (Equipment.AutoManualStatus == false)
                                 {
@@ -4134,12 +4134,21 @@ namespace SLD200_MSL
                             if (circle != null && circle.IsSelected)
                             {
                                 var ptReal = new XyzCoordinate(circle.Center.X, circle.Center.Y, 0);
-                                var targetPos = workStage.ConvertPointFineCam(ptReal);
+                                XyzCoordinate targetPos = workStage.ConvertPointFineCam(ptReal);
 
                                 if (Equipment.AutoManualStatus == false)
                                 {
                                     if (Equipment._InitDeviceStatus.MotionIo)
                                     {
+                                        if (workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign))
+                                        {
+                                            workStage.m_bPreAlignCompleted = true;
+                                        }
+                                        if (workStage.m_bPreAlignCompleted)
+                                        {
+                                            targetPos = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(targetPos.X, targetPos.Y));
+                                        }
+
                                         workStage.MovetoWorkStage_ABS_PositionsXY(
                                             new XyCoordinate(targetPos.X, targetPos.Y),
                                             Type_Motor_Speed.Process
