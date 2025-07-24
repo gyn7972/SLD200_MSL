@@ -469,6 +469,7 @@
             this.label_Config_Laser_Laser_warning = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.label_Config_Laser_Laser_TotalTime = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -621,7 +622,6 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -3405,10 +3405,10 @@
             "Chiller Alarm",
             "Work Stage Vacuum",
             "Laser Cal-Sheet Vacuum",
-            "Dust Collector 0 Fan Running",
-            "Dust Collector 0 Fan Fault",
-            "Dust Collector 1 Fan Running",
-            "Dust Collector 1 Fan Fault"});
+            "Dust Collector 0 Fan Running (상부)",
+            "Dust Collector 0 Fan Fault (상부)",
+            "Dust Collector 1 Fan Running (하부)",
+            "Dust Collector 1 Fan Fault (하부)"});
             this.checkedListBox_Config_WorkStage_DIO_Input.Location = new System.Drawing.Point(10, 19);
             this.checkedListBox_Config_WorkStage_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_WorkStage_DIO_Input.Name = "checkedListBox_Config_WorkStage_DIO_Input";
@@ -6630,6 +6630,18 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = " Laser Status ";
             // 
+            // label20
+            // 
+            this.label20.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label20.ForeColor = System.Drawing.Color.Red;
+            this.label20.Location = new System.Drawing.Point(6, 49);
+            this.label20.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(148, 24);
+            this.label20.TabIndex = 19;
+            this.label20.Text = "* Laser 발진 - 사용 시간";
+            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // label_Config_Laser_Laser_TotalTime
             // 
             this.label_Config_Laser_Laser_TotalTime.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
@@ -8630,18 +8642,6 @@
             this.label51.TabIndex = 49;
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label20
-            // 
-            this.label20.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label20.ForeColor = System.Drawing.Color.Red;
-            this.label20.Location = new System.Drawing.Point(6, 49);
-            this.label20.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(148, 24);
-            this.label20.TabIndex = 19;
-            this.label20.Text = "* Laser 발진 - 사용 시간";
-            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Config
             // 

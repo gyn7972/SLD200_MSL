@@ -3579,6 +3579,21 @@ namespace QMC.Common
                         {
                             dioModule.Read(); // InputBuffer 업데이트
                         }
+
+                        foreach (var point in dioModule.Points)
+                        {
+                            if (point is DioPoint dioPoint &&
+                                dioPoint.Configuration.IoType == IoType.Output)
+                            {
+                                hasInput = true;
+                                break;
+                            }
+                        }
+
+                        if (hasInput)
+                        {
+                            dioModule.Read(); // InputBuffer 업데이트
+                        }
                     }
                 }
             }

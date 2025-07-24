@@ -112,7 +112,7 @@ namespace QMC.Common
 			//}
 
 			//2025-07-23 I/O Signal.
-			//Configuration.RefreshTime = 10; // 10ms로 설정
+			Configuration.RefreshTime = 10; // 10ms로 설정
             if ((double)(Environment.TickCount - m_TickCount) < Configuration.RefreshTime)
 			{
 				return result;

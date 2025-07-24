@@ -116,6 +116,7 @@ namespace QMC.Common.Parts
         {
             bool bEmg = false;
             Thread.Sleep(5000);
+
             while (true)
             {
                 if (m_bExit)

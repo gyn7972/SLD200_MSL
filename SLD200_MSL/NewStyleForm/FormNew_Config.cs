@@ -544,13 +544,23 @@ namespace SLD200_MSL
 
             /////////////////////////////////////////////////////////////////////////////////////
             //  PowerMeter
-            label_Config_Laser_PowerMeterValue_BDS.Text = string.Format("{0:0.00}", workStage.m_dPowerMeterBDS_Value);
-            label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:0.00}", workStage.m_dPowerMeterStage_Value);
-            label_Config_WorkStage_PowerMeterValue_Stage.Text = string.Format("{0:0.00}", workStage.m_dPowerMeterStage_Value);
+            //label_Config_Laser_PowerMeterValue_BDS.Text = string.Format("{0:F2}", workStage.m_dPowerMeterBDS_Value);
+            //label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:F2}", workStage.m_dPowerMeterStage_Value);
+            //label_Config_WorkStage_PowerMeterValue_Stage.Text = string.Format("{0:F2}", workStage.m_dPowerMeterStage_Value);
+            double valBDS = workStage.m_dPowerMeterBDS_Value;
+            label_Config_Laser_PowerMeterValue_BDS.Text =
+                (double.IsNaN(valBDS) || double.IsInfinity(valBDS)) ? "-" : valBDS.ToString("F2");
+
+            double valStage = workStage.m_dPowerMeterStage_Value;
+            label_Config_Laser_PowerMeterValue_Stage.Text =
+                (double.IsNaN(valStage) || double.IsInfinity(valStage)) ? "-" : valStage.ToString("F2");
+
+            label_Config_WorkStage_PowerMeterValue_Stage.Text =
+                (double.IsNaN(valStage) || double.IsInfinity(valStage)) ? "-" : valStage.ToString("F2");
 
             /////////////////
             /// 집진기
-            if(m_bDustCollectorSetFreqOK_Upper)
+            if (m_bDustCollectorSetFreqOK_Upper)
             {
                 label_Config_TabWorkStage_DustCollector0_Freq_Value.Text = string.Format("{0:0.0}", textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
             }

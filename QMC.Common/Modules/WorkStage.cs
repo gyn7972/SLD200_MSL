@@ -4631,45 +4631,6 @@ namespace QMC.Common.Modules
                 BeamExpanderComm_Close();
             }
 
-            //기존 코드
-            {
-                //if (Camera_HighRes != null)
-                //{
-                //    Camera_HighRes.Close();
-                //}
-
-                //if (Camera_LowRes != null)
-                //{
-                //    Camera_LowRes.Close();
-                //}
-
-                //if (m_powerMeter_ExitPos_Comm != null)
-                //{
-                //    m_powerMeter_ExitPos_Comm.CloseComm();
-                //    m_powerMeter_ExitPos_Comm.Close();
-                //}
-
-                //if (m_powerMeter_TargetPos_Comm != null)
-                //{
-                //    m_powerMeter_TargetPos_Comm.CloseComm();
-                //    m_powerMeter_TargetPos_Comm.Close();
-                //}
-
-                //if (m_beamExpander_Comm != null)
-                //{
-                //    m_beamExpander_Comm.CloseComm();
-                //    m_beamExpander_Comm.Close();
-                //}
-
-                //if (m_electroRegulator_Comm != null)
-                //{
-                //    m_electroRegulator_Comm.CloseComm();
-                //    m_electroRegulator_Comm.Close();
-                //}
-            }
-            
-
-
             base.Close();
         }
         #endregion
@@ -8052,11 +8013,8 @@ namespace QMC.Common.Modules
                 }
                 else
                 {
-                    //if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, workStageParameter.DI_Scanner_Flow_Check()))
-                    //    AlarmPost(AlarmKey.Scanner_Flow_Alarm);
-                    if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, !workStageParameter.DI_Scanner_Flow_Check()))
-                        AlarmPost(AlarmKey.Scanner_Flow_Alarm);
-                    //if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, workStageParameter.DI_Scanner_Flow_Check()))
+                    // 막아보고 해보자.
+                    //if (ShouldRaiseAlarm(AlarmKey.Scanner_Flow_Alarm, !workStageParameter.DI_Scanner_Flow_Check()))
                     //    AlarmPost(AlarmKey.Scanner_Flow_Alarm);
                 }
 
@@ -8067,50 +8025,6 @@ namespace QMC.Common.Modules
                 if (ShouldRaiseAlarm(AlarmKey.DustCollector_Fan_Fault_Low_Alarm, workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower)))
                     AlarmPost(AlarmKey.DustCollector_Fan_Fault_Low_Alarm);
 
-                // 기존 코드
-                {
-                    //if (!workStageParameter.DI_Chiller_Alarm_Check())
-                    //{
-                    //    AlarmPost(AlarmKey.Chiller_Alarm);
-                    //}
-
-                    //if (!workStageParameter.DI_Chiller_Run())
-                    //{
-                    //    AlarmPost(AlarmKey.Chiller_Stop);
-                    //}
-
-                    //if (!workStageParameter.DI_Main_CDA_Check())
-                    //{
-                    //    AlarmPost(AlarmKey.Main_CDA_Alarm);
-                    //}
-
-                    //if (!workStageParameter.DI_Main_Purge_Check())
-                    //{
-                    //    AlarmPost(AlarmKey.Main_Purge_Alarm);
-                    //}
-
-                    ////if (!workStageParameter.DI_Scanner_Flow_Check())
-                    //if (workStageParameter.DI_Scanner_Flow_Check())
-                    //{
-                    //    AlarmPost(AlarmKey.Scanner_Flow_Alarm);
-                    //}
-
-                    //if (!workStageParameter.DI_Water_In_Leak_Check())
-                    //{
-                    //    AlarmPost(AlarmKey.Water_In_Leak_Alarm);
-                    //}
-
-                    //if (workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper)) //A접점
-                    //{
-                    //    AlarmPost(AlarmKey.DustCollector_Fan_Fault_Upper_Alarm);
-                    //}
-
-                    //if (workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower)) //A접점
-                    //{
-                    //    AlarmPost(AlarmKey.DustCollector_Fan_Fault_Low_Alarm);
-                    //}
-                }
-                
 
                 if (Equipment.Machine_LaserType_CO2)
                 {
@@ -8121,24 +8035,6 @@ namespace QMC.Common.Modules
                     if (ShouldRaiseAlarm(AlarmKey.Laser_System_Fault_Alarm, workStageParameter.DI_Laser_System_Fault())) //A접점
                         AlarmPost(AlarmKey.Laser_System_Fault_Alarm);
 
-                    // 기존 코드
-                    {
-                        //if (!workStageParameter.DI_VarioScan_Flow_Check())
-                        //{
-                        //    AlarmPost(AlarmKey.VarioScan_Flow_Alarm);
-                        //}
-
-                        //if (!workStageParameter.DI_Mask_Leak_Check())
-                        //{
-                        //    AlarmPost(AlarmKey.Mask_Leak_Alarm);
-                        //}
-
-                        //if (workStageParameter.DI_Laser_System_Fault()) //A접점
-                        //{
-                        //    AlarmPost(AlarmKey.Laser_System_Fault_Alarm);
-                        //}
-                    }
-                    
                     if(workStageParameter.IsDO_Laser_Enable()) //A접점
                     {
                         if(!workStageParameter.IsDO_BeamDump_Coolant_Supply())
@@ -9559,7 +9455,7 @@ namespace QMC.Common.Modules
                         //workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
                         //workStageParameter.DO_Scanner_Coolant_Supply(true);                     //  Scanner Cooling Valve Open
 
-                        if (Equipment.Machine_LaserType_CO2)
+                    if (Equipment.Machine_LaserType_CO2)
                     {
                         workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
                         workStageParameter.DO_Mask_Coolant_Supply(true);                    //  Beam Mask 
