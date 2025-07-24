@@ -9561,6 +9561,7 @@ namespace QMC.Common.Modules
 
                         if (Equipment.Machine_LaserType_CO2)
                     {
+                        workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
                         workStageParameter.DO_Mask_Coolant_Supply(true);                    //  Beam Mask 
                         workStageParameter.DO_VarioScan_Coolant_Supply(true);
                     }
