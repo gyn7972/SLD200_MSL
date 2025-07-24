@@ -9546,10 +9546,20 @@ namespace QMC.Common.Modules
                     loader.loaderParameter.DO_Loader_Ionizer(true);
 
                     //  홈 실행할 때 냉각수 밸브를 열어준다. (닫지 않음. 상시 Open)
-                    workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
-                    workStageParameter.DO_Scanner_Coolant_Supply(true);                     //  Scanner Cooling Valve Open
+                    if (!workStageParameter.IsDO_BeamDump_Coolant_Supply())
+                    {
+                        workStageParameter.DO_BeamDump_Coolant_Supply(true);
+                    }
 
-                    if (Equipment.Machine_LaserType_CO2)
+                    if (!workStageParameter.IsDO_Scanner_Coolant_Supply())
+                    {
+                        workStageParameter.DO_Scanner_Coolant_Supply(true);
+                    }
+
+                        //workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
+                        //workStageParameter.DO_Scanner_Coolant_Supply(true);                     //  Scanner Cooling Valve Open
+
+                        if (Equipment.Machine_LaserType_CO2)
                     {
                         workStageParameter.DO_Mask_Coolant_Supply(true);                    //  Beam Mask 
                         workStageParameter.DO_VarioScan_Coolant_Supply(true);
@@ -13496,7 +13506,14 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                bSocketAlignOK = (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount);
+                                if (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount)
+                                {
+                                    bSocketAlignOK = false;
+                                }
+                                else
+                                {
+                                    bSocketAlignOK = true;
+                                }   
                             }
 
                             //m_bMainWorkCycle_ResultOK = true;
