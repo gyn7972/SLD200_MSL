@@ -3995,15 +3995,8 @@ namespace SLD200_MSL
                             {
                                 XyzCoordinate v = workStage.ConvertPointFineCam(new XyzCoordinate(ptReal.X, ptReal.Y, 0));
 
-                                if (workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign))
-                                {
-                                    workStage.m_bPreAlignCompleted = true;
-                                }
-                                if (workStage.m_bPreAlignCompleted)
-                                {
-                                    v = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(v.X, v.Y));
-                                }
-
+                                v = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(v.X, v.Y));
+                                
                                 workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X, v.Y), Type_Motor_Speed.Process);
                                 return;
                             }
@@ -4047,15 +4040,8 @@ namespace SLD200_MSL
                             // 도면 좌표 → 장비 좌표 변환
                             var targetPos = workStage.ConvertPointFineCam(ptReal);
 
-                            if (workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign))
-                            {
-                                workStage.m_bPreAlignCompleted = true;
-                            }
-                            if (workStage.m_bPreAlignCompleted)
-                            {
-                                targetPos = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(targetPos.X, targetPos.Y));
-                            }
-
+                            targetPos = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(targetPos.X, targetPos.Y));
+                           
                             workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(targetPos.X, targetPos.Y), Type_Motor_Speed.Process);
                         }
                         else
@@ -4101,15 +4087,8 @@ namespace SLD200_MSL
                                 {
                                     if (Equipment._InitDeviceStatus.MotionIo)
                                     {
-                                        if (workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign))
-                                        {
-                                            workStage.m_bPreAlignCompleted = true;
-                                        }
-                                        if (workStage.m_bPreAlignCompleted)
-                                        {
-                                            targetPos = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(targetPos.X, targetPos.Y));
-                                        }
-
+                                        targetPos = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(targetPos.X, targetPos.Y));
+                                        
                                         workStage.MovetoWorkStage_ABS_PositionsXY(
                                             new XyCoordinate(targetPos.X, targetPos.Y),
                                             Type_Motor_Speed.Process
@@ -4140,15 +4119,9 @@ namespace SLD200_MSL
                                 {
                                     if (Equipment._InitDeviceStatus.MotionIo)
                                     {
-                                        if (workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign))
-                                        {
-                                            workStage.m_bPreAlignCompleted = true;
-                                        }
-                                        if (workStage.m_bPreAlignCompleted)
-                                        {
-                                            targetPos = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(targetPos.X, targetPos.Y));
-                                        }
-
+                                       
+                                        targetPos = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(targetPos.X, targetPos.Y));
+                                       
                                         workStage.MovetoWorkStage_ABS_PositionsXY(
                                             new XyCoordinate(targetPos.X, targetPos.Y),
                                             Type_Motor_Speed.Process

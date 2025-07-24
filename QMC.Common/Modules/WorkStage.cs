@@ -33189,23 +33189,7 @@ namespace QMC.Common.Modules
             // PreAlign Data 적용/미적용
             if (Equipment.Machine_PreAlign_First_Enable && m_bPreAlignCompleted)
             {
-                XyCoordinate xyCoordinate = new XyCoordinate(0,0);
-                xyCoordinate = result;
-
-                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinate before : ", xyCoordinate.ToString());
-                //xyCoordinateAlignPositionOrgLast <- PreAliginData.
-                //Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
-                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
-
-                double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
-                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionLast : ", dAngle.ToString());
-
-                xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionLast.X,
-                                                   xyCoordinateAlignPositionLast.Y, dAngle);
-
-                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinate After : ", xyCoordinate.ToString());
-
-                result = xyCoordinate;
+                result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y));
             }
 
             return result;
@@ -33308,17 +33292,28 @@ namespace QMC.Common.Modules
 
             Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate before : ", xyCoordinate.ToString());
 
-            if (xyCoordinateAlignPositionLast != null) //xyCoordinateAlignPositionLast <- X,Y가... 0일수는 있잖아..
+            if (m_bPreAlignCompleted && 
+                xyCoordinateAlignPositionLast != null && 
+                xyCoordinateAlignPositionOrgLast != null)
             {
-                //xyCoordinateAlignPositionOrgLast <- PreAliginData.
-                //Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
-                Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+                Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                Log.Write("SLD-200", "ConvertPreAlignData-Offset  : " + offset.ToString());
+                Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign before : ", xyCoordinate.ToString());
 
-                double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
-                Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionLast : ", dAngle.ToString());
+                xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
+                    xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
 
-                xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionLast.X,
-                                                   xyCoordinateAlignPositionLast.Y, dAngle);
+                xyCoordinate = xyCoordinate + offset;
+                Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign After : ", xyCoordinate.ToString());
+                Log.Write("SLD-200", "ConvertPreAlignData-Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+
+                //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionLast.ToString());
+                //double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
+                //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", dAngle.ToString());
+                //xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionLast.X,
+                //                                   xyCoordinateAlignPositionLast.Y, dAngle);
 
                 Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
             }
