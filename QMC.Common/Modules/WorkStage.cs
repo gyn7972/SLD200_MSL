@@ -33146,7 +33146,6 @@ namespace QMC.Common.Modules
             result.Y *= -1;
             return result;
         }
-
         public XyCoordinate ConvertFineCamToLaserHeightSensor(XyCoordinate position)
         {
             XyCoordinate result = new XyCoordinate(0,0);
@@ -33188,20 +33187,21 @@ namespace QMC.Common.Modules
             result.Y -= position.Y;
 
             // PreAlign Data 적용/미적용
-            if(Equipment.Machine_PreAlign_First_Enable)
+            if (Equipment.Machine_PreAlign_First_Enable && m_bPreAlignCompleted)
             {
                 XyCoordinate xyCoordinate = new XyCoordinate(0,0);
                 xyCoordinate = result;
 
                 Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinate before : ", xyCoordinate.ToString());
                 //xyCoordinateAlignPositionOrgLast <- PreAliginData.
-                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                //Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
 
                 double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
-                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionOrgLast : ", dAngle.ToString());
+                Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionLast : ", dAngle.ToString());
 
-                xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
-                                                   xyCoordinateAlignPositionOrgLast.Y, dAngle);
+                xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionLast.X,
+                                                   xyCoordinateAlignPositionLast.Y, dAngle);
 
                 Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinate After : ", xyCoordinate.ToString());
 
@@ -33217,7 +33217,6 @@ namespace QMC.Common.Modules
             return new XyzCoordinate(result.X, result.Y, 0);
 
         }
-
         public XyCoordinate ConvertPointFineCam(XyCoordinate position)
         {
             XyCoordinate result = new XyCoordinate();
@@ -33301,6 +33300,30 @@ namespace QMC.Common.Modules
             return new XyzCoordinate(this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]
                 , this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] , 0);
             
+        }
+        public XyCoordinate ConvertPreAlignData(XyCoordinate position)
+        {
+            XyCoordinate xyCoordinate = new XyCoordinate(0, 0);
+            xyCoordinate = position;
+
+            Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate before : ", xyCoordinate.ToString());
+
+            if (xyCoordinateAlignPositionLast != null) //xyCoordinateAlignPositionLast <- X,Y가... 0일수는 있잖아..
+            {
+                //xyCoordinateAlignPositionOrgLast <- PreAliginData.
+                //Log.Write("SLD-200", "ConvertFineCamToLaserHeightSensor", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+
+                double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
+                Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionLast : ", dAngle.ToString());
+
+                xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionLast.X,
+                                                   xyCoordinateAlignPositionLast.Y, dAngle);
+
+                Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
+            }
+
+            return xyCoordinate;
         }
 
         public void SiriusViewObjectEntitySelect(List<IEntity> list)

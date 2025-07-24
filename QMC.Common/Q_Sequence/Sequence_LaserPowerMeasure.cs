@@ -129,7 +129,7 @@ namespace QMC.Common.Q_Sequence
 
         public Sequence_LaserPowerMeasure()
         {
-            
+            _setting.LoadPowerMeterConfig();
         }
         //소멸자
         ~Sequence_LaserPowerMeasure()
