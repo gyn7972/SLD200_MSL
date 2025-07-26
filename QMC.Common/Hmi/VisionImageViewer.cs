@@ -69,6 +69,10 @@ namespace QMC.Common.Hmi
         [Serializable]
         public enum MenuItems
         {
+            [Abbreviation("Live")]
+            Live,
+            [Abbreviation("Stop")]
+            Stop,
             [Abbreviation("Image load")]
             ImageLoad,
             [Abbreviation("Image save")]
@@ -1157,7 +1161,6 @@ namespace QMC.Common.Hmi
 
                         StartUpdateTask();
 
-                        
                         Display();
                         Refresh();
                     }
@@ -1242,6 +1245,26 @@ namespace QMC.Common.Hmi
                 //    module.ResultOverlays.Clear();
                 //}
 
+            }
+            else if (item.Name == MenuItems.Live.ToString())
+            {
+                if (this.Camera == null)
+                {
+                    MessageBox.Show("Camera is not exist");
+                    return;
+                }
+                Simulated = false;
+                Camera.StartLive();
+            }
+            else if (item.Name == MenuItems.Stop.ToString())
+            {
+                if (this.Camera == null)
+                {
+                    MessageBox.Show("Camera is not exist");
+                    return;
+                }
+                Simulated = false;
+                Camera.StopLive();
             }
         }
 
