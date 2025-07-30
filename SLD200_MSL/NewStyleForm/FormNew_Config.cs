@@ -2929,11 +2929,20 @@ namespace SLD200_MSL
             //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
             //}
 
-
-
             //  Target 위치 계산
-            lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+            if (Machine_ScannerToFineCamOffset)
+            {
+                lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - dScannerToFineCamX;
+                lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - dScannerToFineCamY;
+            }
+            else
+            {
+                lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            }
+            
 
             ////  맵 데이터 변경
             //workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
@@ -3043,8 +3052,18 @@ namespace SLD200_MSL
 
 
             //  Target 위치 계산
-            lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+            if (Machine_ScannerToFineCamOffset)
+            {
+                lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + dScannerToFineCamX;
+                lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + dScannerToFineCamY;
+            }
+            else
+            {
+                lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            }
 
             //  속도 설정
             if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)

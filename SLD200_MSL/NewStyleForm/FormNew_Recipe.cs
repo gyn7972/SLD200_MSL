@@ -1512,7 +1512,7 @@ namespace SLD200_MSL
 
             //saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
 
-            if (Equipment.Current_Recipe.Length <= 0)
+             if (Equipment.Current_Recipe.Length <= 0)
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", "레시피를 불러오지 않았습니다.");

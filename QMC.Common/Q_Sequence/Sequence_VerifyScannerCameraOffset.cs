@@ -1044,8 +1044,19 @@ namespace QMC.Common.Q_Sequence
                         result.X += m_dCurrentCalPosX;
                         result.Y += m_dCurrentCalPosY;
                         //  좌표계 변환 (Scanner 위치 --> Fine Camera 위치)
-                        result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                        result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                        double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                        double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                        if (Machine_ScannerToFineCamOffset)
+                        {
+                            result.X -= dScannerToFineCamX;
+                            result.Y -= dScannerToFineCamY;
+                        }
+                        else
+                        {
+                            result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                            result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                        }
+                        
                         //  좌표계 변환 (Fine Camera 위치 --> Laser Height Sensor 위치)
                         result.X += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
                         result.Y += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
@@ -1385,10 +1396,22 @@ namespace QMC.Common.Q_Sequence
 
                 case (int)VerifyScannerCameraOffset_Step.StageXY_Move_CrossMarkCenterPos:
                     {
-                        xyInterpolatedCoordinate.X =
+                        double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                        double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                        if (Machine_ScannerToFineCamOffset)
+                        {
+                            xyInterpolatedCoordinate.X =
+                            workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - dScannerToFineCamX;
+                            xyInterpolatedCoordinate.Y =
+                                workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - dScannerToFineCamY;
+                        }
+                        else
+                        {
+                            xyInterpolatedCoordinate.X =
                             workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                        xyInterpolatedCoordinate.Y =
-                            workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                            xyInterpolatedCoordinate.Y =
+                                workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                        }
 
                         if (bCalPosition)
                         {

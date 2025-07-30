@@ -170,7 +170,6 @@ namespace QMC.Common.Modules
         }
         #endregion
 
-
         public struct stDrawingHoleParam                                        //  Hole (Circle, Arc) 파라미터
         {
             public double CenterX;              //  중심 X 좌표
@@ -14377,16 +14376,20 @@ namespace QMC.Common.Modules
                             xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
 
                             //  데이터 위치를 Scanner 위치로 변경
-                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
-                                Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
-                                Equipment.stOffsetDistance.FromScannerToFineCam.Y;
-
-                            // Offset 거리 적용
-                            //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
-                            //    Equipment.stOffsetDistance.FromAlignOffset.X;
-                            //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
-                            //    Equipment.stOffsetDistance.FromAlignOffset.Y;
+                            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                            if(Machine_ScannerToFineCamOffset)
+                            {
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X += dScannerToFineCamX;
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y += dScannerToFineCamY;
+                            }
+                            else
+                            {
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
+                                    Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
+                                    Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                            }
 
                             // 여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
                             //공용척 사용시.
@@ -14465,10 +14468,23 @@ namespace QMC.Common.Modules
                                         xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
 
                                         //  데이터 위치를 Scanner 위치로 변경
-                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
+                                        double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                                        double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                                        if (Machine_ScannerToFineCamOffset)
+                                        {
+                                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
+                                            dScannerToFineCamX;
+                                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
+                                            dScannerToFineCamY;
+                                        }
+                                        else
+                                        {
+                                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
                                             Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
-                                            Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
+                                                Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                                        }
+                                        
 
                                         // 여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
                                         //공용척 사용시.
@@ -14587,10 +14603,23 @@ namespace QMC.Common.Modules
                                 xyCoordinateGoldpowderAlignPositionOrgLast = xyCoordinateGoldpowderAlignPositionOrgLastTemp;
 
                                 //  데이터 위치를 Scanner 위치로 변경
-                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
+                                double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                                double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                                if (Machine_ScannerToFineCamOffset)
+                                {
+                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
+                                    dScannerToFineCamX;
+                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
+                                    dScannerToFineCamY;
+                                }
+                                else
+                                {
+                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X +=
                                     Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                                m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
+                                    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y +=
                                     Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                                }
+                                
 
                                 //  여기까지는 Fine Camera 기준 위치값이므로, Scanner 위치 것으로 변환해야 한다. (Stage 원점 위치에서 Scanner Center 까지의 Offset 거리 반영)
                                 //공용척 사용시.
@@ -31403,8 +31432,19 @@ namespace QMC.Common.Modules
                         result.X += m_dCurrentCalPosX;
                         result.Y += m_dCurrentCalPosY;
                         //  좌표계 변환 (Scanner 위치 --> Fine Camera 위치)
-                        result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                        result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                        double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                        double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                        if (Machine_ScannerToFineCamOffset)
+                        {
+                            result.X -= dScannerToFineCamX;
+                            result.Y -= dScannerToFineCamY;
+                        }
+                        else
+                        {
+                            result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                            result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                        }
+                        
                         //  좌표계 변환 (Fine Camera 위치 --> Laser Height Sensor 위치)
                         result.X += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
                         result.Y += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
@@ -31677,10 +31717,23 @@ namespace QMC.Common.Modules
 
                 case (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos:
                     {
-                        xyInterpolatedCoordinate.X = 
+                        double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                        double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                        if (Machine_ScannerToFineCamOffset)
+                        {
+                            xyInterpolatedCoordinate.X =
+                            MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - dScannerToFineCamX;
+                            xyInterpolatedCoordinate.Y =
+                            MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - dScannerToFineCamY;
+                        }
+                        else
+                        {
+                            xyInterpolatedCoordinate.X =
                             MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                        xyInterpolatedCoordinate.Y = 
-                            MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                            xyInterpolatedCoordinate.Y =
+                                MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                        }
+                        
 
                         if(bCalPosition)
                         {
@@ -33137,8 +33190,19 @@ namespace QMC.Common.Modules
             //result.Y -= Equipment.StageOffset_forDrilling_Y;
 
             //  데이터 위치를 Fine 카메라 위치로 변경
-            result.X += Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            result.Y += Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+            if (Machine_ScannerToFineCamOffset)
+            {
+                result.X += dScannerToFineCamX;
+                result.Y += dScannerToFineCamY;
+            }
+            else
+            {
+                result.X += Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                result.Y += Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            }
+            
 
             result.X += xyFineVisionPos.X;
             result.Y += xyFineVisionPos.Y;
@@ -33172,8 +33236,19 @@ namespace QMC.Common.Modules
             //result.Y += Equipment.StageOffset_forDrilling_Y;
 
             //  좌표계 변환 (Scanner 위치 --> Fine Camera 위치)
-            result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+            if (Machine_ScannerToFineCamOffset)
+            {
+                result.X -= dScannerToFineCamX;
+                result.Y -= dScannerToFineCamY;
+            }
+            else
+            {
+                result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            }
+            
 
             //  좌표계 변환 (Fine Camera 위치 --> Laser Height Sensor 위치)
             result.X += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
@@ -33227,12 +33302,19 @@ namespace QMC.Common.Modules
             //result.Y += Equipment.StageOffset_forDrilling_Y;
 
             //  데이터 위치를 Fine 카메라 위치로 변경
-            result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+            if (Machine_ScannerToFineCamOffset)
+            {
+                result.X -= dScannerToFineCamX;
+                result.Y -= dScannerToFineCamY;
+            }
+            else
+            {
+                result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            }
 
-
-            //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
-            //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
             result.X -= position.X;
             result.Y -= position.Y;
 
@@ -33272,9 +33354,19 @@ namespace QMC.Common.Modules
             //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  데이터 위치를 Fine 카메라 위치로 변경
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
-
+            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+            if (Machine_ScannerToFineCamOffset)
+            {
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= dScannerToFineCamX;
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= dScannerToFineCamY;
+            }
+            else
+            {
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            }
+            
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
 
