@@ -899,6 +899,9 @@ namespace QMC.Common.Q_Sequence
 
                         if (bCalChagne)
                         {
+                            Equipment.Scanner_Calibration_PosX_Last = 0.0;
+                            Equipment.Scanner_Calibration_PosY_Last = 0.0;
+
                             m_dCurrentCalPosX = dScannerCalTeachingPosX;// m_dScannerCalPosX_Last;
                             m_dCurrentCalPosY = dScannerCalTeachingPosY;// - 10;
                             Equipment.Scanner_Calibration_Change = false;
@@ -1046,7 +1049,8 @@ namespace QMC.Common.Q_Sequence
                         //  좌표계 변환 (Scanner 위치 --> Fine Camera 위치)
                         double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
                         double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
-                        if (Machine_ScannerToFineCamOffset)
+                        //if (Machine_ScannerToFineCamOffset)
+                        if (false)
                         {
                             result.X -= dScannerToFineCamX;
                             result.Y -= dScannerToFineCamY;
@@ -1398,7 +1402,8 @@ namespace QMC.Common.Q_Sequence
                     {
                         double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
                         double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
-                        if (Machine_ScannerToFineCamOffset)
+                        //if (Machine_ScannerToFineCamOffset)
+                        if (false)
                         {
                             xyInterpolatedCoordinate.X =
                             workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - dScannerToFineCamX;
