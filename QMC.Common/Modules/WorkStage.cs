@@ -14375,7 +14375,7 @@ namespace QMC.Common.Modules
                                 m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
                             xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
 
-                            //  데이터 위치를 Scanner 위치로 변경
+                            // 데이터 위치를 Scanner 위치로 변경
                             double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
                             double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
                             if(Machine_ScannerToFineCamOffset)

@@ -680,6 +680,10 @@ namespace QMC.Common
             public PointD FromFineCamToCoarseCam;           //  Fine Camera to Coarse Camera
             public PointD FromFineCamToLaserHeightSensor;   //  Fine Camera to Laser Height Sensor (Keyence)
 
+            // 이 Data는 Stage Center 에서 구한 Data에서
+            // Stage Cal에서 구한 Data를 뺀 깞을 넣어줘야함. 
+            // 그래야 Stage Cal에서 구한 Data에 Offset을 + 하면
+            // Stage Center에서 구한 Data가 나옴.
             public PointD FromScannerToFineCam_Offset;              //  ....
         }
         public static stOffsetDistanceParameter stOffsetDistance = new stOffsetDistanceParameter();
