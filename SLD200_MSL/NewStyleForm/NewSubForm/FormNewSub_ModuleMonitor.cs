@@ -239,34 +239,37 @@ namespace SLD200.NewStyleForm.NewSubForm
                                 .OrderBy(l => l.LayerEnum.ToString()) // Hole1 ~ Hole50 순 정렬
                                 .ToList();
 
-                            var lastHoleLayer = holeLayers.LastOrDefault();
-                            if (lastHoleLayer != null)
+                            //수정필요
                             {
-                                var currentSocket = drillingLayer.SocketList[socketIndex];
-                                var lastHoleSocket = lastHoleLayer.SocketList[socketIndex];
+                                //var lastHoleLayer = holeLayers.LastOrDefault();
+                                //if (lastHoleLayer != null)
+                                //{
+                                //    var currentSocket = drillingLayer.SocketList[socketIndex];
+                                //    var lastHoleSocket = lastHoleLayer.SocketList[socketIndex];
 
-                                // 마지막 Hole 레이어일 경우: 일반 상태 처리 함수 사용
-                                if (drillingLayer == lastHoleLayer)
-                                {
-                                    brush = GetBrushBySocketStatus(lastHoleSocket);
-                                }
-                                else
-                                {
-                                    // 그 외 Hole 레이어는 성공 여부 무시하고 시작 여부만 판단
-                                    brush = currentSocket.IsDrilled ? Brushes.Gold : Brushes.LightGray;
-                                }
+                                //    // 마지막 Hole 레이어일 경우: 일반 상태 처리 함수 사용
+                                //    if (drillingLayer == lastHoleLayer)
+                                //    {
+                                //        brush = GetBrushBySocketStatus(lastHoleSocket);
+                                //    }
+                                //    else
+                                //    {
+                                //        // 그 외 Hole 레이어는 성공 여부 무시하고 시작 여부만 판단
+                                //        brush = currentSocket.IsDrilled ? Brushes.Gold : Brushes.LightGray;
+                                //    }
+                                //}
                             }
                             //기존코드
                             {
-                                //var lastHoleLayer = holeLayers.LastOrDefault();
-                                //bool isLastHoleDrilled = false;
-                                //if (lastHoleLayer != null)
-                                //{
-                                //    var lastHoleSocket = lastHoleLayer.SocketList[socketIndex];
-                                //    if (lastHoleSocket != null && lastHoleSocket.IsDrilled)
-                                //        isLastHoleDrilled = true;
-                                //}
-                                //brush = isLastHoleDrilled ? Brushes.LightGreen : Brushes.LightGray;
+                                var lastHoleLayer = holeLayers.LastOrDefault();
+                                bool isLastHoleDrilled = false;
+                                if (lastHoleLayer != null)
+                                {
+                                    var lastHoleSocket = lastHoleLayer.SocketList[socketIndex];
+                                    if (lastHoleSocket != null && lastHoleSocket.IsDrilled)
+                                        isLastHoleDrilled = true;
+                                }
+                                brush = isLastHoleDrilled ? Brushes.LightGreen : Brushes.LightGray;
                             }
                         }
                         else

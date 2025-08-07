@@ -13513,10 +13513,19 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                bSocketAlignOK = (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount);
+                                //Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount = 1;
+                                if (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount)
+                                {
+                                    bSocketAlignOK = false;
+                                }
+                                else
+                                {
+                                    bSocketAlignOK = true;
+                                }
+                                //bSocketAlignOK = (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount);
                             }
 
-                            if (bSocketAlignOK ||
+                            if (!bSocketAlignOK ||
                                 m_bworkStageVacuumFail ||
                                 m_bForceEjectRequest ||
                                 !m_bFindLowerAlignMark_OK)
@@ -42058,6 +42067,20 @@ namespace QMC.Common.Modules
                     {
                         m_nDrillingWork_Group_Count = 0;
                     }
+
+                    //OK를 여기에.
+                    // 공통 자동 완료 마킹 TEST하고 하자.
+                    //{
+                    //    layerEnum = GetCurrentLayerEnum(m_LayerType);
+                    //    layer = DrillingManager.GetLayer(layerEnum);
+                    //    socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                    //    if (layer != null && socket != null)
+                    //    {
+                    //        SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                    //        Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
+                    //    }
+                    //}
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                     break;
 
