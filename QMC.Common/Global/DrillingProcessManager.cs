@@ -438,6 +438,9 @@ namespace QMC.Common.Global
 
             string startTime = CycleTimer_LaserDrilling.ProcessStartTime.ToString("yyyy-MM-dd HH:mm:ss");
             string endTime = CycleTimer_LaserDrilling.ProcessEndTime.ToString("yyyy-MM-dd HH:mm:ss");
+            TimeSpan avg = CycleTimer_LaserDrilling.Average;
+            string averageTime = string.Format("{0:D2}:{1:D2}:{2:D2}",
+                (int)avg.TotalHours, avg.Minutes, avg.Seconds);
             string recipeName = Path.GetFileName(Equipment.Current_Recipe);
             string drawingName = Path.GetFileName(Equipment.Current_DrawingFileName);
             int count = 0;      // 전체 제품 수
@@ -457,6 +460,11 @@ namespace QMC.Common.Global
                             lines.Add(reader.ReadLine());
                     }
                 }
+                else
+                {
+                    // 새 파일이라면 헤더 추가
+                    lines.Add("StartTime,EndTime,RecipeName,DrawingName,Count,CountNG,AverageTime");
+                }
 
                 bool isUpdated = false;
                 int updatedCount = 0;
@@ -466,7 +474,7 @@ namespace QMC.Common.Global
                 {
                     string lastLine = lines.Last();
                     var parts = lastLine.Split(',');
-                    if (parts.Length >= 6 && parts[2] == recipeName)
+                    if (parts.Length >= 7 && parts[2] == recipeName)
                     {
                         string originalStartTime = parts[0];
                         if (int.TryParse(parts[4], out int prevCount) && int.TryParse(parts[5], out int prevCountNg))
@@ -480,11 +488,11 @@ namespace QMC.Common.Global
                             {
                                 updatedCountNg = prevCountNg + 1;
                             }
-                            string updatedLine = $"{originalStartTime},{endTime},{recipeName},{drawingName},{updatedCount},{updatedCountNg}";
+                            string updatedLine = $"{originalStartTime},{endTime},{recipeName},{drawingName},{updatedCount},{updatedCountNg},{averageTime}";
                             lines[lines.Count - 1] = updatedLine;
                             isUpdated = true;
 
-                            Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={updatedCount}, NG={updatedCountNg}");
+                            Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={updatedCount}, NG={updatedCountNg}, Avg={averageTime}");
                         }
                     }
                 }
@@ -501,10 +509,10 @@ namespace QMC.Common.Global
                         countNg += 1;
                     }
 
-                    string newLine = $"{startTime},{endTime},{recipeName},{drawingName},{count},{countNg}";
+                    string newLine = $"{startTime},{endTime},{recipeName},{drawingName},{count},{countNg},{averageTime}";
                     lines.Add(newLine);
 
-                    Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={count}, NG={countNg}");
+                    Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={count}, NG={countNg}, Avg={averageTime}");
                 }
 
                 using (FileStream fs = new FileStream(logFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))

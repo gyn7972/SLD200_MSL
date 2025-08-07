@@ -287,6 +287,7 @@ namespace SLD200_MSL
                 pictureBox_Main_DiviceStatus_Powermeter_bds.Enabled = false;
 
                 groupBox_BET_Status.Visible = true;
+                groupBox_Main_AxisPositions_Mask.Visible = true;
             }
             else
             {
@@ -296,6 +297,7 @@ namespace SLD200_MSL
                 pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
 
                 groupBox_BET_Status.Visible = false;
+                groupBox_Main_AxisPositions_Mask.Visible = false;
             }
             this.FormClosing += FormNew_Main_FormClosing;
 
@@ -2272,11 +2274,11 @@ namespace SLD200_MSL
             }
 
             //  Chiller 가 알람 상태인지 체크
-            if (!workStage.workStageParameter.DI_Chiller_Alarm_Check())
-            {
-                workStage.AlarmPost(WorkStage.AlarmKey.Chiller_Alarm);
-                return;
-            }
+            //if (!workStage.workStageParameter.DI_Chiller_Alarm_Check())
+            //{
+            //    workStage.AlarmPost(WorkStage.AlarmKey.Chiller_Alarm);
+            //    return;
+            //}
 
             //  Chiller 동작 신호가 On 인데 Chiller 가 동작하지 않을경우
             if (workStage.workStageParameter.IsDO_Chiller_Run() &&
@@ -3991,7 +3993,10 @@ namespace SLD200_MSL
                         {
                             if (Equipment._InitDeviceStatus.MotionIo)
                             {
-                                var v = workStage.ConvertPointFineCam(new XyzCoordinate(ptReal.X, ptReal.Y, 0));
+                                XyzCoordinate v = workStage.ConvertPointFineCam(new XyzCoordinate(ptReal.X, ptReal.Y, 0));
+
+                                v = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(v.X, v.Y));
+                                
                                 workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X, v.Y), Type_Motor_Speed.Process);
                                 return;
                             }
@@ -4034,6 +4039,9 @@ namespace SLD200_MSL
                         {
                             // 도면 좌표 → 장비 좌표 변환
                             var targetPos = workStage.ConvertPointFineCam(ptReal);
+
+                            targetPos = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(targetPos.X, targetPos.Y));
+                           
                             workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(targetPos.X, targetPos.Y), Type_Motor_Speed.Process);
                         }
                         else
@@ -4073,12 +4081,14 @@ namespace SLD200_MSL
                             if (group != null && group.IsSelected)
                             {
                                 var ptReal = new XyzCoordinate(group.Location.X, group.Location.Y, 0);
-                                var targetPos = workStage.ConvertPointFineCam(ptReal);
+                                XyzCoordinate targetPos = workStage.ConvertPointFineCam(ptReal);
 
                                 if (Equipment.AutoManualStatus == false)
                                 {
                                     if (Equipment._InitDeviceStatus.MotionIo)
                                     {
+                                        targetPos = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(targetPos.X, targetPos.Y));
+                                        
                                         workStage.MovetoWorkStage_ABS_PositionsXY(
                                             new XyCoordinate(targetPos.X, targetPos.Y),
                                             Type_Motor_Speed.Process
@@ -4103,12 +4113,15 @@ namespace SLD200_MSL
                             if (circle != null && circle.IsSelected)
                             {
                                 var ptReal = new XyzCoordinate(circle.Center.X, circle.Center.Y, 0);
-                                var targetPos = workStage.ConvertPointFineCam(ptReal);
+                                XyzCoordinate targetPos = workStage.ConvertPointFineCam(ptReal);
 
                                 if (Equipment.AutoManualStatus == false)
                                 {
                                     if (Equipment._InitDeviceStatus.MotionIo)
                                     {
+                                       
+                                        targetPos = (XyzCoordinate)workStage.ConvertPreAlignData(new XyCoordinate(targetPos.X, targetPos.Y));
+                                       
                                         workStage.MovetoWorkStage_ABS_PositionsXY(
                                             new XyCoordinate(targetPos.X, targetPos.Y),
                                             Type_Motor_Speed.Process
@@ -4340,6 +4353,35 @@ namespace SLD200_MSL
         private void button_TEST2_Click(object sender, EventArgs e)
         {
             return;
+
+            string strTemp = string.Empty;
+            float fMeasuredPower = workStage.m_Sequence_LaserPowerMeasure.m_fMeasuredPower;
+            float fPowerLimitMin = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMin;
+            float fPowerLimitMax = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMax;
+            if (fMeasuredPower < fPowerLimitMin || fMeasuredPower > fPowerLimitMax)
+            {
+                strTemp = "m_Sequence_LaserPowerMeasure 실패.";
+                Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_LaserPowerMeasure_Check", strTemp);
+                //return AlarmPost(AlarmKey.LaserPowerMeasureLimitFail);
+            }
+
+            //foreach (var layerList in workStage.DrillingManager.LayerList)
+            //{
+            //    if (!layerList.LayerEnum.ToString().StartsWith("Hole1"))
+            //        continue;
+
+            //    bool isSingleSocket = layerList.SocketList.Count == 1;
+
+            //    foreach (var socketList in layerList.SocketList)
+            //    {
+            //        if (isSingleSocket || !socketList.IsDrilled)
+            //        {
+            //            workStage.SetDrillResult(layerList.LayerName, socketList.SocketNumber, false);
+            //        }
+            //    }
+            //}
+
+            return;
             workStage.m_dStageheight = 1.567;
             workStage.m_dModuleHeight = 0.590;
 
@@ -4396,7 +4438,7 @@ namespace SLD200_MSL
             } while (false);
 
 
-            string strTemp = "15.25";
+            //string strTemp = "15.25";
             int na = ToInt(strTemp);
 
             return;

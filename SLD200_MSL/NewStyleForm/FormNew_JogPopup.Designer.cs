@@ -68,7 +68,7 @@
             this.tabPage_Stage.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage_Stage.Name = "tabPage_Stage";
             this.tabPage_Stage.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage_Stage.Size = new System.Drawing.Size(496, 563);
+            this.tabPage_Stage.Size = new System.Drawing.Size(496, 426);
             this.tabPage_Stage.TabIndex = 1;
             this.tabPage_Stage.Text = "Stage";
             this.tabPage_Stage.UseVisualStyleBackColor = true;
@@ -79,7 +79,7 @@
             this.tabPage_Unloader.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage_Unloader.Name = "tabPage_Unloader";
             this.tabPage_Unloader.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage_Unloader.Size = new System.Drawing.Size(496, 563);
+            this.tabPage_Unloader.Size = new System.Drawing.Size(496, 426);
             this.tabPage_Unloader.TabIndex = 2;
             this.tabPage_Unloader.Text = "Unloader";
             this.tabPage_Unloader.UseVisualStyleBackColor = true;
@@ -92,7 +92,7 @@
             this.Controls.Add(this.tabControl_JogPopup);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormNew_JogPopup";
-            this.Text = "FormNew_JogPopup";
+            this.Text = "Jog Popup";
             this.tabControl_JogPopup.ResumeLayout(false);
             this.ResumeLayout(false);
 

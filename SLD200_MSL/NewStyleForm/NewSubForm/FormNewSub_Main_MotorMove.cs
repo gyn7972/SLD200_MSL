@@ -551,9 +551,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                 expectedStageX = Equipment.StageOffset_forDrilling_X;
                 expectedStageY = Equipment.StageOffset_forDrilling_Y;
             }
+
+            double expectedFineCamX = 0.0;
+            double expectedFineCamY = 0.0;
             // FineCam 기준 위치 = Stage 기준 위치 + Offset
-            double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+            if (Equipment.Machine_ScannerToFineCamOffset)
+            {
+                expectedFineCamX = expectedStageX - dScannerToFineCamX;
+                expectedFineCamY = expectedStageY - dScannerToFineCamY;
+            }
+            else
+            {
+                expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            }
+            
 
             // 허용 오차 (척 크기에 따라 ±150mm)
             double toleranceX = 150.0;
@@ -572,11 +586,22 @@ namespace SLD200.NewStyleForm.NewSubForm
             else
             {
                 // 이동할 목표 위치 (현재 위치에서 Offset 만큼 이동)
-                XyCoordinate targetPosition = new XyCoordinate
+                XyCoordinate targetPosition = new XyCoordinate(0,0);
+                if (Equipment.Machine_ScannerToFineCamOffset)
                 {
-                    X = currX - Equipment.stOffsetDistance.FromScannerToFineCam.X,
-                    Y = currY - Equipment.stOffsetDistance.FromScannerToFineCam.Y
-                };
+                    targetPosition.X = currX - dScannerToFineCamX;
+                    targetPosition.Y = currY - dScannerToFineCamY;
+                }
+                else
+                {
+                    targetPosition.X = currX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                    targetPosition.Y = currY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                }
+                //XyCoordinate targetPosition = new XyCoordinate
+                //{
+                //    X = currX - Equipment.stOffsetDistance.FromScannerToFineCam.X,
+                //    Y = currY - Equipment.stOffsetDistance.FromScannerToFineCam.Y
+                //};
 
                 workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
                 workStage.MovetoWorkStage_ABS_PositionsXY(targetPosition, Equipment.Type_Motor_Speed.Coarse);
@@ -665,8 +690,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
 
                 // FineCam 기준 위치 = Stage 기준 위치 + Offset
-                double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                double expectedFineCamX = 0.0;
+                double expectedFineCamY = 0.0;
+                // FineCam 기준 위치 = Stage 기준 위치 + Offset
+                double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                if (Equipment.Machine_ScannerToFineCamOffset)
+                {
+                    expectedFineCamX = expectedStageX - dScannerToFineCamX;
+                    expectedFineCamY = expectedStageY - dScannerToFineCamY;
+                }
+                else
+                {
+                    expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                    expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                }
+                //double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                //double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
                 // 허용 오차 (척 크기에 따라 ±150mm)
                 double toleranceX = 150.0;
@@ -684,11 +724,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
 
                 // 이동할 위치는 현재 위치에서 Offset 만큼 더한 위치 → Scanner 중심
-                XyCoordinate targetPosition = new XyCoordinate
+                // 이동할 목표 위치 (현재 위치에서 Offset 만큼 이동)
+                XyCoordinate targetPosition = new XyCoordinate(0, 0);
+                if (Equipment.Machine_ScannerToFineCamOffset)
                 {
-                    X = currX + Equipment.stOffsetDistance.FromScannerToFineCam.X,
-                    Y = currY + Equipment.stOffsetDistance.FromScannerToFineCam.Y
-                };
+                    targetPosition.X = currX + dScannerToFineCamX;
+                    targetPosition.Y = currY + dScannerToFineCamY;
+                }
+                else
+                {
+                    targetPosition.X = currX + Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                    targetPosition.Y = currY + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                }
+                //XyCoordinate targetPosition = new XyCoordinate
+                //{
+                //    X = currX + Equipment.stOffsetDistance.FromScannerToFineCam.X,
+                //    Y = currY + Equipment.stOffsetDistance.FromScannerToFineCam.Y
+                //};
 
                 workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
                 workStage.MovetoWorkStage_ABS_PositionsXY(targetPosition, Equipment.Type_Motor_Speed.Coarse);
@@ -762,8 +814,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
 
                 // FineCam 기준 위치 = Stage 기준 위치 + Offset
-                double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                double expectedFineCamX = 0.0;
+                double expectedFineCamY = 0.0;
+                // FineCam 기준 위치 = Stage 기준 위치 + Offset
+                double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                if (Equipment.Machine_ScannerToFineCamOffset)
+                {
+                    expectedFineCamX = expectedStageX - dScannerToFineCamX;
+                    expectedFineCamY = expectedStageY - dScannerToFineCamY;
+                }
+                else
+                {
+                    expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                    expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                }
+                //double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                //double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
                 // heightsensor 기준 위치 = FineCam 기준 위치 + Offset
                 double expectedHeightSensorX = expectedFineCamX + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
@@ -867,8 +934,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
 
                 // FineCam 기준 위치 = Stage 기준 위치 + Offset
-                double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                double expectedFineCamX = 0.0;
+                double expectedFineCamY = 0.0;
+                // FineCam 기준 위치 = Stage 기준 위치 + Offset
+                double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                if (Equipment.Machine_ScannerToFineCamOffset)
+                {
+                    expectedFineCamX = expectedStageX - dScannerToFineCamX;
+                    expectedFineCamY = expectedStageY - dScannerToFineCamY;
+                }
+                else
+                {
+                    expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                    expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                }
+                //double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                //double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
                 // heightsensor 기준 위치 = FineCam 기준 위치 + Offset
                 double expectedHeightSensorX = expectedFineCamX + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
@@ -980,8 +1062,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
 
                 // FineCam 기준 위치 = Stage 기준 위치 + Offset
-                double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                double expectedFineCamX = 0.0;
+                double expectedFineCamY = 0.0;
+                // FineCam 기준 위치 = Stage 기준 위치 + Offset
+                double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                if (Equipment.Machine_ScannerToFineCamOffset)
+                {
+                    expectedFineCamX = expectedStageX - dScannerToFineCamX;
+                    expectedFineCamY = expectedStageY - dScannerToFineCamY;
+                }
+                else
+                {
+                    expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                    expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                }
+                //double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                //double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
                 // CoarseCam 기준 위치 = FineCam 기준 위치 + Offset
                 double expectedCoarseCamX = expectedFineCamX + Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
@@ -1079,8 +1176,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
 
                 // FineCam 기준 위치 = Stage 기준 위치 + Offset
-                double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-                double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                double expectedFineCamX = 0.0;
+                double expectedFineCamY = 0.0;
+                // FineCam 기준 위치 = Stage 기준 위치 + Offset
+                double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                if (Equipment.Machine_ScannerToFineCamOffset)
+                {
+                    expectedFineCamX = expectedStageX - dScannerToFineCamX;
+                    expectedFineCamY = expectedStageY - dScannerToFineCamY;
+                }
+                else
+                {
+                    expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                    expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                }
+                //double expectedFineCamX = expectedStageX - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                //double expectedFineCamY = expectedStageY - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
                 // CoarseCam 기준 위치 = FineCam 기준 위치 + Offset
                 double expectedCoarseCamX = expectedFineCamX + Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;

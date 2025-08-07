@@ -671,6 +671,8 @@ namespace QMC.Common
         public static bool Machine_PreAlign_First_Enable { set; get; } = false;    
         public static bool Machine_VisionNG_OKPort_Enable { set; get; } = false;
 
+        public static bool Machine_ScannerToFineCamOffset { set; get; } = true;           //  Scanner to Fine Camera Offset 사용 여부 (true: 사용, false: 미사용)
+
         //  Offset Distance
         public struct stOffsetDistanceParameter
         {
@@ -678,7 +680,11 @@ namespace QMC.Common
             public PointD FromFineCamToCoarseCam;           //  Fine Camera to Coarse Camera
             public PointD FromFineCamToLaserHeightSensor;   //  Fine Camera to Laser Height Sensor (Keyence)
 
-            public PointD FromAlignOffset;              //  ....
+            // 이 Data는 Stage Center 에서 구한 Data에서
+            // Stage Cal에서 구한 Data를 뺀 깞을 넣어줘야함. 
+            // 그래야 Stage Cal에서 구한 Data에 Offset을 + 하면
+            // Stage Center에서 구한 Data가 나옴.
+            public PointD FromScannerToFineCam_Offset;              //  ....
         }
         public static stOffsetDistanceParameter stOffsetDistance = new stOffsetDistanceParameter();
 
@@ -1217,8 +1223,8 @@ namespace QMC.Common
             stOffsetDistance.FromFineCamToCoarseCam.Y = 0;
             stOffsetDistance.FromFineCamToLaserHeightSensor.X = 0;
             stOffsetDistance.FromFineCamToLaserHeightSensor.Y = 0;
-            stOffsetDistance.FromAlignOffset.X = 0;                     //  Align Offset X
-            stOffsetDistance.FromAlignOffset.Y = 0;                     //  Align Offset Y
+            stOffsetDistance.FromScannerToFineCam_Offset.X = 0;                     //  Align Offset X
+            stOffsetDistance.FromScannerToFineCam_Offset.Y = 0;                     //  Align Offset Y
 
 
             //  Layer Recipe 파라미터 초기화
@@ -3169,9 +3175,9 @@ namespace QMC.Common
             Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y = Equipment.ToDouble(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_AlignOffset_X", "0.0", temp, 255, strFIle);
-            Equipment.stOffsetDistance.FromAlignOffset.X = Equipment.ToDouble(temp.ToString());
+            Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_AlignOffset_Y", "0.0", temp, 255, strFIle);
-            Equipment.stOffsetDistance.FromAlignOffset.Y = Equipment.ToDouble(temp.ToString());
+            Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y = Equipment.ToDouble(temp.ToString());
 
 
             //  Scanner Head Offset
@@ -3541,6 +3547,14 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Machine_Option", "Laser_Type", "True", temp, 255, strFIle);
             Equipment.Machine_LaserType_CO2 = temp.ToString() == "False" ? false : true;
 
+            if(Equipment.Machine_LaserType_CO2)
+            {
+                Machine_ScannerToFineCamOffset = false;
+            }
+            else
+            {
+                Machine_ScannerToFineCamOffset = true;
+            }
 
             // Axis Setting
             // AxisMap 초기화
@@ -3552,6 +3566,51 @@ namespace QMC.Common
         public static int Axis_Test(AxisMap.AxisKey key)
         {
             return AxisMap.Get(key);
+        }
+
+        //2025-07-22 I/O Read.
+        public static void PollingAllInputModules()
+        {
+            foreach (var board in IOBoards)
+            {
+                foreach (var module in board.Modules)
+                {
+                    if (module is DioModule dioModule)
+                    {
+                        bool hasInput = false;
+
+                        foreach (var point in dioModule.Points)
+                        {
+                            if (point is DioPoint dioPoint &&
+                                dioPoint.Configuration.IoType == IoType.Input)
+                            {
+                                hasInput = true;
+                                break;
+                            }
+                        }
+
+                        if (hasInput)
+                        {
+                            dioModule.Read(); // InputBuffer 업데이트
+                        }
+
+                        foreach (var point in dioModule.Points)
+                        {
+                            if (point is DioPoint dioPoint &&
+                                dioPoint.Configuration.IoType == IoType.Output)
+                            {
+                                hasInput = true;
+                                break;
+                            }
+                        }
+
+                        if (hasInput)
+                        {
+                            dioModule.Read(); // InputBuffer 업데이트
+                        }
+                    }
+                }
+            }
         }
     }
 }

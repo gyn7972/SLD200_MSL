@@ -306,7 +306,8 @@ namespace QMC.Common
             DioModule module = Module as DioModule;
             if (module != null)
             {
-                module.Read();
+                //20250722 IO TEST 여기 제거.
+                //module.Read();
                 return module.GetValue(this.Configuration.Simulated, this.Configuration.Address, this.Configuration.IoType);
             }
             else

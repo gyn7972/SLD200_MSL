@@ -71,8 +71,16 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             InitializeJogButtons();
             InitAxisLabelMap();
-
             InitRecipeUI_KeyPad();
+
+            if(Equipment.Machine_LaserType_CO2)
+            {
+                groupBox_jogPopup_Stage_Mask.Visible = true;
+            }
+            else
+            {
+                groupBox_jogPopup_Stage_Mask.Visible = false;
+            }
 
             m_bInitialized = true;
         }

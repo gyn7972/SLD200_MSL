@@ -423,6 +423,31 @@ namespace SLD200_MSL
 
             InitRecipeUI_KeyPad();
 
+
+            if (Equipment.Machine_LaserType_CO2)
+            {
+                groupBox_Setup_Option_BET.Visible = true;
+                groupBox_Config_AxisPositions_Mask.Visible = true;
+
+                label_Recipe_TabRecipe_Miscellaneous_Mask.Visible = true;
+                comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Visible = true;
+
+                label_Recipe_TabRecipe_Miscellaneous_BETPosition.Visible = true;
+                comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Visible = true;
+            }
+            else
+            {
+                groupBox_Setup_Option_BET.Visible = false;
+                groupBox_Config_AxisPositions_Mask.Visible = false;
+
+                label_Recipe_TabRecipe_Miscellaneous_Mask.Visible = false;
+                comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.Visible = false;
+
+                label_Recipe_TabRecipe_Miscellaneous_BETPosition.Visible = false;
+                comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Visible = false;
+            }
+
+
             this.Refresh();
         }
 
@@ -1368,7 +1393,7 @@ namespace SLD200_MSL
                 radioButton_Setup_Option_LaserType_UV.Checked = true;
             }
 
-            //  Offset Distance
+            // Offset Distance
             textBox_Setup_Option_Offset_ScannerFineCam_X.Text = Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString();
             textBox_Setup_Option_Offset_ScannerFineCam_Y.Text = Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString();
             textBox_Setup_Option_Offset_FineCamCoarseCam_X.Text = Equipment.stOffsetDistance.FromFineCamToCoarseCam.X.ToString();
@@ -1376,20 +1401,17 @@ namespace SLD200_MSL
             textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Text = Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X.ToString();
             textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Text = Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y.ToString();
 
-            textBox_Setup_Option_OffsetX.Text = Equipment.stOffsetDistance.FromAlignOffset.X.ToString();
-            textBox_Setup_Option_OffsetY.Text = Equipment.stOffsetDistance.FromAlignOffset.Y.ToString();
-
+            textBox_Setup_Option_OffsetX.Text = Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X.ToString();
+            textBox_Setup_Option_OffsetY.Text = Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y.ToString();
 
             //  Scanner Head Offset
             textBox_ScannerOffset_X.Text = Equipment.Scanner_HeadOffset_X.ToString();
             textBox_ScannerOffset_Y.Text = Equipment.Scanner_HeadOffset_Y.ToString();
             textBox_ScannerOffset_Angle.Text = Equipment.Scanner_HeadOffset_Angle.ToString();
 
-
             //  Machine Coordinate Offset
             textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Text = Equipment.CoordinateMatchingOffset_X.ToString();
             textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Text = Equipment.CoordinateMatchingOffset_Y.ToString();
-
 
             //  Offset Distance
             textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text = Equipment.StageOffset_forDrilling_X.ToString();
@@ -1988,8 +2010,8 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_X", textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_Y", textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Text, strFIle);
 
-            Equipment.stOffsetDistance.FromAlignOffset.X = Equipment.ToDouble(textBox_Setup_Option_OffsetX.Text);
-            Equipment.stOffsetDistance.FromAlignOffset.Y = Equipment.ToDouble(textBox_Setup_Option_OffsetY.Text);
+            Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X = Equipment.ToDouble(textBox_Setup_Option_OffsetX.Text);
+            Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y = Equipment.ToDouble(textBox_Setup_Option_OffsetY.Text);
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_AlignOffset_X", textBox_Setup_Option_OffsetX.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_AlignOffset_Y", textBox_Setup_Option_OffsetY.Text, strFIle);
 
@@ -3235,9 +3257,12 @@ namespace SLD200_MSL
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
                     return;
 
-                workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step = 
-                    (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.Start;
+                workStage.m_Sequence_FlatnessMeasure.Start();
+                workStage.m_Sequence_FlatnessMeasure.m_MainTick_Start = true;
+                //workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step = 
+                //    (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.Start;
 
+                //아래꺼.. 굳이 해야하나?
                 workStage.timer_Comm.Enabled = true;
                 workStage.timer_Comm.Start();
             }
@@ -3263,6 +3288,9 @@ namespace SLD200_MSL
                 mb.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
                 return;
             }
+
+            workStage.m_Sequence_FlatnessMeasure.Reset();
+            workStage.m_Sequence_FlatnessMeasure.m_MainTick_Start = false;
 
             workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step = 
                 (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.None;

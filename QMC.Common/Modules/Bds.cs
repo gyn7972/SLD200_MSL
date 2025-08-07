@@ -873,8 +873,6 @@ namespace QMC.Common.Modules
 
             DustCollector_Upper?.Close();
             DustCollector_Lower?.Close();
-
-
         }
 
         public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)

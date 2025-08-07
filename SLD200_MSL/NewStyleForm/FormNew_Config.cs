@@ -28,6 +28,7 @@ using static QMC.Common.Modules.Loader;
 using static QMC.Common.Modules.Unloader;
 using static QMC.Common.Modules.Vision;
 using static QMC.Common.Modules.WorkStage;
+using static QMC.Common.Parts.DustCollectorController;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace SLD200_MSL
@@ -529,6 +530,7 @@ namespace SLD200_MSL
                 m_bEmgBtn_Clicked = false;
             }
 
+
             if (m_bFormVisible == false)
             {
                 timer_Status.Enabled = false;
@@ -542,13 +544,23 @@ namespace SLD200_MSL
 
             /////////////////////////////////////////////////////////////////////////////////////
             //  PowerMeter
-            label_Config_Laser_PowerMeterValue_BDS.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterBDS_Value);
-            label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
-            label_Config_WorkStage_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
+            //label_Config_Laser_PowerMeterValue_BDS.Text = string.Format("{0:F2}", workStage.m_dPowerMeterBDS_Value);
+            //label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:F2}", workStage.m_dPowerMeterStage_Value);
+            //label_Config_WorkStage_PowerMeterValue_Stage.Text = string.Format("{0:F2}", workStage.m_dPowerMeterStage_Value);
+            double valBDS = workStage.m_dPowerMeterBDS_Value;
+            label_Config_Laser_PowerMeterValue_BDS.Text =
+                (double.IsNaN(valBDS) || double.IsInfinity(valBDS)) ? "-" : valBDS.ToString("F3");
+
+            double valStage = workStage.m_dPowerMeterStage_Value;
+            label_Config_Laser_PowerMeterValue_Stage.Text =
+                (double.IsNaN(valStage) || double.IsInfinity(valStage)) ? "-" : valStage.ToString("F3");
+
+            label_Config_WorkStage_PowerMeterValue_Stage.Text =
+                (double.IsNaN(valStage) || double.IsInfinity(valStage)) ? "-" : valStage.ToString("F3");
 
             /////////////////
             /// 집진기
-            if(m_bDustCollectorSetFreqOK_Upper)
+            if (m_bDustCollectorSetFreqOK_Upper)
             {
                 label_Config_TabWorkStage_DustCollector0_Freq_Value.Text = string.Format("{0:0.0}", textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
             }
@@ -566,13 +578,45 @@ namespace SLD200_MSL
                 label_Config_TabWorkStage_DustCollector1_Freq_Value.Text = "0.0";
             }
 
+            //SetValue(button_Config_TabWorkStage_DustCollector0_Run, strText);
+            DustCollectorController.CollectorRunState runState = bds.DustCollector_Upper.GetRunState();
+            if (runState == CollectorRunState.Running)
+            {
+                SetColor(button_Config_TabWorkStage_DustCollector0_Run, Color.Lime, Color.Black);
+                SetColor(button_Config_TabWorkStage_DustCollector0_Stop, System.Drawing.SystemColors.Control, Color.Black);
+                //Log.Write("DustCollector", "집진기 상태: 운전 중");
+            }
+            else
+            {
+                SetColor(button_Config_TabWorkStage_DustCollector0_Run, System.Drawing.SystemColors.Control, Color.Black);
+                SetColor(button_Config_TabWorkStage_DustCollector0_Stop, Color.Lime, Color.Black);
+                //Log.Write("DustCollector", "집진기 상태: 정지");
+            }
+            runState = bds.DustCollector_Lower.GetRunState();
+            if (runState == CollectorRunState.Running)
+            {
+                SetColor(button_Config_TabWorkStage_DustCollector1_Run, Color.Lime, Color.Black);
+                SetColor(button_Config_TabWorkStage_DustCollector1_Stop, System.Drawing.SystemColors.Control, Color.Black);
+                //Log.Write("DustCollector", "집진기 상태: 운전 중");
+            }
+            else //if (runState == CollectorRunState.Stopped)
+            {
+                SetColor(button_Config_TabWorkStage_DustCollector1_Run, System.Drawing.SystemColors.Control, Color.Black);
+                SetColor(button_Config_TabWorkStage_DustCollector1_Stop, Color.Lime, Color.Black);
+                //Log.Write("DustCollector", "집진기 상태: 정지");
+            }
+
+
+
+
+
+
             /////////////////////////////////////////////////////////////////////////////////////
             /// VarioScan
             float? zOffset = bds.CurrentRtcZOffset;
             float? zDefocus = bds.CurrentRtcZDefocus;
             label_VarioScan_Z_Offset_Pos.Text = string.Format("{0:0.00000}", zOffset.HasValue ? zOffset.Value : 0.0f);
             label_VarioScan_Z_Defocus_Pos.Text = string.Format("{0:0.00000}", zDefocus.HasValue ? zDefocus.Value : 0.0f);
-
 
             //  Laser Height Sensor
             label_Config_WorkStage_LaserHeightSensorValue.Text = string.Format("{0:0.00000}", workStage.m_dLaserHeightSensorSocket_Value);
@@ -697,17 +741,23 @@ namespace SLD200_MSL
                 // HH:MM 형식으로 변환
                 try
                 {
-                    int hours = (int)workStage.m_dLaser_OperatingHours / 60;        // 시간 계산
-                    int minutes = (int)workStage.m_dLaser_OperatingHours % 60;      // 분 계산
-                    string formattedTime = $"{hours:D2}:{minutes:D2}";
+                    int totalMinutes = (int)workStage.m_dLaser_OperatingHours;
 
-                    baseLabel_Config_TabLaser_LaserHeadOperatingHours.Text = string.Format("{0}", formattedTime);
+                    int hours = totalMinutes / 60;
+                    int minutes = totalMinutes % 60;
+
+                    string formattedTime = $"{hours:D}:{minutes:D2}"; // 시간은 자릿수 제한 없이, 분만 2자리 고정
+                    baseLabel_Config_TabLaser_LaserHeadOperatingHours.Text = formattedTime;
+
+                    //int hours = (int)workStage.m_dLaser_OperatingHours / 60;        // 시간 계산
+                    //int minutes = (int)workStage.m_dLaser_OperatingHours % 60;      // 분 계산
+                    //string formattedTime = $"{hours:D2}:{minutes:D2}";
+                    //baseLabel_Config_TabLaser_LaserHeadOperatingHours.Text = string.Format("{0}", formattedTime);
                 }
                 catch (Exception ex)
                 {
                     // 예외 처리
                     Console.WriteLine("Error: " + ex.Message);
-
                     baseLabel_Config_TabLaser_LaserHeadOperatingHours.Text = string.Format("---");
                 }
 
@@ -2879,11 +2929,20 @@ namespace SLD200_MSL
             //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
             //}
 
-
-
             //  Target 위치 계산
-            lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+            if (Machine_ScannerToFineCamOffset)
+            {
+                lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - dScannerToFineCamX;
+                lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - dScannerToFineCamY;
+            }
+            else
+            {
+                lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            }
+            
 
             ////  맵 데이터 변경
             //workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
@@ -2993,8 +3052,18 @@ namespace SLD200_MSL
 
 
             //  Target 위치 계산
-            lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+            if (Machine_ScannerToFineCamOffset)
+            {
+                lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + dScannerToFineCamX;
+                lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + dScannerToFineCamY;
+            }
+            else
+            {
+                lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            }
 
             //  속도 설정
             if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
@@ -3136,12 +3205,24 @@ namespace SLD200_MSL
                 groupBox_Config_Laser_UVLaser.Visible = false;
                 groupBox_MotorizedBET.Visible = true;
                 groupBox_VarioScan.Visible = true;
+                label_Text_Config_Laser_PowerMeterValue_BDS.Visible = false;
+                label_Config_Laser_PowerMeterValue_BDS.Visible = false;
+                groupBox_Config_Laser_Laser_Warning.Visible = true;
+                groupBox_Config_BDS_TeachingPositions.Visible = true;
+                groupBox_Config_BDS_Move.Visible = true;
+                groupBox_Config_AxisPositions_Mask.Visible = true;
             }
             else
             {
                 groupBox_Config_Laser_UVLaser.Visible = true;
                 groupBox_MotorizedBET.Visible = false;
                 groupBox_VarioScan.Visible = false;
+                label_Text_Config_Laser_PowerMeterValue_BDS.Visible = true;
+                label_Config_Laser_PowerMeterValue_BDS.Visible = true;
+                groupBox_Config_Laser_Laser_Warning.Visible = false;
+                groupBox_Config_BDS_TeachingPositions.Visible = false;
+                groupBox_Config_BDS_Move.Visible = false;
+                groupBox_Config_AxisPositions_Mask.Visible = false;
             }
         }
 
@@ -4781,11 +4862,15 @@ namespace SLD200_MSL
                 m_nShutterCloseCount++;
 
                 //  BDS Power Meter 셔터 닫기
-                bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
-                bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+                //bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
+                //bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+                workStage.workStageParameter.DO_BDS_PowerMeter_FW(true);
+                workStage.workStageParameter.DO_BDS_PowerMeter_BW(false);
+                
+
 
                 //  BDS Power Meter 셔터 닫기 확인
-                if (bds.bdsParameter.DI_BDS_PowerMeter_FW() && !bds.bdsParameter.DI_BDS_PowerMeter_BW())
+                if (workStage.workStageParameter.DI_BDS_PowerMeter_FW_Check() && !workStage.workStageParameter.DI_BDS_PowerMeter_BW_Check())
                 {
                     m_bShutterClosed = true;
                 }
@@ -6027,33 +6112,42 @@ namespace SLD200_MSL
         private void Button_Config_BDS_BeamShutter_Open_Click(object sender, EventArgs e)
         {
             //  Beam Shtter Open (BW)
+            workStage.workStageParameter.DO_BDS_PowerMeter_FW(false);
+            //Thread.Sleep(200);
+            workStage.workStageParameter.DO_BDS_PowerMeter_BW(true);
 
-            bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
-            bds.bdsParameter.DO_BDS_PowerMeter_BW(true);            
+            //bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
+            //bds.bdsParameter.DO_BDS_PowerMeter_BW(true);            
         }
 
         private void Button_Config_BDS_BeamShutter_Close_Click(object sender, EventArgs e)
         {
             //  Beam Shtter Close (FW)
+            workStage.workStageParameter.DO_BDS_PowerMeter_FW(true);
+            //Thread.Sleep(200);
+            workStage.workStageParameter.DO_BDS_PowerMeter_BW(false);
 
-            bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
-            bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
+            //bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+            //bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
         }
 
         private void Button_Config_Laser_BeamShutter_Open_Click(object sender, EventArgs e)
         {
             //  Beam Shtter Open (BW)
+            workStage.workStageParameter.DO_BDS_PowerMeter_FW(false);
+            workStage.workStageParameter.DO_BDS_PowerMeter_BW(true);
 
-            bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
-            bds.bdsParameter.DO_BDS_PowerMeter_BW(true);
+            //bds.bdsParameter.DO_BDS_PowerMeter_FW(false);
+            //bds.bdsParameter.DO_BDS_PowerMeter_BW(true);
         }
 
         private void Button_Config_Laser_BeamShutter_Close_Click(object sender, EventArgs e)
         {
             //  Beam Shtter Close (FW)
-
-            bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
-            bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
+            workStage.workStageParameter.DO_BDS_PowerMeter_FW(true);
+            workStage.workStageParameter.DO_BDS_PowerMeter_BW(false);
+            //bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+            //bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
         }
 
         private void Button_Config_VarioScan_ZOffset_Set_Click(object sender, EventArgs e)
@@ -6352,6 +6446,41 @@ namespace SLD200_MSL
                     // 숫자 아님 → 초기화
                     tb.Text = meta.Min.ToString(meta.Format);
                 }
+            }
+        }
+
+        private void SetColor(System.Windows.Forms.Control control, Color Backcolor, Color foreColor)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetColor(control, Backcolor, foreColor);
+                }));
+
+            }
+            else
+            {
+                control.BackColor = Backcolor;
+                control.ForeColor = foreColor;
+            }
+        }
+        private void SetValue(BaseTextBox control, string text, bool isVisible = true)
+        {
+            if (control.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    SetValue(control, text, isVisible);
+                }));
+
+            }
+            else
+            {
+                control.Text = text;
+                control.Visible = isVisible;
             }
         }
     }

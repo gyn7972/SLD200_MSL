@@ -98,9 +98,13 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "프로그램을 종료하시겠습니까?"))
                 return;
 
-            
-
             //m_Monitoring_CWA150SA.ThreadStop();
+            var alarms = AlarmManager.Instance.Alarms;
+            if (alarms != null && alarms.Count > 0)
+            {
+                AlarmManager.Instance.ClearAllAlarms();
+                CommonModule.Instance.TowerLamp_BuzzerStop = true;
+            }
 
             workStage.m_MainStatus_Start = false;
             workStage.m_Comm_Start = false;
@@ -112,7 +116,6 @@ namespace SLD200_MSL
             unloader.Close();
             vision.Close();
             bds.Close();
-
 
             //  Lamp 다 끄기
             CommonModule.Instance.TowerLamp.AllLamp_Off();

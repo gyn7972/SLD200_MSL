@@ -271,7 +271,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Stacker1_Work_Pos_Move_To_Full_Sensor_Position;
             alarm.Title = "Loader Left 스태커";
-            alarm.Cause = "만재 선서가 감지 되지 않았습니다.";
+            alarm.Cause = "만재 센서가 감지 되지 않았습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -280,7 +280,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Stacker0_FullSensor_Off_MoveFail;
             alarm.Title = "Loader Right 스태커";
-            alarm.Cause = "만재 선서가 감지 되지 않았습니다.";
+            alarm.Cause = "만재 센서가 감지 되지 않았습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -306,7 +306,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_TransferX_Move_ReadyPos_Timeout;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer Z 축이 대기 위치로 이동 하지 못하였습니다.";
+            alarm.Cause = "Loader Trasfer X 축이 대기 위치로 이동 하지 못하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -618,7 +618,6 @@ namespace QMC.Common.Modules
         static WorkStage workStage;
         static Unloader unloader;
         protected Task m_taskTimer_LoaderWork_Tick = null;
-
         #endregion
 
         #region Property
@@ -651,7 +650,6 @@ namespace QMC.Common.Modules
 
         //  Cycle 동작 중 엘리베이터 Z축 오버 토크가 발생할 경우 모터 Stop
         public bool m_bInCycleMoving_ElevZOverTorque_Detected = false;
-
 
         public LoaderParameter loaderParameter { set; get; }
         #endregion
@@ -7122,7 +7120,7 @@ namespace QMC.Common.Modules
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000 * 2)
                     {
                         m_strTemp = "M-Aligner, Align 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);

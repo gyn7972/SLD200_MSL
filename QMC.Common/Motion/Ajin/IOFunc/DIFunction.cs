@@ -249,7 +249,6 @@ namespace QMC.Common.Motion.Ajin.IO
             return bRet;
         }
 
-
         #region DI Functions
 
         public bool DI_StartBtn()
