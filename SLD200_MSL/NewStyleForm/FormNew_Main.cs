@@ -1193,7 +1193,7 @@ namespace SLD200_MSL
             // Height
             SetValue(label_Main_Height_Stage, workStage.m_dStageheight.ToString("0.000"));
             SetValue(label_Main_Height_Module, workStage.m_dModuleHeight.ToString("0.000"));
-            SetValue(label_Main_heightSensor, workStage.m_dLaserHeightSensorSocket_Value.ToString("0.000"));
+            SetValue(label_Main_heightSensor, workStage.m_dLaserHeightSensorSocket_Value.ToString("0.00000"));
 
             //  BET 상태 업데이트
             SetValue(label_Main_BET_ZoomStatus, string.Format("{0:0.000}  /  {1:0.000}", workStage.m_dBET_ZoomValue, workStage.m_dBET_ZoomValue_Recipe));

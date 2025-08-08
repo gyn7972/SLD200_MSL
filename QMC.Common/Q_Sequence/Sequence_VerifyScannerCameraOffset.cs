@@ -865,10 +865,10 @@ namespace QMC.Common.Q_Sequence
                         double AreaCenterY = dScannerCalTeachingPosY;
                         
                         // 좌측 하단 티칭 기준
-                        double dScannerCalAreaPosX_Min = dScannerCalTeachingPosX + dCalPitchOffset;
-                        double dScannerCalAreaPosX_Max = dScannerCalTeachingPosX + dScannerCalAreaWidth - dCalPitchOffset;
-                        double dScannerCalAreaPosY_Min = dScannerCalTeachingPosY + dCalPitchOffset;
-                        double dScannerCalAreaPosY_Max = dScannerCalTeachingPosY + dScannerCalAreaheight - dCalPitchOffset;
+                        double dScannerCalAreaPosX_Min = dScannerCalTeachingPosX - dScannerCalAreaWidth - dCalPitchOffset; 
+                        double dScannerCalAreaPosX_Max = dScannerCalTeachingPosX + dCalPitchOffset;
+                        double dScannerCalAreaPosY_Min = dScannerCalTeachingPosY - dScannerCalAreaheight - dCalPitchOffset; 
+                        double dScannerCalAreaPosY_Max = dScannerCalTeachingPosY + dCalPitchOffset;
 
                         //기존코드
                         {
@@ -910,8 +910,8 @@ namespace QMC.Common.Q_Sequence
                             Equipment.Scanner_Calibration_PosX_Last = 0.0;
                             Equipment.Scanner_Calibration_PosY_Last = 0.0;
 
-                            m_dCurrentCalPosX = dScannerCalAreaPosX_Min;
-                            m_dCurrentCalPosY = dScannerCalAreaPosY_Min;
+                            m_dCurrentCalPosX = dScannerCalAreaPosX_Max; // dScannerCalAreaPosX_Min;
+                            m_dCurrentCalPosY = dScannerCalAreaPosY_Max; // dScannerCalAreaPosY_Min;
 
                             bIsLeftToRight = true; // 첫 줄은 항상 왼쪽→오른쪽
                             Equipment.Scanner_Calibration_Change = false;
@@ -934,6 +934,7 @@ namespace QMC.Common.Q_Sequence
                             m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last;
 
                             if (m_dCurrentCalPosX < dScannerCalAreaPosX_Min)
+                            //if (m_dCurrentCalPosX > dScannerCalAreaPosX_Max)
                             {
                                 // 다음 Y 줄로 이동
                                 m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last - dCalPitchOffset;
@@ -946,6 +947,7 @@ namespace QMC.Common.Q_Sequence
                                             $"X 범위 초과로 다음 Y줄 이동 시도 → X: {m_dCurrentCalPosX:F3}, Y: {m_dCurrentCalPosY:F3}, 방향: {(bIsLeftToRight ? "→" : "←")}");
 
                                 if (m_dCurrentCalPosY < dScannerCalAreaPosY_Min)
+                                //if (m_dCurrentCalPosY < dScannerCalAreaPosY_Max)
                                 {
                                     strTemp = string.Format("캘판 범위 모두 처리 완료. 캘판을 교체해 주세요.");
                                     Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
@@ -980,7 +982,7 @@ namespace QMC.Common.Q_Sequence
                         }
 
                         // 최종 위치가 유효한지 검사
-                        double epsilon = 1.0; // 1mm 허용 오차
+                        double epsilon = 2.0; // 1mm 허용 오차
                         if (m_dCurrentCalPosX < dScannerCalAreaPosX_Min - epsilon ||
                             m_dCurrentCalPosX > dScannerCalAreaPosX_Max + epsilon ||
                             m_dCurrentCalPosY < dScannerCalAreaPosY_Min - epsilon ||
