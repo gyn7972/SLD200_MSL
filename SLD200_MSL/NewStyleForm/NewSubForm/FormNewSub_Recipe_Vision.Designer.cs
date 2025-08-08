@@ -114,8 +114,11 @@
             this.radioButton_RecipeVision_CameraSelection_HighMag = new System.Windows.Forms.RadioButton();
             this.radioButton_RecipeVision_CameraSelection_LowMag = new System.Windows.Forms.RadioButton();
             this.groupBox_RecipeVision_CoarseCam = new System.Windows.Forms.GroupBox();
+            this.button_Recipe_PreAlign_Mark_Delete = new System.Windows.Forms.Button();
             this.textBox_RecipeVision_Circle_Score = new System.Windows.Forms.TextBox();
+            this.button_Recipe_PreAlign_Mark_Add = new System.Windows.Forms.Button();
             this.label_RecipeVision_Circle_Score = new System.Windows.Forms.Label();
+            this.comboBox_Recipe_PreAlign_MarkIndex = new System.Windows.Forms.ComboBox();
             this.button_RecipeVision_Circle_Score = new System.Windows.Forms.Button();
             this.ImageViewer_RecipeVision_Lows = new QMC.Common.Hmi.VisionImageViewer();
             this.groupBox_RecipeVision_TrainImage = new SLD200_MSL.WATGroupBox();
@@ -1277,8 +1280,11 @@
             // 
             // groupBox_RecipeVision_CoarseCam
             // 
+            this.groupBox_RecipeVision_CoarseCam.Controls.Add(this.button_Recipe_PreAlign_Mark_Delete);
             this.groupBox_RecipeVision_CoarseCam.Controls.Add(this.textBox_RecipeVision_Circle_Score);
+            this.groupBox_RecipeVision_CoarseCam.Controls.Add(this.button_Recipe_PreAlign_Mark_Add);
             this.groupBox_RecipeVision_CoarseCam.Controls.Add(this.label_RecipeVision_Circle_Score);
+            this.groupBox_RecipeVision_CoarseCam.Controls.Add(this.comboBox_Recipe_PreAlign_MarkIndex);
             this.groupBox_RecipeVision_CoarseCam.Controls.Add(this.button_RecipeVision_Circle_Score);
             this.groupBox_RecipeVision_CoarseCam.Controls.Add(this.ImageViewer_RecipeVision_Lows);
             this.groupBox_RecipeVision_CoarseCam.Controls.Add(this.groupBox_RecipeVision_MarkMatching);
@@ -1302,6 +1308,18 @@
             this.groupBox_RecipeVision_CoarseCam.TabStop = false;
             this.groupBox_RecipeVision_CoarseCam.Text = " Coarse Camera ";
             // 
+            // button_Recipe_PreAlign_Mark_Delete
+            // 
+            this.button_Recipe_PreAlign_Mark_Delete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Recipe_PreAlign_Mark_Delete.Location = new System.Drawing.Point(917, 164);
+            this.button_Recipe_PreAlign_Mark_Delete.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_PreAlign_Mark_Delete.Name = "button_Recipe_PreAlign_Mark_Delete";
+            this.button_Recipe_PreAlign_Mark_Delete.Size = new System.Drawing.Size(125, 37);
+            this.button_Recipe_PreAlign_Mark_Delete.TabIndex = 235;
+            this.button_Recipe_PreAlign_Mark_Delete.Text = "Mark Delete";
+            this.button_Recipe_PreAlign_Mark_Delete.UseVisualStyleBackColor = true;
+            this.button_Recipe_PreAlign_Mark_Delete.Click += new System.EventHandler(this.button_Recipe_PreAlign_Mark_Delete_Click);
+            // 
             // textBox_RecipeVision_Circle_Score
             // 
             this.textBox_RecipeVision_Circle_Score.Font = new System.Drawing.Font("Tahoma", 10F);
@@ -1314,6 +1332,18 @@
             this.textBox_RecipeVision_Circle_Score.Text = "000";
             this.textBox_RecipeVision_Circle_Score.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // button_Recipe_PreAlign_Mark_Add
+            // 
+            this.button_Recipe_PreAlign_Mark_Add.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Recipe_PreAlign_Mark_Add.Location = new System.Drawing.Point(779, 164);
+            this.button_Recipe_PreAlign_Mark_Add.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_PreAlign_Mark_Add.Name = "button_Recipe_PreAlign_Mark_Add";
+            this.button_Recipe_PreAlign_Mark_Add.Size = new System.Drawing.Size(125, 37);
+            this.button_Recipe_PreAlign_Mark_Add.TabIndex = 234;
+            this.button_Recipe_PreAlign_Mark_Add.Text = "Mark Add";
+            this.button_Recipe_PreAlign_Mark_Add.UseVisualStyleBackColor = true;
+            this.button_Recipe_PreAlign_Mark_Add.Click += new System.EventHandler(this.button_Recipe_PreAlign_Mark_Add_Click);
+            // 
             // label_RecipeVision_Circle_Score
             // 
             this.label_RecipeVision_Circle_Score.Font = new System.Drawing.Font("Tahoma", 10F);
@@ -1324,6 +1354,16 @@
             this.label_RecipeVision_Circle_Score.TabIndex = 209;
             this.label_RecipeVision_Circle_Score.Text = "Circle Score(%):";
             this.label_RecipeVision_Circle_Score.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // comboBox_Recipe_PreAlign_MarkIndex
+            // 
+            this.comboBox_Recipe_PreAlign_MarkIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_Recipe_PreAlign_MarkIndex.FormattingEnabled = true;
+            this.comboBox_Recipe_PreAlign_MarkIndex.Location = new System.Drawing.Point(779, 125);
+            this.comboBox_Recipe_PreAlign_MarkIndex.Name = "comboBox_Recipe_PreAlign_MarkIndex";
+            this.comboBox_Recipe_PreAlign_MarkIndex.Size = new System.Drawing.Size(263, 31);
+            this.comboBox_Recipe_PreAlign_MarkIndex.TabIndex = 233;
+            this.comboBox_Recipe_PreAlign_MarkIndex.SelectedIndexChanged += new System.EventHandler(this.comboBox_Recipe_PreAlign_MarkIndex_SelectedIndexChanged);
             // 
             // button_RecipeVision_Circle_Score
             // 
@@ -2434,5 +2474,8 @@
         private System.Windows.Forms.ComboBox comboBox_Recipe_Fiducial_MarkIndex;
         private System.Windows.Forms.Button button_Recipe_Fiducial_Mark_Delete;
         private System.Windows.Forms.Button button_Recipe_Fiducial_Mark_Add;
+        private System.Windows.Forms.Button button_Recipe_PreAlign_Mark_Delete;
+        private System.Windows.Forms.Button button_Recipe_PreAlign_Mark_Add;
+        private System.Windows.Forms.ComboBox comboBox_Recipe_PreAlign_MarkIndex;
     }
 }

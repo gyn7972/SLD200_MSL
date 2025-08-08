@@ -129,6 +129,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             Temp_Position_Load();
 
             InitSocketMarkCombo();
+            InitPreAlignMarkCombo();
 
             InitRecipeUI_KeyPad();
 
@@ -199,9 +200,11 @@ namespace SLD200.NewStyleForm.NewSubForm
             // === 현재 Recipe의 Vision 데이터 UI 반영 ===
             // 콤보 초기화 및 선택
             InitSocketMarkCombo();
+            InitPreAlignMarkCombo();
 
             // 콤보에서 선택된 SocketMark를 UI에 표시
             this.ApplySocketMarkToUI();
+            this.ApplyPreAlignMarkToUI();
         }
 
         public void OnHide()
@@ -806,45 +809,52 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Owner.TestImage = ImageViewer_RecipeVision_Lows.InputImage;
             }
 
+            // PreAlignMarkList 기반으로 선택 마크를 가져온다
+            int preAlignIdx = comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex;
+            if (preAlignIdx < 0 || preAlignIdx >= Equipment.stVisionRecipeSet.PreAlignMarkList.Count)
+                return;
+            var mark = Equipment.stVisionRecipeSet.PreAlignMarkList[preAlignIdx];
+
+            // 컬러 선택
             if (radioButton_RecipeVision_Black.Checked)
-            {
-                Equipment.stVisionRecipeSet.nPreCircleColor = 0;
-            }
+                mark.CircleColor = 0;
             else if (radioButton_RecipeVision_White.Checked)
-            {
-                Equipment.stVisionRecipeSet.nPreCircleColor = 1;
-            }
+                mark.CircleColor = 1;
             else if (radioButton_RecipeVision_Ignore.Checked)
-            {
-                Equipment.stVisionRecipeSet.nPreCircleColor = 2;
-            }
+                mark.CircleColor = 2;
 
             if (radioButton_RecipeVision_Pattern.Checked)
             {
-                stVisionRecipeSet.pointPreTrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
-                stVisionRecipeSet.pointPreTrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
-                stVisionRecipeSet.pointPreInspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
-                stVisionRecipeSet.pointPreInspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
-                stVisionRecipeSet.nPreIlluminationIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
-                stVisionRecipeSet.nPreIlluminationRed = hScrollBar_RecipeVision_Illuminator_Red.Value;
+                // ROI
+                mark.TrainRoiStart = RoiTrain.Parameter.StartLocation;
+                mark.TrainRoiEnd = RoiTrain.Parameter.EndLocation;
+                mark.InspectRoiStart = RoiInspect.Parameter.StartLocation;
+                mark.InspectRoiEnd = RoiInspect.Parameter.EndLocation;
 
-                PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
-                PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
-                PatternMatchingParameter.MinTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text) * -1;
-                PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
-                PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
-                PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
-                PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+                // Illumination
+                mark.IllumIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
+                mark.IllumRed = hScrollBar_RecipeVision_Illuminator_Red.Value;
 
-                stVisionRecipeSet.PrePatternMatching = PatternMatchingParameter;
+                // PatternMatchingParameter (UI → mark)
+                mark.PatternMatching.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
+                mark.PatternMatching.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
+                mark.PatternMatching.MinTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text) * -1;
+                mark.PatternMatching.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
+                mark.PatternMatching.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
+                mark.PatternMatching.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
+                mark.PatternMatching.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
 
-                UpdateOwnerRecipe(stVisionRecipeSet);
+                // AlgorithmType, MarkType
+                mark.AlgorithmType = VisionAlgorithmType.PatternMatching;
+                mark.MarkType = radioButton_RecipeVision_Type_Cross.Checked ? MarkTypeList.Cross : MarkTypeList.Circle;
 
+                // 값 업데이트
+                UpdateOwnerRecipe(Equipment.stVisionRecipeSet); // 필요 시 이 부분도 mark 단위로 전달
+
+                // Search & Display (기존 로직 유지)
                 PatternMatchingResult result = Owner.GetResult();
                 if (result != null)
-                {
                     ImageViewer_RecipeVision_Lows.ResultOverlays.Clear();
-                }
 
                 result = Owner.Search();
                 if (result != null)
@@ -855,48 +865,28 @@ namespace SLD200.NewStyleForm.NewSubForm
                         overlay.Visible = true;
                     }
                 }
-
                 if (result != null && result.Values.Count > 0)
                 {
-                    if (IsPixel == true)
-                    {
+                    if (IsPixel)
                         UpdataPositionData(result.Values[0].X, result.Values[0].Y, result.Values[0].R);
-                    }
-                    else
-                    {
-                        //PointD converted = new PointD((result.Values[0].X - this.m_Owner.Camera.Resolution.Width / 2) * ((WorkStage)this.m_Owner.Owner).Scale.X * (((WorkStage)this.m_Owner.Owner).Scale.InvertedX ? 1 : -1),
-                        //                              (result.Values[0].Y - this.m_Owner.Camera.Resolution.Height / 2) * ((WorkStage)this.m_Owner.Owner).Scale.Y * (((WorkStage)this.m_Owner.Owner).Scale.InvertedY ? 1 : -1));
-
-                        //PointD converted = new PointD((result.Values[0].X - workStage.scannerCompensator.Camera.Resolution.Width / 2) * (workStage.scannerCompensator.Owner).Scale.X * ((workStage.scannerCompensator.Owner).Scale.InvertedX ? 1 : -1),
-                        //                              (result.Values[0].Y - workStage.scannerCompensator.Camera.Resolution.Height / 2) * (workStage.scannerCompensator.Owner).Scale.Y * ((workStage.scannerCompensator.Owner).Scale.InvertedY ? 1 : -1));
-
-                        //UpdataPositionData(converted.X, converted.Y, result.Values[0].R);
-                    }
+                    // (else 변환 좌표 처리 필요시 기존 로직 사용)
                 }
                 ImageViewer_RecipeVision_Lows.Display();
             }
             else if (radioButton_RecipeVision_Blob.Checked)
             {
-                Equipment.stVisionRecipeSet.dPreCircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
-                Equipment.stVisionRecipeSet.dPreCircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
-                Equipment.stVisionRecipeSet.dPreCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+                // Circle 파라미터 UI → mark 저장
+                mark.CircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
+                mark.CircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
+                mark.CircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
 
-                double dspec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);    //0.5; //Spec Param 만들어야됨.
-                double dRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);    //0.5; //Size Param 만들어야됨.
-                double dScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);    //0.5; //Score Param 만들어야됨.
-                int nIsDarkCircleSearch = 0;
-                if (radioButton_RecipeVision_Black.Checked)
-                {
-                    nIsDarkCircleSearch = 0;
-                }
-                else if (radioButton_RecipeVision_White.Checked)
-                {
-                    nIsDarkCircleSearch = 1;
-                }
-                else if (radioButton_RecipeVision_Ignore.Checked)
-                {
-                    nIsDarkCircleSearch = 2;
-                }
+                mark.AlgorithmType = VisionAlgorithmType.CircleDetection;
+                mark.MarkType = radioButton_RecipeVision_Type_Cross.Checked ? MarkTypeList.Cross : MarkTypeList.Circle;
+
+                double dspec = mark.CircleMarkSpec;
+                double dRadius = mark.CircleMarkRadius;
+                double dScore = mark.CircleMarkScore;
+                int nIsDarkCircleSearch = mark.CircleColor;
 
                 PatternMatchingResult SearchResult = null;
                 XyCoordinate PointCoordinate = new XyCoordinate();
@@ -911,20 +901,147 @@ namespace SLD200.NewStyleForm.NewSubForm
                         overlay.Visible = true;
                     }
                 }
-               
-                
                 if (SearchResult != null && SearchResult.Values.Count > 0)
                 {
-                    if (IsPixel == true)
-                    {
+                    if (IsPixel)
                         UpdataPositionData(SearchResult.Values[0].X, SearchResult.Values[0].Y, SearchResult.Values[0].R);
-                    }
                 }
                 ImageViewer_RecipeVision_Lows.Display();
             }
 
             Owner.Camera.StartLive();
         }
+
+        //private void button_RecipeVision_Search_Click(object sender, EventArgs e)
+        //{
+        //    UpdataPositionData(0.0, 0.0, 0.0);
+
+        //    if (ImageViewer_RecipeVision_Lows.Simulated)
+        //    {
+        //        Owner.Simulated = true;
+        //        Owner.Camera.LatestImage = ImageViewer_RecipeVision_Lows.InputImage;
+        //        Owner.TestImage = ImageViewer_RecipeVision_Lows.InputImage;
+        //    }
+
+        //    if (radioButton_RecipeVision_Black.Checked)
+        //    {
+        //        Equipment.stVisionRecipeSet.nPreCircleColor = 0;
+        //    }
+        //    else if (radioButton_RecipeVision_White.Checked)
+        //    {
+        //        Equipment.stVisionRecipeSet.nPreCircleColor = 1;
+        //    }
+        //    else if (radioButton_RecipeVision_Ignore.Checked)
+        //    {
+        //        Equipment.stVisionRecipeSet.nPreCircleColor = 2;
+        //    }
+
+        //    if (radioButton_RecipeVision_Pattern.Checked)
+        //    {
+        //        stVisionRecipeSet.pointPreTrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
+        //        stVisionRecipeSet.pointPreTrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
+        //        stVisionRecipeSet.pointPreInspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
+        //        stVisionRecipeSet.pointPreInspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
+        //        stVisionRecipeSet.nPreIlluminationIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
+        //        stVisionRecipeSet.nPreIlluminationRed = hScrollBar_RecipeVision_Illuminator_Red.Value;
+
+        //        PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
+        //        PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
+        //        PatternMatchingParameter.MinTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text) * -1;
+        //        PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
+        //        PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
+        //        PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
+        //        PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+
+        //        stVisionRecipeSet.PrePatternMatching = PatternMatchingParameter;
+
+        //        UpdateOwnerRecipe(stVisionRecipeSet);
+
+        //        PatternMatchingResult result = Owner.GetResult();
+        //        if (result != null)
+        //        {
+        //            ImageViewer_RecipeVision_Lows.ResultOverlays.Clear();
+        //        }
+
+        //        result = Owner.Search();
+        //        if (result != null)
+        //        {
+        //            foreach (var overlay in result.ResultOverlays)
+        //            {
+        //                ImageViewer_RecipeVision_Lows.ResultOverlays.Add(overlay);
+        //                overlay.Visible = true;
+        //            }
+        //        }
+
+        //        if (result != null && result.Values.Count > 0)
+        //        {
+        //            if (IsPixel == true)
+        //            {
+        //                UpdataPositionData(result.Values[0].X, result.Values[0].Y, result.Values[0].R);
+        //            }
+        //            else
+        //            {
+        //                //PointD converted = new PointD((result.Values[0].X - this.m_Owner.Camera.Resolution.Width / 2) * ((WorkStage)this.m_Owner.Owner).Scale.X * (((WorkStage)this.m_Owner.Owner).Scale.InvertedX ? 1 : -1),
+        //                //                              (result.Values[0].Y - this.m_Owner.Camera.Resolution.Height / 2) * ((WorkStage)this.m_Owner.Owner).Scale.Y * (((WorkStage)this.m_Owner.Owner).Scale.InvertedY ? 1 : -1));
+
+        //                //PointD converted = new PointD((result.Values[0].X - workStage.scannerCompensator.Camera.Resolution.Width / 2) * (workStage.scannerCompensator.Owner).Scale.X * ((workStage.scannerCompensator.Owner).Scale.InvertedX ? 1 : -1),
+        //                //                              (result.Values[0].Y - workStage.scannerCompensator.Camera.Resolution.Height / 2) * (workStage.scannerCompensator.Owner).Scale.Y * ((workStage.scannerCompensator.Owner).Scale.InvertedY ? 1 : -1));
+
+        //                //UpdataPositionData(converted.X, converted.Y, result.Values[0].R);
+        //            }
+        //        }
+        //        ImageViewer_RecipeVision_Lows.Display();
+        //    }
+        //    else if (radioButton_RecipeVision_Blob.Checked)
+        //    {
+        //        Equipment.stVisionRecipeSet.dPreCircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
+        //        Equipment.stVisionRecipeSet.dPreCircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
+        //        Equipment.stVisionRecipeSet.dPreCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+
+        //        double dspec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);    //0.5; //Spec Param 만들어야됨.
+        //        double dRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);    //0.5; //Size Param 만들어야됨.
+        //        double dScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);    //0.5; //Score Param 만들어야됨.
+        //        int nIsDarkCircleSearch = 0;
+        //        if (radioButton_RecipeVision_Black.Checked)
+        //        {
+        //            nIsDarkCircleSearch = 0;
+        //        }
+        //        else if (radioButton_RecipeVision_White.Checked)
+        //        {
+        //            nIsDarkCircleSearch = 1;
+        //        }
+        //        else if (radioButton_RecipeVision_Ignore.Checked)
+        //        {
+        //            nIsDarkCircleSearch = 2;
+        //        }
+
+        //        PatternMatchingResult SearchResult = null;
+        //        XyCoordinate PointCoordinate = new XyCoordinate();
+
+        //        ImageViewer_RecipeVision_Lows.ResultOverlays.Clear();
+        //        Owner.FindCircleDetection(dRadius, nIsDarkCircleSearch, dspec, dScore, out SearchResult, out PointCoordinate);
+        //        if (SearchResult != null)
+        //        {
+        //            foreach (var overlay in SearchResult.ResultOverlays)
+        //            {
+        //                ImageViewer_RecipeVision_Lows.ResultOverlays.Add(overlay);
+        //                overlay.Visible = true;
+        //            }
+        //        }
+
+
+        //        if (SearchResult != null && SearchResult.Values.Count > 0)
+        //        {
+        //            if (IsPixel == true)
+        //            {
+        //                UpdataPositionData(SearchResult.Values[0].X, SearchResult.Values[0].Y, SearchResult.Values[0].R);
+        //            }
+        //        }
+        //        ImageViewer_RecipeVision_Lows.Display();
+        //    }
+
+        //    Owner.Camera.StartLive();
+        //}
 
         private void UpdateOwnerRecipe(VisionRecipeData data)
         {
@@ -1014,106 +1131,115 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             SaveSocketMarkFromUI();  // 이 함수 내부에서도 SelectedIndex를 사용해야 일관성 있음
 
-            //기존 코드
-            //if (this.radioButton_Fiducial_Pattern.Checked)
-            //{
-            //    Equipment.stVisionRecipeSet.nSocketAlignType = (int)VisionAlgorithmType.PatternMatching;
-            //}
-            //else if (this.radioButton_Fiducial_Circle.Checked)
-            //{
-            //    Equipment.stVisionRecipeSet.nSocketAlignType = (int)VisionAlgorithmType.CircleDetection;
-            //}
-
-            //if (this.radioButton_Fiducial_Type_GoldPowder.Checked)
-            //{
-            //    Equipment.stVisionRecipeSet.nSocketMarkType = (int)MarkTypeList.GoldPowder;
-            //}
-            //else if (this.radioButton_Fiducial_Type_Circle.Checked)
-            //{
-            //    Equipment.stVisionRecipeSet.nSocketMarkType = (int)MarkTypeList.Circle;
-            //}
-
-            //if (radioButton_Fiducial_Black.Checked)
-            //{
-            //    Equipment.stVisionRecipeSet.nSocketCircleColor = 0;
-            //}
-            //else if (radioButton_Fiducial_White.Checked)
-            //{
-            //    Equipment.stVisionRecipeSet.nSocketCircleColor = 1;
-            //}
-            //else if (radioButton_Fiducial_Ignor.Checked)
-            //{
-            //    Equipment.stVisionRecipeSet.nSocketCircleColor = 2;
-
-            //}
-            //else
-            //{
-            //    Equipment.stVisionRecipeSet.nSocketCircleColor = 0;
-            //}
-            //Equipment.stVisionRecipeSet.dSocketCircleMarkRadius = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
-            //Equipment.stVisionRecipeSet.dSocketCircleMarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
-            //Equipment.stVisionRecipeSet.dSocketCircleMarkScore = Convert.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
-            //Equipment.stVisionRecipeSet.bSocketIlluminationRedUse = checkBox_RecipeVision_Illuminator_Red.Checked;
-            //Equipment.stVisionRecipeSet.bSocketIlluminationIRUse = checkBox_RecipeVision_Illuminator_IR.Checked;
-            //Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime = Convert.ToDouble(textBox_RecipeVision_Camera_ExposureTime_High.Text);
-            //Equipment.stVisionRecipeSet.dSocketAxisZ_Offset = Convert.ToDouble(textBox_RecipeVision_AxisZ_Setting.Text);
-            //Equipment.stVisionRecipeSet.nSocketIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);// workStage.Config.ListIlluminationChannel[0].Value;
-            //Equipment.stVisionRecipeSet.nSocketIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);//workStage.Config.ListIlluminationChannel[1].Value;
-
-
-
             //PreAlign
-            Equipment.stVisionRecipeSet.PrePatternMatching = PatternMatchingParameter;
-            Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
-            Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
-            Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
-            Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
-            //Equipment.stVisionRecipeSet.TrainImagePath = Equipment.stVisionRecipeSet.TrainImagePath;
-            Equipment.stVisionRecipeSet.SaveTrainImage(pictureBox_RecipeVision_TrainImage.Image);
+            // ======= PreAlign 다중 마크 부분 =======
 
-            if (this.radioButton_RecipeVision_Pattern.Checked)
+            // 현재 PreAlign 콤보 인덱스 사용 (※ 콤보박스 이름 다를 수 있음)
+            int preAlignIndex = comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex;
+            if (preAlignIndex < 0)
             {
-                Equipment.stVisionRecipeSet.ePreAlgorithmType = VisionAlgorithmType.PatternMatching;
-            }
-            else if (this.radioButton_RecipeVision_Blob.Checked)
-            {
-                Equipment.stVisionRecipeSet.ePreAlgorithmType = VisionAlgorithmType.CircleDetection;
+                MessageBox.Show("선택된 PreAlign 마크가 없습니다.", "저장 오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            if (this.radioButton_RecipeVision_Type_Cross.Checked)
-            {
-                Equipment.stVisionRecipeSet.ePreMarkType = MarkTypeList.Cross;
-            }
-            else if (this.radioButton_RecipeVision_Circle.Checked)
-            {
-                Equipment.stVisionRecipeSet.ePreMarkType = MarkTypeList.Circle;
-            }
+            while (Equipment.stVisionRecipeSet.PreAlignMarkList.Count <= preAlignIndex)
+                Equipment.stVisionRecipeSet.PreAlignMarkList.Add(new PreAlignMarkInfo());
+
+            var markPreAlign = Equipment.stVisionRecipeSet.PreAlignMarkList[preAlignIndex];
+
+            // ROI/조명 등 필요한 값 저장
+            markPreAlign.TrainRoiStart = RoiTrain.Parameter.StartLocation;
+            markPreAlign.TrainRoiEnd = RoiTrain.Parameter.EndLocation;
+            markPreAlign.InspectRoiStart = RoiInspect.Parameter.StartLocation;
+            markPreAlign.InspectRoiEnd = RoiInspect.Parameter.EndLocation;
+            markPreAlign.IllumIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text);
+            markPreAlign.IllumRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text);
+            markPreAlign.ExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);
+
+            // 알고리즘/마크타입/컬러/서클옵션 등
+            markPreAlign.AlgorithmType = radioButton_RecipeVision_Pattern.Checked ? VisionAlgorithmType.PatternMatching : VisionAlgorithmType.CircleDetection;
+            markPreAlign.MarkType = radioButton_RecipeVision_Type_Cross.Checked ? MarkTypeList.Cross : MarkTypeList.Circle;
 
             if (radioButton_RecipeVision_Black.Checked)
-            {
-                Equipment.stVisionRecipeSet.nPreCircleColor = 0;
-            }
+                markPreAlign.CircleColor = 0;
             else if (radioButton_RecipeVision_White.Checked)
-            {
-                Equipment.stVisionRecipeSet.nPreCircleColor = 1;
-            }
+                markPreAlign.CircleColor = 1;
             else if (radioButton_RecipeVision_Ignore.Checked)
-            {
-                Equipment.stVisionRecipeSet.nPreCircleColor = 2;
-            }
+                markPreAlign.CircleColor = 2;
             else
+                markPreAlign.CircleColor = 0;
+
+            markPreAlign.CircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
+            markPreAlign.CircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
+            markPreAlign.CircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+
+            // 패턴매칭 파라미터
+            if (markPreAlign.PatternMatching == null)
+                markPreAlign.PatternMatching = new PatternMatchingParameters();
+
+            markPreAlign.PatternMatching.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
+            markPreAlign.PatternMatching.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
+            markPreAlign.PatternMatching.MinTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text) * -1;
+            markPreAlign.PatternMatching.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
+            markPreAlign.PatternMatching.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
+            markPreAlign.PatternMatching.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
+            markPreAlign.PatternMatching.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+
+            // 이미지 저장
+            Equipment.stVisionRecipeSet.SaveTrainImage(pictureBox_RecipeVision_TrainImage.Image);
+
+            //기존 코드
             {
-                Equipment.stVisionRecipeSet.nPreCircleColor = 0;
+                //Equipment.stVisionRecipeSet.PrePatternMatching = PatternMatchingParameter;
+                //Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
+                //Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
+                //Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
+                //Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
+                ////Equipment.stVisionRecipeSet.TrainImagePath = Equipment.stVisionRecipeSet.TrainImagePath;
+                //Equipment.stVisionRecipeSet.SaveTrainImage(pictureBox_RecipeVision_TrainImage.Image);
+                //if (this.radioButton_RecipeVision_Pattern.Checked)
+                //{
+                //    Equipment.stVisionRecipeSet.ePreAlgorithmType = VisionAlgorithmType.PatternMatching;
+                //}
+                //else if (this.radioButton_RecipeVision_Blob.Checked)
+                //{
+                //    Equipment.stVisionRecipeSet.ePreAlgorithmType = VisionAlgorithmType.CircleDetection;
+                //}
+                //if (this.radioButton_RecipeVision_Type_Cross.Checked)
+                //{
+                //    Equipment.stVisionRecipeSet.ePreMarkType = MarkTypeList.Cross;
+                //}
+                //else if (this.radioButton_RecipeVision_Circle.Checked)
+                //{
+                //    Equipment.stVisionRecipeSet.ePreMarkType = MarkTypeList.Circle;
+                //}
+                //if (radioButton_RecipeVision_Black.Checked)
+                //{
+                //    Equipment.stVisionRecipeSet.nPreCircleColor = 0;
+                //}
+                //else if (radioButton_RecipeVision_White.Checked)
+                //{
+                //    Equipment.stVisionRecipeSet.nPreCircleColor = 1;
+                //}
+                //else if (radioButton_RecipeVision_Ignore.Checked)
+                //{
+                //    Equipment.stVisionRecipeSet.nPreCircleColor = 2;
+                //}
+                //else
+                //{
+                //    Equipment.stVisionRecipeSet.nPreCircleColor = 0;
+                //}
+                //Equipment.stVisionRecipeSet.dPreCircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
+                //Equipment.stVisionRecipeSet.dPreCircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
+                //Equipment.stVisionRecipeSet.dPreCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+                //Equipment.stVisionRecipeSet.nPreIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text);//workStage.Config.ListIlluminationChannel[2].Value;
+                //Equipment.stVisionRecipeSet.nPreIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text);//workStage.Config.ListIlluminationChannel[2].Value;
+                //Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);
+
             }
 
-            Equipment.stVisionRecipeSet.dPreCircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
-            Equipment.stVisionRecipeSet.dPreCircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
-            Equipment.stVisionRecipeSet.dPreCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
-            Equipment.stVisionRecipeSet.nPreIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text);//workStage.Config.ListIlluminationChannel[2].Value;
-            Equipment.stVisionRecipeSet.nPreIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text);//workStage.Config.ListIlluminationChannel[2].Value;
 
-            Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);
-
+            // ======= 저장 =======
             //Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe);
             if (Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe))
             {
@@ -1950,6 +2076,184 @@ namespace SLD200.NewStyleForm.NewSubForm
                     tb.Text = meta.Min.ToString(meta.Format);
                 }
             }
+        }
+
+        private void InitPreAlignMarkCombo()
+        {
+            // 리스트가 비어 있다면 기존 호환용 마크 자동 등록
+            if (Equipment.stVisionRecipeSet.PreAlignMarkList.Count == 0)
+            {
+                var defaultMark = new PreAlignMarkInfo();
+
+                // 기존 단일 값 → 마이그레이션 (예시)
+                defaultMark.CircleColor = Equipment.stVisionRecipeSet.nPreCircleColor;
+                defaultMark.CircleMarkRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
+                defaultMark.CircleMarkSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
+                defaultMark.CircleMarkScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
+                defaultMark.IllumIR = Equipment.stVisionRecipeSet.nPreIlluminationIR;
+                defaultMark.IllumRed = Equipment.stVisionRecipeSet.nPreIlluminationRed;
+                defaultMark.ExposureTime = Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime;
+                defaultMark.TrainRoiStart = Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation;
+                defaultMark.TrainRoiEnd = Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation;
+                defaultMark.InspectRoiStart = Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation;
+                defaultMark.InspectRoiEnd = Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation;
+                defaultMark.AlgorithmType = Equipment.stVisionRecipeSet.ePreAlgorithmType;
+                defaultMark.MarkType = Equipment.stVisionRecipeSet.ePreMarkType;
+                defaultMark.PatternMatching = Equipment.stVisionRecipeSet.PrePatternMatching;
+                defaultMark.TrainImagePath = Equipment.stVisionRecipeSet.pointPreTrainImagePath;
+
+                Equipment.stVisionRecipeSet.PreAlignMarkList.Add(defaultMark);
+            }
+
+            // 콤보박스 채우기
+            comboBox_Recipe_PreAlign_MarkIndex.Items.Clear();
+
+            for (int i = 0; i < Equipment.stVisionRecipeSet.PreAlignMarkList.Count; i++)
+                comboBox_Recipe_PreAlign_MarkIndex.Items.Add($"PreAlign Mark {i + 1}");
+
+            if (comboBox_Recipe_PreAlign_MarkIndex.Items.Count > 0)
+                comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex = 0;
+        }
+
+        private void button_Recipe_PreAlign_Mark_Add_Click(object sender, EventArgs e)
+        {
+            AddPreAlignMark();
+        }
+
+        private void button_Recipe_PreAlign_Mark_Delete_Click(object sender, EventArgs e)
+        {
+            DeletePreAlignMark();
+        }
+
+        private void AddPreAlignMark()
+        {
+            var newMark = new PreAlignMarkInfo();
+
+            // 현재 마크 복사해서 추가 (편의성)
+            if (comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex >= 0)
+            {
+                var current = Equipment.stVisionRecipeSet.PreAlignMarkList[comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex];
+                newMark = current.Clone(); // Clone() 구현되어 있어야 함!
+            }
+
+            Equipment.stVisionRecipeSet.PreAlignMarkList.Add(newMark);
+
+            // 콤보 및 인덱스 갱신
+            InitPreAlignMarkCombo();
+            comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex = Equipment.stVisionRecipeSet.PreAlignMarkList.Count - 1;
+        }
+
+        private void DeletePreAlignMark()
+        {
+            if (Equipment.stVisionRecipeSet.PreAlignMarkList.Count <= 1)
+            {
+                MessageBox.Show("최소 1개의 마크는 유지되어야 합니다.", "삭제 불가", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int idx = comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex;
+            if (idx < 0 || idx >= Equipment.stVisionRecipeSet.PreAlignMarkList.Count)
+                return;
+
+            Equipment.stVisionRecipeSet.PreAlignMarkList.RemoveAt(idx);
+
+            // 콤보 및 인덱스 조정
+            InitPreAlignMarkCombo();
+            comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex = Math.Max(0, idx - 1);
+        }
+
+        private void ApplyPreAlignMarkToUI()
+        {
+            int idx = comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex;
+            if (idx < 0 || idx >= Equipment.stVisionRecipeSet.PreAlignMarkList.Count)
+                return;
+
+            var mark = Equipment.stVisionRecipeSet.PreAlignMarkList[idx];
+
+            // ROI/조명 등 필요한 UI 컨트롤 모두 적용
+            RoiTrain.Parameter.StartLocation = mark.TrainRoiStart;
+            RoiTrain.Parameter.EndLocation = mark.TrainRoiEnd;
+            RoiInspect.Parameter.StartLocation = mark.InspectRoiStart;
+            RoiInspect.Parameter.EndLocation = mark.InspectRoiEnd;
+            hScrollBar_RecipeVision_Illuminator_IR.Value = mark.IllumIR;
+            hScrollBar_RecipeVision_Illuminator_Red.Value = mark.IllumRed;
+
+            textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text = mark.IllumRed.ToString();
+            textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text = mark.IllumIR.ToString();
+
+
+            // Circle 옵션
+            radioButton_RecipeVision_Black.Checked = mark.CircleColor == 0;
+            radioButton_RecipeVision_White.Checked = mark.CircleColor == 1;
+            radioButton_RecipeVision_Ignore.Checked = mark.CircleColor == 2;
+            textBox_RecipeVision_Circle_Spec.Text = mark.CircleMarkSpec.ToString("F3");
+            textBox_RecipeVision_Circle_Size.Text = mark.CircleMarkRadius.ToString("F3");
+            textBox_RecipeVision_Circle_Score.Text = mark.CircleMarkScore.ToString("F3");
+
+            radioButton_RecipeVision_Pattern.Checked = mark.AlgorithmType == VisionAlgorithmType.PatternMatching;
+            radioButton_RecipeVision_Blob.Checked = mark.AlgorithmType == VisionAlgorithmType.CircleDetection;
+
+            radioButton_RecipeVision_Type_Cross.Checked = mark.MarkType == MarkTypeList.Cross;
+            radioButton_RecipeVision_Circle.Checked = mark.MarkType == MarkTypeList.Circle;
+
+            textBox_RecipeVision_Camera_ExposureTime_Low.Text = mark.ExposureTime.ToString("F2");
+
+            // 학습 이미지, 패턴 파라미터 등 기타 필요한 UI 항목도 적용.
+            if (mark.PatternMatching != null && mark.PatternMatching.TrainImage != null)
+            {
+                pictureBox_RecipeVision_TrainImage.Image = mark.PatternMatching.TrainImage.GetImage();
+            }
+                
+
+            this.Refresh();
+        }
+
+        private void SavePreAlignMarkFromUI()
+        {
+            int idx = comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex;
+            if (idx < 0 || idx >= Equipment.stVisionRecipeSet.PreAlignMarkList.Count)
+                return;
+
+            var mark = Equipment.stVisionRecipeSet.PreAlignMarkList[idx];
+
+            // ROI/조명 등 필요한 UI 컨트롤 값 저장
+            mark.TrainRoiStart = RoiTrain.Parameter.StartLocation;
+            mark.TrainRoiEnd = RoiTrain.Parameter.EndLocation;
+            mark.InspectRoiStart = RoiInspect.Parameter.StartLocation;
+            mark.InspectRoiEnd = RoiInspect.Parameter.EndLocation;
+            mark.IllumIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
+            mark.IllumRed = hScrollBar_RecipeVision_Illuminator_Red.Value;
+
+            // Circle 옵션
+            if (radioButton_RecipeVision_Black.Checked)
+                mark.CircleColor = 0;
+            else if (radioButton_RecipeVision_White.Checked)
+                mark.CircleColor = 1;
+            else
+                mark.CircleColor = 2;
+
+            mark.CircleMarkSpec = Equipment.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
+            mark.CircleMarkRadius = Equipment.ToDouble(textBox_RecipeVision_Circle_Size.Text);
+            mark.CircleMarkScore = Equipment.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+
+            mark.AlgorithmType = radioButton_RecipeVision_Pattern.Checked ? VisionAlgorithmType.PatternMatching : VisionAlgorithmType.CircleDetection;
+            mark.MarkType = radioButton_RecipeVision_Type_Cross.Checked ? MarkTypeList.Cross : MarkTypeList.Circle;
+
+            mark.ExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);
+
+            // 학습 이미지, 패턴 파라미터 등 기타 필요한 데이터도 저장
+            if (mark.PatternMatching == null)
+                mark.PatternMatching = new PatternMatchingParameters();
+
+            mark.PatternMatching.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+            // ... 기타 PatternMatching 필드 저장도 필요시 추가
+
+            // 만약 저장 직전에 값 동기화가 필요하면 여기에서 SavePreAlignMarkFromUI() 호출
+        }
+
+        private void comboBox_Recipe_PreAlign_MarkIndex_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ApplyPreAlignMarkToUI();
         }
     }
 }

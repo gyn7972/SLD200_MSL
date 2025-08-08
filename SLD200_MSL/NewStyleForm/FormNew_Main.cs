@@ -1187,12 +1187,13 @@ namespace SLD200_MSL
             SetColor(checkBox_Main_SocketDrilling_Pass, Equipment.SocketDrilling_Skip ? Color.LightGreen : Color.LightGreen);
 
             //  EPRO 데이터 업데이트
-            SetValue(label_Main_EPRO_Current_Pressure, workStage.m_dEPRO_Value.ToString("0.0000"));
-            SetValue(label_Main_EPRO_Absorption_Judgment_Pressure, Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString("0.0000"));
+            //SetValue(label_Main_EPRO_Current_Pressure, workStage.m_dEPRO_Value.ToString("0.0000"));
+            //SetValue(label_Main_EPRO_Absorption_Judgment_Pressure, Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString("0.0000"));
 
             // Height
             SetValue(label_Main_Height_Stage, workStage.m_dStageheight.ToString("0.000"));
             SetValue(label_Main_Height_Module, workStage.m_dModuleHeight.ToString("0.000"));
+            SetValue(label_Main_heightSensor, workStage.m_dLaserHeightSensorSocket_Value.ToString("0.000"));
 
             //  BET 상태 업데이트
             SetValue(label_Main_BET_ZoomStatus, string.Format("{0:0.000}  /  {1:0.000}", workStage.m_dBET_ZoomValue, workStage.m_dBET_ZoomValue_Recipe));
@@ -1477,6 +1478,8 @@ namespace SLD200_MSL
             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Start 버튼");
             string strTemp = "";
 
+
+
             //  Chiller 상태 체크 - Run 신호를 내보내는지
             if (!workStage.workStageParameter.IsDO_Chiller_Run())
             {
@@ -1624,8 +1627,6 @@ namespace SLD200_MSL
             {
                 loader.m_nStacker_Priority = (int)LoaderParameter.StackerTable.None;
             }
-
-
 
 
             // Process Status
@@ -1941,6 +1942,23 @@ namespace SLD200_MSL
             }
             else
             {
+                // Vacuum 해제
+                if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
+                {
+                    workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    Thread.Sleep(200);
+                    workStage.workStageParameter.DO_Stage_Blow(false);
+                    Thread.Sleep(200);
+                    strTemp = "workStage - 자재 확인 바랍니다. Reset";
+                    Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                }
+                else
+                {
+                    workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    workStage.workStageParameter.DO_Stage_Blow(false);
+                }
+
                 Log.Write("SLD-200", Equipment.User_Name, "StartButton_Click", "시컨스 처음 부터 시작.");
 
             }

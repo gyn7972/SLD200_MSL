@@ -34,6 +34,7 @@
             this.button_Recipe_Apply = new System.Windows.Forms.Button();
             this.tabControl_Recipe = new System.Windows.Forms.TabControl();
             this.tabPage_Recipe = new System.Windows.Forms.TabPage();
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable = new System.Windows.Forms.CheckBox();
             this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable = new System.Windows.Forms.CheckBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.button_Marking_SerialNumber_CountReset = new System.Windows.Forms.Button();
@@ -320,7 +321,8 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable = new System.Windows.Forms.CheckBox();
+            this.button_Open_Recipe_Queue = new System.Windows.Forms.Button();
+            this.listBox_RecipeQueue = new System.Windows.Forms.ListBox();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -443,11 +445,21 @@
             this.tabPage_Recipe.Text = "Recipe";
             this.tabPage_Recipe.UseVisualStyleBackColor = true;
             // 
-            // checkBox_Recipe_TabRecipe_ChuckMSL_Use
+            // checkBox_Recipe_TabRecipe_3PointAlign_Enable
+            // 
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Location = new System.Drawing.Point(10, 696);
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Name = "checkBox_Recipe_TabRecipe_3PointAlign_Enable";
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Size = new System.Drawing.Size(94, 23);
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.TabIndex = 94;
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Text = "3점얼라인";
+            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Recipe_TabRecipe_ChuckMSL_Enable
             // 
             this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.AutoSize = true;
             this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Location = new System.Drawing.Point(10, 501);
-            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Name = "checkBox_Recipe_TabRecipe_ChuckMSL_Use";
+            this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Name = "checkBox_Recipe_TabRecipe_ChuckMSL_Enable";
             this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Size = new System.Drawing.Size(103, 23);
             this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.TabIndex = 93;
             this.checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Text = "공용척 사용";
@@ -4047,15 +4059,29 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
-            // checkBox_Recipe_TabRecipe_3PointAlign_Enable
+            // button_Open_Recipe_Queue
             // 
-            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.AutoSize = true;
-            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Location = new System.Drawing.Point(10, 696);
-            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Name = "checkBox_Recipe_TabRecipe_3PointAlign_Enable";
-            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Size = new System.Drawing.Size(94, 23);
-            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.TabIndex = 94;
-            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.Text = "3점얼라인";
-            this.checkBox_Recipe_TabRecipe_3PointAlign_Enable.UseVisualStyleBackColor = true;
+            this.button_Open_Recipe_Queue.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Open_Recipe_Queue.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Open_Recipe_Queue.Location = new System.Drawing.Point(1777, 18);
+            this.button_Open_Recipe_Queue.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Open_Recipe_Queue.Name = "button_Open_Recipe_Queue";
+            this.button_Open_Recipe_Queue.Size = new System.Drawing.Size(131, 69);
+            this.button_Open_Recipe_Queue.TabIndex = 26;
+            this.button_Open_Recipe_Queue.Text = "Open Oueue";
+            this.button_Open_Recipe_Queue.UseVisualStyleBackColor = true;
+            this.button_Open_Recipe_Queue.Visible = false;
+            this.button_Open_Recipe_Queue.Click += new System.EventHandler(this.button_Open_Recipe_Queue_Click);
+            // 
+            // listBox_RecipeQueue
+            // 
+            this.listBox_RecipeQueue.FormattingEnabled = true;
+            this.listBox_RecipeQueue.ItemHeight = 14;
+            this.listBox_RecipeQueue.Location = new System.Drawing.Point(1268, 18);
+            this.listBox_RecipeQueue.Name = "listBox_RecipeQueue";
+            this.listBox_RecipeQueue.Size = new System.Drawing.Size(488, 74);
+            this.listBox_RecipeQueue.TabIndex = 27;
+            this.listBox_RecipeQueue.Visible = false;
             // 
             // FormNew_Recipe
             // 
@@ -4063,6 +4089,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.listBox_RecipeQueue);
+            this.Controls.Add(this.button_Open_Recipe_Queue);
             this.Controls.Add(this.label_Recipe_FileName);
             this.Controls.Add(this.label52);
             this.Controls.Add(this.button_Recipe_New);
@@ -4420,5 +4448,7 @@
         private System.Windows.Forms.Button button_Recipe_TabRecipe_SpiralParam_Pitch;
         private System.Windows.Forms.Label label_Recipe_TabRecipe_SpiralParam_Pitch;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_3PointAlign_Enable;
+        private System.Windows.Forms.Button button_Open_Recipe_Queue;
+        private System.Windows.Forms.ListBox listBox_RecipeQueue;
     }
 }

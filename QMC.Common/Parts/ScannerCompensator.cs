@@ -422,7 +422,6 @@ namespace QMC.Common.Parts
                 return -1;
             }
 
-            //Test 필요.
             FireUpdateResult(patternMatchingResult);
 
             this.Stage.GetCommandPosition(ref currentPos);

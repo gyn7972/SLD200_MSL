@@ -212,6 +212,8 @@
     <Compile Include="Modules\LaserRecipe.cs" />
     <Compile Include="Q_Config\ProcessConfigData.cs" />
     <Compile Include="Q_Config\ScannerCalConfigData.cs" />
+    <Compile Include="Q_Recipe\RecipeManager.cs" />
+    <Compile Include="Q_Recipe\RecipeQueueManager.cs" />
     <Compile Include="Q_Recipe\ScannerCalManager.cs" />
     <Compile Include="Q_Recipe\VisionRecipeData.cs" />
     <Compile Include="Q_Sequence\Sequence_FlatnessMeasure.cs" />

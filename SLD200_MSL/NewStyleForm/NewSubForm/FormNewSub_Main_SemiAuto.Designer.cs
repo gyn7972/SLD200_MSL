@@ -35,9 +35,9 @@
             this.button_SemiAuto_LaserDrilling = new System.Windows.Forms.Button();
             this.button_SemiAuto_Loading = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button_SemiAuto_Unload_Reset = new System.Windows.Forms.Button();
-            this.button_SemiAuto_Load_Reset = new System.Windows.Forms.Button();
             this.button_SemiAuto_Stage_Reset = new System.Windows.Forms.Button();
+            this.button_SemiAuto_Load_Reset = new System.Windows.Forms.Button();
+            this.button_SemiAuto_Unload_Reset = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -128,30 +128,9 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "SemiAuto";
             // 
-            // button_SemiAuto_Unload_Reset
-            // 
-            this.button_SemiAuto_Unload_Reset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_Unload_Reset.Location = new System.Drawing.Point(7, 51);
-            this.button_SemiAuto_Unload_Reset.Name = "button_SemiAuto_Unload_Reset";
-            this.button_SemiAuto_Unload_Reset.Size = new System.Drawing.Size(115, 30);
-            this.button_SemiAuto_Unload_Reset.TabIndex = 6;
-            this.button_SemiAuto_Unload_Reset.Text = "Unload Reset";
-            this.button_SemiAuto_Unload_Reset.UseVisualStyleBackColor = true;
-            this.button_SemiAuto_Unload_Reset.Click += new System.EventHandler(this.button_SemiAuto_Unload_Reset_Click);
-            // 
-            // button_SemiAuto_Load_Reset
-            // 
-            this.button_SemiAuto_Load_Reset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_Load_Reset.Location = new System.Drawing.Point(249, 51);
-            this.button_SemiAuto_Load_Reset.Name = "button_SemiAuto_Load_Reset";
-            this.button_SemiAuto_Load_Reset.Size = new System.Drawing.Size(115, 30);
-            this.button_SemiAuto_Load_Reset.TabIndex = 7;
-            this.button_SemiAuto_Load_Reset.Text = "Load Reset";
-            this.button_SemiAuto_Load_Reset.UseVisualStyleBackColor = true;
-            this.button_SemiAuto_Load_Reset.Click += new System.EventHandler(this.button_SemiAuto_Load_Reset_Click);
-            // 
             // button_SemiAuto_Stage_Reset
             // 
+            this.button_SemiAuto_Stage_Reset.Enabled = false;
             this.button_SemiAuto_Stage_Reset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_SemiAuto_Stage_Reset.Location = new System.Drawing.Point(128, 113);
             this.button_SemiAuto_Stage_Reset.Name = "button_SemiAuto_Stage_Reset";
@@ -159,7 +138,34 @@
             this.button_SemiAuto_Stage_Reset.TabIndex = 8;
             this.button_SemiAuto_Stage_Reset.Text = "Stage Reset";
             this.button_SemiAuto_Stage_Reset.UseVisualStyleBackColor = true;
+            this.button_SemiAuto_Stage_Reset.Visible = false;
             this.button_SemiAuto_Stage_Reset.Click += new System.EventHandler(this.button_SemiAuto_Stage_Reset_Click);
+            // 
+            // button_SemiAuto_Load_Reset
+            // 
+            this.button_SemiAuto_Load_Reset.Enabled = false;
+            this.button_SemiAuto_Load_Reset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_SemiAuto_Load_Reset.Location = new System.Drawing.Point(249, 51);
+            this.button_SemiAuto_Load_Reset.Name = "button_SemiAuto_Load_Reset";
+            this.button_SemiAuto_Load_Reset.Size = new System.Drawing.Size(115, 30);
+            this.button_SemiAuto_Load_Reset.TabIndex = 7;
+            this.button_SemiAuto_Load_Reset.Text = "Load Reset";
+            this.button_SemiAuto_Load_Reset.UseVisualStyleBackColor = true;
+            this.button_SemiAuto_Load_Reset.Visible = false;
+            this.button_SemiAuto_Load_Reset.Click += new System.EventHandler(this.button_SemiAuto_Load_Reset_Click);
+            // 
+            // button_SemiAuto_Unload_Reset
+            // 
+            this.button_SemiAuto_Unload_Reset.Enabled = false;
+            this.button_SemiAuto_Unload_Reset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_SemiAuto_Unload_Reset.Location = new System.Drawing.Point(7, 51);
+            this.button_SemiAuto_Unload_Reset.Name = "button_SemiAuto_Unload_Reset";
+            this.button_SemiAuto_Unload_Reset.Size = new System.Drawing.Size(115, 30);
+            this.button_SemiAuto_Unload_Reset.TabIndex = 6;
+            this.button_SemiAuto_Unload_Reset.Text = "Unload Reset";
+            this.button_SemiAuto_Unload_Reset.UseVisualStyleBackColor = true;
+            this.button_SemiAuto_Unload_Reset.Visible = false;
+            this.button_SemiAuto_Unload_Reset.Click += new System.EventHandler(this.button_SemiAuto_Unload_Reset_Click);
             // 
             // FormNewSub_Main_SemiAuto
             // 
