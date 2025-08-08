@@ -17219,6 +17219,11 @@ namespace QMC.Common.Modules
                 //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
                 //{
 
+                strTemp = string .Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, RecipeIndex ({0}), Layer : {1}",
+                                            m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex], m_nHoleLayer_ProcessIndex);
+                Log.Write("SLD-200", "Auto Run", strTemp);
+                Log.Write("LaserDrilling", strTemp);
+
                 //  Frequency, Pulse Width 값이 있으면 적용
                 if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_Frequency > 0.0)
                 {
@@ -43588,6 +43593,7 @@ namespace QMC.Common.Modules
                             }
                         }
 
+                        //여기가 문제.
                         m_nHoleLayer_ProcessIndex = m_nHoleLayer_ProcessIndex_Count;
 
                         //  Group 카운트 증가 없이 그대로 재가공 (파라미터는 변경해야 함. Defocusing, Resizing 등)

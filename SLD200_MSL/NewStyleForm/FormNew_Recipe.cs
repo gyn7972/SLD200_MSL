@@ -782,7 +782,7 @@ namespace SLD200_MSL
                 //if (workStage.m_nDrawing_Hole8Count > 0)
                 {
                     //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
+                    for (int i = 0; i < workStage.m_nDrawing_ThruholeCount; i++)
                     {
                         ListViewItem item = new ListViewItem();
                         item.Text = (i + 1).ToString();
@@ -814,10 +814,30 @@ namespace SLD200_MSL
             }
             else if (m_strLayerName == "Outline")
             {
+                for (int i = 0; i < workStage.m_nDrawing_OutlineCount; i++)
+                {
+                    ListViewItem item = new ListViewItem();
+                    item.Text = (i + 1).ToString();
+                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].CenterX));
+                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].CenterY));
+                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].Width));
+                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].Height));
+                    listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                }
+
                 SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Marking")
             {
+                for (int i = 0; i < workStage.m_nMarking_SocketCount; i++)
+                {
+                    ListViewItem item = new ListViewItem();
+                    item.Text = (i + 1).ToString();
+                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stMarking_SocketData.m_stMarking_ObjectData[i].dObjectCenter.X));
+                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stMarking_SocketData.m_stMarking_ObjectData[i].dObjectCenter.Y));
+                    listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                }
+
                 SetRecipeTabControlsVisible(m_strLayerName, true);
             }
             else if (m_strLayerName == "Fiducial")
@@ -840,6 +860,16 @@ namespace SLD200_MSL
             }
             else if (m_strLayerName == "PreAlign")
             {
+                for (int i = 0; i < workStage.m_nDrawing_FiducialCount; i++)
+                {
+                    ListViewItem item = new ListViewItem();
+                    item.Text = (i + 1).ToString();
+                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].CenterX));
+                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].CenterY));
+                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].radius));
+                    listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                }
+
                 SetRecipeTabControlsVisible(m_strLayerName, false);
             }
             else
