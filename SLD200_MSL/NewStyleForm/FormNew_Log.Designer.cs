@@ -416,7 +416,7 @@
             this.tabPage_HeightMeasure.Name = "tabPage_HeightMeasure";
             this.tabPage_HeightMeasure.Size = new System.Drawing.Size(1893, 809);
             this.tabPage_HeightMeasure.TabIndex = 3;
-            this.tabPage_HeightMeasure.Text = "---";
+            this.tabPage_HeightMeasure.Text = "Height";
             this.tabPage_HeightMeasure.UseVisualStyleBackColor = true;
             // 
             // baseGroupBox_Log_Height_Search

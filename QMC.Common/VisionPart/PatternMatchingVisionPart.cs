@@ -7,6 +7,7 @@ using QMC.Common.Vision.Tools;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -108,6 +109,19 @@ namespace QMC.Common.VisionPart
                 }
                 if ((ret = Camera.GrabSync(Purpose.Processing, out image)) != 0) return ret;
             }
+
+            // 1. 폴더 생성 (날짜 기준)
+            string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+            string baseDir = Path.Combine("d:\\TempCrossImage", dateFolder);
+            if (!Directory.Exists(baseDir))
+                Directory.CreateDirectory(baseDir);
+
+            // 2. 초기 원본 이미지 저장
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+            //string rawImagePath = Path.Combine(baseDir, $"CrossImage_{timestamp}.bmp");
+            string rawImagePath = Path.Combine(baseDir, $"CrossImage_{timestamp}");
+            image.Save(rawImagePath, VisionImage.FileFilter.jpg);
+
             m_PatternMatchingTool.Parameter.AngleTolerance = new RangeD(parameter.MinTolerance, parameter.MaxTolerance);            
             m_PatternMatchingTool.Parameter.DuplicateChecked = parameter.DuplicateChecked;
             m_PatternMatchingTool.Parameter.MaxInstance = parameter.MaxInstance;

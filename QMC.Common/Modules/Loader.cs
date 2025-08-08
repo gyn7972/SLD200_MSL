@@ -2088,7 +2088,7 @@ namespace QMC.Common.Modules
 
                         m_bStacker0_Run_byUser = true;
                     }
-                    else if (Equipment.CycleModuleStop&& Equipment.CycleStopped_UnloaderTransfer)
+                    else if (Equipment.CycleModuleStop && Equipment.CycleStopped_UnloaderTransfer)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "CycleStopped_LoaderTransfer : ON");
 
@@ -3972,9 +3972,9 @@ namespace QMC.Common.Modules
                 m_LoaderWork_Start = false;
 
                 string message = string.Format(
-                                                        "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Loader 공정 정지 요청",
-                                                        Equipment.DrillModuleTargetCount,
-                                                        workStage.DrillingManager.CycleTimer_DoneModuleCount);
+                                "[생산완료 조건 만족] TargetCount = {0}, DoneCount = {1} → Loader 공정 정지 요청",
+                                Equipment.DrillModuleTargetCount,
+                                workStage.DrillingManager.CycleTimer_DoneModuleCount);
 
                 Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", message);
                 return ret;
