@@ -3257,9 +3257,12 @@ namespace SLD200_MSL
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
                     return;
 
-                workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step = 
-                    (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.Start;
+                workStage.m_Sequence_FlatnessMeasure.Start();
+                workStage.m_Sequence_FlatnessMeasure.m_MainTick_Start = true;
+                //workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step = 
+                //    (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.Start;
 
+                //아래꺼.. 굳이 해야하나?
                 workStage.timer_Comm.Enabled = true;
                 workStage.timer_Comm.Start();
             }
@@ -3285,6 +3288,9 @@ namespace SLD200_MSL
                 mb.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
                 return;
             }
+
+            workStage.m_Sequence_FlatnessMeasure.Reset();
+            workStage.m_Sequence_FlatnessMeasure.m_MainTick_Start = false;
 
             workStage.m_Sequence_FlatnessMeasure.m_nFlatnessMeasure_Step = 
                 (int)Sequence_FlatnessMeasure.FlatnessMeasure_Step.None;

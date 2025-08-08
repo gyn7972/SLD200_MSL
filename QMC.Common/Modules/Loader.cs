@@ -7120,7 +7120,7 @@ namespace QMC.Common.Modules
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000 * 2)
                     {
                         m_strTemp = "M-Aligner, Align 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
