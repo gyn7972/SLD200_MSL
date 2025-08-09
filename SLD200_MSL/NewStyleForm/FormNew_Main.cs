@@ -1478,8 +1478,6 @@ namespace SLD200_MSL
             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Start 버튼");
             string strTemp = "";
 
-
-
             //  Chiller 상태 체크 - Run 신호를 내보내는지
             if (!workStage.workStageParameter.IsDO_Chiller_Run())
             {
@@ -1949,14 +1947,57 @@ namespace SLD200_MSL
                     Thread.Sleep(200);
                     workStage.workStageParameter.DO_Stage_Blow(false);
                     Thread.Sleep(200);
-                    strTemp = "workStage - 자재 확인 바랍니다. Reset";
+                    strTemp = "workStage - 자재 확인 바랍니다.";
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                    return;
                 }
-                else
+
+                foreach (var posMAlign in Enum.GetValues(typeof(LoaderParameter.MAlignerVacuumPos)))
                 {
-                    workStage.workStageParameter.DO_Stage_Vacuum(false);
-                    workStage.workStageParameter.DO_Stage_Blow(false);
+                    int index = (int)posMAlign;
+                    if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck(index)) // 그냥 무조건 OFF
+                    {
+                        loader.loaderParameter.DO_Loader_Aligner_Vacuum(index, false);
+                        Thread.Sleep(200);
+                        loader.loaderParameter.DO_Loader_Aligner_Blow(index, false);
+                        Thread.Sleep(200);
+
+                        strTemp = "M-Align Unit - 자재 확인 바랍니다.";
+                        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                        new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                        return;
+                    }
+                }
+
+                foreach (var posPicker in Enum.GetValues(typeof(LoaderParameter.PickerVacuumPos)))
+                {
+                    int index = (int)posPicker;
+                    if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck(index)) 
+                    {
+                        //loader.loaderParameter.DO_Loader_Picker_Vacuum(index, false);
+                        //Thread.Sleep(200);
+                        //loader.loaderParameter.DO_Loader_Picker_Blow(false);
+                        //Thread.Sleep(200);
+
+                        strTemp = "Loader Unit - 자재 확인 바랍니다.";
+                        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                        new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                        return;
+                    }
+
+                    if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index)) 
+                    {
+                        //unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
+                        //Thread.Sleep(100);
+                        //unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
+                        //Thread.Sleep(200);
+
+                        strTemp = "Unloader Unit - 자재 확인 바랍니다.";
+                        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                        new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                        return;
+                    }
                 }
 
                 Log.Write("SLD-200", Equipment.User_Name, "StartButton_Click", "시컨스 처음 부터 시작.");

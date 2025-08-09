@@ -455,7 +455,6 @@ namespace QMC.Common.Parts
                             }
                         }
                         Thread.Sleep(100);
-                        //Thread.Sleep(500); //Sleep은 안하는게 좋음.
 
                         this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
 

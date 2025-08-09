@@ -78,6 +78,7 @@ using QMC.Common.Q_Config;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using static QMC.Common.Q_Sequence.Sequence_VerifyScannerCameraOffset;
 using System.Reflection;
+using QMC.Common.Recipe;
 
 
 namespace QMC.Common.Modules
@@ -15479,10 +15480,8 @@ namespace QMC.Common.Modules
         private int SpiralSearch(double dWidth , int maxSteps = 9, AlignMode alignMode = AlignMode.Socket)
         {
             int ret = -1;
-
-            //int markIndex = 0;
-            int foundMarkIndex = -1;
-
+            int lastSuccessfulMarkIndex = -1; // 마지막 성공한 마크 인덱스
+            
             try
             {
                 // 중심 좌표 설정
@@ -15516,6 +15515,7 @@ namespace QMC.Common.Modules
                 {
                     stepSize = 0;
                 }
+
                 for (int i = 0; i < maxSteps; i++)
                 {
                     if (Equipment.AutoManualStatus == false)
@@ -15561,7 +15561,6 @@ namespace QMC.Common.Modules
                         }
                         Thread.Sleep(200);
                     }
-
 
                     //if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
                     QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
@@ -15642,200 +15641,131 @@ namespace QMC.Common.Modules
                     {
                         Fiducial_circleFound = false;
                         Fiducial_circlesResult.Clear();
-                        
-                        // 이게 맞나?
-                        //if(foundMarkIndex < 0)
+
+                        // 추가: 시작 인덱스 기준으로 마크 리스트 재정렬
+                        var marks = Equipment.stVisionRecipeSet.SocketMarkList;
+                        if (marks == null || marks.Count == 0)
+                            continue; // 또는 break; 상황에 맞게
+
+                        List<SocketMarkInfo> markListToSearch;
+                        if (lastSuccessfulMarkIndex >= 0 && lastSuccessfulMarkIndex < marks.Count)
                         {
-                            int markIndex = 0;
-                            foreach (var mark in Equipment.stVisionRecipeSet.SocketMarkList)
+                            markListToSearch = marks.Skip(lastSuccessfulMarkIndex).Concat(marks.Take(lastSuccessfulMarkIndex)).ToList();
+                        }
+                        else
+                        {
+                            markListToSearch = marks.ToList();
+                        }
+
+                        int markIndex = 0;
+                        //foreach (var mark in Equipment.stVisionRecipeSet.SocketMarkList)
+                        foreach (var mark in markListToSearch)
+                        {
+                            markIndex = marks.IndexOf(mark); // 원본 리스트에서의 인덱스
+
+                            Log.Write("SLD-200", "SpiralSearch", $"Try Mark {markIndex}");
+
+                            if (mark.MarkType != (int)MarkTypeList.Circle)
                             {
-                                Log.Write("SLD-200", "SpiralSearch", $"Try Mark {markIndex}");
+                                Log.Write("SLD-200", "SpiralSearch", $"MarkTypeList.Circle X");
+                                continue;
+                            }
 
-                                if (mark.MarkType != (int)MarkTypeList.Circle)
+                            // ---------------- 조명 및 노출 세팅 ----------------
+                            SetLightingByChannel(LightingChannel.FineCamRed, mark.IllumRed, mark.UseRed);
+                            SetLightingByChannel(LightingChannel.FineCamIR, mark.IllumIR, mark.UseIR);
+                            jigAligner_HighRes.Camera.SetExposureTime(mark.ExposureTime);
+                            Thread.Sleep(100); // 100ms 대기
+
+                            // --------------------------------------------------
+                            // Z-Axis 변경도 있음.
+                            double dCurrZ = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z;//GetEncWorkStagePos_Motor(nAxis.Z);
+                            double dThiknessZ = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness;
+                            double dZPosOffset = mark.AxisZOffset;
+                            dCurrZ += (dThiknessZ + dZPosOffset + m_dZOffset_SocketHeightCheck);
+                            MovetoWorkStage_ABS_PositionsZ(dCurrZ, Type_Motor_Speed.Fine);
+                            int tick = 0;
+                            Thread.Sleep(100);
+                            while (true)
+                            {
+                                if(!IsWorkStage_Positions(nAxis.Z, dCurrZ))
                                 {
-                                    markIndex++;
-                                    Log.Write("SLD-200", "SpiralSearch", $"MarkTypeList.Circle X");
-                                    continue;
-                                }
-
-                                // ---------------- 조명 및 노출 세팅 ----------------
-                                SetLightingByChannel(LightingChannel.FineCamRed, mark.IllumRed, mark.UseRed);
-                                SetLightingByChannel(LightingChannel.FineCamIR, mark.IllumIR, mark.UseIR);
-                                jigAligner_HighRes.Camera.SetExposureTime(mark.ExposureTime);
-                                Thread.Sleep(100); // 100ms 대기
-
-                                // --------------------------------------------------
-                                // Z-Axis 변경도 있음.
-                                double dCurrZ = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z;//GetEncWorkStagePos_Motor(nAxis.Z);
-                                double dThiknessZ = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness;
-                                double dZPosOffset = mark.AxisZOffset;
-                                dCurrZ += (dThiknessZ + dZPosOffset + m_dZOffset_SocketHeightCheck);
-                                MovetoWorkStage_ABS_PositionsZ(dCurrZ, Type_Motor_Speed.Fine);
-                                int tick = 0;
-                                Thread.Sleep(100);
-                                //while(!IsWorkStage_Positions(nAxis.Z, dCurrZ))
-                                while (true)
-                                {
-                                    if(!IsWorkStage_Positions(nAxis.Z, dCurrZ))
+                                    tick++;
+                                    Thread.Sleep(10);
+                                    if (tick > 500)
                                     {
-                                        tick++;
-                                        Thread.Sleep(10);
-                                        if (tick > 500)
-                                        {
-                                            Log.Write("SLD-200", "SpiralSearch", $"Try Mark {markIndex}, PosZ {dCurrZ} :: IsWorkStage_Positions");
-                                            break;
-                                        } 
-                                    }
-                                    else
-                                    {
+                                        Log.Write("SLD-200", "SpiralSearch", $"Try Mark {markIndex}, PosZ {dCurrZ} :: IsWorkStage_Positions");
                                         break;
-                                    }
-
-                                    //if (!Equipment.AutoRunStatus)
-                                    //    break;
+                                    } 
                                 }
-                                Thread.Sleep(200);
-                                //while (!MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
-                                //!MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, dCurrZ))
-                                //{
-                                //    tick++;
-                                //    Thread.Sleep(10);
-                                //    if (tick > 5000)
-                                //        break;
-                                //}
-                                //Thread.Sleep(200);
-
-                                // 여기서 이미지를 다시 가져와야지..
-                                Camera_HighRes.Grab();
-                                nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X);
-                                bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
-                                Fiducial_aligner = new QMC_ImageProcessFindAlign();
-                                Fiducial_circlesResult = new List<RectangleF>();
-                                if (bm_AlignRawData == null)
+                                else
                                 {
-                                    Camera_HighRes.Initialize();
-                                    continue;
-                                }
-
-                                // Circle Color 0: White, 1: Black
-                                if (mark.MarkColor <= 1)
-                                {
-                                    result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
-                                        Fiducial_circlesResult,
-                                        bm_AlignRawData,
-                                        Camera_HighRes.Resolution.Width,
-                                        Camera_HighRes.Resolution.Height,
-                                        nWidthImageCount,
-                                        mark.MarkSpec,
-                                        ref Fiducial_circleFound,
-                                        0, 0,
-                                        (mark.MarkType == 0), // GoldPowder 여부?
-                                        mark.MarkScore,
-                                        false);
-
-                                    if (Fiducial_circlesResult.Count <= 0)
-                                        Fiducial_circleFound = false;
-                                }
-                                // Circle Color 2: Ignore
-                                else if (mark.MarkColor == 2)
-                                {
-                                    result = Fiducial_aligner.FindCircleForFR4(
-                                        bm_AlignRawData,
-                                        Camera_HighRes.Resolution.Width,
-                                        Camera_HighRes.Resolution.Height,
-                                        nWidthImageCount,
-                                        mark.MarkSpec,
-                                        mark.MarkScore);
-
-                                    Fiducial_circlesResult.Clear();
-                                    foreach (var circle in result.Circles)
-                                    {
-                                        Fiducial_circleFound = true;
-                                        Fiducial_circlesResult.Add(circle.GetBoundery());
-                                    }
-
-                                    if (Fiducial_circlesResult.Count == 0)
-                                        Fiducial_circleFound = false;
-                                }
-
-                                // 하나라도 찾았으면 반복 종료
-                                if (Fiducial_circleFound)
-                                {
-                                    foundMarkIndex = markIndex; // 첫 성공 시 저장
-                                    Log.Write("SLD-200", "SpiralSearch", $"Fiducial_circleFound {Fiducial_circleFound}");
                                     break;
                                 }
+                            }
+                            Thread.Sleep(200);
+                                
+                            // 여기서 이미지를 다시 가져와야지..
+                            Camera_HighRes.Grab();
+                            nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X);
+                            bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
+                            Fiducial_aligner = new QMC_ImageProcessFindAlign();
+                            Fiducial_circlesResult = new List<RectangleF>();
+                            if (bm_AlignRawData == null)
+                            {
+                                Camera_HighRes.Initialize();
+                                continue;
+                            }
 
-                                markIndex++;
+                            // Circle Color 0: White, 1: Black
+                            if (mark.MarkColor <= 1)
+                            {
+                                result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
+                                    Fiducial_circlesResult,
+                                    bm_AlignRawData,
+                                    Camera_HighRes.Resolution.Width,
+                                    Camera_HighRes.Resolution.Height,
+                                    nWidthImageCount,
+                                    mark.MarkSpec,
+                                    ref Fiducial_circleFound,
+                                    0, 0,
+                                    (mark.MarkType == 0), // GoldPowder 여부?
+                                    mark.MarkScore,
+                                    false);
+
+                                if (Fiducial_circlesResult.Count <= 0)
+                                    Fiducial_circleFound = false;
+                            }
+                            // Circle Color 2: Ignore
+                            else if (mark.MarkColor == 2)
+                            {
+                                result = Fiducial_aligner.FindCircleForFR4(
+                                    bm_AlignRawData,
+                                    Camera_HighRes.Resolution.Width,
+                                    Camera_HighRes.Resolution.Height,
+                                    nWidthImageCount,
+                                    mark.MarkSpec,
+                                    mark.MarkScore);
+
+                                Fiducial_circlesResult.Clear();
+                                foreach (var circle in result.Circles)
+                                {
+                                    Fiducial_circleFound = true;
+                                    Fiducial_circlesResult.Add(circle.GetBoundery());
+                                }
+
+                                if (Fiducial_circlesResult.Count == 0)
+                                    Fiducial_circleFound = false;
+                            }
+
+                            // 하나라도 찾았으면 반복 종료
+                            if (Fiducial_circleFound)
+                            {
+                                lastSuccessfulMarkIndex = markIndex; // 추가: 성공 마크 인덱스 저장
+                                Log.Write("SLD-200", "SpiralSearch", $"Fiducial_circleFound {Fiducial_circleFound}");
+                                break;
                             }
                         }
-                        //else
-                        //{
-                        //    var mark = Equipment.stVisionRecipeSet.SocketMarkList[foundMarkIndex];
-                        //    Log.Write("SLD-200", "SpiralSearch", $"Retry Mark {foundMarkIndex}");
-
-                        //    SetLightingByChannel(LightingChannel.FineCamRed, mark.IllumRed, mark.UseRed);
-                        //    SetLightingByChannel(LightingChannel.FineCamIR, mark.IllumIR, mark.UseIR);
-                        //    jigAligner_HighRes.Camera.SetExposureTime(mark.ExposureTime);
-                        //    Thread.Sleep(100);
-
-                        //    double dCurrZ = GetEncWorkStagePos_Motor(nAxis.Z);
-                        //    double dZPosOffset = mark.AxisZOffset;
-                        //    dCurrZ += dZPosOffset;
-                        //    MovetoWorkStage_ABS_PositionsZ(dCurrZ, Type_Motor_Speed.Fine);
-                        //    int tick = 0;
-                        //    Thread.Sleep(100);
-                        //    while (!IsWorkStage_Positions(nAxis.Z, dCurrZ))
-                        //    {
-                        //        tick++;
-                        //        Thread.Sleep(10);
-                        //        if (tick > 5000)
-                        //            break;
-                        //    }
-                        //    Thread.Sleep(200);
-
-                        //    if (mark.MarkColor <= 1)
-                        //    {
-                        //        result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
-                        //            Fiducial_circlesResult,
-                        //            bm_AlignRawData,
-                        //            Camera_HighRes.Resolution.Width,
-                        //            Camera_HighRes.Resolution.Height,
-                        //            nWidthImageCount,
-                        //            mark.MarkSpec,
-                        //            ref Fiducial_circleFound,
-                        //            0, 0,
-                        //            (mark.MarkType == 0),
-                        //            mark.MarkScore,
-                        //            false);
-                        //    }
-                        //    else if (mark.MarkColor == 2)
-                        //    {
-                        //        result = Fiducial_aligner.FindCircleForFR4(
-                        //            bm_AlignRawData,
-                        //            Camera_HighRes.Resolution.Width,
-                        //            Camera_HighRes.Resolution.Height,
-                        //            nWidthImageCount,
-                        //            mark.MarkSpec,
-                        //            mark.MarkScore);
-
-                        //        Fiducial_circlesResult.Clear();
-                        //        foreach (var circle in result.Circles)
-                        //        {
-                        //            Fiducial_circleFound = true;
-                        //            Fiducial_circlesResult.Add(circle.GetBoundery());
-                        //        }
-
-                        //        if (Fiducial_circlesResult.Count == 0)
-                        //            Fiducial_circleFound = false;
-                        //    }
-
-                        //    if (!Fiducial_circleFound)
-                        //    {
-                        //        Log.Write("SLD-200", "SpiralSearch", $"Retry Mark {foundMarkIndex} 실패 → 전체 탐색으로 전환");
-                        //        foundMarkIndex = -1; // 리트라이 실패 → 전체 탐색으로 전환
-                        //    }
-                        //}
                     }
 
                     UpdateOverlay(result);
@@ -15866,10 +15796,6 @@ namespace QMC.Common.Modules
                                 bFound = true;
                                 continue;
                             }
-                            else
-                            {
-                                foundMarkIndex = -1; // 보정 실패 → 다음 루프에서 전체 탐색
-                            }
                         }
                         else if(alignMode == AlignMode.GoldPowder)
                         {
@@ -15891,10 +15817,6 @@ namespace QMC.Common.Modules
 
                                     bFound = true;
                                     continue;
-                                }
-                                else
-                                {
-                                    foundMarkIndex = -1;
                                 }
                             }
                             else
