@@ -1944,13 +1944,20 @@ namespace SLD200_MSL
                 if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
                 {
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
-                    Thread.Sleep(200);
+                    Thread.Sleep(10);
                     workStage.workStageParameter.DO_Stage_Blow(false);
-                    Thread.Sleep(200);
+                    Thread.Sleep(10);
                     strTemp = "workStage - 자재 확인 바랍니다.";
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
                     return;
+                }
+                else
+                {
+                    workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    Thread.Sleep(10);
+                    workStage.workStageParameter.DO_Stage_Blow(false);
+                    Thread.Sleep(10);
                 }
 
                 foreach (var posMAlign in Enum.GetValues(typeof(LoaderParameter.MAlignerVacuumPos)))
@@ -1959,14 +1966,21 @@ namespace SLD200_MSL
                     if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck(index)) // 그냥 무조건 OFF
                     {
                         loader.loaderParameter.DO_Loader_Aligner_Vacuum(index, false);
-                        Thread.Sleep(200);
+                        Thread.Sleep(10);
                         loader.loaderParameter.DO_Loader_Aligner_Blow(index, false);
-                        Thread.Sleep(200);
+                        Thread.Sleep(10);
 
                         strTemp = "M-Align Unit - 자재 확인 바랍니다.";
                         Log.Write("SLD-200", Equipment.User_Name, strTemp);
                         new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
                         return;
+                    }
+                    else
+                    {
+                        loader.loaderParameter.DO_Loader_Aligner_Vacuum(index, false);
+                        Thread.Sleep(10);
+                        loader.loaderParameter.DO_Loader_Aligner_Blow(index, false);
+                        Thread.Sleep(10);
                     }
                 }
 
@@ -1985,8 +1999,15 @@ namespace SLD200_MSL
                         new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
                         return;
                     }
+                    else
+                    {
+                        loader.loaderParameter.DO_Loader_Picker_Vacuum(index, false);
+                        Thread.Sleep(10);
+                        loader.loaderParameter.DO_Loader_Picker_Blow(false);
+                        Thread.Sleep(10);
+                    }
 
-                    if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index)) 
+                    if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index))
                     {
                         //unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
                         //Thread.Sleep(100);
@@ -1997,6 +2018,13 @@ namespace SLD200_MSL
                         Log.Write("SLD-200", Equipment.User_Name, strTemp);
                         new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
                         return;
+                    }
+                    else
+                    {
+                        unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
+                        Thread.Sleep(10);
+                        unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
+                        Thread.Sleep(10);
                     }
                 }
 
