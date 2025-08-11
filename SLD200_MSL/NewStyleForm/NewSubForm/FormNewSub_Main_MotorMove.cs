@@ -204,15 +204,17 @@ namespace SLD200.NewStyleForm.NewSubForm
 
 
             //  Laser Height Sensor
-            double? dHeightVal = workStage.m_dLaserHeightSensorSocket_Value;
-            label_MotorMove_heightSensor.Text = string.Format("{0:0.0000}", dHeightVal.HasValue ? dHeightVal.Value : 0.0f);
+            //double? dHeightVal = workStage.m_dLaserHeightSensorSocket_Value;
+            //label_MotorMove_heightSensor.Text = string.Format("{0:0.0000}", dHeightVal.HasValue ? dHeightVal.Value : 0.0f);
 
             /////////////////////////////////////////////////////////////////////////////
             //  ElectroPneumaticRetulator
             double? dCurrentValue = workStage.m_dEPRO_Value;
+            double? dJudgmentValue = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel; //Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString("0.0000");
             double? dSetValue = workStage.m_dEPRO_SetValue;
 
             label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.Text = string.Format("{0:0.0000}", dCurrentValue.HasValue ? dCurrentValue.Value : 0.0f);
+            label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.Text = string.Format("{0:0.0000}", dJudgmentValue.HasValue ? dJudgmentValue.Value : 0.0f);
             label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Text = string.Format("{0:0.0000}", dSetValue.HasValue ? dSetValue.Value : 0.0f);
         }
 

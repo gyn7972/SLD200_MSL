@@ -54,7 +54,6 @@
             this.groupBox_MotorMove_heightSensor = new System.Windows.Forms.GroupBox();
             this.label_MotorMove_heightSensor = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupBox70 = new System.Windows.Forms.GroupBox();
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue = new System.Windows.Forms.Label();
             this.label41 = new System.Windows.Forms.Label();
@@ -63,6 +62,9 @@
             this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue = new System.Windows.Forms.Button();
             this.textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue = new System.Windows.Forms.TextBox();
             this.label36 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox_MotorMove_Unloader.SuspendLayout();
             this.groupBox_MotorMove_MainStage.SuspendLayout();
             this.groupBox_MotorMove_Loader.SuspendLayout();
@@ -331,14 +333,15 @@
             // 
             this.groupBox_MotorMove_heightSensor.Controls.Add(this.label_MotorMove_heightSensor);
             this.groupBox_MotorMove_heightSensor.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox_MotorMove_heightSensor.Location = new System.Drawing.Point(334, 127);
+            this.groupBox_MotorMove_heightSensor.Location = new System.Drawing.Point(492, 127);
             this.groupBox_MotorMove_heightSensor.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_MotorMove_heightSensor.Name = "groupBox_MotorMove_heightSensor";
             this.groupBox_MotorMove_heightSensor.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_MotorMove_heightSensor.Size = new System.Drawing.Size(167, 63);
+            this.groupBox_MotorMove_heightSensor.Size = new System.Drawing.Size(54, 27);
             this.groupBox_MotorMove_heightSensor.TabIndex = 81;
             this.groupBox_MotorMove_heightSensor.TabStop = false;
             this.groupBox_MotorMove_heightSensor.Text = " Laser Height Sensor ";
+            this.groupBox_MotorMove_heightSensor.Visible = false;
             // 
             // label_MotorMove_heightSensor
             // 
@@ -370,19 +373,10 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Motor Move";
             // 
-            // label1
-            // 
-            this.label1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Blue;
-            this.label1.Location = new System.Drawing.Point(334, 195);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(166, 18);
-            this.label1.TabIndex = 82;
-            this.label1.Text = "* Ctrl+J : JogDlg Open";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // groupBox70
             // 
+            this.groupBox70.Controls.Add(this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure);
+            this.groupBox70.Controls.Add(this.label3);
             this.groupBox70.Controls.Add(this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue);
             this.groupBox70.Controls.Add(this.label41);
             this.groupBox70.Controls.Add(this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure);
@@ -391,11 +385,11 @@
             this.groupBox70.Controls.Add(this.textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue);
             this.groupBox70.Controls.Add(this.label36);
             this.groupBox70.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox70.Location = new System.Drawing.Point(334, 221);
+            this.groupBox70.Location = new System.Drawing.Point(334, 159);
             this.groupBox70.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox70.Name = "groupBox70";
             this.groupBox70.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox70.Size = new System.Drawing.Size(215, 96);
+            this.groupBox70.Size = new System.Drawing.Size(215, 158);
             this.groupBox70.TabIndex = 83;
             this.groupBox70.TabStop = false;
             this.groupBox70.Text = "Vacuum";
@@ -406,10 +400,10 @@
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.ForeColor = System.Drawing.Color.Lime;
-            this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Location = new System.Drawing.Point(105, 42);
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Location = new System.Drawing.Point(113, 83);
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Name = "label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue";
-            this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Size = new System.Drawing.Size(103, 20);
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Size = new System.Drawing.Size(95, 25);
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.TabIndex = 52;
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Text = "0";
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -417,10 +411,10 @@
             // label41
             // 
             this.label41.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label41.Location = new System.Drawing.Point(4, 42);
+            this.label41.Location = new System.Drawing.Point(4, 83);
             this.label41.Margin = new System.Windows.Forms.Padding(6);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(98, 20);
+            this.label41.Size = new System.Drawing.Size(110, 25);
             this.label41.TabIndex = 51;
             this.label41.Text = "Setting (kPa) :";
             this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -431,10 +425,10 @@
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.ForeColor = System.Drawing.Color.Lime;
-            this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.Location = new System.Drawing.Point(105, 18);
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.Location = new System.Drawing.Point(113, 18);
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.Name = "label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure";
-            this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.Size = new System.Drawing.Size(103, 20);
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.Size = new System.Drawing.Size(95, 25);
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.TabIndex = 50;
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.Text = "0";
             this.label_MotorMove_Stage_ElectroPneumaticRegulator_CurrentPressure.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -445,7 +439,7 @@
             this.label72.Location = new System.Drawing.Point(4, 18);
             this.label72.Margin = new System.Windows.Forms.Padding(6);
             this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(98, 20);
+            this.label72.Size = new System.Drawing.Size(110, 25);
             this.label72.TabIndex = 49;
             this.label72.Text = "Current (kPa) :";
             this.label72.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -453,10 +447,10 @@
             // button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue
             // 
             this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Location = new System.Drawing.Point(159, 68);
+            this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Location = new System.Drawing.Point(158, 112);
             this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Margin = new System.Windows.Forms.Padding(6);
             this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Name = "button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue";
-            this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Size = new System.Drawing.Size(50, 20);
+            this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Size = new System.Drawing.Size(50, 30);
             this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.TabIndex = 44;
             this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Text = "Set";
             this.button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.UseVisualStyleBackColor = true;
@@ -465,7 +459,7 @@
             // textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue
             // 
             this.textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Location = new System.Drawing.Point(106, 67);
+            this.textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Location = new System.Drawing.Point(107, 116);
             this.textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Margin = new System.Windows.Forms.Padding(6);
             this.textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Name = "textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue";
             this.textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue.Size = new System.Drawing.Size(50, 22);
@@ -476,13 +470,49 @@
             // label36
             // 
             this.label36.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label36.Location = new System.Drawing.Point(4, 67);
+            this.label36.Location = new System.Drawing.Point(4, 115);
             this.label36.Margin = new System.Windows.Forms.Padding(6);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(98, 20);
+            this.label36.Size = new System.Drawing.Size(110, 25);
             this.label36.TabIndex = 42;
             this.label36.Text = "Set (kPa) :";
             this.label36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Blue;
+            this.label1.Location = new System.Drawing.Point(331, 136);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(166, 18);
+            this.label1.TabIndex = 82;
+            this.label1.Text = "* Ctrl+J : JogDlg Open";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure
+            // 
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.ForeColor = System.Drawing.Color.Lime;
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.Location = new System.Drawing.Point(113, 47);
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.Name = "label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure";
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.Size = new System.Drawing.Size(95, 25);
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.TabIndex = 54;
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.Text = "0";
+            this.label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            this.label3.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(4, 47);
+            this.label3.Margin = new System.Windows.Forms.Padding(6);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(110, 25);
+            this.label3.TabIndex = 53;
+            this.label3.Text = "Judgment(kPa) :";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNewSub_Main_MotorMove
             // 
@@ -539,5 +569,7 @@
         private System.Windows.Forms.Button button_MotorMove_Stage_ElectroPneumaticRegulator_SetValue;
         private System.Windows.Forms.TextBox textBox_MotorMove_Stage_ElectroPneumaticRegulator_SetValue;
         private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.Label label_MotorMove_Stage_ElectroPneumaticRegulator_JudgmentPressure;
+        private System.Windows.Forms.Label label3;
     }
 }

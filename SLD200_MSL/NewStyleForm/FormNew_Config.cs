@@ -307,13 +307,16 @@ namespace SLD200_MSL
                 // Enum 값 순환
                 LaserDrilling_Step currentStep = (LaserDrilling_Step)(((int)step) % Enum.GetValues(typeof(LaserDrilling_Step)).Length);
                 string str = $"STEP: {currentStep}";
-                label_Config_SeqTest_SeqStatus_Disp_workStage.Text = str;
+                //Tabcontrol Del. 20250808
+                //label_Config_SeqTest_SeqStatus_Disp_workStage.Text = str;
 
                 int nStep = workStage.m_nSocketAlign_MainStep;
                 SocketAlign_Step currentStopSocket = (SocketAlign_Step)(((int)nStep) % Enum.GetValues(typeof(SocketAlign_Step)).Length);
 
                 str = $"STEP: {currentStopSocket}";
-                label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Text = str;
+
+                //Tabcontrol Del. 20250808
+                //label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Text = str;
             }
         }
 
@@ -332,14 +335,16 @@ namespace SLD200_MSL
                 Loader_Transfer_Step currentStep = (Loader_Transfer_Step)(((int)step) % Enum.GetValues(typeof(Loader_Transfer_Step)).Length);
 
                 string str = $"STEP: {currentStep}";
-                label_Config_SeqTest_SeqStatus_Disp_Loader.Text = str;
+                //Tabcontrol Del. 20250808
+                //label_Config_SeqTest_SeqStatus_Disp_Loader.Text = str;
 
 
                 // Enum 값 순환
                 MAlign_Step currentMAStep = (MAlign_Step)(((int)loader.m_nMAlign_Step) % Enum.GetValues(typeof(MAlign_Step)).Length);
 
                 str = $"STEP: {currentMAStep}";
-                Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Text = str;
+                //Tabcontrol Del. 20250808
+                //Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Text = str;
 
 
 
@@ -347,13 +352,15 @@ namespace SLD200_MSL
                 StackerModulePickupWaitingPos_Step currentLPStep = (StackerModulePickupWaitingPos_Step)(((int)loader.m_nStacker0_ModulePickupWaitingPos_Step) % Enum.GetValues(typeof(StackerModulePickupWaitingPos_Step)).Length);
 
                 str = $"STEP: {currentLPStep}";
-                Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Text = str;
+                //Tabcontrol Del. 20250808
+                //Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Text = str;
 
 
                 StackerModulePickupWaitingPos_Step currentRPStep = (StackerModulePickupWaitingPos_Step)(((int)loader.m_nStacker1_ModulePickupWaitingPos_Step) % Enum.GetValues(typeof(StackerModulePickupWaitingPos_Step)).Length);
 
                 str = $"STEP: {currentRPStep}";
-                Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Text = str;
+                //Tabcontrol Del. 20250808
+                //Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Text = str;
             }
         }
 
@@ -372,18 +379,21 @@ namespace SLD200_MSL
                 Unloader_Transfer_Step currentStep = (Unloader_Transfer_Step)(((int)step) % Enum.GetValues(typeof(Unloader_Transfer_Step)).Length);
 
                 string str = $"STEP: {currentStep}";
-                label_Config_SeqTest_SeqStatus_Disp_UnLoader.Text = str;
+                //Tabcontrol Del. 20250808
+                //label_Config_SeqTest_SeqStatus_Disp_UnLoader.Text = str;
 
                 StackerModulePutdownWaitingPos_Step currentLpStep = (StackerModulePutdownWaitingPos_Step)(((int)unloader.m_nStacker0_ModulePutdownWaitingPos_Step) % Enum.GetValues(typeof(StackerModulePutdownWaitingPos_Step)).Length);
 
                 str = $"STEP: {currentStep}";
-                label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Text = str;
+                //Tabcontrol Del. 20250808
+                //label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Text = str;
 
 
                 StackerModulePutdownWaitingPos_Step currentRpStep = (StackerModulePutdownWaitingPos_Step)(((int)unloader.m_nStacker1_ModulePutdownWaitingPos_Step) % Enum.GetValues(typeof(StackerModulePutdownWaitingPos_Step)).Length);
 
                 str = $"STEP: {currentRpStep}";
-                label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Text = str;
+                //Tabcontrol Del. 20250808
+                //label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Text = str;
 
             }
         }
@@ -4272,8 +4282,10 @@ namespace SLD200_MSL
                 //  Recipe 의 모듈 사이즈가 없으면 Seq. Test 에서 입력한 값을 사용
                 if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
                 {
-                    m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
-                    m_dModuleHeight = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+                    //Tabcontrol Del. 20250808
+                    //m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+                    //Tabcontrol Del. 20250808
+                    //m_dModuleHeight = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
                 }
 
                 //m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
@@ -5092,8 +5104,10 @@ namespace SLD200_MSL
             double m_dModuleWidth = 0.0;
             double m_dModuleHeight = 0.0;
 
-            m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
-            m_dModuleHeight = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+            //Tabcontrol Del. 20250808
+            //m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+            //Tabcontrol Del. 20250808
+            //m_dModuleHeight = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
 
             if (!Equipment.AjinBoard_Opened)
             {

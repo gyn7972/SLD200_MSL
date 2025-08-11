@@ -296,7 +296,6 @@ namespace AsyncSocket
             }
 
             return true;
-
         }
 
         /// <summary>

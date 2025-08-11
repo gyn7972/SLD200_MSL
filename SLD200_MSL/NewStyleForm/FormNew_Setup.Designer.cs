@@ -3304,12 +3304,12 @@
             this.groupBox_Setup_ScannerCal__Illuminator2.Size = new System.Drawing.Size(204, 208);
             this.groupBox_Setup_ScannerCal__Illuminator2.TabIndex = 224;
             this.groupBox_Setup_ScannerCal__Illuminator2.TabStop = false;
-            this.groupBox_Setup_ScannerCal__Illuminator2.Text = " Illuminator (for Fiducial Mark Find) ";
+            this.groupBox_Setup_ScannerCal__Illuminator2.Text = " Illuminator";
             // 
             // button_ScannerCal_Illuminator_Camera_ExposureTime_High
             // 
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Location = new System.Drawing.Point(161, 177);
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Location = new System.Drawing.Point(161, 162);
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(2);
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Name = "button_ScannerCal_Illuminator_Camera_ExposureTime_High";
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Size = new System.Drawing.Size(38, 25);
@@ -3321,7 +3321,7 @@
             // label_RecipeVision_Camera_ExposureTime_High
             // 
             this.label_RecipeVision_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_RecipeVision_Camera_ExposureTime_High.Location = new System.Drawing.Point(6, 150);
+            this.label_RecipeVision_Camera_ExposureTime_High.Location = new System.Drawing.Point(6, 135);
             this.label_RecipeVision_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(5);
             this.label_RecipeVision_Camera_ExposureTime_High.Name = "label_RecipeVision_Camera_ExposureTime_High";
             this.label_RecipeVision_Camera_ExposureTime_High.Size = new System.Drawing.Size(119, 24);
@@ -3332,7 +3332,7 @@
             // textBox_ScannerCal_Illuminator_Camera_ExposureTime_High
             // 
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Location = new System.Drawing.Point(6, 177);
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Location = new System.Drawing.Point(6, 162);
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Name = "textBox_ScannerCal_Illuminator_Camera_ExposureTime_High";
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Size = new System.Drawing.Size(151, 23);
@@ -3343,7 +3343,7 @@
             // textBox_Setup_ScannerCal_Illuminator_FineCamRed
             // 
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Location = new System.Drawing.Point(6, 64);
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Location = new System.Drawing.Point(6, 49);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Name = "textBox_Setup_ScannerCal_Illuminator_FineCamRed";
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Size = new System.Drawing.Size(151, 23);
@@ -3354,7 +3354,7 @@
             // label_Setup_ScannerCal_High_Red
             // 
             this.label_Setup_ScannerCal_High_Red.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Setup_ScannerCal_High_Red.Location = new System.Drawing.Point(6, 41);
+            this.label_Setup_ScannerCal_High_Red.Location = new System.Drawing.Point(6, 26);
             this.label_Setup_ScannerCal_High_Red.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_Setup_ScannerCal_High_Red.Name = "label_Setup_ScannerCal_High_Red";
             this.label_Setup_ScannerCal_High_Red.Size = new System.Drawing.Size(119, 24);
@@ -3365,7 +3365,7 @@
             // textBox_Setup_ScannerCal_Illuminator_FineCamIR
             // 
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Location = new System.Drawing.Point(6, 118);
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Location = new System.Drawing.Point(6, 103);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Name = "textBox_Setup_ScannerCal_Illuminator_FineCamIR";
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Size = new System.Drawing.Size(151, 23);
@@ -3376,7 +3376,7 @@
             // label_Setup_ScannerCal_High_IR
             // 
             this.label_Setup_ScannerCal_High_IR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Setup_ScannerCal_High_IR.Location = new System.Drawing.Point(6, 92);
+            this.label_Setup_ScannerCal_High_IR.Location = new System.Drawing.Point(6, 77);
             this.label_Setup_ScannerCal_High_IR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_Setup_ScannerCal_High_IR.Name = "label_Setup_ScannerCal_High_IR";
             this.label_Setup_ScannerCal_High_IR.Size = new System.Drawing.Size(119, 24);
@@ -3599,7 +3599,7 @@
             this.button_Setup_ScannerCal_Inspect.Name = "button_Setup_ScannerCal_Inspect";
             this.button_Setup_ScannerCal_Inspect.Size = new System.Drawing.Size(191, 51);
             this.button_Setup_ScannerCal_Inspect.TabIndex = 163;
-            this.button_Setup_ScannerCal_Inspect.Text = "Inspect";
+            this.button_Setup_ScannerCal_Inspect.Text = "ROI Inspect";
             this.button_Setup_ScannerCal_Inspect.UseVisualStyleBackColor = true;
             this.button_Setup_ScannerCal_Inspect.Click += new System.EventHandler(this.button_Setup_ScannerCal_Inspect_Click);
             // 
@@ -3609,7 +3609,7 @@
             this.button_Setup_ScannerCal_Train.Name = "button_Setup_ScannerCal_Train";
             this.button_Setup_ScannerCal_Train.Size = new System.Drawing.Size(191, 55);
             this.button_Setup_ScannerCal_Train.TabIndex = 162;
-            this.button_Setup_ScannerCal_Train.Text = "Train";
+            this.button_Setup_ScannerCal_Train.Text = "Mark Train";
             this.button_Setup_ScannerCal_Train.UseVisualStyleBackColor = true;
             this.button_Setup_ScannerCal_Train.Click += new System.EventHandler(this.button_Setup_ScannerCal_Train_Click);
             // 
@@ -3990,7 +3990,7 @@
             this.textBox_Setup_ScannerCal_VisionZOffset.Name = "textBox_Setup_ScannerCal_VisionZOffset";
             this.textBox_Setup_ScannerCal_VisionZOffset.Size = new System.Drawing.Size(90, 23);
             this.textBox_Setup_ScannerCal_VisionZOffset.TabIndex = 159;
-            this.textBox_Setup_ScannerCal_VisionZOffset.Tag = "KeyPad;Min=0;Max=100;Format=0.000";
+            this.textBox_Setup_ScannerCal_VisionZOffset.Tag = "KeyPad;Min=-10;Max=10;Format=0.000";
             this.textBox_Setup_ScannerCal_VisionZOffset.Text = "0.0";
             // 
             // label_Recipe_TabRecipe_Miscellaneous_BETPosition
@@ -4653,7 +4653,7 @@
             this.basetextBox_Setup_ScannerCal_MinScore.Name = "basetextBox_Setup_ScannerCal_MinScore";
             this.basetextBox_Setup_ScannerCal_MinScore.Size = new System.Drawing.Size(88, 13);
             this.basetextBox_Setup_ScannerCal_MinScore.TabIndex = 7;
-            this.basetextBox_Setup_ScannerCal_MinScore.Tag = "KeyPad;Min=0;Max=100;Format=0";
+            this.basetextBox_Setup_ScannerCal_MinScore.Tag = "KeyPad;Min=0;Max=1;Format=0.000";
             // 
             // baseLabel_Setup_ScannerCal_AngleTolerance
             // 
@@ -4915,7 +4915,7 @@
             this.button_Setup_ScannerCal_Train_Set.Name = "button_Setup_ScannerCal_Train_Set";
             this.button_Setup_ScannerCal_Train_Set.Size = new System.Drawing.Size(180, 44);
             this.button_Setup_ScannerCal_Train_Set.TabIndex = 0;
-            this.button_Setup_ScannerCal_Train_Set.Text = "Train";
+            this.button_Setup_ScannerCal_Train_Set.Text = "Image Save";
             this.button_Setup_ScannerCal_Train_Set.UseVisualStyleBackColor = false;
             this.button_Setup_ScannerCal_Train_Set.Click += new System.EventHandler(this.button_Setup_ScannerCal_Train_Set_Click);
             // 

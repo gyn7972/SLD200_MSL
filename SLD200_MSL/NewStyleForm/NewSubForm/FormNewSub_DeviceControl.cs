@@ -299,7 +299,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 ("스캐너", () => workStage.Sirius_Init(), () => workStage.Sirius_Close(), picScanner),
                 ("칠러", workStage.ChillerComm_Init, workStage.ChillerComm_Close, picChiller),
-                ("높이센서", workStage.LaserSensor_Socket_Connect, workStage.LaserSensor_Socket_Disconnect, picHeightSensor),
+                ("높이센서", () => workStage.LaserSensor_Socket_Connect(), workStage.LaserSensor_Socket_Disconnect, picHeightSensor),
 
                 ("집진기(상)", () => bds.InitDustCollector(DustCollectorController.CollectorPosition.Upper),
                               () => bds.DisconnectDustCollector(DustCollectorController.CollectorPosition.Upper),

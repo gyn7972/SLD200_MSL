@@ -43,6 +43,7 @@ using System.ServiceModel.Syndication;
 using QMC.Common.Recipe;
 using System.IO.Ports;
 using QMC.Common.Global;
+using QMC.Common.Q_Recipe;
 
 
 
@@ -564,6 +565,14 @@ namespace QMC.Common
             public bool Align3Point_Enable;                             //  3-Point Align Enable (true: Enable, false: Disable)
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
+
+
+        public struct LayerRecipeResult
+        {
+            public int Index;                              // 현재 레이어 Index
+            public stLayerRecipeParameter LayerData;       // 해당 레이어 전용 데이터
+            public stLayerRecipeParameter CommonData;      // Hole1(0번) 공통 데이터
+        }
 
 
         public enum VisionAlgorithmType
@@ -3612,5 +3621,29 @@ namespace QMC.Common
                 }
             }
         }
+
+
+        public static RecipeQueueManager RecipeQueue { get; private set; } = new RecipeQueueManager();
+
+        public static void StartRecipeQueue()
+        {
+            if (Equipment.RecipeQueue.HasNextRecipe())
+            {
+                string recipePath = Equipment.RecipeQueue.GetNextRecipe();
+                StartRecipe(recipePath);
+            }
+            else
+            {
+                MessageBox.Show("실행할 Recipe가 없습니다.");
+            }
+        }
+
+        public static void StartRecipe(string recipePath)
+        {
+            // 이 함수들은 Form에 있는데 - 여기에 연동을 해야돼네.. 흠..
+            //Recipe_Open(recipePath);   // 기존 Recipe 열기 함수 호출
+            //StartProduction();         // 장비 시작
+        }
+
     }
 }

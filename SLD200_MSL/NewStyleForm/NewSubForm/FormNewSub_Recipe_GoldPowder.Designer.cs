@@ -68,9 +68,7 @@
             this.groupBox_Recipe_GoldPowder_Illuminator = new System.Windows.Forms.GroupBox();
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed = new System.Windows.Forms.TextBox();
             this.label_Recipe_GoldPowder_High_Red = new System.Windows.Forms.Label();
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR = new System.Windows.Forms.TextBox();
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR = new System.Windows.Forms.TextBox();
-            this.label_Recipe_GoldPowder_Low_IR = new System.Windows.Forms.Label();
             this.label_Recipe_GoldPowder_High_IR = new System.Windows.Forms.Label();
             this.groupBox_Recipe_GoldPowder_Fiducial_Camera = new System.Windows.Forms.GroupBox();
             this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag = new System.Windows.Forms.RadioButton();
@@ -571,19 +569,17 @@
             // 
             this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed);
             this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.label_Recipe_GoldPowder_High_Red);
-            this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR);
             this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR);
-            this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.label_Recipe_GoldPowder_Low_IR);
             this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.label_Recipe_GoldPowder_High_IR);
             this.groupBox_Recipe_GoldPowder_Illuminator.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_Recipe_GoldPowder_Illuminator.Location = new System.Drawing.Point(1375, 150);
             this.groupBox_Recipe_GoldPowder_Illuminator.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Recipe_GoldPowder_Illuminator.Name = "groupBox_Recipe_GoldPowder_Illuminator";
             this.groupBox_Recipe_GoldPowder_Illuminator.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Recipe_GoldPowder_Illuminator.Size = new System.Drawing.Size(164, 216);
+            this.groupBox_Recipe_GoldPowder_Illuminator.Size = new System.Drawing.Size(164, 172);
             this.groupBox_Recipe_GoldPowder_Illuminator.TabIndex = 229;
             this.groupBox_Recipe_GoldPowder_Illuminator.TabStop = false;
-            this.groupBox_Recipe_GoldPowder_Illuminator.Text = " Illuminator (for Fiducial Mark Find) ";
+            this.groupBox_Recipe_GoldPowder_Illuminator.Text = " Illuminator";
             // 
             // textBox_Recipe_GoldPowder_Illuminator_FineCamRed
             // 
@@ -607,19 +603,6 @@
             this.label_Recipe_GoldPowder_High_Red.Text = "Fine Cam. Red :";
             this.label_Recipe_GoldPowder_High_Red.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR
-            // 
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR.Enabled = false;
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR.Location = new System.Drawing.Point(21, 175);
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR.Name = "textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR";
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR.Size = new System.Drawing.Size(119, 24);
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR.TabIndex = 16;
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR.Tag = "KeyPad;Min=0;Max=4096;Format=0";
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR.Text = "0";
-            this.textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR.Visible = false;
-            // 
             // textBox_Recipe_GoldPowder_Illuminator_FineCamIR
             // 
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -630,19 +613,6 @@
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.TabIndex = 14;
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Tag = "KeyPad;Min=0;Max=4096;Format=0";
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = "0";
-            // 
-            // label_Recipe_GoldPowder_Low_IR
-            // 
-            this.label_Recipe_GoldPowder_Low_IR.Enabled = false;
-            this.label_Recipe_GoldPowder_Low_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label_Recipe_GoldPowder_Low_IR.Location = new System.Drawing.Point(21, 147);
-            this.label_Recipe_GoldPowder_Low_IR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label_Recipe_GoldPowder_Low_IR.Name = "label_Recipe_GoldPowder_Low_IR";
-            this.label_Recipe_GoldPowder_Low_IR.Size = new System.Drawing.Size(119, 24);
-            this.label_Recipe_GoldPowder_Low_IR.TabIndex = 7;
-            this.label_Recipe_GoldPowder_Low_IR.Text = "Coarse Cam. IR :";
-            this.label_Recipe_GoldPowder_Low_IR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label_Recipe_GoldPowder_Low_IR.Visible = false;
             // 
             // label_Recipe_GoldPowder_High_IR
             // 
@@ -984,9 +954,7 @@
         private System.Windows.Forms.GroupBox groupBox_Recipe_GoldPowder_Illuminator;
         private System.Windows.Forms.TextBox textBox_Recipe_GoldPowder_Illuminator_FineCamRed;
         private System.Windows.Forms.Label label_Recipe_GoldPowder_High_Red;
-        private System.Windows.Forms.TextBox textBox_Recipe_GoldPowder_Illuminator_CoarseCamIR;
         private System.Windows.Forms.TextBox textBox_Recipe_GoldPowder_Illuminator_FineCamIR;
-        private System.Windows.Forms.Label label_Recipe_GoldPowder_Low_IR;
         private System.Windows.Forms.Label label_Recipe_GoldPowder_High_IR;
         private System.Windows.Forms.GroupBox groupBox_Recipe_GoldPowder_Fiducial_Camera;
         private System.Windows.Forms.RadioButton radioButton_Recipe_GoldPowder_CameraSelection_HighMag;
