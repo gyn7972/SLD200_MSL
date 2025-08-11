@@ -2014,7 +2014,7 @@
             this.groupBox_RecipeVision_Illuminator.Size = new System.Drawing.Size(164, 216);
             this.groupBox_RecipeVision_Illuminator.TabIndex = 223;
             this.groupBox_RecipeVision_Illuminator.TabStop = false;
-            this.groupBox_RecipeVision_Illuminator.Text = " Illuminator (for Fiducial Mark Find) ";
+            this.groupBox_RecipeVision_Illuminator.Text = " Illuminator";
             // 
             // textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed
             // 

@@ -319,10 +319,12 @@ namespace QMC.Common.Parts
 
         private XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();         //  Stage XY Map Data 로 변환된 위치 이동 좌표
 
-        
+
+        // PreAlign - 1번/2번 포인트 각각의 마지막 성공 마크 인덱스
+        private int m_lastPreAlignMarkIndex1 = -1;   // 기본: 없으면 -1 → 0번부터
+        private int m_lastPreAlignMarkIndex2 = -1;   // 기본: 없으면 -1 → 0번부터
         public override int OnWork()
         {
-
             int ret = 0;
             try
             {
@@ -464,34 +466,64 @@ namespace QMC.Common.Parts
                             m_Owner.SetLightingByChannel(LightingChannel.FineCamRed, 4000, true);
                             m_Owner.SetLightingByChannel(LightingChannel.FineCamIR, 0, false);
 
-                            foreach (var mark in Equipment.stVisionRecipeSet.PreAlignMarkList)
+                            var marks = Equipment.stVisionRecipeSet.PreAlignMarkList;
+                            if (marks == null || marks.Count == 0)
                             {
-                                //Illum 변경 필요.!!
-                                // 카메라 노출 설정
-                                Camera.SetExposureTime(mark.ExposureTime);
-                                m_Owner.SetLightingByChannel(LightingChannel.CoarseCamIR, mark.IllumIR);
-                                m_Owner.SetLightingByChannel(LightingChannel.CoarseCamRed, mark.IllumRed);
-                                Thread.Sleep(100);
+                                m_lastPreAlignMarkIndex1 = -1;
+                                // 여기서 적절히 return/continue
+                            }
 
-                                if (mark.AlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
+                            // 이전 인덱스가 범위를 벗어나면 리셋
+                            if (m_lastPreAlignMarkIndex1 >= marks.Count) m_lastPreAlignMarkIndex1 = -1;
+
+                            if (marks != null && marks.Count > 0)
+                            {
+                                // 시작 인덱스 결정: 최근 성공 마크가 있으면 거기서, 없으면 기본 0
+                                int defaultStart1 = 0;
+
+                                int start = (m_lastPreAlignMarkIndex1 >= 0 && m_lastPreAlignMarkIndex1 < marks.Count)
+                                            ? m_lastPreAlignMarkIndex1
+                                            : (marks.Count > defaultStart1 ? defaultStart1 : 0);
+
+                                var markListToSearch = marks.Skip(start).Concat(marks.Take(start)).ToList();
+
+                                //foreach (var mark in Equipment.stVisionRecipeSet.PreAlignMarkList)
+                                foreach (var mark in markListToSearch)
                                 {
-                                    this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
-                                }
-                                else if (mark.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
-                                {
-                                    dSpec = mark.CircleMarkSpec;
-                                    dScore = mark.CircleMarkScore;
-                                    dRadius = m_dRadius[0] != 0 ? m_dRadius[0] : mark.CircleMarkRadius;
-                                    nColor = mark.CircleColor;
-                                    // ROI, Illum 등도 필요시 마크별 값 사용
+                                    //Illum 변경 필요.!!
+                                    // 카메라 노출 설정
+                                    Camera.SetExposureTime(mark.ExposureTime);
+                                    m_Owner.SetLightingByChannel(LightingChannel.CoarseCamIR, mark.IllumIR);
+                                    m_Owner.SetLightingByChannel(LightingChannel.CoarseCamRed, mark.IllumRed);
+                                    Thread.Sleep(100);
 
-                                    //내부에서 Camera Grab 호출함.
-                                    this.FindCircleDetection(dRadius, nColor, dSpec, dScore, out firstPointSearchResult, out firstPointCoordinate);
-                                }
+                                    if (mark.AlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
+                                    {
+                                        this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
+                                    }
+                                    else if (mark.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
+                                    {
+                                        dSpec = mark.CircleMarkSpec;
+                                        dScore = mark.CircleMarkScore;
+                                        dRadius = m_dRadius[0] != 0 ? m_dRadius[0] : mark.CircleMarkRadius;
+                                        nColor = mark.CircleColor;
+                                        // ROI, Illum 등도 필요시 마크별 값 사용
 
-                                // 마크를 찾으면 break;
-                                if (firstPointSearchResult != null && firstPointSearchResult.Values.Count > 0)
-                                    break;
+                                        //내부에서 Camera Grab 호출함.
+                                        this.FindCircleDetection(dRadius, nColor, dSpec, dScore, out firstPointSearchResult, out firstPointCoordinate);
+                                    }
+
+                                    // 마크를 찾으면 break;
+                                    if (firstPointSearchResult != null && firstPointSearchResult.Values.Count > 0)
+                                    {
+                                        m_lastPreAlignMarkIndex1 = marks.IndexOf(mark); // ★ 1번 포인트용 저장
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        m_lastPreAlignMarkIndex1 = -1;
+                                    }
+                                }
                             }
                         }
                         else
@@ -513,30 +545,6 @@ namespace QMC.Common.Parts
 
                                 this.FindCircleDetection(dRadius, nColor, dSpec, dScore, out firstPointSearchResult, out firstPointCoordinate);
                             }
-                        }
-
-                        //기존코드
-                        {
-                            //if (Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
-                            //{
-                            //    this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
-                            //}
-                            //else if(Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
-                            //{
-                            //        dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
-                            //        dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
-                            //        dRadius = m_dRadius[0];
-                            //        if (m_dRadius[0] == 0)
-                            //            dRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
-
-                            //        this.FindCircleDetection(dRadius, Equipment.stVisionRecipeSet.nPreCircleColor,
-                            //            dSpec, dScore, out firstPointSearchResult, out firstPointCoordinate);
-                            //}
-                            //else
-                            //{
-                            //    this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
-                            //}
-
                         }
                     }
 
@@ -630,34 +638,58 @@ namespace QMC.Common.Parts
                         m_Owner.SetLightingByChannel(LightingChannel.FineCamRed, 4000, true);
                         m_Owner.SetLightingByChannel(LightingChannel.FineCamIR, 0, false);
 
-                        foreach (var mark in Equipment.stVisionRecipeSet.PreAlignMarkList)
+                        var marks = Equipment.stVisionRecipeSet.PreAlignMarkList;
+
+                        if (m_lastPreAlignMarkIndex2 >= marks.Count) m_lastPreAlignMarkIndex2 = -1;
+
+                        if (marks != null && marks.Count > 0)
                         {
-                            //Illum 변경 필요.!!
-                            // 카메라 노출 설정
-                            Camera.SetExposureTime(mark.ExposureTime);
-                            m_Owner.SetLightingByChannel(LightingChannel.CoarseCamIR, mark.IllumIR);
-                            m_Owner.SetLightingByChannel(LightingChannel.CoarseCamRed, mark.IllumRed);
-                            Thread.Sleep(100);
+                            int defaultStart2 = 0;
 
-                            if (mark.AlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
+                            int start = (m_lastPreAlignMarkIndex2 >= 0 && m_lastPreAlignMarkIndex2 < marks.Count)
+                                        ? m_lastPreAlignMarkIndex2
+                                        : (marks.Count > defaultStart2 ? defaultStart2 : 0);
+
+                            var markListToSearch = marks.Skip(start).Concat(marks.Take(start)).ToList();
+
+                            //foreach (var mark in Equipment.stVisionRecipeSet.PreAlignMarkList)
+                            foreach (var mark in markListToSearch)
                             {
-                                this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
-                            }
-                            else if (mark.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
-                            {
-                                dSpec = mark.CircleMarkSpec;
-                                dScore = mark.CircleMarkScore;
-                                dRadius = m_dRadius[1] != 0 ? m_dRadius[1] : mark.CircleMarkRadius;
-                                nColor = mark.CircleColor;
-                                // ROI, Illum 등도 필요시 마크별 값 사용
+                                //Illum 변경 필요.!!
+                                // 카메라 노출 설정
+                                Camera.SetExposureTime(mark.ExposureTime);
+                                m_Owner.SetLightingByChannel(LightingChannel.CoarseCamIR, mark.IllumIR);
+                                m_Owner.SetLightingByChannel(LightingChannel.CoarseCamRed, mark.IllumRed);
+                                Thread.Sleep(100);
 
-                                //내부에서 Camera Grab 호출함.
-                                this.FindCircleDetection(dRadius, nColor, dSpec, dScore, out secondPointSearchResult, out secondPointCoordinate);
+                                if (mark.AlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
+                                {
+                                    this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
+                                }
+                                else if (mark.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
+                                {
+                                    dSpec = mark.CircleMarkSpec;
+                                    dScore = mark.CircleMarkScore;
+                                    dRadius = m_dRadius[1] != 0 ? m_dRadius[1] : mark.CircleMarkRadius;
+                                    nColor = mark.CircleColor;
+                                    // ROI, Illum 등도 필요시 마크별 값 사용
+
+                                    //내부에서 Camera Grab 호출함.
+                                    this.FindCircleDetection(dRadius, nColor, dSpec, dScore, out secondPointSearchResult, out secondPointCoordinate);
+                                }
+
+                                // 마크를 찾으면 break;
+                                if (secondPointSearchResult != null && secondPointSearchResult.Values.Count > 0)
+                                {
+                                    m_lastPreAlignMarkIndex2 = marks.IndexOf(mark); // ★ 2번 포인트용 저장
+                                    break;
+                                }
+                                else
+                                {
+                                    m_lastPreAlignMarkIndex2 = -1;
+                                }
                             }
 
-                            // 마크를 찾으면 break;
-                            if (secondPointSearchResult != null && secondPointSearchResult.Values.Count > 0)
-                                break;
                         }
                     }
                     else

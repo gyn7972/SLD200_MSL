@@ -1971,6 +1971,8 @@ namespace QMC.Common.Modules
                     Equipment.Loader_RPort_Pause = true;
                     Equipment.Loader_RPort_Empty = false;
 
+                    //...장비 내부에 자재가 없을때... 내려가야됨.
+
                     // 자재가 없고, 감지OFF 시간이 충분히 지나면 Z축을 내림 (중복 방지용 Flag 사용)
                     if (!m_bStackerZ0_DownWhenEmpty &&
                         m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
@@ -1978,7 +1980,8 @@ namespace QMC.Common.Modules
                         MC_Func.MC_GetDone((int)nAxis.Z0) &&
                         MC_Func.MC_GetInposition((int)nAxis.Z0) &&
                         //workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None &&
-                        unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None)
+                        unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None &&
+                        workStage.IsAllVacuumOff())
                     {
                         Log.Write("SLD-200", "Stacker0 No Material 상태 → Z축 하강 실행");
                         StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
@@ -2930,7 +2933,8 @@ namespace QMC.Common.Modules
                         MC_Func.MC_GetDone((int)nAxis.Z1) &&
                         MC_Func.MC_GetInposition((int)nAxis.Z1) &&
                         //workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None &&
-                        unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None)
+                        unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None &&
+                        workStage.IsAllVacuumOff())
                     {
                         Log.Write("SLD-200", "Stacker1 No Material 상태 → Z축 하강 실행");
                         StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);

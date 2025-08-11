@@ -43976,7 +43976,7 @@ namespace QMC.Common.Modules
         /// <summary>
         /// 모든 장비 진공 상태가 꺼져 있는지 확인
         /// </summary>
-        private bool IsAllVacuumOff()
+        public bool IsAllVacuumOff()
         {
             bool bLoaderPickerVac = loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner);
             bool bAlignerVac = loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center);
