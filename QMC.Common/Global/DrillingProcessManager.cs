@@ -448,7 +448,6 @@ namespace QMC.Common.Global
             int markingNumber = Equipment.m_nSerialNumberMarkingCount;  // 넣기에는 또.. 경우의 수가 너무 많다.
 
             List<string> lines = new List<string>();
-
             try
             {
                 if (File.Exists(logFile))

@@ -19319,7 +19319,11 @@ namespace QMC.Common.Modules
             m_dThruholeLayer_Defocusing = 0.0;
             m_dThruholeLayer_Resizing = 0.0;
 
-            m_dZOffset_SocketHeightCheck = 0.0;
+            if (!Equipment.SemiAutoEnable)
+            {
+                m_dZOffset_SocketHeightCheck = 0.0;
+            }
+            //m_dZOffset_SocketHeightCheck = 0.0;
 
             m_nDrillingData_SocketAlign_Count = 0;              //  소켓 Align 개수
             m_nDrillingData_SocketAlign_NGCount = 0;            //  소켓 Align 실패 개수
@@ -31489,7 +31493,10 @@ namespace QMC.Common.Modules
                 case (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos:
                     {
                         // Z-Axis :: CO2 -> 아크릴 높이 감안하여 cal 확인시에는 높이를 따로 둔다. ( stage쪽에서는 높이 다름 )
-                        m_dZOffset_SocketHeightCheck = 0.0;
+                        if (!Equipment.SemiAutoEnable)
+                        {
+                            m_dZOffset_SocketHeightCheck = 0.0;
+                        }
                         MovetoWorkStage_TeachingPositionsZ((int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos, Type_Motor_Speed.Fine);
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos_DoneCheck;
@@ -37806,7 +37813,10 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Socket Align 진행 중, Socket Height Check 모드 : On");
 
-                        m_dZOffset_SocketHeightCheck = 0.0;
+                        if(!Equipment.SemiAutoEnable)
+                        {
+                            m_dZOffset_SocketHeightCheck = 0.0;
+                        }
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;
                     }
                     else
@@ -37838,7 +37848,10 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 높이 측정 Process 시작.");
 
-                    m_dZOffset_SocketHeightCheck = 0.0;
+                    if (!Equipment.SemiAutoEnable)
+                    {
+                        m_dZOffset_SocketHeightCheck = 0.0;
+                    }
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos;
                     break;
 
@@ -37897,7 +37910,10 @@ namespace QMC.Common.Modules
                             //if (m_nDrillingWork_Group_Count <= m_stDividedRegion_GroupData.Length)
                             if (m_nDrillingWork_Group_Count < m_stLaserDrilling_SocketData[0].nGroup_Num)
                             {
-                                m_dZOffset_SocketHeightCheck = 0.0;
+                                if (!Equipment.SemiAutoEnable)
+                                {
+                                    m_dZOffset_SocketHeightCheck = 0.0;
+                                }
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos;
                             }
                             else
