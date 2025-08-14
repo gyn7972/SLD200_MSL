@@ -302,8 +302,8 @@ namespace QMC.Common.Q_Sequence
         private XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0, 0.0);
         private XyCoordinate result = new XyCoordinate(0.0, 0.0);
 
-        int m_nCrossMark_AlignMarkCount_Max = 3;                            //  얼라인 마크 검사 최대 회수. (평균 계산용)
         int m_nCrossMark_AlignMark_Count = 0;                               //  얼라인 마크 개수. (평균 계산용)
+        int m_nCrossMark_AlignMarkCount_Max = 3;                            //  얼라인 마크 검사 최대 회수. (평균 계산용)
         PointD m_pCrossMark_AlignMarkPosition_Sum = new PointD(0, 0);       //  얼라인 마크 위치 누적. (평균 계산용)
         PointD m_pCrossMark_AlignMarkPosition_Average = new PointD(0, 0);   //  얼라인 마크 위치 누적. (평균 계산용)
 
@@ -313,6 +313,11 @@ namespace QMC.Common.Q_Sequence
         double m_deltaY = 0.0;
 
         private bool bIsLeftToRight = false; // 시작 방향: ← (기존 코드 유지)
+
+        // 클래스 멤버로 Retry 카운터 변수 추가
+        private int m_MarkFindRetryCount = 0;
+        private const int MAX_MARK_FIND_RETRY = 3;
+
         int SeqVerifyScannerCameraOffset()
         {
             // Scanner Vision Offset Setting 사용 여부
@@ -1638,6 +1643,9 @@ namespace QMC.Common.Q_Sequence
                         result = workStage.scannerCompensator.RunSearchMark();
                         if (result == 1)
                         {
+                            // 성공: 카운터 초기화
+                            m_MarkFindRetryCount = 0;  // NEW
+
                             double markPositionX = workStage.scannerCompensator.ResultPosition.X;
                             double markPositionY = workStage.scannerCompensator.ResultPosition.Y;
 
@@ -1651,10 +1659,24 @@ namespace QMC.Common.Q_Sequence
                         }
                         else
                         {
-                            strTemp = string.Format("마크를 찾을 수 없습니다.");
-                            Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
-                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
-                            return workStage.AlarmPost(AlarmKey.Mark_Search_Fail);
+                            // 실패: 재시도
+                            m_MarkFindRetryCount++;    
+                            if (m_MarkFindRetryCount <= MAX_MARK_FIND_RETRY)  
+                            {
+                                Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset",
+                                           $"마크를 찾을 수 없습니다. 재시도({m_MarkFindRetryCount}/{MAX_MARK_FIND_RETRY})"); 
+
+                                // 처음부터 재시도. ( 레이져 크로스하는 것부터 해야하니깐 )
+                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Start; 
+                            }
+                            else
+                            {
+                                m_MarkFindRetryCount = 0;
+                                strTemp = string.Format("마크를 찾을 수 없습니다.");
+                                Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
+                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
+                                return workStage.AlarmPost(AlarmKey.Mark_Search_Fail);
+                            }
                         }
                     }
                     break;
@@ -1787,7 +1809,7 @@ namespace QMC.Common.Q_Sequence
                             m_deltaY = dCurrentMotorPosY - m_pCrossMark_AlignMarkPosition_Average.Y;
 
                             // 허용 오차 값 가져오기
-                            double allowableXY = 0.3;   //3.0; //Config.ParamConfig.ReticleAutoCal_UpperVision_Allowable_XY;
+                            double allowableXY = 0.05;   //50um 허용 오차 (기존 0.3mm에서 0.05mm로 변경)
 
                             // 판정: 허용 오차 범위 내인지 확인
                             if (Math.Abs(m_deltaX) <= allowableXY &&
@@ -1798,6 +1820,7 @@ namespace QMC.Common.Q_Sequence
 
                                 if (Equipment.Scanner_Vision_Offset_Setting_Use == true)
                                 {
+                                    // 여기 부호 중요함.!!!
                                     Equipment.Scanner_Vision_Offset_Setting_X = m_deltaX * 1;
                                     Equipment.Scanner_Vision_Offset_Setting_Y = m_deltaY * -1;
 
@@ -1837,6 +1860,7 @@ namespace QMC.Common.Q_Sequence
                                         $"Y: {Equipment.stOffsetDistance.FromScannerToFineCam.Y:F6}");
 
                                     m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Complete;
+                                    m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.CrossMarkCenter_XYAlign_Retry;
                                 }
                             }
                             else
@@ -1844,8 +1868,8 @@ namespace QMC.Common.Q_Sequence
                                 SaveScannerCameraOffsetLog("NG",
                                                             Equipment.stOffsetDistance.FromScannerToFineCam.X,
                                                             Equipment.stOffsetDistance.FromScannerToFineCam.Y,
-                                                            m_deltaX,
-                                                            (m_deltaY * -1)
+                                                            Equipment.Scanner_Vision_Offset_Setting_X,
+                                                            Equipment.Scanner_Vision_Offset_Setting_Y
                                                             );
 
                                 strTemp = string.Format($"Cross Mark XY 위치가 허용 오차를 벗어남 (DeltaX: {m_deltaX}, DeltaY: {m_deltaY}, Allowable: {allowableXY})");
@@ -1927,15 +1951,24 @@ namespace QMC.Common.Q_Sequence
                 //  Mark 찾기부터 다시 시작
                 case (int)VerifyScannerCameraOffset_Step.CrossMarkCenter_XYAlign_Retry:
                     {
-                        if (Equipment.Scanner_Vision_Offset_Setting_Use == true)
+                        // 허용 오차(mm)
+                        const double TOLERANCE = 0.003;
+
+                        // 오프셋 값 가져오기
+                        double offsetX = Equipment.Scanner_Vision_Offset_Setting_X;
+                        double offsetY = Equipment.Scanner_Vision_Offset_Setting_Y;
+
+                        // Retry 조건 체크
+                        if (Math.Abs(offsetX) >= TOLERANCE || Math.Abs(offsetY) >= TOLERANCE)
                         {
-                            m_deltaX = Equipment.Scanner_Vision_Offset_Setting_X;
-                            m_deltaY = Equipment.Scanner_Vision_Offset_Setting_Y;
+                            // Retry 처리
+                            strTemp = string.Format("Scanner Vision Offset 초과 - Retry 수행");
+                            Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
 
-                            //MessageBox.Show("OK: Cross Mark XY 위치.\n" +
-                            //    "DeltaX: {deltaX}, DeltaY: {deltaY}", "Completed",
-                            //    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Start;
+                        }
+                        else
+                        {
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Complete;
                         }
                     }

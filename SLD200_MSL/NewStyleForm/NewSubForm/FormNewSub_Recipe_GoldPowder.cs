@@ -660,5 +660,16 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
         }
 
+        private void button_Recipe_GoldPowder_Illuminator_FineCamRed_Click(object sender, EventArgs e)
+        {
+            string strTemp = textBox_Recipe_GoldPowder_IlluminationValue_Red.Text;
+            textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text = strTemp;
+        }
+
+        private void button_Recipe_GoldPowder_Illuminator_FineCamIR_Click(object sender, EventArgs e)
+        {
+            string strTemp = textBox_Recipe_GoldPowder_IlluminationValue_IR.Text;
+            textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = strTemp;
+        }
     }
 }

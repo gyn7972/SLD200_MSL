@@ -13704,7 +13704,7 @@ namespace QMC.Common.Modules
         public bool m_bCO2_MultyMode = false;
         st4PointPosition_Data[] m_st4Dwg_RepairPos = new st4PointPosition_Data[4];
 
-        public bool m_b3PointAlingMode = true;
+        public bool m_b3PointAlingMode = false;
         public bool m_bSocketAlign_Fiducial_3PointNg = false; //1개 실패했을때만 넘어가자. 
 
         #region Socket Align
@@ -14067,7 +14067,6 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align Part 시작");
 
-                    // 여기서 조명을 해야 제대로 먹는 느낌적인 느낌?
                     SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
                     SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
 
@@ -15028,6 +15027,7 @@ namespace QMC.Common.Modules
                                 inspectedCenterX += m_st4PointPosition_InspectedPos[i].ptFiducial_Center.X;
                                 inspectedCenterY += m_st4PointPosition_InspectedPos[i].ptFiducial_Center.Y;
                             }
+
                             dwgCenterX /= 4.0;
                             dwgCenterY /= 4.0;
                             inspectedCenterX /= 4.0;
@@ -15070,7 +15070,6 @@ namespace QMC.Common.Modules
                     else
                     {
                         m_bSocketAlign_OK = true;
-                        
                         // 원래는 true로 되어야 하는건데.. false로 했네.. 그렇다면.. 흠...
                         m_bIsFirstAlign = false;
 
@@ -16236,7 +16235,6 @@ namespace QMC.Common.Modules
 
             for (double i = dFirstAngle; i <= 360 * (turn) + dFirstAngle;) // 360도 회전
             {
-
                 double StartX = currentRadius * Math.Cos(i / 180 * Math.PI);
                 double StartY = currentRadius * Math.Sin(i / 180 * Math.PI);
 
@@ -16275,8 +16273,12 @@ namespace QMC.Common.Modules
             }
 
             rtc.ListArc(new Vector2((float)(center.X), (float)(center.Y )), (float)360);
-            
-            
+
+
+            //pitch 계산
+            pitch = ((outDia*2) - (innerDia*2)) / turn;
+
+
         }
 
         //private void MarkSpiralCircle(double outDia, double innerDia, int turn, double m_dTemp_AngleFactor, PointD center)
@@ -16300,6 +16302,9 @@ namespace QMC.Common.Modules
                 rtc.ListArc(new Vector2((float)(centerX), (float)(centerY)), (float)360);
                 currentRadius += rStep;
             }
+
+            //pitch 계산
+            pitch = ((outDia * 2) - (innerDia * 2)) / turn;
         }
 
         private void LaserDrilling_StepStageXY_MoveUnloadingPos(out double lfVelocity, out double lfAccDec)

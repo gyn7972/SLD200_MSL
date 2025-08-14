@@ -4685,5 +4685,23 @@ namespace SLD200_MSL
                 }
             }
         }
+
+        private void button_Setup_ScannerCal_Illuminator_FineCamRed_Click(object sender, EventArgs e)
+        {
+            if(radioButton_Setup_ScannerCal_Light_Red.Checked)
+            {
+                string strTemp = textBox_Setup_ScannerCal_IlluminationValue.Text;
+                textBox_Setup_ScannerCal_Illuminator_FineCamRed.Text = strTemp;
+            }
+        }
+
+        private void button_Setup_ScannerCal_Illuminator_FineCamIR_Click(object sender, EventArgs e)
+        {
+            if (radioButton_Setup_ScannerCal_Light_IR.Checked)
+            {
+                string strTemp = textBox_Setup_ScannerCal_IlluminationValue.Text;
+                textBox_Setup_ScannerCal_Illuminator_FineCamIR.Text = strTemp;
+            }
+        }
     }
 }
