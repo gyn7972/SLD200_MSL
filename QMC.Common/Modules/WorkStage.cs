@@ -14821,10 +14821,10 @@ namespace QMC.Common.Modules
 
                                         double distance = Math.Sqrt(offsetX * offsetX + offsetY * offsetY);
 
-                                        if (Math.Abs(offsetX) > 0.04 || Math.Abs(offsetY) > 0.04)
-                                        {
-                                            continue;
-                                        }
+                                        //if (Math.Abs(offsetX) > 0.04 || Math.Abs(offsetY) > 0.04)
+                                        //{
+                                        //    continue;
+                                        //}
 
                                         totalOffsetX += offsetX;
                                         totalOffsetY += offsetY;
@@ -15630,7 +15630,7 @@ namespace QMC.Common.Modules
                                                             Equipment.stVisionRecipeSet.dGoldPowderCircleMarkSpec, nMaxInstance);
                             }
 
-                            if (Fiducial_circlesResult.Count > Equipment.stVisionRecipeSet.nGoldPowderCircleMarkFindCount)
+                            if (Fiducial_circlesResult.Count >= Equipment.stVisionRecipeSet.nGoldPowderCircleMarkFindCount)
                             {
                                 Fiducial_circleFound = true;
                             }
@@ -30302,7 +30302,8 @@ namespace QMC.Common.Modules
                     dOffsetX1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
                     dOffsetY1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.Y;
 
-                    if (Math.Abs(dOffsetX1) < 0.025 && Math.Abs(dOffsetY1) < 0.025)
+                    //if (Math.Abs(dOffsetX1) < 0.025 && Math.Abs(dOffsetY1) < 0.025)
+                    if (Math.Abs(dOffsetX1) < 0.08 && Math.Abs(dOffsetY1) < 0.08)
                     {
                         dSumOffsetX += dOffsetX1;
                         dSumOffsetY += dOffsetY1;
