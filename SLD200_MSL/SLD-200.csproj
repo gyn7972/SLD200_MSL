@@ -728,6 +728,12 @@
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ModuleMonitor.Designer.cs">
       <DependentUpon>FormNewSub_ModuleMonitor.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ScannerCal3D.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_ScannerCal3D.Designer.cs">
+      <DependentUpon>FormNewSub_ScannerCal3D.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_SelectProcess.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1604,6 +1610,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_ModuleMonitor.resx">
       <DependentUpon>FormNewSub_ModuleMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_ScannerCal3D.resx">
+      <DependentUpon>FormNewSub_ScannerCal3D.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_SelectProcess.resx">
       <DependentUpon>FormNewSub_SelectProcess.cs</DependentUpon>

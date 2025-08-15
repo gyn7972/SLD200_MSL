@@ -436,16 +436,19 @@ namespace QMC.Common.Global
 
             string logFile = Path.Combine(logFolder, $"LotLog_{DateTime.Now:yyyyMMdd}.csv");
 
-            string startTime = CycleTimer_LaserDrilling.ProcessStartTime.ToString("yyyy-MM-dd HH:mm:ss");
-            string endTime = CycleTimer_LaserDrilling.ProcessEndTime.ToString("yyyy-MM-dd HH:mm:ss");
+            // ⬇️ Auto 세션 기준 시간 사용
+            string startTime = AutoRunTracker.GetStartOrNow().ToString("yyyy-MM-dd HH:mm:ss");
+            string endTime = AutoRunTracker.GetEndOrNow().ToString("yyyy-MM-dd HH:mm:ss");
+
             TimeSpan avg = CycleTimer_LaserDrilling.Average;
             string averageTime = string.Format("{0:D2}:{1:D2}:{2:D2}",
                 (int)avg.TotalHours, avg.Minutes, avg.Seconds);
+
             string recipeName = Path.GetFileName(Equipment.Current_Recipe);
             string drawingName = Path.GetFileName(Equipment.Current_DrawingFileName);
-            int count = 0;      // 전체 제품 수
-            int countNg = 0;    // NG 수
-            int markingNumber = Equipment.m_nSerialNumberMarkingCount;  // 넣기에는 또.. 경우의 수가 너무 많다.
+
+            int count = 0;   // 새 세션 시작 시 1로 만들 예정
+            int countNg = 0;
 
             List<string> lines = new List<string>();
             try
@@ -469,49 +472,43 @@ namespace QMC.Common.Global
                 int updatedCount = 0;
                 int updatedCountNg = 0;
 
-                if (lines.Count > 0)
+                if (lines.Count > 1) // 헤더 제외 내용이 있을 때만
                 {
                     string lastLine = lines.Last();
                     var parts = lastLine.Split(',');
-                    if (parts.Length >= 7 && parts[2] == recipeName)
+
+                    // ⬇️ '같은 Auto 세션인지'를 StartTime으로 판별
+                    // (세션 중 레시피가 바뀌어도 같은 줄로 누적)
+                    if (parts.Length >= 7 && parts[0] == startTime)
                     {
-                        string originalStartTime = parts[0];
+                        // 이전 누적값 불러오기
                         if (int.TryParse(parts[4], out int prevCount) && int.TryParse(parts[5], out int prevCountNg))
                         {
                             updatedCount = prevCount + 1;
-                            if(bOkNg)
-                            {
-                                updatedCountNg = prevCountNg;
-                            }
-                            else
-                            {
-                                updatedCountNg = prevCountNg + 1;
-                            }
-                            string updatedLine = $"{originalStartTime},{endTime},{recipeName},{drawingName},{updatedCount},{updatedCountNg},{averageTime}";
+                            updatedCountNg = bOkNg ? prevCountNg : prevCountNg + 1;
+
+                            // 레시피/도면명은 현재값으로 갱신(원하면 유지해도 됨)
+                            string updatedLine = $"{startTime},{endTime},{recipeName},{drawingName},{updatedCount},{updatedCountNg},{averageTime}";
                             lines[lines.Count - 1] = updatedLine;
                             isUpdated = true;
 
-                            Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={updatedCount}, NG={updatedCountNg}, Avg={averageTime}");
+                            Log.Write("DrillStatus",
+                                $"LOT 로그(세션 누적) 저장: Start={startTime}, Count={updatedCount}, NG={updatedCountNg}, Avg={averageTime}");
                         }
                     }
                 }
 
                 if (!isUpdated)
                 {
-                    count += 1;
-                    if (bOkNg)
-                    {
-                        countNg = 0;
-                    }
-                    else
-                    {
-                        countNg += 1;
-                    }
+                    // 새 Auto 세션의 첫 기록
+                    count = 1;
+                    countNg = bOkNg ? 0 : 1;
 
                     string newLine = $"{startTime},{endTime},{recipeName},{drawingName},{count},{countNg},{averageTime}";
                     lines.Add(newLine);
 
-                    Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={count}, NG={countNg}, Avg={averageTime}");
+                    Log.Write("DrillStatus",
+                        $"LOT 로그(세션 시작) 저장: Start={startTime}, Count={count}, NG={countNg}, Avg={averageTime}");
                 }
 
                 using (FileStream fs = new FileStream(logFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
@@ -526,6 +523,106 @@ namespace QMC.Common.Global
                 Log.Write("DrillStatus", $"LOT 로그 저장 실패: {ex.Message}");
             }
         }
+
+
+        //public void SaveLotLog(bool bOkNg = true)
+        //{
+        //    string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LotLog");
+        //    if (!Directory.Exists(logFolder))
+        //        Directory.CreateDirectory(logFolder);
+
+        //    string logFile = Path.Combine(logFolder, $"LotLog_{DateTime.Now:yyyyMMdd}.csv");
+
+        //    string startTime = CycleTimer_LaserDrilling.ProcessStartTime.ToString("yyyy-MM-dd HH:mm:ss");
+        //    string endTime = CycleTimer_LaserDrilling.ProcessEndTime.ToString("yyyy-MM-dd HH:mm:ss");
+        //    TimeSpan avg = CycleTimer_LaserDrilling.Average;
+        //    string averageTime = string.Format("{0:D2}:{1:D2}:{2:D2}",
+        //        (int)avg.TotalHours, avg.Minutes, avg.Seconds);
+        //    string recipeName = Path.GetFileName(Equipment.Current_Recipe);
+        //    string drawingName = Path.GetFileName(Equipment.Current_DrawingFileName);
+        //    int count = 0;      // 전체 제품 수
+        //    int countNg = 0;    // NG 수
+        //    int markingNumber = Equipment.m_nSerialNumberMarkingCount;  // 넣기에는 또.. 경우의 수가 너무 많다.
+
+        //    List<string> lines = new List<string>();
+        //    try
+        //    {
+        //        if (File.Exists(logFile))
+        //        {
+        //            using (FileStream fs = new FileStream(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        //            using (StreamReader reader = new StreamReader(fs, Encoding.UTF8))
+        //            {
+        //                while (!reader.EndOfStream)
+        //                    lines.Add(reader.ReadLine());
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // 새 파일이라면 헤더 추가
+        //            lines.Add("StartTime,EndTime,RecipeName,DrawingName,Count,CountNG,AverageTime");
+        //        }
+
+        //        bool isUpdated = false;
+        //        int updatedCount = 0;
+        //        int updatedCountNg = 0;
+
+        //        if (lines.Count > 0)
+        //        {
+        //            string lastLine = lines.Last();
+        //            var parts = lastLine.Split(',');
+        //            if (parts.Length >= 7 && parts[2] == recipeName)
+        //            {
+        //                string originalStartTime = parts[0];
+        //                if (int.TryParse(parts[4], out int prevCount) && int.TryParse(parts[5], out int prevCountNg))
+        //                {
+        //                    updatedCount = prevCount + 1;
+        //                    if(bOkNg)
+        //                    {
+        //                        updatedCountNg = prevCountNg;
+        //                    }
+        //                    else
+        //                    {
+        //                        updatedCountNg = prevCountNg + 1;
+        //                    }
+        //                    string updatedLine = $"{originalStartTime},{endTime},{recipeName},{drawingName},{updatedCount},{updatedCountNg},{averageTime}";
+        //                    lines[lines.Count - 1] = updatedLine;
+        //                    isUpdated = true;
+
+        //                    Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={updatedCount}, NG={updatedCountNg}, Avg={averageTime}");
+        //                }
+        //            }
+        //        }
+
+        //        if (!isUpdated)
+        //        {
+        //            count += 1;
+        //            if (bOkNg)
+        //            {
+        //                countNg = 0;
+        //            }
+        //            else
+        //            {
+        //                countNg += 1;
+        //            }
+
+        //            string newLine = $"{startTime},{endTime},{recipeName},{drawingName},{count},{countNg},{averageTime}";
+        //            lines.Add(newLine);
+
+        //            Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={count}, NG={countNg}, Avg={averageTime}");
+        //        }
+
+        //        using (FileStream fs = new FileStream(logFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+        //        using (StreamWriter writer = new StreamWriter(fs, new UTF8Encoding(true)))
+        //        {
+        //            foreach (string line in lines)
+        //                writer.WriteLine(line);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Write("DrillStatus", $"LOT 로그 저장 실패: {ex.Message}");
+        //    }
+        //}
 
     }
 }

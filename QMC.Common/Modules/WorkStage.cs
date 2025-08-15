@@ -8011,8 +8011,48 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.OperationButtons.StopLamp(true);
                     CommonModule.Instance.OperationButtons.ResetLamp(false);
                 }
-                //  자동운전
-                else if (Equipment.AutoRunStatus)
+                else if (Equipment.AutoRunStatus &&
+                         loader.m_nLoader_Transfer_Step != (int)Loader.Loader_Transfer_Step.None &&
+                         m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
+                {
+                    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Green_On();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Yellow_On();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Red_Off();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Buzzer_Off();
+                    }
+                }
+                else if (Equipment.AutoRunStatus &&
+                         m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
+                {
+                    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Green_On();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Yellow_Off();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Red_On();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Buzzer_Off();
+                    }
+                }
+                else if (Equipment.AutoRunStatus) //  자동운전
                 {
                     if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
                     {
@@ -8038,8 +8078,7 @@ namespace QMC.Common.Modules
 
                     CommonModule.Instance.TowerLamp_BuzzerStop = false;
                 }
-                //  Stop
-                else
+                else //  Stop
                 {
                     if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
                     {
@@ -35091,38 +35130,42 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Step_HeightMeasure_Enable:
 
-                    //if (!Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
+                    if (Equipment.SemiAutoEnable && 
+                        _semiAutoRequest == SemiAutoStep.MeasureHeight)
                     {
-                        if (Equipment.Machine_HeightMeasure_Enable)
-                        {
-                            if (m_Sequence_FlatnessMeasure != null)
-                            {
-                                bool bNeedToCheck = false;
-                                // 1. 처음엔 무조건 실행
-                                if (!m_bFirstHeightCheckDone)
-                                {
-                                    bNeedToCheck = true;
-                                    m_bFirstHeightCheckDone = true;
-                                }
-                                // 2. 이후엔 Count 간격마다 실행
-                                else if (Equipment.Machine_HeightMeasure_Count > 0 &&
-                                         DrillingManager.CycleTimer_DoneModuleCount % Equipment.Machine_HeightMeasure_Count == 0)
-                                {
-                                    bNeedToCheck = true;
-                                }
+                        m_Sequence_FlatnessMeasure.Reset();
 
-                                if (bNeedToCheck)
-                                {
-                                    m_Sequence_FlatnessMeasure.Reset();
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_HeightMeasure;
-                                }
-                                else
-                                {
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
-                                }
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_HeightMeasure;
+                    }
+                    else if (Equipment.Machine_HeightMeasure_Enable)
+                    {
+                        if (m_Sequence_FlatnessMeasure != null)
+                        {
+                            bool bNeedToCheck = false;
+                            // 1. 처음엔 무조건 실행
+                            if (!m_bFirstHeightCheckDone)
+                            {
+                                bNeedToCheck = true;
+                                m_bFirstHeightCheckDone = true;
+                            }
+                            // 2. 이후엔 Count 간격마다 실행
+                            else if (Equipment.Machine_HeightMeasure_Count > 0 &&
+                                        DrillingManager.CycleTimer_DoneModuleCount % Equipment.Machine_HeightMeasure_Count == 0)
+                            {
+                                bNeedToCheck = true;
+                            }
+
+                            if (bNeedToCheck)
+                            {
+                                m_Sequence_FlatnessMeasure.Reset();
+
+                                TickCount_Start((int)TickType.TICK_MAIN);
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_HeightMeasure;
                             }
                             else
                             {
+                                TickCount_Start((int)TickType.TICK_MAIN);
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
                             }
                         }
@@ -35132,12 +35175,11 @@ namespace QMC.Common.Modules
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
                         }
                     }
-                    //else
-                    //{
-                    //    TickCount_Start((int)TickType.TICK_MAIN);
-                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
-                    //}
-                    
+                    else
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                    }
                     break;
 
                 case (int)LaserDrilling_Step.Step_HeightMeasure:

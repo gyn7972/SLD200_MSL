@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 using QMC.Core;
+using QMC.Common.Global;
 
 namespace QMC.Common
 {
@@ -303,6 +304,10 @@ namespace QMC.Common
             TotalElapsed += cycleTime.Interval;
 
             this.ProcessEndTime = DateTime.Now; // 전체 작업 종료 시간 기록
+
+            // LotLog 기록을 위해 AutoRunTracker를 호출한다. //Test필요.
+            // Stop 버튼으로만 장비가 정지하지는 않으니깐.. 흠..
+            AutoRunTracker.OnAutoStop();
 
             // 로그를 기록한다.
             Console.WriteLine(string.Format("[Cycle Time] Interval: {0} msec, Start: {1}, End: {2}", cycleTime.Interval.TotalMilliseconds, cycleTime.Start.ToString("yyyy-MM-dd HH:mm:ss.fff"), cycleTime.End.ToString("yyyy-MM-dd HH:mm:ss.fff")));

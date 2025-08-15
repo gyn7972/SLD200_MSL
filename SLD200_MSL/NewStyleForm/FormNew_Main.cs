@@ -2091,6 +2091,9 @@ namespace SLD200_MSL
             button_Main_Start.BackColor = Color.LightGreen;
             button_Main_Start.ForeColor = Color.Black;
 
+            //Lot 정보 저장을 위한 AutoRunTracker 호출
+            AutoRunTracker.OnAutoStart();
+
             int nTargetCount = (int)numericUpDown_Module_TargetCount.Value;            //  모듈 타겟 카운트 초기화
             Equipment.DrillModuleTargetCount = nTargetCount;
             Equipment.AutoRunStatus = true;
@@ -2545,6 +2548,8 @@ namespace SLD200_MSL
             unloader.m_nUL_RESTORE_MainWork_Cycle_ResultOKNG = workStage.m_nMainWorkCycle_ResultOKNG;                                                                           //  Main Work Cycle 결과 (OK, NG) : OK 인 경우에만 R-Port 로 가져감
             unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = workStage.m_bMainWorkCycle_ResultOK_toRPort;
 
+            //Lot 정보 저장을 위한 AutoRunTracker 호출
+            AutoRunTracker.OnAutoStop();
 
             workStage.DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 정지 : 정지 버튼 눌렀을때도 정지하고 다시 해야지.
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
@@ -4440,6 +4445,15 @@ namespace SLD200_MSL
         private void button_TEST2_Click(object sender, EventArgs e)
         {
             return;
+            //AutoRunTracker.OnAutoStart();
+            //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
+            Thread.Sleep(1000);
+            AutoRunTracker.OnAutoStop();
+            workStage.DrillingManager.CycleTimer_LaserDrilling.End();
+
+            workStage.DrillingManager.SaveLotLog();                     // 최신 로그 저장
+
+            return;
 
             string strTemp = string.Empty;
             float fMeasuredPower = workStage.m_Sequence_LaserPowerMeasure.m_fMeasuredPower;
@@ -4451,22 +4465,6 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_LaserPowerMeasure_Check", strTemp);
                 //return AlarmPost(AlarmKey.LaserPowerMeasureLimitFail);
             }
-
-            //foreach (var layerList in workStage.DrillingManager.LayerList)
-            //{
-            //    if (!layerList.LayerEnum.ToString().StartsWith("Hole1"))
-            //        continue;
-
-            //    bool isSingleSocket = layerList.SocketList.Count == 1;
-
-            //    foreach (var socketList in layerList.SocketList)
-            //    {
-            //        if (isSingleSocket || !socketList.IsDrilled)
-            //        {
-            //            workStage.SetDrillResult(layerList.LayerName, socketList.SocketNumber, false);
-            //        }
-            //    }
-            //}
 
             return;
             workStage.m_dStageheight = 1.567;
