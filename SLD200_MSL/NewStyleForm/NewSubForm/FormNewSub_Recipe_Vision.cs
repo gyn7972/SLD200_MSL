@@ -1601,7 +1601,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             label_RecipeVision_Light_Red.Enabled = true;
 
             //checkBox_RecipeVision_Illuminator_Red.Enabled = false;
-            checkBox_RecipeVision_Illuminator_IR.Enabled = false;
+            //checkBox_RecipeVision_Illuminator_IR.Enabled = false;
             textBox_RecipeVision_Camera_ExposureTime_High.Enabled = false;
             textBox_RecipeVision_AxisZ_Setting.Enabled = false;
 
@@ -2254,6 +2254,47 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void comboBox_Recipe_PreAlign_MarkIndex_SelectedIndexChanged(object sender, EventArgs e)
         {
             ApplyPreAlignMarkToUI();
+        }
+
+        private void button_Recipe_RecipeVision_Illuminator_FineCamRed_Click(object sender, EventArgs e)
+        {
+            if (radioButton_RecipeVision_CameraSelection_HighMag.Checked)
+            {
+                string strTemp = textBox_RecipeVision_IlluminationValue_Red.Text;
+                textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text = strTemp;
+
+            }
+                
+        }
+
+        private void button_Recipe_RecipeVision_Illuminator_FineCamIR_Click(object sender, EventArgs e)
+        {
+            if (radioButton_RecipeVision_CameraSelection_HighMag.Checked)
+            {
+                string strTemp = textBox_RecipeVision_IlluminationValue_IR.Text;
+                textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text = strTemp;
+            }
+                
+        }
+
+        private void button_Recipe_RecipeVision_Illuminator_CoarseCamRed_Click(object sender, EventArgs e)
+        {
+            if (radioButton_RecipeVision_CameraSelection_LowMag.Checked)
+            {
+                string strTemp = textBox_RecipeVision_IlluminationValue_Red.Text;
+                textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text = strTemp;
+            }
+                
+        }
+
+        private void button_Recipe_RecipeVision_Illuminator_CoarseCamIR_Click(object sender, EventArgs e)
+        {
+            if (radioButton_RecipeVision_CameraSelection_LowMag.Checked)
+            {
+                string strTemp = textBox_RecipeVision_IlluminationValue_IR.Text;
+                textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text = strTemp;
+            }
+                
         }
     }
 }

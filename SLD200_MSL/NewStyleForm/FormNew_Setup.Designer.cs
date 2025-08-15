@@ -234,6 +234,8 @@
             this.label53 = new System.Windows.Forms.Label();
             this.tabPage_Setup_ScannerCalibration = new System.Windows.Forms.TabPage();
             this.groupBox_Setup_ScannerCal__Illuminator2 = new System.Windows.Forms.GroupBox();
+            this.button_Setup_ScannerCal_Illuminator_FineCamIR = new System.Windows.Forms.Button();
+            this.button_Setup_ScannerCal_Illuminator_FineCamRed = new System.Windows.Forms.Button();
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High = new System.Windows.Forms.Button();
             this.label_RecipeVision_Camera_ExposureTime_High = new System.Windows.Forms.Label();
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High = new System.Windows.Forms.TextBox();
@@ -3289,6 +3291,8 @@
             // 
             // groupBox_Setup_ScannerCal__Illuminator2
             // 
+            this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.button_Setup_ScannerCal_Illuminator_FineCamIR);
+            this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.button_Setup_ScannerCal_Illuminator_FineCamRed);
             this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.button_ScannerCal_Illuminator_Camera_ExposureTime_High);
             this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.label_RecipeVision_Camera_ExposureTime_High);
             this.groupBox_Setup_ScannerCal__Illuminator2.Controls.Add(this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High);
@@ -3306,15 +3310,39 @@
             this.groupBox_Setup_ScannerCal__Illuminator2.TabStop = false;
             this.groupBox_Setup_ScannerCal__Illuminator2.Text = " Illuminator";
             // 
+            // button_Setup_ScannerCal_Illuminator_FineCamIR
+            // 
+            this.button_Setup_ScannerCal_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Setup_ScannerCal_Illuminator_FineCamIR.Location = new System.Drawing.Point(144, 103);
+            this.button_Setup_ScannerCal_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Setup_ScannerCal_Illuminator_FineCamIR.Name = "button_Setup_ScannerCal_Illuminator_FineCamIR";
+            this.button_Setup_ScannerCal_Illuminator_FineCamIR.Size = new System.Drawing.Size(55, 25);
+            this.button_Setup_ScannerCal_Illuminator_FineCamIR.TabIndex = 228;
+            this.button_Setup_ScannerCal_Illuminator_FineCamIR.Text = "적용";
+            this.button_Setup_ScannerCal_Illuminator_FineCamIR.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_Illuminator_FineCamIR.Click += new System.EventHandler(this.button_Setup_ScannerCal_Illuminator_FineCamIR_Click);
+            // 
+            // button_Setup_ScannerCal_Illuminator_FineCamRed
+            // 
+            this.button_Setup_ScannerCal_Illuminator_FineCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Setup_ScannerCal_Illuminator_FineCamRed.Location = new System.Drawing.Point(144, 49);
+            this.button_Setup_ScannerCal_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Setup_ScannerCal_Illuminator_FineCamRed.Name = "button_Setup_ScannerCal_Illuminator_FineCamRed";
+            this.button_Setup_ScannerCal_Illuminator_FineCamRed.Size = new System.Drawing.Size(55, 25);
+            this.button_Setup_ScannerCal_Illuminator_FineCamRed.TabIndex = 227;
+            this.button_Setup_ScannerCal_Illuminator_FineCamRed.Text = "적용";
+            this.button_Setup_ScannerCal_Illuminator_FineCamRed.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_Illuminator_FineCamRed.Click += new System.EventHandler(this.button_Setup_ScannerCal_Illuminator_FineCamRed_Click);
+            // 
             // button_ScannerCal_Illuminator_Camera_ExposureTime_High
             // 
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Location = new System.Drawing.Point(161, 162);
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Location = new System.Drawing.Point(144, 162);
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(2);
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Name = "button_ScannerCal_Illuminator_Camera_ExposureTime_High";
-            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Size = new System.Drawing.Size(38, 25);
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Size = new System.Drawing.Size(55, 25);
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.TabIndex = 225;
-            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Text = "#";
+            this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Text = "적용";
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.UseVisualStyleBackColor = true;
             this.button_ScannerCal_Illuminator_Camera_ExposureTime_High.Click += new System.EventHandler(this.button_ScannerCal_Illuminator_Camera_ExposureTime_High_Click);
             // 
@@ -3335,7 +3363,7 @@
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Location = new System.Drawing.Point(6, 162);
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Name = "textBox_ScannerCal_Illuminator_Camera_ExposureTime_High";
-            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Size = new System.Drawing.Size(151, 23);
+            this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Size = new System.Drawing.Size(135, 23);
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.TabIndex = 225;
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Tag = "KeyPad;Min=0;Max=9999999;Format=0";
             this.textBox_ScannerCal_Illuminator_Camera_ExposureTime_High.Text = "000";
@@ -3346,7 +3374,7 @@
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Location = new System.Drawing.Point(6, 49);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Name = "textBox_Setup_ScannerCal_Illuminator_FineCamRed";
-            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Size = new System.Drawing.Size(151, 23);
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Size = new System.Drawing.Size(135, 23);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.TabIndex = 19;
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Tag = "KeyPad;Min=0;Max=4096;Format=0";
             this.textBox_Setup_ScannerCal_Illuminator_FineCamRed.Text = "0";
@@ -3368,7 +3396,7 @@
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Location = new System.Drawing.Point(6, 103);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Name = "textBox_Setup_ScannerCal_Illuminator_FineCamIR";
-            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Size = new System.Drawing.Size(151, 23);
+            this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Size = new System.Drawing.Size(135, 23);
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.TabIndex = 14;
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Tag = "KeyPad;Min=0;Max=4096;Format=0";
             this.textBox_Setup_ScannerCal_Illuminator_FineCamIR.Text = "0";
@@ -8577,5 +8605,7 @@
         private System.Windows.Forms.TextBox textBox_Setup_Option_HeightMeasure_PosY;
         private System.Windows.Forms.TextBox textBox_Setup_Option_HeightMeasure_PosX;
         private System.Windows.Forms.CheckBox checkBox_Setup_Option_VisionNG_OKPort;
+        private System.Windows.Forms.Button button_Setup_ScannerCal_Illuminator_FineCamIR;
+        private System.Windows.Forms.Button button_Setup_ScannerCal_Illuminator_FineCamRed;
     }
 }

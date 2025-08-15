@@ -13704,7 +13704,7 @@ namespace QMC.Common.Modules
         public bool m_bCO2_MultyMode = false;
         st4PointPosition_Data[] m_st4Dwg_RepairPos = new st4PointPosition_Data[4];
 
-        public bool m_b3PointAlingMode = true;
+        public bool m_b3PointAlingMode = false;
         public bool m_bSocketAlign_Fiducial_3PointNg = false; //1개 실패했을때만 넘어가자. 
 
         #region Socket Align
@@ -14067,7 +14067,6 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align Part 시작");
 
-                    // 여기서 조명을 해야 제대로 먹는 느낌적인 느낌?
                     SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
                     SetLightingByChannel(LightingChannel.CoarseCamRed, 0, false);
 
@@ -15028,6 +15027,7 @@ namespace QMC.Common.Modules
                                 inspectedCenterX += m_st4PointPosition_InspectedPos[i].ptFiducial_Center.X;
                                 inspectedCenterY += m_st4PointPosition_InspectedPos[i].ptFiducial_Center.Y;
                             }
+
                             dwgCenterX /= 4.0;
                             dwgCenterY /= 4.0;
                             inspectedCenterX /= 4.0;
@@ -15070,7 +15070,6 @@ namespace QMC.Common.Modules
                     else
                     {
                         m_bSocketAlign_OK = true;
-                        
                         // 원래는 true로 되어야 하는건데.. false로 했네.. 그렇다면.. 흠...
                         m_bIsFirstAlign = false;
 
@@ -16236,7 +16235,6 @@ namespace QMC.Common.Modules
 
             for (double i = dFirstAngle; i <= 360 * (turn) + dFirstAngle;) // 360도 회전
             {
-
                 double StartX = currentRadius * Math.Cos(i / 180 * Math.PI);
                 double StartY = currentRadius * Math.Sin(i / 180 * Math.PI);
 
@@ -16275,8 +16273,12 @@ namespace QMC.Common.Modules
             }
 
             rtc.ListArc(new Vector2((float)(center.X), (float)(center.Y )), (float)360);
-            
-            
+
+
+            //pitch 계산
+            pitch = ((outDia*2) - (innerDia*2)) / turn;
+
+
         }
 
         //private void MarkSpiralCircle(double outDia, double innerDia, int turn, double m_dTemp_AngleFactor, PointD center)
@@ -16300,6 +16302,9 @@ namespace QMC.Common.Modules
                 rtc.ListArc(new Vector2((float)(centerX), (float)(centerY)), (float)360);
                 currentRadius += rStep;
             }
+
+            //pitch 계산
+            pitch = ((outDia * 2) - (innerDia * 2)) / turn;
         }
 
         private void LaserDrilling_StepStageXY_MoveUnloadingPos(out double lfVelocity, out double lfAccDec)
@@ -19314,7 +19319,11 @@ namespace QMC.Common.Modules
             m_dThruholeLayer_Defocusing = 0.0;
             m_dThruholeLayer_Resizing = 0.0;
 
-            m_dZOffset_SocketHeightCheck = 0.0;
+            if (!Equipment.SemiAutoEnable)
+            {
+                m_dZOffset_SocketHeightCheck = 0.0;
+            }
+            //m_dZOffset_SocketHeightCheck = 0.0;
 
             m_nDrillingData_SocketAlign_Count = 0;              //  소켓 Align 개수
             m_nDrillingData_SocketAlign_NGCount = 0;            //  소켓 Align 실패 개수
@@ -30288,12 +30297,14 @@ namespace QMC.Common.Modules
             }
             else
             {
+                double dLimit = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit;
+
                 for (int iter = 0; iter < 4; iter++)
                 {
                     dOffsetX1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
                     dOffsetY1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.Y;
 
-                    if (Math.Abs(dOffsetX1) < 0.025 && Math.Abs(dOffsetY1) < 0.025)
+                    if (Math.Abs(dOffsetX1) < dLimit && Math.Abs(dOffsetY1) < dLimit)
                     {
                         dSumOffsetX += dOffsetX1;
                         dSumOffsetY += dOffsetY1;
@@ -31484,7 +31495,10 @@ namespace QMC.Common.Modules
                 case (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos:
                     {
                         // Z-Axis :: CO2 -> 아크릴 높이 감안하여 cal 확인시에는 높이를 따로 둔다. ( stage쪽에서는 높이 다름 )
-                        m_dZOffset_SocketHeightCheck = 0.0;
+                        if (!Equipment.SemiAutoEnable)
+                        {
+                            m_dZOffset_SocketHeightCheck = 0.0;
+                        }
                         MovetoWorkStage_TeachingPositionsZ((int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos, Type_Motor_Speed.Fine);
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos_DoneCheck;
@@ -37801,7 +37815,10 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Socket Align 진행 중, Socket Height Check 모드 : On");
 
-                        m_dZOffset_SocketHeightCheck = 0.0;
+                        if(!Equipment.SemiAutoEnable)
+                        {
+                            m_dZOffset_SocketHeightCheck = 0.0;
+                        }
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;
                     }
                     else
@@ -37833,7 +37850,10 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 높이 측정 Process 시작.");
 
-                    m_dZOffset_SocketHeightCheck = 0.0;
+                    if (!Equipment.SemiAutoEnable)
+                    {
+                        m_dZOffset_SocketHeightCheck = 0.0;
+                    }
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos;
                     break;
 
@@ -37892,7 +37912,10 @@ namespace QMC.Common.Modules
                             //if (m_nDrillingWork_Group_Count <= m_stDividedRegion_GroupData.Length)
                             if (m_nDrillingWork_Group_Count < m_stLaserDrilling_SocketData[0].nGroup_Num)
                             {
-                                m_dZOffset_SocketHeightCheck = 0.0;
+                                if (!Equipment.SemiAutoEnable)
+                                {
+                                    m_dZOffset_SocketHeightCheck = 0.0;
+                                }
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos;
                             }
                             else
@@ -42186,6 +42209,20 @@ namespace QMC.Common.Modules
                         m_nDrillingWork_Group_Count = 0;
                         Log.Write("선택_가공", "Auto Run", "DrillingWork_CompleteCheck::m_nDrillingWork_Group_Count = 0");
                     }
+
+                    //OK를 여기에.
+                    // 공통 자동 완료 마킹 TEST하고 하자.
+                    //{
+                    //    layerEnum = GetCurrentLayerEnum(m_LayerType);
+                    //    layer = DrillingManager.GetLayer(layerEnum);
+                    //    socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
+                    //    if (layer != null && socket != null)
+                    //    {
+                    //        SetDrillResult(layer.LayerName, socket.SocketNumber, true);
+                    //        Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
+                    //    }
+                    //}
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                     break;
 

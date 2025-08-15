@@ -1612,7 +1612,7 @@ namespace SLD200_MSL
             this.groupBox83.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox83.Name = "groupBox83";
             this.groupBox83.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.groupBox83.Size = new System.Drawing.Size(106, 93);
+            this.groupBox83.Size = new System.Drawing.Size(123, 93);
             this.groupBox83.TabIndex = 55;
             this.groupBox83.TabStop = false;
             this.groupBox83.Text = " Camera ";
@@ -1627,7 +1627,7 @@ namespace SLD200_MSL
             this.radioButton_VisionPopup_CameraSelection_HighMag.Size = new System.Drawing.Size(86, 27);
             this.radioButton_VisionPopup_CameraSelection_HighMag.TabIndex = 6;
             this.radioButton_VisionPopup_CameraSelection_HighMag.TabStop = true;
-            this.radioButton_VisionPopup_CameraSelection_HighMag.Text = "High Mag.";
+            this.radioButton_VisionPopup_CameraSelection_HighMag.Text = "FineCam";
             this.radioButton_VisionPopup_CameraSelection_HighMag.UseVisualStyleBackColor = true;
             this.radioButton_VisionPopup_CameraSelection_HighMag.CheckedChanged += new System.EventHandler(this.radioButton_VisionPopup_CameraSelection_HighMag_CheckedChanged);
             // 
@@ -1637,9 +1637,9 @@ namespace SLD200_MSL
             this.radioButton_VisionPopup_CameraSelection_LowMag.Location = new System.Drawing.Point(13, 25);
             this.radioButton_VisionPopup_CameraSelection_LowMag.Margin = new System.Windows.Forms.Padding(6);
             this.radioButton_VisionPopup_CameraSelection_LowMag.Name = "radioButton_VisionPopup_CameraSelection_LowMag";
-            this.radioButton_VisionPopup_CameraSelection_LowMag.Size = new System.Drawing.Size(86, 27);
+            this.radioButton_VisionPopup_CameraSelection_LowMag.Size = new System.Drawing.Size(101, 27);
             this.radioButton_VisionPopup_CameraSelection_LowMag.TabIndex = 5;
-            this.radioButton_VisionPopup_CameraSelection_LowMag.Text = "Low Mag.";
+            this.radioButton_VisionPopup_CameraSelection_LowMag.Text = "CoarseCam";
             this.radioButton_VisionPopup_CameraSelection_LowMag.UseVisualStyleBackColor = true;
             this.radioButton_VisionPopup_CameraSelection_LowMag.CheckedChanged += new System.EventHandler(this.radioButton_VisionPopup_CameraSelection_LowMag_CheckedChanged);
             // 

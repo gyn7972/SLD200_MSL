@@ -47,7 +47,6 @@
             this.radioButton_Recipe_GoldPowder_Fiducial_Black = new System.Windows.Forms.RadioButton();
             this.radioButton_Recipe_GoldPowder_Fiducial_White = new System.Windows.Forms.RadioButton();
             this.textBox_Recipe_GoldPowder_Fiducial_CircleScore = new System.Windows.Forms.TextBox();
-            this.ImageViewer_Recipe_GoldPowder_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.button_Recipe_GoldPowder_Fiducial_CircleScore = new System.Windows.Forms.Button();
             this.button_Recipe_GoldPowder_Fiducial_Search = new System.Windows.Forms.Button();
             this.label_Recipe_GoldPowder_Fiducial_CircleScore = new System.Windows.Forms.Label();
@@ -81,26 +80,29 @@
             this.checkBox_Recipe_GoldPowder_Illuminator_Red = new System.Windows.Forms.CheckBox();
             this.label_Recipe_GoldPowder_Light_Red = new System.Windows.Forms.Label();
             this.label_Recipe_GoldPowder_Light_IR = new System.Windows.Forms.Label();
-            this.baseLabel_Recipe_GoldPowder_Max_Red = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Recipe_GoldPowder_Min_Red = new SLD200_MSL.BaseLabel();
             this.hScrollBar_Recipe_GoldPowder_Illuminator_Red = new System.Windows.Forms.HScrollBar();
             this.button_Recipe_GoldPowder_Illumin_value_Red = new System.Windows.Forms.Button();
             this.textBox_Recipe_GoldPowder_IlluminationValue_Red = new System.Windows.Forms.TextBox();
-            this.baseLabel_Recipe_GoldPowder_Max_IR = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Recipe_GoldPowder_Min_IR = new SLD200_MSL.BaseLabel();
             this.hScrollBar_Recipe_GoldPowder_Illuminator_IR = new System.Windows.Forms.HScrollBar();
             this.button_Recipe_GoldPowder_Illumin_value_IR = new System.Windows.Forms.Button();
             this.textBox_Recipe_GoldPowder_IlluminationValue_IR = new System.Windows.Forms.TextBox();
+            this.baseLabel_Recipe_GoldPowder_Max_Red = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Recipe_GoldPowder_Min_Red = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Recipe_GoldPowder_Max_IR = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Recipe_GoldPowder_Min_IR = new SLD200_MSL.BaseLabel();
+            this.ImageViewer_Recipe_GoldPowder_highs = new QMC.Common.Hmi.VisionImageViewer();
+            this.button_Recipe_GoldPowder_Illuminator_FineCamRed = new System.Windows.Forms.Button();
+            this.button_Recipe_GoldPowder_Illuminator_FineCamIR = new System.Windows.Forms.Button();
             this.groupBox_Recipe_GoldPowder_Fine_Camera.SuspendLayout();
             this.groupBox_Recipe_GoldPowder_Fiducial_MarkMatching.SuspendLayout();
             this.groupBox_Recipe_GoldPowder_Fiducial_MarkType.SuspendLayout();
             this.groupBox_Recipe_GoldPowder_Fiducial_Color.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Recipe_GoldPowder_highs)).BeginInit();
             this.groupBox_Recipe_GoldPowder_AxisZ_Setting.SuspendLayout();
             this.groupBox_Recipe_GoldPowder_Camera_Setting.SuspendLayout();
             this.groupBox_Recipe_GoldPowder_Illuminator.SuspendLayout();
             this.groupBox_Recipe_GoldPowder_Fiducial_Camera.SuspendLayout();
             this.groupBox_Recipe_GoldPowder_Illumination.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Recipe_GoldPowder_highs)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox_Recipe_GoldPowder_Fine_Camera
@@ -344,26 +346,6 @@
             this.textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text = "000";
             this.textBox_Recipe_GoldPowder_Fiducial_CircleScore.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // ImageViewer_Recipe_GoldPowder_highs
-            // 
-            this.ImageViewer_Recipe_GoldPowder_highs.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Recipe_GoldPowder_highs.Camera = null;
-            this.ImageViewer_Recipe_GoldPowder_highs.CameraSwitch = null;
-            this.ImageViewer_Recipe_GoldPowder_highs.FrameRate = 1D;
-            this.ImageViewer_Recipe_GoldPowder_highs.InputImage = null;
-            this.ImageViewer_Recipe_GoldPowder_highs.IsViewCustomizedImage = false;
-            this.ImageViewer_Recipe_GoldPowder_highs.Location = new System.Drawing.Point(6, 28);
-            this.ImageViewer_Recipe_GoldPowder_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Recipe_GoldPowder_highs.Name = "ImageViewer_Recipe_GoldPowder_highs";
-            this.ImageViewer_Recipe_GoldPowder_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Recipe_GoldPowder_highs.Simulated = false;
-            this.ImageViewer_Recipe_GoldPowder_highs.Size = new System.Drawing.Size(470, 325);
-            this.ImageViewer_Recipe_GoldPowder_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Recipe_GoldPowder_highs.TabIndex = 185;
-            this.ImageViewer_Recipe_GoldPowder_highs.TabStop = false;
-            this.ImageViewer_Recipe_GoldPowder_highs.UpdateDelayTime = 160;
-            this.ImageViewer_Recipe_GoldPowder_highs.VisibleCrossLine = true;
-            // 
             // button_Recipe_GoldPowder_Fiducial_CircleScore
             // 
             this.button_Recipe_GoldPowder_Fiducial_CircleScore.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -485,12 +467,12 @@
             // button_Recipe_GoldPowder_AxisZ_Setting
             // 
             this.button_Recipe_GoldPowder_AxisZ_Setting.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Recipe_GoldPowder_AxisZ_Setting.Location = new System.Drawing.Point(266, 25);
+            this.button_Recipe_GoldPowder_AxisZ_Setting.Location = new System.Drawing.Point(259, 25);
             this.button_Recipe_GoldPowder_AxisZ_Setting.Margin = new System.Windows.Forms.Padding(2);
             this.button_Recipe_GoldPowder_AxisZ_Setting.Name = "button_Recipe_GoldPowder_AxisZ_Setting";
-            this.button_Recipe_GoldPowder_AxisZ_Setting.Size = new System.Drawing.Size(30, 25);
+            this.button_Recipe_GoldPowder_AxisZ_Setting.Size = new System.Drawing.Size(43, 25);
             this.button_Recipe_GoldPowder_AxisZ_Setting.TabIndex = 223;
-            this.button_Recipe_GoldPowder_AxisZ_Setting.Text = "#";
+            this.button_Recipe_GoldPowder_AxisZ_Setting.Text = "적용";
             this.button_Recipe_GoldPowder_AxisZ_Setting.UseVisualStyleBackColor = true;
             this.button_Recipe_GoldPowder_AxisZ_Setting.Visible = false;
             // 
@@ -511,7 +493,7 @@
             this.textBox_Recipe_GoldPowder_AxisZ_Setting.Location = new System.Drawing.Point(150, 25);
             this.textBox_Recipe_GoldPowder_AxisZ_Setting.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_Recipe_GoldPowder_AxisZ_Setting.Name = "textBox_Recipe_GoldPowder_AxisZ_Setting";
-            this.textBox_Recipe_GoldPowder_AxisZ_Setting.Size = new System.Drawing.Size(112, 24);
+            this.textBox_Recipe_GoldPowder_AxisZ_Setting.Size = new System.Drawing.Size(100, 24);
             this.textBox_Recipe_GoldPowder_AxisZ_Setting.TabIndex = 223;
             this.textBox_Recipe_GoldPowder_AxisZ_Setting.Tag = "KeyPad;Min=-10;Max=100;Format=0.000";
             this.textBox_Recipe_GoldPowder_AxisZ_Setting.Text = "000";
@@ -533,12 +515,12 @@
             // button_Recipe_GoldPowder_Camera_ExposureTime
             // 
             this.button_Recipe_GoldPowder_Camera_ExposureTime.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Recipe_GoldPowder_Camera_ExposureTime.Location = new System.Drawing.Point(266, 25);
+            this.button_Recipe_GoldPowder_Camera_ExposureTime.Location = new System.Drawing.Point(259, 25);
             this.button_Recipe_GoldPowder_Camera_ExposureTime.Margin = new System.Windows.Forms.Padding(2);
             this.button_Recipe_GoldPowder_Camera_ExposureTime.Name = "button_Recipe_GoldPowder_Camera_ExposureTime";
-            this.button_Recipe_GoldPowder_Camera_ExposureTime.Size = new System.Drawing.Size(30, 25);
+            this.button_Recipe_GoldPowder_Camera_ExposureTime.Size = new System.Drawing.Size(43, 25);
             this.button_Recipe_GoldPowder_Camera_ExposureTime.TabIndex = 223;
-            this.button_Recipe_GoldPowder_Camera_ExposureTime.Text = "#";
+            this.button_Recipe_GoldPowder_Camera_ExposureTime.Text = "적용";
             this.button_Recipe_GoldPowder_Camera_ExposureTime.UseVisualStyleBackColor = true;
             this.button_Recipe_GoldPowder_Camera_ExposureTime.Click += new System.EventHandler(this.button_Recipe_GoldPowder_Camera_ExposureTime_Click);
             // 
@@ -559,7 +541,7 @@
             this.textBox_Recipe_GoldPowder_Camera_ExposureTime.Location = new System.Drawing.Point(150, 25);
             this.textBox_Recipe_GoldPowder_Camera_ExposureTime.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_Recipe_GoldPowder_Camera_ExposureTime.Name = "textBox_Recipe_GoldPowder_Camera_ExposureTime";
-            this.textBox_Recipe_GoldPowder_Camera_ExposureTime.Size = new System.Drawing.Size(112, 24);
+            this.textBox_Recipe_GoldPowder_Camera_ExposureTime.Size = new System.Drawing.Size(100, 24);
             this.textBox_Recipe_GoldPowder_Camera_ExposureTime.TabIndex = 223;
             this.textBox_Recipe_GoldPowder_Camera_ExposureTime.Tag = "KeyPad;Min=0;Max=9000000;Format=0";
             this.textBox_Recipe_GoldPowder_Camera_ExposureTime.Text = "000";
@@ -567,6 +549,8 @@
             // 
             // groupBox_Recipe_GoldPowder_Illuminator
             // 
+            this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.button_Recipe_GoldPowder_Illuminator_FineCamIR);
+            this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.button_Recipe_GoldPowder_Illuminator_FineCamRed);
             this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed);
             this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.label_Recipe_GoldPowder_High_Red);
             this.groupBox_Recipe_GoldPowder_Illuminator.Controls.Add(this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR);
@@ -584,10 +568,10 @@
             // textBox_Recipe_GoldPowder_Illuminator_FineCamRed
             // 
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Location = new System.Drawing.Point(21, 63);
+            this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Location = new System.Drawing.Point(7, 63);
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Name = "textBox_Recipe_GoldPowder_Illuminator_FineCamRed";
-            this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Size = new System.Drawing.Size(119, 24);
+            this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Size = new System.Drawing.Size(100, 24);
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed.TabIndex = 19;
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Tag = "KeyPad;Min=0;Max=4096;Format=0";
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text = "0";
@@ -595,7 +579,7 @@
             // label_Recipe_GoldPowder_High_Red
             // 
             this.label_Recipe_GoldPowder_High_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label_Recipe_GoldPowder_High_Red.Location = new System.Drawing.Point(21, 40);
+            this.label_Recipe_GoldPowder_High_Red.Location = new System.Drawing.Point(7, 40);
             this.label_Recipe_GoldPowder_High_Red.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_Recipe_GoldPowder_High_Red.Name = "label_Recipe_GoldPowder_High_Red";
             this.label_Recipe_GoldPowder_High_Red.Size = new System.Drawing.Size(119, 24);
@@ -606,10 +590,10 @@
             // textBox_Recipe_GoldPowder_Illuminator_FineCamIR
             // 
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Location = new System.Drawing.Point(21, 117);
+            this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Location = new System.Drawing.Point(7, 117);
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Name = "textBox_Recipe_GoldPowder_Illuminator_FineCamIR";
-            this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Size = new System.Drawing.Size(119, 24);
+            this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Size = new System.Drawing.Size(100, 24);
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.TabIndex = 14;
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Tag = "KeyPad;Min=0;Max=4096;Format=0";
             this.textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = "0";
@@ -617,7 +601,7 @@
             // label_Recipe_GoldPowder_High_IR
             // 
             this.label_Recipe_GoldPowder_High_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label_Recipe_GoldPowder_High_IR.Location = new System.Drawing.Point(21, 91);
+            this.label_Recipe_GoldPowder_High_IR.Location = new System.Drawing.Point(7, 91);
             this.label_Recipe_GoldPowder_High_IR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label_Recipe_GoldPowder_High_IR.Name = "label_Recipe_GoldPowder_High_IR";
             this.label_Recipe_GoldPowder_High_IR.Size = new System.Drawing.Size(119, 24);
@@ -645,13 +629,13 @@
             // 
             this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Checked = true;
             this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Location = new System.Drawing.Point(110, 16);
+            this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Location = new System.Drawing.Point(127, 16);
             this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Margin = new System.Windows.Forms.Padding(6);
             this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Name = "radioButton_Recipe_GoldPowder_CameraSelection_HighMag";
             this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Size = new System.Drawing.Size(86, 27);
             this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.TabIndex = 6;
             this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.TabStop = true;
-            this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Text = "High Mag.";
+            this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Text = "FineCam";
             this.radioButton_Recipe_GoldPowder_CameraSelection_HighMag.UseVisualStyleBackColor = true;
             // 
             // radioButton_Recipe_GoldPowder_CameraSelection_LowMag
@@ -661,19 +645,19 @@
             this.radioButton_Recipe_GoldPowder_CameraSelection_LowMag.Location = new System.Drawing.Point(12, 16);
             this.radioButton_Recipe_GoldPowder_CameraSelection_LowMag.Margin = new System.Windows.Forms.Padding(6);
             this.radioButton_Recipe_GoldPowder_CameraSelection_LowMag.Name = "radioButton_Recipe_GoldPowder_CameraSelection_LowMag";
-            this.radioButton_Recipe_GoldPowder_CameraSelection_LowMag.Size = new System.Drawing.Size(86, 27);
+            this.radioButton_Recipe_GoldPowder_CameraSelection_LowMag.Size = new System.Drawing.Size(108, 27);
             this.radioButton_Recipe_GoldPowder_CameraSelection_LowMag.TabIndex = 5;
-            this.radioButton_Recipe_GoldPowder_CameraSelection_LowMag.Text = "Low Mag.";
+            this.radioButton_Recipe_GoldPowder_CameraSelection_LowMag.Text = "CoarseCam";
             this.radioButton_Recipe_GoldPowder_CameraSelection_LowMag.UseVisualStyleBackColor = true;
             this.radioButton_Recipe_GoldPowder_CameraSelection_LowMag.Visible = false;
             // 
             // button_Recipe_GoldPowder_CameraLive
             // 
             this.button_Recipe_GoldPowder_CameraLive.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Recipe_GoldPowder_CameraLive.Location = new System.Drawing.Point(197, 16);
+            this.button_Recipe_GoldPowder_CameraLive.Location = new System.Drawing.Point(220, 16);
             this.button_Recipe_GoldPowder_CameraLive.Margin = new System.Windows.Forms.Padding(2);
             this.button_Recipe_GoldPowder_CameraLive.Name = "button_Recipe_GoldPowder_CameraLive";
-            this.button_Recipe_GoldPowder_CameraLive.Size = new System.Drawing.Size(86, 27);
+            this.button_Recipe_GoldPowder_CameraLive.Size = new System.Drawing.Size(70, 27);
             this.button_Recipe_GoldPowder_CameraLive.TabIndex = 197;
             this.button_Recipe_GoldPowder_CameraLive.Text = "LIVE";
             this.button_Recipe_GoldPowder_CameraLive.UseVisualStyleBackColor = true;
@@ -682,10 +666,10 @@
             // button_Recipe_GoldPowder_CameraStop
             // 
             this.button_Recipe_GoldPowder_CameraStop.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Recipe_GoldPowder_CameraStop.Location = new System.Drawing.Point(282, 16);
+            this.button_Recipe_GoldPowder_CameraStop.Location = new System.Drawing.Point(298, 16);
             this.button_Recipe_GoldPowder_CameraStop.Margin = new System.Windows.Forms.Padding(2);
             this.button_Recipe_GoldPowder_CameraStop.Name = "button_Recipe_GoldPowder_CameraStop";
-            this.button_Recipe_GoldPowder_CameraStop.Size = new System.Drawing.Size(86, 27);
+            this.button_Recipe_GoldPowder_CameraStop.Size = new System.Drawing.Size(70, 27);
             this.button_Recipe_GoldPowder_CameraStop.TabIndex = 199;
             this.button_Recipe_GoldPowder_CameraStop.Text = "STOP";
             this.button_Recipe_GoldPowder_CameraStop.UseVisualStyleBackColor = true;
@@ -727,7 +711,7 @@
             this.groupBox_Recipe_GoldPowder_Illumination.Size = new System.Drawing.Size(373, 90);
             this.groupBox_Recipe_GoldPowder_Illumination.TabIndex = 226;
             this.groupBox_Recipe_GoldPowder_Illumination.TabStop = false;
-            this.groupBox_Recipe_GoldPowder_Illumination.Text = " Illumination Brightness (%) ";
+            this.groupBox_Recipe_GoldPowder_Illumination.Text = " Illumination Brightness(조명테스트) (%) ";
             // 
             // checkBox_Recipe_GoldPowder_Illuminator_IR
             // 
@@ -775,30 +759,6 @@
             this.label_Recipe_GoldPowder_Light_IR.Text = "IR";
             this.label_Recipe_GoldPowder_Light_IR.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // baseLabel_Recipe_GoldPowder_Max_Red
-            // 
-            this.baseLabel_Recipe_GoldPowder_Max_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Recipe_GoldPowder_Max_Red.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Recipe_GoldPowder_Max_Red.Location = new System.Drawing.Point(242, 23);
-            this.baseLabel_Recipe_GoldPowder_Max_Red.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.baseLabel_Recipe_GoldPowder_Max_Red.Name = "baseLabel_Recipe_GoldPowder_Max_Red";
-            this.baseLabel_Recipe_GoldPowder_Max_Red.Size = new System.Drawing.Size(48, 25);
-            this.baseLabel_Recipe_GoldPowder_Max_Red.TabIndex = 39;
-            this.baseLabel_Recipe_GoldPowder_Max_Red.Text = "4096";
-            this.baseLabel_Recipe_GoldPowder_Max_Red.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // baseLabel_Recipe_GoldPowder_Min_Red
-            // 
-            this.baseLabel_Recipe_GoldPowder_Min_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Recipe_GoldPowder_Min_Red.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Recipe_GoldPowder_Min_Red.Location = new System.Drawing.Point(105, 23);
-            this.baseLabel_Recipe_GoldPowder_Min_Red.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.baseLabel_Recipe_GoldPowder_Min_Red.Name = "baseLabel_Recipe_GoldPowder_Min_Red";
-            this.baseLabel_Recipe_GoldPowder_Min_Red.Size = new System.Drawing.Size(15, 25);
-            this.baseLabel_Recipe_GoldPowder_Min_Red.TabIndex = 38;
-            this.baseLabel_Recipe_GoldPowder_Min_Red.Text = "0";
-            this.baseLabel_Recipe_GoldPowder_Min_Red.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // hScrollBar_Recipe_GoldPowder_Illuminator_Red
             // 
             this.hScrollBar_Recipe_GoldPowder_Illuminator_Red.Location = new System.Drawing.Point(127, 23);
@@ -828,30 +788,6 @@
             this.textBox_Recipe_GoldPowder_IlluminationValue_Red.TabIndex = 35;
             this.textBox_Recipe_GoldPowder_IlluminationValue_Red.Text = "000";
             this.textBox_Recipe_GoldPowder_IlluminationValue_Red.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // baseLabel_Recipe_GoldPowder_Max_IR
-            // 
-            this.baseLabel_Recipe_GoldPowder_Max_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Recipe_GoldPowder_Max_IR.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Recipe_GoldPowder_Max_IR.Location = new System.Drawing.Point(242, 56);
-            this.baseLabel_Recipe_GoldPowder_Max_IR.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.baseLabel_Recipe_GoldPowder_Max_IR.Name = "baseLabel_Recipe_GoldPowder_Max_IR";
-            this.baseLabel_Recipe_GoldPowder_Max_IR.Size = new System.Drawing.Size(48, 25);
-            this.baseLabel_Recipe_GoldPowder_Max_IR.TabIndex = 32;
-            this.baseLabel_Recipe_GoldPowder_Max_IR.Text = "4096";
-            this.baseLabel_Recipe_GoldPowder_Max_IR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // baseLabel_Recipe_GoldPowder_Min_IR
-            // 
-            this.baseLabel_Recipe_GoldPowder_Min_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Recipe_GoldPowder_Min_IR.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Recipe_GoldPowder_Min_IR.Location = new System.Drawing.Point(105, 56);
-            this.baseLabel_Recipe_GoldPowder_Min_IR.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.baseLabel_Recipe_GoldPowder_Min_IR.Name = "baseLabel_Recipe_GoldPowder_Min_IR";
-            this.baseLabel_Recipe_GoldPowder_Min_IR.Size = new System.Drawing.Size(15, 25);
-            this.baseLabel_Recipe_GoldPowder_Min_IR.TabIndex = 31;
-            this.baseLabel_Recipe_GoldPowder_Min_IR.Text = "0";
-            this.baseLabel_Recipe_GoldPowder_Min_IR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // hScrollBar_Recipe_GoldPowder_Illuminator_IR
             // 
@@ -883,6 +819,98 @@
             this.textBox_Recipe_GoldPowder_IlluminationValue_IR.Text = "000";
             this.textBox_Recipe_GoldPowder_IlluminationValue_IR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // baseLabel_Recipe_GoldPowder_Max_Red
+            // 
+            this.baseLabel_Recipe_GoldPowder_Max_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Recipe_GoldPowder_Max_Red.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Recipe_GoldPowder_Max_Red.Location = new System.Drawing.Point(242, 23);
+            this.baseLabel_Recipe_GoldPowder_Max_Red.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.baseLabel_Recipe_GoldPowder_Max_Red.Name = "baseLabel_Recipe_GoldPowder_Max_Red";
+            this.baseLabel_Recipe_GoldPowder_Max_Red.Size = new System.Drawing.Size(48, 25);
+            this.baseLabel_Recipe_GoldPowder_Max_Red.TabIndex = 39;
+            this.baseLabel_Recipe_GoldPowder_Max_Red.Text = "4096";
+            this.baseLabel_Recipe_GoldPowder_Max_Red.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // baseLabel_Recipe_GoldPowder_Min_Red
+            // 
+            this.baseLabel_Recipe_GoldPowder_Min_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Recipe_GoldPowder_Min_Red.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Recipe_GoldPowder_Min_Red.Location = new System.Drawing.Point(105, 23);
+            this.baseLabel_Recipe_GoldPowder_Min_Red.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.baseLabel_Recipe_GoldPowder_Min_Red.Name = "baseLabel_Recipe_GoldPowder_Min_Red";
+            this.baseLabel_Recipe_GoldPowder_Min_Red.Size = new System.Drawing.Size(15, 25);
+            this.baseLabel_Recipe_GoldPowder_Min_Red.TabIndex = 38;
+            this.baseLabel_Recipe_GoldPowder_Min_Red.Text = "0";
+            this.baseLabel_Recipe_GoldPowder_Min_Red.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // baseLabel_Recipe_GoldPowder_Max_IR
+            // 
+            this.baseLabel_Recipe_GoldPowder_Max_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Recipe_GoldPowder_Max_IR.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Recipe_GoldPowder_Max_IR.Location = new System.Drawing.Point(242, 56);
+            this.baseLabel_Recipe_GoldPowder_Max_IR.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.baseLabel_Recipe_GoldPowder_Max_IR.Name = "baseLabel_Recipe_GoldPowder_Max_IR";
+            this.baseLabel_Recipe_GoldPowder_Max_IR.Size = new System.Drawing.Size(48, 25);
+            this.baseLabel_Recipe_GoldPowder_Max_IR.TabIndex = 32;
+            this.baseLabel_Recipe_GoldPowder_Max_IR.Text = "4096";
+            this.baseLabel_Recipe_GoldPowder_Max_IR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // baseLabel_Recipe_GoldPowder_Min_IR
+            // 
+            this.baseLabel_Recipe_GoldPowder_Min_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Recipe_GoldPowder_Min_IR.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Recipe_GoldPowder_Min_IR.Location = new System.Drawing.Point(105, 56);
+            this.baseLabel_Recipe_GoldPowder_Min_IR.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.baseLabel_Recipe_GoldPowder_Min_IR.Name = "baseLabel_Recipe_GoldPowder_Min_IR";
+            this.baseLabel_Recipe_GoldPowder_Min_IR.Size = new System.Drawing.Size(15, 25);
+            this.baseLabel_Recipe_GoldPowder_Min_IR.TabIndex = 31;
+            this.baseLabel_Recipe_GoldPowder_Min_IR.Text = "0";
+            this.baseLabel_Recipe_GoldPowder_Min_IR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // ImageViewer_Recipe_GoldPowder_highs
+            // 
+            this.ImageViewer_Recipe_GoldPowder_highs.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Recipe_GoldPowder_highs.Camera = null;
+            this.ImageViewer_Recipe_GoldPowder_highs.CameraSwitch = null;
+            this.ImageViewer_Recipe_GoldPowder_highs.FrameRate = 1D;
+            this.ImageViewer_Recipe_GoldPowder_highs.InputImage = null;
+            this.ImageViewer_Recipe_GoldPowder_highs.IsViewCustomizedImage = false;
+            this.ImageViewer_Recipe_GoldPowder_highs.Location = new System.Drawing.Point(6, 28);
+            this.ImageViewer_Recipe_GoldPowder_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Recipe_GoldPowder_highs.Name = "ImageViewer_Recipe_GoldPowder_highs";
+            this.ImageViewer_Recipe_GoldPowder_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Recipe_GoldPowder_highs.Simulated = false;
+            this.ImageViewer_Recipe_GoldPowder_highs.Size = new System.Drawing.Size(470, 325);
+            this.ImageViewer_Recipe_GoldPowder_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Recipe_GoldPowder_highs.TabIndex = 185;
+            this.ImageViewer_Recipe_GoldPowder_highs.TabStop = false;
+            this.ImageViewer_Recipe_GoldPowder_highs.UpdateDelayTime = 160;
+            this.ImageViewer_Recipe_GoldPowder_highs.VisibleCrossLine = true;
+            // 
+            // button_Recipe_GoldPowder_Illuminator_FineCamRed
+            // 
+            this.button_Recipe_GoldPowder_Illuminator_FineCamRed.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Recipe_GoldPowder_Illuminator_FineCamRed.Location = new System.Drawing.Point(116, 63);
+            this.button_Recipe_GoldPowder_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_GoldPowder_Illuminator_FineCamRed.Name = "button_Recipe_GoldPowder_Illuminator_FineCamRed";
+            this.button_Recipe_GoldPowder_Illuminator_FineCamRed.Size = new System.Drawing.Size(43, 25);
+            this.button_Recipe_GoldPowder_Illuminator_FineCamRed.TabIndex = 225;
+            this.button_Recipe_GoldPowder_Illuminator_FineCamRed.Text = "적용";
+            this.button_Recipe_GoldPowder_Illuminator_FineCamRed.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_Illuminator_FineCamRed.Click += new System.EventHandler(this.button_Recipe_GoldPowder_Illuminator_FineCamRed_Click);
+            // 
+            // button_Recipe_GoldPowder_Illuminator_FineCamIR
+            // 
+            this.button_Recipe_GoldPowder_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Recipe_GoldPowder_Illuminator_FineCamIR.Location = new System.Drawing.Point(116, 117);
+            this.button_Recipe_GoldPowder_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_GoldPowder_Illuminator_FineCamIR.Name = "button_Recipe_GoldPowder_Illuminator_FineCamIR";
+            this.button_Recipe_GoldPowder_Illuminator_FineCamIR.Size = new System.Drawing.Size(43, 25);
+            this.button_Recipe_GoldPowder_Illuminator_FineCamIR.TabIndex = 226;
+            this.button_Recipe_GoldPowder_Illuminator_FineCamIR.Text = "적용";
+            this.button_Recipe_GoldPowder_Illuminator_FineCamIR.UseVisualStyleBackColor = true;
+            this.button_Recipe_GoldPowder_Illuminator_FineCamIR.Click += new System.EventHandler(this.button_Recipe_GoldPowder_Illuminator_FineCamIR_Click);
+            // 
             // FormNewSub_Recipe_GoldPowder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -905,7 +933,6 @@
             this.groupBox_Recipe_GoldPowder_Fiducial_MarkMatching.ResumeLayout(false);
             this.groupBox_Recipe_GoldPowder_Fiducial_MarkType.ResumeLayout(false);
             this.groupBox_Recipe_GoldPowder_Fiducial_Color.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Recipe_GoldPowder_highs)).EndInit();
             this.groupBox_Recipe_GoldPowder_AxisZ_Setting.ResumeLayout(false);
             this.groupBox_Recipe_GoldPowder_AxisZ_Setting.PerformLayout();
             this.groupBox_Recipe_GoldPowder_Camera_Setting.ResumeLayout(false);
@@ -915,6 +942,7 @@
             this.groupBox_Recipe_GoldPowder_Fiducial_Camera.ResumeLayout(false);
             this.groupBox_Recipe_GoldPowder_Illumination.ResumeLayout(false);
             this.groupBox_Recipe_GoldPowder_Illumination.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Recipe_GoldPowder_highs)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -983,5 +1011,7 @@
         private System.Windows.Forms.TextBox textBox_Recipe_GoldPowder_Fiducial_MaxInstance;
         private System.Windows.Forms.Button button_Recipe_GoldPowder_Fiducial_MaxInstance;
         private System.Windows.Forms.Label label_Recipe_GoldPowder_Fiducial_MaxInstance;
+        private System.Windows.Forms.Button button_Recipe_GoldPowder_Illuminator_FineCamIR;
+        private System.Windows.Forms.Button button_Recipe_GoldPowder_Illuminator_FineCamRed;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using QMC.Common.Modules;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,26 @@ namespace QMC.Common.Q_Recipe
 {
     public class RecipeManager
     {
+        //사용방법
+        // 열기
+        //RecipeManager.Instance.OpenRecipe(@"D:\Recipe\MyRecipe.ini");
+
+        //// 저장(동일 경로 덮어쓰기)
+        //RecipeManager.Instance.SaveRecipe();
+
+        //// 다른 경로로 저장
+        //RecipeManager.Instance.SaveRecipe(@"D:\Recipe\MyRecipe_copy.ini");
+
+        //// 특정 레이어 데이터만 확인/갱신
+        //var r = RecipeManager.Instance.GetLayerRecipeData("Hole1");
+        //var p = r.LayerData;
+        //// p 값 조정 후 SaveRecipe() 호출하면 INI 반영됨
+
         private static RecipeManager _instance;
         public static RecipeManager Instance => _instance ?? (_instance = new RecipeManager());
 
         public string CurrentRecipePath { get; private set; }
+        private readonly object _sync = new object();
 
         private RecipeManager() { }
 
@@ -26,13 +43,160 @@ namespace QMC.Common.Q_Recipe
             if (string.IsNullOrEmpty(recipePath) || !File.Exists(recipePath))
                 throw new FileNotFoundException("Recipe 파일을 찾을 수 없습니다.", recipePath);
 
-            // Recipe 로드
-            Recipe_Data_Load_Refactory(recipePath);
+            lock (_sync)
+            {
+                // Recipe 로드
+                Recipe_Data_Load_Refactory(recipePath); // 기존 로더 유지  :contentReference[oaicite:2]{index=2}
 
-            Equipment.Current_Recipe = recipePath;
-            Equipment.Current_DrawingFileName = Path.GetFileName(recipePath);
-            CurrentRecipePath = recipePath;
+                Equipment.Current_Recipe = recipePath;
+                Equipment.Current_DrawingFileName = Path.GetFileName(recipePath);
+                CurrentRecipePath = recipePath;
+            }
         }
+
+        /// <summary>
+        /// 현재 Equipment.stLayerRecipeSet 내용을 INI로 저장 (경로 생략 시 현재 경로에 덮어쓰기)
+        /// </summary>
+        public void SaveRecipe(string recipePath = null)
+        {
+            lock (_sync)
+            {
+                var path = string.IsNullOrWhiteSpace(recipePath) ? CurrentRecipePath : recipePath;
+                if (string.IsNullOrWhiteSpace(path))
+                    throw new InvalidOperationException("저장 경로가 지정되지 않았습니다.");
+
+                var dir = Path.GetDirectoryName(path);
+                if (string.IsNullOrEmpty(dir))
+                    throw new ArgumentException("유효하지 않은 경로입니다.", nameof(recipePath));
+                Directory.CreateDirectory(dir);
+
+                var bak = path + ".bak";
+                var tmp = path + ".tmp";
+
+                // INI 내용 작성
+                var sb = new StringBuilder(4096);
+                var inv = CultureInfo.InvariantCulture;
+                int layerCount = (int)Enum.GetValues(typeof(Equipment.LayerList)).Length; // :contentReference[oaicite:3]{index=3}
+
+                for (int i = 0; i < layerCount; i++)
+                {
+                    var p = Equipment.stLayerRecipeSet[i]; // 저장 원본  :contentReference[oaicite:4]{index=4}
+                    sb.AppendLine($"[Layer_{i}]");
+
+                    // === Drawing & Laser ===
+                    sb.AppendLine($"Drawing_File_Name={p.DrawingFile}");
+                    sb.AppendLine($"Pulse_Width={p.LaserParam_PulseWidth.ToString(inv)}");
+                    sb.AppendLine($"Pulse_Period={p.LaserParam_PulsePeriod.ToString(inv)}");
+                    sb.AppendLine($"Frequency={p.LaserParam_Frequency.ToString(inv)}");
+                    sb.AppendLine($"Duty_Cycle={p.LaserParam_DutyCycle.ToString(inv)}");
+                    sb.AppendLine($"Trigger_Mode_External={p.LaserParam_TriggerMode_External.ToString(inv)}");
+                    sb.AppendLine($"P2P={p.ProcessPriority_P2P.ToString(inv)}");
+
+                    // === Miscellaneous (가공 공통) ===
+                    sb.AppendLine($"Reference_Layer={p.Miscellaneous_ReferenceLayer}");
+                    sb.AppendLine($"Defocusing_Distance={p.Miscellaneous_DefocusingDistance.ToString(inv)}");
+                    sb.AppendLine($"Resizing={p.Miscellaneous_Resizing.ToString(inv)}");
+                    sb.AppendLine($"HoleDrilling_StartPosDivision={p.Miscellaneous_HoleDrilling_StartPosDivision.ToString(inv)}");
+                    sb.AppendLine($"GroupSplitSize={p.Miscellaneous_GroupSplitSize.ToString(inv)}");
+                    sb.AppendLine($"GroupSplitSize_Height={p.Miscellaneous_GroupSplitSize_Height.ToString(inv)}");
+                    sb.AppendLine($"ScannerDrillingSpeed={p.Miscellaneous_ScannerDrillingSpeed.ToString(inv)}");
+                    sb.AppendLine($"ScannerJumpSpeed={p.Miscellaneous_ScannerJumpSpeed.ToString(inv)}");
+                    sb.AppendLine($"LaserOnDelay={p.Miscellaneous_LaserOnDelay.ToString(inv)}");
+                    sb.AppendLine($"LaserOffDelay={p.Miscellaneous_LaserOffDelay.ToString(inv)}");
+                    sb.AppendLine($"MarkDelay={p.Miscellaneous_MarkDelay.ToString(inv)}");
+                    sb.AppendLine($"JumpDelay={p.Miscellaneous_JumpDelay.ToString(inv)}");
+                    sb.AppendLine($"PolygonDelay={p.Miscellaneous_PolygonDelay.ToString(inv)}");
+                    sb.AppendLine($"DrillingPower={p.Miscellaneous_Drilling_Power.ToString(inv)}");
+                    sb.AppendLine($"P2PDistance={p.Miscellaneous_P2PDistance.ToString(inv)}");
+                    // 주의: 로더가 "DrillingRepetation" 철자 사용중  :contentReference[oaicite:5]{index=5}
+                    sb.AppendLine($"DrillingRepetation={p.Miscellaneous_DrillingRepetition.ToString(inv)}");
+                    sb.AppendLine($"DrillingRepetitionBundle={p.Miscellaneous_DrillingRepetitionBundle.ToString(inv)}");
+                    sb.AppendLine($"RotationAngleArc={p.Miscellaneous_RotationAngleArc.ToString(inv)}");
+                    sb.AppendLine($"RotationStartAngle_Circle1time={p.Miscellaneous_CircleStartAngleCircle1time.ToString(inv)}");
+                    sb.AppendLine($"MaskIndex={p.Miscellaneous_MaskIndex.ToString(inv)}");
+                    sb.AppendLine($"BETPositionIndex={p.Miscellaneous_BETPositionIndex.ToString(inv)}");
+                    sb.AppendLine($"HoleProcessingType={p.Miscellaneous_HoleProcessingType.ToString(inv)}");
+                    sb.AppendLine($"HoleSortByDistance_Use={p.Miscellaneous_HoleSortByDistance_Use.ToString(inv)}");
+                    sb.AppendLine($"HoleDataSortingDistance={p.Miscellaneous_HoleSortingDistance.ToString(inv)}");
+
+                    // === Process Option ===
+                    sb.AppendLine($"Socket_Align_Use={p.ProcessOption_SocketAlign_Use.ToString(inv)}");
+                    sb.AppendLine($"Socket_HeightCheck_Use={p.ProcessOption_SocketHeightCheck_Use.ToString(inv)}");
+                    sb.AppendLine($"Socket_HeightCheckPos_OffsetX={p.ProcessOption_SocketHeightCheckPos_OffsetX.ToString(inv)}");
+                    sb.AppendLine($"Socket_HeightCheckPos_OffsetY={p.ProcessOption_SocketHeightCheckPos_OffsetY.ToString(inv)}");
+                    sb.AppendLine($"GoldPowder_Use={p.ProcessOption_GoldPowderAlign_Use.ToString(inv)}");
+
+                    // === Module Info ===
+                    sb.AppendLine($"Module_Width={p.ModuleInformation_Module_Width.ToString(inv)}");
+                    sb.AppendLine($"Module_Height={p.ModuleInformation_Module_Height.ToString(inv)}");
+                    sb.AppendLine($"Module_SiliconThickness={p.ModuleInformation_Silicon_Thickness.ToString(inv)}");
+                    sb.AppendLine($"Module_GoldPowderThickness={p.ModuleInformation_GoldPowder_Thickness.ToString(inv)}");
+                    sb.AppendLine($"Module_GoldPowderPercent={p.ModuleInformation_GoldPowder_Percent.ToString(inv)}");
+                    sb.AppendLine($"Module_GoldPowder_Thickness={p.ModuleInformation_GoldPowder_Limit.ToString(inv)}");
+
+                    // === Spiral ===
+                    sb.AppendLine($"Spiral_OuterDiameter={p.SpiralParam_OuterDiameter.ToString(inv)}");
+                    sb.AppendLine($"Spiral_InnerDiameter={p.SpiralParam_InnerDiameter.ToString(inv)}");
+                    sb.AppendLine($"Spiral_Revolutions={p.SpiralParam_Revolutions.ToString(inv)}");
+                    sb.AppendLine($"Spiral_AngleFactor={p.SpiralParam_AngleFactor.ToString(inv)}");
+
+                    // === EPRO ===
+                    sb.AppendLine($"EPRO_ModuleAbsorptionLevel={p.EPRO_ModuleAbsorptionLevel.ToString(inv)}");
+
+                    // === M-Aligner Vacuum ===
+                    sb.AppendLine($"MAlignerVacuumUse_Ignore={p.MAligner_VacuumPos_Ignore.ToString(inv)}");
+                    sb.AppendLine($"MAlignerVacuumUse_Center={p.MAligner_VacuumPos_Center.ToString(inv)}");
+                    sb.AppendLine($"MAlignerVacuumUse_Inner={p.MAligner_VacuumPos_Inner.ToString(inv)}");
+                    sb.AppendLine($"MAlignerVacuumUse_Outer={p.MAligner_VacuumPos_Outer.ToString(inv)}");
+
+                    // === Dust Collector ===
+                    sb.AppendLine($"DustCollector_RemoteMode_Use={p.DustCollectorRemoteMode_Use.ToString(inv)}");
+                    sb.AppendLine($"DustCollector_Frequency_Upper={p.DustCollectorFreq_Upper.ToString(inv)}");
+                    sb.AppendLine($"DustCollector_Frequency_Lower={p.DustCollectorFreq_Lower.ToString(inv)}");
+                    sb.AppendLine($"DustCollector_Lower_Disable={p.DustCollectorLower_Disable.ToString(inv)}");
+
+                    // === Cal / Options ===
+                    sb.AppendLine($"ZCalFile_OffsetZ={p.CalfileOffsetZAxismm.ToString(inv)}");
+                    sb.AppendLine($"ChuckMSL_Use={p.ChuckMSL_Enable.ToString(inv)}");
+                    sb.AppendLine($"Align3Point_Enable={p.Align3Point_Enable.ToString(inv)}");
+
+                    // === Marking Template ===
+                    sb.AppendLine($"MarkingData_SiriusTemplate_Use={p.MarkingData_SiriusTemplate_Use.ToString(inv)}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_EntityData_DataType={p.MarkingTemplate_EntityData_DataType.ToString(inv)}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_EntityData_Width={p.MarkingTemplate_EntityData_Width.ToString(inv)}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_EntityData_Height={p.MarkingTemplate_EntityData_Height.ToString(inv)}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_EntityData_TextType={p.MarkingTemplate_EntityData_TextType.ToString(inv)}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_EntityData_PrefixData={p.MarkingTemplate_EntityData_PrefixData}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_EntityData_StartNumber={p.MarkingTemplate_EntityData_StartNumber.ToString(inv)}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_EntityData_Digits={p.MarkingTemplate_EntityData_Digits.ToString(inv)}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_EntityData_IncreaseStep={p.MarkingTemplate_EntityData_IncreaseStep.ToString(inv)}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_EntityData_SuffixData={p.MarkingTemplate_EntityData_SuffixData}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_Hatch_Use={p.MarkingTemplate_EntityData_Hatch_Use.ToString(inv)}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_Hatch_Spacing={p.MarkingTemplate_EntityData_Hatch_Spacing.ToString(inv)}");
+                    sb.AppendLine($"MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType={p.MarkingTemplate_EntityData_SerialNumberIncreaseType.ToString(inv)}");
+
+                    sb.AppendLine(); // 섹션 간 공백
+                }
+
+                // 원자적 저장(임시 → 백업 → 본파일 교체)
+                File.WriteAllText(tmp, sb.ToString(), Encoding.UTF8);
+
+                if (File.Exists(path))
+                {
+                    // 기존을 .bak로 보존
+                    File.Copy(path, bak, overwrite: true);
+                }
+
+                // 교체
+                File.Copy(tmp, path, overwrite: true);
+                File.Delete(tmp);
+
+                // 상태 업데이트
+                Equipment.Current_Recipe = path;
+                CurrentRecipePath = path;
+            }
+        }
+
 
         /// <summary>
         /// Recipe Layer 데이터를 새로고침
@@ -44,8 +208,11 @@ namespace QMC.Common.Q_Recipe
 
             // Equipment 데이터는 GetLayerRecipeData로 접근
             var data = GetLayerRecipeData(layerName);
-            if (data.Equals(default(stLayerRecipeParameter)))
+            if (data.Index < 0)
                 Log.Write("SLD-200", Equipment.User_Name, $"Layer [{layerName}] 데이터 없음");
+
+            //if (data.Equals(default(stLayerRecipeParameter)))
+            //    Log.Write("SLD-200", Equipment.User_Name, $"Layer [{layerName}] 데이터 없음");
         }
 
         private bool Recipe_Data_Load_Refactory(string strRecipeFile)
@@ -141,6 +308,7 @@ namespace QMC.Common.Q_Recipe
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = ReadDouble(data, "Module_SiliconThickness", 0.0);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness = ReadDouble(data, "Module_GoldPowderThickness", 0.0);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent = ReadDouble(data, "Module_GoldPowderPercent", 0.0);
+                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Limit = ReadDouble(data, "Module_GoldPowderLimit", 0.0);
 
                 Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter = ReadDouble(data, "Spiral_OuterDiameter", 0.0);
                 Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter = ReadDouble(data, "Spiral_InnerDiameter", 0.0);
@@ -217,15 +385,6 @@ namespace QMC.Common.Q_Recipe
                 LayerData = Equipment.stLayerRecipeSet[nIndex],
                 CommonData = Equipment.stLayerRecipeSet[(int)LayerList.Hole1] // 공통 데이터는 0번 Hole
             };
-        }
-
-        /// <summary>
-        /// 자동 전환 시 Recipe 오픈 및 UI 새로고침
-        /// </summary>
-        public void AutoChangeRecipe(string recipePath)
-        {
-            OpenRecipe(recipePath);
-            RefreshRecipeData("Hole1"); // 기본 첫 레이어
         }
 
         public bool IsNumeric(string input)
