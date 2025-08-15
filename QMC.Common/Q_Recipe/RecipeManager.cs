@@ -132,6 +132,7 @@ namespace QMC.Common.Q_Recipe
                     sb.AppendLine($"Module_SiliconThickness={p.ModuleInformation_Silicon_Thickness.ToString(inv)}");
                     sb.AppendLine($"Module_GoldPowderThickness={p.ModuleInformation_GoldPowder_Thickness.ToString(inv)}");
                     sb.AppendLine($"Module_GoldPowderPercent={p.ModuleInformation_GoldPowder_Percent.ToString(inv)}");
+                    sb.AppendLine($"Module_GoldPowder_Thickness={p.ModuleInformation_GoldPowder_Limit.ToString(inv)}");
 
                     // === Spiral ===
                     sb.AppendLine($"Spiral_OuterDiameter={p.SpiralParam_OuterDiameter.ToString(inv)}");
@@ -307,6 +308,7 @@ namespace QMC.Common.Q_Recipe
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = ReadDouble(data, "Module_SiliconThickness", 0.0);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness = ReadDouble(data, "Module_GoldPowderThickness", 0.0);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent = ReadDouble(data, "Module_GoldPowderPercent", 0.0);
+                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Limit = ReadDouble(data, "Module_GoldPowderLimit", 0.0);
 
                 Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter = ReadDouble(data, "Spiral_OuterDiameter", 0.0);
                 Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter = ReadDouble(data, "Spiral_InnerDiameter", 0.0);
