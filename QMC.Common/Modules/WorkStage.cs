@@ -30297,12 +30297,14 @@ namespace QMC.Common.Modules
             }
             else
             {
+                double dLimit = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit;
+
                 for (int iter = 0; iter < 4; iter++)
                 {
                     dOffsetX1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
                     dOffsetY1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.Y;
 
-                    if (Math.Abs(dOffsetX1) < 0.025 && Math.Abs(dOffsetY1) < 0.025)
+                    if (Math.Abs(dOffsetX1) < dLimit && Math.Abs(dOffsetY1) < dLimit)
                     {
                         dSumOffsetX += dOffsetX1;
                         dSumOffsetY += dOffsetY1;

@@ -1043,6 +1043,8 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness = Equipment.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_GoldPowderPercent", "75.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "Module_GoldPowderLimit", "0.05", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Limit = Equipment.ToDouble(temp.ToString());
 
 
                 //  Spiral Parameter
@@ -1162,13 +1164,13 @@ namespace SLD200_MSL
 
                 Equipment.stLayerRecipeSet[i].DrawingFile = ReadValue(data, "Drawing_File_Name", "");
 
-                Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth = ReadDouble(data, "Pulse_Width", 0);
+                Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth = ReadDouble(data, "Pulse_Width", 1);
                 Equipment.stLayerRecipeSet[i].LaserParam_PulsePeriod = ReadDouble(data, "Pulse_Period", 0);
-                Equipment.stLayerRecipeSet[i].LaserParam_Frequency = ReadInt(data, "Frequency", 0);
-                Equipment.stLayerRecipeSet[i].LaserParam_DutyCycle = ReadDouble(data, "Duty_Cycle", 0.0);
+                Equipment.stLayerRecipeSet[i].LaserParam_Frequency = ReadInt(data, "Frequency", 7000);
+                Equipment.stLayerRecipeSet[i].LaserParam_DutyCycle = ReadDouble(data, "Duty_Cycle", 0.2);
 
                 Equipment.stLayerRecipeSet[i].LaserParam_TriggerMode_External = ReadBool(data, "Trigger_Mode_External", false);
-                Equipment.stLayerRecipeSet[i].ProcessPriority_P2P = ReadBool(data, "P2P", false);
+                Equipment.stLayerRecipeSet[i].ProcessPriority_P2P = ReadBool(data, "P2P", true);
 
                 Equipment.stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = ReadValue(data, "Reference_Layer", "");
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = ReadDouble(data, "Defocusing_Distance", 0.0);
@@ -1176,7 +1178,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = ReadInt(data, "HoleDrilling_StartPosDivision", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = ReadDouble(data, "GroupSplitSize", 0.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize_Height = ReadDouble(data, "GroupSplitSize_Height", 0.0);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed = ReadDouble(data, "ScannerDrillingSpeed", 10.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed = ReadDouble(data, "ScannerDrillingSpeed", 100.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerJumpSpeed = ReadDouble(data, "ScannerJumpSpeed", 100.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOnDelay = ReadInt(data, "LaserOnDelay", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOffDelay = ReadInt(data, "LaserOffDelay", 0);
@@ -1189,7 +1191,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = (short)ReadInt(data, "DrillingRepetitionBundle", 100);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = ReadDouble(data, "RotationAngleArc", 360.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_CircleStartAngleCircle1time = ReadDouble(data, "RotationStartAngle_Circle1time", 0.0);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex = ReadInt(data, "MaskIndex", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex = ReadInt(data, "MaskIndex", 4);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = ReadInt(data, "BETPositionIndex", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = ReadInt(data, "HoleProcessingType", 0);
                 //Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = ReadInt(data, "FiducialAlignType", 0);
@@ -1197,8 +1199,8 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSortByDistance_Use = ReadBool(data, "HoleSortByDistance_Use", true);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSortingDistance = ReadDouble(data, "HoleDataSortingDistance", 0.5);
 
-                Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = ReadBool(data, "Socket_Align_Use", false);
-                Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use = ReadBool(data, "Socket_HeightCheck_Use", false);
+                Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = ReadBool(data, "Socket_Align_Use", true);
+                Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use = ReadBool(data, "Socket_HeightCheck_Use", true);
                 Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetX = ReadDouble(data, "Socket_HeightCheckPos_OffsetX", 0.0);
                 Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetY = ReadDouble(data, "Socket_HeightCheckPos_OffsetY", 0.0);
                 
@@ -1208,14 +1210,15 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height = ReadDouble(data, "Module_Height", 120.0);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = ReadDouble(data, "Module_SiliconThickness", 0.0);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness = ReadDouble(data, "Module_GoldPowderThickness", 0.0);
-                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent = ReadDouble(data, "Module_GoldPowderPercent", 0.0);
+                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent = ReadDouble(data, "Module_GoldPowderPercent", 75.0);
+                Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Limit = ReadDouble(data, "Module_GoldPowderLimit", 0.05);
 
                 Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter = ReadDouble(data, "Spiral_OuterDiameter", 0.0);
                 Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter = ReadDouble(data, "Spiral_InnerDiameter", 0.0);
                 Equipment.stLayerRecipeSet[i].SpiralParam_Revolutions = ReadInt(data, "Spiral_Revolutions", 10);
                 Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor = ReadDouble(data, "Spiral_AngleFactor", 10.0);
 
-                Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = ReadDouble(data, "EPRO_ModuleAbsorptionLevel", -40.0);
+                Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = ReadDouble(data, "EPRO_ModuleAbsorptionLevel", -20.0);
 
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Ignore = ReadBool(data, "MAlignerVacuumUse_Ignore", false);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center = ReadBool(data, "MAlignerVacuumUse_Center", true);
@@ -1413,6 +1416,7 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString();
             textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness.ToString();
             textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent.ToString();
+            textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit.ToString();
 
             //  Spiral Parameter
             textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_OuterDiameter.ToString();
@@ -1807,6 +1811,7 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = CommonData.ModuleInformation_Silicon_Thickness.ToString();
             textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text = CommonData.ModuleInformation_GoldPowder_Thickness.ToString();
             textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text = CommonData.ModuleInformation_GoldPowder_Percent.ToString();
+            textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text = CommonData.ModuleInformation_GoldPowder_Limit.ToString();
 
             //  EPRO Module Absorption Level
             textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = CommonData.EPRO_ModuleAbsorptionLevel.ToString();
@@ -2019,6 +2024,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString();
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness.ToString();
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent.ToString();
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit.ToString();
 
                 //  Spiral Parameter
                 textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter.ToString();
@@ -2428,6 +2434,7 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_SiliconThickness", Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_GoldPowderThickness", Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_GoldPowderPercent", Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Module_GoldPowderLimit", Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Limit.ToString(), strFIle);
 
 
                 //  Spiral Parameter
@@ -2545,6 +2552,7 @@ namespace SLD200_MSL
                 layerDict["Module_SiliconThickness"] = Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness.ToString();
                 layerDict["Module_GoldPowderThickness"] = Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness.ToString();
                 layerDict["Module_GoldPowderPercent"] = Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Percent.ToString();
+                layerDict["Module_GoldPowderLimit"] = Equipment.stLayerRecipeSet[i].ModuleInformation_GoldPowder_Limit.ToString();
 
                 layerDict["Spiral_OuterDiameter"] = Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter.ToString();
                 layerDict["Spiral_InnerDiameter"] = Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter.ToString();
@@ -2840,6 +2848,7 @@ namespace SLD200_MSL
                     textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString();
                     textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness.ToString();
                     textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent.ToString();
+                    textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit.ToString();
 
                     //  Spiral Parameter
                     textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter.ToString();
@@ -3302,6 +3311,7 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text) : 0.0;
             Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text) : 0.0;
             Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text) : 0.0;
+            Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text) : 0.0;
 
             //  Spiral Parameter
             Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_OuterDiameter = textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text) : 0.0;
@@ -3913,6 +3923,7 @@ namespace SLD200_MSL
                 button_GoldPowderThickness,
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness,
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent,
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit,
                 checkBox_Recipe_TabRecipe_ChuckMSL_Enable,
                 checkBox_Recipe_TabRecipe_3PointAlign_Enable,
                 
@@ -4000,6 +4011,7 @@ namespace SLD200_MSL
                 button_GoldPowderThickness,
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness,
                 textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent,
+                textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit,
                 checkBox_Recipe_TabRecipe_ChuckMSL_Enable,
                 checkBox_Recipe_TabRecipe_3PointAlign_Enable,
                 
