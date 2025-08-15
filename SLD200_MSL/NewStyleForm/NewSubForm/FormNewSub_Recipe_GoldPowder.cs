@@ -528,7 +528,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                                                             w, h, (int)m_dradius, dScore, dSpec);
                     }
                         
-                    if (circlesResult.Count > 3)
+                    if (circlesResult.Count >= 1)
                     {
                         bFindCircle = true;
                     }

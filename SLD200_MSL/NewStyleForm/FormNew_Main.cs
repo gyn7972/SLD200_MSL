@@ -1940,6 +1940,10 @@ namespace SLD200_MSL
             }
             else
             {
+                bool isErrorFound = false;
+                string errorMessages = "";
+                var sb = new StringBuilder();
+
                 // Vacuum 해제
                 if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
                 {
@@ -1947,10 +1951,15 @@ namespace SLD200_MSL
                     Thread.Sleep(10);
                     workStage.workStageParameter.DO_Stage_Blow(false);
                     Thread.Sleep(10);
-                    strTemp = "workStage - 자재 확인 바랍니다.";
-                    Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-                    return;
+
+                    //errorMessages += "workStage - 자재 확인 바랍니다.\n";
+                    sb.AppendLine("workStage - 자재 확인 바랍니다.");
+                    isErrorFound = true;
+
+                    //strTemp = "workStage - 자재 확인 바랍니다.";
+                    //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                    //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                    //return;
                 }
                 else
                 {
@@ -1970,10 +1979,14 @@ namespace SLD200_MSL
                         loader.loaderParameter.DO_Loader_Aligner_Blow(index, false);
                         Thread.Sleep(10);
 
-                        strTemp = "M-Align Unit - 자재 확인 바랍니다.";
-                        Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                        new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-                        return;
+                        //errorMessages += $"M-Align Unit({posMAlign}) - 자재 확인 바랍니다.\n";
+                        sb.AppendLine($"M-Align Unit({posMAlign}) - 자재 확인 바랍니다.");
+                        isErrorFound = true;
+
+                        //strTemp = "M-Align Unit - 자재 확인 바랍니다.";
+                        //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                        //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                        //return;
                     }
                     else
                     {
@@ -1989,15 +2002,19 @@ namespace SLD200_MSL
                     int index = (int)posPicker;
                     if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck(index)) 
                     {
+                        //errorMessages += $"Loader Unit({posPicker}) - 자재 확인 바랍니다.\n";
+                        sb.AppendLine($"Loader Unit({posPicker}) - 자재 확인 바랍니다.");
+                        isErrorFound = true;
+
                         //loader.loaderParameter.DO_Loader_Picker_Vacuum(index, false);
                         //Thread.Sleep(200);
                         //loader.loaderParameter.DO_Loader_Picker_Blow(false);
                         //Thread.Sleep(200);
 
-                        strTemp = "Loader Unit - 자재 확인 바랍니다.";
-                        Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                        new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-                        return;
+                        //strTemp = "Loader Unit - 자재 확인 바랍니다.";
+                        //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                        //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                        //return;
                     }
                     else
                     {
@@ -2009,15 +2026,19 @@ namespace SLD200_MSL
 
                     if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index))
                     {
+                        //errorMessages += $"Unloader Unit({posPicker}) - 자재 확인 바랍니다.\n";
+                        sb.AppendLine($"Unloader Unit({posPicker}) - 자재 확인 바랍니다.");
+                        isErrorFound = true;
+
                         //unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
                         //Thread.Sleep(100);
                         //unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
                         //Thread.Sleep(200);
 
-                        strTemp = "Unloader Unit - 자재 확인 바랍니다.";
-                        Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                        new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-                        return;
+                        //strTemp = "Unloader Unit - 자재 확인 바랍니다.";
+                        //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                        //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                        //return;
                     }
                     else
                     {
@@ -2025,6 +2046,15 @@ namespace SLD200_MSL
                         Thread.Sleep(10);
                         unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
                         Thread.Sleep(10);
+                    }
+
+                    // 최종 에러 처리
+                    if (isErrorFound)
+                    {
+                        string message = sb.ToString().TrimEnd(); // 마지막 줄바꿈 제거
+                        Log.Write("SLD-200", Equipment.User_Name, message);
+                        new QMC.Core.MessageBoxOk().ShowDialog("Error !", message);
+                        return;
                     }
                 }
 
