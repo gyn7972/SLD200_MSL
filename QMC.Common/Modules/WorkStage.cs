@@ -15485,6 +15485,7 @@ namespace QMC.Common.Modules
         {
             if(bDirection)
             {
+                //도면에서 스테이지 좌표 보정 시.
                 double dX = xyCoordinate.X - dRotationCenterX;
                 double dY = xyCoordinate.Y - dRotationCenterY;
                 double dNewX = (dX * Math.Cos(v)) - (dY * Math.Sin(v));
@@ -15493,6 +15494,7 @@ namespace QMC.Common.Modules
             }
             else
             {
+                //스테이지에서 스테이지 좌표 보정 시.
                 double dx = xyCoordinate.X - dRotationCenterX;
                 double dy = xyCoordinate.Y - dRotationCenterY;
                 double cos = Math.Cos(v);
