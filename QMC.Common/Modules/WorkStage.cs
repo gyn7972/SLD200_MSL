@@ -14084,7 +14084,6 @@ namespace QMC.Common.Modules
 
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPosDoneCheck;
                     break;
-
                 case (int)SocketAlign_Step.SocketAlignZ_MoveReadyPosDoneCheck:                                        //  Stage Z 축, 대기위치(높이)로 이동 완료 확인
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
                         MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z))
@@ -14328,30 +14327,6 @@ namespace QMC.Common.Modules
                         m_nSocketAlign_MainStep = tempStep;  // 다시 반영
                     }
 
-                    //기존 코드
-                    {
-                        //if (IsWorkStage_Positions(nAxis.X, xyCoordinateAlign.X) &&
-                        //IsWorkStage_Positions(nAxis.Y, xyCoordinateAlign.Y))
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "SocketAlign", "Fiducial 마크 위치로 이동 완료");
-
-                        //    Log.Write("FineVision InspectionPOs", " Socket NO : " + nSocketNum.ToString() + "  FineVision Fiducial Makr No : " + m_nSocketAlign_FiducialCount.ToString()
-                        //            + " X : " + xyCoordinateAlign.X.ToString()
-                        //            + ", Y : " + xyCoordinateAlign.Y.ToString());
-
-                        //    //m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveInspPos;  // 가공 위치랑 비전 위치가 동일해서.. Skip인가..
-                        //    //꼭 수정 TEST
-                        //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
-                        //}
-                        //else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) > 60000)
-                        //{
-                        //    strTemp = string.Format("Fiducial 마크 위치로 이동 실패. (Timeout) [AlignMode: {0}]", alignMode);
-                        //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
-
-                        //    return AlarmPost(AlarmKey.SocketAlignXYMoveFail);
-                        //}
-                    }
-                    
                     break;
 
                 case (int)SocketAlign_Step.SocketAlignZ_MoveInspPos:                                                 //  Stage Z 축, 비전 검사 위치(높이)로 이동
@@ -17659,116 +17634,9 @@ namespace QMC.Common.Modules
                 m_dOffset = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness;
             }
 
-            double dZPosOffset = 0.0;
-            //if (Equipment.stVisionRecipeSet.bSocketIlluminationRedUse)
-            //{
-            //    dZPosOffset = Equipment.stVisionRecipeSet.dSocketAxisZ_Offset;
-            //}
-
             //  좌표계 (기존)
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
-                    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset + dZPosOffset;
-
-            MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
-                                  lfVelocity, lfAccDec, lfAccDec);
-
-            TickCount_Start((int)TickType.TICK_MAIN);
-        }
-
-        private void LaserDrilling_StepDrillingData_SocketDrillingHeight_ZOffset_Move(out string strTemp, out double lfVelocity, out double lfAccDec, out double m_dOffset)
-        {
-            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Socket 가공 Focus 조정 시작.");
-            
-            workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-            //  속도 설정
-            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-
-            //  가공 할 Layer 의 Z Offset 값으로 이동 
-            //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
-            m_dOffset = m_dHoleLayer_Defocusing;
-
-            strTemp = "";
-            if (Equipment.Machine_SocketHeight_Batch_Use &&
-                !Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
-            {
-                var layerEnum = GetCurrentLayerEnum(m_LayerType);
-                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
-                if (socket != null && socket.IsSocketDisplacement)
-                {
-                    m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
-
-                    strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
-                                            layerEnum,
-                                            m_nDrillingWork_Group_Count,
-                                            m_dZOffset_SocketHeightCheck);
-                    Log.Write("SocketHeight", strTemp);
-                }
-                else
-                {
-                    Log.Write("SocketHeight", $"Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
-                }
-            }
-            else
-            {
-                //Log 남겨놔보자.
-                var layerEnum = GetCurrentLayerEnum(m_LayerType);
-                var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
-                if (socket != null && socket.IsSocketDisplacement)
-                {
-                    // 적용하지말고 로그만 남기자.
-                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
-                    strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
-                                            layerEnum,
-                                            m_nDrillingWork_Group_Count,
-                                            m_dZOffset_SocketHeightCheck);
-                    Log.Write("SocketHeight", strTemp);
-                }
-                else
-                {
-                    Log.Write("SocketHeight", $"로그만_Layer = {layerEnum}, Socket No = {m_nDrillingWork_Group_Count}, Displacement 사용 안함 또는 Socket 없음");
-                }
-            }
-
-                switch (m_LayerType)
-                {
-                    case LayerType.LAYER_DRILLING:
-                        m_dOffset = m_dHoleLayer_Defocusing;
-
-                        strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Drilling Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
-                                m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dHoleLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
-                        break;
-
-                    case LayerType.LAYER_THRUHOLE:
-                        m_dOffset = m_dThruholeLayer_Defocusing;
-
-                        strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Thruhole Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
-                                m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dThruholeLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
-                        break;
-
-                    case LayerType.LAYER_OUTLINE:
-                        m_dOffset = m_dOutlineLayer_Defocusing;
-
-                        strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Outline Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
-                                m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dOutlineLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
-                        break;
-
-                    case LayerType.LAYER_MARKING:
-                        m_dOffset = m_dMarkingLayer_Defocusing;
-
-                        strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Marking Dofocusing Distance ({3:0.000}), Axis Z ({4:0.000})",
-                                m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, m_dMarkingLayer_Defocusing, MC_Func.MC_GetEncPos((int)nAxis.Z));
-                        break;
-                }
-            Log.Write("SocketHeight", strTemp);
-
-            //  좌표계 (기존)
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
-                vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset;
-            strTemp = string.Format("TargetZ = {0:F3} mm",
-                                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]);
-            Log.Write("SocketHeight", strTemp);
+                    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset;
 
             MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
                                   lfVelocity, lfAccDec, lfAccDec);
@@ -38218,23 +38086,6 @@ namespace QMC.Common.Modules
                                     }
                                 }
                                 DrillingManager.MarkAsChanged();
-
-
-
-                                //기존 코드
-                                {
-                                    //var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
-                                    //int socketIndex = m_nDrillingWork_Group_Count;
-                                    //socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
-                                    //if (socket != null)
-                                    //{
-                                    //    socket.IsSocketDisplacement = true;
-                                    //    socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
-                                    //    DrillingManager.MarkAsChanged();
-                                    //    Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
-                                    //}
-                                }
-                                
                             }
 
                             if (m_stOutLine_SocketData != null)
@@ -38447,7 +38298,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move:                                 //  Socket 가공 높이 보정 이동
 
-                    LaserDrilling_StepDrillingData_SocketDrillingHeight_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
+                    LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move_DoneCheck;
                     break;
@@ -39781,6 +39632,7 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move:                                           //  Socket 가공 높이로 보정 이동
 
                     //  가공 높이로 보정 이동
+                    //LaserDrilling_StepDrillingData_SocketDrillingHeight_ZOffset_Move
                     LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move_DoneCheck;
@@ -40333,7 +40185,6 @@ namespace QMC.Common.Modules
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap2;
                         }
                     }
-
                     break;
 
 
@@ -41956,7 +41807,10 @@ namespace QMC.Common.Modules
                             m_nDrillingWork_Repeat_Count++;
                             if (m_nDrillingWork_Repeat_Count < /*Config.ParamConfig.Drilling_Repeat_Count*/m_nDrillingWork_Repeat_Count_Total)                            //  Drilling 반복 회수 이내이면? --> 다시 Drilling
                             {
-                                Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Hole 반복 회수 이내");
+                                if(false)
+                                {
+                                    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Hole 반복 회수 이내");
+                                }
 
                                 m_nDrillingWork_RepeatBundle_Count++;
                                 //if (m_nDrillingWork_RepeatBundle_Count < Config.ParamConfig.RepetitionsBundle)

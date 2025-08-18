@@ -1819,7 +1819,6 @@
             this.button_TEST2.TabIndex = 213;
             this.button_TEST2.Text = "TEST";
             this.button_TEST2.UseVisualStyleBackColor = false;
-            this.button_TEST2.Visible = false;
             this.button_TEST2.Click += new System.EventHandler(this.button_TEST2_Click);
             // 
             // groupBox_BET_Status

@@ -65,6 +65,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             m_correction3DRtcForm.TopLevel = false; // 폼을 최상위 폼이 아니도록 설정
             m_correction3DRtcForm.FormBorderStyle = FormBorderStyle.None; // 폼의 테두리를 제거
             m_correction3DRtcForm.Dock = DockStyle.Fill; // 폼을 패널에 맞게 채움
+            this.pictureBox_Correction3DRtcForm.Controls.Add(m_correction3DRtcForm);
+            m_correction3DRtcForm.Show();
+
         }
     }
 }

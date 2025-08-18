@@ -1361,7 +1361,12 @@ namespace SLD200_MSL
                 if (Equipment.Machine_LaserType_CO2)
                 {
                     workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
+
+                    workStage.workStageParameter.DO_Laser_Enable(false);
+                    Thread.Sleep(100); //  레이저가 꺼지는 시간을 주자.
                 }
+
+
 
                 //  이것저것 다 리셋 - 끝
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1385,6 +1390,9 @@ namespace SLD200_MSL
                 workStage.timer_Motion_Home.Enabled = true;
                 workStage.m_MotionHome_Start = true;
                 workStage.m_bHomeProgressForm_Close = false;
+
+                Thread.Sleep(100); //  홈 타이머가 시작되기 전에 잠시 대기
+                workStage.workStageParameter.DO_Laser_Enable(true);
 
                 if (!m_FormProgress.HasChildren)            //  Progress 창을 실수로 닫았다면, 다시 메모리 할당하자.
                 {
@@ -2137,17 +2145,21 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New || Equipment.SelectRunEnable)
                 return;
 
-            workStage.Module_Allocation();
-            unloader.Module_Allocation();
-            loader.Module_Allocation();
-
-            //  카메라는 여러번 초기화 할 수 있으니, 이 조건을 걸어서 스캐너 초기화를 1회만 하도록 한다.
+            // 이 조건을 걸어서 스캐너 초기화를 1회만 하도록 한다.
             if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6_COMPLETE)
             {
+                 workStage.Module_Allocation();
+                unloader.Module_Allocation();
+                loader.Module_Allocation();
+
                 // 문서 생성후 뷰어에 지정
                 var doc = new DocumentDefault();
                 SiriusViewer_Main.Document = doc;
 
+                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+            }
+            else if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+            {
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
             }
         }
@@ -4474,6 +4486,9 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            var dlg = new FormNewSub_ScannerCal3D();
+            dlg.ShowDialog();
+
             return;
             //AutoRunTracker.OnAutoStart();
             //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();

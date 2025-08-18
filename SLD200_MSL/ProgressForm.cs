@@ -96,7 +96,7 @@ namespace SLD200_MSL
                 {
                     if (m_AsyncResult.Status == TaskStatus.RanToCompletion)
                     {
-                        Console.WriteLine("Progress End");
+                        //Console.WriteLine("Progress End");
                         int nResult = 0;
                         nResult = m_AsyncResult.Result;
                         if (nResult == 0)
