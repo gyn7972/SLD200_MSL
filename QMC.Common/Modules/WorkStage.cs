@@ -33363,7 +33363,46 @@ namespace QMC.Common.Modules
             // PreAlign Data 적용/미적용
             if (Equipment.Machine_PreAlign_First_Enable && m_bPreAlignCompleted)
             {
-                result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y));
+                //result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y));
+                XyCoordinate xyCoordinate = new XyCoordinate(0, 0);
+                xyCoordinate = result;
+
+                Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate before : ", xyCoordinate.ToString());
+
+                if (m_bPreAlignCompleted &&
+                    xyCoordinateAlignPositionLast != null &&
+                    xyCoordinateAlignPositionOrgLast != null)
+                {
+                    XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-Offset  : " + offset.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign before : ", xyCoordinate.ToString());
+
+                    //xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
+                    //    xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+                    //private XyCoordinate CoordinateTransform(XyCoordinate xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v)
+                    {
+                        double dX = xyCoordinate.X - xyCoordinateAlignPositionOrgLast.X;
+                        double dY = xyCoordinate.Y - xyCoordinateAlignPositionOrgLast.Y;
+                        double dNewX = (dX * Math.Cos(m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1)) -
+                            (dY * Math.Sin(m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1));
+                        double dNewY = (dX * Math.Sin(m_st4PointAlign_Result_LastSuccess.dRotationAngle)) +
+                            (dY * Math.Cos(m_st4PointAlign_Result_LastSuccess.dRotationAngle));
+                        //return new XyCoordinate(dNewX + xyCoordinateAlignPositionOrgLast.X, dNewY + xyCoordinateAlignPositionOrgLast.Y);
+
+                        xyCoordinate.X = dNewX + xyCoordinateAlignPositionOrgLast.X;
+                        xyCoordinate.Y = dNewY + xyCoordinateAlignPositionOrgLast.Y;
+                    }
+
+                    xyCoordinate = xyCoordinate + offset;
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign After : ", xyCoordinate.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+
+                    Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
+                }
+
+                result = xyCoordinate;
             }
 
             return result;
