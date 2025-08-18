@@ -1059,6 +1059,7 @@
             this.checkBox_Test_DryRun.TabIndex = 59;
             this.checkBox_Test_DryRun.Text = "Dry Run";
             this.checkBox_Test_DryRun.UseVisualStyleBackColor = true;
+            this.checkBox_Test_DryRun.Visible = false;
             // 
             // checkBox_Main_Loader_LPort_Pause
             // 
@@ -1122,10 +1123,10 @@
             this.buttonForceMaterialOut.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.buttonForceMaterialOut.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.buttonForceMaterialOut.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1457, 419);
+            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1357, 419);
             this.buttonForceMaterialOut.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonForceMaterialOut.Name = "buttonForceMaterialOut";
-            this.buttonForceMaterialOut.Size = new System.Drawing.Size(94, 62);
+            this.buttonForceMaterialOut.Size = new System.Drawing.Size(192, 59);
             this.buttonForceMaterialOut.TabIndex = 158;
             this.buttonForceMaterialOut.Text = "강제배출";
             this.buttonForceMaterialOut.UseVisualStyleBackColor = false;
@@ -1228,13 +1229,14 @@
             // 
             this.button_TestbyUser_LPort_Start.BackColor = System.Drawing.Color.DarkGray;
             this.button_TestbyUser_LPort_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_TestbyUser_LPort_Start.Location = new System.Drawing.Point(1359, 419);
+            this.button_TestbyUser_LPort_Start.Location = new System.Drawing.Point(1595, 266);
             this.button_TestbyUser_LPort_Start.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_TestbyUser_LPort_Start.Name = "button_TestbyUser_LPort_Start";
-            this.button_TestbyUser_LPort_Start.Size = new System.Drawing.Size(94, 62);
+            this.button_TestbyUser_LPort_Start.Size = new System.Drawing.Size(38, 26);
             this.button_TestbyUser_LPort_Start.TabIndex = 193;
             this.button_TestbyUser_LPort_Start.Text = "LD L-Port Start\r\n(by User)";
             this.button_TestbyUser_LPort_Start.UseVisualStyleBackColor = false;
+            this.button_TestbyUser_LPort_Start.Visible = false;
             this.button_TestbyUser_LPort_Start.Click += new System.EventHandler(this.button_TestbyUser_LPort_Start_Click);
             // 
             // label_Title_Stacker_LPort
@@ -2338,7 +2340,7 @@
             this.button_Main_SelectedProcess.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_Main_SelectedProcess.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_SelectedProcess.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Main_SelectedProcess.Location = new System.Drawing.Point(1359, 485);
+            this.button_Main_SelectedProcess.Location = new System.Drawing.Point(1357, 485);
             this.button_Main_SelectedProcess.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_SelectedProcess.Name = "button_Main_SelectedProcess";
             this.button_Main_SelectedProcess.Size = new System.Drawing.Size(192, 59);
@@ -2480,6 +2482,7 @@
             this.baseTextBox_DryRun_ProcessingTime.Tag = "KeyPad;Min=0;Max=1500;Format=0.000";
             this.baseTextBox_DryRun_ProcessingTime.Text = "5";
             this.baseTextBox_DryRun_ProcessingTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.baseTextBox_DryRun_ProcessingTime.Visible = false;
             // 
             // baseLabel5
             // 
@@ -2492,6 +2495,7 @@
             this.baseLabel5.TabIndex = 150;
             this.baseLabel5.Text = "(DryRun Time (sec) :";
             this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.baseLabel5.Visible = false;
             // 
             // FormNew_Main
             // 

@@ -15481,13 +15481,27 @@ namespace QMC.Common.Modules
             return new PointD(result.X, result.Y);
         }
 
-        private XyCoordinate CoordinateTransform(XyCoordinate xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v)
+        private XyCoordinate CoordinateTransform(XyCoordinate xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v, bool bDirection = true)
         {
-            double dX = xyCoordinate.X - dRotationCenterX;
-            double dY = xyCoordinate.Y - dRotationCenterY;
-            double dNewX = (dX * Math.Cos(v)) - (dY * Math.Sin(v));
-            double dNewY = (dX * Math.Sin(v)) + (dY * Math.Cos(v));
-            return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
+            if(bDirection)
+            {
+                double dX = xyCoordinate.X - dRotationCenterX;
+                double dY = xyCoordinate.Y - dRotationCenterY;
+                double dNewX = (dX * Math.Cos(v)) - (dY * Math.Sin(v));
+                double dNewY = (dX * Math.Sin(v)) + (dY * Math.Cos(v));
+                return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
+            }
+            else
+            {
+                double dx = xyCoordinate.X - dRotationCenterX;
+                double dy = xyCoordinate.Y - dRotationCenterY;
+                double cos = Math.Cos(v);
+                double sin = Math.Sin(v);
+                // 영상 좌표계(+v=시계, y-down)용 순수 회전
+                double nx = dx * cos + dy * sin;
+                double ny = -dx * sin + dy * cos;
+                return new XyCoordinate(nx + dRotationCenterX, ny + dRotationCenterY);
+            }
         }
 
         private int SpiralSearch(double dWidth , int maxSteps = 9, AlignMode alignMode = AlignMode.Socket)
@@ -35085,7 +35099,8 @@ namespace QMC.Common.Modules
                         {
                             m_Sequence_FlatnessMeasure.Reset();
                             {
-                                dTeachingPosZ = (int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos;
+                                dTeachingPosZ = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z;
+
                                 //double dCurrentPosZ = GetEncWorkStagePos_Motor(nAxis.Z);
                                 double dHeightOffset = (m_dLaserHeightSensorSocket_Value > -4.5 && m_dLaserHeightSensorSocket_Value < 5.5)
                                                        ? m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition
@@ -38043,7 +38058,9 @@ namespace QMC.Common.Modules
 
                     // dPosZ : 척과의 높이에서의 PosZ;
                     // 이 값이랑 제품 높이에서 측정후 변위센서값을 뺸 PosZ과 계산하면 제품 높이를 구할 수 있다.
-                    dTeachingPosZ = (int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos;
+
+                    //dTeachingPosZ = (int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos;
+                    dTeachingPosZ = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z;
                     double dPosModuleZ = dTeachingPosZ + m_dZOffset_SocketHeightCheck;
 
                     m_dStageheight = m_Sequence_FlatnessMeasure.LoadStageZMeasureHeight();
