@@ -15494,15 +15494,27 @@ namespace QMC.Common.Modules
             }
             else
             {
-                //스테이지에서 스테이지 좌표 보정 시.
-                double dx = xyCoordinate.X - dRotationCenterX;
-                double dy = xyCoordinate.Y - dRotationCenterY;
-                double cos = Math.Cos(v);
-                double sin = Math.Sin(v);
-                // 영상 좌표계(+v=시계, y-down)용 순수 회전
-                double nx = dx * cos + dy * sin;
-                double ny = -dx * sin + dy * cos;
-                return new XyCoordinate(nx + dRotationCenterX, ny + dRotationCenterY);
+                double dX = xyCoordinate.X - dRotationCenterX;
+                double dY = xyCoordinate.Y - dRotationCenterY;
+                double dNewX = (dX * Math.Cos(v)) - (dY * Math.Sin(v));
+                double dNewY = (dX * Math.Sin(v)) + (dY * Math.Cos(v));
+                return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
+
+                ////스테이지에서 스테이지 좌표 보정 시.
+                //double dx = xyCoordinate.X - dRotationCenterX;
+                //double dy = xyCoordinate.Y - dRotationCenterY;
+                //double cos = Math.Cos(v);
+                //double sin = Math.Sin(v * -1);
+                //// 영상 좌표계(+v=시계, y-down)용 순수 회전
+                //double nx = dx * cos - dy * sin;
+                //double ny = dx * sin + dy * cos;
+                ////return new XyCoordinate(nx + dRotationCenterX, ny + dRotationCenterY);
+
+                //nx += dRotationCenterX;
+                //ny += dRotationCenterY;
+                ////nx *= -1;
+                //ny *= 1;
+                //return new XyCoordinate(nx, ny);
             }
         }
 
@@ -33270,7 +33282,23 @@ namespace QMC.Common.Modules
                 result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
                 result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
             }
-            
+
+            if (Equipment.Machine_LaserType_CO2)
+            {
+                result.X -= position.X;
+                result.Y -= position.Y;
+            }
+            else
+            {
+                result.X -= position.X;
+                result.Y -= position.Y;
+            }
+
+            // PreAlign Data 적용/미적용
+            if (Equipment.Machine_PreAlign_First_Enable && m_bPreAlignCompleted)
+            {
+                result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y), false);
+            }
 
             //  좌표계 변환 (Fine Camera 위치 --> Laser Height Sensor 위치)
             result.X += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
@@ -33280,14 +33308,22 @@ namespace QMC.Common.Modules
             result.X += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX;
             result.Y += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY;
 
-            result.X -= position.X;
-            result.Y -= position.Y;
-
-            // PreAlign Data 적용/미적용
-            if (Equipment.Machine_PreAlign_First_Enable && m_bPreAlignCompleted)
-            {
-                result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y));
-            }
+            //if(Equipment.Machine_LaserType_CO2)
+            //{
+            //    result.X -= position.X;
+            //    result.Y -= position.Y;
+            //}
+            //else
+            //{
+            //    result.X -= position.X;
+            //    result.Y -= position.Y;
+            //}
+                
+            //// PreAlign Data 적용/미적용
+            //if (Equipment.Machine_PreAlign_First_Enable && m_bPreAlignCompleted)
+            //{
+            //    result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y), false);
+            //}
 
             return result;
         }
@@ -33399,7 +33435,7 @@ namespace QMC.Common.Modules
                 , this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] , 0);
             
         }
-        public XyCoordinate ConvertPreAlignData(XyCoordinate position)
+        public XyCoordinate ConvertPreAlignData(XyCoordinate position, bool bDirection = true)
         {
             XyCoordinate xyCoordinate = new XyCoordinate(0, 0);
             xyCoordinate = position;
@@ -33410,26 +33446,55 @@ namespace QMC.Common.Modules
                 xyCoordinateAlignPositionLast != null && 
                 xyCoordinateAlignPositionOrgLast != null)
             {
-                XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
-                Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
-                Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
-                Log.Write("SLD-200", "ConvertPreAlignData-Offset  : " + offset.ToString());
-                Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign before : ", xyCoordinate.ToString());
+                if(bDirection)
+                {
+                    XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-Offset  : " + offset.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign before : ", xyCoordinate.ToString());
 
-                xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
-                    xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+                    xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
+                        xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle, bDirection);
 
-                xyCoordinate = xyCoordinate + offset;
-                Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign After : ", xyCoordinate.ToString());
-                Log.Write("SLD-200", "ConvertPreAlignData-Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+                    xyCoordinate = xyCoordinate + offset;
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign After : ", xyCoordinate.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
 
-                //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionLast.ToString());
-                //double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
-                //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", dAngle.ToString());
-                //xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionLast.X,
-                //                                   xyCoordinateAlignPositionLast.Y, dAngle);
+                    //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionLast.ToString());
+                    //double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
+                    //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", dAngle.ToString());
+                    //xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionLast.X,
+                    //                                   xyCoordinateAlignPositionLast.Y, dAngle);
 
-                Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
+                }
+                else
+                {
+                    XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-Offset  : " + offset.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign before : ", xyCoordinate.ToString());
+
+                    //xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
+                    //    xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle, bDirection);
+                    xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
+                        xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle, bDirection);
+
+                    xyCoordinate = xyCoordinate + offset;
+                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign After : ", xyCoordinate.ToString());
+                    Log.Write("SLD-200", "ConvertPreAlignData-Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+
+                    //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionLast.ToString());
+                    //double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
+                    //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", dAngle.ToString());
+                    //xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionLast.X,
+                    //                                   xyCoordinateAlignPositionLast.Y, dAngle);
+
+                    Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
+                }
+                
             }
 
             return xyCoordinate;
