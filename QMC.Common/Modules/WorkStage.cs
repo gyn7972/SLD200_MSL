@@ -33286,7 +33286,7 @@ namespace QMC.Common.Modules
             // PreAlign Data 적용/미적용
             if (Equipment.Machine_PreAlign_First_Enable && m_bPreAlignCompleted)
             {
-                result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y));
+                result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y), false);
             }
 
             return result;
@@ -33399,7 +33399,7 @@ namespace QMC.Common.Modules
                 , this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] , 0);
             
         }
-        public XyCoordinate ConvertPreAlignData(XyCoordinate position)
+        public XyCoordinate ConvertPreAlignData(XyCoordinate position, bool bDirection = true)
         {
             XyCoordinate xyCoordinate = new XyCoordinate(0, 0);
             xyCoordinate = position;
@@ -33417,7 +33417,7 @@ namespace QMC.Common.Modules
                 Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign before : ", xyCoordinate.ToString());
 
                 xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
-                    xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+                    xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle, bDirection);
 
                 xyCoordinate = xyCoordinate + offset;
                 Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign After : ", xyCoordinate.ToString());
