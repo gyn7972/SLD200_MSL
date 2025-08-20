@@ -295,7 +295,8 @@ namespace QMC.Common.Q_Sequence
 
                     if (m_nFlatnessMeasure_Count < 9) //  최대 9 포인트로 고정되어 있음.
                     {
-                        if (Equipment.Machine_HeightMeasure_Enable)
+                        if (Equipment.Machine_HeightMeasure_Enable || 
+                            m_nFlatnessMeasure_Type == (int)FlatMeasureList.Auto_Stage)
                         {
                             Log.Write("FlatnessMeasure", Equipment.User_Name, "Machine_HeightMeasure_Enable. 측정 위치 이동.");
                             m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.FlatnessMeasure_StageXY_MovetoFlatnessMeasurePos;
@@ -334,7 +335,8 @@ namespace QMC.Common.Q_Sequence
                     double dPosX = 0.0;
                     double dPosY = 0.0;
 
-                    if(Equipment.Machine_HeightMeasure_Enable)
+                    if(Equipment.Machine_HeightMeasure_Enable ||
+                       m_nFlatnessMeasure_Type == (int)FlatMeasureList.Auto_Stage)
                     {
                         dPosX = Equipment.Machine_HeightMeasure_PosX;
                         dPosY = Equipment.Machine_HeightMeasure_PosY;
@@ -519,7 +521,7 @@ namespace QMC.Common.Q_Sequence
 
                     m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.None;
 
-                    if (!Equipment.AutoRunStatus && !Equipment.SelectRunEnable_New && !Equipment.SelectRunEnable)
+                    if (!Equipment.AutoRunStatus && !Equipment.SelectRunEnable_New && !Equipment.SelectRunEnable && !Equipment.SemiAutoEnable)
                     {
                         MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }

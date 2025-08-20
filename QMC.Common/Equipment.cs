@@ -1309,7 +1309,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = -40.0;                             //  EPRO Module Absorption Level (kPa)
 
                 //  Mechanical-Alignment Vacuum
-                stLayerRecipeSet[i].MAligner_VacuumPos_Ignore = true;
+                stLayerRecipeSet[i].MAligner_VacuumPos_Ignore = false;
                 stLayerRecipeSet[i].MAligner_VacuumPos_Center = true;                               //  Mechanical-Alignment Center Vacuum Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].MAligner_VacuumPos_Outer = false;                               //  Mechanical-Alignment Outer Vacuum Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].MAligner_VacuumPos_Inner = false;                               //  Mechanical-Alignment Inner Vacuum Use (true: Use, false: Not Use)

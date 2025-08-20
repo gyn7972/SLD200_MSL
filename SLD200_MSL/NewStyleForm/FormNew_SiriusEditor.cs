@@ -512,7 +512,7 @@ namespace SLD200_MSL
             if (!bRetryInit)
             {
                 //SpiralLab.Sirius.Config.AngleFactor = 50;
-                if (Equipment.SiriusDrawing_Rendering_Resolution < 0)
+                if (Equipment.SiriusDrawing_Rendering_Resolution <= 0)
                 {
                     SpiralLab.Sirius.Config.AngleFactor = 50;
                 }

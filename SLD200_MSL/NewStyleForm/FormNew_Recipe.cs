@@ -268,7 +268,7 @@ namespace SLD200_MSL
         private void OnShowRecipeForm()
         {
             // 예시: 레시피 데이터 새로고침
-            Console.WriteLine("FormNew_Recipe 활성화됨 (Show)");
+            //Console.WriteLine("FormNew_Recipe 활성화됨 (Show)");
 
             // 실제 구현 로직 여기에
             // e.g., RefreshRecipeUI(), UpdateDeviceStatus(), etc.
@@ -310,7 +310,7 @@ namespace SLD200_MSL
         /// </summary>
         private void OnHideRecipeForm()
         {
-            Console.WriteLine("FormNew_Recipe 비활성화됨 (Hide)");
+            //Console.WriteLine("FormNew_Recipe 비활성화됨 (Hide)");
 
             // 예시: 타이머 멈춤, 리소스 일시 해제 등
             // StopRecipePreviewTimer();
@@ -1062,7 +1062,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = Equipment.ToDouble(temp.ToString());
 
                 //  M-Aligner Vacuum Use
-                NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Ignore", "true", temp, 255, strFIle);
+                NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Ignore", "false", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Ignore = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Center", "true", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center = Convert.ToBoolean(temp.ToString());
@@ -4742,9 +4742,9 @@ namespace SLD200_MSL
 
         private void checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore_CheckedChanged(object sender, EventArgs e)
         {
-            Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore = false;
-
-            if(checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked)
+            //checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+            //Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore = false;
+            if (checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked)
             {
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = false;
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = false;
@@ -4756,17 +4756,28 @@ namespace SLD200_MSL
 
         private void checkBox_Recipe_TabRecipe_MAlignVacuum_Center_CheckedChanged(object sender, EventArgs e)
         {
-            checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+            if(checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked)
+            {
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+            }
+
+            
         }
 
         private void checkBox_Recipe_TabRecipe_MAlignVacuum_Inner_CheckedChanged(object sender, EventArgs e)
         {
-            checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+            if (checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked)
+            {
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+            }
         }
 
         private void checkBox_Recipe_TabRecipe_MAlignVacuum_Outer_CheckedChanged(object sender, EventArgs e)
         {
-            checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+            if (checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked)
+            {
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked = false;
+            }
         }
 
         private void button_Recipe_TabRecipe_SpiralParam_Pitch_Click(object sender, EventArgs e)

@@ -334,6 +334,24 @@ namespace SLD200_MSL
 
         private void FormNew_Main_FormClosing(object sender, FormClosingEventArgs e)
         {
+            try 
+            { 
+                if (m_blinkTimer != null) 
+                { 
+                    m_blinkTimer.Stop(); 
+                    m_blinkTimer.Dispose(); 
+                } 
+            }
+            catch (Exception ex)
+            {
+                //LogManager.WriteError(ex);
+            }
+            //finally 
+            //{ 
+            //    base.OnFormClosing(e); 
+            //}
+
+
             //  Form 이 닫히는 경우
             var moduleUI = new FormNewSub_Main_SemiAuto();
             moduleUI.DisposeSemiAutoResources();  // 부모 폼 설정
@@ -1012,6 +1030,36 @@ namespace SLD200_MSL
         // -----------------------
         // UI 갱신 로직
         // -----------------------
+        private System.Windows.Forms.Timer m_blinkTimer;
+        private bool m_blinkToggle = false;
+
+        // 폼 초기화 시 1회만 호출
+        private void InitBlinkTimer()
+        {
+            m_blinkTimer = new System.Windows.Forms.Timer();
+            m_blinkTimer.Interval = 1000; // 1초 간격 (원하시면 변경)
+            m_blinkTimer.Tick += BlinkTimer_Tick;
+        }
+
+        // 깜빡임 전용 처리
+        private void BlinkTimer_Tick(object sender, EventArgs e)
+        {
+            string strText = string.Empty;
+            if (m_blinkToggle)
+            {
+                strText = "Socket Align : Not Use";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Red);
+            }
+            else
+            {
+                strText = "Height Check : Not Use";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+            }
+            m_blinkToggle = !m_blinkToggle;
+        }
+
         private void UpdateUIControls()
         {
             string strText = string.Empty;
@@ -1020,17 +1068,6 @@ namespace SLD200_MSL
             {
                 return;
             }
-
-            // 이거 안해도 될거 같은데.
-            //if (workStage.Camera_HighRes.Opened)
-            //{
-            //    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
-            //}
-
-            //if (workStage.jigAligner_LowRes.Camera.Opened)
-            //{
-            //    ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
-            //}
 
             UpdateCycleTimerUI();
             Motor_Position2();
@@ -1100,7 +1137,6 @@ namespace SLD200_MSL
                 
             }
 
-            //
             var markingLayer = workStage.DrillingManager.GetLayer(LayerList.Marking);
             if (markingLayer != null && markingLayer.SocketList.Count > 0)
             {
@@ -1115,7 +1151,59 @@ namespace SLD200_MSL
                 }
             }
 
-            if(workStage.m_stLaserDrilling_SocketData != null)
+            bool socketAlignNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;
+            bool heightCheckNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;
+            if (socketAlignNotUse && heightCheckNotUse)
+            {
+                // 둘 다 Not Use일 때만 깜빡임 시작 (이미 돌고 있으면 그대로 둠)
+                if (m_blinkTimer == null) InitBlinkTimer();
+                if (!m_blinkTimer.Enabled)
+                {
+                    m_blinkToggle = false;   // 시작할 때 기본면 한쪽부터
+                    m_blinkTimer.Start();
+                    BlinkTimer_Tick(null, null); // 즉시 1회 적용해 첫 화면 반영
+                }
+                return; // 메인 Tick에서 표시를 덮어쓰지 않도록 즉시 반환
+            }
+
+            // 깜빡임 조건이 해제되면 타이머 정지
+            if (m_blinkTimer != null && m_blinkTimer.Enabled)
+                m_blinkTimer.Stop();
+
+            // 개별 조건 출력(메인 Tick에서만 수행)
+            if (socketAlignNotUse)
+            {
+                strText = "Socket Align : Not Use";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Red);
+            }
+            else if (heightCheckNotUse)
+            {
+                strText = "Height Check : Not Use";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+            }
+            else
+            {
+                strText = "Status Normal";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Black);
+            }
+
+            //if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+            //{
+            //    strText = "Socket Align : Not Use";
+            //    SetValue(label_Main_Title_Status, strText);
+            //    SetColor(label_Main_Title_Status, Color.Black, Color.Red);
+            //}
+            //else if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+            //{
+            //    strText = "Height Check : Not Use";
+            //    SetValue(label_Main_Title_Status, strText);
+            //    SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+            //}
+
+            if (workStage.m_stLaserDrilling_SocketData != null)
             {
                 SetValue(baseTextBox_SocketCountPerModule, workStage.m_stLaserDrilling_SocketData.Length.ToString());
                 strText = string.Format("{0}", workStage.m_nSelectedSocket_Index + 1);
@@ -1128,7 +1216,7 @@ namespace SLD200_MSL
                 SetValue(baseTextBox_Socket_Index, strText);
             }
 
-                strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
+            strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
             SetValue(label_Main_LaserStatus, strText);
             Color backcolor = workStage.GetLaserBusyStatus() ? Color.Red : Color.Black;
             Color foreColor = workStage.GetLaserBusyStatus() ? Color.White : Color.Lime;
@@ -1361,7 +1449,12 @@ namespace SLD200_MSL
                 if (Equipment.Machine_LaserType_CO2)
                 {
                     workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
+
+                    workStage.workStageParameter.DO_Laser_Enable(false);
+                    Thread.Sleep(100); //  레이저가 꺼지는 시간을 주자.
                 }
+
+
 
                 //  이것저것 다 리셋 - 끝
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1385,6 +1478,9 @@ namespace SLD200_MSL
                 workStage.timer_Motion_Home.Enabled = true;
                 workStage.m_MotionHome_Start = true;
                 workStage.m_bHomeProgressForm_Close = false;
+
+                Thread.Sleep(100); //  홈 타이머가 시작되기 전에 잠시 대기
+                workStage.workStageParameter.DO_Laser_Enable(true);
 
                 if (!m_FormProgress.HasChildren)            //  Progress 창을 실수로 닫았다면, 다시 메모리 할당하자.
                 {
@@ -2121,6 +2217,9 @@ namespace SLD200_MSL
             button_Main_Start.BackColor = Color.LightGreen;
             button_Main_Start.ForeColor = Color.Black;
 
+            //Lot 정보 저장을 위한 AutoRunTracker 호출
+            AutoRunTracker.OnAutoStart();
+
             int nTargetCount = (int)numericUpDown_Module_TargetCount.Value;            //  모듈 타겟 카운트 초기화
             Equipment.DrillModuleTargetCount = nTargetCount;
             Equipment.AutoRunStatus = true;
@@ -2134,17 +2233,21 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New || Equipment.SelectRunEnable)
                 return;
 
-            workStage.Module_Allocation();
-            unloader.Module_Allocation();
-            loader.Module_Allocation();
-
-            //  카메라는 여러번 초기화 할 수 있으니, 이 조건을 걸어서 스캐너 초기화를 1회만 하도록 한다.
+            // 이 조건을 걸어서 스캐너 초기화를 1회만 하도록 한다.
             if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6_COMPLETE)
             {
+                 workStage.Module_Allocation();
+                unloader.Module_Allocation();
+                loader.Module_Allocation();
+
                 // 문서 생성후 뷰어에 지정
                 var doc = new DocumentDefault();
                 SiriusViewer_Main.Document = doc;
 
+                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+            }
+            else if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+            {
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
             }
         }
@@ -2575,6 +2678,8 @@ namespace SLD200_MSL
             unloader.m_nUL_RESTORE_MainWork_Cycle_ResultOKNG = workStage.m_nMainWorkCycle_ResultOKNG;                                                                           //  Main Work Cycle 결과 (OK, NG) : OK 인 경우에만 R-Port 로 가져감
             unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = workStage.m_bMainWorkCycle_ResultOK_toRPort;
 
+            //Lot 정보 저장을 위한 AutoRunTracker 호출
+            AutoRunTracker.OnAutoStop();
 
             workStage.DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 정지 : 정지 버튼 눌렀을때도 정지하고 다시 해야지.
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
@@ -4469,9 +4574,65 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            return;
+            bool socketAlignNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;
+            bool heightCheckNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;
+            if (socketAlignNotUse && heightCheckNotUse)
+            {
+                // 둘 다 Not Use일 때만 깜빡임 시작 (이미 돌고 있으면 그대로 둠)
+                if (m_blinkTimer == null) InitBlinkTimer();
+                if (!m_blinkTimer.Enabled)
+                {
+                    m_blinkToggle = false;   // 시작할 때 기본면 한쪽부터
+                    m_blinkTimer.Start();
+                    BlinkTimer_Tick(null, null); // 즉시 1회 적용해 첫 화면 반영
+                }
+                return; // 메인 Tick에서 표시를 덮어쓰지 않도록 즉시 반환
+            }
+
+            // 깜빡임 조건이 해제되면 타이머 정지
+            if (m_blinkTimer != null && m_blinkTimer.Enabled)
+                m_blinkTimer.Stop();
+
+            string strText = string.Empty;
+            // 개별 조건 출력(메인 Tick에서만 수행)
+            if (socketAlignNotUse)
+            {
+                strText = "Socket Align : Not Use";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Red);
+            }
+            else if (heightCheckNotUse)
+            {
+                strText = "Height Check : Not Use";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+            }
+            else
+            {
+                strText = "Status Normal";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Black);
+            }
 
             string strTemp = string.Empty;
+            strTemp = LogManager.Instance.GetLogPath();
+
+            var dlg = new FormNewSub_ScannerCal3D();
+            dlg.ShowDialog();
+
+            return;
+            //AutoRunTracker.OnAutoStart();
+            //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
+            Thread.Sleep(1000);
+            AutoRunTracker.OnAutoStop();
+            workStage.DrillingManager.CycleTimer_LaserDrilling.End();
+
+            workStage.DrillingManager.SaveLotLog();                     // 최신 로그 저장
+
+            return;
+
+            //string strTemp = string.Empty;
+            strTemp = string.Empty;
             float fMeasuredPower = workStage.m_Sequence_LaserPowerMeasure.m_fMeasuredPower;
             float fPowerLimitMin = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMin;
             float fPowerLimitMax = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMax;
@@ -4481,22 +4642,6 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_LaserPowerMeasure_Check", strTemp);
                 //return AlarmPost(AlarmKey.LaserPowerMeasureLimitFail);
             }
-
-            //foreach (var layerList in workStage.DrillingManager.LayerList)
-            //{
-            //    if (!layerList.LayerEnum.ToString().StartsWith("Hole1"))
-            //        continue;
-
-            //    bool isSingleSocket = layerList.SocketList.Count == 1;
-
-            //    foreach (var socketList in layerList.SocketList)
-            //    {
-            //        if (isSingleSocket || !socketList.IsDrilled)
-            //        {
-            //            workStage.SetDrillResult(layerList.LayerName, socketList.SocketNumber, false);
-            //        }
-            //    }
-            //}
 
             return;
             workStage.m_dStageheight = 1.567;

@@ -188,6 +188,7 @@
     </Compile>
     <Compile Include="DustCollectorController\DustCollectorController.cs" />
     <Compile Include="Global\AreaInfo.cs" />
+    <Compile Include="Global\AutoRunTracker.cs" />
     <Compile Include="Global\AxisMap.cs" />
     <Compile Include="Global\DrillingProcessManager.cs" />
     <Compile Include="Global\GlobalHotkeyMessageFilter.cs" />

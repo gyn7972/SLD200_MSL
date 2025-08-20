@@ -602,8 +602,6 @@ namespace SLD200_MSL
             }
         }
 
-
-
         // ActionSaveDone 이벤트 핸들러
         private void OnSaveDone(string message)
         {

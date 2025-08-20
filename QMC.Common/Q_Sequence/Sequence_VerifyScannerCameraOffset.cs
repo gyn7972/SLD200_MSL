@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Timers;
 using System.IO;
 using System.Text;
+using QMC.Common.Vision.Cameras;
 
 
 namespace QMC.Common.Q_Sequence
@@ -43,6 +44,9 @@ namespace QMC.Common.Q_Sequence
 
             LaserPower_Change,                                          //  레이저 Energy 변경
             LaserPower_ChangeCheck,                                     //  레이저 Energy 변경 확인
+
+            Scanner_Init,
+            Scanner_Init_Check,
 
             DustCollector_On,                                           //  집진기 On
             DustCollector_Frequency_Set,
@@ -445,7 +449,7 @@ namespace QMC.Common.Q_Sequence
                             {
                                 Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", "Laser Off Check 실패.");
 
-                                m_VerifyScannerCameraOffsetStep = (int)VerifyScannerCameraOffset_Step.None;
+                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
                                 return workStage.AlarmPost(WorkStage.AlarmKey.eRTC_FAIL);
                             }
                         }
@@ -454,7 +458,7 @@ namespace QMC.Common.Q_Sequence
                             strTemp = string.Format("Laser Off Check 실패. (Laser Comm 열리지 않음)");
                             Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
 
-                            m_VerifyScannerCameraOffsetStep = (int)VerifyScannerCameraOffset_Step.None;
+                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
                             return workStage.AlarmPost(WorkStage.AlarmKey.eLaserComm_NotOpen);
                         }
                     }
@@ -555,7 +559,8 @@ namespace QMC.Common.Q_Sequence
                             (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > DustCollector_TurnOn_AfterStableTime))
                         {
                             Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", "집진기 On 확인");
-                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.LaserShutter_Open;
+                            //m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.LaserShutter_Open;
+                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Scanner_Init;
                         }
                         else if (workStage.workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) ||
                             workStage.workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
@@ -571,6 +576,51 @@ namespace QMC.Common.Q_Sequence
 
                             m_VerifyScannerCameraOffsetStep = (int)VerifyScannerCameraOffset_Step.None;
                             return workStage.AlarmPost(AlarmKey.eDustCollectorFail);
+                        }
+                    }
+                    break;
+
+                case (int)VerifyScannerCameraOffset_Step.Scanner_Init:
+                    {
+                        //스케너 초기화 하자. 여기서!
+                        if (Equipment.Machine_LaserType_CO2)
+                        {
+                            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+                            {
+                                TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
+
+                                workStage.workStageParameter.DO_Laser_Enable(false);
+
+                                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                            }
+                        }
+
+                        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Scanner_Init_Check;
+                    }
+                    break;
+
+                case (int)VerifyScannerCameraOffset_Step.Scanner_Init_Check:
+                    {
+                        if (Equipment.Machine_LaserType_CO2)
+                        {
+                            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+                            {
+                                workStage.workStageParameter.DO_Laser_Enable(true);
+                                Thread.Sleep(100);
+
+                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.LaserShutter_Open;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > 120000)
+                            {
+                                Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", "Scanner init 실패.");
+
+                                m_VerifyScannerCameraOffsetStep = (int)VerifyScannerCameraOffset_Step.None;
+                                return workStage.AlarmPost(AlarmKey.InitFail_Scanner);
+                            }
+                        }
+                        else
+                        {
+                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.LaserShutter_Open;
                         }
                     }
                     break;
