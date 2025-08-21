@@ -4574,6 +4574,19 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes == mb.ShowDialog("Question ?",
+                "Scanner Calibration을 시작합니다.\n\n기존 캘리브레이션 판을 사용하십니까?"))
+            {
+                Equipment.Scanner_Calibration_Change = false;
+            }
+            else
+            {
+                Equipment.Scanner_Calibration_Change = true;
+            }
+
+            return;
+
             bool socketAlignNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;
             bool heightCheckNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;
             if (socketAlignNotUse && heightCheckNotUse)
@@ -4634,8 +4647,8 @@ namespace SLD200_MSL
             //string strTemp = string.Empty;
             strTemp = string.Empty;
             float fMeasuredPower = workStage.m_Sequence_LaserPowerMeasure.m_fMeasuredPower;
-            float fPowerLimitMin = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMin;
-            float fPowerLimitMax = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMax;
+            float fPowerLimitMin = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMin_Stage;
+            float fPowerLimitMax = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMax_Stage;
             if (fMeasuredPower < fPowerLimitMin || fMeasuredPower > fPowerLimitMax)
             {
                 strTemp = "m_Sequence_LaserPowerMeasure 실패.";
@@ -4732,7 +4745,7 @@ namespace SLD200_MSL
                 {
                     int nCount = Equipment.m_nSerialNumberMarkingCount;
                     strTemp = string.Format("Module Number : {0} 부터 시작합니다.", nCount);
-                    var mb = new MessageBoxOk();
+                    //var mb = new MessageBoxOk();
                     mb.ShowDialog("Information !", strTemp);
                 }
                 //string message = $"Marking 레이어가 존재하며, {markingLayer.SocketList.Count}개의 소켓이 포함되어 있습니다.";

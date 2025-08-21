@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.panel_Setup_Communication_DeviceControl = new System.Windows.Forms.Panel();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
@@ -609,6 +609,7 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
+            this.checkBox_Setup_ScannerCal_AcrylicPanel = new System.Windows.Forms.CheckBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -1312,14 +1313,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1372,14 +1373,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -3254,6 +3255,7 @@
             // 
             // tabPage_Setup_ScannerCalibration
             // 
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.checkBox_Setup_ScannerCal_AcrylicPanel);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.groupBox_Setup_ScannerCal__Illuminator2);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.label85);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.checkBox_Setup_ScannerCal_Position);
@@ -3415,7 +3417,7 @@
             // label85
             // 
             this.label85.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label85.Location = new System.Drawing.Point(1577, 301);
+            this.label85.Location = new System.Drawing.Point(1582, 333);
             this.label85.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label85.Name = "label85";
             this.label85.Size = new System.Drawing.Size(132, 25);
@@ -3427,7 +3429,7 @@
             // 
             this.checkBox_Setup_ScannerCal_Position.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_Setup_ScannerCal_Position.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Setup_ScannerCal_Position.Location = new System.Drawing.Point(1717, 285);
+            this.checkBox_Setup_ScannerCal_Position.Location = new System.Drawing.Point(1722, 317);
             this.checkBox_Setup_ScannerCal_Position.Name = "checkBox_Setup_ScannerCal_Position";
             this.checkBox_Setup_ScannerCal_Position.Size = new System.Drawing.Size(153, 53);
             this.checkBox_Setup_ScannerCal_Position.TabIndex = 173;
@@ -3858,7 +3860,7 @@
             // button_Setup_ScannerCal_Vision
             // 
             this.button_Setup_ScannerCal_Vision.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_ScannerCal_Vision.Location = new System.Drawing.Point(1573, 403);
+            this.button_Setup_ScannerCal_Vision.Location = new System.Drawing.Point(1580, 463);
             this.button_Setup_ScannerCal_Vision.Name = "button_Setup_ScannerCal_Vision";
             this.button_Setup_ScannerCal_Vision.Size = new System.Drawing.Size(153, 51);
             this.button_Setup_ScannerCal_Vision.TabIndex = 63;
@@ -3869,7 +3871,7 @@
             // button_Setup_ScannerCal_CalStop
             // 
             this.button_Setup_ScannerCal_CalStop.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_ScannerCal_CalStop.Location = new System.Drawing.Point(1737, 344);
+            this.button_Setup_ScannerCal_CalStop.Location = new System.Drawing.Point(1744, 404);
             this.button_Setup_ScannerCal_CalStop.Name = "button_Setup_ScannerCal_CalStop";
             this.button_Setup_ScannerCal_CalStop.Size = new System.Drawing.Size(133, 51);
             this.button_Setup_ScannerCal_CalStop.TabIndex = 62;
@@ -3880,7 +3882,7 @@
             // button_Setup_ScannerCal_CalStart
             // 
             this.button_Setup_ScannerCal_CalStart.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_ScannerCal_CalStart.Location = new System.Drawing.Point(1573, 344);
+            this.button_Setup_ScannerCal_CalStart.Location = new System.Drawing.Point(1580, 404);
             this.button_Setup_ScannerCal_CalStart.Name = "button_Setup_ScannerCal_CalStart";
             this.button_Setup_ScannerCal_CalStart.Size = new System.Drawing.Size(153, 51);
             this.button_Setup_ScannerCal_CalStart.TabIndex = 61;
@@ -7914,6 +7916,17 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // checkBox_Setup_ScannerCal_AcrylicPanel
+            // 
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.AutoSize = true;
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.Location = new System.Drawing.Point(1722, 288);
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.Name = "checkBox_Setup_ScannerCal_AcrylicPanel";
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.Size = new System.Drawing.Size(128, 23);
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.TabIndex = 225;
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.Text = "AcrylicPanel";
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.CheckedChanged += new System.EventHandler(this.checkBox_Setup_ScannerCal_AcrylicPanel_CheckedChanged);
+            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -8607,5 +8620,6 @@
         private System.Windows.Forms.CheckBox checkBox_Setup_Option_VisionNG_OKPort;
         private System.Windows.Forms.Button button_Setup_ScannerCal_Illuminator_FineCamIR;
         private System.Windows.Forms.Button button_Setup_ScannerCal_Illuminator_FineCamRed;
+        private System.Windows.Forms.CheckBox checkBox_Setup_ScannerCal_AcrylicPanel;
     }
 }
