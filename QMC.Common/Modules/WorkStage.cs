@@ -14033,7 +14033,9 @@ namespace QMC.Common.Modules
                                 }
                                 else
                                 {
-                                    var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stLaserDrilling_SocketData);
+                                    int nMaxInstance = Equipment.stVisionRecipeSet.nGoldPowderCircleMarkMaxInstance;
+                                    //var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stLaserDrilling_SocketData);
+                                    var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stLaserDrilling_SocketData, nMaxInstance);
                                     for (int i = 0; i < 4; i++)
                                     {
                                         // PreAlign-> SocketAlign 이후 4-Point 의 도면상 위치 데이터
