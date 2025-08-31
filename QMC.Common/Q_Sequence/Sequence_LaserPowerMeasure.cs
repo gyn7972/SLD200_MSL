@@ -270,6 +270,8 @@ namespace QMC.Common.Q_Sequence
                 case LaserPowerMeasure_Step.Start:
                     if (workStage.m_bHomeOK == false)
                     {
+                        _measuredPowerList.Clear();
+
                         Log.Write("SeqLaserPowerMeasure", "WorkStage Home Position is not OK.");
                         m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None;
                         //return -1; // Home이 안되어 있으면 종료
@@ -685,7 +687,7 @@ namespace QMC.Common.Q_Sequence
                         m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None; // 완료 후 초기화
 
                         string strTemp = string.Empty;
-                        float fMeasuredPower = m_fMeasuredPower;
+                        float fMeasuredPower = m_fMeasuredAvgPower;// m_fMeasuredPower;
                         float fPowerLimitMin = m_fPowerLimitMin_Stage;
                         float fPowerLimitMax = m_fPowerLimitMax_Stage;
                         if(_setting.PowerMeterType == 0)
@@ -705,7 +707,8 @@ namespace QMC.Common.Q_Sequence
                             Log.Write("SLD-200", Equipment.User_Name, "LaserPowerMeasure_Step::Complete", strTemp);
                             return workStage.AlarmPost(AlarmKey.LaserPowerMeasureLimitFail);
                         }
-                       
+
+                        _measuredPowerList.Clear();
                         return 0; // 성공적으로 완료
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
@@ -1062,7 +1065,7 @@ namespace QMC.Common.Q_Sequence
                 SavePowerMeasureLogList(position);
                 Log.Write("LaserPowerMeasure", "LaserPowerMeasure_Start", $"{position} 위치에서 파워 측정 완료");
 
-                _measuredPowerList.Clear();
+                //_measuredPowerList.Clear();
                 bComp = true;
 
                 // 모든 상태 초기화
@@ -1215,6 +1218,9 @@ namespace QMC.Common.Q_Sequence
             }
         }
 
+        public float m_fMeasuredAvgPower { get; set; }
+
+
         public float m_fPowerLimitMin_Top
         {
             get { return _setting.PowerLimitMin_Top; }
@@ -1272,6 +1278,8 @@ namespace QMC.Common.Q_Sequence
                 string avgLine = $"{timestamp},{targetType},Average,{avg:F2}," +
                                  $"{powerPercent:F1},{frequency:F1},{pulseWidth:F2},{dutyCycle:F2}";
                 lines.Add(avgLine);
+
+                m_fMeasuredAvgPower = (float)avg;
             }
 
             try

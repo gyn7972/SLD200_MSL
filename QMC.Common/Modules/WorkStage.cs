@@ -34970,7 +34970,7 @@ namespace QMC.Common.Modules
                     {
                         m_Sequence_LaserPowerMeasure.Reset();
 
-                        float fMeasuredPower = m_Sequence_LaserPowerMeasure.m_fMeasuredPower;
+                        float fMeasuredPower = m_Sequence_LaserPowerMeasure.m_fMeasuredAvgPower; //m_Sequence_LaserPowerMeasure.m_fMeasuredPower;
                         float fPowerLimitMin = m_Sequence_LaserPowerMeasure.m_fPowerLimitMin_Stage;
                         float fPowerLimitMax = m_Sequence_LaserPowerMeasure.m_fPowerLimitMax_Stage;
                         if(fMeasuredPower < fPowerLimitMin || fMeasuredPower > fPowerLimitMax)

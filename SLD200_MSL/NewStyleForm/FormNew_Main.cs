@@ -4524,45 +4524,45 @@ namespace SLD200_MSL
 
             return;
 
-            bool socketAlignNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;
-            bool heightCheckNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;
-            if (socketAlignNotUse && heightCheckNotUse)
-            {
-                // 둘 다 Not Use일 때만 깜빡임 시작 (이미 돌고 있으면 그대로 둠)
-                if (m_blinkTimer == null) InitBlinkTimer();
-                if (!m_blinkTimer.Enabled)
-                {
-                    m_blinkToggle = false;   // 시작할 때 기본면 한쪽부터
-                    m_blinkTimer.Start();
-                    BlinkTimer_Tick(null, null); // 즉시 1회 적용해 첫 화면 반영
-                }
-                return; // 메인 Tick에서 표시를 덮어쓰지 않도록 즉시 반환
-            }
+            //bool socketAlignNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;
+            //bool heightCheckNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;
+            //if (socketAlignNotUse && heightCheckNotUse)
+            //{
+            //    // 둘 다 Not Use일 때만 깜빡임 시작 (이미 돌고 있으면 그대로 둠)
+            //    if (m_blinkTimer == null) InitBlinkTimer();
+            //    if (!m_blinkTimer.Enabled)
+            //    {
+            //        m_blinkToggle = false;   // 시작할 때 기본면 한쪽부터
+            //        m_blinkTimer.Start();
+            //        BlinkTimer_Tick(null, null); // 즉시 1회 적용해 첫 화면 반영
+            //    }
+            //    return; // 메인 Tick에서 표시를 덮어쓰지 않도록 즉시 반환
+            //}
 
-            // 깜빡임 조건이 해제되면 타이머 정지
-            if (m_blinkTimer != null && m_blinkTimer.Enabled)
-                m_blinkTimer.Stop();
+            //// 깜빡임 조건이 해제되면 타이머 정지
+            //if (m_blinkTimer != null && m_blinkTimer.Enabled)
+            //    m_blinkTimer.Stop();
 
-            string strText = string.Empty;
-            // 개별 조건 출력(메인 Tick에서만 수행)
-            if (socketAlignNotUse)
-            {
-                strText = "Socket Align : Not Use";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Red);
-            }
-            else if (heightCheckNotUse)
-            {
-                strText = "Height Check : Not Use";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
-            }
-            else
-            {
-                strText = "Status Normal";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Black);
-            }
+            //string strText = string.Empty;
+            //// 개별 조건 출력(메인 Tick에서만 수행)
+            //if (socketAlignNotUse)
+            //{
+            //    strText = "Socket Align : Not Use";
+            //    SetValue(label_Main_Title_Status, strText);
+            //    SetColor(label_Main_Title_Status, Color.Black, Color.Red);
+            //}
+            //else if (heightCheckNotUse)
+            //{
+            //    strText = "Height Check : Not Use";
+            //    SetValue(label_Main_Title_Status, strText);
+            //    SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+            //}
+            //else
+            //{
+            //    strText = "Status Normal";
+            //    SetValue(label_Main_Title_Status, strText);
+            //    SetColor(label_Main_Title_Status, Color.Black, Color.Black);
+            //}
 
             string strTemp = string.Empty;
             strTemp = LogManager.Instance.GetLogPath();
