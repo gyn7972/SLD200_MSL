@@ -329,29 +329,14 @@ namespace SLD200_MSL
 
             checkBox_Main_Loader_LPort_Pause.Checked = false;
             checkBox_Main_Loader_RPort_Pause.Checked = false;
+
+            _blinkStopwatch.Start();
+
         }
 
 
         private void FormNew_Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            try 
-            { 
-                if (m_blinkTimer != null) 
-                { 
-                    m_blinkTimer.Stop(); 
-                    m_blinkTimer.Dispose(); 
-                } 
-            }
-            catch (Exception ex)
-            {
-                //LogManager.WriteError(ex);
-            }
-            //finally 
-            //{ 
-            //    base.OnFormClosing(e); 
-            //}
-
-
             //  Form 이 닫히는 경우
             var moduleUI = new FormNewSub_Main_SemiAuto();
             moduleUI.DisposeSemiAutoResources();  // 부모 폼 설정
@@ -1030,35 +1015,9 @@ namespace SLD200_MSL
         // -----------------------
         // UI 갱신 로직
         // -----------------------
-        private System.Windows.Forms.Timer m_blinkTimer;
         private bool m_blinkToggle = false;
-
-        // 폼 초기화 시 1회만 호출
-        private void InitBlinkTimer()
-        {
-            m_blinkTimer = new System.Windows.Forms.Timer();
-            m_blinkTimer.Interval = 1000; // 1초 간격 (원하시면 변경)
-            m_blinkTimer.Tick += BlinkTimer_Tick;
-        }
-
-        // 깜빡임 전용 처리
-        private void BlinkTimer_Tick(object sender, EventArgs e)
-        {
-            string strText = string.Empty;
-            if (m_blinkToggle)
-            {
-                strText = "Socket Align : Not Use";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Red);
-            }
-            else
-            {
-                strText = "Height Check : Not Use";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
-            }
-            m_blinkToggle = !m_blinkToggle;
-        }
+        private readonly Stopwatch _blinkStopwatch = new Stopwatch();
+        private const int BlinkIntervalMs = 2000; // 원하는 간격(ms)
 
         private void UpdateUIControls()
         {
@@ -1151,58 +1110,6 @@ namespace SLD200_MSL
                 }
             }
 
-            bool socketAlignNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;
-            bool heightCheckNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;
-            if (socketAlignNotUse && heightCheckNotUse)
-            {
-                // 둘 다 Not Use일 때만 깜빡임 시작 (이미 돌고 있으면 그대로 둠)
-                if (m_blinkTimer == null) InitBlinkTimer();
-                if (!m_blinkTimer.Enabled)
-                {
-                    m_blinkToggle = false;   // 시작할 때 기본면 한쪽부터
-                    m_blinkTimer.Start();
-                    BlinkTimer_Tick(null, null); // 즉시 1회 적용해 첫 화면 반영
-                }
-                return; // 메인 Tick에서 표시를 덮어쓰지 않도록 즉시 반환
-            }
-
-            // 깜빡임 조건이 해제되면 타이머 정지
-            if (m_blinkTimer != null && m_blinkTimer.Enabled)
-                m_blinkTimer.Stop();
-
-            // 개별 조건 출력(메인 Tick에서만 수행)
-            if (socketAlignNotUse)
-            {
-                strText = "Socket Align : Not Use";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Red);
-            }
-            else if (heightCheckNotUse)
-            {
-                strText = "Height Check : Not Use";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
-            }
-            else
-            {
-                strText = "Status Normal";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Black);
-            }
-
-            //if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
-            //{
-            //    strText = "Socket Align : Not Use";
-            //    SetValue(label_Main_Title_Status, strText);
-            //    SetColor(label_Main_Title_Status, Color.Black, Color.Red);
-            //}
-            //else if (!Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
-            //{
-            //    strText = "Height Check : Not Use";
-            //    SetValue(label_Main_Title_Status, strText);
-            //    SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
-            //}
-
             if (workStage.m_stLaserDrilling_SocketData != null)
             {
                 SetValue(baseTextBox_SocketCountPerModule, workStage.m_stLaserDrilling_SocketData.Length.ToString());
@@ -1246,22 +1153,6 @@ namespace SLD200_MSL
                     m_ProcRegionRowCol.Item1, m_ProcRegionRowCol.Item2,
                     m_ProcRegionStatus);
             }
-
-            //if (m_bNeedAutoRunStop)
-            //{
-            //    m_bNeedAutoRunStop = false;
-
-            //    Equipment.AutoRunStatus = false;
-            //    workStage.SetRunStatus(RunStatus.Stop);
-
-            //    loader.m_LoaderWork_Start = false;
-            //    workStage.m_LaserDrillingWork_Start = false;
-            //    Equipment.LaserDrillingCycStop_Reservation = false;
-            //    unloader.timer_UnloaderWork.Stop();
-            //    unloader.m_UnloaderWork_Start = false;
-
-            //    //System.Windows.Forms.MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //}
 
             // label_Title_MESMessage
             // 여기에 자재 유/무에 대한 메세지 표시
@@ -1330,12 +1221,58 @@ namespace SLD200_MSL
                 SetEnable(button_Main_Reset, true);
             }
 
-
-
-
-
             // 장비 상태 UI에 반영
             UpdateDeviceStatusImages();
+
+            if(Equipment.Current_Recipe != string.Empty)
+            {
+                bool socketAlignNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;
+                bool heightCheckNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;
+                if (socketAlignNotUse && heightCheckNotUse)
+                {
+                    // 토글 코드 진입 바로 앞에 딱 이 부분만 추가
+                    if (_blinkStopwatch.ElapsedMilliseconds >= BlinkIntervalMs)
+                    {
+                        if (m_blinkToggle)
+                        {
+                            strText = "Socket Align : Not Use";
+                            SetValue(label_Main_Title_Status, strText);
+                            SetColor(label_Main_Title_Status, Color.Black, Color.Red);
+                            m_blinkToggle = false;
+                        }
+                        else
+                        {
+                            strText = "Height Check : Not Use";
+                            SetValue(label_Main_Title_Status, strText);
+                            SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+                            m_blinkToggle = true;
+                        }
+
+                        _blinkStopwatch.Restart(); // 간격 리셋
+                    }
+                    return; // 메인 Tick에서 표시를 덮어쓰지 않도록 즉시 반환
+                }
+
+                // 개별 조건 출력(메인 Tick에서만 수행)
+                if (socketAlignNotUse)
+                {
+                    strText = "Socket Align : Not Use";
+                    SetValue(label_Main_Title_Status, strText);
+                    SetColor(label_Main_Title_Status, Color.Black, Color.Red);
+                }
+                else if (heightCheckNotUse)
+                {
+                    strText = "Height Check : Not Use";
+                    SetValue(label_Main_Title_Status, strText);
+                    SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+                }
+                else
+                {
+                    strText = "Status Normal";
+                    SetValue(label_Main_Title_Status, strText);
+                    SetColor(label_Main_Title_Status, Color.Black, Color.Black);
+                }
+            }
         }
 
         
@@ -4602,45 +4539,45 @@ namespace SLD200_MSL
 
             return;
 
-            bool socketAlignNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;
-            bool heightCheckNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;
-            if (socketAlignNotUse && heightCheckNotUse)
-            {
-                // 둘 다 Not Use일 때만 깜빡임 시작 (이미 돌고 있으면 그대로 둠)
-                if (m_blinkTimer == null) InitBlinkTimer();
-                if (!m_blinkTimer.Enabled)
-                {
-                    m_blinkToggle = false;   // 시작할 때 기본면 한쪽부터
-                    m_blinkTimer.Start();
-                    BlinkTimer_Tick(null, null); // 즉시 1회 적용해 첫 화면 반영
-                }
-                return; // 메인 Tick에서 표시를 덮어쓰지 않도록 즉시 반환
-            }
+            //bool socketAlignNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;
+            //bool heightCheckNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;
+            //if (socketAlignNotUse && heightCheckNotUse)
+            //{
+            //    // 둘 다 Not Use일 때만 깜빡임 시작 (이미 돌고 있으면 그대로 둠)
+            //    if (m_blinkTimer == null) InitBlinkTimer();
+            //    if (!m_blinkTimer.Enabled)
+            //    {
+            //        m_blinkToggle = false;   // 시작할 때 기본면 한쪽부터
+            //        m_blinkTimer.Start();
+            //        BlinkTimer_Tick(null, null); // 즉시 1회 적용해 첫 화면 반영
+            //    }
+            //    return; // 메인 Tick에서 표시를 덮어쓰지 않도록 즉시 반환
+            //}
 
-            // 깜빡임 조건이 해제되면 타이머 정지
-            if (m_blinkTimer != null && m_blinkTimer.Enabled)
-                m_blinkTimer.Stop();
+            //// 깜빡임 조건이 해제되면 타이머 정지
+            //if (m_blinkTimer != null && m_blinkTimer.Enabled)
+            //    m_blinkTimer.Stop();
 
-            string strText = string.Empty;
-            // 개별 조건 출력(메인 Tick에서만 수행)
-            if (socketAlignNotUse)
-            {
-                strText = "Socket Align : Not Use";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Red);
-            }
-            else if (heightCheckNotUse)
-            {
-                strText = "Height Check : Not Use";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
-            }
-            else
-            {
-                strText = "Status Normal";
-                SetValue(label_Main_Title_Status, strText);
-                SetColor(label_Main_Title_Status, Color.Black, Color.Black);
-            }
+            //string strText = string.Empty;
+            //// 개별 조건 출력(메인 Tick에서만 수행)
+            //if (socketAlignNotUse)
+            //{
+            //    strText = "Socket Align : Not Use";
+            //    SetValue(label_Main_Title_Status, strText);
+            //    SetColor(label_Main_Title_Status, Color.Black, Color.Red);
+            //}
+            //else if (heightCheckNotUse)
+            //{
+            //    strText = "Height Check : Not Use";
+            //    SetValue(label_Main_Title_Status, strText);
+            //    SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+            //}
+            //else
+            //{
+            //    strText = "Status Normal";
+            //    SetValue(label_Main_Title_Status, strText);
+            //    SetColor(label_Main_Title_Status, Color.Black, Color.Black);
+            //}
 
             string strTemp = string.Empty;
             strTemp = LogManager.Instance.GetLogPath();
