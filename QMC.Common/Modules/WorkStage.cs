@@ -17208,45 +17208,22 @@ namespace QMC.Common.Modules
 
         private string LaserDrilling_StepDividedRegion_ScannerOnly_RegionListOpen(string strTemp)
         {
-            //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
             {
                 m_bDivRegionList_Success = true;
                 m_bScannerLib_Success = true;
-
-                //var rtcMode = rtc as IRtc;                                  //  RTC6
-                //rtc.ListBegin(laser, ListType.Auto);
-                //rtc.ListEnd();
-                //rtc.ListExecute();
-                //Thread.Sleep(100);
-
-                //m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
                 m_bDivRegionList_Success &= rtc.ListBegin(laser, ListType.Auto);
-                //m_bDivRegionList_Success &= rtc.ListBegin(laser, ListType.Single);
 
                 Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List Open");
 
-                //20250806-공정
-                {
-                    ////rtcMode.IsScanAhead = true; //<- Get만됨..
-                    ////activate auto delay
-                    ////자동 지연 활성화
-                    //rtc.CtlDelayScanAheadByAuto(true);
-                    ////line quality scale factor
-                    ////품질 인자 스케일 설정 (0~100)
-                    ////rtc.ScanAheadLineParamsCornerScale = 100;
-                    //rtc.ScanAheadLineParamsCornerScale = 90;
-                    ////rtc.ScanAheadLineParamsCornerScale = 80;
-                    ////rtc.ScanAheadLineParamsCornerScale = 70;
-                    //rtc.ScanAheadLineParamsEndScale = 100;
-                    //rtc.ScanAheadLineParamsAccScale = 0;
-                }
+                //m_nHoleLayer_ProcessIndex
 
-                if ((Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].ProcessPriority_P2P) &&                   //  P2P Mode
-                    (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_P2PDistance > 0.0))
+
+                if ((Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].ProcessPriority_P2P) &&                   //  P2P Mode
+                    (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_P2PDistance > 0.0))
                 {
                     strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Spot Distance Control 파라미터 적용, Spot Distance ({0:0.0000})," +
                                             "Layer : {1}",
-                                            Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_P2PDistance, m_nHoleLayer_ProcessIndex + 1);
+                                            Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_P2PDistance, m_nHoleLayer_ProcessIndex + 1);
 
                     Log.Write("SLD-200", "Auto Run", strTemp);
                     Log.Write("LaserDrilling", strTemp);
@@ -17257,9 +17234,9 @@ namespace QMC.Common.Modules
                         //  Spot Distance Control
                         var alc = rtc as IRtcAutoLaserControl;
                         m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
-                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_P2PDistance,                              //  Percentage100
-                            (float)(Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_P2PDistance * 0.8),                      //  Min
-                            (float)(Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_P2PDistance * 1.2));                     //  Max
+                            (float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_P2PDistance,                              //  Percentage100
+                            (float)(Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_P2PDistance * 0.8),                      //  Min
+                            (float)(Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_P2PDistance * 1.2));                     //  Max
 
                         if (!m_bScannerLib_Success)
                         {
@@ -17289,21 +17266,21 @@ namespace QMC.Common.Modules
                 Log.Write("LaserDrilling", strTemp);
 
                 //  Frequency, Pulse Width 값이 있으면 적용
-                if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_Frequency > 0.0)
+                if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_Frequency > 0.0)
                 {
                     double m_dLaserParam_PulseWidth = 0.0;
 
                     //  Laser Type 이 CO2 일 경우, 여기에서 Duty Cycle 을 Pulse Width 로 계산해서 Power 를 변경할 수 있도록 한다.
                     if (Equipment.Machine_LaserType_CO2)
                     {
-                        if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_DutyCycle > 0.0)
+                        if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_DutyCycle > 0.0)
                         {
-                            m_dLaserParam_PulseWidth = Calc_PulseWidth(Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_Frequency,
-                                                                        Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_DutyCycle);
+                            m_dLaserParam_PulseWidth = Calc_PulseWidth(Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_Frequency,
+                                                                        Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_DutyCycle);
 
                             strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})" +
                                                     "Layer : {2}",
-                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_Frequency,
+                                                    Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_Frequency,
                                                     m_dLaserParam_PulseWidth, m_nHoleLayer_ProcessIndex + 1);
                         }
                         else
@@ -17311,27 +17288,27 @@ namespace QMC.Common.Modules
                             m_dLaserParam_PulseWidth = 1.0;
 
                             strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
-                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_Frequency,
+                                                    Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_Frequency,
                                                     m_dLaserParam_PulseWidth);
                         }
                     }
                     else
                     {
-                        if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_PulseWidth > 0.0)
+                        if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_PulseWidth > 0.0)
                         {
-                            m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_PulseWidth;
+                            m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_PulseWidth;
 
                             strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})" +
                                                     "Layer : {2}",
-                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_Frequency,
-                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_PulseWidth, m_nHoleLayer_ProcessIndex + 1);
+                                                    Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_Frequency,
+                                                    Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_PulseWidth, m_nHoleLayer_ProcessIndex + 1);
                         }
                         else
                         {
                             m_dLaserParam_PulseWidth = 1.0;
 
                             strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
-                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_Frequency,
+                                                    Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_Frequency,
                                                     m_dLaserParam_PulseWidth);
                         }
                     }
@@ -17339,7 +17316,7 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", strTemp);
                     Log.Write("LaserDrilling", strTemp);
 
-                    m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].LaserParam_Frequency,
+                    m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_Frequency,
                                                                 (float)m_dLaserParam_PulseWidth);
 
                     if (!m_bScannerLib_Success)
@@ -17356,11 +17333,11 @@ namespace QMC.Common.Modules
 
                 //m_bDivRegionList_Success &= rtc.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
                 //                                                        (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
-                m_bDivRegionList_Success &= rtc.ListDelay((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_LaserOnDelay,
-                                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_LaserOffDelay,
-                                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_JumpDelay,
-                                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_MarkDelay,
-                                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_PolygonDelay);
+                m_bDivRegionList_Success &= rtc.ListDelay((float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_LaserOnDelay,
+                                                            (float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_LaserOffDelay,
+                                                            (float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_JumpDelay,
+                                                            (float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_MarkDelay,
+                                                            (float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_PolygonDelay);
 
                 //if (!m_bDivRegionList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)
                 //{
@@ -17373,7 +17350,7 @@ namespace QMC.Common.Modules
                 //}
 
                 //m_bDivRegionList_Success &= rtc.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
-                m_bDivRegionList_Success &= rtc.ListSpeed((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_ScannerJumpSpeed, (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_ScannerDrillingSpeed);
+                m_bDivRegionList_Success &= rtc.ListSpeed((float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_ScannerJumpSpeed, (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_ScannerDrillingSpeed);
 
                 //if (!m_bDivRegionList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)
                 //{
@@ -40941,12 +40918,12 @@ namespace QMC.Common.Modules
                         if ((m_nDrillingData_Type == (int)ObjectType.OBJECT_CIR) || (m_nDrillingData_Type == (int)ObjectType.OBJECT_ARC))
                         {
                             //if (Config.ParamConfig.CircleStartPosDiv != 0)
-                            if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_HoleDrilling_StartPosDivision != 0)
+                            if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleDrilling_StartPosDivision != 0)
                             {
                                 m_nCircleDrilling_CurrentRotStep++;
 
                                 //if (m_nCircleDrilling_CurrentRotStep >= Config.ParamConfig.CircleStartPosDiv)
-                                if (m_nCircleDrilling_CurrentRotStep >= Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_HoleDrilling_StartPosDivision)
+                                if (m_nCircleDrilling_CurrentRotStep >= Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleDrilling_StartPosDivision)
                                 {
                                     m_nCircleDrilling_CurrentRotStep = 0;
                                 }
@@ -41206,7 +41183,7 @@ namespace QMC.Common.Modules
                                 if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Circle)
                                 {
                                     //if (Config.ParamConfig.bDrillingSizeReduce_Enable)
-                                    //if (Math.Abs(Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_Resizing) > 0.0)
+                                    //if (Math.Abs(Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing) > 0.0)
                                     if (Math.Abs(m_dHoleLayer_Resizing) > 0.0)
                                     {
                                         //  반지름에서 Reduce Size 만큼 줄임
@@ -41298,7 +41275,7 @@ namespace QMC.Common.Modules
 
                                         //m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
                                         m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y),
-                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_RotationAngleArc);
+                                            (float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_RotationAngleArc);
                                         //(float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc
 
                                         //Log.Write("Circle Center", "Arc CenterPso X : " + entity_Position_Rot.X.ToString() + ", Y : " + entity_Position_Rot.Y);
@@ -41521,7 +41498,7 @@ namespace QMC.Common.Modules
 
                                         //m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
                                         m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y),
-                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_RotationAngleArc);
+                                            (float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_RotationAngleArc);
                                     }
                                 }
                                 //  Hole : Spiral Polyline 타입으로 가공
@@ -41941,12 +41918,12 @@ namespace QMC.Common.Modules
                             if ((m_nDrillingData_Type == (int)ObjectType.OBJECT_CIR) || (m_nDrillingData_Type == (int)ObjectType.OBJECT_ARC))
                             {
                                 //if (Config.ParamConfig.CircleStartPosDiv != 0)
-                                if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_HoleDrilling_StartPosDivision != 0)
+                                if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleDrilling_StartPosDivision != 0)
                                 {
                                     m_nCircleDrilling_CurrentRotStep++;
 
                                     //if (m_nCircleDrilling_CurrentRotStep >= Config.ParamConfig.CircleStartPosDiv)
-                                    if (m_nCircleDrilling_CurrentRotStep >= Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex]].Miscellaneous_HoleDrilling_StartPosDivision)
+                                    if (m_nCircleDrilling_CurrentRotStep >= Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleDrilling_StartPosDivision)
                                     {
                                         m_nCircleDrilling_CurrentRotStep = 0;
                                     }
@@ -43608,6 +43585,9 @@ namespace QMC.Common.Modules
                         //20250808-GYN :: 
                         //여기가 문제.
                         m_nHoleLayer_ProcessIndex = m_nHoleLayer_ProcessIndex_Count;
+                        
+                        //위에꺼 아니면 밑에꺼가 문제인디...
+                        
                         //여기서 이거는 증가를 해야한다. HoleLayer 갯수 증가.
                         //m_nHoleLayer_ProcessIndex++;
                         
