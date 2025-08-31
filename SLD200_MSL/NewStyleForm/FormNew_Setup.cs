@@ -461,7 +461,17 @@ namespace SLD200_MSL
                 comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.Visible = false;
             }
 
-
+            // CO2인 경우 사용하는걸로 하자.
+            if (Equipment.Machine_LaserType_CO2)
+            {
+                checkBox_Setup_ScannerCal_AcrylicPanel.Visible = true;
+                checkBox_Setup_ScannerCal_AcrylicPanel.Checked = true;
+            }
+            else
+            {
+                checkBox_Setup_ScannerCal_AcrylicPanel.Visible = false;
+            }
+                
             this.Refresh();
         }
 
@@ -2269,6 +2279,9 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowCount", m_row.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colCount", m_col.ToString(), strFIle);
 
+
+
+
          }
 
         private void btnScannerOffset_Set_Click(object sender, EventArgs e)
@@ -3682,8 +3695,17 @@ namespace SLD200_MSL
 
             // 캘판 변경 유/무에 대해서 물어보는 메세지 박스해주고 True/False 리턴받기
             var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", 
-                "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
+            //if (DialogResult.Yes != mb.ShowDialog("Question ?", 
+            //    "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
+            //{
+            //    Equipment.Scanner_Calibration_Change = false;
+            //}
+            //else
+            //{
+            //    Equipment.Scanner_Calibration_Change = true;
+            //}
+            if (DialogResult.Yes == mb.ShowDialog("Question ?",
+                "Scanner Calibration을 시작합니다.\n\n기존 캘리브레이션 판을 사용하십니까?"))
             {
                 Equipment.Scanner_Calibration_Change = false;
             }
@@ -4537,6 +4559,8 @@ namespace SLD200_MSL
 
                 checkBox_Setup_ScannerCal_Position.Text = "Cal Pan";
                 checkBox_Setup_ScannerCal_Position.ForeColor = Color.BlueViolet;
+
+                checkBox_Setup_ScannerCal_AcrylicPanel.Enabled = false;
             }
             else
             {
@@ -4544,6 +4568,11 @@ namespace SLD200_MSL
 
                 checkBox_Setup_ScannerCal_Position.Text = "Stage Center";
                 checkBox_Setup_ScannerCal_Position.ForeColor = Color.BlueViolet;
+
+                if(Equipment.Machine_LaserType_CO2)
+                {
+                    checkBox_Setup_ScannerCal_AcrylicPanel.Enabled = true;
+                }
             }
         }
 
@@ -4781,6 +4810,19 @@ namespace SLD200_MSL
             {
                 string strTemp = textBox_Setup_ScannerCal_IlluminationValue.Text;
                 textBox_Setup_ScannerCal_Illuminator_FineCamIR.Text = strTemp;
+            }
+        }
+
+        private void checkBox_Setup_ScannerCal_AcrylicPanel_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.Scanner_Calibration_AcrylicPanel_Enable = false;
+            if (checkBox_Setup_ScannerCal_AcrylicPanel.Checked)
+            {
+                Equipment.Scanner_Calibration_AcrylicPanel_Enable = true;
+            }
+            else
+            {
+                Equipment.Scanner_Calibration_AcrylicPanel_Enable = false;
             }
         }
     }

@@ -511,6 +511,7 @@ namespace SLD200_MSL
             bool bRet = true;
             if (!bRetryInit)
             {
+                // 도면 불러오기 속도 줄이기.
                 //SpiralLab.Sirius.Config.AngleFactor = 50;
                 if (Equipment.SiriusDrawing_Rendering_Resolution <= 0)
                 {
@@ -521,6 +522,11 @@ namespace SLD200_MSL
                     SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
                 }
 
+                //SpiralLab.Sirius.Config.IsDocumentDrawGrids = false;
+                //SpiralLab.Sirius.Config.GripPointSize = 3; //  그리드 라인 표시 안함
+                //SpiralLab.Sirius.Config.BezierSplineMicroStepDistance = 0.5f; //  베지어 곡선의 마이크로 스텝 거리 (0.01mm)
+                //SpiralLab.Sirius.Config.UndoStackSize = 50; //  Undo Stack Size (기본값: 100)
+
                 //  Arc 를 Polyline 으로 만들 경우
                 Config.LwPolylineBulgeToLines = true;
                 Config.LwPolylineBulgeToLineMinThreshold = (float)0.001;
@@ -528,6 +534,29 @@ namespace SLD200_MSL
                     Config.LwPolylineBulgePrecision = 100;
                 else
                     Config.LwPolylineBulgePrecision = Equipment.Machine_PolylineCurve_Resolution;
+
+
+                SpiralLab.Sirius.Config.IsDocumentDrawGrids = true;
+                SpiralLab.Sirius.Config.IsDocumentDrawAxes = false;
+                //SpiralLab.Sirius.Config.AngleFactor = 25;
+                SpiralLab.Sirius.Config.SimulationStepDistance = 0.5f;
+
+                SpiralLab.Sirius.Config.BezierSplineMicroStepDistance = 0.3f;
+                SpiralLab.Sirius.Config.SplineControlPointPrecision = 4f;
+                //SpiralLab.Sirius.Config.LwPolylineBulgeToLines = true;
+                SpiralLab.Sirius.Config.LwPolylineBulgePrecision = 10;
+                SpiralLab.Sirius.Config.LwPolylineBulgeToLineMinThreshold = 0.05f;
+
+                SpiralLab.Sirius.Config.IsDxfCircleOverride = true;
+                SpiralLab.Sirius.Config.DxfCircleOverrideAngleFactor = 60;
+                SpiralLab.Sirius.Config.DxfCircleOverrideRepeats = 1;
+
+                SpiralLab.Sirius.Config.UndoStackSize = 50;
+                SpiralLab.Sirius.Config.IsSnapToGridHatchInterval = true;
+
+
+
+
 
                 if (SiriusEditor == null)
                 {
@@ -666,22 +695,30 @@ namespace SLD200_MSL
                 return false;
 
             bool bRtn = false;
-            if (workStage.rtc.CtlGetStatus(RtcStatus.Busy))
+            try
             {
-                // abort marking operation
-                workStage.rtc.CtlAbort();
-                // wait until busy has finished
-                workStage.rtc.CtlBusyWait();
+                if (workStage.rtc.CtlGetStatus(RtcStatus.Busy))
+                {
+                    // abort marking operation
+                    workStage.rtc.CtlAbort();
+                    // wait until busy has finished
+                    workStage.rtc.CtlBusyWait();
+                }
+
+                workStage.DisposespiralLabScannerModule();
+
+                workStage.laser.Dispose();
+                workStage.rtc.Dispose();
+
+                workStage.laser = null;
+                workStage.rtc = null;
+                
+                bRtn = true;
             }
-            workStage.rtc.Dispose();
-            workStage.laser.Dispose();
-
-            workStage.rtc = null;
-            workStage.laser = null;
-
-            workStage.DisposespiralLabScannerModule();
-
-            bRtn = true;
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
             return bRtn;
         }
 
@@ -714,8 +751,10 @@ namespace SLD200_MSL
                 if (workStage.rtc != null && Equipment._InitDeviceStatus.Scanner)
                 {
                     //  이미 RTC 가 초기화 되어 있다면 Rtc 객체를 닫고 다시 초기화 한다.
-                    Rtc_Close();
+                    //Rtc_Close();
+                    workStage.Sirius_Close();
                     Equipment._InitDeviceStatus.Scanner = false;
+
                     Thread.Sleep(100); //  RTC 가 닫히는 시간을 준다.
                     if (Rtc_Init(true))
                     {

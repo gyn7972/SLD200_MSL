@@ -191,16 +191,25 @@ namespace SLD200.NewStyleForm.NewSubForm
                 dataGridViewSettings.Rows.Add("Frequency(Hz)", _setting.Frequency);
                 dataGridViewSettings.Rows.Add("PulseWidth(us)", _setting.PulseWidth);
                 dataGridViewSettings.Rows.Add("DutyCycle(%)", _setting.DutyCycle);
-                dataGridViewSettings.Rows.Add("Limit_Min(W)", _setting.PowerLimitMin);
-                dataGridViewSettings.Rows.Add("Limit_Max(W)", _setting.PowerLimitMax);
+                
             }
             else
             {
                 dataGridViewSettings.Rows.Add("PowerPercent(%)", _setting.PowerPercent);
                 dataGridViewSettings.Rows.Add("Frequency(Hz)", _setting.Frequency);
                 dataGridViewSettings.Rows.Add("PulseWidth(us)", _setting.PulseWidth);
-                dataGridViewSettings.Rows.Add("Limit_Min(W)", _setting.PowerLimitMin);
-                dataGridViewSettings.Rows.Add("Limit_Max(W)", _setting.PowerLimitMax);
+                
+            }
+
+            if(comboBoxTargetType.SelectedIndex == 0)
+            {
+                dataGridViewSettings.Rows.Add("Limit_Min(W)", _setting.PowerLimitMin_Top);
+                dataGridViewSettings.Rows.Add("Limit_Max(W)", _setting.PowerLimitMax_Top);
+            }
+            else
+            {
+                dataGridViewSettings.Rows.Add("Limit_Min(W)", _setting.PowerLimitMin_Stage);
+                dataGridViewSettings.Rows.Add("Limit_Max(W)", _setting.PowerLimitMax_Stage);
             }
         }
 
@@ -262,8 +271,28 @@ namespace SLD200.NewStyleForm.NewSubForm
                                 }
                             }
                             break;
-                            case "Limit_Min(W)": _setting.PowerLimitMin = value; break;
-                            case "Limit_Max(W)": _setting.PowerLimitMax = value; break;
+                            case "Limit_Min(W)":
+                                if (comboBoxTargetType.SelectedIndex == 0)
+                                {
+                                    _setting.PowerLimitMin_Top = value;
+                                }
+                                else
+                                {
+                                    _setting.PowerLimitMin_Stage = value;
+                                }
+                                    
+                                break;
+                            case "Limit_Max(W)":
+                                if (comboBoxTargetType.SelectedIndex == 0)
+                                {
+                                    _setting.PowerLimitMax_Top = value;
+                                }
+                                else
+                                {
+                                    _setting.PowerLimitMax_Stage = value;
+                                }
+                                
+                                break;
                         }
                     }
                     else
@@ -273,8 +302,28 @@ namespace SLD200.NewStyleForm.NewSubForm
                             case "PowerPercent(%)": _setting.PowerPercent = value; break;
                             case "Frequency(Hz)": _setting.Frequency = value; break;
                             case "PulseWidth(us)": _setting.PulseWidth = value; break;
-                            case "Limit_Min(W)": _setting.PowerLimitMin = value; break;
-                            case "Limit_Max(W)": _setting.PowerLimitMax = value; break;
+                            case "Limit_Min(W)":
+                                if (comboBoxTargetType.SelectedIndex == 0)
+                                {
+                                    _setting.PowerLimitMin_Top = value;
+                                }
+                                else
+                                {
+                                    _setting.PowerLimitMin_Stage = value;
+                                }
+
+                                break;
+                            case "Limit_Max(W)":
+                                if (comboBoxTargetType.SelectedIndex == 0)
+                                {
+                                    _setting.PowerLimitMax_Top = value;
+                                }
+                                else
+                                {
+                                    _setting.PowerLimitMax_Stage = value;
+                                }
+
+                                break;
                         }
                     }
                 }
@@ -561,7 +610,16 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void comboBoxTargetType_SelectedIndexChanged(object sender, EventArgs e)
         {
             _setting.PowerMeterType = (comboBoxTargetType.SelectedIndex);
-            //SaveLaserPowerMeasureSetting();
+            if (comboBoxTargetType.SelectedIndex == 0)
+            {
+                UpdateSettingRow("Limit_Min(W)", _setting.PowerLimitMin_Top);
+                UpdateSettingRow("Limit_Max(W)", _setting.PowerLimitMax_Top);
+            }
+            else
+            {
+                UpdateSettingRow("Limit_Min(W)", _setting.PowerLimitMin_Stage);
+                UpdateSettingRow("Limit_Max(W)", _setting.PowerLimitMax_Stage);
+            }
         }
 
         public void SaveLaserPowerMeasureSetting()
@@ -570,9 +628,6 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             NativeMethods.WritePrivateProfileString("Laser", "TargetTypeIndex", comboBoxTargetType.SelectedIndex.ToString(), iniPath);
             NativeMethods.WritePrivateProfileString("Laser", "Duration", numericUpDownDuration.Value.ToString(), iniPath);
-
-            NativeMethods.WritePrivateProfileString("Laser", "PowerLimitMin", _setting.PowerLimitMin.ToString(), iniPath);
-            NativeMethods.WritePrivateProfileString("Laser", "PowerLimitMax", _setting.PowerLimitMax.ToString(), iniPath);
 
             if (Equipment.Machine_LaserType_CO2)
             {
@@ -587,6 +642,17 @@ namespace SLD200.NewStyleForm.NewSubForm
                 NativeMethods.WritePrivateProfileString("Laser", "PowerPercent", _setting.PowerPercent.ToString(), iniPath);
                 NativeMethods.WritePrivateProfileString("Laser", "Frequency", _setting.Frequency.ToString(), iniPath);
                 NativeMethods.WritePrivateProfileString("Laser", "PulseWidth", _setting.PulseWidth.ToString(), iniPath);
+            }
+
+            if(comboBoxTargetType.SelectedIndex == 0)
+            {
+                NativeMethods.WritePrivateProfileString("Laser", "PowerLimitMin_Top", _setting.PowerLimitMin_Top.ToString(), iniPath);
+                NativeMethods.WritePrivateProfileString("Laser", "PowerLimitMax_Top", _setting.PowerLimitMax_Top.ToString(), iniPath);
+            }
+            else
+            {
+                NativeMethods.WritePrivateProfileString("Laser", "PowerLimitMin_Stage", _setting.PowerLimitMin_Stage.ToString(), iniPath);
+                NativeMethods.WritePrivateProfileString("Laser", "PowerLimitMax_Stage", _setting.PowerLimitMax_Stage.ToString(), iniPath);
             }
         }
 
@@ -634,10 +700,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 _setting.MaskIndex = comboBox_MaskIndex.SelectedIndex;
                 _setting.BETIndex = comboBox_BETPositionIndex.SelectedIndex;
 
-                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMin", "0", temp, 255, iniPath);
-                _setting.PowerLimitMin = (float)Equipment.ToDouble(temp.ToString());
-                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMax", "0", temp, 255, iniPath);
-                _setting.PowerLimitMax = (float)Equipment.ToDouble(temp.ToString());
+                
             }
             else
             {
@@ -649,12 +712,17 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 NativeMethods.GetPrivateProfileString("Laser", "PulseWidth", "1", temp, 255, iniPath);
                 _setting.PulseWidth = (float)Equipment.ToDouble(temp.ToString());
-
-                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMin", "0", temp, 255, iniPath);
-                _setting.PowerLimitMin = (float)Equipment.ToDouble(temp.ToString());
-                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMax", "0", temp, 255, iniPath);
-                _setting.PowerLimitMax = (float)Equipment.ToDouble(temp.ToString());
             }
+
+            NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMin_Top", "0", temp, 255, iniPath);
+            _setting.PowerLimitMin_Top = (float)Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMax_Top", "0", temp, 255, iniPath);
+            _setting.PowerLimitMax_Top = (float)Equipment.ToDouble(temp.ToString());
+
+            NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMin_Stage", "0", temp, 255, iniPath);
+            _setting.PowerLimitMin_Stage = (float)Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMax_Stage", "0", temp, 255, iniPath);
+            _setting.PowerLimitMax_Stage = (float)Equipment.ToDouble(temp.ToString());
         }
 
         private void button_SeqStart_Click(object sender, EventArgs e)
@@ -901,12 +969,30 @@ namespace SLD200.NewStyleForm.NewSubForm
                     break;
 
                 case "Limit_Min(W)":
-                    _setting.PowerLimitMin = value;
-                    UpdateSettingRow("Limit_Min(W)", _setting.PowerLimitMin);
+                    if (comboBoxTargetType.SelectedIndex == 0)
+                    {
+                        _setting.PowerLimitMin_Top = value;
+                        UpdateSettingRow("Limit_Min(W)", _setting.PowerLimitMin_Top);
+                    }
+                    else
+                    {
+                        _setting.PowerLimitMin_Stage = value;
+                        UpdateSettingRow("Limit_Min(W)", _setting.PowerLimitMin_Stage);
+                    }
+                        
                     break;
                 case "Limit_Max(W)":
-                    _setting.PowerLimitMax = value;
-                    UpdateSettingRow("Limit_Max(W)", _setting.PowerLimitMax);
+                    if (comboBoxTargetType.SelectedIndex == 0)
+                    {
+                        _setting.PowerLimitMax_Top = value;
+                        UpdateSettingRow("Limit_Max(W)", _setting.PowerLimitMax_Top);
+                    }
+                    else
+                    {
+                        _setting.PowerLimitMax_Stage = value;
+                        UpdateSettingRow("Limit_Max(W)", _setting.PowerLimitMax_Stage);
+                    }
+                    
                     break;
             }
         }
@@ -930,19 +1016,19 @@ namespace SLD200.NewStyleForm.NewSubForm
                 dataGridViewSettings.CommitEdit(DataGridViewDataErrorContexts.Commit);
 
             dataGridViewSettings.Refresh();
-            SaveLaserPowerMeasureSetting();
+            //SaveLaserPowerMeasureSetting();
         }
 
         private void comboBox_MaskIndex_SelectedIndexChanged(object sender, EventArgs e)
         {
             _setting.MaskIndex = (comboBox_MaskIndex.SelectedIndex);
-            SaveLaserPowerMeasureSetting();
+            //SaveLaserPowerMeasureSetting();
         }
 
         private void comboBox_BETPositionIndex_SelectedIndexChanged(object sender, EventArgs e)
         {
             _setting.BETIndex = (comboBox_BETPositionIndex.SelectedIndex);
-            SaveLaserPowerMeasureSetting();
+            //SaveLaserPowerMeasureSetting();
         }
 
 

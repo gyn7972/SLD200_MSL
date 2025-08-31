@@ -22,6 +22,7 @@ using QMC.Common.VisionPart;
 using QMC.Core;
 using SLD200.NewStyleForm;
 using SLD200.NewStyleForm.NewSubForm;
+using SLD200.Properties;
 using SpiralLab.Sirius;
 using static QMC.Common.Equipment;
 using static QMC.Common.Modules.Loader;
@@ -238,8 +239,9 @@ namespace SLD200_MSL
             m_FormLaserPowerMeasure = new FormNewSub_LaserPowerMeasure(bds.spiralLabScanner);
             m_FormLaserPowerMeasure.Owner = this;
 
-
             InitRecipeUI_KeyPad();
+
+            InitMaskSettingTable();
         }
 
 
@@ -3221,6 +3223,7 @@ namespace SLD200_MSL
                 groupBox_Config_BDS_TeachingPositions.Visible = true;
                 groupBox_Config_BDS_Move.Visible = true;
                 groupBox_Config_AxisPositions_Mask.Visible = true;
+                groupBox_Config_BDS_MaskSize.Visible = true;
             }
             else
             {
@@ -3233,6 +3236,7 @@ namespace SLD200_MSL
                 groupBox_Config_BDS_TeachingPositions.Visible = false;
                 groupBox_Config_BDS_Move.Visible = false;
                 groupBox_Config_AxisPositions_Mask.Visible = false;
+                groupBox_Config_BDS_MaskSize.Visible = false;
             }
         }
 
@@ -6496,6 +6500,129 @@ namespace SLD200_MSL
                 control.Text = text;
                 control.Visible = isVisible;
             }
+        }
+
+
+        private void InitMaskSettingTable()
+        {
+            dataGridMaskSize.ColumnCount = 2;
+            dataGridMaskSize.Columns[0].Name = "Position";
+            dataGridMaskSize.Columns[1].Name = "Size(mm)";
+            // 열 전체를 ReadOnly로 설정
+            dataGridMaskSize.Columns[0].ReadOnly = true;
+
+            if (Equipment.Machine_LaserType_CO2)
+            {
+                dataGridMaskSize.Rows.Add("#1MaskPosition", 0.0);
+                dataGridMaskSize.Rows.Add("#2MaskPosition", 0.0);
+                dataGridMaskSize.Rows.Add("#3MaskPosition", 0.0);
+                dataGridMaskSize.Rows.Add("#4MaskPosition", 0.0);
+            }
+
+            StyleDataGridView(dataGridMaskSize);
+            LoadMaskSizesFromIni();
+        }
+
+        public void LoadMaskSizesFromIni(string iniPath = "")
+        {
+            iniPath = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+
+            StringBuilder temp = new StringBuilder(255);
+            double dTemp = 0.0;
+
+            dataGridMaskSize.Rows.Clear();
+
+            NativeMethods.GetPrivateProfileString("Mask", "Size_1", "1", temp, 255, iniPath);
+            dTemp = Equipment.ToDouble(temp.ToString());
+            dataGridMaskSize.Rows.Add("#1MaskPosition", dTemp.ToString("0.#####"));
+            NativeMethods.GetPrivateProfileString("Mask", "Size_2", "1", temp, 255, iniPath);
+            dTemp = Equipment.ToDouble(temp.ToString());
+            dataGridMaskSize.Rows.Add("#2MaskPosition", dTemp.ToString("0.#####"));
+            NativeMethods.GetPrivateProfileString("Mask", "Size_3", "1", temp, 255, iniPath);
+            dTemp = Equipment.ToDouble(temp.ToString());
+            dataGridMaskSize.Rows.Add("#3MaskPosition", dTemp.ToString("0.#####"));
+            NativeMethods.GetPrivateProfileString("Mask", "Size_4", "1", temp, 255, iniPath);
+            dTemp = Equipment.ToDouble(temp.ToString());
+            dataGridMaskSize.Rows.Add("#4MaskPosition", dTemp.ToString("0.#####"));
+        }
+
+        // 저장
+        public void SaveMaskSizesToIni(string iniPath = "")
+        {
+            iniPath = ConfigManager.GetConfigPath() + "\\ConfigFile(Do not delete or modify).ini";
+
+            string strTemp = string.Empty;
+            double dTemp = 0.0;
+            foreach (DataGridViewRow row in dataGridMaskSize.Rows)
+            {
+                if (row.Cells[0].Value == null || row.Cells[1].Value == null)
+                    continue;
+
+                string param = row.Cells[0].Value.ToString();
+                string valueStr = row.Cells[1].Value.ToString();
+                float value = float.TryParse(valueStr, out var v) ? v : 0f;
+                switch (param)
+                {
+                    case "#1MaskPosition":
+                        dTemp = value;
+                        NativeMethods.WritePrivateProfileString("Mask", "Size_1", dTemp.ToString(), iniPath);
+                        break;
+                    case "#2MaskPosition":
+                        dTemp = value;
+                        NativeMethods.WritePrivateProfileString("Mask", "Size_2", dTemp.ToString(), iniPath);
+                        break;
+                    case "#3MaskPosition":
+                        dTemp = value;
+                        NativeMethods.WritePrivateProfileString("Mask", "Size_3", dTemp.ToString(), iniPath);
+                        break;
+                    case "#4MaskPosition":
+                        dTemp = value;
+                        NativeMethods.WritePrivateProfileString("Mask", "Size_4", dTemp.ToString(), iniPath);
+                        break;
+                }
+            }
+        }
+
+        private void button_MaskSizeSave_Click(object sender, EventArgs e)
+        {
+            SaveMaskSizesToIni();
+        }
+
+        private void StyleDataGridView(DataGridView dgv)
+        {
+            // 전체 스타일
+            dgv.EnableHeadersVisualStyles = false;
+            dgv.BorderStyle = BorderStyle.None;
+            dgv.BackgroundColor = Color.White;
+            dgv.GridColor = Color.LightGray;
+
+            // 헤더 스타일
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.DodgerBlue;
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 10, System.Drawing.FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgv.ColumnHeadersHeight = 35;
+
+            // 셀 스타일
+            dgv.DefaultCellStyle.Font = new Font("Tahoma", 10);
+            dgv.DefaultCellStyle.SelectionBackColor = Color.LightSkyBlue;
+            dgv.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgv.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // 행 높이
+            dgv.RowTemplate.Height = 32;
+
+            // 열 너비 자동 조정
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            // 편집 관련 설정
+            dgv.ReadOnly = false;
+            dgv.AllowUserToAddRows = false;
+            dgv.AllowUserToResizeRows = false;
+            dgv.RowHeadersVisible = false;
+
+            // 선택 모드
+            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         }
     }
 }

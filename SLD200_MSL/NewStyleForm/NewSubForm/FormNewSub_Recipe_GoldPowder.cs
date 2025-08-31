@@ -1,8 +1,11 @@
-﻿using QMC.Common;
+﻿using OpenCvSharp.Dnn;
+using QMC.Common;
+using QMC.Common.Global;
 using QMC.Common.Modules;
 using QMC.Common.Parts;
 using QMC.Common.Recipe;
 using QMC.Common.VisionPart;
+using QMC.Core;
 using SLD200_MSL;
 using System;
 using System.Collections.Generic;
@@ -29,6 +32,12 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private VisionRecipeData m_recipe = null;
         private string m_recipePath = "";
+
+        // (추가) 필드
+        private int m_currentGoldPowderSocketIndex = 0;
+        //private int GoldPowderSocketTotal => Math.Max(1, m_recipe?.GoldPowderSocketPosList?.Count ?? 1);
+        // GoldPowder 소켓 총수 (동적으로 갱신)
+        private int m_goldPowderSocketTotal = 1;
 
         public FormNewSub_Recipe_GoldPowder()
         {
@@ -117,7 +126,14 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (!m_bInitialized)
                 return;
             LoadRecipe();
+            InitGoldPowderSocketCombo(); // (추가)
+            // 없을 경우 최소 1개 확보 후 첫 소켓 UI 표시
+            m_recipe?.EnsureGoldPowderSocketPosCount(m_goldPowderSocketTotal);
             ApplyRecipeToUI();
+
+            // (추가) 비어있는 소켓 포지션 자동 초기화 후 저장
+            AutoInitializeEmptyGoldPowderPositionsAndSave();
+
             timer_Status.Start();
         }
         public void OnHide()
@@ -143,7 +159,22 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
         }
 
+        // (추가) 소켓 콤보 초기화 호출 지점: LoadRecipe() 후 OnShow 또는 Load 완료 시
+        // 콤보 초기화 갱신 (기존 메서드 수정)
+        private void InitGoldPowderSocketCombo()
+        {
+            if (m_recipe == null) return;
 
+            RefreshGoldPowderSocketTotal(); // 실제 소켓 수 먼저 갱신
+
+            comboBox_Recipe_GoldPowder_Socket.Items.Clear();
+            for (int i = 0; i < m_goldPowderSocketTotal; i++)
+                comboBox_Recipe_GoldPowder_Socket.Items.Add((i + 1).ToString());
+
+            if (comboBox_Recipe_GoldPowder_Socket.Items.Count > 0)
+                comboBox_Recipe_GoldPowder_Socket.SelectedIndex =
+                    Math.Min(m_currentGoldPowderSocketIndex, comboBox_Recipe_GoldPowder_Socket.Items.Count - 1);
+        }
 
 
 
@@ -157,6 +188,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void button_Recipe_GoldPowder_Save_Click(object sender, EventArgs e)
         {
             UpdateRecipeFromUI();
+            SyncLegacyGoldPowderPosFromSocket0();       // 레거시 필드 보장
             SaveRecipe();
 
             //MessageBox.Show("GoldPowder Recipe 저장 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -271,11 +303,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void ApplyRecipeToUI()
         {
-            if (m_recipe == null || 
-                m_recipePath == "")
-            {
+            if (m_recipe == null || m_recipePath == "")
                 return;
-            }
 
             radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Checked = true;
 
@@ -317,11 +346,18 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             // 마크 스펙
-            textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text = m_recipe.dGoldPowderCircleMarkSpec.ToString("F3");
             textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text = m_recipe.dGoldPowderCircleMarkRadius.ToString("F3");
-            textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text = m_recipe.dGoldPowderCircleMarkScore.ToString("F3");
             textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text = m_recipe.nGoldPowderCircleMarkMaxInstance.ToString();
             textBox_Recipe_GoldPowder_Fiducial_FindCount.Text = m_recipe.nGoldPowderCircleMarkFindCount.ToString();
+            //textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text = m_recipe.dGoldPowderCircleMarkSpec.ToString("F3");
+            //textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text = m_recipe.dGoldPowderCircleMarkScore.ToString("F3");
+            // 내부 값 (0~1)을 퍼센트 문자열로 표시
+            textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text =
+                (m_recipe.dGoldPowderCircleMarkSpec * 100).ToString("F2");
+            // 내부 값 (0~1)을 퍼센트 문자열로 표시
+            textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text =
+                (m_recipe.dGoldPowderCircleMarkScore * 100).ToString("F2");
+
 
             // 조명 사용 여부
             checkBox_Recipe_GoldPowder_Illuminator_Red.Checked = m_recipe.bGoldPowderIlluminationRedUse;
@@ -356,6 +392,29 @@ namespace SLD200.NewStyleForm.NewSubForm
             textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text = m_recipe.nGoldPowderIlluminationRed.ToString();
             textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = m_recipe.nGoldPowderIlluminationIR.ToString();
 
+            // 최초 호출 시 현재 소켓 UI 로드
+            ApplyGoldPowderSocketPosToUI(m_currentGoldPowderSocketIndex);
+
+            //textBox_Recipe_GoldPowder_Position_X1.Text = m_recipe.dGoldPowderPos1X.ToString("F3");
+            //textBox_Recipe_GoldPowder_Position_Y1.Text = m_recipe.dGoldPowderPos1Y.ToString("F3");
+            //textBox_Recipe_GoldPowder_Position_X2.Text = m_recipe.dGoldPowderPos2X.ToString("F3");
+            //textBox_Recipe_GoldPowder_Position_Y2.Text = m_recipe.dGoldPowderPos2Y.ToString("F3");
+            //textBox_Recipe_GoldPowder_Position_X3.Text = m_recipe.dGoldPowderPos3X.ToString("F3");
+            //textBox_Recipe_GoldPowder_Position_Y3.Text = m_recipe.dGoldPowderPos3Y.ToString("F3");
+            //textBox_Recipe_GoldPowder_Position_X4.Text = m_recipe.dGoldPowderPos4X.ToString("F3");
+            //textBox_Recipe_GoldPowder_Position_Y4.Text = m_recipe.dGoldPowderPos4Y.ToString("F3");
+
+            //// (수정) 기존 ApplyRecipeToUI 끝부분 GoldPowder 포지션 설정 부분 교체
+            //// 기존 전역 변수 -> 최초 소켓[0] 동기화 후 UI 반영
+            //textBox_Recipe_GoldPowder_Position_X1.Text = m_recipe.GoldPowderSocketPosList.Count > 0 ?
+            //    m_recipe.GoldPowderSocketPosList[0].X[0].ToString("F3") : m_recipe.dGoldPowderPos1X.ToString("F3");
+            //// 나머지 동일하게 호출 대신 아래 한줄로 대체:
+            //ApplyGoldPowderSocketPosToUI(m_currentGoldPowderSocketIndex);
+
+            //// (수정) UpdateRecipeFromUI 끝부분 전역 포지션 저장 직후 추가
+            //UpdateGoldPowderSocketPosFromUI(m_currentGoldPowderSocketIndex);
+
+
             SetScroll();
         }
 
@@ -376,8 +435,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 m_recipe.bGoldPowderCircleColor = radioButton_Recipe_GoldPowder_Fiducial_White.Checked ? false : true;
 
                 // Z 오프셋 및 노출 시간
-                m_recipe.dGoldPowderAxisZ_Offset = ParseDouble(textBox_Recipe_GoldPowder_AxisZ_Setting.Text);
-                m_recipe.dGoldPowderIlluminationExposureTime = ParseDouble(textBox_Recipe_GoldPowder_Camera_ExposureTime.Text);
+                m_recipe.dGoldPowderAxisZ_Offset = Equipment.ToDouble(textBox_Recipe_GoldPowder_AxisZ_Setting.Text);
+                m_recipe.dGoldPowderIlluminationExposureTime = Equipment.ToDouble(textBox_Recipe_GoldPowder_Camera_ExposureTime.Text);
 
                 // 조명 사용 여부
                 m_recipe.bGoldPowderIlluminationIRUse = checkBox_Recipe_GoldPowder_Illuminator_IR.Checked;
@@ -388,11 +447,37 @@ namespace SLD200.NewStyleForm.NewSubForm
                 m_recipe.nGoldPowderIlluminationRed = Equipment.ToInt(textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text);
 
                 // 마크 조건
-                m_recipe.dGoldPowderCircleMarkRadius = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text);
-                m_recipe.dGoldPowderCircleMarkSpec = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text);
-                m_recipe.dGoldPowderCircleMarkScore = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text);
+                m_recipe.dGoldPowderCircleMarkRadius = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text);
                 m_recipe.nGoldPowderCircleMarkMaxInstance = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text);
                 m_recipe.nGoldPowderCircleMarkFindCount = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_FindCount.Text);
+                //m_recipe.dGoldPowderCircleMarkSpec = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text);
+                //m_recipe.dGoldPowderCircleMarkScore = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text);
+                double percentValue = 0.0;
+                if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text, out percentValue))
+                {
+                    // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                    m_recipe.dGoldPowderCircleMarkSpec = percentValue / 100.0;
+                }
+                if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text, out percentValue))
+                {
+                    // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                    m_recipe.dGoldPowderCircleMarkScore = percentValue / 100.0;
+                }
+
+                //m_recipe.dGoldPowderPos1X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1.Text);
+                //m_recipe.dGoldPowderPos1Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1.Text);
+                //m_recipe.dGoldPowderPos2X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X2.Text);
+                //m_recipe.dGoldPowderPos2Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y2.Text);
+                //m_recipe.dGoldPowderPos3X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X3.Text);
+                //m_recipe.dGoldPowderPos3Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y3.Text);
+                //m_recipe.dGoldPowderPos4X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X4.Text);
+                //m_recipe.dGoldPowderPos4Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y4.Text);
+
+                // 현재 소켓 포지션 구조에 반영
+                UpdateGoldPowderSocketPosFromUI(m_currentGoldPowderSocketIndex);
+                // 레거시 필드 (첫 소켓) 동기화
+                SyncLegacyGoldPowderPosFromSocket0();
+
             }
             catch (Exception ex)
             {
@@ -470,11 +555,24 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.Camera_HighRes.LatestImage = ImageViewer_Recipe_GoldPowder_highs.InputImage;
             }
 
-            dSpec = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text); //  Fiducial 마크 Spec
             dTargetSize_Radius = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text); //  Fiducial 마크 크기
-            dScore = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text); //  Fiducial 마크 Score
             nMaxInstance = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text); //  Fiducial 마크 최대 개수
             nFindCount = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_FindCount.Text); //  Fiducial 마크 찾기 개수
+
+            //dSpec = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text); //  Fiducial 마크 Spec
+            //dScore = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text); //  Fiducial 마크 Score
+            double percentValue = 0.0;
+            if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text, out percentValue))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                dSpec = percentValue / 100.0;
+            }
+            if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text, out percentValue))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                dScore = percentValue / 100.0;
+            }
+
 
             if (radioButton_Recipe_GoldPowder_Fiducial_White.Checked)
             {
@@ -670,6 +768,617 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             string strTemp = textBox_Recipe_GoldPowder_IlluminationValue_IR.Text;
             textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = strTemp;
+        }
+
+        private void button_Recipe_GoldPowder_Position_X1_Click(object sender, EventArgs e)
+        {
+            CaptureStageXY(out double x, out double y);
+            SetPositionUIAndRecipe(m_currentGoldPowderSocketIndex, 1, x, y);
+        }
+
+        private void button_Recipe_GoldPowder_Position_X2_Click(object sender, EventArgs e)
+        {
+            CaptureStageXY(out double x, out double y);
+            SetPositionUIAndRecipe(m_currentGoldPowderSocketIndex, 2, x, y);
+        }
+
+        private void button_Recipe_GoldPowder_Position_X3_Click(object sender, EventArgs e)
+        {
+            CaptureStageXY(out double x, out double y);
+            SetPositionUIAndRecipe(m_currentGoldPowderSocketIndex, 3, x, y);
+        }
+
+        private void button_Recipe_GoldPowder_Position_X4_Click(object sender, EventArgs e)
+        {
+            CaptureStageXY(out double x, out double y);
+            SetPositionUIAndRecipe(m_currentGoldPowderSocketIndex, 4, x, y);
+        }
+
+        private void button_Recipe_GoldPowder_AxisZ_Setting_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_Recipe_GoldPowder_Position_Move_XY1_Click(object sender, EventArgs e)
+        {
+            double lfTargetX = 0.0f;
+            double lfTargetY = 0.0f;
+            double lfVelocity = 0.0f;
+            double lfAccDec = 0.0f;
+
+            if (!workStage.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            if (Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1.Text) == 0.0 && Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1.Text) == 0.0)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "위치가 설정되어 있지 않습니다.");
+                return;
+            }
+
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "위치로 이동하시겠습니까?"))
+                return;
+
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
+                return;
+            }
+
+            //  Target 위치
+            lfTargetX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1.Text);
+            lfTargetY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1.Text);
+
+            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+            //  속도 설정
+            //if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+            //}
+            //else
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            //}
+
+            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();
+            xyInterpolatedCoordinate.X = lfTargetX;
+            xyInterpolatedCoordinate.Y = lfTargetY;
+            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+        }
+
+        private void button_Recipe_GoldPowder_Position_Move_XY2_Click(object sender, EventArgs e)
+        {
+            double lfTargetX = 0.0f;
+            double lfTargetY = 0.0f;
+            double lfVelocity = 0.0f;
+            double lfAccDec = 0.0f;
+
+            if (!workStage.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            if (Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X2.Text) == 0.0 && Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y2.Text) == 0.0)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "위치가 설정되어 있지 않습니다.");
+                return;
+            }
+
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "위치로 이동하시겠습니까?"))
+                return;
+
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
+                return;
+            }
+
+            //  Target 위치
+            lfTargetX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X2.Text);
+            lfTargetY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y2.Text);
+
+            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+            //  속도 설정
+            //if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+            //}
+            //else
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            //}
+
+            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();
+            xyInterpolatedCoordinate.X = lfTargetX;
+            xyInterpolatedCoordinate.Y = lfTargetY;
+            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+        }
+
+        private void button_Recipe_GoldPowder_Position_Move_XY3_Click(object sender, EventArgs e)
+        {
+            double lfTargetX = 0.0f;
+            double lfTargetY = 0.0f;
+            double lfVelocity = 0.0f;
+            double lfAccDec = 0.0f;
+
+            if (!workStage.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            if (Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X3.Text) == 0.0 && Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y3.Text) == 0.0)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "위치가 설정되어 있지 않습니다.");
+                return;
+            }
+
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "위치로 이동하시겠습니까?"))
+                return;
+
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
+                return;
+            }
+
+            //  Target 위치
+            lfTargetX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X3.Text);
+            lfTargetY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y3.Text);
+
+            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+            //  속도 설정
+            //if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+            //}
+            //else
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            //}
+
+            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();
+            xyInterpolatedCoordinate.X = lfTargetX;
+            xyInterpolatedCoordinate.Y = lfTargetY;
+            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+        }
+
+        private void button_Recipe_GoldPowder_Position_Move_XY4_Click(object sender, EventArgs e)
+        {
+            double lfTargetX = 0.0f;
+            double lfTargetY = 0.0f;
+            double lfVelocity = 0.0f;
+            double lfAccDec = 0.0f;
+
+            if (!workStage.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            if (Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X4.Text) == 0.0 && Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y4.Text) == 0.0)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "위치가 설정되어 있지 않습니다.");
+                return;
+            }
+
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "위치로 이동하시겠습니까?"))
+                return;
+
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
+                return;
+            }
+
+            //  Target 위치
+            lfTargetX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X4.Text);
+            lfTargetY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y4.Text);
+
+            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+            //  속도 설정
+            //if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+            //}
+            //else
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            //}
+
+            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();
+            xyInterpolatedCoordinate.X = lfTargetX;
+            xyInterpolatedCoordinate.Y = lfTargetY;
+            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+        }
+
+        private void comboBox_Recipe_GoldPowder_Socket_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (m_recipe == null) return;
+            // 변경 전 현재 UI -> 기존 소켓 데이터 반영
+
+
+            //여기서 UpdateGoldPowderSocketPosFromUI 하면 안됨.
+            //UpdateGoldPowderSocketPosFromUI(m_currentGoldPowderSocketIndex);
+
+            m_currentGoldPowderSocketIndex = comboBox_Recipe_GoldPowder_Socket.SelectedIndex;
+            ApplyGoldPowderSocketPosToUI(m_currentGoldPowderSocketIndex);
+        }
+
+        // (추가) UI -> 소켓 데이터
+        private void UpdateGoldPowderSocketPosFromUI(int socketIndex)
+        {
+            if (m_recipe == null) return;
+            if (socketIndex < 0) return;
+            m_recipe.EnsureGoldPowderSocketPosCount(socketIndex + 1);
+
+            double x1 = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1.Text);
+            double y1 = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1.Text);
+            double x2 = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X2.Text);
+            double y2 = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y2.Text);
+            double x3 = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X3.Text);
+            double y3 = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y3.Text);
+            double x4 = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X4.Text);
+            double y4 = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y4.Text);
+
+            m_recipe.SetGoldPowderPos(socketIndex, 1, x1, y1);
+            m_recipe.SetGoldPowderPos(socketIndex, 2, x2, y2);
+            m_recipe.SetGoldPowderPos(socketIndex, 3, x3, y3);
+            m_recipe.SetGoldPowderPos(socketIndex, 4, x4, y4);
+        }
+
+        // (추가) 소켓 데이터 -> UI
+        private void ApplyGoldPowderSocketPosToUI(int socketIndex)
+        {
+            if (m_recipe == null) return;
+            var gp = m_recipe.GetGoldPowderSocketPos(socketIndex);
+            if (gp == null) return;
+
+            textBox_Recipe_GoldPowder_Position_X1.Text = gp.X[0].ToString("F3");
+            textBox_Recipe_GoldPowder_Position_Y1.Text = gp.Y[0].ToString("F3");
+            textBox_Recipe_GoldPowder_Position_X2.Text = gp.X[1].ToString("F3");
+            textBox_Recipe_GoldPowder_Position_Y2.Text = gp.Y[1].ToString("F3");
+            textBox_Recipe_GoldPowder_Position_X3.Text = gp.X[2].ToString("F3");
+            textBox_Recipe_GoldPowder_Position_Y3.Text = gp.Y[2].ToString("F3");
+            textBox_Recipe_GoldPowder_Position_X4.Text = gp.X[3].ToString("F3");
+            textBox_Recipe_GoldPowder_Position_Y4.Text = gp.Y[3].ToString("F3");
+        }
+
+        // (선택) 저장 전에 소켓[0]을 기존 전역 변수로 동기화 (레거시 호환)
+        private void SyncLegacyGoldPowderPosFromSocket0()
+        {
+            var gp0 = m_recipe.GetGoldPowderSocketPos(0);
+            if (gp0 == null) return;
+            m_recipe.dGoldPowderPos1X = gp0.X[0]; m_recipe.dGoldPowderPos1Y = gp0.Y[0];
+            m_recipe.dGoldPowderPos2X = gp0.X[1]; m_recipe.dGoldPowderPos2Y = gp0.Y[1];
+            m_recipe.dGoldPowderPos3X = gp0.X[2]; m_recipe.dGoldPowderPos3Y = gp0.Y[2];
+            m_recipe.dGoldPowderPos4X = gp0.X[3]; m_recipe.dGoldPowderPos4Y = gp0.Y[3];
+        }
+
+        // 실제 장비/공정 상태로부터 소켓 총수를 계산
+        private void RefreshGoldPowderSocketTotal()
+        {
+            int count = 0;
+            try
+            {
+                if (workStage != null)
+                {
+                    // 우선순위: drilling 전체 > drilling 진행 수 > marking > 기타
+                    if(workStage.m_stLaserDrilling_SocketData[0].nGroup_Num > 0)
+                        count = workStage.m_stLaserDrilling_SocketData[0].nGroup_Num;
+
+                }
+
+                //if (count <= 0)
+                //{
+                //    // 글로벌 매니저 (있다면) 활용
+                //    try
+                //    {
+                //        var mgr = QMC.Common.Global.DrillingProcessManager.Instance;
+                //        if (mgr != null)
+                //            count = mgr.GetTotalSocketCount(true); // onlyUsedSockets=true
+                //    }
+                //    catch { /* 싱글톤 미초기화 상황 대비 */ }
+                //}
+            }
+            catch { }
+
+            if (count <= 0)
+                count = 1; // 최소 1 보장
+
+            m_goldPowderSocketTotal = count;
+
+            // 레시피 리스트에도 최소 count 개 확보
+            if (m_recipe != null)
+                m_recipe.EnsureGoldPowderSocketPosCount(m_goldPowderSocketTotal);
+
+            // 선택 인덱스 범위 보정
+            if (m_currentGoldPowderSocketIndex >= m_goldPowderSocketTotal)
+                m_currentGoldPowderSocketIndex = m_goldPowderSocketTotal - 1;
+        }
+
+        // (추가) 캡처/공통 유틸 메서드들 : 클래스 내부 아무 private 메서드 영역에 추가
+        private void CaptureStageXY(out double x, out double y)
+        {
+            x = workStage?.MC_Func?.MC_GetEncPos((int)WorkStage.nAxis.X) ?? 0.0;
+            y = workStage?.MC_Func?.MC_GetEncPos((int)WorkStage.nAxis.Y) ?? 0.0;
+        }
+        private string FormatPos(double v) => v.ToString("0.000");
+
+        private void SetPositionUIAndRecipe(int socketIndex, int posIndex, double x, double y)
+        {
+            // UI
+            switch (posIndex)
+            {
+                case 1:
+                    textBox_Recipe_GoldPowder_Position_X1.Text = FormatPos(x);
+                    textBox_Recipe_GoldPowder_Position_Y1.Text = FormatPos(y);
+                    break;
+                case 2:
+                    textBox_Recipe_GoldPowder_Position_X2.Text = FormatPos(x);
+                    textBox_Recipe_GoldPowder_Position_Y2.Text = FormatPos(y);
+                    break;
+                case 3:
+                    textBox_Recipe_GoldPowder_Position_X3.Text = FormatPos(x);
+                    textBox_Recipe_GoldPowder_Position_Y3.Text = FormatPos(y);
+                    break;
+                case 4:
+                    textBox_Recipe_GoldPowder_Position_X4.Text = FormatPos(x);
+                    textBox_Recipe_GoldPowder_Position_Y4.Text = FormatPos(y);
+                    break;
+            }
+            // 레시피(소켓 구조)
+            m_recipe?.SetGoldPowderPos(socketIndex, posIndex, x, y);
+            // 레거시 첫 소켓 동기화 (선택)
+            if (socketIndex == 0)
+                SyncLegacyGoldPowderPosFromSocket0();
+        }
+
+        private void button_Recipe_GoldPowder_Position_Init_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                bool ok = InitializeGoldPowderPositions_FromDrawing(m_currentGoldPowderSocketIndex, overwrite: true, showMessage: true);
+                if (ok)
+                {
+                    UpdateGoldPowderSocketPosFromUI(m_currentGoldPowderSocketIndex);
+                    if (m_currentGoldPowderSocketIndex == 0)
+                        SyncLegacyGoldPowderPosFromSocket0();
+                }
+                else
+                {
+                    MessageBox.Show("초기화 실패 또는 기존 데이터가 이미 존재합니다.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                MessageBox.Show("포지션 초기화 중 오류가 발생했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            //try
+            //{
+            //    string strTemp = string.Empty;
+            //    var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(m_currentGoldPowderSocketIndex, workStage.m_stLaserDrilling_SocketData);
+            //    if (alignPositions == null || alignPositions.CornerPoints == null || alignPositions.CornerPoints.Count < 4)
+            //    {
+            //        Log.Write("Goldpowder", "Position_Init", "CornerPoints 부족 또는 null");
+            //        MessageBox.Show("정렬 포인트 계산 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+
+            //    for (int i = 0; i < 4; i++)
+            //    {
+            //        // (패치) 도면 좌표 -> 장비(FineCam 기준) 좌표 변환 로직 강화
+            //        double dTargetX = alignPositions.CornerPoints[i].X;
+            //        double dTargetY = alignPositions.CornerPoints[i].Y;
+
+            //        strTemp = string.Format(
+            //            "Fiducial Mark No: {0}, Drawing TargetX: {1:F4}, TargetY: {2:F4}",
+            //            i+1,
+            //            dTargetX, dTargetY
+            //        );
+            //        Log.Write("Goldpowder", "Result", strTemp);
+
+            //        XyCoordinate xyDraw = new XyCoordinate(dTargetX, dTargetY);
+
+            //        // 2) FineCam 보정/보간 포함된 변환
+            //        XyCoordinate xyConverted = workStage.ConvertPointFineCam(xyDraw);
+
+            //        // 3) 변환값 검증 (이상치 필터 – 필요 시 조건 수정)
+            //        if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
+            //        {
+            //            Log.Write("Goldpowder", "Result",
+            //                $"[Warn] ConvertPointFineCam 결과가 (0,0)에 근접. 입력(Draw:{xyDraw.X:F4},{xyDraw.Y:F4})");
+            //            // 필요 시 fallback 로직 (예: 그대로 사용)
+            //            xyConverted = xyDraw;
+            //        }
+            //        // UI + Recipe 반영 (i:0~3 -> Pos1~Pos4)
+            //        SetPositionUIAndRecipe(m_currentGoldPowderSocketIndex, i + 1, xyConverted.X, xyConverted.Y);
+
+            //        string logMsg =
+            //            $"[Socket {m_currentGoldPowderSocketIndex + 1}, Pos{i + 1}] Calc Alignment\n" +
+            //            $"X={xyConverted.X:F4}  Y={xyConverted.Y:F4}";
+
+            //        Log.Write("Goldpowder", "button_Recipe_GoldPowder_Position_Init_Click", logMsg);
+
+            //        //여기서 도면 Data를 장비 Pos 값으로 변경하자.
+            //        //xyCoordinateAlign = workStage.ConvertPointFineCam(new XyCoordinate(dX, dY));
+            //        //xyInterpolatedCoordinate = xyCoordinateAlign;
+
+            //    }
+
+            //    // 현재 소켓 저장 구조 재확인 / 레거시 동기화
+            //    UpdateGoldPowderSocketPosFromUI(m_currentGoldPowderSocketIndex);
+            //    if (m_currentGoldPowderSocketIndex == 0)
+            //        SyncLegacyGoldPowderPosFromSocket0();
+
+            //    MessageBox.Show("도면 기준 4포인트를 적용했습니다.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Write(ex);
+            //    MessageBox.Show("포지션 초기화 중 오류가 발생했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+        }
+
+        // (추가) GoldPowder 소켓 포지션 비어있을 때 자동 초기화 & 저장 기능 관련 유틸리티 메서드들
+
+        // 모든 값이 0이면 비어있다고 판단
+        private bool IsGoldPowderSocketPosEmpty(int socketIndex)
+        {
+            if (m_recipe == null) return true;
+            var gp = m_recipe.GetGoldPowderSocketPos(socketIndex);
+            if (gp == null) return true;
+
+            bool anyNonZero = false;
+            for (int i = 0; i < 4; i++)
+            {
+                if (Math.Abs(gp.X[i]) > double.Epsilon || Math.Abs(gp.Y[i]) > double.Epsilon)
+                {
+                    anyNonZero = true;
+                    break;
+                }
+            }
+            return !anyNonZero;
+        }
+
+        // 기존 버튼 로직을 재사용할 수 있도록 함수로 분리
+        private bool InitializeGoldPowderPositions_FromDrawing(int socketIndex, bool overwrite = false, bool showMessage = true)
+        {
+            if (m_recipe == null || workStage == null) return false;
+
+            // 덮어쓰기 금지이며 이미 데이터가 있으면 스킵
+            if (!overwrite && !IsGoldPowderSocketPosEmpty(socketIndex))
+                return false;
+
+            try
+            {
+                var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(socketIndex, workStage.m_stLaserDrilling_SocketData);
+                if (alignPositions == null || alignPositions.CornerPoints == null || alignPositions.CornerPoints.Count < 4)
+                {
+                    Log.Write("Goldpowder", "AutoInit", $"Socket {socketIndex + 1}: CornerPoints 부족/NULL");
+                    return false;
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    double dTargetX = alignPositions.CornerPoints[i].X;
+                    double dTargetY = alignPositions.CornerPoints[i].Y;
+
+                    XyCoordinate xyDraw = new XyCoordinate(dTargetX, dTargetY);
+                    XyCoordinate xyConverted;
+                    try
+                    {
+                        xyConverted = workStage.ConvertPointFineCam(xyDraw);
+                        if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
+                        {
+                            Log.Write("Goldpowder", "AutoInit",
+                                $"[Warn] ConvertPointFineCam (0,0) 근접 → 원본 사용. Draw({xyDraw.X:F4},{xyDraw.Y:F4})");
+                            xyConverted = xyDraw;
+                        }
+                    }
+                    catch
+                    {
+                        xyConverted = xyDraw;
+                    }
+
+                    m_recipe.SetGoldPowderPos(socketIndex, i + 1, xyConverted.X, xyConverted.Y);
+
+                    Log.Write("Goldpowder", "AutoInit",
+                        $"Socket {socketIndex + 1} Pos{i + 1}: Draw({xyDraw.X:F4},{xyDraw.Y:F4}) -> Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+                }
+
+                if (socketIndex == 0)
+                    SyncLegacyGoldPowderPosFromSocket0();
+
+                // 현재 선택된 소켓이면 UI 갱신
+                if (socketIndex == m_currentGoldPowderSocketIndex)
+                    ApplyGoldPowderSocketPosToUI(socketIndex);
+
+                if (showMessage)
+                    MessageBox.Show($"Socket {socketIndex + 1} 포지션 자동 초기화 완료", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return false;
+            }
+        }
+
+        // 레시피 로드 후 비어있는 소켓 자동 초기화 & 저장
+        private void AutoInitializeEmptyGoldPowderPositionsAndSave()
+        {
+            if (m_recipe == null) return;
+
+            bool changed = false;
+            m_recipe.EnsureGoldPowderSocketPosCount(m_goldPowderSocketTotal);
+
+            for (int s = 0; s < m_goldPowderSocketTotal; s++)
+            {
+                if (IsGoldPowderSocketPosEmpty(s))
+                {
+                    bool initOk = InitializeGoldPowderPositions_FromDrawing(s, overwrite: false, showMessage: false);
+                    if (initOk)
+                        changed = true;
+                }
+            }
+
+            if (changed)
+            {
+                // 자동 초기화된 내용 저장
+                try
+                {
+                    SyncLegacyGoldPowderPosFromSocket0();
+                    SaveRecipe();
+                    Log.Write("Goldpowder", "AutoInit", "빈 GoldPowder 소켓 포지션 자동 초기화 & 저장 완료");
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+            }
         }
     }
 }

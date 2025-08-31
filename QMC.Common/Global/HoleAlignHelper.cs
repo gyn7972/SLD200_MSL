@@ -101,7 +101,15 @@ namespace QMC.Common.Global
                 }
             }
 
-            return GetFourCornerAlignmentCentersWithAll(allPoints, sampleCount);
+            if(Equipment.Machine_LaserType_CO2)
+            {
+                return GetFourCornerAlignmentCentersWithAll_CO2(allPoints, sampleCount);
+            }
+            else
+            {
+                return GetFourCornerAlignmentCentersWithAll(allPoints, sampleCount);
+            }
+                //return GetFourCornerAlignmentCentersWithAll(allPoints, sampleCount);
         }
 
         public static AlignResult GetFourCornerAlignmentCentersWithAll(List<AlignPoint> allPoints, int sampleCount = 20)
@@ -144,6 +152,59 @@ namespace QMC.Common.Global
 
             return result;
         }
+
+        public static AlignResult GetFourCornerAlignmentCentersWithAll_CO2(List<AlignPoint> allPoints, int sampleCount = 20)
+        {
+            AlignResult result = new AlignResult();
+            var cornerPoints = result.CornerPoints;
+
+            if (allPoints == null || allPoints.Count == 0)
+                return result;
+
+            result.AllPoints = allPoints;
+
+            // 공통 헬퍼
+            AlignPoint GetAverage(IReadOnlyList<AlignPoint> pts)
+            {
+                if (pts == null || pts.Count == 0) return new AlignPoint(0, 0, 0);
+                double sx = 0, sy = 0, sr = 0;
+                foreach (var p in pts) { sx += p.X; sy += p.Y; sr += p.Radius; }
+                double n = pts.Count;
+                return new AlignPoint((float)(sx / n), (float)(sy / n), (float)(sr / n));
+            }
+            List<AlignPoint> TakeNearest(IReadOnlyList<AlignPoint> src, AlignPoint anchor, int k)
+            {
+                k = Math.Max(1, Math.Min(k, src.Count));
+                return src.OrderBy(p =>
+                {
+                    double dx = p.X - anchor.X;
+                    double dy = p.Y - anchor.Y;
+                    return dx * dx + dy * dy;
+                }).Take(k).ToList();
+            }
+
+            // 1) 우선 극값 기반 코너 앵커 산출 (사분면 분포에 덜 민감)
+            var tlAnchor = allPoints.OrderBy(p => (double)p.X + p.Y).First();      // Top-Left  : X+Y 최소
+            var brAnchor = allPoints.OrderByDescending(p => (double)p.X + p.Y).First(); // Bottom-Right: X+Y 최대
+            var trAnchor = allPoints.OrderByDescending(p => (double)p.X - p.Y).First(); // Top-Right : X−Y 최대
+            var blAnchor = allPoints.OrderBy(p => (double)p.X - p.Y).First();      // Bottom-Left: X−Y 최소
+
+            // 2) 각 앵커 주변에서 sampleCount개 샘플링 → 평균
+            var tlGroup = TakeNearest(allPoints, tlAnchor, sampleCount);
+            var trGroup = TakeNearest(allPoints, trAnchor, sampleCount);
+            var blGroup = TakeNearest(allPoints, blAnchor, sampleCount);
+            var brGroup = TakeNearest(allPoints, brAnchor, sampleCount);
+
+            // 3) 결과 매핑 (기존 인덱스 유지)
+            cornerPoints[0] = GetAverage(blGroup);            // BL
+            cornerPoints[1] = GetAverage(tlGroup);            // TL
+            cornerPoints[2] = GetAverage(trGroup);            // TR
+            cornerPoints[3] = GetAverage(brGroup);            // BR
+            cornerPoints[4] = GetAverage(allPoints);          // 전체 평균
+
+            return result;
+        }
+
 
         public static List<HoleDeviation> MatchClosestHoles(List<AlignPoint> nominalHoles, List<AlignPoint> detectedHoles)
         {

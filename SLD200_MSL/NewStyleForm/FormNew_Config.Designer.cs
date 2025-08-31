@@ -28,6 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl_Config = new System.Windows.Forms.TabControl();
             this.tabPage_Config_LDUL = new System.Windows.Forms.TabPage();
             this.groupBox_Config_LDUL_DIO = new System.Windows.Forms.GroupBox();
@@ -474,6 +478,9 @@
             this.label21 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.tabPage_Config_BDS = new System.Windows.Forms.TabPage();
+            this.groupBox_Config_BDS_MaskSize = new System.Windows.Forms.GroupBox();
+            this.dataGridMaskSize = new System.Windows.Forms.DataGridView();
+            this.button_MaskSizeSave = new System.Windows.Forms.Button();
             this.groupBox65 = new System.Windows.Forms.GroupBox();
             this.Button_Config_BDS_BeamShutter_Close = new System.Windows.Forms.Button();
             this.Button_Config_BDS_BeamShutter_Open = new System.Windows.Forms.Button();
@@ -645,6 +652,8 @@
             this.groupBox_Config_Laser_Laser_Warning.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.tabPage_Config_BDS.SuspendLayout();
+            this.groupBox_Config_BDS_MaskSize.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridMaskSize)).BeginInit();
             this.groupBox65.SuspendLayout();
             this.groupBox59.SuspendLayout();
             this.groupBox60.SuspendLayout();
@@ -5337,7 +5346,8 @@
             "Laser Focus Z Axis Position",
             "Laser Sensor, Height Check Position",
             "Safety Z Axis Position",
-            "Laser Sensor, HeightCheck Cal Position"});
+            "Laser Sensor, HeightCheck Cal Position",
+            "Laser Sensor, HeightCheck Stage Position"});
             this.listBox_Config_Vision_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_Vision_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_Vision_TeachingPositions.Name = "listBox_Config_Vision_TeachingPositions";
@@ -6617,6 +6627,7 @@
             // 
             // tabPage_Config_BDS
             // 
+            this.tabPage_Config_BDS.Controls.Add(this.groupBox_Config_BDS_MaskSize);
             this.tabPage_Config_BDS.Controls.Add(this.groupBox65);
             this.tabPage_Config_BDS.Controls.Add(this.groupBox59);
             this.tabPage_Config_BDS.Controls.Add(this.groupBox_Config_BDS_Move);
@@ -6627,6 +6638,75 @@
             this.tabPage_Config_BDS.TabIndex = 4;
             this.tabPage_Config_BDS.Text = "BDS";
             this.tabPage_Config_BDS.UseVisualStyleBackColor = true;
+            // 
+            // groupBox_Config_BDS_MaskSize
+            // 
+            this.groupBox_Config_BDS_MaskSize.Controls.Add(this.dataGridMaskSize);
+            this.groupBox_Config_BDS_MaskSize.Controls.Add(this.button_MaskSizeSave);
+            this.groupBox_Config_BDS_MaskSize.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox_Config_BDS_MaskSize.Location = new System.Drawing.Point(1054, 10);
+            this.groupBox_Config_BDS_MaskSize.Name = "groupBox_Config_BDS_MaskSize";
+            this.groupBox_Config_BDS_MaskSize.Size = new System.Drawing.Size(340, 270);
+            this.groupBox_Config_BDS_MaskSize.TabIndex = 78;
+            this.groupBox_Config_BDS_MaskSize.TabStop = false;
+            this.groupBox_Config_BDS_MaskSize.Text = "MaskSize";
+            // 
+            // dataGridMaskSize
+            // 
+            this.dataGridMaskSize.AllowUserToAddRows = false;
+            this.dataGridMaskSize.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.Format = "N0";
+            dataGridViewCellStyle1.NullValue = "0";
+            this.dataGridMaskSize.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.dataGridMaskSize.BackgroundColor = System.Drawing.SystemColors.Menu;
+            this.dataGridMaskSize.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.dataGridMaskSize.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Sunken;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.Format = "No";
+            dataGridViewCellStyle2.NullValue = "0";
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
+            this.dataGridMaskSize.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridMaskSize.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.Format = "N0";
+            dataGridViewCellStyle3.NullValue = "0";
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridMaskSize.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridMaskSize.Location = new System.Drawing.Point(7, 25);
+            this.dataGridMaskSize.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.dataGridMaskSize.Name = "dataGridMaskSize";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridMaskSize.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.dataGridMaskSize.RowHeadersWidth = 62;
+            this.dataGridMaskSize.Size = new System.Drawing.Size(322, 178);
+            this.dataGridMaskSize.TabIndex = 77;
+            // 
+            // button_MaskSizeSave
+            // 
+            this.button_MaskSizeSave.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_MaskSizeSave.Location = new System.Drawing.Point(219, 210);
+            this.button_MaskSizeSave.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_MaskSizeSave.Name = "button_MaskSizeSave";
+            this.button_MaskSizeSave.Size = new System.Drawing.Size(110, 52);
+            this.button_MaskSizeSave.TabIndex = 48;
+            this.button_MaskSizeSave.Text = "Save";
+            this.button_MaskSizeSave.UseVisualStyleBackColor = true;
+            this.button_MaskSizeSave.Click += new System.EventHandler(this.button_MaskSizeSave_Click);
             // 
             // groupBox65
             // 
@@ -7943,6 +8023,8 @@
             this.groupBox_Config_Laser_Laser_Warning.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.tabPage_Config_BDS.ResumeLayout(false);
+            this.groupBox_Config_BDS_MaskSize.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridMaskSize)).EndInit();
             this.groupBox65.ResumeLayout(false);
             this.groupBox59.ResumeLayout(false);
             this.groupBox60.ResumeLayout(false);
@@ -8512,5 +8594,8 @@
         private System.Windows.Forms.Label label_Config_Laser_Laser_TotalTime;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.DataGridView dataGridMaskSize;
+        private System.Windows.Forms.Button button_MaskSizeSave;
+        private System.Windows.Forms.GroupBox groupBox_Config_BDS_MaskSize;
     }
 }
