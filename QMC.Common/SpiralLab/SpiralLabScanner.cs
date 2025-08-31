@@ -75,8 +75,10 @@ namespace QMC.Common.Parts
             public int BETIndex { get; set;} = 0;
             public int Duration { get; set; } = 0;
 
-            public float PowerLimitMin { get; set; } = 0f; // 레이저 출력 제한 (0 = 제한 없음)
-            public float PowerLimitMax { get; set; } = 0f; // 레이저 출력 제한 (0 = 제한 없음)
+            public float PowerLimitMin_Top { get; set; } = 0f; // 레이저 출력 제한 (0 = 제한 없음)
+            public float PowerLimitMax_Top { get; set; } = 0f; // 레이저 출력 제한 (0 = 제한 없음)
+            public float PowerLimitMin_Stage { get; set; } = 0f; // 레이저 출력 제한 (0 = 제한 없음)
+            public float PowerLimitMax_Stage { get; set; } = 0f; // 레이저 출력 제한 (0 = 제한 없음)
 
 
             public ScannerLaserSetting Clone()
@@ -105,8 +107,10 @@ namespace QMC.Common.Parts
                 BETIndex = 0;
                 Duration = 5000;
 
-                PowerLimitMin = 0; // 레이저 출력 제한 (0 = 제한 없음)
-                PowerLimitMax = 0; // 레이저 출력 제한 (0 = 제한 없음)
+                PowerLimitMin_Top = 0; // 레이저 출력 제한 (0 = 제한 없음)
+                PowerLimitMax_Top = 0; // 레이저 출력 제한 (0 = 제한 없음)
+                PowerLimitMin_Stage = 0; // 레이저 출력 제한 (0 = 제한 없음)
+                PowerLimitMax_Stage = 0; // 레이저 출력 제한 (0 = 제한 없음)
             }
 
             public bool LoadPowerMeterConfig()
@@ -123,11 +127,6 @@ namespace QMC.Common.Parts
 
                 NativeMethods.GetPrivateProfileString("Laser", "Duration", "100000", temp, 255, iniPath);
                 Duration = Equipment.ToInt(temp.ToString());
-
-                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMin", "0", temp, 255, iniPath);
-                PowerLimitMin = (float)Equipment.ToDouble(temp.ToString());
-                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMax", "0", temp, 255, iniPath);
-                PowerLimitMax = (float)Equipment.ToDouble(temp.ToString());
 
                 if (Equipment.Machine_LaserType_CO2)
                 {
@@ -157,6 +156,15 @@ namespace QMC.Common.Parts
                     NativeMethods.GetPrivateProfileString("Laser", "PulseWidth", "1", temp, 255, iniPath);
                     PulseWidth = (float)Equipment.ToDouble(temp.ToString());
                 }
+
+                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMin_Top", "0", temp, 255, iniPath);
+                PowerLimitMin_Top = (float)Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMax_Top", "0", temp, 255, iniPath);
+                PowerLimitMax_Top = (float)Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMin_Stage", "0", temp, 255, iniPath);
+                PowerLimitMin_Stage = (float)Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString("Laser", "PowerLimitMax_Stage", "0", temp, 255, iniPath);
+                PowerLimitMax_Stage = (float)Equipment.ToDouble(temp.ToString());
 
                 return bRtn;
             }

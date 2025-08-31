@@ -511,8 +511,9 @@ namespace SLD200_MSL
             bool bRet = true;
             if (!bRetryInit)
             {
+                // 도면 불러오기 속도 줄이기.
                 //SpiralLab.Sirius.Config.AngleFactor = 50;
-                if (Equipment.SiriusDrawing_Rendering_Resolution < 0)
+                if (Equipment.SiriusDrawing_Rendering_Resolution <= 0)
                 {
                     SpiralLab.Sirius.Config.AngleFactor = 50;
                 }
@@ -521,6 +522,11 @@ namespace SLD200_MSL
                     SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
                 }
 
+                //SpiralLab.Sirius.Config.IsDocumentDrawGrids = false;
+                //SpiralLab.Sirius.Config.GripPointSize = 3; //  그리드 라인 표시 안함
+                //SpiralLab.Sirius.Config.BezierSplineMicroStepDistance = 0.5f; //  베지어 곡선의 마이크로 스텝 거리 (0.01mm)
+                //SpiralLab.Sirius.Config.UndoStackSize = 50; //  Undo Stack Size (기본값: 100)
+
                 //  Arc 를 Polyline 으로 만들 경우
                 Config.LwPolylineBulgeToLines = true;
                 Config.LwPolylineBulgeToLineMinThreshold = (float)0.001;
@@ -528,6 +534,29 @@ namespace SLD200_MSL
                     Config.LwPolylineBulgePrecision = 100;
                 else
                     Config.LwPolylineBulgePrecision = Equipment.Machine_PolylineCurve_Resolution;
+
+
+                SpiralLab.Sirius.Config.IsDocumentDrawGrids = true;
+                SpiralLab.Sirius.Config.IsDocumentDrawAxes = false;
+                //SpiralLab.Sirius.Config.AngleFactor = 25;
+                SpiralLab.Sirius.Config.SimulationStepDistance = 0.5f;
+
+                SpiralLab.Sirius.Config.BezierSplineMicroStepDistance = 0.3f;
+                SpiralLab.Sirius.Config.SplineControlPointPrecision = 4f;
+                //SpiralLab.Sirius.Config.LwPolylineBulgeToLines = true;
+                SpiralLab.Sirius.Config.LwPolylineBulgePrecision = 10;
+                SpiralLab.Sirius.Config.LwPolylineBulgeToLineMinThreshold = 0.05f;
+
+                SpiralLab.Sirius.Config.IsDxfCircleOverride = true;
+                SpiralLab.Sirius.Config.DxfCircleOverrideAngleFactor = 60;
+                SpiralLab.Sirius.Config.DxfCircleOverrideRepeats = 1;
+
+                SpiralLab.Sirius.Config.UndoStackSize = 50;
+                SpiralLab.Sirius.Config.IsSnapToGridHatchInterval = true;
+
+
+
+
 
                 if (SiriusEditor == null)
                 {

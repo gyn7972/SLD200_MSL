@@ -337,7 +337,7 @@ namespace QMC.Common.Q_Sequence
             bool bCalPosition = Equipment.Scanner_Calibration_Position_Enable; // true: cal판, false 중앙
             bool bCalChagne = Equipment.Scanner_Calibration_Change;    //캘리브레이션 변경 여부
             if (Equipment.AutoManualStatus &&
-               (Equipment.AutoRunStatus || Equipment.AutoManualStatus || Equipment.SemiAutoEnable))
+               (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New || Equipment.SemiAutoEnable))
             {
                 bCalPosition = true;    // 캘리브레이션 위치 설정 여부 : 무조건 Cal판.
                 bCalChagne = false;
@@ -1093,13 +1093,27 @@ namespace QMC.Common.Q_Sequence
                         // Z-Axis :: CO2 -> 아크릴 높이 감안하여 cal 확인시에는 높이를 따로 둔다. ( stage쪽에서는 높이 다름 )
                         m_dZOffset_SocketHeightCheck = 0.0;
                         int nZPos = 0;
-                        if(bCalPosition)
+                        if (bCalPosition)
                         {
                             nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos;
                         }
                         else
                         {
-                            nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            if (Equipment.Machine_LaserType_CO2)
+                            {
+                                if (Equipment.Scanner_Calibration_AcrylicPanel_Enable)
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
+                                }
+                                else
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                                }
+                            }
+                            else
+                            {
+                                nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            }
                         }
 
                         workStage.MovetoWorkStage_TeachingPositionsZ(nZPos, Type_Motor_Speed.Fine);
@@ -1117,7 +1131,21 @@ namespace QMC.Common.Q_Sequence
                         }
                         else
                         {
-                            nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            if (Equipment.Machine_LaserType_CO2)
+                            {
+                                if (Equipment.Scanner_Calibration_AcrylicPanel_Enable)
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
+                                }
+                                else
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                                }
+                            }
+                            else
+                            {
+                                nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            }
                         }
 
                         if (workStage.IsWorkStage_TeachingPositionsZ((int)nZPos))
@@ -1277,7 +1305,22 @@ namespace QMC.Common.Q_Sequence
                         }
                         else
                         {
-                            nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            if (Equipment.Machine_LaserType_CO2)
+                            {
+                                if (Equipment.Scanner_Calibration_AcrylicPanel_Enable)
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
+                                }
+                                else
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                                }
+                            }
+                            else
+                            {
+                                nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            }
+                            //nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                         }
 
                         double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dHeightOffsetScanner;
@@ -1308,7 +1351,22 @@ namespace QMC.Common.Q_Sequence
                             }
                             else
                             {
-                                nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                                if (Equipment.Machine_LaserType_CO2)
+                                {
+                                    if (Equipment.Scanner_Calibration_AcrylicPanel_Enable)
+                                    {
+                                        nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
+                                    }
+                                    else
+                                    {
+                                        nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                                    }
+                                }
+                                else
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                                }
+                                //nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                             }
 
                             double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dHeightOffsetScanner;
@@ -1574,7 +1632,22 @@ namespace QMC.Common.Q_Sequence
                         }
                         else
                         {
-                            nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            if (Equipment.Machine_LaserType_CO2)
+                            {
+                                if (Equipment.Scanner_Calibration_AcrylicPanel_Enable)
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
+                                }
+                                else
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                                }
+                            }
+                            else
+                            {
+                                nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            }
+                            //nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                         }
 
                         double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z + m_dHeightOffsetVision;
@@ -1600,7 +1673,22 @@ namespace QMC.Common.Q_Sequence
                         }
                         else
                         {
-                            nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            if (Equipment.Machine_LaserType_CO2)
+                            {
+                                if (Equipment.Scanner_Calibration_AcrylicPanel_Enable)
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
+                                }
+                                else
+                                {
+                                    nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                                }
+                            }
+                            else
+                            {
+                                nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            }
+                            //nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                         }
 
                         double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z + m_dHeightOffsetVision;
@@ -2004,7 +2092,7 @@ namespace QMC.Common.Q_Sequence
                 case (int)VerifyScannerCameraOffset_Step.CrossMarkCenter_XYAlign_Retry:
                     {
                         // 허용 오차(mm)
-                        const double TOLERANCE = 0.003;
+                        const double TOLERANCE = 0.002;
 
                         // 오프셋 값 가져오기
                         double offsetX = Equipment.Scanner_Vision_Offset_Setting_X;
