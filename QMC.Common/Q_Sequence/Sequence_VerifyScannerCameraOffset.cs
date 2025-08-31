@@ -603,7 +603,9 @@ namespace QMC.Common.Q_Sequence
                     {
                         if (Equipment.Machine_LaserType_CO2)
                         {
-                            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+                            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE &&
+                                Equipment._InitDeviceStatus.Scanner == true &&
+                                TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > 5000)
                             {
                                 workStage.workStageParameter.DO_Laser_Enable(true);
                                 Thread.Sleep(100);

@@ -666,22 +666,30 @@ namespace SLD200_MSL
                 return false;
 
             bool bRtn = false;
-            if (workStage.rtc.CtlGetStatus(RtcStatus.Busy))
+            try
             {
-                // abort marking operation
-                workStage.rtc.CtlAbort();
-                // wait until busy has finished
-                workStage.rtc.CtlBusyWait();
+                if (workStage.rtc.CtlGetStatus(RtcStatus.Busy))
+                {
+                    // abort marking operation
+                    workStage.rtc.CtlAbort();
+                    // wait until busy has finished
+                    workStage.rtc.CtlBusyWait();
+                }
+
+                workStage.DisposespiralLabScannerModule();
+
+                workStage.laser.Dispose();
+                workStage.rtc.Dispose();
+
+                workStage.laser = null;
+                workStage.rtc = null;
+                
+                bRtn = true;
             }
-            workStage.rtc.Dispose();
-            workStage.laser.Dispose();
-
-            workStage.rtc = null;
-            workStage.laser = null;
-
-            workStage.DisposespiralLabScannerModule();
-
-            bRtn = true;
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
             return bRtn;
         }
 
@@ -714,8 +722,10 @@ namespace SLD200_MSL
                 if (workStage.rtc != null && Equipment._InitDeviceStatus.Scanner)
                 {
                     //  이미 RTC 가 초기화 되어 있다면 Rtc 객체를 닫고 다시 초기화 한다.
-                    Rtc_Close();
+                    //Rtc_Close();
+                    workStage.Sirius_Close();
                     Equipment._InitDeviceStatus.Scanner = false;
+
                     Thread.Sleep(100); //  RTC 가 닫히는 시간을 준다.
                     if (Rtc_Init(true))
                     {

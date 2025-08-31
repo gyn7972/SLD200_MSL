@@ -6704,23 +6704,32 @@ namespace QMC.Common.Modules
             if (!Equipment._InitDeviceStatus.Scanner)
                 return false;
 
+            Equipment._InitDeviceStatus.Scanner = false;
+
             if (rtc == null || laser == null)
                 return false;
-      
             bool bRtn = false;
-            if (rtc.CtlGetStatus(RtcStatus.Busy))
+            try
             {
-                rtc.CtlAbort(); // abort marking operation
-                rtc.CtlBusyWait(); // wait until busy has finished
+                if (rtc.CtlGetStatus(RtcStatus.Busy))
+                {
+                    rtc.CtlAbort(); // abort marking operation
+                    rtc.CtlBusyWait(); // wait until busy has finished
+                }
+
+                DisposespiralLabScannerModule();
+
+                laser.Dispose();
+                rtc.Dispose();
+
+                rtc = null;
+                laser = null;
+                Equipment._InitDeviceStatus.Scanner = false;
             }
-
-            rtc.Dispose();
-            laser.Dispose();
-            DisposespiralLabScannerModule();
-
-            rtc = null;
-            laser = null;
-            Equipment._InitDeviceStatus.Scanner = false;
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
 
             bRtn = true;
             return bRtn;
@@ -43304,8 +43313,12 @@ namespace QMC.Common.Modules
 
                     m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
                     m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
-                    m_dZOffset_SocketHeightCheck = 0.0;
-
+                    
+                    if(!Equipment.SemiAutoEnable)
+                    {
+                        m_dZOffset_SocketHeightCheck = 0.0;
+                    }
+                    
                     // 현재 설정된 묶음 개수 가져오기 (작업 파일을 Open 할 때마다 묶음 개수를 원래대로)
                     // m_nRepetation_Bundle = Config.ParamConfig.RepetitionsBundle;
                     // Equipment.WorkStartTick_Drilling = Environment.TickCount;                   //  Drilling Tick Start

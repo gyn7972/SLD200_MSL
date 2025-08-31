@@ -482,6 +482,11 @@ namespace QMC.Common.Modules
                 {
                 }
 
+                if(!Equipment._InitDeviceStatus.Scanner)
+                {
+                    return;
+                }
+
                 // --- 레이져 누적 시간 계산용 현재 시각 ---
                 DateTime LaserOn_Now = DateTime.Now;
 
