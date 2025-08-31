@@ -43302,7 +43302,12 @@ namespace QMC.Common.Modules
 
                     m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
                     m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
-                    m_dZOffset_SocketHeightCheck = 0.0;
+
+                    if (!Equipment.SemiAutoEnable)
+                    {
+                        m_dZOffset_SocketHeightCheck = 0.0;
+                    }
+                    //m_dZOffset_SocketHeightCheck = 0.0;
 
                     // 현재 설정된 묶음 개수 가져오기 (작업 파일을 Open 할 때마다 묶음 개수를 원래대로)
                     // m_nRepetation_Bundle = Config.ParamConfig.RepetitionsBundle;
