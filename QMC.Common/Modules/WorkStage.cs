@@ -12101,7 +12101,7 @@ namespace QMC.Common.Modules
                             {
                                 if(m_bSensorRequestPending &&
                                    Equipment.AutoManualStatus &&
-                                   (Equipment.AutoRunStatus || Equipment.AutoManualStatus || Equipment.SemiAutoEnable))
+                                   (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New || Equipment.SemiAutoEnable))
                                 {
                                     m_dLaserHeightSensorSocket_Value = Equipment.ToDouble(LaserSensorData[1]);
                                     m_bSensorResponseReady = true;
@@ -13782,6 +13782,29 @@ namespace QMC.Common.Modules
         public bool m_b3PointAlingMode = false;
         public bool m_bSocketAlign_Fiducial_3PointNg = false; //1개 실패했을때만 넘어가자. 
 
+        // (추가) 헬퍼: GoldPowder 레시피 포지션 가져오기 (유효하면 true)
+        private bool TryGetGoldPowderRecipePos(int socketIndex, int fidIndex, out double x, out double y)
+        {
+            x = 0; y = 0;
+            var vr = Equipment.stVisionRecipeSet;
+            if (vr == null) return false;
+            if (socketIndex < 0 || fidIndex < 0 || fidIndex > 3) return false;
+            if (vr.GoldPowderSocketPosList == null) return false;
+            if (socketIndex >= vr.GoldPowderSocketPosList.Count) return false;
+
+            var gp = vr.GoldPowderSocketPosList[socketIndex];
+            if (gp == null) return false;
+
+            x = gp.X[fidIndex];
+            y = gp.Y[fidIndex];
+
+            // 0,0 은 미설정으로 판단 (둘 다 0인 경우만)
+            if (Math.Abs(x) < double.Epsilon && Math.Abs(y) < double.Epsilon)
+                return false;
+
+            return true;
+        }
+
         #region Socket Align
         int ExecuteAlignmentSequence(int nSocketNum, 
             LayerType m_LayerType = LayerType.LAYER_DRILLING, Equipment.AlignMode alignMode = AlignMode.Socket)
@@ -14224,6 +14247,16 @@ namespace QMC.Common.Modules
                     }
                     else if (alignMode == AlignMode.GoldPowder)
                     {
+                        bool useRecipePos = false;
+                        double recipeX = 0.0, recipeY = 0.0;
+
+                        // CO2 Repair 모드가 아니고 레시피 포지션이 유효하면 레시피 좌표 사용
+                        if (!m_bCO2_repairMode &&
+                            TryGetGoldPowderRecipePos(nSocketNum, m_nSocketAlign_FiducialCount, out recipeX, out recipeY))
+                        {
+                            useRecipePos = true;
+                        }
+
                         if (m_bCO2_repairMode)
                         {
                             //m_st4Dwg_RepairPos
@@ -14251,6 +14284,32 @@ namespace QMC.Common.Modules
                             {
                                 xyCoordinateGoldpowderAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                             }
+                        }
+                        else if (useRecipePos)
+                        {
+                            // 레시피에 저장한 Stage 좌표 그대로 사용 (추가 변환 없음)
+                            xyCoordinateAlign = new XyCoordinate(recipeX, recipeY);
+                            xyInterpolatedCoordinate = xyCoordinateAlign;
+
+                            if (!m_bIsFirstAlign)
+                            {
+                                if (m_nSocketAlign_FiducialCount == 0)
+                                {
+                                    // 최초 마크에서 이전 Socket Align 결과 기준값 초기화
+                                    xyCoordinateGoldpowderAlignPositionLast = xyCoordinateAlignPositionLast;
+                                    xyCoordinateGoldpowderAlignPositionOrgLast = xyCoordinateAlignPositionOrgLast;
+                                }
+                                // 이미 돌린 도면 기반 좌표이므로 회전 보정은 0 (필요시 옵션화)
+                                xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign,
+                                    xyCoordinateGoldpowderAlignPositionOrgLast.X,
+                                    xyCoordinateGoldpowderAlignPositionOrgLast.Y,
+                                    0);
+                            }
+                            xyCoordinateGoldpowderAlignPositionOrgLastTemp =
+                                new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+
+                            Log.Write("Goldpowder", "Move",
+                                $"[RecipePos] Socket:{nSocketNum + 1} Fid:{m_nSocketAlign_FiducialCount + 1} -> Stage({xyCoordinateAlign.X:F3},{xyCoordinateAlign.Y:F3})");
                         }
                         else
                         {
@@ -17492,8 +17551,6 @@ namespace QMC.Common.Modules
                 var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                 if (socket != null && socket.IsSocketDisplacement)
                 {
-                    // 적용하지말고 로그만 남기자.
-                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
                     strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
                                             layerEnum,
                                             m_nDrillingWork_Group_Count,
@@ -17572,8 +17629,6 @@ namespace QMC.Common.Modules
                 var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                 if (socket != null && socket.IsSocketDisplacement)
                 {
-                    // 적용하지말고 로그만 남기자.
-                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
                     strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
                                             layerEnum,
                                             m_nDrillingWork_Group_Count,
@@ -17665,8 +17720,6 @@ namespace QMC.Common.Modules
                 var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                 if (socket != null && socket.IsSocketDisplacement)
                 {
-                    // 적용하지말고 로그만 남기자.
-                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
                     strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
                                             layerEnum,
                                             m_nDrillingWork_Group_Count,
@@ -17805,8 +17858,6 @@ namespace QMC.Common.Modules
                 var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                 if (socket != null && socket.IsSocketDisplacement)
                 {
-                    // 적용하지말고 로그만 남기자.
-                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
                     strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
                                             layerEnum,
                                             m_nDrillingWork_Group_Count,
@@ -18820,8 +18871,6 @@ namespace QMC.Common.Modules
                 var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                 if (socket != null && socket.IsSocketDisplacement)
                 {
-                    // 적용하지말고 로그만 남기자.
-                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
                     strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
                                             layerEnum,
                                             m_nDrillingWork_Group_Count,
@@ -18911,8 +18960,6 @@ namespace QMC.Common.Modules
                 var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                 if (socket != null && socket.IsSocketDisplacement)
                 {
-                    // 적용하지말고 로그만 남기자.
-                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
                     strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
                                             layerEnum,
                                             m_nDrillingWork_Group_Count,
@@ -19003,8 +19050,6 @@ namespace QMC.Common.Modules
                 var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                 if (socket != null && socket.IsSocketDisplacement)
                 {
-                    // 적용하지말고 로그만 남기자.
-                    //m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
                     strTemp = string.Format("로그만_Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
                                             layerEnum,
                                             m_nDrillingWork_Group_Count,
@@ -19294,7 +19339,6 @@ namespace QMC.Common.Modules
             {
                 m_dZOffset_SocketHeightCheck = 0.0;
             }
-            //m_dZOffset_SocketHeightCheck = 0.0;
 
             m_nDrillingData_SocketAlign_Count = 0;              //  소켓 Align 개수
             m_nDrillingData_SocketAlign_NGCount = 0;            //  소켓 Align 실패 개수
@@ -23989,7 +24033,7 @@ namespace QMC.Common.Modules
             //  일단 Layer 는 1개만 사용하기로...
             m_nGroupCount = 0;
 
-            //  Divide 크기는 Layer 별로 다르게 한다. (Recipe 에서 설정)
+            // Divide 크기는 Layer 별로 다르게 한다. (Recipe 에서 설정)
             //if (Config.ParamConfig.Drilling_DivideSize <= 0.0)                //  default : 5mm
             //    m_dDrilling_FOV = 5.0;
             //else
@@ -24012,7 +24056,7 @@ namespace QMC.Common.Modules
             m_stLayerType.m_nLayerType = new int[m_stLayerType.m_nLayerCount];
             m_stLayerType.m_nLayerIndex = new int[(int)System.Enum.GetValues(typeof(LayerList)).Length];
 
-            //  Layer 종류별 Count
+            // Layer 종류별 Count
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable)
@@ -24086,27 +24130,9 @@ namespace QMC.Common.Modules
                 }
             }
 
-            //  이전의 PreAlign 데이터와 Fiducial 데이터를 null 로
+            // 이전의 PreAlign 데이터와 Fiducial 데이터를 null 로
             m_ptPreAlign = null;
             m_ptFiducial = null;
-
-            //  2025. 04. 26.  SCH : Outline 은 Socket 개수대로 공간을 할당해야 한다. --> 여기서 공간 할당 하지 않음
-            //  Outline 의 경우, Layer 가 2개 이상일 수 있다. 여기서 공간 할당.
-            //if (m_nLayerOutline_Count >= 1)
-            //{
-            //    m_nOutLine_LayerNum = m_nLayerOutline_Count;
-            //    m_stOutLine_SocketData = new WorkStage.stOutLine_SocketData[m_nLayerOutline_Count];
-            //    m_nLayerOutline_Count = 0;
-            //}
-
-            //  2025. 04. 26.  SCH : Outline 도 Socket 개수대로 공간을 할당해야 한다. --> 여기서 공간 할당 하지 않음
-            //  Thruhole 의 경우, Layer 가 2개 이상일 수 있다. 여기서 공간 할당. --> Thruhole Layer 1개로 고정
-            //if (m_nLayerThruhole_Count >= 1)
-            //{
-            //    m_nThruHole_LayerNum = m_nLayerThruhole_Count;
-            //    m_stThruHole_LayerData = new stThruHole_SocketData[m_nLayerThruhole_Count];
-            //    m_nLayerThruhole_Count = 0;
-            //}
 
             m_nLayerCount = 0;
             // 1. 도면 레이어별 소켓 수 파악
@@ -24140,12 +24166,12 @@ namespace QMC.Common.Modules
                     socketCount = layer.Count;
                 }
 
-                        //Hole2, 3, 4 등은 자료가 없이 hole1번꺼를 사용할꺼임.
-                        //그래서 아래와 같은 인터락 있으면 안됨.
+                //Hole2, 3, 4 등은 자료가 없이 hole1번꺼를 사용할꺼임.
+                //그래서 아래와 같은 인터락 있으면 안됨.
                 //if (socketCount <= 0)
                 //    continue;
 
-                        // 이름 보정 및 Dictionary 추가
+                // 이름 보정 및 Dictionary 추가
                 if (name.StartsWith("Hole"))
                 {
                     string digitPart = new string(name.Skip(4).Where(char.IsDigit).ToArray());
@@ -29454,7 +29480,6 @@ namespace QMC.Common.Modules
                 }
             }
             
-
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
         }
@@ -42774,7 +42799,7 @@ namespace QMC.Common.Modules
                                 Log.Write("선택_가공", $"LaserDrilling_StepDrillingData_SocketRemainedCheck_SelectMode:LAYER_DRILLING:소켓 m_bDrillingWork_Hole1_Exist = true");
 
                                 m_bDrillingWork_Hole1_Exist = true; // 다른 문제가 나올려나.. 흠..
-                                m_nDrillingWork_Group_Count = 0;
+                                m_nDrillingWork_Group_Count = 0; // <- 선택 유/무 찾아야 하니깐 해야 하는건가.
                             }
                             m_nLaserDrilling_LayerCount++;
                             nextStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
@@ -43342,7 +43367,13 @@ namespace QMC.Common.Modules
 
                     m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
                     m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
-                    m_dZOffset_SocketHeightCheck = 0.0;
+
+                    //2025-08-22::여기서 이거 왜 하지?
+                    if (!Equipment.SemiAutoEnable)
+                    {
+                        m_dZOffset_SocketHeightCheck = 0.0;
+                    }
+                    //m_dZOffset_SocketHeightCheck = 0.0;
 
                     // 현재 설정된 묶음 개수 가져오기 (작업 파일을 Open 할 때마다 묶음 개수를 원래대로)
                     // m_nRepetation_Bundle = Config.ParamConfig.RepetitionsBundle;
@@ -43466,7 +43497,8 @@ namespace QMC.Common.Modules
             return m_strTemp;
         }
 
-        private int LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck_Selectmode(ref int m_nZigZag_CurrentRow, ref int m_nZigZag_CurRow_FirstIndex, ref int m_nZigZag_CurRow_CurIndex, ref int m_nZigZag_CurRow_LastIndex)
+        public int LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck_Selectmode(ref int m_nZigZag_CurrentRow, ref int m_nZigZag_CurRow_FirstIndex, ref int m_nZigZag_CurRow_CurIndex, ref int m_nZigZag_CurRow_LastIndex)
+        //private int LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck_Selectmode(ref int m_nZigZag_CurrentRow, ref int m_nZigZag_CurRow_FirstIndex, ref int m_nZigZag_CurRow_CurIndex, ref int m_nZigZag_CurRow_LastIndex)
         {
             //m_nDividedRegion_Region_CurrentIndex <- 홀 소켓의 분할 영역 인덱스
             int nNextStep;
@@ -43541,6 +43573,7 @@ namespace QMC.Common.Modules
 
                 if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole50))
                 {
+                    //Layer가 있는 숫자 만큼 돌면서 Layer위치의 Data를 빼 올 수 있는건가?
                     for (int i = 0; i < m_stLayerType.m_nLayerIndex.Length; i++)
                     {
                         if (m_stLayerType.m_nLayerIndex[i] == m_nHoleLayer_ProcessIndex_Count)
@@ -43575,9 +43608,9 @@ namespace QMC.Common.Modules
 
                         //20250808-GYN :: 
                         //여기가 문제.
-                        //m_nHoleLayer_ProcessIndex = m_nHoleLayer_ProcessIndex_Count;
+                        m_nHoleLayer_ProcessIndex = m_nHoleLayer_ProcessIndex_Count;
                         //여기서 이거는 증가를 해야한다. HoleLayer 갯수 증가.
-                        m_nHoleLayer_ProcessIndex++;
+                        //m_nHoleLayer_ProcessIndex++;
                         
                         //  Group 카운트 증가 없이 그대로 재가공 (파라미터는 변경해야 함. Defocusing, Resizing 등)
                         //nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;

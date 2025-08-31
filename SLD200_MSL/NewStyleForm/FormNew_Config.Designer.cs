@@ -31,6 +31,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl_Config = new System.Windows.Forms.TabControl();
             this.tabPage_Config_LDUL = new System.Windows.Forms.TabPage();
             this.groupBox_Config_LDUL_DIO = new System.Windows.Forms.GroupBox();
@@ -6654,7 +6655,7 @@
             // 
             this.dataGridMaskSize.AllowUserToAddRows = false;
             this.dataGridMaskSize.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle1.Format = "N0";
             dataGridViewCellStyle1.NullValue = "0";
             this.dataGridMaskSize.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
@@ -6662,7 +6663,7 @@
             this.dataGridMaskSize.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridMaskSize.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Sunken;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.Format = "No";
             dataGridViewCellStyle2.NullValue = "0";
@@ -6672,7 +6673,7 @@
             this.dataGridMaskSize.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle3.Format = "N0";
             dataGridViewCellStyle3.NullValue = "0";
@@ -6683,6 +6684,14 @@
             this.dataGridMaskSize.Location = new System.Drawing.Point(7, 25);
             this.dataGridMaskSize.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dataGridMaskSize.Name = "dataGridMaskSize";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridMaskSize.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridMaskSize.RowHeadersWidth = 62;
             this.dataGridMaskSize.Size = new System.Drawing.Size(322, 178);
             this.dataGridMaskSize.TabIndex = 77;

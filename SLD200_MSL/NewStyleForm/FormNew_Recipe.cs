@@ -1254,7 +1254,7 @@ namespace SLD200_MSL
         public void Recipe_Data_Refresh(string m_strLayerName)
         {
             //  해당 Layer 의 데이터로 변경하여 표시
-            int m_nIndex = -1;
+            int nIndex = -1;
             //  Hole 인지?
             string m_strLayer = m_strLayerName.Length > 4 ? m_strLayerName.Substring(0, 4) : m_strLayerName;
 
@@ -1269,11 +1269,11 @@ namespace SLD200_MSL
                     int m_nHoleLayer_Index = Equipment.ToInt(m_strHoleLayer_Number);
                     if ((m_nHoleLayer_Index >= 1) && (m_nHoleLayer_Index <= 50))
                     {
-                        m_nIndex = m_nHoleLayer_Index - 1;             //  Hole Layer 의 Index 는 0부터 시작
+                        nIndex = m_nHoleLayer_Index - 1;             //  Hole Layer 의 Index 는 0부터 시작
                     }
                     else
                     {
-                        m_nIndex = (int)LayerList.Hole1;
+                        nIndex = (int)LayerList.Hole1;
                     }
                 }
             }
@@ -1317,30 +1317,30 @@ namespace SLD200_MSL
             #endregion
             else if (m_strLayerName == "Rect")
             {
-                m_nIndex = (int)LayerList.Rect;
+                nIndex = (int)LayerList.Rect;
             }
             else if (m_strLayerName == "Outline")
             {
-                m_nIndex = (int)LayerList.Outline;
+                nIndex = (int)LayerList.Outline;
             }
             else if (m_strLayerName == "Marking")
             {
-                m_nIndex = (int)LayerList.Marking;
+                nIndex = (int)LayerList.Marking;
             }
             else if (m_strLayerName == "Fiducial")
             {
-                m_nIndex = (int)LayerList.Fiducial;
+                nIndex = (int)LayerList.Fiducial;
             }
             else if (m_strLayerName == "Thruhole")
             {
-                m_nIndex = (int)LayerList.Thruhole;
+                nIndex = (int)LayerList.Thruhole;
             }
             else if (m_strLayerName == "PreAlign")
             {
-                m_nIndex = (int)LayerList.PreAlign;
+                nIndex = (int)LayerList.PreAlign;
             }
 
-            if (m_nIndex < 0)
+            if (nIndex < 0)
             {
 
                 Log.Write("SLD-200", Equipment.User_Name, "Recipe_Data_Refresh - Fail.");
@@ -1350,24 +1350,126 @@ namespace SLD200_MSL
             // m_nIndex 여기서 Hole Index 내부에 data가 0이거나 없으면.. 
             // 값을 넣어줘야함.
             // 신규로 Layer가 만들어졌을때.
+            // 신규 Hole 레이어(값 비었으면) → 이전 Hole 데이터 복사
+            //if ((m_strLayer == "Hole" && m_nIndex > (int)LayerList.Hole1) &&
+            //    m_strLayerName == "Outline" && m_strLayerName == "Marking" &&
+            //    m_strLayerName == "Thruhole")
+            //{
+
+            //}
 
             //  Laser Parameter
-            textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = Equipment.stLayerRecipeSet[m_nIndex].LaserParam_PulseWidth.ToString();
-            textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[m_nIndex].LaserParam_PulsePeriod.ToString();
-            textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = Equipment.stLayerRecipeSet[m_nIndex].LaserParam_Frequency.ToString();
-            textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[m_nIndex].LaserParam_DutyCycle.ToString();
+            if (Equipment.stLayerRecipeSet[nIndex].LaserParam_Frequency <= 0 ||
+                Equipment.stLayerRecipeSet[nIndex].LaserParam_PulseWidth <= 0)
+            {
+                if (Equipment.stLayerRecipeSet[nIndex].LaserParam_Frequency <= 0 ||
+                    Equipment.stLayerRecipeSet[nIndex].LaserParam_PulseWidth <= 0)
+                {
+                    Equipment.stLayerRecipeSet[nIndex].LaserParam_PulseWidth = Equipment.stLayerRecipeSet[nIndex - 1].LaserParam_PulseWidth;
+                    Equipment.stLayerRecipeSet[nIndex].LaserParam_PulsePeriod = Equipment.stLayerRecipeSet[nIndex - 1].LaserParam_PulsePeriod;
+                    Equipment.stLayerRecipeSet[nIndex].LaserParam_Frequency = Equipment.stLayerRecipeSet[nIndex - 1].LaserParam_Frequency;
+                    Equipment.stLayerRecipeSet[nIndex].LaserParam_DutyCycle = Equipment.stLayerRecipeSet[nIndex - 1].LaserParam_DutyCycle;
+                    Equipment.stLayerRecipeSet[nIndex].ProcessPriority_P2P = Equipment.stLayerRecipeSet[nIndex - 1].ProcessPriority_P2P;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_ReferenceLayer = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_ReferenceLayer;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DefocusingDistance = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_DefocusingDistance;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_Resizing = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_Resizing;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleDrilling_StartPosDivision = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_HoleDrilling_StartPosDivision;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_GroupSplitSize = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_GroupSplitSize;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_GroupSplitSize_Height = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_GroupSplitSize_Height;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_ScannerDrillingSpeed = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_ScannerDrillingSpeed;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_ScannerJumpSpeed = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_ScannerJumpSpeed;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_LaserOnDelay = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_LaserOnDelay;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_LaserOffDelay = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_LaserOffDelay;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_MarkDelay = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_MarkDelay;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_JumpDelay = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_JumpDelay;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_PolygonDelay = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_PolygonDelay;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_Drilling_Power = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_Drilling_Power;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DrillingRepetition = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_DrillingRepetition;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DrillingRepetitionBundle = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_DrillingRepetitionBundle;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_RotationAngleArc = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_RotationAngleArc;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_CircleStartAngleCircle1time = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_CircleStartAngleCircle1time;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_P2PDistance = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_P2PDistance;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_MaskIndex = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_MaskIndex;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_BETPositionIndex = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_BETPositionIndex;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleProcessingType = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_HoleProcessingType;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleSortByDistance_Use = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_HoleSortByDistance_Use;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleSortingDistance = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_HoleSortingDistance;
+                    Equipment.stLayerRecipeSet[nIndex].ProcessOption_SocketAlign_Use = Equipment.stLayerRecipeSet[nIndex - 1].ProcessOption_SocketAlign_Use;
+                    Equipment.stLayerRecipeSet[nIndex].ProcessOption_SocketHeightCheck_Use = Equipment.stLayerRecipeSet[nIndex - 1].ProcessOption_SocketHeightCheck_Use;
+                    Equipment.stLayerRecipeSet[nIndex].ProcessOption_SocketHeightCheckPos_OffsetX = Equipment.stLayerRecipeSet[nIndex - 1].ProcessOption_SocketHeightCheckPos_OffsetX;
+                    Equipment.stLayerRecipeSet[nIndex].ProcessOption_SocketHeightCheckPos_OffsetY = Equipment.stLayerRecipeSet[nIndex - 1].ProcessOption_SocketHeightCheckPos_OffsetY;
+                    Equipment.stLayerRecipeSet[nIndex].ProcessOption_GoldPowderAlign_Use = Equipment.stLayerRecipeSet[nIndex - 1].ProcessOption_GoldPowderAlign_Use;
+                    Equipment.stLayerRecipeSet[nIndex].ModuleInformation_Module_Width = Equipment.stLayerRecipeSet[nIndex - 1].ModuleInformation_Module_Width;
+                    Equipment.stLayerRecipeSet[nIndex].ModuleInformation_Module_Height = Equipment.stLayerRecipeSet[nIndex - 1].ModuleInformation_Module_Height;
+                    Equipment.stLayerRecipeSet[nIndex].ModuleInformation_Silicon_Thickness = Equipment.stLayerRecipeSet[nIndex - 1].ModuleInformation_Silicon_Thickness;
+                    Equipment.stLayerRecipeSet[nIndex].ModuleInformation_GoldPowder_Thickness = Equipment.stLayerRecipeSet[nIndex - 1].ModuleInformation_GoldPowder_Thickness;
+                    Equipment.stLayerRecipeSet[nIndex].ModuleInformation_GoldPowder_Percent = Equipment.stLayerRecipeSet[nIndex - 1].ModuleInformation_GoldPowder_Percent;
+                    Equipment.stLayerRecipeSet[nIndex].ModuleInformation_GoldPowder_Limit = Equipment.stLayerRecipeSet[nIndex - 1].ModuleInformation_GoldPowder_Limit;
+                    Equipment.stLayerRecipeSet[nIndex].SpiralParam_OuterDiameter = Equipment.stLayerRecipeSet[nIndex - 1].SpiralParam_OuterDiameter;
+                    Equipment.stLayerRecipeSet[nIndex].SpiralParam_InnerDiameter = Equipment.stLayerRecipeSet[nIndex - 1].SpiralParam_InnerDiameter;
+                    Equipment.stLayerRecipeSet[nIndex].SpiralParam_Revolutions = Equipment.stLayerRecipeSet[nIndex - 1].SpiralParam_Revolutions;
+                    Equipment.stLayerRecipeSet[nIndex].SpiralParam_AngleFactor = Equipment.stLayerRecipeSet[nIndex - 1].SpiralParam_AngleFactor;
+                    Equipment.stLayerRecipeSet[nIndex].EPRO_ModuleAbsorptionLevel = Equipment.stLayerRecipeSet[nIndex - 1].EPRO_ModuleAbsorptionLevel;
+                    Equipment.stLayerRecipeSet[nIndex].MAligner_VacuumPos_Ignore = Equipment.stLayerRecipeSet[nIndex - 1].MAligner_VacuumPos_Ignore;
+                    Equipment.stLayerRecipeSet[nIndex].MAligner_VacuumPos_Center = Equipment.stLayerRecipeSet[nIndex - 1].MAligner_VacuumPos_Center;
+                    Equipment.stLayerRecipeSet[nIndex].MAligner_VacuumPos_Inner = Equipment.stLayerRecipeSet[nIndex - 1].MAligner_VacuumPos_Inner;
+                    Equipment.stLayerRecipeSet[nIndex].MAligner_VacuumPos_Outer = Equipment.stLayerRecipeSet[nIndex - 1].MAligner_VacuumPos_Outer;
+                    Equipment.stLayerRecipeSet[nIndex].DustCollectorRemoteMode_Use = Equipment.stLayerRecipeSet[nIndex - 1].DustCollectorRemoteMode_Use;
+                    Equipment.stLayerRecipeSet[nIndex].DustCollectorFreq_Upper = Equipment.stLayerRecipeSet[nIndex - 1].DustCollectorFreq_Upper;
+                    Equipment.stLayerRecipeSet[nIndex].DustCollectorFreq_Lower = Equipment.stLayerRecipeSet[nIndex - 1].DustCollectorFreq_Lower;
+                    Equipment.stLayerRecipeSet[nIndex].DustCollectorLower_Disable = Equipment.stLayerRecipeSet[nIndex - 1].DustCollectorLower_Disable;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingData_SiriusTemplate_Use = Equipment.stLayerRecipeSet[nIndex - 1].MarkingData_SiriusTemplate_Use;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_DataType = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_DataType;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_TextType = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_TextType;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_PrefixData = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_PrefixData;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_StartNumber = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_StartNumber;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_Digits = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_Digits;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_IncreaseStep = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_IncreaseStep;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_SuffixData = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_SuffixData;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_Hatch_Use = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_Hatch_Use;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_Hatch_Spacing = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_Hatch_Spacing;
+                    Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_SerialNumberIncreaseType;
+                    Equipment.stLayerRecipeSet[nIndex].CalfileOffsetZAxismm = Equipment.stLayerRecipeSet[nIndex - 1].CalfileOffsetZAxismm;
+                    Equipment.stLayerRecipeSet[nIndex].ChuckMSL_Enable = Equipment.stLayerRecipeSet[nIndex - 1].ChuckMSL_Enable;
+                    Equipment.stLayerRecipeSet[nIndex].Align3Point_Enable = Equipment.stLayerRecipeSet[nIndex - 1].Align3Point_Enable;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_BETPositionIndex = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_BETPositionIndex;
+                    switch (Equipment.stLayerRecipeSet[nIndex].Miscellaneous_BETPositionIndex)
+                    {
+                        case 0:
+                            workStage.m_dBET_ZoomValue_Recipe = 0.8;
+                            workStage.m_dBET_MradValue_Recipe = Equipment.BET_0_8X_Mrad;
+                            break;
 
-            //if (Equipment.stLayerRecipeSet[m_nIndex].LaserParam_TriggerMode_External)
-            //{
-            //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
-            //}
-            //else
-            //{
-            //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Checked = true;
-            //}
+                        case 1:
+                            workStage.m_dBET_ZoomValue_Recipe = 0.9;
+                            workStage.m_dBET_MradValue_Recipe = Equipment.BET_0_9X_Mrad;
+                            break;
+
+                        case 2:
+                            workStage.m_dBET_ZoomValue_Recipe = 1.0;
+                            workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_0X_Mrad;
+                            break;
+
+                        case 3:
+                            workStage.m_dBET_ZoomValue_Recipe = 1.1;
+                            workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_1X_Mrad;
+                            break;
+
+                        case 4:
+                            workStage.m_dBET_ZoomValue_Recipe = 1.2;
+                            workStage.m_dBET_MradValue_Recipe = Equipment.BET_1_2X_Mrad;
+                            break;
+                    }
+                }
+            }
+
+            textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = Equipment.stLayerRecipeSet[nIndex].LaserParam_Frequency.ToString();
+            textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = Equipment.stLayerRecipeSet[nIndex].LaserParam_PulseWidth.ToString();
+            textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[nIndex].LaserParam_PulsePeriod.ToString();
+            textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[nIndex].LaserParam_DutyCycle.ToString();
 
             //  Process Priority
-            if (Equipment.stLayerRecipeSet[m_nIndex].ProcessPriority_P2P)
+            if (Equipment.stLayerRecipeSet[nIndex].ProcessPriority_P2P)
             {
                 radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true;
 
@@ -1387,32 +1489,28 @@ namespace SLD200_MSL
             }
 
             //  Miscellaneous
-            textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_ReferenceLayer;
-            textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_DefocusingDistance.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_Resizing.ToString();
-            comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_GroupSplitSize.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_GroupSplitSize_Height.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_ScannerDrillingSpeed.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_ScannerJumpSpeed.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_LaserOnDelay.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_LaserOffDelay.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MarkDelay.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_JumpDelay.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_PolygonDelay.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_Drilling_Power.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_DrillingRepetition.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_DrillingRepetitionBundle.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_RotationAngleArc.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_CircleStartAngleCircle1time.ToString();
-            textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_P2PDistance.ToString();
-            //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString();
-            //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString();
-            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString());
+            textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_ReferenceLayer;
+            textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DefocusingDistance.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_Resizing.ToString();
+            comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_GroupSplitSize.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_GroupSplitSize_Height.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_ScannerDrillingSpeed.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_ScannerJumpSpeed.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_LaserOnDelay.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_LaserOffDelay.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_MarkDelay.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_JumpDelay.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_PolygonDelay.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_Drilling_Power.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DrillingRepetition.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DrillingRepetitionBundle.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_RotationAngleArc.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_CircleStartAngleCircle1time.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_P2PDistance.ToString();
+            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[nIndex].Miscellaneous_MaskIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleProcessingType.ToString());
-            //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialAlignType.ToString());
-            //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialMarkType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleProcessingType.ToString());
             checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use;
             textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance.ToString();
 
@@ -1433,10 +1531,10 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit.ToString();
 
             //  Spiral Parameter
-            textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_OuterDiameter.ToString();
-            textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_InnerDiameter.ToString();
-            textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_Revolutions.ToString();
-            textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_AngleFactor.ToString();
+            textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[nIndex].SpiralParam_OuterDiameter.ToString();
+            textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text = Equipment.stLayerRecipeSet[nIndex].SpiralParam_InnerDiameter.ToString();
+            textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = Equipment.stLayerRecipeSet[nIndex].SpiralParam_Revolutions.ToString();
+            textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = Equipment.stLayerRecipeSet[nIndex].SpiralParam_AngleFactor.ToString();
 
             //  EPRO Module Absorption Level
             textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString();
@@ -1456,8 +1554,6 @@ namespace SLD200_MSL
             //  Marking Template
             checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingData_SiriusTemplate_Use;
             comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_DataType.ToString());
-            //textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Width.ToString();
-            //textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Height.ToString();
 
             if (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType)
             {
@@ -1523,15 +1619,16 @@ namespace SLD200_MSL
 
             textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text = Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_Hatch_Spacing.ToString();
 
-
             //m_nIndex <- 이거 먹나?
-            richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[m_nIndex].CalfileOffsetZAxismm.ToString();
+            richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[nIndex].CalfileOffsetZAxismm.ToString();
 
             //  Chuck MSL 사용 여부
             checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Enable;
 
             //  3-Point Align 사용 여부
             checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked = Equipment.stLayerRecipeSet[0].Align3Point_Enable;
+
+            
         }
 
 

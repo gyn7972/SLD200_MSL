@@ -1191,8 +1191,6 @@ namespace QMC.Common.Motion.Ajin.Motions
     //}
     #endregion
 
-    
-
     #region AjinAxlHomingSpecification
     /// <summary>
     /// AJIN에서 제공하는 Homing 함수를 사용하기 위해 프로퍼티를 추가함.

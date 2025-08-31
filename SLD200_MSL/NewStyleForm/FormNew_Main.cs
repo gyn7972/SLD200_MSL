@@ -4574,6 +4574,21 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            int nNextStep = 0;
+
+            workStage.m_nHoleLayer_ProcessIndex_Count = 0;
+            workStage.m_nHoleLayer_ProcessIndex = 0;
+
+            workStage.LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck_Selectmode(ref nNextStep, ref nNextStep, ref nNextStep, ref nNextStep);
+
+            double dwtwd = Equipment.stLayerRecipeSet[workStage.m_stLayerType.m_nLayerIndex[workStage.m_nHoleLayer_ProcessIndex]].LaserParam_PulseWidth;
+            bool   btest = Equipment.stLayerRecipeSet[workStage.m_stLayerType.m_nLayerIndex[workStage.m_nHoleLayer_ProcessIndex]].ProcessPriority_P2P;
+
+            dwtwd = Equipment.stLayerRecipeSet[workStage.m_nHoleLayer_ProcessIndex].LaserParam_PulseWidth;
+            btest = Equipment.stLayerRecipeSet[workStage.m_nHoleLayer_ProcessIndex].ProcessPriority_P2P;
+
+            return;
+
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes == mb.ShowDialog("Question ?",
                 "Scanner Calibration을 시작합니다.\n\n기존 캘리브레이션 판을 사용하십니까?"))
