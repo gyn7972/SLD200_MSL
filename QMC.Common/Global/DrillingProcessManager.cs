@@ -203,7 +203,7 @@ namespace QMC.Common.Global
             var layer = LayerList.FirstOrDefault(l => l.LayerEnum == layerEnum);
             if (layer == null)
             {
-                Log.Write("DrillStatus", $"GetLayer 실패 - 요청한 LayerEnum({layerEnum}) 이 존재하지 않습니다.");
+                //Log.Write("DrillStatus", $"GetLayer 실패 - 요청한 LayerEnum({layerEnum}) 이 존재하지 않습니다.");
             }
 
             return layer;

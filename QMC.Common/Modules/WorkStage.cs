@@ -17238,6 +17238,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", "Auto Run", strTemp);
                     Log.Write("LaserDrilling", strTemp);
+                    Log.Write("Test", strTemp);
 
                     int m_nSDC_Count = 0;
                     do
@@ -17254,12 +17255,14 @@ namespace QMC.Common.Modules
                             strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Spot Distance Control 파라미터 적용 실패, ({0}/3)", m_nSDC_Count + 1);
                             Log.Write("SLD-200", "Auto Run", strTemp);
                             Log.Write("LaserDrilling", strTemp);
+                            Log.Write("Test", strTemp);
                         }
                         else
                         {
                             strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Spot Distance Control 파라미터 적용 성공, ({0}/3)", m_nSDC_Count + 1);
                             Log.Write("SLD-200", "Auto Run", strTemp);
                             Log.Write("LaserDrilling", strTemp);
+                            Log.Write("Test", strTemp);
 
                             // 알람도 울려야 하는거 같다. 
                         }
@@ -17275,6 +17278,7 @@ namespace QMC.Common.Modules
                                             m_stLayerType.m_nLayerIndex[m_nHoleLayer_ProcessIndex] + 1, m_nHoleLayer_ProcessIndex + 1, m_nLaserDrilling_LayerCount + 1);
                 Log.Write("SLD-200", "Auto Run", strTemp);
                 Log.Write("LaserDrilling", strTemp);
+                Log.Write("Test", strTemp);
 
                 //  Frequency, Pulse Width 값이 있으면 적용
                 if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_Frequency > 0.0)
@@ -17326,6 +17330,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", "Auto Run", strTemp);
                     Log.Write("LaserDrilling", strTemp);
+                    Log.Write("Test", strTemp);
 
                     m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].LaserParam_Frequency,
                                                                 (float)m_dLaserParam_PulseWidth);
@@ -17334,11 +17339,13 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 파라미터 적용 실패");
                         Log.Write("LaserDrilling", strTemp);
+                        Log.Write("Test", strTemp);
                     }
                     else
                     {
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 파라미터 적용 성공");
                         Log.Write("LaserDrilling", strTemp);
+                        Log.Write("Test", strTemp);
                     }
                 }
 
@@ -17510,6 +17517,7 @@ namespace QMC.Common.Modules
             }
             m_strTemp = strTemp;
             Log.Write("SLD-200", "Auto Run", m_strTemp);
+            Log.Write("Test", "Auto Run", m_strTemp);
 
 
             if (Equipment.Machine_SocketHeight_Batch_Use && 
@@ -43557,7 +43565,7 @@ namespace QMC.Common.Modules
                 // Hole2 ~ Hole50 Layer 가 있을 경우, 해당 Parameter 로 Hole1 가공을 다시 진행한다.
                 m_nHoleLayer_ProcessIndex_Count++;
                 bool m_bLayerExist = false;
-
+                int nlayerCnt = 0;
                 if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole50))
                 {
                     //Layer가 있는 숫자 만큼 돌면서 Layer위치의 Data를 빼 올 수 있는건가?
@@ -43565,6 +43573,7 @@ namespace QMC.Common.Modules
                     {
                         if (m_stLayerType.m_nLayerIndex[i] == m_nHoleLayer_ProcessIndex_Count)
                         {
+                            nlayerCnt = i;
                             m_bLayerExist = true;
                             i = m_stLayerType.m_nLayerIndex.Length;
                         }
@@ -43584,10 +43593,9 @@ namespace QMC.Common.Modules
                                 return nNextStep;
                             }
 
-                            //if (!IsCurrentSocketSelected(LayerType.LAYER_DRILLING, m_nHoleLayer_ProcessIndex_Count, m_nDrillingWork_Group_Count))
-                            if (!IsCurrentSocketSelected(LayerType.LAYER_DRILLING, m_nHoleLayer_ProcessIndex, m_nDrillingWork_Group_Count))
+                            if (!IsCurrentSocketSelected(LayerType.LAYER_DRILLING, nlayerCnt, m_nDrillingWork_Group_Count))
                             {
-                                Log.Write("선택_가공", $"LAYER_DRILLING: 소켓 {m_nDrillingWork_Group_Count + 1}, LAYER Hole:{m_nHoleLayer_ProcessIndex + 1} 은 선택되지 않음 → SKIP");
+                                Log.Write("선택_가공", $"LAYER_DRILLING: 소켓 {m_nDrillingWork_Group_Count + 1}, LAYER Hole:{nlayerCnt + 1} 은 선택되지 않음 → SKIP");
                                 nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                                 return nNextStep;
                             }
