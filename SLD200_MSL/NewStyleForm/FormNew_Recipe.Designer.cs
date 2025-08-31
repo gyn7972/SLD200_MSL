@@ -128,6 +128,8 @@
             this.textBox_Recipe_TabRecipe_ModuleInformation_Width = new System.Windows.Forms.TextBox();
             this.label34 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit = new System.Windows.Forms.TextBox();
             this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent = new System.Windows.Forms.TextBox();
             this.button_GoldPowderThickness = new System.Windows.Forms.Button();
             this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign = new System.Windows.Forms.CheckBox();
@@ -252,8 +254,6 @@
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
             this.button_Open_Recipe_Queue = new System.Windows.Forms.Button();
             this.listBox_RecipeQueue = new System.Windows.Forms.ListBox();
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -1545,6 +1545,28 @@
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = " Process Options ";
             // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label1.Location = new System.Drawing.Point(100, 153);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(75, 24);
+            this.label1.TabIndex = 23;
+            this.label1.Text = "Limit(mm)";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit
+            // 
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Location = new System.Drawing.Point(179, 153);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Name = "textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit";
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Size = new System.Drawing.Size(45, 24);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.TabIndex = 68;
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text = "0.0";
+            // 
             // textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent
             // 
             this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Font = new System.Drawing.Font("Tahoma", 10F);
@@ -1839,6 +1861,7 @@
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.TabIndex = 8;
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Text = "Pulse Period";
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.UseVisualStyleBackColor = true;
+            this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod_CheckedChanged);
             // 
             // radioButton_Recipe_TabRecipe_ProcessPriority_P2P
             // 
@@ -1852,6 +1875,7 @@
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.TabStop = true;
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Text = "Space of P2P";
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.UseVisualStyleBackColor = true;
+            this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.CheckedChanged += new System.EventHandler(this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P_CheckedChanged);
             // 
             // groupBox163
             // 
@@ -3103,28 +3127,6 @@
             this.listBox_RecipeQueue.Size = new System.Drawing.Size(488, 74);
             this.listBox_RecipeQueue.TabIndex = 27;
             this.listBox_RecipeQueue.Visible = false;
-            // 
-            // textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit
-            // 
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Location = new System.Drawing.Point(179, 153);
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Name = "textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit";
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Size = new System.Drawing.Size(45, 24);
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.TabIndex = 68;
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
-            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text = "0.0";
-            // 
-            // label1
-            // 
-            this.label1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label1.Location = new System.Drawing.Point(100, 153);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 24);
-            this.label1.TabIndex = 23;
-            this.label1.Text = "Limit(mm)";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Recipe
             // 

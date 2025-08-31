@@ -806,6 +806,7 @@ namespace QMC.Common
         //Status로 사용
         //  Scanner Calibration Position Enable true: calPan, false: Stage Center
         public static bool Scanner_Calibration_Position_Enable { set; get; } = false;            //  Scanner Calibration Position Enable (true: Enable, false: Disable)
+        public static bool Scanner_Calibration_AcrylicPanel_Enable { set; get; } = false;            //  Scanner Calibration Position Enable (true: Enable, false: Disable)
         public static bool Scanner_Calibration_Change { set; get; } = false;
 
         public static int Scanner_Calibration_Convert { set; get; } = 0;            //  Scanner Calibration Use (true: Use, false: Not Use)
@@ -1244,10 +1245,21 @@ namespace QMC.Common
                 stLayerRecipeSet[i].DrawingFile = "";                                //  Drawing File Path and Name
 
                 //  Laser Parameter
-                stLayerRecipeSet[i].LaserParam_PulseWidth = 0;                      //  Laser Pulse Width (us)
-                stLayerRecipeSet[i].LaserParam_PulsePeriod = 0;                     //  Laser Pulse Period (us)
-                stLayerRecipeSet[i].LaserParam_Frequency = 0;                       //  Laser Frequency (Hz)
-                stLayerRecipeSet[i].LaserParam_DutyCycle = 0;                       //  Laser Duty Cycle (%)
+                if(Equipment.Machine_LaserType_CO2)
+                {
+                    stLayerRecipeSet[i].LaserParam_PulseWidth = 1;                      //  Laser Pulse Width (us)
+                    stLayerRecipeSet[i].LaserParam_PulsePeriod = 1;                     //  Laser Pulse Period (us)
+                    stLayerRecipeSet[i].LaserParam_Frequency = 7000;                       //  Laser Frequency (Hz)
+                    stLayerRecipeSet[i].LaserParam_DutyCycle = 1;                       //  Laser Duty Cycle (%)
+                }
+                else
+                {
+                    stLayerRecipeSet[i].LaserParam_PulseWidth = 1;                      //  Laser Pulse Width (us)
+                    stLayerRecipeSet[i].LaserParam_PulsePeriod = 1;                     //  Laser Pulse Period (us)
+                    stLayerRecipeSet[i].LaserParam_Frequency = 500000;                       //  Laser Frequency (Hz)
+                    stLayerRecipeSet[i].LaserParam_DutyCycle = 1;                       //  Laser Duty Cycle (%)
+                }
+
                 stLayerRecipeSet[i].LaserParam_TriggerMode_External = false;        //  Laser Trigger Mode (true: External, false: Internal)
 
                 //  Process Priority

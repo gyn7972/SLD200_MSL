@@ -1347,6 +1347,10 @@ namespace SLD200_MSL
                 return;
             }
 
+            // m_nIndex 여기서 Hole Index 내부에 data가 0이거나 없으면.. 
+            // 값을 넣어줘야함.
+            // 신규로 Layer가 만들어졌을때.
+
             //  Laser Parameter
             textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = Equipment.stLayerRecipeSet[m_nIndex].LaserParam_PulseWidth.ToString();
             textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[m_nIndex].LaserParam_PulsePeriod.ToString();
@@ -1365,11 +1369,21 @@ namespace SLD200_MSL
             //  Process Priority
             if (Equipment.stLayerRecipeSet[m_nIndex].ProcessPriority_P2P)
             {
-                radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true; ;
+                radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true;
+
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Enabled = false;
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Enabled = false;
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Enabled = false;
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = true;
             }
             else
             {
                 radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked = true;
+
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Enabled = true;
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Enabled = true;
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Enabled = true;
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = false;
             }
 
             //  Miscellaneous
@@ -1754,11 +1768,21 @@ namespace SLD200_MSL
             //  Process Priority
             if (layerData.ProcessPriority_P2P)
             {
-                radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true; ;
+                radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true;
+
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Enabled = false;
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Enabled = false;
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Enabled = false;
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = true;
             }
             else
             {
                 radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked = true;
+
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Enabled = true;
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Enabled = true;
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Enabled = true;
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = false;
             }
 
             //  Miscellaneous
@@ -1966,11 +1990,21 @@ namespace SLD200_MSL
                 //  Process Priority
                 if (Equipment.stLayerRecipeSet[0].ProcessPriority_P2P)
                 {
-                    radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true; ;
+                    radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true;
+
+                    textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Enabled = false;
+                    textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Enabled = false;
+                    textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Enabled = false;
+                    textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = true;
                 }
                 else
                 {
-                    radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked = true; ;
+                    radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked = true;
+
+                    textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Enabled = true;
+                    textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Enabled = true;
+                    textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Enabled = true;
+                    textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = false;
                 }
 
                 //  Miscellaneous
@@ -2790,11 +2824,21 @@ namespace SLD200_MSL
 
                     if (Equipment.stLayerRecipeSet[0].ProcessPriority_P2P)
                     {
-                        radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true; ;
+                        radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked = true;
+
+                        textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Enabled = false;
+                        textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Enabled = false;
+                        textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Enabled = false;
+                        textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = true;
                     }
                     else
                     {
-                        radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked = true; ;
+                        radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked = true;
+
+                        textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Enabled = true;
+                        textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Enabled = true;
+                        textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Enabled = true;
+                        textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = false;
                     }
 
                     //  Miscellaneous
@@ -3255,10 +3299,30 @@ namespace SLD200_MSL
             Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
             //  Laser Parameter
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulseWidth = textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulsePeriod = textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_Frequency = textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_DutyCycle = textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 0;
+            if ( Equipment.Machine_LaserType_CO2)
+            {
+                Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulseWidth = 
+                    textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 1;
+                Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulsePeriod = 
+                    textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
+                Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_Frequency = 
+                    textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 7000;
+                Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_DutyCycle = 
+                    textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
+
+            }
+            else
+            {
+                Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulseWidth = 
+                    textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 1;
+                Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulsePeriod = 
+                    textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
+                Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_Frequency = 
+                    textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 500000;
+                Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_DutyCycle = 
+                    textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
+
+            }
 
             //Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_TriggerMode_External = radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked;
 
@@ -4853,6 +4917,30 @@ namespace SLD200_MSL
                     Equipment.RecipeQueue.AddRecipe(file);
                     listBox_RecipeQueue.Items.Add(file); // UI 리스트에 표시
                 }
+            }
+        }
+
+        private void radioButton_Recipe_TabRecipe_ProcessPriority_P2P_CheckedChanged(object sender, EventArgs e)
+        {
+            if(radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked)
+            {
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Enabled = false;
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Enabled = false;
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Enabled = false;
+
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = true;
+            }
+        }
+
+        private void radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked)
+            {
+                textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Enabled = true;
+                textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Enabled = true;
+                textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Enabled = true;
+
+                textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = false;
             }
         }
     }

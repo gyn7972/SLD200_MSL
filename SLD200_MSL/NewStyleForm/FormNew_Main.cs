@@ -4511,7 +4511,59 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes == mb.ShowDialog("Question ?",
+                "Scanner Calibration을 시작합니다.\n\n기존 캘리브레이션 판을 사용하십니까?"))
+            {
+                Equipment.Scanner_Calibration_Change = false;
+            }
+            else
+            {
+                Equipment.Scanner_Calibration_Change = true;
+            }
+
             return;
+
+            bool socketAlignNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;
+            bool heightCheckNotUse = !Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;
+            if (socketAlignNotUse && heightCheckNotUse)
+            {
+                // 둘 다 Not Use일 때만 깜빡임 시작 (이미 돌고 있으면 그대로 둠)
+                if (m_blinkTimer == null) InitBlinkTimer();
+                if (!m_blinkTimer.Enabled)
+                {
+                    m_blinkToggle = false;   // 시작할 때 기본면 한쪽부터
+                    m_blinkTimer.Start();
+                    BlinkTimer_Tick(null, null); // 즉시 1회 적용해 첫 화면 반영
+                }
+                return; // 메인 Tick에서 표시를 덮어쓰지 않도록 즉시 반환
+            }
+
+            // 깜빡임 조건이 해제되면 타이머 정지
+            if (m_blinkTimer != null && m_blinkTimer.Enabled)
+                m_blinkTimer.Stop();
+
+            string strText = string.Empty;
+            // 개별 조건 출력(메인 Tick에서만 수행)
+            if (socketAlignNotUse)
+            {
+                strText = "Socket Align : Not Use";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Red);
+            }
+            else if (heightCheckNotUse)
+            {
+                strText = "Height Check : Not Use";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+            }
+            else
+            {
+                strText = "Status Normal";
+                SetValue(label_Main_Title_Status, strText);
+                SetColor(label_Main_Title_Status, Color.Black, Color.Black);
+            }
+
             string strTemp = string.Empty;
             strTemp = LogManager.Instance.GetLogPath();
 
@@ -4532,8 +4584,8 @@ namespace SLD200_MSL
             //string strTemp = string.Empty;
             strTemp = string.Empty;
             float fMeasuredPower = workStage.m_Sequence_LaserPowerMeasure.m_fMeasuredPower;
-            float fPowerLimitMin = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMin;
-            float fPowerLimitMax = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMax;
+            float fPowerLimitMin = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMin_Stage;
+            float fPowerLimitMax = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMax_Stage;
             if (fMeasuredPower < fPowerLimitMin || fMeasuredPower > fPowerLimitMax)
             {
                 strTemp = "m_Sequence_LaserPowerMeasure 실패.";
@@ -4630,7 +4682,7 @@ namespace SLD200_MSL
                 {
                     int nCount = Equipment.m_nSerialNumberMarkingCount;
                     strTemp = string.Format("Module Number : {0} 부터 시작합니다.", nCount);
-                    var mb = new MessageBoxOk();
+                    //var mb = new MessageBoxOk();
                     mb.ShowDialog("Information !", strTemp);
                 }
                 //string message = $"Marking 레이어가 존재하며, {markingLayer.SocketList.Count}개의 소켓이 포함되어 있습니다.";

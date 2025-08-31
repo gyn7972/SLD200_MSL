@@ -276,10 +276,17 @@ namespace SLD200.NewStyleForm.NewSubForm
                     radioButton_Fiducial_White.Checked = false;
                     radioButton_Fiducial_Ignor.Checked = false;
                 }
-
-                textBox_Recipe_Fiducial_CircleSpec.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec.ToString();
                 textBox_Recipe_Fiducial_CircleSize.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkRadius.ToString();
-                textBox_Recipe_Fiducial_CircleScore.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkScore.ToString();
+
+                //textBox_Recipe_Fiducial_CircleSpec.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec.ToString();
+                //textBox_Recipe_Fiducial_CircleScore.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkScore.ToString();
+                // 내부 값 (0~1)을 퍼센트 문자열로 표시
+                textBox_Recipe_Fiducial_CircleSpec.Text =
+                    (Equipment.stVisionRecipeSet.dSocketCircleMarkSpec * 100).ToString("F2");
+                // 내부 값 (0~1)을 퍼센트 문자열로 표시
+                textBox_Recipe_Fiducial_CircleScore.Text =
+                    (Equipment.stVisionRecipeSet.dSocketCircleMarkScore * 100).ToString("F2");
+
 
                 checkBox_RecipeVision_Illuminator_Red.Checked = Equipment.stVisionRecipeSet.bSocketIlluminationRedUse;
                 checkBox_RecipeVision_Illuminator_IR.Checked = Equipment.stVisionRecipeSet.bSocketIlluminationIRUse;
@@ -382,11 +389,18 @@ namespace SLD200.NewStyleForm.NewSubForm
                     radioButton_RecipeVision_White.Checked = false;
                     radioButton_RecipeVision_Ignore.Checked = true;
                 }
-
-                this.textBox_RecipeVision_Circle_Spec.Text = Equipment.stVisionRecipeSet.dPreCircleMarkSpec.ToString();
                 this.textBox_RecipeVision_Circle_Size.Text = Equipment.stVisionRecipeSet.dPreCircleMarkRadius.ToString();
-                this.textBox_RecipeVision_Circle_Score.Text = Equipment.stVisionRecipeSet.dPreCircleMarkScore.ToString();
                 this.textBox_RecipeVision_Camera_ExposureTime_Low.Text = Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime.ToString();
+
+                //this.textBox_RecipeVision_Circle_Spec.Text = Equipment.stVisionRecipeSet.dPreCircleMarkSpec.ToString();
+                //this.textBox_RecipeVision_Circle_Score.Text = Equipment.stVisionRecipeSet.dPreCircleMarkScore.ToString();
+                // 내부 값 (0~1)을 퍼센트 문자열로 표시
+                textBox_RecipeVision_Circle_Spec.Text =
+                    (Equipment.stVisionRecipeSet.dPreCircleMarkSpec * 100).ToString("F2");
+                // 내부 값 (0~1)을 퍼센트 문자열로 표시
+                textBox_RecipeVision_Circle_Score.Text =
+                    (Equipment.stVisionRecipeSet.dPreCircleMarkScore * 100).ToString("F2");
+
 
 
                 this.radioButton_RecipeVision_Move_MoveMode_Fine.Checked = false;
@@ -876,9 +890,20 @@ namespace SLD200.NewStyleForm.NewSubForm
             else if (radioButton_RecipeVision_Blob.Checked)
             {
                 // Circle 파라미터 UI → mark 저장
-                mark.CircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
                 mark.CircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
-                mark.CircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+                //mark.CircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
+                //mark.CircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+                double percentValue = 0.0;
+                if (double.TryParse(textBox_RecipeVision_Circle_Spec.Text, out percentValue))
+                {
+                    // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                    mark.CircleMarkSpec = percentValue / 100.0;
+                }
+                if (double.TryParse(textBox_RecipeVision_Circle_Score.Text, out percentValue))
+                {
+                    // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                    mark.CircleMarkScore = percentValue / 100.0;
+                }
 
                 mark.AlgorithmType = VisionAlgorithmType.CircleDetection;
                 mark.MarkType = radioButton_RecipeVision_Type_Cross.Checked ? MarkTypeList.Cross : MarkTypeList.Circle;
@@ -1118,8 +1143,19 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             // 마크 속성 설정
             mark.MarkRadius = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
-            mark.MarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
-            mark.MarkScore = Convert.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
+            //mark.MarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
+            //mark.MarkScore = Convert.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
+            double percentValue = 0.0;
+            if (double.TryParse(textBox_Recipe_Fiducial_CircleSpec.Text, out percentValue))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                mark.MarkSpec = percentValue / 100.0;
+            }
+            if (double.TryParse(textBox_Recipe_Fiducial_CircleScore.Text, out percentValue))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                mark.MarkScore = percentValue / 100.0;
+            }
 
             // 조명 설정
             mark.UseRed = checkBox_RecipeVision_Illuminator_Red.Checked;
@@ -1170,8 +1206,19 @@ namespace SLD200.NewStyleForm.NewSubForm
                 markPreAlign.CircleColor = 0;
 
             markPreAlign.CircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
-            markPreAlign.CircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
-            markPreAlign.CircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+            //markPreAlign.CircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
+            //markPreAlign.CircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+            double percentValue2 = 0.0;
+            if (double.TryParse(textBox_RecipeVision_Circle_Spec.Text, out percentValue2))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                markPreAlign.CircleMarkSpec = percentValue2 / 100.0;
+            }
+            if (double.TryParse(textBox_RecipeVision_Circle_Score.Text, out percentValue2))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                markPreAlign.CircleMarkScore = percentValue2 / 100.0;
+            }
 
             // 패턴매칭 파라미터
             if (markPreAlign.PatternMatching == null)
@@ -1684,9 +1731,23 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.Camera_HighRes.LatestImage = ImageViewer_RecipeVision_highs.InputImage;
             }
 
-            dSpec = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text); //  Fiducial 마크 Spec
             dTargetSize_Radius = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text); //  Fiducial 마크 크기
-            dScore = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text); //  Fiducial 마크 Score
+            //dSpec = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text); //  Fiducial 마크 Spec
+            //dScore = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text); //  Fiducial 마크 Score
+            double percentValue = 0.0;
+            if (double.TryParse(textBox_Recipe_Fiducial_CircleSpec.Text, out percentValue))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                dSpec = percentValue / 100.0;
+            }
+            if (double.TryParse(textBox_Recipe_Fiducial_CircleScore.Text, out percentValue))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                dScore = percentValue / 100.0;
+            }
+
+
+
             if (radioButton_Fiducial_Black.Checked)
             {
                 nTargetColor = 0;
@@ -1888,8 +1949,16 @@ namespace SLD200.NewStyleForm.NewSubForm
             radioButton_Fiducial_Ignor.Checked = mark.MarkColor == 2;
 
             textBox_Recipe_Fiducial_CircleSize.Text = mark.MarkRadius.ToString("F3");
-            textBox_Recipe_Fiducial_CircleSpec.Text = mark.MarkSpec.ToString("F3");
-            textBox_Recipe_Fiducial_CircleScore.Text = mark.MarkScore.ToString("F3");
+            
+            //textBox_Recipe_Fiducial_CircleSpec.Text = mark.MarkSpec.ToString("F3");
+            //textBox_Recipe_Fiducial_CircleScore.Text = mark.MarkScore.ToString("F3");
+            // 내부 값 (0~1)을 퍼센트 문자열로 표시
+            textBox_Recipe_Fiducial_CircleSpec.Text =
+                (mark.MarkSpec * 100).ToString("F2");
+            // 내부 값 (0~1)을 퍼센트 문자열로 표시
+            textBox_Recipe_Fiducial_CircleScore.Text =
+                (mark.MarkScore * 100).ToString("F2");
+
 
             checkBox_RecipeVision_Illuminator_Red.Checked = mark.UseRed;
             checkBox_RecipeVision_Illuminator_IR.Checked = mark.UseIR;
@@ -1924,8 +1993,20 @@ namespace SLD200.NewStyleForm.NewSubForm
                 mark.MarkColor = 2;
 
             mark.MarkRadius = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
-            mark.MarkSpec = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
-            mark.MarkScore = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
+            //mark.MarkSpec = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
+            //mark.MarkScore = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
+            double percentValue = 0.0;
+            if (double.TryParse(textBox_Recipe_Fiducial_CircleSpec.Text, out percentValue))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                mark.MarkSpec = percentValue / 100.0;
+            }
+            if (double.TryParse(textBox_Recipe_Fiducial_CircleScore.Text, out percentValue))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                mark.MarkScore = percentValue / 100.0;
+            }
+
 
             mark.UseRed = checkBox_RecipeVision_Illuminator_Red.Checked;
             mark.UseIR = checkBox_RecipeVision_Illuminator_IR.Checked;
@@ -2186,9 +2267,16 @@ namespace SLD200.NewStyleForm.NewSubForm
             radioButton_RecipeVision_Black.Checked = mark.CircleColor == 0;
             radioButton_RecipeVision_White.Checked = mark.CircleColor == 1;
             radioButton_RecipeVision_Ignore.Checked = mark.CircleColor == 2;
-            textBox_RecipeVision_Circle_Spec.Text = mark.CircleMarkSpec.ToString("F3");
+
             textBox_RecipeVision_Circle_Size.Text = mark.CircleMarkRadius.ToString("F3");
-            textBox_RecipeVision_Circle_Score.Text = mark.CircleMarkScore.ToString("F3");
+            //textBox_RecipeVision_Circle_Spec.Text = mark.CircleMarkSpec.ToString("F3");
+            //textBox_RecipeVision_Circle_Score.Text = mark.CircleMarkScore.ToString("F3");
+            // 내부 값 (0~1)을 퍼센트 문자열로 표시
+            textBox_RecipeVision_Circle_Spec.Text =
+                (mark.CircleMarkSpec * 100).ToString("F2");
+            // 내부 값 (0~1)을 퍼센트 문자열로 표시
+            textBox_RecipeVision_Circle_Score.Text =
+                (mark.CircleMarkScore * 100).ToString("F2");
 
             radioButton_RecipeVision_Pattern.Checked = mark.AlgorithmType == VisionAlgorithmType.PatternMatching;
             radioButton_RecipeVision_Blob.Checked = mark.AlgorithmType == VisionAlgorithmType.CircleDetection;
@@ -2208,48 +2296,48 @@ namespace SLD200.NewStyleForm.NewSubForm
             this.Refresh();
         }
 
-        private void SavePreAlignMarkFromUI()
-        {
-            int idx = comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex;
-            if (idx < 0 || idx >= Equipment.stVisionRecipeSet.PreAlignMarkList.Count)
-                return;
+        //private void SavePreAlignMarkFromUI()
+        //{
+        //    int idx = comboBox_Recipe_PreAlign_MarkIndex.SelectedIndex;
+        //    if (idx < 0 || idx >= Equipment.stVisionRecipeSet.PreAlignMarkList.Count)
+        //        return;
 
-            var mark = Equipment.stVisionRecipeSet.PreAlignMarkList[idx];
+        //    var mark = Equipment.stVisionRecipeSet.PreAlignMarkList[idx];
 
-            // ROI/조명 등 필요한 UI 컨트롤 값 저장
-            mark.TrainRoiStart = RoiTrain.Parameter.StartLocation;
-            mark.TrainRoiEnd = RoiTrain.Parameter.EndLocation;
-            mark.InspectRoiStart = RoiInspect.Parameter.StartLocation;
-            mark.InspectRoiEnd = RoiInspect.Parameter.EndLocation;
-            mark.IllumIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
-            mark.IllumRed = hScrollBar_RecipeVision_Illuminator_Red.Value;
+        //    // ROI/조명 등 필요한 UI 컨트롤 값 저장
+        //    mark.TrainRoiStart = RoiTrain.Parameter.StartLocation;
+        //    mark.TrainRoiEnd = RoiTrain.Parameter.EndLocation;
+        //    mark.InspectRoiStart = RoiInspect.Parameter.StartLocation;
+        //    mark.InspectRoiEnd = RoiInspect.Parameter.EndLocation;
+        //    mark.IllumIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
+        //    mark.IllumRed = hScrollBar_RecipeVision_Illuminator_Red.Value;
 
-            // Circle 옵션
-            if (radioButton_RecipeVision_Black.Checked)
-                mark.CircleColor = 0;
-            else if (radioButton_RecipeVision_White.Checked)
-                mark.CircleColor = 1;
-            else
-                mark.CircleColor = 2;
+        //    // Circle 옵션
+        //    if (radioButton_RecipeVision_Black.Checked)
+        //        mark.CircleColor = 0;
+        //    else if (radioButton_RecipeVision_White.Checked)
+        //        mark.CircleColor = 1;
+        //    else
+        //        mark.CircleColor = 2;
 
-            mark.CircleMarkSpec = Equipment.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
-            mark.CircleMarkRadius = Equipment.ToDouble(textBox_RecipeVision_Circle_Size.Text);
-            mark.CircleMarkScore = Equipment.ToDouble(textBox_RecipeVision_Circle_Score.Text);
+        //    mark.CircleMarkSpec = Equipment.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
+        //    mark.CircleMarkRadius = Equipment.ToDouble(textBox_RecipeVision_Circle_Size.Text);
+        //    mark.CircleMarkScore = Equipment.ToDouble(textBox_RecipeVision_Circle_Score.Text);
 
-            mark.AlgorithmType = radioButton_RecipeVision_Pattern.Checked ? VisionAlgorithmType.PatternMatching : VisionAlgorithmType.CircleDetection;
-            mark.MarkType = radioButton_RecipeVision_Type_Cross.Checked ? MarkTypeList.Cross : MarkTypeList.Circle;
+        //    mark.AlgorithmType = radioButton_RecipeVision_Pattern.Checked ? VisionAlgorithmType.PatternMatching : VisionAlgorithmType.CircleDetection;
+        //    mark.MarkType = radioButton_RecipeVision_Type_Cross.Checked ? MarkTypeList.Cross : MarkTypeList.Circle;
 
-            mark.ExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);
+        //    mark.ExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);
 
-            // 학습 이미지, 패턴 파라미터 등 기타 필요한 데이터도 저장
-            if (mark.PatternMatching == null)
-                mark.PatternMatching = new PatternMatchingParameters();
+        //    // 학습 이미지, 패턴 파라미터 등 기타 필요한 데이터도 저장
+        //    if (mark.PatternMatching == null)
+        //        mark.PatternMatching = new PatternMatchingParameters();
 
-            mark.PatternMatching.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
-            // ... 기타 PatternMatching 필드 저장도 필요시 추가
+        //    mark.PatternMatching.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+        //    // ... 기타 PatternMatching 필드 저장도 필요시 추가
 
-            // 만약 저장 직전에 값 동기화가 필요하면 여기에서 SavePreAlignMarkFromUI() 호출
-        }
+        //    // 만약 저장 직전에 값 동기화가 필요하면 여기에서 SavePreAlignMarkFromUI() 호출
+        //}
 
         private void comboBox_Recipe_PreAlign_MarkIndex_SelectedIndexChanged(object sender, EventArgs e)
         {

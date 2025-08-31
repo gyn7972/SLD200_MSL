@@ -271,13 +271,30 @@ namespace QMC.Common.Q_Sequence
                     if (workStage.m_bHomeOK == false)
                     {
                         Log.Write("SeqLaserPowerMeasure", "WorkStage Home Position is not OK.");
-                        return -1; // Home이 안되어 있으면 종료
+                        m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None;
+                        //return -1; // Home이 안되어 있으면 종료
                     }
                     else
                     {
-                        _setting.LoadPowerMeterConfig();
-                        TickCount_Start((int)TickType.TICK_LASER_POWER_MEASURE);
-                        m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.WaterLine_Open;
+                        if(Equipment.Machine_LaserType_CO2)
+                        {
+                            if (_setting.PowerMeterType == 0)
+                            {
+                                m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None;
+                            }
+                            else
+                            {
+                                _setting.LoadPowerMeterConfig();
+                                TickCount_Start((int)TickType.TICK_LASER_POWER_MEASURE);
+                                m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.WaterLine_Open;
+                            }
+                        }
+                        else
+                        {
+                            _setting.LoadPowerMeterConfig();
+                            TickCount_Start((int)TickType.TICK_LASER_POWER_MEASURE);
+                            m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.WaterLine_Open;
+                        }
                     }
                     break;
 
@@ -666,6 +683,29 @@ namespace QMC.Common.Q_Sequence
                         IsCompleted = true;
                         Log.Write("SeqLaserPowerMeasure", "Laser Power Measure Sequence Complete.");
                         m_LaserPowerMeasure_Step = LaserPowerMeasure_Step.None; // 완료 후 초기화
+
+                        string strTemp = string.Empty;
+                        float fMeasuredPower = m_fMeasuredPower;
+                        float fPowerLimitMin = m_fPowerLimitMin_Stage;
+                        float fPowerLimitMax = m_fPowerLimitMax_Stage;
+                        if(_setting.PowerMeterType == 0)
+                        {
+                            fPowerLimitMin = m_fPowerLimitMin_Top;
+                            fPowerLimitMax = m_fPowerLimitMax_Top;
+                        }
+                        else
+                        {
+                            fPowerLimitMin = m_fPowerLimitMin_Stage;
+                            fPowerLimitMax = m_fPowerLimitMax_Stage;
+                        }
+
+                        if (fMeasuredPower < fPowerLimitMin || fMeasuredPower > fPowerLimitMax)
+                        {
+                            strTemp = "m_Sequence_LaserPowerMeasure 실패.";
+                            Log.Write("SLD-200", Equipment.User_Name, "LaserPowerMeasure_Step::Complete", strTemp);
+                            return workStage.AlarmPost(AlarmKey.LaserPowerMeasureLimitFail);
+                        }
+                       
                         return 0; // 성공적으로 완료
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
@@ -1175,13 +1215,22 @@ namespace QMC.Common.Q_Sequence
             }
         }
 
-        public float m_fPowerLimitMin
+        public float m_fPowerLimitMin_Top
         {
-            get { return _setting.PowerLimitMin; }
+            get { return _setting.PowerLimitMin_Top; }
         }
-        public float m_fPowerLimitMax
+        public float m_fPowerLimitMax_Top
         {
-            get { return _setting.PowerLimitMax; }
+            get { return _setting.PowerLimitMax_Top; }
+        }
+
+        public float m_fPowerLimitMin_Stage
+        {
+            get { return _setting.PowerLimitMin_Stage; }
+        }
+        public float m_fPowerLimitMax_Stage
+        {
+            get { return _setting.PowerLimitMax_Stage; }
         }
 
         public void SavePowerMeasureLogList(string targetType)

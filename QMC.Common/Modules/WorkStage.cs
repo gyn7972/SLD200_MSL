@@ -6249,62 +6249,6 @@ namespace QMC.Common.Modules
             }
 
             return m_bRet;
-
-            //bool m_bRet = false;
-
-            //int m_nIndex = 0;
-            //int m_DataNum = 0;
-            //int m_nCheckSum = 0;
-            //byte m_btTemp;
-            //string m_strSendData = "";
-            //byte[] m_cSendCmd = null;
-
-            //m_DataNum = 12 + (4 * m_nAddrCount);                    //  데이터 개수에 따라 길이 가변
-            //m_cSendCmd = new byte[m_DataNum];
-
-            //m_cSendCmd[0] = chrENQ;                                 //  ENQ 1자리
-            //m_cSendCmd[1] = (byte)'0';                              //  국번 2자리 (앞)
-            //m_cSendCmd[2] = (byte)'1';                              //  국번 2자리 (뒤)
-            //m_cSendCmd[3] = chrW;                                   //  CMD 1자리
-            //m_nCheckSum = m_cSendCmd[1] + m_cSendCmd[2] + m_cSendCmd[3];    //  CheckSum
-            //for (int i = 0; i < m_strAddr.Length; i++)
-            //{
-            //    m_cSendCmd[4 + i] = (byte)m_strAddr[i];             //  번지 4자리
-            //    m_nCheckSum += m_cSendCmd[4 + i];                           //  CheckSum
-            //}
-            //m_cSendCmd[8] = (byte)(char)(m_nAddrCount + '0');       //  번지 개수 1자리
-            //m_nCheckSum += m_cSendCmd[8];                                   //  CheckSum
-            //for (int i = 0; i < m_strData.Length; i++)
-            //{
-            //    m_nIndex = 9 + i;
-            //    m_cSendCmd[m_nIndex] = (byte)m_strData[i];       //  데이터 (번지 개수 * 4자리)
-            //    m_nCheckSum += m_cSendCmd[m_nIndex];                     //  CheckSum
-            //}
-            //int m_nTemp = m_nCheckSum & 0xFF;                       //  CheckSum 계산 (하위 1바이트)
-            //m_btTemp = (byte)m_nTemp;
-            //string m_strCheckSum = m_btTemp.ToString("x2");
-            //m_cSendCmd[m_nIndex + 1] = (byte)m_strCheckSum[0];           //  CheckSum 2자리 중 앞자리
-            //m_cSendCmd[m_nIndex + 2] = (byte)m_strCheckSum[1];           //  CheckSum 2자리 중 뒷자리
-            //m_cSendCmd[m_nIndex + 3] = chrEOT;
-            //m_strSendData = Encoding.Default.GetString(m_cSendCmd);
-            //if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
-            //{
-            //    if (m_dustCollector_UpperPos_Comm.IsOpen)
-            //    {
-            //        m_dustCollector_UpperPos_Comm.Send(m_strSendData);
-            //        m_bRet = true;
-            //    } 
-            //}
-            //else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
-            //{
-            //    if (m_dustCollector_LowerPos_Comm.IsOpen)
-            //    {
-            //        m_dustCollector_LowerPos_Comm.Send(m_strSendData);
-            //        m_bRet = true;
-            //    }
-            //}
-
-            //return m_bRet;
         }
         public string ConvertDecimalToHex(string m_strDecimalNumber)
         {
@@ -7885,6 +7829,8 @@ namespace QMC.Common.Modules
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "HasChanged", Equipment.Scanner_Calibration_BlobVisionToolParameter.HasChanged.ToString(), strFIle);
 
 
+
+
         }
 
         #region Event Handler
@@ -7954,6 +7900,98 @@ namespace QMC.Common.Modules
         }
 
         public DateTime m_StartProcessTime;
+
+        // 1) 토글 헬퍼: 현재 상태를 확인하고 필요할 때만 On/Off
+        private static void EnsureOn(Func<int> isOnFn, Func<int> onFn)
+        {
+            if (isOnFn() == 0) _ = onFn();  // 반환값은 버림
+        }
+        private static void EnsureOff(Func<int> isOnFn, Func<int> offFn)
+        {
+            if (isOnFn() != 0) _ = offFn(); // 반환값은 버림
+        }
+
+        // 2) 램프 일괄 적용 (원하는 상태만 전달)
+        //    buzzerDesired = null 이면 현재 로직(버저 정지 플래그)에 따라 처리
+        private static void ApplyTowerLamp(bool green, bool yellow, bool red, bool? buzzerDesired = null)
+        {
+            var tl = CommonModule.Instance.TowerLamp;
+
+            if (green) EnsureOn(tl.Is_Green_On, tl.Green_On);
+            else EnsureOff(tl.Is_Green_On, tl.Green_Off);
+
+            if (yellow) EnsureOn(tl.Is_Yellow_On, tl.Yellow_On);
+            else EnsureOff(tl.Is_Yellow_On, tl.Yellow_Off);
+
+            if (red) EnsureOn(tl.Is_Red_On, tl.Red_On);
+            else EnsureOff(tl.Is_Red_On, tl.Red_Off);
+
+            // Buzzer: 명시 지정이 있으면 그 상태로, 없으면 기존 플래그 로직 유지
+            if (buzzerDesired.HasValue)
+            {
+                if (buzzerDesired.Value) EnsureOn(tl.Is_Buzzer_On, tl.Buzzer_On);
+                else EnsureOff(tl.Is_Buzzer_On, tl.Buzzer_Off);
+            }
+            else
+            {
+                if (CommonModule.Instance.TowerLamp_BuzzerStop)
+                    EnsureOff(tl.Is_Buzzer_On, tl.Buzzer_Off);
+                else
+                    EnsureOn(tl.Is_Buzzer_On, tl.Buzzer_On);
+            }
+        }
+
+        // 3) 버튼 램프 일괄 적용
+        private static void ApplyOperationButtons(bool start, bool stop, bool reset)
+        {
+            var ob = CommonModule.Instance.OperationButtons;
+            ob.StartLamp(start);
+            ob.StopLamp(stop);
+            ob.ResetLamp(reset);
+        }
+
+        // 4) 기존 분기 로직을 “의도 상태”만 기술
+        private void UpdateTowerLampByCondition()
+        {
+            bool isAlarm = AlarmManager.Instance.IsAlarm;
+            bool isAuto = Equipment.AutoRunStatus;
+            bool isSelecteMode = Equipment.SelectRunEnable_New;
+            bool loaderMoving = (loader.m_nLoader_Transfer_Step != (int)Loader.Loader_Transfer_Step.None);
+            bool laserIdle = ((m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)) &&
+                             m_bLaserDrilling_Complete;
+
+            if (isAlarm)
+            {
+                // Alarm: Red ON, Green/Yellow OFF, Buzzer 플래그에 따름
+                ApplyTowerLamp(green: false, yellow: false, red: true, buzzerDesired: null);
+                ApplyOperationButtons(start: false, stop: true, reset: false);
+            }
+            else if (isSelecteMode && laserIdle)
+            {
+                // SelecteMode + 가공 Idle: Green ON, Yellow OFF, Red ON, Buzzer OFF
+                ApplyTowerLamp(green: false, yellow: true, red: true, buzzerDesired: false);
+            }
+            else if (isAuto && laserIdle)
+            {
+                // Auto + 가공 Idle: Green ON, Yellow OFF, Red ON, Buzzer OFF
+                ApplyTowerLamp(green: true, yellow: false, red: true, buzzerDesired: false);
+            }
+            else if (isAuto)
+            {
+                // Auto 진행 중: Green ON, Yellow OFF, Red OFF, Buzzer OFF
+                ApplyTowerLamp(green: true, yellow: false, red: false, buzzerDesired: false);
+                ApplyOperationButtons(start: true, stop: false, reset: false);
+                CommonModule.Instance.TowerLamp_BuzzerStop = false;
+            }
+            else
+            {
+                // Stop: Green OFF, Yellow ON, Red OFF, Buzzer OFF
+                ApplyTowerLamp(green: false, yellow: true, red: false, buzzerDesired: false);
+                ApplyOperationButtons(start: false, stop: true, reset: false);
+                CommonModule.Instance.TowerLamp_BuzzerStop = false;
+            }
+        }
+
         private async void Timer_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -7975,138 +8013,142 @@ namespace QMC.Common.Modules
                 }
 
                 //  타워램프 상태 갱신
-                //  Alarm 상태
-                if (AlarmManager.Instance.IsAlarm)
+                UpdateTowerLampByCondition();
+                //기존코드
                 {
-                    if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Green_Off();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Yellow_Off();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Red_On() == 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Red_On();
-                    }
+                    //  Alarm 상태
+                    //if (AlarmManager.Instance.IsAlarm)
+                    //{
+                    //    if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Green_Off();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Yellow_Off();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Red_On() == 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Red_On();
+                    //    }
 
-                    if (CommonModule.Instance.TowerLamp_BuzzerStop)
-                    {
-                        if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                        {
-                            CommonModule.Instance.TowerLamp.Buzzer_Off();
-                        }
-                    }
-                    else
-                    {
-                        if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() == 0)
-                        {
-                            CommonModule.Instance.TowerLamp.Buzzer_On();
-                        }
-                    }
+                    //    if (CommonModule.Instance.TowerLamp_BuzzerStop)
+                    //    {
+                    //        if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                    //        {
+                    //            CommonModule.Instance.TowerLamp.Buzzer_Off();
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() == 0)
+                    //        {
+                    //            CommonModule.Instance.TowerLamp.Buzzer_On();
+                    //        }
+                    //    }
 
-                    //  버튼 색깔 변경
-                    CommonModule.Instance.OperationButtons.StartLamp(false);
-                    CommonModule.Instance.OperationButtons.StopLamp(true);
-                    CommonModule.Instance.OperationButtons.ResetLamp(false);
-                }
-                else if (Equipment.AutoRunStatus &&
-                         loader.m_nLoader_Transfer_Step != (int)Loader.Loader_Transfer_Step.None &&
-                         m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
-                {
-                    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Green_On();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Yellow_On();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Red_Off();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Buzzer_Off();
-                    }
-                }
-                else if (Equipment.AutoRunStatus &&
-                         m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
-                {
-                    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Green_On();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Yellow_Off();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Red_On();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Buzzer_Off();
-                    }
-                }
-                else if (Equipment.AutoRunStatus) //  자동운전
-                {
-                    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Green_On();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Yellow_Off();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Red_Off();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Buzzer_Off();
-                    }
+                    //    //  버튼 색깔 변경
+                    //    CommonModule.Instance.OperationButtons.StartLamp(false);
+                    //    CommonModule.Instance.OperationButtons.StopLamp(true);
+                    //    CommonModule.Instance.OperationButtons.ResetLamp(false);
+                    //}
+                    //else if (Equipment.AutoRunStatus &&
+                    //         loader.m_nLoader_Transfer_Step != (int)Loader.Loader_Transfer_Step.None &&
+                    //         m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
+                    //{
+                    //    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Green_On();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Yellow_On();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Red_Off();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Buzzer_Off();
+                    //    }
+                    //}
+                    //else if (Equipment.AutoRunStatus &&
+                    //         m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
+                    //{
+                    //    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Green_On();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Yellow_Off();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Red_On() == 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Red_On();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Buzzer_Off();
+                    //    }
+                    //}
+                    //else if (Equipment.AutoRunStatus) //  자동운전
+                    //{
+                    //    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Green_On();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Yellow_Off();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Red_Off();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Buzzer_Off();
+                    //    }
 
-                    //  버튼 색깔 변경
-                    CommonModule.Instance.OperationButtons.StartLamp(true);
-                    CommonModule.Instance.OperationButtons.StopLamp(false);
-                    CommonModule.Instance.OperationButtons.ResetLamp(false);
+                    //    //  버튼 색깔 변경
+                    //    CommonModule.Instance.OperationButtons.StartLamp(true);
+                    //    CommonModule.Instance.OperationButtons.StopLamp(false);
+                    //    CommonModule.Instance.OperationButtons.ResetLamp(false);
 
-                    CommonModule.Instance.TowerLamp_BuzzerStop = false;
-                }
-                else //  Stop
-                {
-                    if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Green_Off();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() == 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Yellow_On();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Red_Off();
-                    }
-                    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                    {
-                        CommonModule.Instance.TowerLamp.Buzzer_Off();
-                    }
+                    //    CommonModule.Instance.TowerLamp_BuzzerStop = false;
+                    //}
+                    //else //  Stop
+                    //{
+                    //    if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Green_Off();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() == 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Yellow_On();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Red_Off();
+                    //    }
+                    //    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                    //    {
+                    //        CommonModule.Instance.TowerLamp.Buzzer_Off();
+                    //    }
 
-                    //  버튼 색깔 변경
-                    CommonModule.Instance.OperationButtons.StartLamp(false);
-                    CommonModule.Instance.OperationButtons.StopLamp(true);
-                    CommonModule.Instance.OperationButtons.ResetLamp(false);
+                    //    //  버튼 색깔 변경
+                    //    CommonModule.Instance.OperationButtons.StartLamp(false);
+                    //    CommonModule.Instance.OperationButtons.StopLamp(true);
+                    //    CommonModule.Instance.OperationButtons.ResetLamp(false);
 
-                    CommonModule.Instance.TowerLamp_BuzzerStop = false;
+                    //    CommonModule.Instance.TowerLamp_BuzzerStop = false;
+                    //}
                 }
 
                 // Home 잡기 전에는 Device 알람 X
-                if(!m_bHomeOK)
+                if (!m_bHomeOK)
                     return;
                 else
                     UpdateInitStatusFromComm();
@@ -8628,15 +8670,9 @@ namespace QMC.Common.Modules
 
                 int ret = 0;
 
-                //test 후에 둘 중에 하나는 지워야됨.
-                //if(Equipment.SelectRunEnable_New)
                 if (true)
                 {
                     ret = Run_LaserDrilling_Main_Cycle_SelectMode();
-                }
-                else
-                {
-                    //ret = Run_LaserDrilling_Main_Cycle();
                 }
                     
                 if(ret !=0)
@@ -33294,7 +33330,7 @@ namespace QMC.Common.Modules
                 result.Y -= position.Y;
             }
 
-            // PreAlign Data 적용/미적용
+            // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
             if (Equipment.Machine_PreAlign_First_Enable && m_bPreAlignCompleted)
             {
                 result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y), false);
@@ -33308,25 +33344,9 @@ namespace QMC.Common.Modules
             result.X += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX;
             result.Y += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY;
 
-            //if(Equipment.Machine_LaserType_CO2)
-            //{
-            //    result.X -= position.X;
-            //    result.Y -= position.Y;
-            //}
-            //else
-            //{
-            //    result.X -= position.X;
-            //    result.Y -= position.Y;
-            //}
-                
-            //// PreAlign Data 적용/미적용
-            //if (Equipment.Machine_PreAlign_First_Enable && m_bPreAlignCompleted)
-            //{
-            //    result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y), false);
-            //}
-
             return result;
         }
+
         public XyzCoordinate ConvertFineCamToLaserHeightSensor(XyzCoordinate position)
         {
             XyCoordinate result = ConvertFineCamToLaserHeightSensor(new XyCoordinate(position.X, position.Y));
@@ -34951,8 +34971,8 @@ namespace QMC.Common.Modules
                         m_Sequence_LaserPowerMeasure.Reset();
 
                         float fMeasuredPower = m_Sequence_LaserPowerMeasure.m_fMeasuredPower;
-                        float fPowerLimitMin = m_Sequence_LaserPowerMeasure.m_fPowerLimitMin;
-                        float fPowerLimitMax = m_Sequence_LaserPowerMeasure.m_fPowerLimitMax;
+                        float fPowerLimitMin = m_Sequence_LaserPowerMeasure.m_fPowerLimitMin_Stage;
+                        float fPowerLimitMax = m_Sequence_LaserPowerMeasure.m_fPowerLimitMax_Stage;
                         if(fMeasuredPower < fPowerLimitMin || fMeasuredPower > fPowerLimitMax)
                         {
                             strTemp = "m_Sequence_LaserPowerMeasure 실패.";
@@ -35321,6 +35341,9 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Step_Stage_VacuumOn_Check:
 
+                    //(m_dEPRO_Value < Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
+                    //이거... 부호가.. 맞나? 값이 -로 들어오고.. SettingLevel값이.. 양수(+)이면..흠... 
+
                     if (workStageParameter.DI_Stage_Vacuum_Check() &&
                        (m_dEPRO_Value < Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
                     {
@@ -35358,8 +35381,8 @@ namespace QMC.Common.Modules
                     break;
 
                 case (int)LaserDrilling_Step.DustCollector_On:                                      //  집진기 On
-                    //laserDrillingParameter.DO_DustCollector_OnOff(true);                          //  집진기 동작은 On/Off 스위치로 동작
 
+                    //laserDrillingParameter.DO_DustCollector_OnOff(true);                          //  집진기 동작은 On/Off 스위치로 동작
                     if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
                     {
                         Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, 집진기 On");
@@ -35369,13 +35392,13 @@ namespace QMC.Common.Modules
 
                         if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
                         {
+                            DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                             Log.Write("SLD-200", "Auto Run", "하부 집진기 사용 안함");
                         }
                         else
                         {
-                            Log.Write("SLD-200", "Auto Run", "하부 집진기 사용. 집진기 On");
-
                             DustCollector_On((int)nDustCollector.DustCollector_Lower);
+                            Log.Write("SLD-200", "Auto Run", "하부 집진기 사용. 집진기 On");
                         }
 
                         TickCount_Start((int)TickType.TICK_MAIN);
@@ -35394,8 +35417,25 @@ namespace QMC.Common.Modules
                     {
                         strTemp = LaserDrillingStepDustCollectorFrequenceSet();
 
-                        TickCount_Start((int)TickType.TICK_MAIN);
+                        if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                        {
+                            DustCollector_On((int)nDustCollector.DustCollector_Upper);
+                            if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+                            {
+                                DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                                Log.Write("SLD-200", "Auto Run", "하부 집진기 사용 안함");
+                            }
+                            else
+                            {
+                                DustCollector_On((int)nDustCollector.DustCollector_Lower);
+                                Log.Write("SLD-200", "Auto Run", "하부 집진기 사용. 집진기 On");
+                            }
 
+                            TickCount_Start((int)TickType.TICK_MAIN);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_Frequency_Set;
+                        }
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_On_Check;
                     }
                     break;

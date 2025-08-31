@@ -317,11 +317,18 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             // 마크 스펙
-            textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text = m_recipe.dGoldPowderCircleMarkSpec.ToString("F3");
             textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text = m_recipe.dGoldPowderCircleMarkRadius.ToString("F3");
-            textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text = m_recipe.dGoldPowderCircleMarkScore.ToString("F3");
             textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text = m_recipe.nGoldPowderCircleMarkMaxInstance.ToString();
             textBox_Recipe_GoldPowder_Fiducial_FindCount.Text = m_recipe.nGoldPowderCircleMarkFindCount.ToString();
+            //textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text = m_recipe.dGoldPowderCircleMarkSpec.ToString("F3");
+            //textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text = m_recipe.dGoldPowderCircleMarkScore.ToString("F3");
+            // 내부 값 (0~1)을 퍼센트 문자열로 표시
+            textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text =
+                (m_recipe.dGoldPowderCircleMarkSpec * 100).ToString("F2");
+            // 내부 값 (0~1)을 퍼센트 문자열로 표시
+            textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text =
+                (m_recipe.dGoldPowderCircleMarkScore * 100).ToString("F2");
+
 
             // 조명 사용 여부
             checkBox_Recipe_GoldPowder_Illuminator_Red.Checked = m_recipe.bGoldPowderIlluminationRedUse;
@@ -389,10 +396,21 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 // 마크 조건
                 m_recipe.dGoldPowderCircleMarkRadius = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text);
-                m_recipe.dGoldPowderCircleMarkSpec = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text);
-                m_recipe.dGoldPowderCircleMarkScore = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text);
                 m_recipe.nGoldPowderCircleMarkMaxInstance = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text);
                 m_recipe.nGoldPowderCircleMarkFindCount = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_FindCount.Text);
+                //m_recipe.dGoldPowderCircleMarkSpec = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text);
+                //m_recipe.dGoldPowderCircleMarkScore = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text);
+                double percentValue = 0.0;
+                if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text, out percentValue))
+                {
+                    // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                    m_recipe.dGoldPowderCircleMarkSpec = percentValue / 100.0;
+                }
+                if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text, out percentValue))
+                {
+                    // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                    m_recipe.dGoldPowderCircleMarkScore = percentValue / 100.0;
+                }
             }
             catch (Exception ex)
             {
@@ -470,11 +488,24 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.Camera_HighRes.LatestImage = ImageViewer_Recipe_GoldPowder_highs.InputImage;
             }
 
-            dSpec = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text); //  Fiducial 마크 Spec
             dTargetSize_Radius = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text); //  Fiducial 마크 크기
-            dScore = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text); //  Fiducial 마크 Score
             nMaxInstance = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text); //  Fiducial 마크 최대 개수
             nFindCount = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_FindCount.Text); //  Fiducial 마크 찾기 개수
+
+            //dSpec = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text); //  Fiducial 마크 Spec
+            //dScore = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text); //  Fiducial 마크 Score
+            double percentValue = 0.0;
+            if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text, out percentValue))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                dSpec = percentValue / 100.0;
+            }
+            if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text, out percentValue))
+            {
+                // UI에서 입력받은 %를 내부 0~1 값으로 변환
+                dScore = percentValue / 100.0;
+            }
+
 
             if (radioButton_Recipe_GoldPowder_Fiducial_White.Checked)
             {
