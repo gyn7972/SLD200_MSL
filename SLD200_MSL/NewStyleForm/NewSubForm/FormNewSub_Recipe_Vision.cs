@@ -1746,8 +1746,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 dScore = percentValue / 100.0;
             }
 
-
-
             if (radioButton_Fiducial_Black.Checked)
             {
                 nTargetColor = 0;
@@ -1781,7 +1779,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData, 
                                                     w, h, (int)dRadius, dSpec,
-                                                    ref bFindCircle, 0, 0, nTargetColor == 0);
+                                                    ref bFindCircle, 0, 0, nTargetColor == 0, dScore, false);
 
                 }
                 else if(nTargetColor == 2)
@@ -1823,8 +1821,48 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else
             {
-                MessageBox.Show("원 찾기 실패", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                listBox_Recipe_Fiducial_Result.Items.Clear();
+                //MessageBox.Show("원 찾기 실패", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //listBox_Recipe_Fiducial_Result.Items.Clear();
+
+                // 실패 시
+                if (!result.Success)
+                {
+                    listBox_Recipe_Fiducial_Result.Items.Clear();
+                    listBox_Recipe_Fiducial_Result.Items.Add("[원 찾기 실패]");
+                    listBox_Recipe_Fiducial_Result.Items.Add("Reason : " + result.FailReason);
+                    if (!string.IsNullOrEmpty(result.FailMessage))
+                        listBox_Recipe_Fiducial_Result.Items.Add(result.FailMessage);
+
+                    // 새 가이드 출력
+                    if (!string.IsNullOrEmpty(result.UserGuide))
+                    {
+                        listBox_Recipe_Fiducial_Result.Items.Add("---- Guide ----");
+                        foreach (var line in result.UserGuide.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                            listBox_Recipe_Fiducial_Result.Items.Add(line);
+                    }
+                    else if (!string.IsNullOrEmpty(result.Recommendation))
+                    {
+                        listBox_Recipe_Fiducial_Result.Items.Add("---- Recommendation ----");
+                        foreach (var line in result.Recommendation.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                            listBox_Recipe_Fiducial_Result.Items.Add(line);
+                    }
+
+                    MessageBox.Show((result.UserGuide ?? result.FailMessage),
+                        "원 찾기 실패", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                    //listBox_Recipe_Fiducial_Result.Items.Clear();
+                    //listBox_Recipe_Fiducial_Result.Items.Add("[원 찾기 실패]");
+                    //listBox_Recipe_Fiducial_Result.Items.Add("Reason : " + result.FailReason);
+                    //if (!string.IsNullOrEmpty(result.FailMessage))
+                    //    listBox_Recipe_Fiducial_Result.Items.Add(result.FailMessage);
+                    //if (!string.IsNullOrEmpty(result.Recommendation))
+                    //{
+                    //    listBox_Recipe_Fiducial_Result.Items.Add("---- 권고 ----");
+                    //    foreach (var line in result.Recommendation.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                    //        listBox_Recipe_Fiducial_Result.Items.Add(line);
+                    //}
+                    //MessageBox.Show($"{result.FailMessage}\n\n{result.Recommendation}", "원 찾기 실패", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
 
             //  원 찾기 후 다시 Live

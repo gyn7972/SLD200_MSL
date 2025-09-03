@@ -543,6 +543,18 @@ namespace SLD200.NewStyleForm.NewSubForm
             int nMaxInstance = 0;
             int nFindCount = 0;
 
+            if (Equipment.Machine_LaserType_CO2)
+            {
+                // Model에 따라 다르다. 나만 알듯..
+                workStage.m_bCO2_repairMode = false;  //1.2T Model - Repair 적용.
+                workStage.m_bCO2_MultyMode = true;    // 386 Model시에 적용.
+            }
+            else
+            {
+                workStage.m_bCO2_repairMode = false;
+                workStage.m_bCO2_MultyMode = false;
+            }
+
             if (textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text.Length < 0)
             {
                 MessageBox.Show("Fiducial Size 를 입력하세요.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -623,7 +635,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     {
                         result = aligner.FindGoldPowderForAutoTreshold(circlesResult,
                                                             workStage.Camera_HighRes.LatestImage.RawData,
-                                                            w, h, (int)m_dradius, dScore, dSpec);
+                                                            w, h, (int)m_dradius, dScore, dSpec, nMaxInstance);
                     }
                         
                     if (circlesResult.Count >= 1)

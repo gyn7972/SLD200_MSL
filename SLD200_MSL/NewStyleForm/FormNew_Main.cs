@@ -765,30 +765,6 @@ namespace SLD200_MSL
 
                 System.Windows.Forms.MessageBox.Show("도면 로드 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            
-            //if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
-            //{
-            //    workStage.m_bHomeProgressForm_Close = false;
-            //    m_bHomeProgress_Show = false;
-
-            //    m_FormProgress.Hide();
-            //}
-
-            ////  메인 화면 도면 갱신 (요상스럽도다... 메인 화면에 도면을 불러온 후 다른 화면으로 넘어갔다가 돌아오면, 메인 화면의 Viewer 에 도면이 사라진다. 보이기만 안보이는 게 아니라 데이터도 사라진다. 
-            ////                      그래서 Equipment 에 SiriusView 를 하나 임시로 두고, 서로 데이터가 다를 경우(로드된 파일명) 임시 Viewer 의 데이터를 메인 화면의 Viewer 로 가져온다.
-            //if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
-            //{
-            //    //if ((SiriusViewer_Main.Document.FileName != Equipment.EqpSiriusViewer.Document.FileName) &&
-            //    //    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
-            //    if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
-            //        (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
-            //    {
-            //        SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
-            //        //workStage.SiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
-            //        //workStage.MainSiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
-            //    }
-            //}
-
             return ret;
         }
 

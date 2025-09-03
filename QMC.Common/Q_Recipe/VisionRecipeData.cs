@@ -664,15 +664,24 @@ namespace QMC.Common.Recipe
                 data.nGoldPowderCircleMarkMaxInstance = Equipment.ToInt(sb.ToString());
                 NativeMethods.GetPrivateProfileString("GoldPowder", "CircleMarkFindCount", "7", sb, sb.Capacity, path);
                 data.nGoldPowderCircleMarkFindCount = Equipment.ToInt(sb.ToString());
+                
                 // 위치 4개 로드
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos1X", "0", sb, sb.Capacity, path); data.dGoldPowderPos1X = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos1Y", "0", sb, sb.Capacity, path); data.dGoldPowderPos1Y = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos2X", "0", sb, sb.Capacity, path); data.dGoldPowderPos2X = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos2Y", "0", sb, sb.Capacity, path); data.dGoldPowderPos2Y = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos3X", "0", sb, sb.Capacity, path); data.dGoldPowderPos3X = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos3Y", "0", sb, sb.Capacity, path); data.dGoldPowderPos3Y = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos4X", "0", sb, sb.Capacity, path); data.dGoldPowderPos4X = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos4Y", "0", sb, sb.Capacity, path); data.dGoldPowderPos4Y = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos1X", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos1X = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos1Y", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos1Y = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos2X", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos2X = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos2Y", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos2Y = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos3X", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos3X = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos3Y", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos3Y = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos4X", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos4X = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos4Y", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos4Y = Equipment.ToDouble(sb.ToString());
 
                 // === (추가) 소켓별 GoldPowder 포지션 로드 ===
                 NativeMethods.GetPrivateProfileString("GoldPowderSocketPos", "Count", "0", sb, sb.Capacity, path);

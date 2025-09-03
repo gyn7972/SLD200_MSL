@@ -52,6 +52,9 @@ namespace SLD200_MSL
 
         public Action<bool> ActionLoadRecipe;
 
+        // 수동 입력 활성화 여부
+        private bool _manualHoleSizeOverride = false;
+
         public FormNew_Recipe()
         {
             InitializeComponent();
@@ -138,6 +141,14 @@ namespace SLD200_MSL
 
             InitRecipeUI_KeyPad();
             ApplyTooltips();
+
+            // 이벤트 연결 (중복 방지 위해 먼저 제거)
+            richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.TextChanged -= HoleSizeOrResizing_TextChanged;
+            textBox_Recipe_TabRecipe_Miscellaneous_Resizing.TextChanged -= HoleSizeOrResizing_TextChanged;
+
+            richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.TextChanged += HoleSizeOrResizing_TextChanged;
+            textBox_Recipe_TabRecipe_Miscellaneous_Resizing.TextChanged += HoleSizeOrResizing_TextChanged;
+
         }
 
         private void MachineType_Component_Enable(bool m_bLaserType)
@@ -567,14 +578,14 @@ namespace SLD200_MSL
         {
             //  선택된 Layer 데이터를 ListView 에 표시
             int m_nIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
-            string m_strLayerName = "";
+            string strLayerName = "";
 
             if (m_nIndex < 0)
             {
                 return;
             }
 
-            m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
+            strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
 
             listView_Recipe_TabRecipe_LayerData.BeginUpdate();
 
@@ -586,26 +597,26 @@ namespace SLD200_MSL
             }
 
             //  ListView Column 설정
-            if ((m_strLayerName == "Hole1") ||
-                (m_strLayerName == "Hole2") ||
-                (m_strLayerName == "Hole3") ||
-                (m_strLayerName == "Hole4") ||
-                (m_strLayerName == "Hole5") ||
-                (m_strLayerName == "Hole6") ||
-                (m_strLayerName == "Hole7") ||
-                (m_strLayerName == "Hole8") ||
-                (m_strLayerName == "Hole9") ||
-                (m_strLayerName == "Hole10") ||
-                (m_strLayerName == "Thruhole") ||
-                (m_strLayerName == "Fiducial"))
+            if ((strLayerName == "Hole1") ||
+                (strLayerName == "Hole2") ||
+                (strLayerName == "Hole3") ||
+                (strLayerName == "Hole4") ||
+                (strLayerName == "Hole5") ||
+                (strLayerName == "Hole6") ||
+                (strLayerName == "Hole7") ||
+                (strLayerName == "Hole8") ||
+                (strLayerName == "Hole9") ||
+                (strLayerName == "Hole10") ||
+                (strLayerName == "Thruhole") ||
+                (strLayerName == "Fiducial"))
             {
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Center X", 80, HorizontalAlignment.Center);
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Center Y", 80, HorizontalAlignment.Center);
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("radius", 60, HorizontalAlignment.Center);
             }
-            else if ((m_strLayerName == "Rect") ||
-                    (m_strLayerName == "Outline"))
+            else if ((strLayerName == "Rect") ||
+                    (strLayerName == "Outline"))
             {
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Center X", 80, HorizontalAlignment.Center);
@@ -613,13 +624,13 @@ namespace SLD200_MSL
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Width", 60, HorizontalAlignment.Center);
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Height", 60, HorizontalAlignment.Center);
             }
-            else if (m_strLayerName == "Marking")
+            else if (strLayerName == "Marking")
             {
 
             }
 
             //  ListView Data 표시
-            if (m_strLayerName == "Hole1")
+            if (strLayerName == "Hole1")
             {
                 //if (workStage.m_nDrawing_Hole1Count > 0)
                 {
@@ -634,9 +645,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Hole2")
+            else if (strLayerName == "Hole2")
             {
                 //if (workStage.m_nDrawing_Hole2Count > 0)
                 {
@@ -651,9 +662,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Hole3")
+            else if (strLayerName == "Hole3")
             {
                 //if (workStage.m_nDrawing_Hole3Count > 0)
                 {
@@ -668,9 +679,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Hole4")
+            else if (strLayerName == "Hole4")
             {
                 //if (workStage.m_nDrawing_Hole4Count > 0)
                 {
@@ -685,9 +696,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Hole5")
+            else if (strLayerName == "Hole5")
             {
                 //if (workStage.m_nDrawing_Hole5Count > 0)
                 {
@@ -702,9 +713,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Hole6")
+            else if (strLayerName == "Hole6")
             {
                 //if (workStage.m_nDrawing_Hole6Count > 0)
                 {
@@ -719,9 +730,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Hole7")
+            else if (strLayerName == "Hole7")
             {
                 //if (workStage.m_nDrawing_Hole7Count > 0)
                 {
@@ -736,9 +747,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Hole8")
+            else if (strLayerName == "Hole8")
             {
                 //if (workStage.m_nDrawing_Hole8Count > 0)
                 {
@@ -753,9 +764,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Hole9")
+            else if (strLayerName == "Hole9")
             {
                 //if (workStage.m_nDrawing_Hole8Count > 0)
                 {
@@ -770,9 +781,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Hole10")
+            else if (strLayerName == "Hole10")
             {
                 //if (workStage.m_nDrawing_Hole8Count > 0)
                 {
@@ -787,9 +798,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Thruhole")
+            else if (strLayerName == "Thruhole")
             {
                 //if (workStage.m_nDrawing_Hole8Count > 0)
                 {
@@ -804,9 +815,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Rect")
+            else if (strLayerName == "Rect")
             {
                 //if (workStage.m_nDrawing_RectCount > 0)
                 {
@@ -822,9 +833,9 @@ namespace SLD200_MSL
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Outline")
+            else if (strLayerName == "Outline")
             {
                 for (int i = 0; i < workStage.m_nDrawing_OutlineCount; i++)
                 {
@@ -837,9 +848,9 @@ namespace SLD200_MSL
                     listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                 }
 
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Marking")
+            else if (strLayerName == "Marking")
             {
                 for (int i = 0; i < workStage.m_nMarking_SocketCount; i++)
                 {
@@ -850,9 +861,9 @@ namespace SLD200_MSL
                     listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                 }
 
-                SetRecipeTabControlsVisible(m_strLayerName, true);
+                SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (m_strLayerName == "Fiducial")
+            else if (strLayerName == "Fiducial")
             {
                 //if (workStage.m_nDrawing_FiducialCount > 0)
                 {
@@ -868,9 +879,9 @@ namespace SLD200_MSL
                     }
                 }
 
-                SetRecipeTabControlsVisible(m_strLayerName, false);
+                SetRecipeTabControlsVisible(strLayerName, false);
             }
-            else if (m_strLayerName == "PreAlign")
+            else if (strLayerName == "PreAlign")
             {
                 for (int i = 0; i < workStage.m_nDrawing_FiducialCount; i++)
                 {
@@ -882,7 +893,7 @@ namespace SLD200_MSL
                     listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                 }
 
-                SetRecipeTabControlsVisible(m_strLayerName, false);
+                SetRecipeTabControlsVisible(strLayerName, false);
             }
             else
             {
@@ -893,7 +904,9 @@ namespace SLD200_MSL
             listView_Recipe_TabRecipe_LayerData.EndUpdate();
 
             // Layer 에 대한 Miscellaneous Data 표시
-            Recipe_Data_Refresh(m_strLayerName);
+            Recipe_Data_Refresh(strLayerName);
+            UpdateHoleSizeAndResizingDisplay(strLayerName);
+
         }
 
 
@@ -949,6 +962,10 @@ namespace SLD200_MSL
                 //  Resizing (mm)
                 NativeMethods.GetPrivateProfileString(strTemp, "Resizing", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing = Equipment.ToDouble(temp.ToString());
+                //Miscellaneous_HoleSize
+                NativeMethods.GetPrivateProfileString(strTemp, "HoleSize", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSize = Equipment.ToDouble(temp.ToString());
+
                 //  Hole Drilling Start Position Division (등분)
                 NativeMethods.GetPrivateProfileString(strTemp, "HoleDrilling_StartPosDivision", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = Equipment.ToInt(temp.ToString());
@@ -1175,6 +1192,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = ReadValue(data, "Reference_Layer", "");
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = ReadDouble(data, "Defocusing_Distance", 0.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing = ReadDouble(data, "Resizing", 0.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSize = ReadDouble(data, "HoleSize", 0.0);   //Miscellaneous_HoleSize
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = ReadInt(data, "HoleDrilling_StartPosDivision", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = ReadDouble(data, "GroupSplitSize", 0.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize_Height = ReadDouble(data, "GroupSplitSize_Height", 0.0);
@@ -1373,6 +1391,7 @@ namespace SLD200_MSL
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_ReferenceLayer = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_ReferenceLayer;
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DefocusingDistance = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_DefocusingDistance;
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_Resizing = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_Resizing;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleSize = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_HoleSize;////Miscellaneous_HoleSize
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleDrilling_StartPosDivision = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_HoleDrilling_StartPosDivision;
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_GroupSplitSize = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_GroupSplitSize;
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_GroupSplitSize_Height = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_GroupSplitSize_Height;
@@ -1492,6 +1511,7 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_ReferenceLayer;
             textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DefocusingDistance.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_Resizing.ToString();
+            richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleSize.ToString();////Miscellaneous_HoleSize
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_GroupSplitSize.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_GroupSplitSize_Height.ToString();
@@ -1886,6 +1906,7 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = layerData.Miscellaneous_ReferenceLayer;
             textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = layerData.Miscellaneous_DefocusingDistance.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = layerData.Miscellaneous_Resizing.ToString();
+            richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = layerData.Miscellaneous_HoleSize.ToString(); ////Miscellaneous_HoleSize
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = layerData.Miscellaneous_HoleDrilling_StartPosDivision.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = layerData.Miscellaneous_GroupSplitSize.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = layerData.Miscellaneous_GroupSplitSize_Height.ToString();
@@ -2108,6 +2129,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ReferenceLayer;
                 textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DefocusingDistance.ToString();
                 textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_Resizing.ToString();
+                richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSize.ToString(); //Miscellaneous_HoleSize
                 comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
                 textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize.ToString();
 
@@ -2504,6 +2526,9 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "Defocusing_Distance", Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance.ToString(), strFIle);
                 //  Resizing (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "Resizing", Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing.ToString(), strFIle);
+                ////Miscellaneous_HoleSize
+                NativeMethods.WritePrivateProfileString(strTemp, "HoleSize", Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSize.ToString(), strFIle);
+
                 //  Hole Drilling Start Position Division (등분)
                 NativeMethods.WritePrivateProfileString(strTemp, "HoleDrilling_StartPosDivision", Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision.ToString(), strFIle);
                 //  Group Split Size (mm)
@@ -2647,6 +2672,7 @@ namespace SLD200_MSL
                 layerDict["Reference_Layer"] = Equipment.stLayerRecipeSet[i].Miscellaneous_ReferenceLayer;
                 layerDict["Defocusing_Distance"] = Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance.ToString();
                 layerDict["Resizing"] = Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing.ToString();
+                layerDict["HoleSize"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSize.ToString(); ////Miscellaneous_HoleSize
                 layerDict["HoleDrilling_StartPosDivision"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
                 layerDict["GroupSplitSize"] = Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize.ToString();
                 layerDict["GroupSplitSize_Height"] = Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize_Height.ToString();
@@ -2942,6 +2968,7 @@ namespace SLD200_MSL
                     textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ReferenceLayer;
                     textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DefocusingDistance.ToString();
                     textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_Resizing.ToString();
+                    richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSize.ToString(); //Miscellaneous_HoleSize
                     comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
                     textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize.ToString();
 
@@ -3210,6 +3237,23 @@ namespace SLD200_MSL
 
                                 //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
                                 workStage.GetDrillingData_ProcessingFlagCheck();
+
+                                label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = string.Empty;
+                                label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = string.Empty;
+                                string strResizing = string.Empty;
+                                double dResizing = 0.0;
+                                strResizing = textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text;
+
+                                dResizing = Equipment.ToDouble(strResizing);
+                                dResizing = dResizing / 2;
+                                strResizing = dResizing.ToString("0.###");
+
+                                double dHoleSize = workStage.m_stLaserDrilling_SocketData[0].
+                                    m_stDividedRegion_RegionData[0].m_stDividedRegion_ObjectData[0].dEdgePoint[1].X;
+                                label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = dHoleSize.ToString("0.###");
+
+                                label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = (dHoleSize + dResizing).ToString("0.###");
+
                                 mb.ShowDialog("Information !!", "가공 데이터 Parsing 성공 및 Recipe Data를 로드 성공.");
                                 break;
 
@@ -3430,6 +3474,7 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ReferenceLayer = textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DefocusingDistance = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text);
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_Resizing = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleSize = Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text);//Miscellaneous_HoleSize
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleDrilling_StartPosDivision = comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text.Length > 0 ? Equipment.ToInt(comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_GroupSplitSize = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text) : 4.0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_GroupSplitSize_Height = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text) : 4.0;
@@ -5040,5 +5085,376 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = false;
             }
         }
+
+        //    /// <summary>
+        //    /// 선택된 레이어 이름(layerName)에 따라 Hole Size 와 Resizing 결과 라벨을 갱신한다.
+        //    /// Hole 레이어: workStage.m_stLaserDrilling_SocketData 경로 사용
+        //    /// Thruhole, Outline 레이어: 구조가 불확실하므로 Reflection으로 dEdgePoint[*].X 탐색 (첫 번째/두 번째 점)
+        //    /// </summary>
+        //private void UpdateHoleSizeAndResizingDisplay(string layerName)
+        //{
+        //    if (workStage == null)
+        //    {
+        //        label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = "";
+        //        label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = "";
+        //        return;
+        //    }
+
+        //    // 1. Resizing 입력 파싱 (지름 입력이라 가정하고 /2)
+        //    double resizingHalf = 0.0;
+        //    {
+        //        string txt = textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text?.Trim();
+        //        double v = Equipment.ToDouble(txt);
+        //        resizingHalf = v;/// 2.0;
+        //    }
+
+        //    double? holeSize = null;
+
+        //    try
+        //    {
+        //        if (layerName != null && layerName.StartsWith("Hole", StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            // HoleN → N 추출 (1~50 범위)
+        //            int n;
+        //            if (int.TryParse(layerName.Substring(4), out n) && n >= 1 && n <= 50)
+        //            {
+        //                int holeIndex = n - 1;
+        //                // 안전 체크
+        //                if (workStage.m_stLaserDrilling_SocketData != null &&
+        //                    workStage.m_stLaserDrilling_SocketData.Length > 0 &&
+        //                    holeIndex < workStage.m_stLaserDrilling_SocketData.Length)
+        //                {
+        //                    var g = workStage.m_stLaserDrilling_SocketData[0]; // Socket(0) 기준 (기존 코드 유지)
+        //                    var regionArrField = g.GetType().GetField("m_stDividedRegion_RegionData");
+        //                    if (regionArrField != null)
+        //                    {
+        //                        var regions = regionArrField.GetValue(g) as Array;
+        //                        if (regions != null && regions.Length > 0)
+        //                        {
+        //                            var region0 = regions.GetValue(0);
+        //                            var objArrField = region0.GetType().GetField("m_stDividedRegion_ObjectData");
+        //                            if (objArrField != null)
+        //                            {
+        //                                var objs = objArrField.GetValue(region0) as Array;
+        //                                if (objs != null && objs.Length > 0)
+        //                                {
+        //                                    var obj0 = objs.GetValue(0);
+        //                                    var edgeField = obj0.GetType().GetField("dEdgePoint");
+        //                                    if (edgeField != null)
+        //                                    {
+        //                                        var edgeArray = edgeField.GetValue(obj0) as Array;
+        //                                        if (edgeArray != null && edgeArray.Length > 0)
+        //                                        {
+        //                                            // 기존 코드: [1].X 사용 → 길이 부족 시 [0]
+        //                                            int idx = edgeArray.Length > 1 ? 1 : 0;
+        //                                            var pt = edgeArray.GetValue(idx);
+        //                                            var xProp = pt.GetType().GetProperty("X");
+        //                                            if (xProp != null)
+        //                                            {
+        //                                                holeSize = Equipment.ToDouble(xProp.GetValue(pt)?.ToString());
+        //                                            }
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else if (string.Equals(layerName, "Thruhole", StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            holeSize = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
+        //        }
+        //        else if (string.Equals(layerName, "Outline", StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            holeSize = TryExtractFirstEdgePointX_Generic(workStage.m_stOutLine_SocketData);
+        //        }
+        //        else
+        //        {
+        //            // Marking / Fiducial / PreAlign 등은 표시 초기화
+        //            holeSize = null;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        // 파싱 실패시 표시 초기화
+        //        holeSize = null;
+        //    }
+
+        //    if (holeSize.HasValue)
+        //    {
+        //        holeSize *= 2.0;
+        //        label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = holeSize.Value.ToString("0.###");
+        //        label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = (holeSize.Value + resizingHalf).ToString("0.###");
+        //    }
+        //    else
+        //    {
+        //        label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = "";
+        //        label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = "";
+        //    }
+        //}
+
+        /// <summary>
+        /// ThruHole / Outline 등 구조가 명확하지 않은 배열(혹은 단일객체)에 대해
+        /// public 필드를 재귀적으로 순회하여 이름이 dEdgePoint 인 배열을 찾고
+        /// 첫(또는 두 번째) 요소의 X 값을 반환.
+        /// </summary>
+        private double? TryExtractFirstEdgePointX_Generic(object dataRoot)
+        {
+            if (dataRoot == null) return null;
+
+            // 배열이면 각 요소 순회
+            if (dataRoot is Array arr)
+            {
+                foreach (var elem in arr)
+                {
+                    var v = TryExtractFirstEdgePointX_Generic(elem);
+                    if (v.HasValue) return v;
+                }
+                return null;
+            }
+
+            var type = dataRoot.GetType();
+            // dEdgePoint 필드 직접 보유?
+            var edgeField = type.GetField("dEdgePoint");
+            if (edgeField != null)
+            {
+                var edgeArray = edgeField.GetValue(dataRoot) as Array;
+                if (edgeArray != null && edgeArray.Length > 0)
+                {
+                    int idx = edgeArray.Length > 1 ? 1 : 0;
+                    var pt = edgeArray.GetValue(idx);
+                    if (pt != null)
+                    {
+                        var xProp = pt.GetType().GetProperty("X");
+                        if (xProp != null)
+                        {
+                            double val;
+                            if (double.TryParse(xProp.GetValue(pt)?.ToString(), out val))
+                                return val;
+                        }
+                        var xField = pt.GetType().GetField("X");
+                        if (xField != null)
+                        {
+                            double val;
+                            if (double.TryParse(xField.GetValue(pt)?.ToString(), out val))
+                                return val;
+                        }
+                    }
+                }
+            }
+
+            // 다른 필드 재귀 탐색
+            foreach (var f in type.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+            {
+                if (f.FieldType.IsPrimitive || f.FieldType == typeof(string))
+                    continue;
+
+                var child = f.GetValue(dataRoot);
+                var v = TryExtractFirstEdgePointX_Generic(child);
+                if (v.HasValue) return v;
+            }
+
+            return null;
+        }
+
+        // 현재 선택된 레이어 이름 기준으로 홀 지름(diameter) 반환
+        private double? GetCurrentLayerHoleDiameter()
+        {
+            if (workStage == null) return null;
+            if (listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex < 0) return null;
+
+            string layerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer
+                                    .Items[listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex]
+                                    .ToString();
+
+            double? rawRadius = null;
+
+            try
+            {
+                if (!string.IsNullOrEmpty(layerName) &&
+                    layerName.StartsWith("Hole", StringComparison.OrdinalIgnoreCase))
+                {
+                    // m_stLaserDrilling_SocketData[0] 첫 객체의 edgePoint 이용 (기존 로직 동일)
+                    if (workStage.m_stLaserDrilling_SocketData != null &&
+                        workStage.m_stLaserDrilling_SocketData.Length > 0)
+                    {
+                        var g = workStage.m_stLaserDrilling_SocketData[0];
+                        var regionField = g.GetType().GetField("m_stDividedRegion_RegionData");
+                        var regions = regionField?.GetValue(g) as Array;
+                        var region0 = regions?.Length > 0 ? regions.GetValue(0) : null;
+                        var objField = region0?.GetType().GetField("m_stDividedRegion_ObjectData");
+                        var objs = objField?.GetValue(region0) as Array;
+                        var obj0 = objs?.Length > 0 ? objs.GetValue(0) : null;
+                        var edgeField = obj0?.GetType().GetField("dEdgePoint");
+                        var edgeArr = edgeField?.GetValue(obj0) as Array;
+                        if (edgeArr != null && edgeArr.Length > 0)
+                        {
+                            int idx = edgeArr.Length > 1 ? 1 : 0;
+                            var pt = edgeArr.GetValue(idx);
+                            var xProp = pt.GetType().GetProperty("X");
+                            if (xProp != null)
+                                rawRadius = Equipment.ToDouble(xProp.GetValue(pt)?.ToString());
+                        }
+                    }
+                }
+                else if (string.Equals(layerName, "Thruhole", StringComparison.OrdinalIgnoreCase))
+                {
+                    rawRadius = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
+                }
+                else if (string.Equals(layerName, "Outline", StringComparison.OrdinalIgnoreCase))
+                {
+                    rawRadius = TryExtractFirstEdgePointX_Generic(workStage.m_stOutLine_SocketData);
+                }
+                else
+                {
+                    return null; // Marking 등은 대상 아님
+                }
+            }
+            catch
+            {
+                rawRadius = null;
+            }
+
+            if (!rawRadius.HasValue) return null;
+
+            // 기존 자동 계산과 동일하게 2배(지름) 처리
+            return rawRadius.Value * 2.0;
+        }
+
+        private void button_Recipe_TabRecipe_Miscellaneous_HoleSize_Click(object sender, EventArgs e)
+        {
+            double? diameter = GetCurrentLayerHoleDiameter();
+            if (!diameter.HasValue)
+            {
+                MessageBox.Show("현재 선택된 레이어에서 Hole Size를 추출할 수 없습니다.", "정보",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // 수동 오버라이드 모드 전환 및 텍스트 설정
+            richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.TextChanged -= HoleSizeOrResizing_TextChanged;
+            richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = diameter.Value.ToString("0.###");
+            richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.TextChanged += HoleSizeOrResizing_TextChanged;
+
+            _manualHoleSizeOverride = true;
+
+            // 최종 라벨 갱신
+            RecalculateManualHoleResizing();
+        }
+
+        private void HoleSizeOrResizing_TextChanged(object sender, EventArgs e)
+        {
+            // 사용자가 직접 Hole Size 편집했다고 판단 (자동 세팅 시에는 _manualHoleSizeOverride를 false로 강제 세팅하면 됨)
+            if (sender == richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize)
+                _manualHoleSizeOverride = !string.IsNullOrWhiteSpace(richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text);
+
+            RecalculateManualHoleResizing();
+        }
+
+        /// <summary>
+        /// 수동 HoleSize + Resizing 값을 기반으로 최종 결과(HoleSize / Resized)를 라벨에 표시
+        /// </summary>
+        private void RecalculateManualHoleResizing()
+        {
+            // 빈 값이면 라벨 초기화
+            if (string.IsNullOrWhiteSpace(richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text))
+            {
+                label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = "";
+                label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = "";
+                return;
+            }
+
+            double holeSize = Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text);
+            double resizing = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
+
+            // HoleSize 라벨에도 동일 값 표시(기존 label 유지용)
+            label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = holeSize.ToString("0.###");
+
+            // 기존 로직 : 최종 = HoleSize + (Resizing / 2)
+            double finalSize = holeSize + resizing;// (resizing / 2.0);
+            label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = finalSize.ToString("0.###");
+        }
+
+        /// <summary>
+        /// 레이어 선택시 자동 계산 (수동 입력이 없을 때만). 
+        /// 기존 UpdateHoleSizeAndResizingDisplay 내용을 수정.
+        /// </summary>
+        private void UpdateHoleSizeAndResizingDisplay(string layerName)
+        {
+            if (_manualHoleSizeOverride)
+            {
+                // 사용자가 직접 입력 중이면 자동 갱신을 건너뛰고 수동 계산만 유지
+                RecalculateManualHoleResizing();
+                return;
+            }
+
+            // ---- 기존 자동 계산 일부 (필요한 최소만 유지) ----
+            if (workStage == null)
+            {
+                label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = "";
+                label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = "";
+                return;
+            }
+
+            // Resizing 입력
+            double resizing = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
+            double? rawHole = null;
+
+            try
+            {
+                if (!string.IsNullOrEmpty(layerName) && layerName.StartsWith("Hole", StringComparison.OrdinalIgnoreCase))
+                {
+                    // (간단화) 기존 구조 접근 실패 시 무시
+                    if (workStage.m_stLaserDrilling_SocketData != null &&
+                        workStage.m_stLaserDrilling_SocketData.Length > 0)
+                    {
+                        var g = workStage.m_stLaserDrilling_SocketData[0];
+                        var regionField = g.GetType().GetField("m_stDividedRegion_RegionData");
+                        var regions = regionField?.GetValue(g) as Array;
+                        var region0 = regions?.Length > 0 ? regions.GetValue(0) : null;
+                        var objField = region0?.GetType().GetField("m_stDividedRegion_ObjectData");
+                        var objs = objField?.GetValue(region0) as Array;
+                        var obj0 = objs?.Length > 0 ? objs.GetValue(0) : null;
+                        var edgeField = obj0?.GetType().GetField("dEdgePoint");
+                        var edgeArr = edgeField?.GetValue(obj0) as Array;
+                        if (edgeArr != null && edgeArr.Length > 0)
+                        {
+                            int idx = edgeArr.Length > 1 ? 1 : 0;
+                            var pt = edgeArr.GetValue(idx);
+                            var xProp = pt.GetType().GetProperty("X");
+                            if (xProp != null)
+                                rawHole = Equipment.ToDouble(xProp.GetValue(pt)?.ToString());
+                        }
+                    }
+                }
+                else if (string.Equals(layerName, "Thruhole", StringComparison.OrdinalIgnoreCase))
+                    rawHole = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
+                else if (string.Equals(layerName, "Outline", StringComparison.OrdinalIgnoreCase))
+                    rawHole = TryExtractFirstEdgePointX_Generic(workStage.m_stOutLine_SocketData);
+            }
+            catch { rawHole = null; }
+
+            if (rawHole.HasValue)
+            {
+                // 기존 코드에서 2배 처리하던 부분 유지 여부는 요구사항에 따라 조정.
+                double holeSize = rawHole.Value * 2.0;
+                label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = holeSize.ToString("0.###");
+                double finalSize = holeSize + resizing;// (resizing / 2.0);
+                label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = finalSize.ToString("0.###");
+
+                // 자동 모드에서 richTextBox 동기화 (사용자에게 참고용)
+                richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.TextChanged -= HoleSizeOrResizing_TextChanged;
+                richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = holeSize.ToString("0.###");
+                richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.TextChanged += HoleSizeOrResizing_TextChanged;
+            }
+            else
+            {
+                label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = "";
+                label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = "";
+            }
+        }
+
     }
 }

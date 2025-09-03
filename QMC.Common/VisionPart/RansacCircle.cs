@@ -88,6 +88,7 @@ namespace QMC.Common.VisionPart
                 int idx3 = (idx2 + nStep) % nCount;
                 if (idx1 < 0 || idx2 < 0 || idx3 < 0)
                     break;
+
                 PointF p1 = points[idx1];
                 PointF p2 = points[idx2];
                 PointF p3 = points[idx3];
@@ -111,8 +112,8 @@ namespace QMC.Common.VisionPart
                     {
                         continue;
                     }
-
                 }
+
                 // 모든 점들에 대해 원의 경계(반지름)와의 오차를 계산하고 inlier 수를 센다.
                 int inlierCount = 0;
                 System.Threading.Tasks.Parallel.For(0, points.Count, iter =>
@@ -142,12 +143,12 @@ namespace QMC.Common.VisionPart
                 double dMin = Math.Min(circle.Radius, r);
                 double dMax = Math.Max(circle.Radius, r);
                 double dScore = inlierCount * dMin / dMax;
+                
                 if (dScore > bestInliers)
                 {
                     bestInliers = dScore;
                     circle.Score = (float)dScore / points.Count;
                     bestCircle = circle;
-
                 }
             }
 

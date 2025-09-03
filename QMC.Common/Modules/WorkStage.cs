@@ -8943,8 +8943,6 @@ namespace QMC.Common.Modules
                 }
 
                 // 단계별 실행
-                //Console.WriteLine($"Scanner Calibration running at {DateTime.Now}, Step: {m_nScanner_Calibration_Step}");
-                Run_Verify_ScannerCameraOffset_Func();
                 Run_LaserHeightCheck_Func();
             }
             catch (Exception ex)
@@ -8961,8 +8959,6 @@ namespace QMC.Common.Modules
         {
             timer_VerifyScannerCamOffset.Enabled = false;
 
-            Run_Verify_ScannerCameraOffset_Func();
-            //Run_Scanner_Calibration_Func();
             Run_LaserHeightCheck_Func();
 
             timer_VerifyScannerCamOffset.Enabled = true;
@@ -29531,7 +29527,6 @@ namespace QMC.Common.Modules
 
             //  SLD-200 에서 사용할 변수
             //int m_nLayerThruHole_Count = 0;
-
             //m_bGroupExist_LargerThanDivideSize = false;
 
             int m_nUnusableLayerCount = 0;
@@ -29577,7 +29572,6 @@ namespace QMC.Common.Modules
                             //break;
                         }
 
-
                         if (LayerIsGroup)               //  MSL 은 Thruhole 을 Group 으로 해야 한다. 
                         {
                             //  전체 Socket 개수만큼 공간 할당
@@ -29590,6 +29584,7 @@ namespace QMC.Common.Modules
                             if (layer.Items[i].Description == null)
                             {
                                 m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = true;
+                                Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = true __1");
                             }
                             else if ((layer.Items[i].Description.ToUpper() == "NO") ||
                                     (layer.Items[i].Description.ToUpper() == "NOT") ||
@@ -29597,10 +29592,12 @@ namespace QMC.Common.Modules
                                     (layer.Items[i].Description.ToUpper() == "FALSE"))
                             {
                                 m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = false;
+                                Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = false __2");
                             }
                             else
                             {
                                 m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = true;
+                                Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = true __3");
                             }
                         }
                     }
@@ -30768,9 +30765,6 @@ namespace QMC.Common.Modules
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
         }
 
-        void Run_Verify_ScannerCameraOffset_Func()
-        {
-        }
 
         double m_dCurrentCalPosX = 0;
         double m_dCurrentCalPosY = 0;
@@ -34612,7 +34606,6 @@ namespace QMC.Common.Modules
                 default:
                     break;
             }
-            //LaserDrilling_Step.DrillingData_SocketRemainedCheck <- 여기서 분기한다.
 
             m_MainWork_Start = true;
             m_LaserDrillingWork_Start = true;
@@ -39283,16 +39276,20 @@ namespace QMC.Common.Modules
                             if (m_bSocketAlign_OK)
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료");
-                                if (m_bPassedSocket_Exist)
+                                // Passed socket 재정렬 성공 플래그 (Socket 모드에서만 의미)
+                                if (m_bPassedSocket_Exist && m_AlignMode == AlignMode.Socket)
                                 {
                                     m_bRetryAlignSucess = true;
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료 : m_bPassedSocket_Exist, m_bRetryAlignSucess = true");
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                                        $"{m_AlignMode} Align 완료 : PassedSocket -> m_bRetryAlignSucess = true");
                                 }
 
-                                if (m_bPassedSocket_Exist)
+                                // GoldPowder 성공 시에는 Passed 여부와 무관하게 재시도 성공 플래그(불필요한 재진입 방지)
+                                if (m_AlignMode == AlignMode.GoldPowder)
                                 {
                                     m_bRetryAlignSucess = true;
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료 : m_bPassedSocket_Exist, m_bRetryAlignSucess = true");
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                                        "GoldPowder Align 성공 -> m_bRetryAlignSucess = true");
                                 }
 
                                 //  Align 후 계산된 데이터 가져오기
@@ -39340,10 +39337,12 @@ namespace QMC.Common.Modules
                             else
                             {
                                 m_bSocketAlign_OK = false;
-                                if (m_bPassedSocket_Exist)
+                                // 실패
+                                if (m_bPassedSocket_Exist && m_AlignMode == AlignMode.Socket)
                                 {
-                                    m_bRetryAlignSucess = true;
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료 : m_bPassedSocket_Exist, m_bRetryAlignSucess = true");
+                                    m_bRetryAlignSucess = true; // 재정렬 루프 진입 조건 해제
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                                        "Socket Align 실패(PassedSocket) -> m_bRetryAlignSucess = true");
                                 }
 
                                 socket = DrillingManager.GetSocket(GetCurrentLayerEnum(m_LayerType), m_nSocketNum_forAlign);
@@ -39387,7 +39386,6 @@ namespace QMC.Common.Modules
                                         Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
                                         GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
                                         Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag //  단일 선택 가공이면, Align 실패 시 Out
-                                        
                                         {
                                             //  Thruhole Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
                                             if (m_stThruHole_SocketData_ProcessingFlag != null)
@@ -39397,6 +39395,7 @@ namespace QMC.Common.Modules
                                                     if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stLaserDrilling_SocketData.Length)
                                                     {
                                                         m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;//  true:가공, false:Skip
+                                                        Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false __4");
                                                     }
                                                     //else if(m_stThruHole_SocketData_ProcessingFlag.Length < m_stLaserDrilling_SocketData.Length)
                                                     //{
@@ -39411,6 +39410,7 @@ namespace QMC.Common.Modules
                                                         strTemp = "Thruhole 과 Hole 의 Socket 개수가 작습니다." +
                                                                     "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
                                                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                                                        Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false __5");
                                                     }
                                                     else
                                                     {
@@ -39664,9 +39664,11 @@ namespace QMC.Common.Modules
                             m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle = 0;
                         }
                     }
-                    
-                    
-                    m_bRetryAlignSucess = false;
+
+
+                    if (m_AlignMode == AlignMode.Socket)
+                        m_bRetryAlignSucess = false;
+
                     switch (m_LayerType)
                     {
                         case LayerType.LAYER_DRILLING:
@@ -40236,7 +40238,6 @@ namespace QMC.Common.Modules
                                     }
                                     else
                                     {
-                                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                                     }
                                 }
@@ -42447,6 +42448,8 @@ namespace QMC.Common.Modules
                         DrillingManager.CycleTimer_LaserDrilling.End();   // 현재 사이클 종료
                         DrillingManager.SaveLotLog();                     // 최신 로그 저장
 
+                        // 여기만... 뺴면.. 될거 같긴한데... Test 필요.
+                        // 경광등 노랑, 빨강 조건 위해서. 이거 주석처리 필요.
                         Equipment.SelectRunEnable_New = false; // 선택 가공 모드 종료
                     }
 
@@ -42484,7 +42487,6 @@ namespace QMC.Common.Modules
                         {
                             // 흠.. 여기서 hole1인경우에 Skip되면.. 얼라인을 안하니깐..
                             // Align을 하게 하고서 진행해야 하네..
-
                             var layerEnum = GetCurrentLayerEnum(m_LayerType);
                             var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
                             
@@ -42617,7 +42619,8 @@ namespace QMC.Common.Modules
                     }
                     else
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", 
+                            "가공할 Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
 
                         //  Thruhole, Outline, Marking 등의 Layer 가 있는지 체크. 
                         //  Socket Align 에 실패하여 가공하지 않고 건너 뛴 Socket 의 Thruhole 데이터도
@@ -42627,40 +42630,58 @@ namespace QMC.Common.Modules
                         //  Hole1 Layer 와 Thruhole Layer 조합일 때 진행해야 하는 부분인데, Thruhole Layer 대신 Outline 이나 Marking Layer 로 이루어진 조합이라면??? 
                         //  일단 Hole1 과 Thruhole Layer 가 포함된 경우에만 실패한 소켓들 전부 얼라인 하는 것으로 하자.
                         //
+
+                        // GoldPowder 모드에서는 여기서 재정렬 로직을 모두 스킵
                         if (m_AlignMode == AlignMode.GoldPowder)
                         {
-                            if (m_bCO2_repairMode)
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
+                                "GoldPowder 모드: 재정렬 로직 스킵, 다음 Layer 이동");
+                            if (Equipment.SelectRunEnable_New)
                             {
-                                m_bPassedSocket_Exist = false;
-                                m_nSocketNum_forFailedSocket_Align = -1;
-                                if (m_stThruHole_SocketData_ProcessingFlag != null)
-                                {
-                                    if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
-                                    {
-                                        //  가장 마지막에 Align 성공한 Socket 위치에서 얼라인을 한다.
-                                        for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag.Length; i++)
-                                        {
-                                            if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == true)
-                                            {
-                                                m_nSocketNum_forFailedSocket_Align = i;
-                                            }
-                                            else
-                                            {
-                                                m_bPassedSocket_Exist = true;
-                                            }
-                                        }
-                                    }
-                                }
+                                m_bDrillingWork_Hole1_Exist = true;
+                                m_nDrillingWork_Group_Count = 0;
                             }
-                            else
-                            {
-                                // goldPowder 실패시에는 그냥 소켓 얼라인 정보로 수행.
-                                m_bPassedSocket_Exist = false;
-                                m_nSocketNum_forFailedSocket_Align = -1;
-                            }
+                            m_nLaserDrilling_LayerCount++;
+                            return (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
-                        else
+
+                        //if (m_AlignMode == AlignMode.GoldPowder)
+                        //{
+                        //    if (m_bCO2_repairMode)
+                        //    {
+                        //        m_bPassedSocket_Exist = false;
+                        //        m_nSocketNum_forFailedSocket_Align = -1;
+                        //        if (m_stThruHole_SocketData_ProcessingFlag != null)
+                        //        {
+                        //            if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
+                        //            {
+                        //                //  가장 마지막에 Align 성공한 Socket 위치에서 얼라인을 한다.
+                        //                for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag.Length; i++)
+                        //                {
+                        //                    if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == true)
+                        //                    {
+                        //                        m_nSocketNum_forFailedSocket_Align = i;
+                        //                    }
+                        //                    else
+                        //                    {
+                        //                        m_bPassedSocket_Exist = true;
+                        //                    }
+                        //                }
+                        //            }
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        // goldPowder 실패시에는 그냥 소켓 얼라인 정보로 수행.
+                        //        m_bPassedSocket_Exist = false;
+                        //        m_nSocketNum_forFailedSocket_Align = -1;
+
+                        //        Log.Write("Test", Equipment.User_Name, "Auto Run", "GoldPowder 일반 모드: 재정렬 스킵");
+                        //    }
+                        //}
+                        //else //Socket Align 모드
                         {
+                            // (Socket 모드) 실패/건너뛴 소켓 재정렬 대상 탐색
                             m_bPassedSocket_Exist = false;
                             m_nSocketNum_forFailedSocket_Align = -1;
                             if (m_stThruHole_SocketData_ProcessingFlag != null)
@@ -42683,16 +42704,20 @@ namespace QMC.Common.Modules
                             }
                         }
 
-                        if (m_bPassedSocket_Exist && 
-                           (m_nSocketNum_forFailedSocket_Align != -1) &&
+                        // 재시도 조건들 (Socket 모드에서만)
+                        if (m_AlignMode == AlignMode.Socket && 
+                            m_bPassedSocket_Exist && 
+                            (m_nSocketNum_forFailedSocket_Align != -1) &&
                             m_bRetryAlignSucess == false)            //  가공을 건너 뛴 Socket 이 있고, 건너 뛴 Socket 보정을 위한 Align Socket 위치 번호가 있을 경우
                         {
-                            string m_strTemp = string.Format("Socket Align 실패한 Socket 이 있음. Align 재시도를 위한 Socket 번호1 : {0}", m_nSocketNum_forFailedSocket_Align);
+                            string m_strTemp = string.Format("Socket Align 실패한 Socket 이 있음. " +
+                                "Align 재시도를 위한 Socket 번호1 : {0}", m_nSocketNum_forFailedSocket_Align);
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
                             nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;                 //  분할 영역 Drilling 작업 시작
                         }
-                        else if ((m_stThruHole_SocketData_ProcessingFlag != null) &&
+                        else if (m_AlignMode == AlignMode.Socket && 
+                                (m_stThruHole_SocketData_ProcessingFlag != null) &&
                                 m_stThruHole_SocketData_ProcessingFlag.Length == 1 &&   // 한개가 아니고... hole이랑 갯수가 같을 수도 있는데.
                                 m_stThruHole_SocketData_ProcessingFlag[0].bProcessing == false &&
                                 m_bRetryAlignSucess == false)
@@ -42700,7 +42725,6 @@ namespace QMC.Common.Modules
                             var layerEnum = GetCurrentLayerEnum(m_LayerType);
                             int closestAlignedSocket = -1;
                             int groupCount = m_stLaserDrilling_SocketData[0].nGroup_Num;
-
                             for (int i = 0; i < groupCount; i++)
                             {
                                 var socket = DrillingManager.GetSocket(layerEnum, i);
@@ -42730,7 +42754,8 @@ namespace QMC.Common.Modules
                                 //return;
                             }
                         }
-                        else if ((m_stThruHole_SocketData_ProcessingFlag != null) &&
+                        else if (m_AlignMode == AlignMode.Socket && 
+                                (m_stThruHole_SocketData_ProcessingFlag != null) &&
                                 m_stThruHole_SocketData_ProcessingFlag.Length == m_stLaserDrilling_SocketData[0].nGroup_Num &&   
                                 m_stThruHole_SocketData_ProcessingFlag[0].bProcessing == false &&
                                 m_bRetryAlignSucess == false)
@@ -42740,7 +42765,6 @@ namespace QMC.Common.Modules
                             var layerEnum = GetCurrentLayerEnum(m_LayerType);
                             int closestAlignedSocket = -1;
                             int groupCount = m_stLaserDrilling_SocketData[0].nGroup_Num;
-
                             for (int i = 0; i < groupCount; i++)
                             {
                                 var socket = DrillingManager.GetSocket(layerEnum, i);
