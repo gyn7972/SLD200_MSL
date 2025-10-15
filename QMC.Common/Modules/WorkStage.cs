@@ -13660,18 +13660,15 @@ namespace QMC.Common.Modules
                             // NG Power가 아닌 OK로 처리.
                             if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                             {
-                                // GoldPowder Align 결과 존재 여부 확인
-                                bool bGoldPowderAlignResultExist =
-                                    Math.Abs(m_st4PointGoldpowderAlign_Result_LastSuccess.dCenterOffsetX) > 0.0001 ||
-                                    Math.Abs(m_st4PointGoldpowderAlign_Result_LastSuccess.dCenterOffsetY) > 0.0001 ||
-                                    Math.Abs(m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle) > 0.0001;
+                                
+                                //하나라도 0 이면 true이다.
+                                bool allZeroX = DrillingManager.HasAnyGoldOffsetXZero();
+                                bool allZeroY = DrillingManager.HasAnyGoldOffsetYZero();
+                                Log.Write("DrillStatus", $"GoldPowder Align 사용, OffsetX AllZero: {allZeroX}, OffsetY AllZero: {allZeroY}");
 
-                                if (bGoldPowderAlignResultExist)
+                                if (allZeroX && allZeroY)
                                 {
-                                    if (Equipment.m_GoldPowderOffsetX == 0 && Equipment.m_GoldPowderOffsetY == 0)
-                                    {
-                                        bSocketAlignOK = true;
-                                    }
+                                    bSocketAlignOK = true;
                                 }
                             }
 
