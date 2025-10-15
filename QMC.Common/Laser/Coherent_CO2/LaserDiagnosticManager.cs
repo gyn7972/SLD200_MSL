@@ -71,7 +71,7 @@ namespace QMC.Common.Laser.Coherent_CO2
                 string resp = _client.ReadAscii();
                 if (string.IsNullOrEmpty(resp))
                 {
-                    RaiseAlarm("No response for status request.");
+                    //RaiseAlarm("No response for status request.");
                     return null;
                 }
 

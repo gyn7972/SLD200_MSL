@@ -143,6 +143,7 @@ namespace SLD200_MSL
 
         private readonly object _viewerLock = new object();
         // ====================== Viewer 렌더링 요청 함수 ======================
+
         private void SafeInvalidateViewer(Control viewer)
         {
             if (viewer == null || !viewer.IsHandleCreated || viewer.IsDisposed)
@@ -164,8 +165,28 @@ namespace SLD200_MSL
             {
                 viewer.BeginInvoke(new System.Action(() =>
                 {
-                    if (!viewer.IsDisposed)
-                        viewer.Invalidate();
+                    if (viewer.IsDisposed) return;
+
+                    // 🔧 SiriusViewerForm의 View 렌더(1회만)
+                    if (viewer is SiriusViewerForm siriusForm)
+                    {
+                        var doc = siriusForm.Document;
+                        if (doc != null && doc.Views != null && doc.Views.Count > 0)
+                        {
+                            try
+                            {
+                                // 마지막 View만 강제 Render (전체 렌더 방지)
+                                var v = doc.Views.Last();
+                                v.Render();
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Write("SiriusViewer", "Render", "예외 발생: " + ex.Message);
+                            }
+                        }
+                    }
+
+                    viewer.Invalidate(); // 이건 빠르게 화면 업데이트만
                 }));
             }
             catch { }
@@ -181,16 +202,91 @@ namespace SLD200_MSL
                             _viewerRefreshPending = false;
                             _lastViewerRefreshTime = DateTime.Now;
                         }
+
                         try
                         {
                             if (viewer.IsHandleCreated && !viewer.IsDisposed)
-                                viewer.BeginInvoke(new System.Action(() => viewer.Invalidate()));
+                            {
+                                viewer.BeginInvoke(new System.Action(() =>
+                                {
+                                    if (viewer is SiriusViewerForm siriusForm)
+                                    {
+                                        var doc = siriusForm.Document;
+                                        if (doc != null && doc.Views != null && doc.Views.Count > 0)
+                                        {
+                                            try
+                                            {
+                                                // 타이머에서 지연 렌더도 동일하게 마지막 뷰만 수행
+                                                var v = doc.Views.Last();
+                                                v.Render();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Log.Write("SiriusViewer", "TimerRender", "예외 발생: " + ex.Message);
+                                            }
+                                        }
+                                    }
+
+                                    viewer.Invalidate();
+                                }));
+                            }
                         }
                         catch { }
                     }
                 }, null, 100, 100);
             }
         }
+
+
+
+        //private void SafeInvalidateViewer(Control viewer)
+        //{
+        //    if (viewer == null || !viewer.IsHandleCreated || viewer.IsDisposed)
+        //        return;
+
+        //    lock (_viewerLock)
+        //    {
+        //        var now = DateTime.Now;
+        //        if (now - _lastViewerRefreshTime < _viewerRefreshInterval)
+        //        {
+        //            _viewerRefreshPending = true;
+        //            return;
+        //        }
+        //        _lastViewerRefreshTime = now;
+        //        _viewerRefreshPending = false;
+        //    }
+
+        //    try
+        //    {
+        //        viewer.BeginInvoke(new System.Action(() =>
+        //        {
+        //            if (!viewer.IsDisposed)
+        //                viewer.Invalidate();
+        //        }));
+        //    }
+        //    catch { }
+
+        //    if (_viewerRefreshTimer == null)
+        //    {
+        //        _viewerRefreshTimer = new System.Threading.Timer(_ =>
+        //        {
+        //            if (_viewerRefreshPending)
+        //            {
+        //                lock (_viewerLock)
+        //                {
+        //                    _viewerRefreshPending = false;
+        //                    _lastViewerRefreshTime = DateTime.Now;
+        //                }
+        //                try
+        //                {
+        //                    if (viewer.IsHandleCreated && !viewer.IsDisposed)
+        //                        viewer.BeginInvoke(new System.Action(() => viewer.Invalidate()));
+        //                }
+        //                catch { }
+        //            }
+        //        }, null, 100, 100);
+        //    }
+        //}
 
         private int _isClearingViewer = 0;
         private void ClearViewerDocument()
@@ -1163,12 +1259,12 @@ namespace SLD200_MSL
             {
                 m_NeedDocumentSync = false;
                 // 장비가 가공 중이면 동기화 연기
-                if (workStage != null &&
-                    workStage.m_nLaserDrilling_MainStep != (int)WorkStage.LaserDrilling_Step.None)
-                {
-                    m_NeedDocumentSync = true;
-                    return;
-                }
+                //if (workStage != null &&
+                //    workStage.m_nLaserDrilling_MainStep != (int)WorkStage.LaserDrilling_Step.None)
+                //{
+                //    m_NeedDocumentSync = true;
+                //    return;
+                //}
 
                 try
                 {
@@ -4299,6 +4395,10 @@ namespace SLD200_MSL
                     if (Document.Views.Count > 0)
                     {
                         var view = Document.Views.Last();
+
+                        //SiriusViewer_Main.GLcontrol.Invalidate();
+                        //SiriusViewer_Main.GLcontrol.Update();
+                        //view.Render();
 
                         view.Dp2Lp(e.Location, out float dX, out float dY);
                         XyzCoordinate ptReal = new XyzCoordinate(dX, dY, 0);
