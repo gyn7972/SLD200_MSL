@@ -2178,6 +2178,7 @@ namespace QMC.Common.Q_Sequence
                         // 오프셋 값 가져오기
                         double offsetX = Equipment.Scanner_Vision_Offset_Setting_X;
                         double offsetY = Equipment.Scanner_Vision_Offset_Setting_Y;
+
                         if (bCalPosition)
                         {
                             // Retry 조건 체크
@@ -2198,8 +2199,7 @@ namespace QMC.Common.Q_Sequence
                         {
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Complete;
                         }
-
-
+                            
                     }
                     break;
 
