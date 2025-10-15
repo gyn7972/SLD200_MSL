@@ -716,6 +716,17 @@ namespace SLD200_MSL
                     }
                 }
 
+                //button_MotorMove_Stage_Vacuum
+                bool bStageVac = workStage.workStageParameter.DI_Laser_CalSheet_Vacuum_Check();
+                if (bStageVac)
+                {
+                    button_Setup_ScannerCal_Vacuum.BackColor = Color.Lime;
+                }
+                else
+                {
+                    button_Setup_ScannerCal_Vacuum.BackColor = Color.LightGray;
+                }
+
                 //// Option Status - 화면 전환되면 해야겠다..
                 //if (textBox_Setup_Option_Offset_ScannerFineCam_X.Text != Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString())
                 //{
@@ -3335,7 +3346,7 @@ namespace SLD200_MSL
                         break;
 
                     case (int)FlatMeasureList.Auto_Stage:
-                        m_strTemp = "[User1] Flatness 측정을 시작하시겠습니까?";
+                        m_strTemp = "[Auto] Flatness 측정을 시작하시겠습니까?";
                         break;
 
                     case (int)FlatMeasureList.User2:
@@ -4823,6 +4834,45 @@ namespace SLD200_MSL
             else
             {
                 Equipment.Scanner_Calibration_AcrylicPanel_Enable = false;
+            }
+        }
+
+        private void button_Setup_ScannerCal_Vacuum_Click(object sender, EventArgs e)
+        {
+            Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_Setup_ScannerCal_Vacuum_Click");
+
+            if (workStage.workStageParameter.DI_Laser_CalSheet_Vacuum_Check())
+            {
+                workStage.workStageParameter.DO_Laser_CalSheet_Vacuum(false);
+                Thread.Sleep(100);
+                workStage.workStageParameter.DO_Laser_CalSheet_Blow(true);
+                Thread.Sleep(500); // 1초 대기
+                workStage.workStageParameter.DO_Laser_CalSheet_Blow(false);
+            }
+            else
+            {
+
+                workStage.workStageParameter.DO_Laser_CalSheet_Blow(false);
+                Thread.Sleep(100);
+                workStage.workStageParameter.DO_Laser_CalSheet_Vacuum(true);
+            }
+        }
+
+        private void checkBox_Setup_Option_SocketHeight_Batch_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.Machine_SocketHeight_Batch_Use = false;
+            if (checkBox_Setup_Option_SocketHeight_Batch.Checked)
+            {
+                if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                {
+                    var mb = new MessageBoxOk();
+                    mb.ShowDialog("Information!", "GoldPowder 사용 시 SocketAlign 동시 사용 불가 합니다.");
+                    Equipment.Machine_SocketVision_Batch_Use = false;
+                }
+            }
+            else
+            {
+                Equipment.Machine_SocketHeight_Batch_Use = false;
             }
         }
     }

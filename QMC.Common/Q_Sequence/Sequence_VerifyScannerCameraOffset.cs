@@ -72,7 +72,7 @@ namespace QMC.Common.Q_Sequence
 
             //이거는 우선.. 동작 처음 시작시 물어보고 진행하자. 
             //1.	AskUserForCalibrationPlateChange 사용자에게 캘판 변경 여부를 묻는 함수입니다.
-            VerifyCalibrationAreaPos,           // 캘판 위치 확인
+            VerifyCalibrationAreaPos,           // 캔판 위치 확인
 
             MapDataChange_ScannerCalMap,                                //  Scanner Calibration 위치 Map Data 로 변경
             MapDataFlagCheck_ScannerCalMap,                             //  Scanner Calibration 위치 Map Data 로 변경되었는지 확인
@@ -134,6 +134,17 @@ namespace QMC.Common.Q_Sequence
         protected List<Task> listTask = new List<Task>();
         public bool _isMainStatusRunning = false; // 중복 실행 방지 플래그
         public bool m_MainTick_Start = false;
+        private CancellationTokenSource m_mainTickCts = null; // 안전 종료/재시작용
+
+        // 실행 상태 확인
+        public bool IsMainTickAlive
+        {
+            get
+            {
+                var t = m_taskTimer_Main_Tick;
+                return t != null && !(t.IsCanceled || t.IsCompleted || t.IsFaulted);
+            }
+        }
         private async void Timer_MainStatus_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -182,7 +193,88 @@ namespace QMC.Common.Q_Sequence
 
         #endregion
 
+        // 안전한 Task 시작/재시작 유틸
+        private void CleanupCompletedTasks()
+        {
+            for (int i = listTask.Count - 1; i >= 0; i--)
+            {
+                var t = listTask[i];
+                if (t == null || t.IsCompleted || t.IsCanceled || t.IsFaulted)
+                {
+                    try { t?.Dispose(); } catch { }
+                    listTask.RemoveAt(i);
+                }
+            }
+        }
 
+        private void StartMainTickLoop()
+        {
+            try { m_mainTickCts?.Cancel(); } catch { }
+            try { m_mainTickCts?.Dispose(); } catch { }
+            m_mainTickCts = new CancellationTokenSource();
+            var token = m_mainTickCts.Token;
+
+            CleanupCompletedTasks();
+
+            m_taskTimer_Main_Tick = Task.Factory.StartNew(() =>
+            {
+                var th = Thread.CurrentThread;
+                if (th.Name == null)
+                {
+                    try { th.Name = "m_taskTimer_VerifyScannerCameraOffset_Tick"; } catch { }
+                }
+
+                while (!token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        Thread.Sleep(20);
+
+                        if (isModuleClose)
+                            break;
+
+                        Timer_MainStatus_Tick(null, null);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write(ex);
+                        Console.WriteLine($"Error in m_taskTimer_VerifyScannerCameraOffset_Tick: {ex.Message}");
+                    }
+                }
+            }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+
+            listTask.Add(m_taskTimer_Main_Tick);
+
+            // 비정상 종료 시 자동 재시작
+            m_taskTimer_Main_Tick.ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                    Log.Write("VerifyScannerCameraOffset", Equipment.User_Name, $"Main tick faulted: {t.Exception?.GetBaseException().Message}");
+                else
+                    Log.Write("VerifyScannerCameraOffset", Equipment.User_Name, $"Main tick completed. Status={t.Status}");
+
+                if (!isModuleClose && !(m_mainTickCts?.IsCancellationRequested ?? true))
+                {
+                    StartMainTickLoop();
+                }
+            }, TaskScheduler.Default);
+        }
+
+        // 외부에서 수동 확인/재가동
+        public void EnsureMainTickRunning()
+        {
+            if (!IsMainTickAlive && !isModuleClose)
+            {
+                Log.Write("VerifyScannerCameraOffset", Equipment.User_Name, "Main tick not alive. Restarting...");
+                StartMainTickLoop();
+            }
+        }
+
+        // 선택: 명시적 중지
+        public void StopMainTickLoop()
+        {
+            try { m_mainTickCts?.Cancel(); } catch { }
+        }
         //생성자
         public Sequence_VerifyScannerCameraOffset()
         {
@@ -194,14 +286,16 @@ namespace QMC.Common.Q_Sequence
         {
             // 리소스 해제 로직이 필요하다면 여기에 작성
             isModuleClose = true;
+            try { m_mainTickCts?.Cancel(); } catch { }
             foreach (var task in listTask)
             {
-                task.Wait();
-                task.Dispose();
-
+                try { task?.Wait(1000); } catch { }
+                try { task?.Dispose(); } catch { }
             }
             listTask.Clear();
             m_taskTimer_Main_Tick = null;
+            try { m_mainTickCts?.Dispose(); } catch { }
+            m_mainTickCts = null;
         }
 
         #region Tick Count Check
@@ -256,23 +350,8 @@ namespace QMC.Common.Q_Sequence
 
 
             //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
-            m_taskTimer_Main_Tick = Task.Factory.StartNew(() =>
-            {
-                Thread.CurrentThread.Name = "m_taskTimer_VerifyScannerCameraOffset_Tick";
-
-                while (true)
-                {
-                    Thread.Sleep(20);
-
-                    if (isModuleClose)
-                    {
-                        break;
-                    }
-
-                    Timer_MainStatus_Tick(null, null);
-                }
-            });
-            listTask.Add(m_taskTimer_Main_Tick);
+            // 기존 StartNew 제거, 안전한 시작 함수 사용
+            StartMainTickLoop();
         }
 
         public void Start()
@@ -1244,7 +1323,7 @@ namespace QMC.Common.Q_Sequence
                             //        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.ScannerCalHeightValue_Get;
                             //    }
                             //}
-                            //else //Enable ; false 시에 안정화 시간 없이 값 읽어옴.
+                            //else //Enable ; false 시에 안정화 시간 없이 값 읽어오름.
                             //{
                             //    workStage.m_bSensorRequestPending = true;
                             //    workStage.m_bSensorResponseReady = false;
@@ -1279,8 +1358,8 @@ namespace QMC.Common.Q_Sequence
                         {
                             // Laser Height Sensor 값이 비정상적인 경우 알람 발생해야 할 것 같은데..
                             strTemp = string.Format("Laser Height Sensor 값이 비정상적입니다. (측정값: {0:F3})", workStage.m_dLaserHeightSensorSocket_Value);
-                            Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
                             //여기 들어오면 티칭 위치 바꿔야 함.
+                            Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
                             m_dZOffset_SocketHeightCheck = 0.0;
                         }
                         else
@@ -1320,7 +1399,6 @@ namespace QMC.Common.Q_Sequence
                             {
                                 nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                             }
-                            //nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                         }
 
                         double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dHeightOffsetScanner;
@@ -1366,7 +1444,6 @@ namespace QMC.Common.Q_Sequence
                                 {
                                     nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                                 }
-                                //nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                             }
 
                             double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dHeightOffsetScanner;
@@ -1381,10 +1458,10 @@ namespace QMC.Common.Q_Sequence
                             }
                             else if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > nVerifyScannerCameraOffsetTimeout)
                             {
-                                strTemp = string.Format("Stage Z 축, Socket 가공 Focus 조정 실패. (Timeout)");
+                                strTemp = string.Format("Stage Z 축, Socket 가공 Focus 조정 실패");
                                 Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
 
-                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
+                                m_VerifyScannerCameraOffsetStep = (int)VerifyScannerCameraOffset_Step.None;
                                 return workStage.AlarmPost(AlarmKey.eZAxisFail);
                             }
                         }
@@ -1445,7 +1522,7 @@ namespace QMC.Common.Q_Sequence
 
                 case (int)VerifyScannerCameraOffset_Step.CrossMark_MarkingStart:
                     {
-                        //  Cross Mark Marking 시작. //  Cross Mark Marking 함수 넣자.
+                        //  Cross Mark Marking 시작. //  Cross Mark 마킹 함수 넣자.
                         //float fieldsize = Equipment.Scanner_Calibration_FieldSize; //정사각형 Cal. X,Y Size 동일.
                         int nRow = Equipment.Scanner_Calibration_rowCount;
                         int nCol = Equipment.Scanner_Calibration_colCount;
@@ -1526,7 +1603,7 @@ namespace QMC.Common.Q_Sequence
                             strTemp = string.Format("Cross Mark Marking 실패");
                             Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
-                            return workStage.AlarmPost(AlarmKey.eRTC_FAIL);
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eRTC_FAIL);
 
                         }
                     }
@@ -1601,7 +1678,6 @@ namespace QMC.Common.Q_Sequence
                            workStage.IsWorkStage_Positions(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
                         {
                             Log.Write("VerifyScannerCameraOffset", "Scanner Calibration", "Stage XY축, 가공 Center 위치로 이동 완료.");
-                            Thread.Sleep(500); // 안정화 시간으로 500msec 줘보자. (비교)
 
                             TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.VisionCalHeight_ZOffset_Move;
@@ -1647,7 +1723,6 @@ namespace QMC.Common.Q_Sequence
                             {
                                 nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                             }
-                            //nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                         }
 
                         double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z + m_dHeightOffsetVision;
@@ -1688,7 +1763,6 @@ namespace QMC.Common.Q_Sequence
                             {
                                 nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                             }
-                            //nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
                         }
 
                         double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z + m_dHeightOffsetVision;
@@ -1806,7 +1880,7 @@ namespace QMC.Common.Q_Sequence
                                 Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset",
                                            $"마크를 찾을 수 없습니다. 재시도({m_MarkFindRetryCount}/{MAX_MARK_FIND_RETRY})"); 
 
-                                // 처음부터 재시도. ( 레이져 크로스하는 것부터 해야하니깐 )
+                                // 처음부터 재시도. ( 레이져 크로스하는 것부터 해야하니깜 )
                                 m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Start; 
                             }
                             else
@@ -1989,7 +2063,7 @@ namespace QMC.Common.Q_Sequence
                                                                 Equipment.Scanner_Vision_Offset_Setting_Y
                                                                 );
 
-                                    //  Scanner <-> FineCam Offset 적용 <- 검증 후에 적용하자.
+                                    //  Scanner <-> FineCam Offset 적용<- 검증 후에 적용하자.
                                     Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
                                     Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
                                     Equipment.Scanner_FineCam_Offset_Save();
@@ -2012,7 +2086,7 @@ namespace QMC.Common.Q_Sequence
                                                             Equipment.Scanner_Vision_Offset_Setting_Y
                                                             );
 
-                                strTemp = string.Format($"Cross Mark XY 위치가 허용 오차를 벗어남 (DeltaX: {m_deltaX}, DeltaY: {m_deltaY}, Allowable: {allowableXY})");
+                                strTemp = string.Format($"Cross Mark XY 위치가 허용 오차를 벗어남 (DeltaX: {m_deltaX}, DeltaY: {m_deltaY})");
                                 Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
 
                                 m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;

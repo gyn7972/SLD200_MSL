@@ -689,14 +689,18 @@ namespace QMC.Common.Modules
 
         public struct stLDULAxesPos
         {
+            //Loader
             public double LD_Transfer_X;                    //  Loader Transfer X
             public double LD_Transfer_Z;                    //  Loader Transfer Z
             public double LD_Stacker_Z0;                    //  Loader Right Port
             public double LD_Stacker_Z1;                    //  Loader Left Port
+            //M-Aligner
             public double MAligner_X;                       //  M-Aligner X
             public double MAligner_Y;                       //  M-Aligner Y
-            public double UL_Transfer_X;                    //  Loader Transfer X
-            public double UL_Transfer_Z;                    //  Loader Transfer Z
+
+            //Unloader
+            public double ULD_Transfer_X;                    //  Loader Transfer X
+            public double ULD_Transfer_Z;                    //  Loader Transfer Z
             public double UL_Stacker_Z0;                    //  Unloader Right Port
             public double UL_Stacker_Z1;                    //  Unloader Left Port
         }
@@ -1376,8 +1380,8 @@ namespace QMC.Common.Modules
                 stLDULTeachingPos[i].LD_Stacker_Z1 = 0;
                 stLDULTeachingPos[i].MAligner_X = 0;
                 stLDULTeachingPos[i].MAligner_Y = 0;
-                stLDULTeachingPos[i].UL_Transfer_X = 0;
-                stLDULTeachingPos[i].UL_Transfer_Z = 0;
+                stLDULTeachingPos[i].ULD_Transfer_X = 0;
+                stLDULTeachingPos[i].ULD_Transfer_Z = 0;
                 stLDULTeachingPos[i].UL_Stacker_Z0 = 0;
                 stLDULTeachingPos[i].UL_Stacker_Z1 = 0;
 
@@ -6612,7 +6616,8 @@ namespace QMC.Common.Modules
                         if (Equipment.Machine_VacuumSensor_Enable)
                         {
                             //  여기서 Module 을 정상적으로 내려놓았는지 다시 체크                            
-                            if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
+                            if (workStage.workStageParameter.DI_Stage_Vacuum_Check() &&
+                               (workStage.m_dEPRO_Value < Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
                             {
                                 //  Loader 에서 Pick Up 한 Port 번호를 Work Stage 에 넘겨준다.
                                 Equipment.AUTORUN_WorkStage_PickUpPort = Equipment.AUTORUN_Loader_PickUpPort;
@@ -9249,10 +9254,10 @@ namespace QMC.Common.Modules
                 stLDULTeachingPos[i].MAligner_Y = Equipment.ToDouble(temp.ToString());
                 //  UL Transfer X
                 NativeMethods.GetPrivateProfileString(strTemp, "ULTransferX", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].UL_Transfer_X = Equipment.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].ULD_Transfer_X = Equipment.ToDouble(temp.ToString());
                 //  UL Transfer Z
                 NativeMethods.GetPrivateProfileString(strTemp, "ULTransferZ", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].UL_Transfer_Z = Equipment.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].ULD_Transfer_Z = Equipment.ToDouble(temp.ToString());
                 //  UL Stacker Z0
                 NativeMethods.GetPrivateProfileString(strTemp, "ULStackerZ0", "0", temp, 255, strFIle);
                 stLDULTeachingPos[i].UL_Stacker_Z0 = Equipment.ToDouble(temp.ToString());
@@ -9297,9 +9302,9 @@ namespace QMC.Common.Modules
                 //  M-Aligner Y
                 NativeMethods.WritePrivateProfileString(strTemp, "MAlignerY", stLDULTeachingPos[i].MAligner_Y.ToString(), strFIle);
                 //  UL Transfer X
-                NativeMethods.WritePrivateProfileString(strTemp, "ULTransferX", stLDULTeachingPos[i].UL_Transfer_X.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "ULTransferX", stLDULTeachingPos[i].ULD_Transfer_X.ToString(), strFIle);
                 //  UL Transfer Z
-                NativeMethods.WritePrivateProfileString(strTemp, "ULTransferZ", stLDULTeachingPos[i].UL_Transfer_Z.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "ULTransferZ", stLDULTeachingPos[i].ULD_Transfer_Z.ToString(), strFIle);
                 //  UL Stacker Z0
                 NativeMethods.WritePrivateProfileString(strTemp, "ULStackerZ0", stLDULTeachingPos[i].UL_Stacker_Z0.ToString(), strFIle);
                 //  UL Stacker Z1

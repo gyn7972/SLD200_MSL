@@ -120,8 +120,8 @@ namespace QMC.Common.Recipe
     {
         // (추가) GoldPowder 소켓별 포지션 리스트
         public List<GoldPowderSocketPos> GoldPowderSocketPosList { get; private set; } = new List<GoldPowderSocketPos>();
+        public List<GoldPowderSocketPos> GoldPowderSocketPosListOffset { get; private set; } = new List<GoldPowderSocketPos>();
 
-        // (추가) 헬퍼
         public void EnsureGoldPowderSocketPosCount(int count)
         {
             while (GoldPowderSocketPosList.Count < count)
@@ -142,6 +142,28 @@ namespace QMC.Common.Recipe
             GoldPowderSocketPosList[socketIndex].X[idx] = x;
             GoldPowderSocketPosList[socketIndex].Y[idx] = y;
         }
+
+        public void EnsureGoldPowderSocketPosCount_Offset(int count)
+        {
+            while (GoldPowderSocketPosListOffset.Count < count)
+                GoldPowderSocketPosListOffset.Add(new GoldPowderSocketPos());
+        }
+        public GoldPowderSocketPos GetGoldPowderSocketPos_Offset(int socketIndex)
+        {
+            if (socketIndex < 0 || socketIndex >= GoldPowderSocketPosListOffset.Count)
+                return null;
+            return GoldPowderSocketPosListOffset[socketIndex];
+        }
+        public void SetGoldPowderPos_Offset(int socketIndex, int posIndex01to04, double x, double y)
+        {
+            if (posIndex01to04 < 1 || posIndex01to04 > 4) return;
+            if (socketIndex < 0) return;
+            EnsureGoldPowderSocketPosCount_Offset(socketIndex + 1);
+            int idx = posIndex01to04 - 1;
+            GoldPowderSocketPosListOffset[socketIndex].X[idx] = x;
+            GoldPowderSocketPosListOffset[socketIndex].Y[idx] = y;
+        }
+
 
 
 
@@ -211,7 +233,11 @@ namespace QMC.Common.Recipe
         public double dGoldPowderPos2X; public double dGoldPowderPos2Y;
         public double dGoldPowderPos3X; public double dGoldPowderPos3Y;
         public double dGoldPowderPos4X; public double dGoldPowderPos4Y;
-        
+        public double dGoldPowderPos1XOffset; public double dGoldPowderPos1YOffset;
+        public double dGoldPowderPos2XOffset; public double dGoldPowderPos2YOffset;
+        public double dGoldPowderPos3XOffset; public double dGoldPowderPos3YOffset;
+        public double dGoldPowderPos4XOffset; public double dGoldPowderPos4YOffset;
+
 
         public bool SaveToIni(string path)
         {
@@ -318,6 +344,15 @@ namespace QMC.Common.Recipe
             NativeMethods.WritePrivateProfileString("GoldPowder", "Pos3Y", dGoldPowderPos3Y.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "Pos4X", dGoldPowderPos4X.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "Pos4Y", dGoldPowderPos4Y.ToString(), path);
+            // 위치 4개 저장
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos1X", dGoldPowderPos1XOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos1Y", dGoldPowderPos1YOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos2X", dGoldPowderPos2XOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos2Y", dGoldPowderPos2YOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos3X", dGoldPowderPos3XOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos3Y", dGoldPowderPos3YOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos4X", dGoldPowderPos4XOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos4Y", dGoldPowderPos4YOffset.ToString(), path);
 
             // === (추가) 소켓별 GoldPowder 포지션 저장 ===
             NativeMethods.WritePrivateProfileString("GoldPowderSocketPos", "Count", GoldPowderSocketPosList.Count.ToString(), path);
@@ -325,6 +360,20 @@ namespace QMC.Common.Recipe
             {
                 var gp = GoldPowderSocketPosList[s];
                 string section = $"GoldPowderSocket_{s}";
+                for (int p = 0; p < 4; p++)
+                {
+                    int posNo = p + 1;
+                    NativeMethods.WritePrivateProfileString(section, $"Pos{posNo}X", gp.X[p].ToString(), path);
+                    NativeMethods.WritePrivateProfileString(section, $"Pos{posNo}Y", gp.Y[p].ToString(), path);
+                }
+            }
+
+            // === (추가) 소켓별 GoldPowder Offset 포지션 저장 ===
+            NativeMethods.WritePrivateProfileString("GoldPowderSocketPosOffset", "Count", GoldPowderSocketPosListOffset.Count.ToString(), path);
+            for (int s = 0; s < GoldPowderSocketPosListOffset.Count; s++)
+            {
+                var gp = GoldPowderSocketPosListOffset[s];
+                string section = $"GoldPowderSocketOffset_{s}";
                 for (int p = 0; p < 4; p++)
                 {
                     int posNo = p + 1;
@@ -683,6 +732,24 @@ namespace QMC.Common.Recipe
                 NativeMethods.GetPrivateProfileString("GoldPowder", "Pos4Y", "0", sb, sb.Capacity, path); 
                 data.dGoldPowderPos4Y = Equipment.ToDouble(sb.ToString());
 
+                // 위치 4개 로드
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos1X", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos1XOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos1Y", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos1YOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos2X", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos2XOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos2Y", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos2YOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos3X", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos3XOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos3Y", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos3YOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos4X", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos4XOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos4Y", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos4YOffset = Equipment.ToDouble(sb.ToString());
+
                 // === (추가) 소켓별 GoldPowder 포지션 로드 ===
                 NativeMethods.GetPrivateProfileString("GoldPowderSocketPos", "Count", "0", sb, sb.Capacity, path);
                 int socketCount = Equipment.ToInt(sb.ToString());
@@ -712,6 +779,37 @@ namespace QMC.Common.Recipe
                     legacy.X[2] = data.dGoldPowderPos3X; legacy.Y[2] = data.dGoldPowderPos3Y;
                     legacy.X[3] = data.dGoldPowderPos4X; legacy.Y[3] = data.dGoldPowderPos4Y;
                     data.GoldPowderSocketPosList.Add(legacy);
+                }
+
+                // === (추가) 소켓별 GoldPowder 포지션 로드 ===
+                NativeMethods.GetPrivateProfileString("GoldPowderSocketPosOffset", "Count", "0", sb, sb.Capacity, path);
+                int socketCountOffset = Equipment.ToInt(sb.ToString());
+                if (socketCountOffset > 0)
+                {
+                    for (int s = 0; s < socketCountOffset; s++)
+                    {
+                        string section = $"GoldPowderSocketOffset_{s}";
+                        GoldPowderSocketPos gp = new GoldPowderSocketPos();
+                        for (int p = 0; p < 4; p++)
+                        {
+                            int posNo = p + 1;
+                            NativeMethods.GetPrivateProfileString(section, $"Pos{posNo}X", "0", sb, sb.Capacity, path);
+                            gp.X[p] = Equipment.ToDouble(sb.ToString());
+                            NativeMethods.GetPrivateProfileString(section, $"Pos{posNo}Y", "0", sb, sb.Capacity, path);
+                            gp.Y[p] = Equipment.ToDouble(sb.ToString());
+                        }
+                        data.GoldPowderSocketPosListOffset.Add(gp);
+                    }
+                }
+                else
+                {
+                    // (마이그레이션) 기존 단일 전역 포지션을 Socket 0 에 넣는다.
+                    GoldPowderSocketPos legacy = new GoldPowderSocketPos();
+                    legacy.X[0] = data.dGoldPowderPos1XOffset; legacy.Y[0] = data.dGoldPowderPos1YOffset;
+                    legacy.X[1] = data.dGoldPowderPos2XOffset; legacy.Y[1] = data.dGoldPowderPos2YOffset;
+                    legacy.X[2] = data.dGoldPowderPos3XOffset; legacy.Y[2] = data.dGoldPowderPos3YOffset;
+                    legacy.X[3] = data.dGoldPowderPos4XOffset; legacy.Y[3] = data.dGoldPowderPos4YOffset;
+                    data.GoldPowderSocketPosListOffset.Add(legacy);
                 }
 
             }

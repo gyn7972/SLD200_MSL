@@ -1944,8 +1944,8 @@ namespace SLD200_MSL
                 }
                 else                                //  Unloader
                 {
-                    loader.stLDULTeachingPos[m_nIndex].UL_Transfer_X = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferX.Text);
-                    loader.stLDULTeachingPos[m_nIndex].UL_Transfer_Z = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].ULD_Transfer_X = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferX.Text);
+                    loader.stLDULTeachingPos[m_nIndex].ULD_Transfer_Z = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferZ.Text);
                     loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z0 = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
                     loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z1 = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
                 }
@@ -2073,8 +2073,8 @@ namespace SLD200_MSL
                     }
 
                     //  데이터 표시
-                    textBox_Config_LDUL_TeachingPos_TransferX.Text = loader.stLDULTeachingPos[m_nIndex].UL_Transfer_X.ToString();
-                    textBox_Config_LDUL_TeachingPos_TransferZ.Text = loader.stLDULTeachingPos[m_nIndex].UL_Transfer_Z.ToString();
+                    textBox_Config_LDUL_TeachingPos_TransferX.Text = loader.stLDULTeachingPos[m_nIndex].ULD_Transfer_X.ToString();
+                    textBox_Config_LDUL_TeachingPos_TransferZ.Text = loader.stLDULTeachingPos[m_nIndex].ULD_Transfer_Z.ToString();
                     textBox_Config_LDUL_TeachingPos_RPortZ.Text = loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z0.ToString();
                     textBox_Config_LDUL_TeachingPos_LPortZ.Text = loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z1.ToString();
                     textBox_Config_LDUL_TeachingPos_MAlignerX.Text = "---";
@@ -2255,9 +2255,10 @@ namespace SLD200_MSL
             int nPosIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
             if (nPosIndex >= 0)
             {
-                //공용척 사용시.
                 double dTeachingPosX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X);
                 double dTeachingPosY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y);
+
+                //공용척 사용시.
                 if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
                 {
                     if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
@@ -2276,6 +2277,34 @@ namespace SLD200_MSL
                         dTeachingPosY = Equipment.StageOffset_forDrilling_Y_MSL;
                     }
                 }
+                else
+                {
+                    if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_Scanner_CalPos)
+                    {
+                        var mb = new MessageBoxYesNo();
+                        if (DialogResult.Yes == mb.ShowDialog("Question ?", "현재 Fine Vision 위치에서 티칭 중 이십니까?"))
+                        {
+                            double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                            double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                            double lfTargetX = 0.0;
+                            double lfTargetY = 0.0;
+
+                            if (Equipment.Machine_ScannerToFineCamOffset)
+                            {
+                                lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + dScannerToFineCamX;
+                                lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + dScannerToFineCamY;
+                            }
+                            else
+                            {
+                                lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                                lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                            }
+                            dTeachingPosX = lfTargetX;
+                            dTeachingPosY = lfTargetY;
+                        }
+                    }
+                }
+
                 textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", dTeachingPosX.ToString()); //dTeachingPosX.ToString();
                 textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", dTeachingPosY.ToString()); //dTeachingPosY.ToString();
 
@@ -2944,7 +2973,7 @@ namespace SLD200_MSL
             //  Target 위치 계산
             double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
             double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
-            if (Machine_ScannerToFineCamOffset)
+            if (Equipment.Machine_ScannerToFineCamOffset)
             {
                 lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - dScannerToFineCamX;
                 lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - dScannerToFineCamY;
@@ -3066,7 +3095,7 @@ namespace SLD200_MSL
             //  Target 위치 계산
             double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
             double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
-            if (Machine_ScannerToFineCamOffset)
+            if (Equipment.Machine_ScannerToFineCamOffset)
             {
                 lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + dScannerToFineCamX;
                 lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + dScannerToFineCamY;
@@ -5620,7 +5649,7 @@ namespace SLD200_MSL
                 double m_dSpeedMag = 2.0;
 
                 workStage.MC_Func.MC_MovePosition((int)Unloader.nAxis.TR_Z,
-                                    loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z,
+                                    loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z,
                                     m_dSpeed,
                                     m_dSpeed * m_dSpeedMag,
                                     m_dSpeed * m_dSpeedMag);

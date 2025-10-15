@@ -75,9 +75,6 @@ namespace QMC.Common
         #endregion
 
         public static AlignMode m_AlignMode = AlignMode.Socket;
-
-
-
         public class InitDeviceStatus
         {
             public bool MotionIo { get; set; }
@@ -1069,6 +1066,22 @@ namespace QMC.Common
         public static bool m_bMainProcessStatus_UL_Module_PortPutDown_Complete { set; get; } = false;       //  Unloader Port 에 Module Put Down 완료
 
 
+
+        // Gold Powder Align 결과가 이번 사이클에서 유효하게 생성되었는지 여부
+        public static bool GoldPowderAlign_ResultValid { get; set; } = false;
+
+        // 필요 시 사용: 소켓/사이클 시작 시 초기화
+        public static void GoldPowderAlignResult_Reset()
+        {
+            GoldPowderAlign_ResultValid = false;
+            m_GoldPowderOffsetX = 0.0;
+            m_GoldPowderOffsetY = 0.0;
+        }
+
+        public static double m_GoldPowderOffsetX { set; get; } = 0.0;            //  Gold Powder Offset X
+        public static double m_GoldPowderOffsetY { set; get; } = 0.0;            //  Gold Powder Offset Y
+
+
         // Serial Number 마킹 시 증가되는 Count 확인용. (프로그램 재시작, Count Clear 시에는 초기화 됨)
         // 무조건 1번 부터 시작.
         public static int m_nSerialNumberMarkingCount = 1;            //  Serial Number 마킹 Count
@@ -1538,7 +1551,7 @@ namespace QMC.Common
             //stageLoader.Create();
             //Modules.Add(stageLoader);
 
-            CommonModule common = CommonModule.Instance;
+             CommonModule common = CommonModule.Instance;
             common.Create();
             Modules.Add(common);
 
