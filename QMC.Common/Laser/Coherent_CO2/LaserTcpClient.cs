@@ -76,7 +76,7 @@ namespace QMC.Common.Laser.Coherent_CO2
             }
         }
 
-        public string ReadAscii(int timeoutMs = 1500)
+        public string ReadAscii(int timeoutMs = 3000)
         {
             if (_stream == null)
                 return null;

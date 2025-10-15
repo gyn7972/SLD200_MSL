@@ -95,6 +95,8 @@ namespace QMC.Common.Modules
         public DustCollectorController DustCollector_Lower { get; private set; } = null;
 
         public LaserDiagnosticManager LaserCO2Manager { get; set; }
+        public ControllerStatus LaserCO2Status { get; private set; } = null;
+        public List<LaserFault> LaserCO2Faults { get; private set; } = null;
 
         //  레시피 변경 시 위치값을 갱신하기 위해
         public bool m_bParameterSetting_PosData_Reload { set; get; }            //  위치 데이터 다시 로드
@@ -591,17 +593,20 @@ namespace QMC.Common.Modules
                                 {
                                     Log.Write("LaserCO2", "Status", status.ToString());
 
-                                    if (status.SystemFault || status.Interlock || status.OverTemp)
+                                    //if (status.SystemFault || status.Interlock || status.OverTemp)
+                                    if (status.SystemFault || status.OverTemp)
                                     {
                                         Log.Write("LaserCO2", "Status", "⚠ Fault Detected!");
-
                                         // 예: AlarmPost(AlarmKey.LaserFaultDetected, "CO₂ Laser fault 발생");
                                     }
+
+                                    LaserCO2Status = status;
                                 }
 
                                 var faults = LaserCO2Manager.GetFaults();
                                 if (faults != null && faults.Count > 0)
                                 {
+                                    LaserCO2Faults = faults;
                                     foreach (var f in faults)
                                     {
                                         Log.Write("LaserCO2", "Fault", f.ToString());

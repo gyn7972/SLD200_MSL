@@ -1177,7 +1177,8 @@ namespace QMC.Common.Modules
 
             SoftLimitFail,
 
-            LastAlarm = 3999
+            LastAlarm = 3999,
+            Laser_CO2_System_Fault = 4000
         }
         protected override void InitAlarm()
         {
@@ -1827,6 +1828,14 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.SoftLimitFail;
             alarm.Title = "Motor";
             alarm.Cause = "Motor SoftLimitFail.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Laser_CO2_System_Fault;
+            alarm.Title = "Laser_CO2_System_Fault";
+            alarm.Cause = "Laser CO2 System Fault 발생하였습니다. Laser 상태 확인 바랍니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);

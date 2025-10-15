@@ -852,7 +852,86 @@ namespace SLD200_MSL
 
                 if (workStage.workStageParameter.DI_Laser_System_Fault())
                 {
-                    label_Config_Laser_Laser_warning.Text = "Laser System Fault";
+                    label_Config_Laser_Laser_warning.Text = "Laser Status(IO) :Laser System Fault";
+                    label_Config_Laser_Laser_warning.ForeColor = Color.Red;
+                    workStage.AlarmPost(WorkStage.AlarmKey.Laser_CO2_System_Fault);
+                }
+                else
+                {
+                    label_Config_Laser_Laser_warning.Text = "Laser Status(IO) : -----";
+                }
+
+                    var StatusLaser = bds.LaserCO2Status;
+                var FaultLaser = bds.LaserCO2Faults;
+
+                if(StatusLaser != null)
+                {
+                    bool bSystemFault = StatusLaser.SystemFault;
+                    bool bLaserEnable = StatusLaser.Enable;
+                    bool bOverTemp = StatusLaser.OverTemp;
+                    double dVoltage48V = StatusLaser.Voltage48V;
+                    double dLaserTemp = StatusLaser.LaserTemp;
+                    double dShutterTemp = StatusLaser.ShutterTemp;
+                    double dPowerWatt = StatusLaser.PowerWatt;
+
+                    if(bSystemFault)
+                    {
+                        label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser System Fault";
+                        label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
+
+                        if(FaultLaser != null) 
+                        {
+                            if (FaultLaser != null && FaultLaser.Count > 0)
+                            {
+                                foreach (var f in FaultLaser)
+                                {
+                                    label_Config_Laser_Laser_warning_Code_Comm.Text = "Error Code(Comm): " + f.ToString();
+                                }
+                            }
+                        }
+                        workStage.AlarmPost(WorkStage.AlarmKey.Laser_CO2_System_Fault);
+                    }
+                    else if (bLaserEnable == false)
+                    {
+                        label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser Not Enable";
+                        label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
+                    }
+                    else if (bOverTemp)
+                    {
+                        label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser Over Temperature";
+                        label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
+                    }
+                    else if (dVoltage48V < 48.0)
+                    {
+                        label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser 48V Under Voltage";
+                        label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
+                    }
+                    else if (dLaserTemp > 30.0)
+                    {
+                        label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser Head Over Temperature";
+                        label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
+                    }
+                    //else if (dShutterTemp > 45.0)
+                    //{
+                    //    label_Config_Laser_Laser_warning.Text = "Laser Shutter Over Temperature";
+                    //    label_Config_Laser_Laser_warning.ForeColor = Color.Red;
+                    //}
+                    //else if (dPowerWatt < 5.0)
+                    //{
+                    //    label_Config_Laser_Laser_warning.Text = "Laser Low Power";
+                    //    label_Config_Laser_Laser_warning.ForeColor = Color.Red;
+                    //}
+                    else
+                    {
+                        label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Normal";
+                        label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Lime;
+                    }
+                    //label_Config_Laser_Laser_warning_Comm.Text = StatusLaser.ToString();
+                }
+                else
+                {
+                    label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): -----";
+                    label_Config_Laser_Laser_warning_Code_Comm.Text = "Error Code(Comm): 0";
                 }
             }
 

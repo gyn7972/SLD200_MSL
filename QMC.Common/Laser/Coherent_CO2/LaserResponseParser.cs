@@ -30,9 +30,9 @@ namespace QMC.Common.Laser.Coherent_CO2
                 if (parts.Length < 10 || !parts[0].StartsWith("085"))
                     return st;
 
-                st.Voltage48V = ToInt(parts, 3) / 10.0;
-                st.LaserTemp = ToInt(parts, 4) / 10.0;
-                st.ShutterTemp = ToInt(parts, 5) / 10.0;
+                st.Voltage48V = ToInt(parts, 3) / 1.0;
+                st.LaserTemp = ToInt(parts, 4) / 1.0;
+                st.ShutterTemp = ToInt(parts, 5) / 1.0;
                 st.PowerWatt = ToInt(parts, 10);
 
                 byte status1 = (byte)ToInt(parts, 7);
