@@ -15,6 +15,12 @@ namespace SLD200_MSL
         [STAThread]
         static void Main()
         {
+
+            Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(exceptionDump);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+
             Application.SetCompatibleTextRenderingDefault(false);
             Equipment.CreateInstance("SLD200_MSL");
             Application.EnableVisualStyles();
@@ -22,6 +28,15 @@ namespace SLD200_MSL
             Equipment.formMain = new FormMain();
             Application.Run(Equipment.formMain);
             Equipment.Close();
+        }
+
+        static void exceptionDump(object sender, System.Threading.ThreadExceptionEventArgs args)
+        {
+            MinidumpHelp.Minidump.install_self_mini_dump();
+        }
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            MinidumpHelp.Minidump.install_self_mini_dump();
         }
     }
 }

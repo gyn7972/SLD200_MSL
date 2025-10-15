@@ -1058,6 +1058,7 @@ namespace SLD200_MSL
                 if (SiriusViewer_Main.InvokeRequired)
                 {
                     this.Invoke(new System.Action(() =>
+                    //SiriusViewer_Main.Invoke(new System.Action(() =>
                     {
                         //화면에 출력.
                         SiriusViewer_Main.Document = (IDocument)Equipment.GetEqpSiriusViewerDocument();
@@ -1066,7 +1067,6 @@ namespace SLD200_MSL
                 }
                 else
                 {
-
                     SiriusViewer_Main.Document = (IDocument)Equipment.GetEqpSiriusViewerDocument();
                 }
                 
@@ -5129,7 +5129,8 @@ namespace SLD200_MSL
                     return -1;
                 }
 
-                if (token.IsCancellationRequested) return -1;
+                if (token.IsCancellationRequested) 
+                    return -1;
 
                 try
                 {

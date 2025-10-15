@@ -203,6 +203,7 @@
     <Compile Include="Laser\Coherent_CO2\LaserResponseParser.cs" />
     <Compile Include="Laser\Coherent_CO2\LaserTcpClient.cs" />
     <Compile Include="ListParam.cs" />
+    <Compile Include="MinidumpHelp.cs" />
     <Compile Include="Modules\DeviceConnectionModule.cs" />
     <Compile Include="Modules\Laser.cs" />
     <Compile Include="Modules\Bds.cs" />
