@@ -2173,19 +2173,27 @@ namespace QMC.Common.Q_Sequence
                         double offsetX = Equipment.Scanner_Vision_Offset_Setting_X;
                         double offsetY = Equipment.Scanner_Vision_Offset_Setting_Y;
 
-                        // Retry 조건 체크
-                        if (Math.Abs(offsetX) >= TOLERANCE || Math.Abs(offsetY) >= TOLERANCE)
+                        if (bCalPosition)
                         {
-                            // Retry 처리
-                            strTemp = string.Format("Scanner Vision Offset 초과 - Retry 수행");
-                            Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
+                            // Retry 조건 체크
+                            if (Math.Abs(offsetX) >= TOLERANCE || Math.Abs(offsetY) >= TOLERANCE)
+                            {
+                                // Retry 처리
+                                strTemp = string.Format("Scanner Vision Offset 초과 - Retry 수행");
+                                Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
 
-                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Start;
+                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Start;
+                            }
+                            else
+                            {
+                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Complete;
+                            }
                         }
                         else
                         {
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Complete;
                         }
+                            
                     }
                     break;
 
