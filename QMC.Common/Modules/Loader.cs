@@ -1654,73 +1654,8 @@ namespace QMC.Common.Modules
 
         public void Loader_Transfer_Restart_MoveType_Check()
         {
-            //  Stop 했을 때의 조건들을 조합하여 시작 조건 결정
-
-            //  1. Loader Transfer Cycle 의 Step
-            //  2. Transfer 의 Move Type
-            //  3. Module Pick Up 완료 여부
-            //  4. Loader 가 Stacker 에서 Module 을 Pick Up 했는지 여부
-            //  5. Loader 가 M-Aligner 에 Module 을 Put Down 했는지 여부
-            //  6. Loader 가 M-Aligner 에서 Module 을 Pick Up 했는지 여부
-            //  7. Loader 가 Stage 에 Module 을 Put Down 했는지 여부
-            //  8. Main Work Cycle 의 동작 여부
-            //  9. Main Work Cycle 의 완료 여부
-            //  10. Main Work Cycle 이 완료되었다면, 양불 결과
-
-
-            //int m_nLD_RESTORE_Transfer_Step { set; get; } = 0;
-            //int m_nLD_RESTORE_Transfer_MoveType { set; get; } = 0;
-            //bool m_bLD_RESTORE_Transfer_toWorkStage_Module_PutDown_Complete_Flag { set; get; } = false;      //  Work Stage 에 Module Put Down 완료 여부
-            //bool m_bLD_RESTORE_Transfer_fromStacker0_Module_PickUp_Complete_Flag { set; get; } = false;      //  Stacker0 에서 Module Pick Up 완료 여부
-            //bool m_bLD_RESTORE_Transfer_fromStacker1_Module_PickUp_Complete_Flag { set; get; } = false;      //  Stacker1 에서 Module Pick Up 완료 여부
-            //bool m_bLD_RESTORE_Transfer_fromMAligner_Module_PickUp_Complete_Flag { set; get; } = false;      //  M-Aligner 에서 Module Pick Up 완료 여부
-            //bool m_bLD_RESTORE_Transfer_toMAligner_Module_PutDown_Complete_Flag { set; get; } = false;       //  M-Aligner 에 Module Put Down 완료 여부
-            //int m_nLD_RESTORE_MainWork_Cycle_Step { set; get; } = 0;
-            //int m_nLD_RESTORE_DryRun_Cycle_Step { set; get; } = 0;
-            //int m_nLD_RESTORE_LaserDrilling_Cycle_Step { set; get; } = 0;
-            //bool m_bLD_RESTORE_MainWork_Cycle_Complete { set; get; } = false;
-            //bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete { set; get; }       //  Stacker0 에서 Module Pick Up 완료 여부
-            //bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete { set; get; }       //  Stacker1 에서 Module Pick Up 완료 여부
-            //bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete { set; get; }       //  M-Aligner 에서 Module Pick Up 완료 여부
-            //bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete { set; get; }        //  M-Aligner 에 Module Put Down 완료 여부
-            //bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete { set; get; }       //  Work Stage 에 Module Put Down 완료 여부
-
-
-            //  Auto Run 시 동작 조건을 결정하는 변수들. 위 Restore 조건으로 이 변수들의 값을 결정해서 Restart 하도록 한다.
-            //bool m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete { set; get; }              //  Stacker0 에서 Module Pick Up 완료 여부
-            //bool m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete { set; get; }              //  Stacker1 에서 Module Pick Up 완료 여부
-            //bool m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete { set; get; }              //  M-Aligner 에서 Module Pick Up 완료 여부
-            //bool m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete { set; get; }               //  M-Aligner 에 Module Put Down 완료 여부
-            //bool m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete { set; get; }              //  Work Stage 에 Module Put Down 완료 여부
-
-
-
-            ////  1. Laser Drilling 이 진행중이면? Loader 모든 동작 Stop
-            //if (m_nLD_RESTORE_LaserDrilling_Cycle_Step != (int)WorkStage.LaserDrilling_Step.None)
-            //{
-            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;                           //  Stacker0 에서 Module Pick Up 완료 여부
-            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;                           //  Stacker1 에서 Module Pick Up 완료 여부
-            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;                           //  M-Aligner 에서 Module Pick Up 완료 여부
-            //    m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                            //  M-Aligner 에 Module Put Down 완료 여부
-            //    m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                           //  Work Stage 에 Module Put Down 완료 여부
-
-            //    m_bStacker0_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
-            //    m_bStacker1_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
-            //}
-            ////  2. Main Work Cycle 이 진행중이면? Loader 모든 동작 Stop
-            //else if (m_nLD_RESTORE_MainWork_Cycle_Step != (int)WorkStage.MainWork_Step.None)
-            //{
-            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;                           //  Stacker0 에서 Module Pick Up 완료 여부
-            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;                           //  Stacker1 에서 Module Pick Up 완료 여부
-            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;                           //  M-Aligner 에서 Module Pick Up 완료 여부
-            //    m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                            //  M-Aligner 에 Module Put Down 완료 여부
-            //    m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                           //  Work Stage 에 Module Put Down 완료 여부
-
-            //    m_bStacker0_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
-            //    m_bStacker1_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
-            //}
             //  3. Loader Transfer Cycle 이 None 상태이면, 동작이 없던 상태이므로 기존 조건들 그대로 적용하여 Start 한다. 
-            /*else*/ if (m_nLD_RESTORE_Transfer_Step == (int)Loader_Transfer_Step.None)
+            if (m_nLD_RESTORE_Transfer_Step == (int)Loader_Transfer_Step.None)
             {
                 m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete;             //  Stacker0 에서 Module Pick Up 완료 여부
                 m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete;             //  Stacker1 에서 Module Pick Up 완료 여부
@@ -2052,16 +1987,17 @@ namespace QMC.Common.Modules
                  !Equipment.Loader_RPort_Pause &&
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None &&
-
-                //  무언정지 관련 (확인 필요) - 모터가 정지했을 때만 동작하도록 하자.
-                //  Pause 상태가 될 때 Stacker 가 하강하는 명령과, Stacker 의 Auto Run Cycle 이 서로 인터락이 없음
                 MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_GetInposition((int)nAxis.Z0) &&
-
                 m_bStacker0_Run_byUser &&
                 !m_bStacker0_Complete)  //  Stacker0 동작 완료되지 않은 상태 (TR 이 Module 을 집어간 후 false 로 변경됨)
             {
-                Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "시작 Flag");
+                if (workStage.workStageParameter.DI_Stage_Vacuum_Check() ||
+                    workStage.workStageParameter.IsDO_Stage_Vacuum())
+                {
+                    return 0;
+                }
 
+                Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "시작 Flag");
                 m_bStacker0_Run_byUser = false;
                 m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.Start;
             }
@@ -2115,6 +2051,12 @@ namespace QMC.Common.Modules
             }
             else if (Equipment.SemiAutoEnable && !Equipment.Loader_RPort_Pause)
             {
+                if (workStage.workStageParameter.DI_Stage_Vacuum_Check() ||
+                    workStage.workStageParameter.IsDO_Stage_Vacuum())
+                {
+                    return 0;
+                }
+
                 if (workStage.m_bMainWorkCycle_DryRun)          //  Dry Run
                 {
                     if (!m_bStacker0_Run_byUser &&
@@ -3021,19 +2963,20 @@ namespace QMC.Common.Modules
                 !Equipment.Loader_LPort_Pause &&
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nStacker1_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None &&
-
-                //  무언정지 관련 (확인 필요) - 모터가 정지했을 때만 동작하도록 하자.
-                //  Pause 상태가 될 때 Stacker 가 하강하는 명령과, Stacker 의 Auto Run Cycle 이 서로 인터락이 없음
                 MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_GetInposition((int)nAxis.Z1) &&
-
                 m_bStacker1_Run_byUser &&
                 !m_bStacker1_Complete)
             {
+                if (workStage.workStageParameter.DI_Stage_Vacuum_Check() ||
+                    workStage.workStageParameter.IsDO_Stage_Vacuum())
+                {
+                    return 0;
+                }
+
                 Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "시작 Flag");
-
                 m_bStacker1_Run_byUser = false;
-
                 m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.Start;
+
             }
 
 
@@ -3086,25 +3029,17 @@ namespace QMC.Common.Modules
             }
             else if(Equipment.SemiAutoEnable && !Equipment.Loader_LPort_Pause)
             {
-                if (workStage.m_bMainWorkCycle_DryRun)          //  Dry Run
+                if (workStage.workStageParameter.DI_Stage_Vacuum_Check() ||
+                    workStage.workStageParameter.IsDO_Stage_Vacuum())
                 {
-                    if (!m_bStacker1_Run_byUser &&
-                        !m_bStacker1_Complete &&
-
-                        (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker))
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Dry Run 시작 Flag On");
-
-                        m_bStacker1_Run_byUser = true;
-                    }
+                    return 0;
                 }
-                else                                            //  자동 운전
+
                 {
                     if (!m_bStacker1_Run_byUser &&
                         !m_bStacker1_Complete &&
 
                         (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) &&
-
                         loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))               //  Stacker1 에 Module 이 감지되어 있을 때만 진행
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Auto Run 시작 Flag On");
@@ -4125,30 +4060,32 @@ namespace QMC.Common.Modules
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nMAlign_Step == (int)MAlign_Step.None)
             {
+                if (workStage.workStageParameter.DI_Stage_Vacuum_Check() ||
+                    workStage.workStageParameter.IsDO_Stage_Vacuum())
+                {
+                    return 0;
+                }
+
                 // 1. stacker0번(Right)에서 제품 픽업
                 // 2. stacker1번(Left)에서 제품 픽업
                 // 3. M-Aligner에서 제품 안착
                 // 4. M-Aligner에서 제품 픽업
                 // 5. Work Stage에 제품 안착
-
                 // Stacker 우선 순위는 Right부터 이다.
                 // Stacker0 에서 Module 을 Pick Up 하기 위한 조건
                 // 1. stacker0번(Right)에서 제품 픽업
                 if (!m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete &&
                    (m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None) &&
-
                     m_bStacker0_Complete &&
-
-                    //--  우선권을 부여 받은 Port 만 동작하도록 (테스트 후 걷어낼지 말지 결정)
                     (m_nStacker_Priority == (int)LoaderParameter.StackerTable.Stacker_0) &&
-                    //--
-
                     (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) &&
                     !m_bMAlignZone_ModuleExist)
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "m_nLoader_Transfer_Step", "Cycle_Stacker0_PickUp");
+
                     m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_Stacker0_PickUp;            //  Stacker0 에서 Module Pick Up Cycle
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Start;
+                   
                 }
                 //  Stacker1 에서 Module 을 Pick Up 하기 위한 조건
                 // 2. stacker1번(Left)에서 제품 픽업
@@ -7223,10 +7160,11 @@ namespace QMC.Common.Modules
                             // oneStep완료.
                             SetLoaderComplete(true);
                             // SemiAuto Mode 일 경우. 여기서 연속으로 진행하면 안됨.
-                            if (!Equipment.AutoRunStatus && Equipment.SemiAutoEnable)
+                            if (Equipment.SemiAutoEnable)
                             {
                                 Equipment.SemiAutoEnable = false;
                                 m_LoaderWork_Start = false;
+                                m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_None;
                             }
                             else
                             {

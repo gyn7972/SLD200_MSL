@@ -1283,7 +1283,6 @@ namespace QMC.Common.Modules
                 m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
             }
             else if(Equipment.SemiAutoEnable &&
-
                 m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None &&
                 m_nStacker0_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None &&
 
