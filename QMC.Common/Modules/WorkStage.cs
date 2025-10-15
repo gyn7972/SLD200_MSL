@@ -15073,6 +15073,7 @@ namespace QMC.Common.Modules
 
                                 strTemp = $"Fiducial Makr No: " + m_nSocketAlign_FiducialCount.ToString() + "," +
                                           $"검출 갯수: {matchCount}, finalOffsetX: {averageOffsetX:F4}, finalOffsetY: {averageOffsetY:F4}";
+
                                 Log.Write("Goldpowder", "Result", strTemp);
 
                                 m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = averageOffsetX;
