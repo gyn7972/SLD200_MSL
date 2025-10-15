@@ -718,6 +718,12 @@ namespace SLD200_MSL
 
                 //button_MotorMove_Stage_Vacuum
                 bool bStageVac = workStage.workStageParameter.DI_Laser_CalSheet_Vacuum_Check();
+                if (workStage.workStageParameter.DI_Laser_CalSheet_Vacuum_Check() ||
+                workStage.workStageParameter.IsDO_Laser_CalSheet_Vacuum())
+                {
+                    bStageVac = true;
+                }
+
                 if (bStageVac)
                 {
                     button_Setup_ScannerCal_Vacuum.BackColor = Color.Lime;
@@ -4841,7 +4847,9 @@ namespace SLD200_MSL
         {
             Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_Setup_ScannerCal_Vacuum_Click");
 
-            if (workStage.workStageParameter.DI_Laser_CalSheet_Vacuum_Check())
+
+            if (workStage.workStageParameter.DI_Laser_CalSheet_Vacuum_Check() ||
+                workStage.workStageParameter.IsDO_Laser_CalSheet_Vacuum())
             {
                 workStage.workStageParameter.DO_Laser_CalSheet_Vacuum(false);
                 Thread.Sleep(100);
