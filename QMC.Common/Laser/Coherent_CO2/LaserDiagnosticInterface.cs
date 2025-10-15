@@ -1,88 +1,136 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static QMC.Common.Laser.Coherent_CO2.LaserTcpClient;
+using System.Threading;
 
 namespace QMC.Common.Laser.Coherent_CO2
 {
-    public class LaserDiagnosticInterface
+    /// <summary>
+    /// 상위 모듈에서 사용되는 레이저 진단 인터페이스.
+    /// 내부적으로 LaserDiagnosticManager(Part 상속)를 주기적으로 폴링하여
+    /// 상태 및 알람 정보를 이벤트로 전달한다.
+    /// </summary>
+    public class LaserDiagnosticInterface : IDisposable
     {
-        private readonly LaserTcpClient _client;
+        private readonly LaserDiagnosticManager _mgr;
+        private Thread _thread;
+        private bool _running;
+        private readonly object _sync = new object();
 
-        public LaserDiagnosticInterface(string ip, int port = 23)
+        public event Action<string> OnLog;
+        public event Action<string> OnAlarm;
+
+        public int PollIntervalMs { get; set; } = 2000;
+
+
+        /*
+         * var laserInterface = new LaserDiagnosticInterface("LaserDiag", "192.168.0.50", 5000);
+
+        laserInterface.OnLog += msg => Console.WriteLine("[STATUS] " + msg);
+        laserInterface.OnAlarm += msg => Console.WriteLine("[ALARM] " + msg);
+
+        if (laserInterface.Start())
+            Console.WriteLine("Laser monitor started.");
+
+        // ...
+        // 종료 시
+        laserInterface.Stop();
+        */
+        /// <summary>
+        /// 생성자: 장비명, IP, Port 지정
+        /// </summary>
+        public LaserDiagnosticInterface(string name, string ip, int port = 5000)
         {
-            _client = new LaserTcpClient(ip, port);
-            _client.OnAlarmRaised += (msg) => RaiseAlarm?.Invoke(msg);
+            _mgr = new LaserDiagnosticManager(name, ip, port);
+            _mgr.OnAlarmRaised += delegate (string msg)
+            {
+                if (OnAlarm != null)
+                    OnAlarm(msg);
+            };
         }
 
-        public event Action<string> RaiseAlarm;
-
-        public bool Connect() => _client.Connect();
-        public void Disconnect() => _client.Disconnect();
-
-        public string GetStatus()
+        /// <summary>
+        /// 주기적 모니터링 시작
+        /// </summary>
+        public bool Start()
         {
-            if (!_client.SendCommand(LaserCommand.StatusRequest))
-                return "Failed to send StatusRequest command.";
-
-            var response = _client.ReadResponse();
-            if (!LaserResponseParser.ValidateChecksum(response))
+            lock (_sync)
             {
-                RaiseAlarm?.Invoke("Status response checksum error.");
-                return "Invalid status response (checksum error).";
-            }
+                if (_running)
+                    return false;
 
-            return LaserResponseParser.ParseStatusResponse(response);
+                if (!_mgr.Connect())
+                {
+                    if (OnAlarm != null)
+                        OnAlarm("Laser connection failed.");
+                    return false;
+                }
+
+                _running = true;
+                _thread = new Thread(MonitorLoop);
+                _thread.IsBackground = true;
+                _thread.Start();
+                return true;
+            }
         }
 
-        public string GetTemperature()
+        /// <summary>
+        /// 모니터링 종료
+        /// </summary>
+        public void Stop()
         {
-            if (!_client.SendCommand(LaserCommand.ReadTemperature))
-                return "Failed to send ReadTemperature command.";
-
-            var response = _client.ReadResponse();
-            if (!LaserResponseParser.ValidateChecksum(response))
+            lock (_sync)
             {
-                RaiseAlarm?.Invoke("Temperature response checksum error.");
-                return "Invalid temperature response (checksum error).";
+                _running = false;
             }
 
-            return LaserResponseParser.ParseTemperatureResponse(response);
+            if (_thread != null && _thread.IsAlive)
+            {
+                try
+                {
+                    _thread.Join(1000);
+                }
+                catch { }
+            }
+
+            _mgr.Disconnect();
         }
 
-        public string GetFaultStatus()
+        private void MonitorLoop()
         {
-            if (!_client.SendCommand(LaserCommand.ReadErrorLog))
-                return "Failed to send ReadErrorLog command.";
-
-            var response = _client.ReadResponse();
-            if (!LaserResponseParser.ValidateChecksum(response))
+            while (_running)
             {
-                RaiseAlarm?.Invoke("Fault response checksum error.");
-                return "Invalid fault response (checksum error).";
-            }
+                try
+                {
+                    var st = _mgr.GetStatus();
+                    if (st != null && OnLog != null)
+                        OnLog(st.ToString());
 
-            return LaserResponseParser.ParseFaultResponse(response);
+                    var faults = _mgr.GetFaults();
+                    if (faults != null)
+                    {
+                        foreach (var f in faults)
+                        {
+                            if (OnAlarm != null)
+                                OnAlarm(f.ToString());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (OnAlarm != null)
+                        OnAlarm("MonitorLoop exception: " + ex.Message);
+
+                    // 통신 예외 발생 시 강제 종료 처리
+                    _running = false;
+                    try { _mgr.Disconnect(); } catch { }
+                }
+
+                Thread.Sleep(PollIntervalMs);
+            }
         }
 
-        public bool ClearFault()
+        public void Dispose()
         {
-            if (!_client.SendCommand(LaserCommand.ClearFault))
-            {
-                RaiseAlarm?.Invoke("ClearFault command failed to send.");
-                return false;
-            }
-
-            var response = _client.ReadResponse();
-            if (!LaserResponseParser.ValidateChecksum(response))
-            {
-                RaiseAlarm?.Invoke("ClearFault response checksum error.");
-                return false;
-            }
-
-            return true;
+            Stop();
         }
     }
 }

@@ -29,19 +29,6 @@ using SpiralLab;
 using System.Threading;
 using SLD200.NewStyleForm;
 
-//using OpenTK;
-//using OpenTK.Graphics.OpenGL;
-//using SpiralLab.Sirius2;
-//using SpiralLab.Sirius2.Laser;
-//using SpiralLab.Sirius2.PowerMeter;
-//using SpiralLab.Sirius2.Scanner;
-//using SpiralLab.Sirius2.Scanner.Rtc;
-//using SpiralLab.Sirius2.Winforms;
-//using SpiralLab.Sirius2.Winforms.Entity;
-//using SpiralLab.Sirius2.Winforms.Marker;
-//using SpiralLab.Sirius2.Winforms.UI;
-
-
 namespace SLD200_MSL
 {
     public partial class FormNew_SiriusEditor : Form
@@ -54,6 +41,111 @@ namespace SLD200_MSL
         public System.Windows.Forms.Timer timer_RtcInit;
 
         private static FormNew_QMCSiriusEditorStatus m_formUserGuide = null;
+
+        // === Viewer refresh throttle (C# 7.3 호환) ===
+        private readonly TimeSpan _viewerRefreshInterval = TimeSpan.FromMilliseconds(100);
+        private DateTime _lastViewerRefreshTime = DateTime.MinValue;
+        private bool _viewerRefreshPending = false;
+        private System.Threading.Timer _viewerRefreshTimer;
+        private bool _formVisible = false;
+
+        // === RTC 재초기화 중복 방지 플래그 ===
+        private volatile bool _rtcInitRunning = false;
+        private bool _rtcInitDone = false;
+
+        // 1) Invalidate 스로틀
+        private void SafeInvalidateViewer(System.Windows.Forms.Control viewer)
+        {
+            if (viewer == null || !viewer.IsHandleCreated)
+                return;
+
+            var now = DateTime.Now;
+            if (now - _lastViewerRefreshTime < _viewerRefreshInterval)
+            {
+                _viewerRefreshPending = true;
+                return;
+            }
+
+            _lastViewerRefreshTime = now;
+            _viewerRefreshPending = false;
+
+            try { viewer.BeginInvoke(new System.Action(() => viewer.Invalidate())); } catch { }
+
+            if (_viewerRefreshTimer == null)
+            {
+                _viewerRefreshTimer = new System.Threading.Timer(_ =>
+                {
+                    if (_viewerRefreshPending)
+                    {
+                        _viewerRefreshPending = false;
+                        _lastViewerRefreshTime = DateTime.Now;
+                        try
+                        {
+                            if (viewer.IsHandleCreated)
+                                viewer.BeginInvoke(new System.Action(() => viewer.Invalidate()));
+                        }
+                        catch { }
+                    }
+                }, null, 100, 100);
+            }
+        }
+
+        // 2) 커스텀 드로우 핸들러 일괄 부착/해제
+        private void AttachCustomDrawToAllViews()
+        {
+            try
+            {
+                if (SiriusEditor != null && SiriusEditor.Document != null && SiriusEditor.Document.Views != null)
+                {
+                    foreach (var v in SiriusEditor.Document.Views)
+                        v.OnCustomDraw += SiriusView_OnCustomDraw;
+                }
+            }
+            catch { }
+        }
+        private void DetachCustomDrawFromAllViews()
+        {
+            try
+            {
+                if (SiriusEditor != null && SiriusEditor.Document != null && SiriusEditor.Document.Views != null)
+                {
+                    foreach (var v in SiriusEditor.Document.Views)
+                        v.OnCustomDraw -= SiriusView_OnCustomDraw;
+                }
+            }
+            catch { }
+        }
+
+        // 3) 기존 OpenGL View 리소스 정리 (뷰어 버벅임 방지)
+        private void ClearViewerDocument()
+        {
+            try
+            {
+                var viewer = SiriusEditor;                 // 폼의 에디터 컨트롤
+                if (viewer == null || !viewer.IsHandleCreated)
+                    return;
+
+                viewer.BeginInvoke(new System.Action(() =>
+                {
+                    try
+                    {
+                        if (viewer.Document != null && viewer.Document.Views != null)
+                        {
+                            viewer.Document.Views.Clear(); // GL 뷰 객체들 제거(버퍼/리소스 해제)
+                            SafeInvalidateViewer(viewer);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write("SiriusEditor", "Clear", "예외: " + ex.Message);
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
 
         public FormNew_SiriusEditor()
         {
@@ -96,6 +188,8 @@ namespace SLD200_MSL
 
             m_formUserGuide = new FormNew_QMCSiriusEditorStatus();
 
+            this.VisibleChanged += FormNew_SiriusEditor_VisibleChanged;
+
             //HookEditorToolbarButtons();
             //this.Load += (s, e) => HookEditorToolbarButtons(); // Load 이후 실행
         }
@@ -109,32 +203,81 @@ namespace SLD200_MSL
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        private void FormNew_SiriusEditor_VisibleChanged(object sender, EventArgs e)
+        {
+            _formVisible = this.Visible;
+            if (_formVisible)
+            {
+                if (_viewerRefreshTimer == null)
+                    _viewerRefreshTimer = new System.Threading.Timer(_ => SafeInvalidateViewer(SiriusEditor), null, 100, 100);
+            }
+            else
+            {
+                if (_viewerRefreshTimer != null) { _viewerRefreshTimer.Dispose(); _viewerRefreshTimer = null; }
+            }
+        }
+
+        private void FormNew_SiriusEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+
+                e.Cancel = true;
+                Hide();
+            }
+
+            if (_viewerRefreshTimer != null) { _viewerRefreshTimer.Dispose(); _viewerRefreshTimer = null; }
+            DetachCustomDrawFromAllViews();
+            ClearViewerDocument();
+        }
+
+
+
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
         {
-            try
-            {
-                foreach (var v in SiriusEditor.Document.Views)
-                {
-                    v.OnCustomDraw -= SiriusView_OnCustomDraw;
-                }
-            }
-            catch (Exception ex)
-            {
+            // 1) 이전 문서의 커스텀 드로우 핸들러 완전 분리
+            DetachCustomDrawFromAllViews();
 
-            }
+            // 2) 이전 GL 뷰 리소스 정리 (버퍼 누적/중복 렌더 방지)
+            ClearViewerDocument();
+
+            // 3) 문서 교체
             SiriusEditor.Document = doc;
-            try
-            {
 
-                foreach (var v in SiriusEditor.Document.Views)
-                {
-                    v.OnCustomDraw += SiriusView_OnCustomDraw; ;
-                }
-            }
-            catch (Exception ex)
-            {
+            // 4) 새 문서의 모든 뷰에 커스텀 드로우 핸들러 등록
+            AttachCustomDrawToAllViews();
 
-            }
+            // 5) 다른 폼과 문서 공유 상태 유지(메인/조그팝업과 동기화)
+            if (doc != null)
+                Equipment.SetEqpSiriusViewerDocument(doc);
+
+            // 6) 화면 반영은 스로틀을 타게
+            SafeInvalidateViewer(SiriusEditor);
+
+            //try
+            //{
+            //    foreach (var v in SiriusEditor.Document.Views)
+            //    {
+            //        v.OnCustomDraw -= SiriusView_OnCustomDraw;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+
+            //}
+            //SiriusEditor.Document = doc;
+            //try
+            //{
+
+            //    foreach (var v in SiriusEditor.Document.Views)
+            //    {
+            //        v.OnCustomDraw += SiriusView_OnCustomDraw;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+
+            //}
         }
 
         private void SiriusView_OnCustomDraw(IView view)
@@ -164,52 +307,112 @@ namespace SLD200_MSL
 
         private void DrawGrid(IView view, Layer layer)
         {
+            if (layer == null || !layer.IsSelected)
+                return;
+
+            var renderer = view.Renderer;
+            if (renderer == null)
+                return;
+
             if (layer != null)
             {
-                if (layer.Name.Contains("Hole1"))
+                // Hole1 계열만 그리드 처리
+                if (layer.Name.IndexOf("Hole1", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    foreach (var v in layer.Items)
+                    foreach (var it in layer.Items)
                     {
-                        double width = v.BoundRect.Width;
-                        double height = v.BoundRect.Height;
-                        double centerX = v.BoundRect.Center.X;
-                        double centerY = v.BoundRect.Center.Y;
+                        var br = it.BoundRect;
                         double dSplitW = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize;
                         double dSplitH = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize_Height;
-                        int colCount = (int)Math.Ceiling(width / dSplitW);
-                        int rowCount = (int)Math.Ceiling(height / dSplitH);
-                        double dStartX = centerX - (colCount * dSplitW) / 2;
-                        double dStartY = centerY - (rowCount * dSplitH) / 2;
-                        double dEndX = centerX + (colCount * dSplitW) / 2;
-                        double dEndY = centerY + (rowCount * dSplitH) / 2;
 
-                        OpenGL renderer = view.Renderer;
-                        // 바둑판의 크기와 간격 설정
-                        float squareSize = 10.0f;   // 각 셀의 크기
-                        int gridCount = 10;         // 가로, 세로로 그릴 셀의 개수
-                        float gridSize = squareSize * gridCount; // 전체 그리드 크기
+                        if (dSplitW <= 0 || dSplitH <= 0)
+                            continue;
 
-                        // 라임색 설정
-                        renderer.Color(200.0f, 200.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
-                        for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
+                        int colCount = Math.Max(1, (int)Math.Ceiling(br.Width / dSplitW));
+                        int rowCount = Math.Max(1, (int)Math.Ceiling(br.Height / dSplitH));
+
+                        // 선 개수 예산(성능 보호) : 총 선이 예산을 넘으면 샘플링(간격 늘리기)
+                        int lineBudget = 4000; // 필요시 2000~8000 사이 조정
+                        int decimate = 1;
+                        int totalLines = colCount + rowCount;
+                        if (totalLines > lineBudget)
+                            decimate = (int)Math.Ceiling((double)totalLines / lineBudget);
+
+                        double startX = br.Center.X - (colCount * dSplitW) / 2.0;
+                        double endX = br.Center.X + (colCount * dSplitW) / 2.0;
+                        double startY = br.Center.Y - (rowCount * dSplitH) / 2.0;
+                        double endY = br.Center.Y + (rowCount * dSplitH) / 2.0;
+
+                        // 색상
+                        renderer.Color(200.0f, 200.0f, 0.0f);
+
+                        // 세로선: Begin/End 1회
+                        renderer.Begin(OpenGL.GL_LINES);
+                        for (int c = 0; c <= colCount; c += decimate)
                         {
-                            renderer.Begin(OpenGL.GL_LINES);
-                            renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
-                            renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
-                            renderer.End();
+                            double x = startX + c * dSplitW;
+                            renderer.Vertex(x, startY, 0.0f);
+                            renderer.Vertex(x, endY, 0.0f);
                         }
-                        for (double dY = dStartY; dY <= dEndY; dY += dSplitH)
+                        renderer.End();
+
+                        // 가로선: Begin/End 1회
+                        renderer.Begin(OpenGL.GL_LINES);
+                        for (int r = 0; r <= rowCount; r += decimate)
                         {
-                            renderer.Begin(OpenGL.GL_LINES);
-                            renderer.Vertex(dStartX, dY, 0.0f);          // 아래쪽 끝
-                            renderer.Vertex(dEndX, dY, 0.0f);   // 위쪽 끝
-                            renderer.End();
+                            double y = startY + r * dSplitH;
+                            renderer.Vertex(startX, y, 0.0f);
+                            renderer.Vertex(endX, y, 0.0f);
                         }
+                        renderer.End();
                     }
+                    return;
                 }
+                //if (layer.Name.Contains("Hole1"))
+                //{
+                //    foreach (var v in layer.Items)
+                //    {
+                //        double width = v.BoundRect.Width;
+                //        double height = v.BoundRect.Height;
+                //        double centerX = v.BoundRect.Center.X;
+                //        double centerY = v.BoundRect.Center.Y;
+                //        double dSplitW = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize;
+                //        double dSplitH = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize_Height;
+                //        int colCount = (int)Math.Ceiling(width / dSplitW);
+                //        int rowCount = (int)Math.Ceiling(height / dSplitH);
+                //        double dStartX = centerX - (colCount * dSplitW) / 2;
+                //        double dStartY = centerY - (rowCount * dSplitH) / 2;
+                //        double dEndX = centerX + (colCount * dSplitW) / 2;
+                //        double dEndY = centerY + (rowCount * dSplitH) / 2;
+
+                //        OpenGL renderer = view.Renderer;
+                //        // 바둑판의 크기와 간격 설정
+                //        float squareSize = 10.0f;   // 각 셀의 크기
+                //        int gridCount = 10;         // 가로, 세로로 그릴 셀의 개수
+                //        float gridSize = squareSize * gridCount; // 전체 그리드 크기
+
+                //        // 라임색 설정
+                //        renderer.Color(200.0f, 200.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
+                //        for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
+                //        {
+                //            renderer.Begin(OpenGL.GL_LINES);
+                //            renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
+                //            renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
+                //            renderer.End();
+                //        }
+                //        for (double dY = dStartY; dY <= dEndY; dY += dSplitH)
+                //        {
+                //            renderer.Begin(OpenGL.GL_LINES);
+                //            renderer.Vertex(dStartX, dY, 0.0f);          // 아래쪽 끝
+                //            renderer.Vertex(dEndX, dY, 0.0f);   // 위쪽 끝
+                //            renderer.End();
+                //        }
+                //    }
+                //}
                 else if (layer.Name.Contains("Outline"))
                 {
-                    OpenGL renderer = view.Renderer;
+                    //OpenGL renderer = view.Renderer;
+                    renderer = view.Renderer;
 
                     if (Equipment.stLayerRecipeSet == null ||
                         (int)LayerList.Outline >= Equipment.stLayerRecipeSet.Length)
@@ -389,11 +592,6 @@ namespace SLD200_MSL
 
         public void Import_DrawingFile(string strFileName)
         {
-            // Auto인 경우에는 파일명없으면 아에 들어오면 안됨.
-            //  Sirius2
-            //var doc = DocumentFactory.CreateDefault();
-            //doc.ActOpen(strFileName);
-            //siriusEditor.Document = doc;
             if (File.Exists(strFileName) == false)
             {
                 MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -421,17 +619,37 @@ namespace SLD200_MSL
 
                 if (doc != null)
                 {
-                    // 기존 View 정리
+                    // 1) 기존 커스텀드로우 핸들러/뷰 정리
+                    DetachCustomDrawFromAllViews();
                     if (SiriusEditor.Document != null && SiriusEditor.Document.Views != null)
                         SiriusEditor.Document.Views.Clear();
 
+                    // 2) 문서 교체
                     SiriusEditor.Document = doc;
+
+                    // 3) 새 문서의 모든 뷰에 커스텀 드로우 핸들러 등록
+                    AttachCustomDrawToAllViews();
+
+                    // 4) 공유 문서로 등록(메인/조그 팝업과 동기화)
+                    Equipment.SetEqpSiriusViewerDocument(doc);
+
+                    // 5) 화면 반영 (스로틀)
+                    SafeInvalidateViewer(SiriusEditor);
                 }
-                else
-                {
-                    Log.Write("SLD-200", "Import_DrawingFile", "문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
-                    //throw new Exception("문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
-                }
+
+                //if (doc != null)
+                //{
+                //    // 기존 View 정리
+                //    if (SiriusEditor.Document != null && SiriusEditor.Document.Views != null)
+                //        SiriusEditor.Document.Views.Clear();
+
+                //    SiriusEditor.Document = doc;
+                //}
+                //else
+                //{
+                //    Log.Write("SLD-200", "Import_DrawingFile", "문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
+                //    //throw new Exception("문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
+                //}
             }
             catch (Exception ex)
             {
@@ -443,33 +661,6 @@ namespace SLD200_MSL
 
                 SiriusEditor.Document.FileName = "New Document";
                 SiriusEditor.Document.Action.ActNew();
-            }
-
-            //기존 코드
-            {
-                ////  Sirius1
-                //if (m_strExt.ToUpper() == ".DXF")
-                //{
-                //    //SiriusEditor.Document.New();
-                //    doc = DocumentSerializer.OpenDxf(strFileName);
-                //    SiriusEditor.Document = doc;
-                //}
-                //else if (m_strExt.ToUpper() == ".SIRIUS")
-                //{
-                //    //SiriusEditor.Document.New();
-                //    doc = DocumentSerializer.OpenSirius(strFileName);
-                //}
-                //if(doc!=null)
-                //{
-                //    if (SiriusEditor.Document != null)
-                //    {
-                //        if (SiriusEditor.Document.Views != null)
-                //        {
-                //            SiriusEditor.Document.Views.Clear();
-                //        }
-                //    }
-                //    SiriusEditor.Document = doc;
-                //}
             }
         }
 
@@ -731,54 +922,118 @@ namespace SLD200_MSL
 
         private void Timer_RtcInit_Func(object sender, EventArgs e)
         {
-            //timer_RtcInit.Enabled = false;
-            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
-            {
-                //시컨스에서 초기화 했다 안했다 할거니깐.. 죽이면 안됨.
-                //우선 안되니깐 죽이자.
-                //timer_RtcInit.Enabled = false;
-                //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
-                Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
+            // 한 번만 처리
+             if (_rtcInitDone || _rtcInitRunning)
+                return;
 
-                // sirius 팅겨나와서 이거 여기다 둬야 하네...
+            // 사용자 요청 플래그 확인
+            //if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6)
+            //    return;
+
+            // 마킹 중/오토런 중이면 대기
+            try
+            {
+                if (workStage != null && workStage.rtc != null)
+                {
+                    if (workStage.rtc.CtlGetStatus(RtcStatus.Busy))
+                        return;
+                }
+                if (Equipment.AutoRunStatus) // 오토런 중에는 초기화 금지
+                    return;
+            }
+            catch { /* status 조회 예외 무시 */ }
+
+            _rtcInitRunning = true;
+            Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 시도");
+
+            try
+            {
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
 
+                bool ok = false;
+                // 이미 RTC 살아 있으면 안전 종료 후 재초기화
                 if (workStage.rtc != null && Equipment._InitDeviceStatus.Scanner)
                 {
-                    //  이미 RTC 가 초기화 되어 있다면 Rtc 객체를 닫고 다시 초기화 한다.
-                    //Rtc_Close();
-                    workStage.Sirius_Close();
-                    Equipment._InitDeviceStatus.Scanner = false;
-
-                    Thread.Sleep(100); //  RTC 가 닫히는 시간을 준다.
-                    if (Rtc_Init(true))
+                    try
                     {
-                        Equipment._InitDeviceStatus.Scanner = true;
-                    }
-                    else
-                    {
+                        workStage.Sirius_Close();                 // 안전 종료 (기존 Rtc_Close 대체 케이스)
                         Equipment._InitDeviceStatus.Scanner = false;
-                        MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        Thread.Sleep(100);
                     }
-
-                    Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - Retry");
+                    catch { }
+                    ok = Rtc_Init(true);
                 }
                 else
                 {
-                    if (Rtc_Init())
-                    {
-                        Equipment._InitDeviceStatus.Scanner = true;
-                    }
-                    else
-                    {
-                        Equipment._InitDeviceStatus.Scanner = false;
-                        MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-                        Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - First");
-                    }
+                    ok = Rtc_Init();
                 }
-                //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+
+                Equipment._InitDeviceStatus.Scanner = ok;
+                if (!ok)
+                    MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                Log.Write("SLD-200", "RTC_Initialize", ok ? "초기화 성공" : "초기화 실패");
             }
+            catch (Exception ex)
+            {
+                Equipment._InitDeviceStatus.Scanner = false;
+                Log.Write(ex);
+            }
+            finally
+            {
+                _rtcInitRunning = false;
+                _rtcInitDone = true;          // 한 번만 돌도록
+                timer_RtcInit.Enabled = false; // 타이머 중단
+            }
+
+            //기존 코드
+            //if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
+            //{
+            //    //시컨스에서 초기화 했다 안했다 할거니깐.. 죽이면 안됨.
+            //    //우선 안되니깐 죽이자.
+            //    //timer_RtcInit.Enabled = false;
+            //    //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+            //    Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
+
+            //    // sirius 팅겨나와서 이거 여기다 둬야 하네...
+            //    Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+
+            //    if (workStage.rtc != null && Equipment._InitDeviceStatus.Scanner)
+            //    {
+            //        //  이미 RTC 가 초기화 되어 있다면 Rtc 객체를 닫고 다시 초기화 한다.
+            //        //Rtc_Close();
+            //        workStage.Sirius_Close();
+            //        Equipment._InitDeviceStatus.Scanner = false;
+
+            //        Thread.Sleep(100); //  RTC 가 닫히는 시간을 준다.
+            //        if (Rtc_Init(true))
+            //        {
+            //            Equipment._InitDeviceStatus.Scanner = true;
+            //        }
+            //        else
+            //        {
+            //            Equipment._InitDeviceStatus.Scanner = false;
+            //            MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            //        }
+
+            //        Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - Retry");
+            //    }
+            //    else
+            //    {
+            //        if (Rtc_Init())
+            //        {
+            //            Equipment._InitDeviceStatus.Scanner = true;
+            //        }
+            //        else
+            //        {
+            //            Equipment._InitDeviceStatus.Scanner = false;
+            //            MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+            //            Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - First");
+            //        }
+            //    }
+            //    //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+            //}
         }
 
         private void FormNew_CommunicationTerminal_Shown(object sender, EventArgs e)
@@ -791,15 +1046,7 @@ namespace SLD200_MSL
             //timer_Status.Enabled = false;
         }
 
-        private void FormNew_SiriusEditor_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-
-                e.Cancel = true;
-                Hide();
-            }
-        }
+        
 
         private void button_DataParsing_Click(object sender, EventArgs e)
         {

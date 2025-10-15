@@ -167,6 +167,10 @@
             this.button_Recipe_Fiducial_Search = new System.Windows.Forms.Button();
             this.label_Recipe_Fiducial_CircleScore = new System.Windows.Forms.Label();
             this.groupBox_RecipeVision_Illuminator = new System.Windows.Forms.GroupBox();
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR = new System.Windows.Forms.Button();
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed = new System.Windows.Forms.Button();
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR = new System.Windows.Forms.Button();
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed = new System.Windows.Forms.Button();
             this.textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed = new System.Windows.Forms.TextBox();
             this.label_RecipeVision_Low_Red = new System.Windows.Forms.Label();
             this.textBox_Recipe_RecipeVision_Illuminator_FineCamRed = new System.Windows.Forms.TextBox();
@@ -187,10 +191,7 @@
             this.button_RecipeVision_Camera_ExposureTime_Low = new System.Windows.Forms.Button();
             this.label_RecipeVision_Camera_ExposureTime_Low = new System.Windows.Forms.Label();
             this.textBox_RecipeVision_Camera_ExposureTime_Low = new System.Windows.Forms.TextBox();
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed = new System.Windows.Forms.Button();
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR = new System.Windows.Forms.Button();
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed = new System.Windows.Forms.Button();
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR = new System.Windows.Forms.Button();
+            this.button_Recipe_Fiducial_Position_Move_Z = new System.Windows.Forms.Button();
             this.groupBox_RecipeVision_Illumination.SuspendLayout();
             this.groupBox_RecipeVision_MarkMatching.SuspendLayout();
             this.groupBox_RecipeVision_MarkType.SuspendLayout();
@@ -1735,6 +1736,7 @@
             // 
             // groupBox_RecipeVision_Fine_Camera
             // 
+            this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.button_Recipe_Fiducial_Position_Move_Z);
             this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.button_Recipe_Fiducial_Mark_Delete);
             this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.button_Recipe_Fiducial_Mark_Add);
             this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.comboBox_Recipe_Fiducial_MarkIndex);
@@ -2024,6 +2026,54 @@
             this.groupBox_RecipeVision_Illuminator.TabStop = false;
             this.groupBox_RecipeVision_Illuminator.Text = " Illuminator";
             // 
+            // button_Recipe_RecipeVision_Illuminator_CoarseCamIR
+            // 
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Location = new System.Drawing.Point(108, 175);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Name = "button_Recipe_RecipeVision_Illuminator_CoarseCamIR";
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Size = new System.Drawing.Size(51, 25);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.TabIndex = 228;
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text = "적용";
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.UseVisualStyleBackColor = true;
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR_Click);
+            // 
+            // button_Recipe_RecipeVision_Illuminator_CoarseCamRed
+            // 
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Location = new System.Drawing.Point(108, 133);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Name = "button_Recipe_RecipeVision_Illuminator_CoarseCamRed";
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Size = new System.Drawing.Size(51, 25);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.TabIndex = 227;
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text = "적용";
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.UseVisualStyleBackColor = true;
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed_Click);
+            // 
+            // button_Recipe_RecipeVision_Illuminator_FineCamIR
+            // 
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Location = new System.Drawing.Point(108, 85);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Name = "button_Recipe_RecipeVision_Illuminator_FineCamIR";
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Size = new System.Drawing.Size(51, 25);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.TabIndex = 226;
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Text = "적용";
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.UseVisualStyleBackColor = true;
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_FineCamIR_Click);
+            // 
+            // button_Recipe_RecipeVision_Illuminator_FineCamRed
+            // 
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Location = new System.Drawing.Point(108, 44);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Name = "button_Recipe_RecipeVision_Illuminator_FineCamRed";
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Size = new System.Drawing.Size(51, 25);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.TabIndex = 225;
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Text = "적용";
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.UseVisualStyleBackColor = true;
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_FineCamRed_Click);
+            // 
             // textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed
             // 
             this.textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed.Font = new System.Drawing.Font("Tahoma", 10F);
@@ -2257,53 +2307,17 @@
             this.textBox_RecipeVision_Camera_ExposureTime_Low.Text = "000";
             this.textBox_RecipeVision_Camera_ExposureTime_Low.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // button_Recipe_RecipeVision_Illuminator_FineCamRed
+            // button_Recipe_Fiducial_Position_Move_Z
             // 
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Location = new System.Drawing.Point(108, 44);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(2);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Name = "button_Recipe_RecipeVision_Illuminator_FineCamRed";
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Size = new System.Drawing.Size(51, 25);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.TabIndex = 225;
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Text = "적용";
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.UseVisualStyleBackColor = true;
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_FineCamRed_Click);
-            // 
-            // button_Recipe_RecipeVision_Illuminator_FineCamIR
-            // 
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Location = new System.Drawing.Point(108, 85);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(2);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Name = "button_Recipe_RecipeVision_Illuminator_FineCamIR";
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Size = new System.Drawing.Size(51, 25);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.TabIndex = 226;
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Text = "적용";
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.UseVisualStyleBackColor = true;
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_FineCamIR_Click);
-            // 
-            // button_Recipe_RecipeVision_Illuminator_CoarseCamRed
-            // 
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Location = new System.Drawing.Point(108, 133);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Margin = new System.Windows.Forms.Padding(2);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Name = "button_Recipe_RecipeVision_Illuminator_CoarseCamRed";
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Size = new System.Drawing.Size(51, 25);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.TabIndex = 227;
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text = "적용";
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.UseVisualStyleBackColor = true;
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed_Click);
-            // 
-            // button_Recipe_RecipeVision_Illuminator_CoarseCamIR
-            // 
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Location = new System.Drawing.Point(108, 175);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Margin = new System.Windows.Forms.Padding(2);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Name = "button_Recipe_RecipeVision_Illuminator_CoarseCamIR";
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Size = new System.Drawing.Size(51, 25);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.TabIndex = 228;
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text = "적용";
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.UseVisualStyleBackColor = true;
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR_Click);
+            this.button_Recipe_Fiducial_Position_Move_Z.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Recipe_Fiducial_Position_Move_Z.Location = new System.Drawing.Point(764, 195);
+            this.button_Recipe_Fiducial_Position_Move_Z.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_Fiducial_Position_Move_Z.Name = "button_Recipe_Fiducial_Position_Move_Z";
+            this.button_Recipe_Fiducial_Position_Move_Z.Size = new System.Drawing.Size(85, 37);
+            this.button_Recipe_Fiducial_Position_Move_Z.TabIndex = 233;
+            this.button_Recipe_Fiducial_Position_Move_Z.Text = "Move Z";
+            this.button_Recipe_Fiducial_Position_Move_Z.UseVisualStyleBackColor = true;
+            this.button_Recipe_Fiducial_Position_Move_Z.Click += new System.EventHandler(this.button_Recipe_Fiducial_Position_Move_Z_Click);
             // 
             // FormNewSub_Recipe_Vision
             // 
@@ -2537,5 +2551,6 @@
         private System.Windows.Forms.Button button_Recipe_RecipeVision_Illuminator_CoarseCamRed;
         private System.Windows.Forms.Button button_Recipe_RecipeVision_Illuminator_FineCamIR;
         private System.Windows.Forms.Button button_Recipe_RecipeVision_Illuminator_FineCamRed;
+        private System.Windows.Forms.Button button_Recipe_Fiducial_Position_Move_Z;
     }
 }

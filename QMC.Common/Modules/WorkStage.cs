@@ -1,84 +1,83 @@
 ﻿
 
 using ACS.SPiiPlusNET;
+using AsyncSocket;
+using Cognex.VisionPro.ImageProcessing;
+using Cognex.VisionPro.Implementation.Internal;
+using Microsoft.VisualBasic.ApplicationServices;
+using Microsoft.VisualBasic.Devices;
+using netDxf.Entities;
+using netDxf.Tables;
+using QMC.Common;
+using QMC.Common.Global;
+using QMC.Common.Hmi;
+using QMC.Common.Interpolator;
 using QMC.Common.Laser;
+using QMC.Common.Laser.Coherent_CO2;
 using QMC.Common.Motion.ACS.Motions;
 using QMC.Common.Motion.Ajin.Motions;
 using QMC.Common.Parts;
+using QMC.Common.Q_Config;
+using QMC.Common.Q_Sequence;
+using QMC.Common.Recipe;
+using QMC.Common.Vision;
 using QMC.Common.Vision.HIKVISION;
+using QMC.Common.Vision.Tools;
 using QMC.Common.VisionPart;
 using QMC.Core;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Windows;
-using System.Windows.Forms;
-using SerialCommHoneywellBarcodeReader;
-using static QMC.Common.Parts.WorkStageParameter;
-using Point = System.Drawing.Point;
-using SerialCommLaserPowerMeter1;                           //  PowerMeter (Source Pos.) - COM2
-using SerialCommLaserPowerMeter2;                           //  PowerMeter (Target Pos.) - COM3
+using QMC.Process.WorkStage.Parts;
 using SerialCommBeamExpander;                               //  Motorized Beam Expander - COM4
 using SerialCommDustCollector1;                             //  Dust Collector 1 - COM5
 using SerialCommDustCollector2;                             //  Dust Collector 2 - COM6
 using SerialCommElectroPneumaticRegulator;                  //  Electro Pneumatic Regulator - COM7
+using SerialCommHoneywellBarcodeReader;
+using SerialCommLaserPowerMeter1;                           //  PowerMeter (Source Pos.) - COM2
+using SerialCommLaserPowerMeter2;                           //  PowerMeter (Target Pos.) - COM3
 using SerialCommRapidLxLaser;                               //  RapidLx Laser - COM11
 using SocketLaser;
 using SocketLaserHeightSensor;
-using System.IO.Ports;
-using MessageBox = System.Windows.Forms.MessageBox;
 //  Sirius1
 using SpiralLab.Sirius;
-using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
-using static QMC.Common.Modules.Loader;
-using System.Security.Policy;
-
-
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.IO.Ports;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Numerics;
+using System.Reflection;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Runtime.Remoting.Channels;
+using System.Security.Policy;
+using System.ServiceModel.Channels;
 //using SpiralLab.Sirius2.Vision.Camera;
 using System.ServiceModel.Syndication;
-using AsyncSocket;
-using System.Numerics;
-using QMC.Common.Interpolator;
-using System.ServiceModel.Channels;
-using static QMC.Common.Equipment;
-using static QMC.Common.Modules.WorkStage;
-using Microsoft.VisualBasic.Devices;
-using System.Drawing;
-using Bitmap = System.Drawing.Bitmap;
-using static QMC.Common.Modules.Unloader;
-using Cognex.VisionPro.Implementation.Internal;
-using netDxf.Entities;
-using LwPolyline = SpiralLab.Sirius.LwPolyline;
-using PositionOffset = QMC.Common.Parts.PositionOffset;
-using QMC.Common.Vision.Tools;
-using Microsoft.VisualBasic.ApplicationServices;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Net;
 using System.Timers;
-using Cognex.VisionPro.ImageProcessing;
-using QMC.Process.WorkStage.Parts;
-using QMC.Common;
-using System.Runtime.InteropServices.WindowsRuntime;
-using QMC.Common.Hmi;
-using QMC.Common.Vision;
-using static QMC.Common.Parts.ActionItem;
-using static System.Net.Mime.MediaTypeNames;
-using System.Runtime.Remoting.Channels;
-using System.Diagnostics;
-using QMC.Common.Global;
+using System.Windows;
+using System.Windows.Forms;
+using static QMC.Common.Equipment;
 using static QMC.Common.Global.HoleAlignHelper;
-using System.Net.Sockets;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using netDxf.Tables;
-using QMC.Common.Q_Sequence;
-using QMC.Common.Q_Config;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
+using static QMC.Common.Modules.Loader;
+using static QMC.Common.Modules.Unloader;
+using static QMC.Common.Modules.WorkStage;
+using static QMC.Common.Parts.ActionItem;
+using static QMC.Common.Parts.WorkStageParameter;
 using static QMC.Common.Q_Sequence.Sequence_VerifyScannerCameraOffset;
-using System.Reflection;
-using QMC.Common.Recipe;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
+using Bitmap = System.Drawing.Bitmap;
+using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
+using LwPolyline = SpiralLab.Sirius.LwPolyline;
+using MessageBox = System.Windows.Forms.MessageBox;
+using Point = System.Drawing.Point;
+using PositionOffset = QMC.Common.Parts.PositionOffset;
 
 
 namespace QMC.Common.Modules
@@ -4629,6 +4628,11 @@ namespace QMC.Common.Modules
             if (Equipment.Machine_LaserType_CO2)
             {
                 BeamExpanderComm_Close();
+
+                if(bds.LaserCO2Manager != null && bds.LaserCO2Manager.IsConnected)
+                {
+                    bds.LaserCO2Manager.Close();
+                }
             }
 
             base.Close();
@@ -5068,6 +5072,69 @@ namespace QMC.Common.Modules
 
         #endregion
 
+
+        public void LaserCo2_Init()
+        {
+            try
+            {
+                // 이미 생성돼 있다면 재생성 방지
+                if (bds.LaserCO2Manager != null && bds.LaserCO2Manager.IsConnected)
+                {
+                    Log.Write("LaserCO2", "Init", "이미 연결되어 있음");
+                    return;
+                }
+
+                // ---- (1) 인스턴스가 없으면 BDS에서 생성 요청 ----
+                if (bds.LaserCO2Manager == null)
+                {
+                    Log.Write("LaserCO2", "Init", "BDS 레이저 매니저가 없음 → 새로 생성");
+                    bds.LaserCO2Manager = new LaserDiagnosticManager("LaserCO2", "169.254.12.13", 5000);
+                    bds.LaserCO2Manager.Owner = bds;
+                    bds.LaserCO2Manager.OnAlarmRaised += msg => Log.Write("LaserCO2", "Alarm", msg);
+                }
+
+                if (bds.LaserCO2Manager.Connect())
+                {
+                    Log.Write("LaserCO2", "Init", "Laser TCP 연결 성공");
+
+                    // 초기 상태 확인 (Optional)
+                    var st = bds.LaserCO2Manager.GetStatus();
+                    if (st != null)
+                        Log.Write("LaserCO2", "Status", st.ToString());
+                }
+                else
+                {
+                    Log.Write("LaserCO2", "Init", "Laser TCP 연결 실패");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
+
+        public void LaserCo2_Close()
+        {
+            try
+            {
+                if (bds.LaserCO2Manager == null)
+                    return;
+
+                if (bds.LaserCO2Manager.IsConnected)
+                {
+                    bds.LaserCO2Manager.Disconnect();
+                    Log.Write("LaserCO2", "Close", "TCP 연결 종료");
+                }
+
+                bds.LaserCO2Manager.Dispose();
+                //bds.LaserCO2Manager = null;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
 
         #region Serial Comm. - Motorized Beam Expander
         public void BeamExpanderComm_Init()
@@ -6687,7 +6754,6 @@ namespace QMC.Common.Modules
             workStageParameter.DO_Chiller_Run(true);
             Equipment._InitDeviceStatus.Chiller = true;
         }
-
         public void ChillerComm_Close()
         {
             return;  // 그냥 막자. I/O에서만 되게. 
@@ -7968,6 +8034,7 @@ namespace QMC.Common.Modules
             bool loaderMoving = (loader.m_nLoader_Transfer_Step != (int)Loader.Loader_Transfer_Step.None);
             bool laserIdle = ((m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)) &&
                              m_bLaserDrilling_Complete;
+            bool CycleSocketStop = Equipment.CycleSocketStop;
 
             if (isAlarm)
             {
@@ -7984,6 +8051,11 @@ namespace QMC.Common.Modules
             {
                 // Auto + 가공 Idle: Green ON, Yellow OFF, Red ON, Buzzer OFF
                 ApplyTowerLamp(green: true, yellow: false, red: true, buzzerDesired: false);
+            }
+            else if (CycleSocketStop)
+            {
+                // CycleSocketStop: Green OFF, Yellow ON, Red OFF, Buzzer OFF
+                ApplyTowerLamp(green: true, yellow: true, red: false, buzzerDesired: false);
             }
             else if (isAuto)
             {
@@ -10136,7 +10208,7 @@ namespace QMC.Common.Modules
                     //  Target 좌표 재설정
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z;
                     loader.loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)Loader.LDUL_TeachingPosList.LD_TR_SafetyPos].LD_Transfer_Z;
-                    unloader.unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+                    unloader.unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
 
                     MC_Func.MC_MovePosition((int)WorkStageParameter.AxisAjinEnum.Z,
                                         workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
@@ -10212,7 +10284,7 @@ namespace QMC.Common.Modules
                     loader.loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)Loader.LDUL_TeachingPosList.LD_TR_SafetyPos].LD_Transfer_X;
                     loader.loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = loader.stLDULTeachingPos[(int)Loader.LDUL_TeachingPosList.MAligner_OpenPos].MAligner_X;
                     loader.loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = loader.stLDULTeachingPos[(int)Loader.LDUL_TeachingPosList.MAligner_OpenPos].MAligner_Y;
-                    unloader.unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_X;
+                    unloader.unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_X;
 
                     MC_Func.MC_MovePosition((int)WorkStageParameter.AxisAjinEnum.X,
                                         workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X],
@@ -13584,6 +13656,25 @@ namespace QMC.Common.Modules
                                 }   
                             }
 
+                            // Gold Powder Align 사용 시, Offset이 0,0 이라도,
+                            // NG Power가 아닌 OK로 처리.
+                            if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                            {
+                                // GoldPowder Align 결과 존재 여부 확인
+                                bool bGoldPowderAlignResultExist =
+                                    Math.Abs(m_st4PointGoldpowderAlign_Result_LastSuccess.dCenterOffsetX) > 0.0001 ||
+                                    Math.Abs(m_st4PointGoldpowderAlign_Result_LastSuccess.dCenterOffsetY) > 0.0001 ||
+                                    Math.Abs(m_st4PointGoldpowderAlign_Result_LastSuccess.dRotationAngle) > 0.0001;
+
+                                if (bGoldPowderAlignResultExist)
+                                {
+                                    if (Equipment.m_GoldPowderOffsetX == 0 && Equipment.m_GoldPowderOffsetY == 0)
+                                    {
+                                        bSocketAlignOK = true;
+                                    }
+                                }
+                            }
+
                             //m_bMainWorkCycle_ResultOK = true;
                             //  Laser Drilling 결과에 따라 OK/NG 다르게 해야 함.
                             //  소켓 얼라인 결과가 NG 이면 NG 로 (설정 개수 이상 NG 일 경우에)
@@ -13824,8 +13915,8 @@ namespace QMC.Common.Modules
             int redVolume = 0;
             int irVolume = 0;
             double exposureTime = 0.0;
-
-            if(Equipment.Machine_LaserType_CO2)
+            GoldPowderAlignResult_Reset();
+            if (Equipment.Machine_LaserType_CO2)
             {
                 // Model에 따라 다르다. 나만 알듯..
                 m_bCO2_repairMode = false;  //1.2T Model - Repair 적용.
@@ -15583,41 +15674,14 @@ namespace QMC.Common.Modules
             return new PointD(result.X, result.Y);
         }
 
-        private XyCoordinate CoordinateTransform(XyCoordinate xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v, bool bDirection = true)
+        private XyCoordinate CoordinateTransform(XyCoordinate xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v)
         {
-            if(bDirection)
-            {
-                //도면에서 스테이지 좌표 보정 시.
-                double dX = xyCoordinate.X - dRotationCenterX;
-                double dY = xyCoordinate.Y - dRotationCenterY;
-                double dNewX = (dX * Math.Cos(v)) - (dY * Math.Sin(v));
-                double dNewY = (dX * Math.Sin(v)) + (dY * Math.Cos(v));
-                return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
-            }
-            else
-            {
-                double dX = xyCoordinate.X - dRotationCenterX;
-                double dY = xyCoordinate.Y - dRotationCenterY;
-                double dNewX = (dX * Math.Cos(v)) - (dY * Math.Sin(v));
-                double dNewY = (dX * Math.Sin(v)) + (dY * Math.Cos(v));
-                return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
-
-                ////스테이지에서 스테이지 좌표 보정 시.
-                //double dx = xyCoordinate.X - dRotationCenterX;
-                //double dy = xyCoordinate.Y - dRotationCenterY;
-                //double cos = Math.Cos(v);
-                //double sin = Math.Sin(v * -1);
-                //// 영상 좌표계(+v=시계, y-down)용 순수 회전
-                //double nx = dx * cos - dy * sin;
-                //double ny = dx * sin + dy * cos;
-                ////return new XyCoordinate(nx + dRotationCenterX, ny + dRotationCenterY);
-
-                //nx += dRotationCenterX;
-                //ny += dRotationCenterY;
-                ////nx *= -1;
-                //ny *= 1;
-                //return new XyCoordinate(nx, ny);
-            }
+            //도면에서 스테이지 좌표 보정 시.
+            double dX = xyCoordinate.X - dRotationCenterX;
+            double dY = xyCoordinate.Y - dRotationCenterY;
+            double dNewX = (dX * Math.Cos(v)) - (dY * Math.Sin(v));
+            double dNewY = (dX * Math.Sin(v)) + (dY * Math.Cos(v));
+            return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
         }
 
         private int SpiralSearch(double dWidth , int maxSteps = 9, AlignMode alignMode = AlignMode.Socket)
@@ -20515,7 +20579,7 @@ namespace QMC.Common.Modules
             
             if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
-                MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
+                //MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return false;
             }
 
@@ -20531,7 +20595,7 @@ namespace QMC.Common.Modules
 
             if (m_nLayerCount == 0)
             {
-                MessageBox.Show("Layer 개수가 0 입니다.", "Information!!");
+                //MessageBox.Show("Layer 개수가 0 입니다.", "Information!!");
                 return false;
             }
 
@@ -22948,6 +23012,39 @@ namespace QMC.Common.Modules
                 Document.Action.ActEntityRotate(Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenterX, (float)m_dRotCenterY);
                 Document.Action.ActEntityTransit(Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
             }
+
+            // Test
+            //if (Equipment.formMain.InvokeRequired)
+            //{
+            //    Equipment.formMain.BeginInvoke(new System.Action(() =>
+            //    {
+            //        SiriusViewObjectRotateNOffset(m_dRotCenterX, m_dRotCenterY, m_dOffsetX, m_dOffsetY, m_dAngle);
+            //    }));
+            //    return;
+            //}
+
+            //// ... 실제 회전/이동 처리 부분 ...
+            //var doc = Equipment.GetEqpSiriusViewerDocument();
+            //if (doc == null || doc.Action == null) 
+            //    return;
+
+            //// 변환만 수행
+            //var sel = doc.Action.SelectedEntity;
+            //if (sel == null) return;
+
+            //doc.Action.ActEntityRotate(sel, (float)m_dAngle, (float)m_dRotCenterX, (float)m_dRotCenterY);
+            //doc.Action.ActEntityTransit(sel, (float)m_dOffsetX, (float)m_dOffsetY);
+
+            //// 바로 Invalidate() 하지 말고, SafeInvalidateViewer로 지연 호출
+            //Task.Delay(50).ContinueWith(_ =>
+            //{
+            //    try
+            //    {
+            //        if (Equipment.formMain.SiriusViewer_Main?.IsHandleCreated == true)
+            //            Equipment.formMain.SafeInvalidateViewer(Equipment.formMain.SiriusViewer_Main);
+            //    }
+            //    catch { }
+            //}, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         /// <summary>
@@ -30326,6 +30423,12 @@ namespace QMC.Common.Modules
                     m_st4PointAlign_Result.dCenterOffsetY = 0;
                     m_st4PointAlign_Result.dRotationAngle = 0;
                 }
+
+                //적용 Offset 받기
+                Equipment.GoldPowderAlign_ResultValid = true;
+                Equipment.m_GoldPowderOffsetX = m_st4PointAlign_Result.dCenterOffsetX;
+                Equipment.m_GoldPowderOffsetY = m_st4PointAlign_Result.dCenterOffsetY;
+
             }
 
 
@@ -33348,7 +33451,7 @@ namespace QMC.Common.Modules
             // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
             if (Equipment.Machine_PreAlign_First_Enable && m_bPreAlignCompleted)
             {
-                result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y), false);
+                result = ConvertPreAlignData(new XyCoordinate(result.X, result.Y));
             }
 
             //  좌표계 변환 (Fine Camera 위치 --> Laser Height Sensor 위치)
@@ -33470,70 +33573,109 @@ namespace QMC.Common.Modules
                 , this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] , 0);
             
         }
+
         public XyCoordinate ConvertPreAlignData(XyCoordinate position, bool bDirection = true)
         {
-            XyCoordinate xyCoordinate = new XyCoordinate(0, 0);
-            xyCoordinate = position;
+            XyCoordinate xyCoordinate = new XyCoordinate(position.X, position.Y);
 
             Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate before : ", xyCoordinate.ToString());
 
-            if (m_bPreAlignCompleted && 
-                xyCoordinateAlignPositionLast != null && 
+            if (m_bPreAlignCompleted &&
+                xyCoordinateAlignPositionLast != null &&
                 xyCoordinateAlignPositionOrgLast != null)
             {
-                if(bDirection)
-                {
-                    XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
-                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
-                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
-                    Log.Write("SLD-200", "ConvertPreAlignData-Offset  : " + offset.ToString());
-                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign before : ", xyCoordinate.ToString());
+                XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+                double angle = m_st4PointAlign_Result_LastSuccess.dRotationAngle;
 
-                    xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
-                        xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle, bDirection);
+                Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                Log.Write("SLD-200", "ConvertPreAlignData-Offset : " + offset.ToString());
+                Log.Write("SLD-200", "ConvertPreAlignData-Angle : " + angle.ToString());
+
+                if (bDirection)
+                {
+                    //----------------------------------------------------------
+                    // ✅ 정방향 변환 (도면 → 스테이지)
+                    // 회전(-angle) → 이동(+offset)
+                    //----------------------------------------------------------
+                    xyCoordinate = CoordinateTransform(
+                        xyCoordinate,
+                        xyCoordinateAlignPositionOrgLast.X,
+                        xyCoordinateAlignPositionOrgLast.Y,
+                        -angle);
 
                     xyCoordinate = xyCoordinate + offset;
-                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign After : ", xyCoordinate.ToString());
-                    Log.Write("SLD-200", "ConvertPreAlignData-Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
-
-                    //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionLast.ToString());
-                    //double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
-                    //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", dAngle.ToString());
-                    //xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionLast.X,
-                    //                                   xyCoordinateAlignPositionLast.Y, dAngle);
-
-                    Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
                 }
                 else
                 {
-                    XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
-                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
-                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
-                    Log.Write("SLD-200", "ConvertPreAlignData-Offset  : " + offset.ToString());
-                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign before : ", xyCoordinate.ToString());
+                    //----------------------------------------------------------
+                    // ✅ 역변환 (스테이지 → 도면)
+                    // 이동(-offset) → 회전(+angle)
+                    //----------------------------------------------------------
+                    xyCoordinate = xyCoordinate - offset;
 
-                    //xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
-                    //    xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle, bDirection);
-                    xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
-                        xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle, bDirection);
-
-                    xyCoordinate = xyCoordinate + offset;
-                    Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign After : ", xyCoordinate.ToString());
-                    Log.Write("SLD-200", "ConvertPreAlignData-Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
-
-                    //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionLast.ToString());
-                    //double dAngle = m_st4PointAlign_Result_LastSuccess.dRotationAngle * -1;
-                    //Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinateAlignPositionOrgLast : ", dAngle.ToString());
-                    //xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionLast.X,
-                    //                                   xyCoordinateAlignPositionLast.Y, dAngle);
-
-                    Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
+                    xyCoordinate = CoordinateTransform(
+                        xyCoordinate,
+                        xyCoordinateAlignPositionOrgLast.X,
+                        xyCoordinateAlignPositionOrgLast.Y,
+                        +angle);
                 }
-                
+
+                Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
             }
 
             return xyCoordinate;
         }
+
+        //public XyCoordinate ConvertPreAlignData(XyCoordinate position, bool bDirection = true)
+        //{
+        //    XyCoordinate xyCoordinate = new XyCoordinate(0, 0);
+        //    xyCoordinate = position;
+
+        //    Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate before : ", xyCoordinate.ToString());
+
+        //    if (m_bPreAlignCompleted && 
+        //        xyCoordinateAlignPositionLast != null && 
+        //        xyCoordinateAlignPositionOrgLast != null)
+        //    {
+        //        if(bDirection)
+        //        {
+        //            XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+        //            Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+        //            Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+        //            Log.Write("SLD-200", "ConvertPreAlignData-Offset  : " + offset.ToString());
+        //            Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign before : ", xyCoordinate.ToString());
+
+        //            xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
+        //                xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+
+        //            xyCoordinate = xyCoordinate + offset;
+        //            Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign After : ", xyCoordinate.ToString());
+        //            Log.Write("SLD-200", "ConvertPreAlignData-Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+        //            Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
+        //        }
+        //        else
+        //        {
+        //            XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+        //            Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+        //            Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+        //            Log.Write("SLD-200", "ConvertPreAlignData-Offset  : " + offset.ToString());
+        //            Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign before : ", xyCoordinate.ToString());
+
+        //            xyCoordinate = CoordinateTransform(xyCoordinate, xyCoordinateAlignPositionOrgLast.X,
+        //                xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+
+        //            xyCoordinate = xyCoordinate + offset;
+        //            Log.Write("SLD-200", "ConvertPreAlignData-xyCoordinateAlign After : ", xyCoordinate.ToString());
+        //            Log.Write("SLD-200", "ConvertPreAlignData-Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+
+        //            Log.Write("SLD-200", "ConvertPreAlignData", "xyCoordinate After : ", xyCoordinate.ToString());
+        //        }
+
+        //    }
+
+        //    return xyCoordinate;
+        //}
 
         public void SiriusViewObjectEntitySelect(List<IEntity> list)
         {
@@ -35366,12 +35508,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
                     {
-                        if (true)
-                        {
-                            strTemp = "Work Stage Vacuum On 실패.";
-                            Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_Stage_VacuumOn_Check", strTemp);
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
-                        }
+                        m_bworkStageVacuumFail = true;
+                        strTemp = "Work Stage Vacuum On 실패.";
+                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_Stage_VacuumOn_Check", strTemp);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000 ||
                              TickCount_Elapsed((int)TickType.TICK_MAIN) < 30000  )
@@ -42645,41 +42785,7 @@ namespace QMC.Common.Modules
                             return (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                         }
 
-                        //if (m_AlignMode == AlignMode.GoldPowder)
-                        //{
-                        //    if (m_bCO2_repairMode)
-                        //    {
-                        //        m_bPassedSocket_Exist = false;
-                        //        m_nSocketNum_forFailedSocket_Align = -1;
-                        //        if (m_stThruHole_SocketData_ProcessingFlag != null)
-                        //        {
-                        //            if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
-                        //            {
-                        //                //  가장 마지막에 Align 성공한 Socket 위치에서 얼라인을 한다.
-                        //                for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag.Length; i++)
-                        //                {
-                        //                    if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == true)
-                        //                    {
-                        //                        m_nSocketNum_forFailedSocket_Align = i;
-                        //                    }
-                        //                    else
-                        //                    {
-                        //                        m_bPassedSocket_Exist = true;
-                        //                    }
-                        //                }
-                        //            }
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        // goldPowder 실패시에는 그냥 소켓 얼라인 정보로 수행.
-                        //        m_bPassedSocket_Exist = false;
-                        //        m_nSocketNum_forFailedSocket_Align = -1;
-
-                        //        Log.Write("Test", Equipment.User_Name, "Auto Run", "GoldPowder 일반 모드: 재정렬 스킵");
-                        //    }
-                        //}
-                        //else //Socket Align 모드
+                        //Socket Align 모드
                         {
                             // (Socket 모드) 실패/건너뛴 소켓 재정렬 대상 탐색
                             m_bPassedSocket_Exist = false;
@@ -42704,6 +42810,7 @@ namespace QMC.Common.Modules
                             }
                         }
 
+                        // 여기 의심.. ㅇㅋ.. 
                         // 재시도 조건들 (Socket 모드에서만)
                         if (m_AlignMode == AlignMode.Socket && 
                             m_bPassedSocket_Exist && 

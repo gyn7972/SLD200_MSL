@@ -2067,7 +2067,6 @@ namespace SLD200_MSL
                     workStage.jigAligner_LowRes.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage(); //이거 사용중.
                 }
 
-                //workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = 
                 if (Equipment.stVisionRecipeSet.PrePatternMatching != null)
                 {
                     workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxTolerance = Equipment.stVisionRecipeSet.PrePatternMatching.MaxTolerance;

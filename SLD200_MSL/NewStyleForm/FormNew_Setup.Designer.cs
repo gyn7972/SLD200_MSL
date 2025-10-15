@@ -233,6 +233,8 @@
             this.label51 = new System.Windows.Forms.Label();
             this.label53 = new System.Windows.Forms.Label();
             this.tabPage_Setup_ScannerCalibration = new System.Windows.Forms.TabPage();
+            this.button_Setup_ScannerCal_Vacuum = new System.Windows.Forms.Button();
+            this.checkBox_Setup_ScannerCal_AcrylicPanel = new System.Windows.Forms.CheckBox();
             this.groupBox_Setup_ScannerCal__Illuminator2 = new System.Windows.Forms.GroupBox();
             this.button_Setup_ScannerCal_Illuminator_FineCamIR = new System.Windows.Forms.Button();
             this.button_Setup_ScannerCal_Illuminator_FineCamRed = new System.Windows.Forms.Button();
@@ -609,7 +611,6 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.checkBox_Setup_ScannerCal_AcrylicPanel = new System.Windows.Forms.CheckBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -3255,6 +3256,7 @@
             // 
             // tabPage_Setup_ScannerCalibration
             // 
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.button_Setup_ScannerCal_Vacuum);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.checkBox_Setup_ScannerCal_AcrylicPanel);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.groupBox_Setup_ScannerCal__Illuminator2);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.label85);
@@ -3290,6 +3292,28 @@
             this.tabPage_Setup_ScannerCalibration.TabIndex = 5;
             this.tabPage_Setup_ScannerCalibration.Text = "Scanner Calibration";
             this.tabPage_Setup_ScannerCalibration.UseVisualStyleBackColor = true;
+            // 
+            // button_Setup_ScannerCal_Vacuum
+            // 
+            this.button_Setup_ScannerCal_Vacuum.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_ScannerCal_Vacuum.Location = new System.Drawing.Point(1752, 552);
+            this.button_Setup_ScannerCal_Vacuum.Name = "button_Setup_ScannerCal_Vacuum";
+            this.button_Setup_ScannerCal_Vacuum.Size = new System.Drawing.Size(123, 51);
+            this.button_Setup_ScannerCal_Vacuum.TabIndex = 226;
+            this.button_Setup_ScannerCal_Vacuum.Text = "CalPan Vaccum";
+            this.button_Setup_ScannerCal_Vacuum.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_Vacuum.Click += new System.EventHandler(this.button_Setup_ScannerCal_Vacuum_Click);
+            // 
+            // checkBox_Setup_ScannerCal_AcrylicPanel
+            // 
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.AutoSize = true;
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.Location = new System.Drawing.Point(1722, 288);
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.Name = "checkBox_Setup_ScannerCal_AcrylicPanel";
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.Size = new System.Drawing.Size(128, 23);
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.TabIndex = 225;
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.Text = "AcrylicPanel";
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_ScannerCal_AcrylicPanel.CheckedChanged += new System.EventHandler(this.checkBox_Setup_ScannerCal_AcrylicPanel_CheckedChanged);
             // 
             // groupBox_Setup_ScannerCal__Illuminator2
             // 
@@ -5062,7 +5086,7 @@
             this.comboBox_Setup_FlatnessMeasurementPos_List.Items.AddRange(new object[] {
             "Work Stage",
             "Cal. Plate",
-            "User1",
+            "Auto",
             "User2",
             "User3"});
             this.comboBox_Setup_FlatnessMeasurementPos_List.Location = new System.Drawing.Point(109, 26);
@@ -5801,13 +5825,13 @@
             // 
             // label99
             // 
-            this.label99.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label99.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label99.Location = new System.Drawing.Point(5, 172);
             this.label99.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label99.Name = "label99";
             this.label99.Size = new System.Drawing.Size(335, 24);
             this.label99.TabIndex = 93;
-            this.label99.Text = "To UnLoading_MSL [Y] :";
+            this.label99.Text = "언로딩 위치 MSL [Y] :";
             this.label99.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button20
@@ -5835,13 +5859,13 @@
             // 
             // label98
             // 
-            this.label98.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label98.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label98.Location = new System.Drawing.Point(5, 110);
             this.label98.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label98.Name = "label98";
             this.label98.Size = new System.Drawing.Size(335, 24);
             this.label98.TabIndex = 90;
-            this.label98.Text = "To Loading_MSL [Y] :";
+            this.label98.Text = "로딩 위치 MSL [Y] :";
             this.label98.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button19
@@ -5869,13 +5893,13 @@
             // 
             // label97
             // 
-            this.label97.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label97.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label97.Location = new System.Drawing.Point(5, 142);
             this.label97.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label97.Name = "label97";
             this.label97.Size = new System.Drawing.Size(335, 24);
             this.label97.TabIndex = 87;
-            this.label97.Text = "To UnLoading_MSL [X] :";
+            this.label97.Text = "언로딩 위치 MSL [X] :";
             this.label97.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button18
@@ -5903,13 +5927,13 @@
             // 
             // label90
             // 
-            this.label90.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label90.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label90.Location = new System.Drawing.Point(5, 82);
             this.label90.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label90.Name = "label90";
             this.label90.Size = new System.Drawing.Size(335, 24);
             this.label90.TabIndex = 84;
-            this.label90.Text = "To Loading_MSL [X] :";
+            this.label90.Text = "로딩 위치 MSL [X] :";
             this.label90.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button17
@@ -5926,13 +5950,13 @@
             // 
             // label88
             // 
-            this.label88.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label88.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label88.Location = new System.Drawing.Point(5, 53);
             this.label88.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label88.Name = "label88";
             this.label88.Size = new System.Drawing.Size(335, 24);
             this.label88.TabIndex = 81;
-            this.label88.Text = "From Stage Origin Pos. To Scanner Center_MSL [Y] :";
+            this.label88.Text = "스캐너 중심 위치 MSL [Y] :";
             this.label88.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button15
@@ -5960,13 +5984,13 @@
             // 
             // label89
             // 
-            this.label89.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label89.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label89.Location = new System.Drawing.Point(5, 27);
             this.label89.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label89.Name = "label89";
             this.label89.Size = new System.Drawing.Size(335, 24);
             this.label89.TabIndex = 78;
-            this.label89.Text = "From Stage Origin Pos. To Scanner Center_MSL [X] :";
+            this.label89.Text = "스캐너 중심 위치 MSL [X] :";
             this.label89.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button16
@@ -6307,6 +6331,7 @@
             this.checkBox_Setup_Option_SocketHeight_Batch.TabIndex = 128;
             this.checkBox_Setup_Option_SocketHeight_Batch.Text = "SocketHeight_Batch_Enable";
             this.checkBox_Setup_Option_SocketHeight_Batch.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_SocketHeight_Batch.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_SocketHeight_Batch_CheckedChanged);
             // 
             // checkBox_HoleCenterEnable
             // 
@@ -7088,13 +7113,13 @@
             // 
             // label48
             // 
-            this.label48.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label48.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label48.Location = new System.Drawing.Point(5, 99);
             this.label48.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label48.Name = "label48";
             this.label48.Size = new System.Drawing.Size(335, 24);
             this.label48.TabIndex = 73;
-            this.label48.Text = "From Stage Origin Pos. To Scanner Center [Y] :";
+            this.label48.Text = "스캐너 중심 위치 [Y] :";
             this.label48.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y
@@ -7122,13 +7147,13 @@
             // 
             // label49
             // 
-            this.label49.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label49.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label49.Location = new System.Drawing.Point(5, 73);
             this.label49.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(335, 24);
             this.label49.TabIndex = 70;
-            this.label49.Text = "From Stage Origin Pos. To Scanner Center [X] :";
+            this.label49.Text = "스캐너 중심 위치 [X] :";
             this.label49.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X
@@ -7916,17 +7941,6 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox_Setup_ScannerCal_AcrylicPanel
-            // 
-            this.checkBox_Setup_ScannerCal_AcrylicPanel.AutoSize = true;
-            this.checkBox_Setup_ScannerCal_AcrylicPanel.Location = new System.Drawing.Point(1722, 288);
-            this.checkBox_Setup_ScannerCal_AcrylicPanel.Name = "checkBox_Setup_ScannerCal_AcrylicPanel";
-            this.checkBox_Setup_ScannerCal_AcrylicPanel.Size = new System.Drawing.Size(128, 23);
-            this.checkBox_Setup_ScannerCal_AcrylicPanel.TabIndex = 225;
-            this.checkBox_Setup_ScannerCal_AcrylicPanel.Text = "AcrylicPanel";
-            this.checkBox_Setup_ScannerCal_AcrylicPanel.UseVisualStyleBackColor = true;
-            this.checkBox_Setup_ScannerCal_AcrylicPanel.CheckedChanged += new System.EventHandler(this.checkBox_Setup_ScannerCal_AcrylicPanel_CheckedChanged);
-            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -8621,5 +8635,6 @@
         private System.Windows.Forms.Button button_Setup_ScannerCal_Illuminator_FineCamIR;
         private System.Windows.Forms.Button button_Setup_ScannerCal_Illuminator_FineCamRed;
         private System.Windows.Forms.CheckBox checkBox_Setup_ScannerCal_AcrylicPanel;
+        private System.Windows.Forms.Button button_Setup_ScannerCal_Vacuum;
     }
 }
