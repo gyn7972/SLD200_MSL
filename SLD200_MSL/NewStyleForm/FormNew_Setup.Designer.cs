@@ -6322,6 +6322,7 @@
             this.checkBox_Setup_Option_SocketVision_Batch.TabIndex = 129;
             this.checkBox_Setup_Option_SocketVision_Batch.Text = "SocketVision_Batch_Enable";
             this.checkBox_Setup_Option_SocketVision_Batch.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_SocketVision_Batch.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_SocketVision_Batch_CheckedChanged);
             // 
             // checkBox_Setup_Option_SocketHeight_Batch
             // 

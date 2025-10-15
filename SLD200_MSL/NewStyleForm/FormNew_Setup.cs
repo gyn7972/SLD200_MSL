@@ -4860,19 +4860,25 @@ namespace SLD200_MSL
 
         private void checkBox_Setup_Option_SocketHeight_Batch_CheckedChanged(object sender, EventArgs e)
         {
-            Equipment.Machine_SocketHeight_Batch_Use = false;
-            if (checkBox_Setup_Option_SocketHeight_Batch.Checked)
+            
+        }
+
+        private void checkBox_Setup_Option_SocketVision_Batch_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.Machine_SocketVision_Batch_Use = false;
+            if (checkBox_Setup_Option_SocketVision_Batch.Checked)
             {
                 if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                 {
                     var mb = new MessageBoxOk();
                     mb.ShowDialog("Information!", "GoldPowder 사용 시 SocketAlign 동시 사용 불가 합니다.");
                     Equipment.Machine_SocketVision_Batch_Use = false;
+                    checkBox_Setup_Option_SocketVision_Batch.Checked = false;
                 }
             }
             else
             {
-                Equipment.Machine_SocketHeight_Batch_Use = false;
+                Equipment.Machine_SocketVision_Batch_Use = false;
             }
         }
     }

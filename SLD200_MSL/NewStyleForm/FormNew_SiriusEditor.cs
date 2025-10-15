@@ -922,118 +922,118 @@ namespace SLD200_MSL
 
         private void Timer_RtcInit_Func(object sender, EventArgs e)
         {
-            // 한 번만 처리
-             if (_rtcInitDone || _rtcInitRunning)
-                return;
-
-            // 사용자 요청 플래그 확인
-            //if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6)
+            //// 한 번만 처리
+            //if (_rtcInitDone || _rtcInitRunning)
             //    return;
 
-            // 마킹 중/오토런 중이면 대기
-            try
-            {
-                if (workStage != null && workStage.rtc != null)
-                {
-                    if (workStage.rtc.CtlGetStatus(RtcStatus.Busy))
-                        return;
-                }
-                if (Equipment.AutoRunStatus) // 오토런 중에는 초기화 금지
-                    return;
-            }
-            catch { /* status 조회 예외 무시 */ }
+            //// 사용자 요청 플래그 확인
+            ////if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6)
+            ////    return;
 
-            _rtcInitRunning = true;
-            Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 시도");
-
-            try
-            {
-                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
-
-                bool ok = false;
-                // 이미 RTC 살아 있으면 안전 종료 후 재초기화
-                if (workStage.rtc != null && Equipment._InitDeviceStatus.Scanner)
-                {
-                    try
-                    {
-                        workStage.Sirius_Close();                 // 안전 종료 (기존 Rtc_Close 대체 케이스)
-                        Equipment._InitDeviceStatus.Scanner = false;
-                        Thread.Sleep(100);
-                    }
-                    catch { }
-                    ok = Rtc_Init(true);
-                }
-                else
-                {
-                    ok = Rtc_Init();
-                }
-
-                Equipment._InitDeviceStatus.Scanner = ok;
-                if (!ok)
-                    MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-                Log.Write("SLD-200", "RTC_Initialize", ok ? "초기화 성공" : "초기화 실패");
-            }
-            catch (Exception ex)
-            {
-                Equipment._InitDeviceStatus.Scanner = false;
-                Log.Write(ex);
-            }
-            finally
-            {
-                _rtcInitRunning = false;
-                _rtcInitDone = true;          // 한 번만 돌도록
-                timer_RtcInit.Enabled = false; // 타이머 중단
-            }
-
-            //기존 코드
-            //if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
+            //// 마킹 중/오토런 중이면 대기
+            //try
             //{
-            //    //시컨스에서 초기화 했다 안했다 할거니깐.. 죽이면 안됨.
-            //    //우선 안되니깐 죽이자.
-            //    //timer_RtcInit.Enabled = false;
-            //    //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
-            //    Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
+            //    if (workStage != null && workStage.rtc != null)
+            //    {
+            //        if (workStage.rtc.CtlGetStatus(RtcStatus.Busy))
+            //            return;
+            //    }
+            //    if (Equipment.AutoRunStatus) // 오토런 중에는 초기화 금지
+            //        return;
+            //}
+            //catch { /* status 조회 예외 무시 */ }
 
-            //    // sirius 팅겨나와서 이거 여기다 둬야 하네...
+            //_rtcInitRunning = true;
+            //Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 시도");
+
+            //try
+            //{
             //    Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
 
+            //    bool ok = false;
+            //    // 이미 RTC 살아 있으면 안전 종료 후 재초기화
             //    if (workStage.rtc != null && Equipment._InitDeviceStatus.Scanner)
             //    {
-            //        //  이미 RTC 가 초기화 되어 있다면 Rtc 객체를 닫고 다시 초기화 한다.
-            //        //Rtc_Close();
-            //        workStage.Sirius_Close();
-            //        Equipment._InitDeviceStatus.Scanner = false;
-
-            //        Thread.Sleep(100); //  RTC 가 닫히는 시간을 준다.
-            //        if (Rtc_Init(true))
+            //        try
             //        {
-            //            Equipment._InitDeviceStatus.Scanner = true;
-            //        }
-            //        else
-            //        {
+            //            workStage.Sirius_Close();                 // 안전 종료 (기존 Rtc_Close 대체 케이스)
             //            Equipment._InitDeviceStatus.Scanner = false;
-            //            MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            //            Thread.Sleep(100);
             //        }
-
-            //        Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - Retry");
+            //        catch { }
+            //        ok = Rtc_Init(true);
             //    }
             //    else
             //    {
-            //        if (Rtc_Init())
-            //        {
-            //            Equipment._InitDeviceStatus.Scanner = true;
-            //        }
-            //        else
-            //        {
-            //            Equipment._InitDeviceStatus.Scanner = false;
-            //            MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            //            Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - First");
-            //        }
+            //        ok = Rtc_Init();
             //    }
-            //    //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+
+            //    Equipment._InitDeviceStatus.Scanner = ok;
+            //    if (!ok)
+            //        MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+            //    Log.Write("SLD-200", "RTC_Initialize", ok ? "초기화 성공" : "초기화 실패");
             //}
+            //catch (Exception ex)
+            //{
+            //    Equipment._InitDeviceStatus.Scanner = false;
+            //    Log.Write(ex);
+            //}
+            //finally
+            //{
+            //    _rtcInitRunning = false;
+            //    _rtcInitDone = true;          // 한 번만 돌도록
+            //    timer_RtcInit.Enabled = false; // 타이머 중단
+            //}
+
+            //기존 코드
+            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
+            {
+                //시컨스에서 초기화 했다 안했다 할거니깐.. 죽이면 안됨.
+                //우선 안되니깐 죽이자.
+                //timer_RtcInit.Enabled = false;
+                //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+                Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
+
+                // sirius 팅겨나와서 이거 여기다 둬야 하네...
+                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+
+                if (workStage.rtc != null && Equipment._InitDeviceStatus.Scanner)
+                {
+                    //  이미 RTC 가 초기화 되어 있다면 Rtc 객체를 닫고 다시 초기화 한다.
+                    //Rtc_Close();
+                    workStage.Sirius_Close();
+                    Equipment._InitDeviceStatus.Scanner = false;
+
+                    Thread.Sleep(100); //  RTC 가 닫히는 시간을 준다.
+                    if (Rtc_Init(true))
+                    {
+                        Equipment._InitDeviceStatus.Scanner = true;
+                    }
+                    else
+                    {
+                        Equipment._InitDeviceStatus.Scanner = false;
+                        MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+
+                    Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - Retry");
+                }
+                else
+                {
+                    if (Rtc_Init())
+                    {
+                        Equipment._InitDeviceStatus.Scanner = true;
+                    }
+                    else
+                    {
+                        Equipment._InitDeviceStatus.Scanner = false;
+                        MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                        Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 - First");
+                    }
+                }
+                //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+            }
         }
 
         private void FormNew_CommunicationTerminal_Shown(object sender, EventArgs e)
