@@ -21,14 +21,6 @@ namespace SLD200_MSL
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-
-            Application.SetCompatibleTextRenderingDefault(false);
-            Equipment.CreateInstance("SLD200_MSL");
-            Application.EnableVisualStyles();
-            //   Application.Run(new Form1());
-            Equipment.formMain = new FormMain();
-            Application.Run(Equipment.formMain);
-            Equipment.Close();
             // 전역 Mutex로 다중 실행 방지 (세션 간 포함)
             const string mutexName = @"Global\SLD200_MSL_App_Mutex";
             bool createdNew;
