@@ -1261,6 +1261,12 @@ namespace SLD200_MSL
                     SetColor(label_Main_Serial_Number, Color.Black, Color.Lime);
                 }
             }
+            else
+            {
+                strText = string.Format("Serial Number : Not Use");
+                SetValue(label_Main_Serial_Number, strText);
+                SetColor(label_Main_Serial_Number, Color.Black, Color.DarkRed);
+            }
 
             if (workStage.m_stLaserDrilling_SocketData != null)
             {
@@ -1396,7 +1402,7 @@ namespace SLD200_MSL
                         {
                             strText = "Height Check : Not Use";
                             SetValue(label_Main_Title_Status, strText);
-                            SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+                            SetColor(label_Main_Title_Status, Color.Black, Color.Red);
                             m_blinkToggle = true;
                         }
 
