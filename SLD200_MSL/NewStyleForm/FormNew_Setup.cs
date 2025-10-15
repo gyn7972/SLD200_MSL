@@ -4851,7 +4851,6 @@ namespace SLD200_MSL
             }
             else
             {
-
                 workStage.workStageParameter.DO_Laser_CalSheet_Blow(false);
                 Thread.Sleep(100);
                 workStage.workStageParameter.DO_Laser_CalSheet_Vacuum(true);

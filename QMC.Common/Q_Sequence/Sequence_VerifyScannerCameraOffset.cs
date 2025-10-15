@@ -1043,26 +1043,27 @@ namespace QMC.Common.Q_Sequence
 
                         if (bCalChagne)
                         {
-                            Equipment.Scanner_Calibration_PosX_Last = 0.0;
-                            Equipment.Scanner_Calibration_PosY_Last = 0.0;
-
-                            m_dCurrentCalPosX = dScannerCalAreaPosX_Max; // dScannerCalAreaPosX_Min;
-                            m_dCurrentCalPosY = dScannerCalAreaPosY_Max; // dScannerCalAreaPosY_Min;
-
-                            bIsLeftToRight = true; // 첫 줄은 항상 왼쪽→오른쪽
-                            Equipment.Scanner_Calibration_Change = false;
-                            bCalChagne = false;
-
-                            //기존코드
+                            if (bCalPosition)
                             {
-                                //Equipment.Scanner_Calibration_PosX_Last = 0.0;
-                                //Equipment.Scanner_Calibration_PosY_Last = 0.0;
+                                Equipment.Scanner_Calibration_PosX_Last = 0.0;
+                                Equipment.Scanner_Calibration_PosY_Last = 0.0;
 
-                                //m_dCurrentCalPosX = dScannerCalTeachingPosX;// m_dScannerCalPosX_Last;
-                                //m_dCurrentCalPosY = dScannerCalTeachingPosY;// - 10;
-                                //Equipment.Scanner_Calibration_Change = false;
-                                //bCalChagne = false;
+                                m_dCurrentCalPosX = dScannerCalAreaPosX_Max; // dScannerCalAreaPosX_Min;
+                                m_dCurrentCalPosY = dScannerCalAreaPosY_Max; // dScannerCalAreaPosY_Min;
+
+                                bIsLeftToRight = true; // 첫 줄은 항상 왼쪽→오른쪽
+                                Equipment.Scanner_Calibration_Change = false;
+                                bCalChagne = false;
                             }
+                            else
+                            {
+                                m_dCurrentCalPosX = dScannerCalTeachingPosX;
+                                m_dCurrentCalPosY = dScannerCalTeachingPosY;
+                                Equipment.Scanner_Calibration_Change = false;
+                                bIsLeftToRight = true; // 첫 줄은 항상 왼쪽→오른쪽
+                                bCalChagne = false;
+                            }
+                                
                         }
                         else
                         {

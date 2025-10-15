@@ -31532,7 +31532,6 @@ namespace QMC.Common.Modules
                                 Log.Write("SLD-200", "Scanner Calibration", strTemp);
                                 MessageBox.Show(strTemp, "Error");
                                 m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
                             }
                             else
                             {
