@@ -8042,20 +8042,25 @@ namespace QMC.Common.Modules
                 ApplyTowerLamp(green: false, yellow: false, red: true, buzzerDesired: null);
                 ApplyOperationButtons(start: false, stop: true, reset: false);
             }
+            else if (CycleSocketStop)
+            {
+                // CycleSocketStop: Green OFF, Yellow ON, Red OFF, Buzzer OFF
+                ApplyTowerLamp(green: false, yellow: true, red: true, buzzerDesired: false);
+            }
             else if (isSelecteMode && laserIdle)
             {
                 // SelecteMode + 가공 Idle: Green ON, Yellow OFF, Red ON, Buzzer OFF
                 ApplyTowerLamp(green: false, yellow: true, red: true, buzzerDesired: false);
             }
+            else if (isSelecteMode && laserIdle == false)
+            {
+                // SelecteMode + 가공 Idle: Green ON, Yellow OFF, Red ON, Buzzer OFF
+                ApplyTowerLamp(green: true, yellow: true, red: false, buzzerDesired: false);
+            }
             else if (isAuto && laserIdle)
             {
                 // Auto + 가공 Idle: Green ON, Yellow OFF, Red ON, Buzzer OFF
                 ApplyTowerLamp(green: true, yellow: false, red: true, buzzerDesired: false);
-            }
-            else if (CycleSocketStop)
-            {
-                // CycleSocketStop: Green OFF, Yellow ON, Red OFF, Buzzer OFF
-                ApplyTowerLamp(green: true, yellow: true, red: false, buzzerDesired: false);
             }
             else if (isAuto)
             {
@@ -13912,7 +13917,7 @@ namespace QMC.Common.Modules
             int redVolume = 0;
             int irVolume = 0;
             double exposureTime = 0.0;
-            GoldPowderAlignResult_Reset();
+            //GoldPowderAlignResult_Reset();
             if (Equipment.Machine_LaserType_CO2)
             {
                 // Model에 따라 다르다. 나만 알듯..
@@ -30423,11 +30428,12 @@ namespace QMC.Common.Modules
 
                 //적용 Offset 받기
                 Equipment.GoldPowderAlign_ResultValid = true;
-                Equipment.m_GoldPowderOffsetX = m_st4PointAlign_Result.dCenterOffsetX;
-                Equipment.m_GoldPowderOffsetY = m_st4PointAlign_Result.dCenterOffsetY;
-
+                double dX = 0.0, dY = 0.0;
+                dX = m_st4PointAlign_Result.dCenterOffsetX;
+                dY = m_st4PointAlign_Result.dCenterOffsetY;
+                Equipment.m_GoldPowderOffsetX = dX;
+                Equipment.m_GoldPowderOffsetY = dY;
             }
-
 
             return m_st4PointAlign_Result;
         }
@@ -39463,6 +39469,7 @@ namespace QMC.Common.Modules
 
                                                 Log.Write("DrillStatus", $"[Gold_Align] [{m_nSocketNum_forAlign + 1}][{GetCurrentLayerEnum(m_LayerType)}] " +
                                                     $"X={m_dALIGN_FACTOR_Offset_X:F3}, Y={m_dALIGN_FACTOR_Offset_Y:F3}, T={m_dALIGN_FACTOR_Theta:F3}");
+
                                                 break;
                                         }
                                         DrillingManager.MarkAsChanged();
@@ -42586,7 +42593,7 @@ namespace QMC.Common.Modules
 
                         // 여기만... 뺴면.. 될거 같긴한데... Test 필요.
                         // 경광등 노랑, 빨강 조건 위해서. 이거 주석처리 필요.
-                        Equipment.SelectRunEnable_New = false; // 선택 가공 모드 종료
+                        //Equipment.SelectRunEnable_New = false; // 선택 가공 모드 종료 <- 다시 시작할때 초기화 하니깐..
                     }
 
                     m_bLaserDrilling_Complete = true;
@@ -42617,7 +42624,8 @@ namespace QMC.Common.Modules
 
                     if (m_nDrillingWork_Group_Count < m_stLaserDrilling_SocketData[0].nGroup_Num)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
+                        //아래 로그 한 번만 써야한다.. 소켓일시정지시에
+                        //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
 
                         if (Equipment.SelectRunEnable_New)
                         {

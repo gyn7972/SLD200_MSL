@@ -2053,24 +2053,27 @@ namespace QMC.Common.Q_Sequence
                                     // 자동일때.
                                     //  Scanner <-> Vision Offset data에 위에서 구한 Offset 적용해야함.
                                     // 적용 전 로그
-                                    Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", $"[Before Offset Apply] " +
+                                    if (bCalPosition)
+                                    {
+                                        Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", $"[Before Offset Apply] " +
                                         $"FromScannerToFineCam.X: {Equipment.stOffsetDistance.FromScannerToFineCam.X:F6}, " +
                                         $"Y: {Equipment.stOffsetDistance.FromScannerToFineCam.Y:F6}");
-                                    Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", $"[Apply Offset]" +
-                                        $" Setting X: {Equipment.Scanner_Vision_Offset_Setting_X:F6}, " +
-                                        $"Y: {Equipment.Scanner_Vision_Offset_Setting_Y:F6}");
+                                        Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", $"[Apply Offset]" +
+                                            $" Setting X: {Equipment.Scanner_Vision_Offset_Setting_X:F6}, " +
+                                            $"Y: {Equipment.Scanner_Vision_Offset_Setting_Y:F6}");
 
-                                    SaveScannerCameraOffsetLog("OK",  // 또는 "NG"
-                                                                Equipment.stOffsetDistance.FromScannerToFineCam.X,
-                                                                Equipment.stOffsetDistance.FromScannerToFineCam.Y,
-                                                                Equipment.Scanner_Vision_Offset_Setting_X,
-                                                                Equipment.Scanner_Vision_Offset_Setting_Y
-                                                                );
+                                        SaveScannerCameraOffsetLog("OK",  // 또는 "NG"
+                                                                    Equipment.stOffsetDistance.FromScannerToFineCam.X,
+                                                                    Equipment.stOffsetDistance.FromScannerToFineCam.Y,
+                                                                    Equipment.Scanner_Vision_Offset_Setting_X,
+                                                                    Equipment.Scanner_Vision_Offset_Setting_Y
+                                                                    );
 
-                                    //  Scanner <-> FineCam Offset 적용<- 검증 후에 적용하자.
-                                    Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
-                                    Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
-                                    Equipment.Scanner_FineCam_Offset_Save();
+                                        //  Scanner <-> FineCam Offset 적용<- 검증 후에 적용하자.
+                                        Equipment.stOffsetDistance.FromScannerToFineCam.X += Equipment.Scanner_Vision_Offset_Setting_X;
+                                        Equipment.stOffsetDistance.FromScannerToFineCam.Y += Equipment.Scanner_Vision_Offset_Setting_Y;
+                                        Equipment.Scanner_FineCam_Offset_Save();
+                                    }
 
                                     // 적용 후 로그
                                     Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", $"[After Offset Apply] " +

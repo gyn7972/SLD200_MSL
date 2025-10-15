@@ -1069,6 +1069,8 @@ namespace QMC.Common
 
         // Gold Powder Align 결과가 이번 사이클에서 유효하게 생성되었는지 여부
         public static bool GoldPowderAlign_ResultValid { get; set; } = false;
+        public static double m_GoldPowderOffsetX = 0.0;            //  Gold Powder Offset X
+        public static double m_GoldPowderOffsetY = 0.0;            //  Gold Powder Offset Y
 
         // 필요 시 사용: 소켓/사이클 시작 시 초기화
         public static void GoldPowderAlignResult_Reset()
@@ -1078,9 +1080,7 @@ namespace QMC.Common
             m_GoldPowderOffsetY = 0.0;
         }
 
-        public static double m_GoldPowderOffsetX { set; get; } = 0.0;            //  Gold Powder Offset X
-        public static double m_GoldPowderOffsetY { set; get; } = 0.0;            //  Gold Powder Offset Y
-
+        
 
         // Serial Number 마킹 시 증가되는 Count 확인용. (프로그램 재시작, Count Clear 시에는 초기화 됨)
         // 무조건 1번 부터 시작.
