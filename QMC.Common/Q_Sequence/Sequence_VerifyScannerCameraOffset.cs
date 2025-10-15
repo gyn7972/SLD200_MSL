@@ -473,11 +473,16 @@ namespace QMC.Common.Q_Sequence
                         bool bRtn= false;
                         if (bCalPosition)
                         {
-                            bRtn = workStage.workStageParameter.DI_Laser_CalSheet_Vacuum_Check();
+                            //bRtn = workStage.workStageParameter.DI_Laser_CalSheet_Vacuum_Check();
+                            if (workStage.workStageParameter.DI_Laser_CalSheet_Vacuum_Check() ||
+                               workStage.workStageParameter.IsDO_Laser_CalSheet_Vacuum()      )
+                            {
+                                bRtn = true;
+                            }
                         }
                         else
                         {
-                            bRtn = bRtn = workStage.workStageParameter.DI_Stage_Vacuum_Check();
+                            bRtn = workStage.workStageParameter.DI_Stage_Vacuum_Check();
                         }
 
                         if (bRtn)
@@ -1067,8 +1072,11 @@ namespace QMC.Common.Q_Sequence
                         }
                         else
                         {
-                            m_dCurrentCalPosX = Equipment.Scanner_Calibration_PosX_Last - (dCalWidth + dCalPitchOffset);
-                            m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last;
+                            if (bCalPosition)
+                            {
+                                m_dCurrentCalPosX = Equipment.Scanner_Calibration_PosX_Last - (dCalWidth + dCalPitchOffset);
+                                m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last;
+                            }
 
                             if (m_dCurrentCalPosX < dScannerCalAreaPosX_Min)
                             //if (m_dCurrentCalPosX > dScannerCalAreaPosX_Max)
@@ -1120,26 +1128,22 @@ namespace QMC.Common.Q_Sequence
 
                         // 최종 위치가 유효한지 검사
                         double epsilon = 2.0; // 1mm 허용 오차
-                        if (m_dCurrentCalPosX < dScannerCalAreaPosX_Min - epsilon ||
+                        if (bCalPosition)
+                        {
+                            if (m_dCurrentCalPosX < dScannerCalAreaPosX_Min - epsilon ||
                             m_dCurrentCalPosX > dScannerCalAreaPosX_Max + epsilon ||
                             m_dCurrentCalPosY < dScannerCalAreaPosY_Min - epsilon ||
                             m_dCurrentCalPosY > dScannerCalAreaPosY_Max + epsilon)
-                        {
-                            strTemp = "캘판 범위 벗어났습니다. 캘판을 교체해 주세요.";
-                            Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
-                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
-                            return workStage.AlarmPost(AlarmKey.Scan_Area_Fail);
+                            {
+                                strTemp = "캘판 범위 벗어났습니다. 캘판을 교체해 주세요.";
+                                Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
+                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
+                                return workStage.AlarmPost(AlarmKey.Scan_Area_Fail);
+                            }
                         }
-                        //기존코드
+                        else
                         {
-                            //if (m_dCurrentCalPosX < dScannerCalAreaPosX_Min || m_dCurrentCalPosX > dScannerCalAreaPosX_Max ||
-                            //    m_dCurrentCalPosY < dScannerCalAreaPosY_Min || m_dCurrentCalPosY > dScannerCalAreaPosY_Max)
-                            //{
-                            //    strTemp = string.Format("캘판 범위 벗어났습니다. 캘판을 교체해 주세요.");
-                            //    Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
-                            //    m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
-                            //    return workStage.AlarmPost(AlarmKey.Scan_Area_Fail);
-                            //}
+
                         }
 
                         Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset",
@@ -1589,13 +1593,12 @@ namespace QMC.Common.Q_Sequence
                     {
                         if (workStage.rtc.CtlGetStatus(RtcStatus.NotBusy))
                         {
-                            Equipment.Scanner_Calibration_PosX_Last = m_dCurrentCalPosX;
-                            Equipment.Scanner_Calibration_PosY_Last = m_dCurrentCalPosY;
-                            workStage.Scanner_Calibration_Option_Save();
-                            //m_dScannerCalPosX_Last = m_dCurrentCalPosX;
-                            //m_dScannerCalPosY_Last = m_dCurrentCalPosY;
-                            //workStage.Scanner_Calibration_Option_Save();
-
+                            if (bCalPosition)
+                            {
+                                Equipment.Scanner_Calibration_PosX_Last = m_dCurrentCalPosX;
+                                Equipment.Scanner_Calibration_PosY_Last = m_dCurrentCalPosY;
+                                workStage.Scanner_Calibration_Option_Save();
+                            }
                             Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", "VerifyScannerCameraOffset, Cross Mark 가공 완료");
                             m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.MapDataChange_FineCamMap;
                         }
