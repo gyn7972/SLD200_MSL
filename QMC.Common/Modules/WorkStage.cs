@@ -14457,8 +14457,8 @@ namespace QMC.Common.Modules
                             xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
                             double recipeOffsetX = 0.0, recipeOffsetY = 0.0;
                             TryGetGoldPowderRecipePosOffset(nSocketNum, m_nSocketAlign_FiducialCount, out recipeOffsetX, out recipeOffsetY);
-                            xyCoordinateAlign.X += recipeOffsetX;
-                            xyCoordinateAlign.Y += recipeOffsetY;
+                            xyCoordinateAlign.X -= recipeOffsetX;
+                            xyCoordinateAlign.Y -= recipeOffsetY;
                             xyInterpolatedCoordinate = xyCoordinateAlign;
                             strTemp = string.Format(
                                 "Fiducial Mark No: {0}, TargetMotorX: {1:F4}, TargetMotorY: {2:F4}",

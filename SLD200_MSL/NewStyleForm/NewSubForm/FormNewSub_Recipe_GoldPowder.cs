@@ -1601,8 +1601,40 @@ namespace SLD200.NewStyleForm.NewSubForm
             double dY = Equipment.ToDouble(strY);
             xyCoordinate.X += dX;
             xyCoordinate.Y += dY;
-            TargetXyCoordinate[nPositionIndex] = xyCoordinate;
-            MoveGoldPowderPointOffset(nPositionIndex, xyCoordinate);
+            xyCoordinate = xyCoordinate;
+
+            XyCoordinate xyConverted;
+            xyConverted = workStage.ConvertPointFineCam(xyCoordinate);
+            if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
+            {
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoordinate.X:F4},{xyCoordinate.Y:F4})" +
+                    $" -> Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+
+            // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
+            //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
+             if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            {
+                xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+            else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            {
+                //여기서 얼라인 안하는게 맞음!!
+                //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
+            }
+
+            TargetXyCoordinate[nPositionIndex] = xyConverted;
+            MoveGoldPowderPointOffset(nPositionIndex, xyConverted);
         }
         private void button_Recipe_GoldPowder_Position_Move_XY2_Offset_Click(object sender, EventArgs e)
         {
@@ -1616,8 +1648,41 @@ namespace SLD200.NewStyleForm.NewSubForm
             double dY = Equipment.ToDouble(strY);
             xyCoordinate.X += dX;
             xyCoordinate.Y += dY;
-            TargetXyCoordinate[nPositionIndex] = xyCoordinate;
-            MoveGoldPowderPointOffset(nPositionIndex, xyCoordinate);
+            xyCoordinate = xyCoordinate;
+
+            XyCoordinate xyConverted;
+            xyConverted = workStage.ConvertPointFineCam(xyCoordinate);
+            if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
+            {
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoordinate.X:F4},{xyCoordinate.Y:F4})" +
+                    $" -> Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+
+            // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
+            //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
+            if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            {
+                xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+            else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            {
+                //여기서 얼라인 안하는게 맞음!!
+                //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
+            }
+
+            TargetXyCoordinate[nPositionIndex] = xyConverted;
+            MoveGoldPowderPointOffset(nPositionIndex, xyConverted);
+
         }
 
         private void button_Recipe_GoldPowder_Position_Move_XY3_Offset_Click(object sender, EventArgs e)
@@ -1632,8 +1697,41 @@ namespace SLD200.NewStyleForm.NewSubForm
             double dY = Equipment.ToDouble(strY);
             xyCoordinate.X += dX;
             xyCoordinate.Y += dY;
-            TargetXyCoordinate[nPositionIndex] = xyCoordinate;
-            MoveGoldPowderPointOffset(nPositionIndex, xyCoordinate);
+            xyCoordinate = xyCoordinate;
+
+            XyCoordinate xyConverted;
+            xyConverted = workStage.ConvertPointFineCam(xyCoordinate);
+            if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
+            {
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoordinate.X:F4},{xyCoordinate.Y:F4})" +
+                    $" -> Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+
+            // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
+            //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
+            if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            {
+                xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+            else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            {
+                //여기서 얼라인 안하는게 맞음!!
+                //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
+            }
+
+            TargetXyCoordinate[nPositionIndex] = xyConverted;
+            MoveGoldPowderPointOffset(nPositionIndex, xyConverted);
+
         }
 
         private void button_Recipe_GoldPowder_Position_Move_XY4_Offset_Click(object sender, EventArgs e)
@@ -1648,8 +1746,39 @@ namespace SLD200.NewStyleForm.NewSubForm
             double dY = Equipment.ToDouble(strY);
             xyCoordinate.X += dX;
             xyCoordinate.Y += dY;
-            TargetXyCoordinate[nPositionIndex] = xyCoordinate;
-            MoveGoldPowderPointOffset(nPositionIndex, xyCoordinate);
+            xyCoordinate = xyCoordinate;
+            XyCoordinate xyConverted;
+            xyConverted = workStage.ConvertPointFineCam(xyCoordinate);
+            if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
+            {
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoordinate.X:F4},{xyCoordinate.Y:F4})" +
+                    $" -> Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+
+            // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
+            //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
+            if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            {
+                xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+            else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            {
+                //여기서 얼라인 안하는게 맞음!!
+                //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
+            }
+
+            TargetXyCoordinate[nPositionIndex] = xyConverted;
+            MoveGoldPowderPointOffset(nPositionIndex, xyConverted);
         }
 
         private void MoveGoldPowderPointOffset(int pointNo, XyCoordinate xyCoordinate)
@@ -1690,36 +1819,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             double vel = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
             double acc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
-            XyCoordinate xyConverted;
-            xyConverted = workStage.ConvertPointFineCam(xyCoordinate);
-            if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
-            {
-                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoordinate.X:F4},{xyCoordinate.Y:F4})" +
-                    $" -> Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
-            }
-
-            // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
-            //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
-            if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
-            {
-                xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
-                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
-            }
-            else if(workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
-            {
-                //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y), false);
-                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
-            }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
-            }
-
-            workStage.MC_Func.MovePosition(xyConverted, vel, acc, acc);
+            workStage.MC_Func.MovePosition(xyCoordinate, vel, acc, acc);
         }
         private void GetGoldPowderDrawingPositions_FromDrawing(int positionIndex, out XyCoordinate xyCoordinate)
         {
@@ -1765,9 +1865,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //XyCoordinate xyCurrentDrawPos = new XyCoordinate();
             //xyCurrentDrawPos = workStage.ConvertPointFineCam(xyCurrentPos);
-            GetGoldPowderDrawingPositions_FromDrawing(0, out TargetXyCoordinate[0]);
-            XyCoordinate xyTargetPos = new XyCoordinate();
-            xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[0]);
+            //GetGoldPowderDrawingPositions_FromDrawing(0, out TargetXyCoordinate[0]);
+            //XyCoordinate xyTargetPos = new XyCoordinate();
+            //xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[0]);
             //double dX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1_Offset.Text);
             //double dY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1_Offset.Text);
             //xyTargetPos.X += dX;
@@ -1777,7 +1877,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             //xyCalPos = xyCurrentDrawPos - xyTargetDrawPos;
             //모터
             XyCoordinate xyCalPos = new XyCoordinate();
-            xyCalPos = xyCurrentPos - xyTargetPos;
+            xyCalPos = xyCurrentPos - TargetXyCoordinate[0];
             textBox_Recipe_GoldPowder_Position_X1_Offset.Text = FormatPos(xyCalPos.X * -1);
             textBox_Recipe_GoldPowder_Position_Y1_Offset.Text = FormatPos(xyCalPos.Y * -1);
         }
@@ -1790,9 +1890,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //XyCoordinate xyCurrentDrawPos = new XyCoordinate();
             //xyCurrentDrawPos = workStage.ConvertPointFineCam(xyCurrentPos);
-            GetGoldPowderDrawingPositions_FromDrawing(1, out TargetXyCoordinate[1]);
-            XyCoordinate xyTargetPos = new XyCoordinate();
-            xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[1]);
+            //GetGoldPowderDrawingPositions_FromDrawing(1, out TargetXyCoordinate[1]);
+            //XyCoordinate xyTargetPos = new XyCoordinate();
+            //xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[1]);
             //double dX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1_Offset.Text);
             //double dY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1_Offset.Text);
             //xyTargetPos.X += dX;
@@ -1802,7 +1902,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             //xyCalPos = xyCurrentDrawPos - xyTargetDrawPos;
             //모터
             XyCoordinate xyCalPos = new XyCoordinate();
-            xyCalPos = xyCurrentPos - xyTargetPos;
+            //xyCalPos = xyCurrentPos - xyTargetPos;
+            xyCalPos = xyCurrentPos - TargetXyCoordinate[1];
             textBox_Recipe_GoldPowder_Position_X2_Offset.Text = FormatPos(xyCalPos.X * -1);
             textBox_Recipe_GoldPowder_Position_Y2_Offset.Text = FormatPos(xyCalPos.Y * -1);
         }
@@ -1815,9 +1916,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //XyCoordinate xyCurrentDrawPos = new XyCoordinate();
             //xyCurrentDrawPos = workStage.ConvertPointFineCam(xyCurrentPos);
-            GetGoldPowderDrawingPositions_FromDrawing(2, out TargetXyCoordinate[2]);
-            XyCoordinate xyTargetPos = new XyCoordinate();
-            xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[2]);
+            //GetGoldPowderDrawingPositions_FromDrawing(2, out TargetXyCoordinate[2]);
+            //XyCoordinate xyTargetPos = new XyCoordinate();
+            //xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[2]);
             //double dX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1_Offset.Text);
             //double dY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1_Offset.Text);
             //xyTargetPos.X += dX;
@@ -1827,7 +1928,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             //xyCalPos = xyCurrentDrawPos - xyTargetDrawPos;
             //모터
             XyCoordinate xyCalPos = new XyCoordinate();
-            xyCalPos = xyCurrentPos - xyTargetPos;
+            //xyCalPos = xyCurrentPos - xyTargetPos;
+            xyCalPos = xyCurrentPos - TargetXyCoordinate[2];
             textBox_Recipe_GoldPowder_Position_X3_Offset.Text = FormatPos(xyCalPos.X * -1);
             textBox_Recipe_GoldPowder_Position_Y3_Offset.Text = FormatPos(xyCalPos.Y * -1);
         }
@@ -1840,9 +1942,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //XyCoordinate xyCurrentDrawPos = new XyCoordinate();
             //xyCurrentDrawPos = workStage.ConvertPointFineCam(xyCurrentPos);
-            GetGoldPowderDrawingPositions_FromDrawing(3, out TargetXyCoordinate[3]);
-            XyCoordinate xyTargetPos = new XyCoordinate();
-            xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[3]);
+            //GetGoldPowderDrawingPositions_FromDrawing(3, out TargetXyCoordinate[3]);
+            //XyCoordinate xyTargetPos = new XyCoordinate();
+            //xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[3]);
             //double dX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1_Offset.Text);
             //double dY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1_Offset.Text);
             //xyTargetPos.X += dX;
@@ -1852,7 +1954,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             //xyCalPos = xyCurrentDrawPos - xyTargetDrawPos;
             //모터
             XyCoordinate xyCalPos = new XyCoordinate();
-            xyCalPos = xyCurrentPos - xyTargetPos;
+            //xyCalPos = xyCurrentPos - xyTargetPos;
+            xyCalPos = xyCurrentPos - TargetXyCoordinate[3];
             textBox_Recipe_GoldPowder_Position_X4_Offset.Text = FormatPos(xyCalPos.X * -1);
             textBox_Recipe_GoldPowder_Position_Y4_Offset.Text = FormatPos(xyCalPos.Y * -1);
         }
