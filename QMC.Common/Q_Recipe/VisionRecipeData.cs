@@ -156,8 +156,11 @@ namespace QMC.Common.Recipe
         }
         public void SetGoldPowderPos_Offset(int socketIndex, int posIndex01to04, double x, double y)
         {
-            if (posIndex01to04 < 1 || posIndex01to04 > 4) return;
-            if (socketIndex < 0) return;
+            if (posIndex01to04 < 1 || posIndex01to04 > 4) 
+                return;
+            if (socketIndex < 0) 
+                return;
+
             EnsureGoldPowderSocketPosCount_Offset(socketIndex + 1);
             int idx = posIndex01to04 - 1;
             GoldPowderSocketPosListOffset[socketIndex].X[idx] = x;

@@ -13912,6 +13912,29 @@ namespace QMC.Common.Modules
             return true;
         }
 
+        private bool TryGetGoldPowderRecipePosOffset(int socketIndex, int fidIndex, out double x, out double y)
+        {
+            x = 0; y = 0;
+            var vr = Equipment.stVisionRecipeSet;
+            if (vr == null) return false;
+            if (socketIndex < 0 || fidIndex < 0 || fidIndex > 3) return false;
+            if (vr.GoldPowderSocketPosListOffset == null) return false;
+            if (socketIndex >= vr.GoldPowderSocketPosListOffset.Count) return false;
+
+            var gp = vr.GoldPowderSocketPosListOffset[socketIndex];
+            if (gp == null) return false;
+
+            x = gp.X[fidIndex];
+            y = gp.Y[fidIndex];
+
+            // 0,0 은 미설정으로 판단 (둘 다 0인 경우만)
+            if (Math.Abs(x) < double.Epsilon && Math.Abs(y) < double.Epsilon)
+                return false;
+
+            return true;
+        }
+
+
         #region Socket Align
         int ExecuteAlignmentSequence(int nSocketNum, 
             LayerType m_LayerType = LayerType.LAYER_DRILLING, Equipment.AlignMode alignMode = AlignMode.Socket)
@@ -14360,11 +14383,11 @@ namespace QMC.Common.Modules
                         double recipeX = 0.0, recipeY = 0.0;
 
                         // CO2 Repair 모드가 아니고 레시피 포지션이 유효하면 레시피 좌표 사용
-                        if (!m_bCO2_repairMode &&
-                            TryGetGoldPowderRecipePos(nSocketNum, m_nSocketAlign_FiducialCount, out recipeX, out recipeY))
-                        {
-                            useRecipePos = true;
-                        }
+                        //if (!m_bCO2_repairMode &&
+                        //    TryGetGoldPowderRecipePos(nSocketNum, m_nSocketAlign_FiducialCount, out recipeX, out recipeY))
+                        //{
+                        //    useRecipePos = true;
+                        //}
 
                         if (m_bCO2_repairMode)
                         {
@@ -14394,32 +14417,32 @@ namespace QMC.Common.Modules
                                 xyCoordinateGoldpowderAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                             }
                         }
-                        else if (useRecipePos)
-                        {
-                            // 레시피에 저장한 Stage 좌표 그대로 사용 (추가 변환 없음)
-                            xyCoordinateAlign = new XyCoordinate(recipeX, recipeY);
-                            xyInterpolatedCoordinate = xyCoordinateAlign;
+                        //else if (useRecipePos)
+                        //{
+                        //    // 레시피에 저장한 Stage 좌표 그대로 사용 (추가 변환 없음)
+                        //    xyCoordinateAlign = new XyCoordinate(recipeX, recipeY);
+                        //    xyInterpolatedCoordinate = xyCoordinateAlign;
 
-                            if (!m_bIsFirstAlign)
-                            {
-                                if (m_nSocketAlign_FiducialCount == 0)
-                                {
-                                    // 최초 마크에서 이전 Socket Align 결과 기준값 초기화
-                                    xyCoordinateGoldpowderAlignPositionLast = xyCoordinateAlignPositionLast;
-                                    xyCoordinateGoldpowderAlignPositionOrgLast = xyCoordinateAlignPositionOrgLast;
-                                }
-                                // 이미 돌린 도면 기반 좌표이므로 회전 보정은 0 (필요시 옵션화)
-                                xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign,
-                                    xyCoordinateGoldpowderAlignPositionOrgLast.X,
-                                    xyCoordinateGoldpowderAlignPositionOrgLast.Y,
-                                    0);
-                            }
-                            xyCoordinateGoldpowderAlignPositionOrgLastTemp =
-                                new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+                        //    if (!m_bIsFirstAlign)
+                        //    {
+                        //        if (m_nSocketAlign_FiducialCount == 0)
+                        //        {
+                        //            // 최초 마크에서 이전 Socket Align 결과 기준값 초기화
+                        //            xyCoordinateGoldpowderAlignPositionLast = xyCoordinateAlignPositionLast;
+                        //            xyCoordinateGoldpowderAlignPositionOrgLast = xyCoordinateAlignPositionOrgLast;
+                        //        }
+                        //        // 이미 돌린 도면 기반 좌표이므로 회전 보정은 0 (필요시 옵션화)
+                        //        xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign,
+                        //            xyCoordinateGoldpowderAlignPositionOrgLast.X,
+                        //            xyCoordinateGoldpowderAlignPositionOrgLast.Y,
+                        //            0);
+                        //    }
+                        //    xyCoordinateGoldpowderAlignPositionOrgLastTemp =
+                        //        new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
 
-                            Log.Write("Goldpowder", "Move",
-                                $"[RecipePos] Socket:{nSocketNum + 1} Fid:{m_nSocketAlign_FiducialCount + 1} -> Stage({xyCoordinateAlign.X:F3},{xyCoordinateAlign.Y:F3})");
-                        }
+                        //    Log.Write("Goldpowder", "Move",
+                        //        $"[RecipePos] Socket:{nSocketNum + 1} Fid:{m_nSocketAlign_FiducialCount + 1} -> Stage({xyCoordinateAlign.X:F3},{xyCoordinateAlign.Y:F3})");
+                        //}
                         else
                         {
                             double dTargetX = m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
@@ -14432,7 +14455,18 @@ namespace QMC.Common.Modules
                             Log.Write("Goldpowder", "Result", strTemp);
 
                             xyCoordinateAlign = ConvertPointFineCam(new XyCoordinate(dTargetX, dTargetY));
+                            double recipeOffsetX = 0.0, recipeOffsetY = 0.0;
+                            TryGetGoldPowderRecipePosOffset(nSocketNum, m_nSocketAlign_FiducialCount, out recipeOffsetX, out recipeOffsetY);
+                            xyCoordinateAlign.X += recipeOffsetX;
+                            xyCoordinateAlign.Y += recipeOffsetY;
                             xyInterpolatedCoordinate = xyCoordinateAlign;
+                            strTemp = string.Format(
+                                "Fiducial Mark No: {0}, TargetMotorX: {1:F4}, TargetMotorY: {2:F4}",
+                                m_nSocketAlign_FiducialCount,
+                                xyCoordinateAlign.X, xyCoordinateAlign.Y
+                            );
+                            Log.Write("Goldpowder", "Result", strTemp);
+
                             //Pre Align Data -> Sorket Postion 적용
                             if (m_bIsFirstAlign == false)
                             {
@@ -15801,6 +15835,46 @@ namespace QMC.Common.Modules
                     if (alignMode == AlignMode.GoldPowder &&
                         Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                     {
+                        // --------------------------------------------------
+                        // Z-Axis 변경도 있음.
+                        double dCurrZ = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z; //GetEncWorkStagePos_Motor(nAxis.Z);
+                        double dThiknessZ = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness;
+                        double dZPosOffset = Equipment.stVisionRecipeSet.dGoldPowderAxisZ_Offset;   //mark.AxisZOffset;
+                        dCurrZ += (dThiknessZ + dZPosOffset + m_dZOffset_SocketHeightCheck);
+                        MovetoWorkStage_ABS_PositionsZ(dCurrZ, Type_Motor_Speed.Fine);
+                        int tick = 0;
+                        Thread.Sleep(100);
+                        while (true)
+                        {
+                            if (!IsWorkStage_Positions(nAxis.Z, dCurrZ))
+                            {
+                                tick++;
+                                Thread.Sleep(10);
+                                if (tick > 500)
+                                {
+                                    Log.Write("SLD-200", "SpiralSearch", $"Try Mark {m_nSocketAlign_StartIndex}, PosZ {dCurrZ} :: IsWorkStage_Positions");
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        Thread.Sleep(200);
+
+                        // 여기서 이미지를 다시 가져와야지..
+                        Camera_HighRes.Grab();
+                        nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X);
+                        bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
+                        Fiducial_aligner = new QMC_ImageProcessFindAlign();
+                        Fiducial_circlesResult = new List<RectangleF>();
+                        if (bm_AlignRawData == null)
+                        {
+                            Camera_HighRes.Initialize();
+                            continue;
+                        }
+
                         int nMaxInstance = 0;
                         if (m_bCO2_repairMode)
                         {
@@ -15824,7 +15898,6 @@ namespace QMC.Common.Modules
                             nMaxInstance = Equipment.stVisionRecipeSet.nGoldPowderCircleMarkMaxInstance;
                             dWidth = Equipment.stVisionRecipeSet.dGoldPowderCircleMarkRadius;
                             nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X);
-
                             if (m_bCO2_MultyMode)
                             {
                                 result = Fiducial_aligner.FindCirclesWidthCircleBoundaryMultipleCircles(
@@ -15881,7 +15954,6 @@ namespace QMC.Common.Modules
                         foreach (var mark in markListToSearch)
                         {
                             markIndex = marks.IndexOf(mark); // 원본 리스트에서의 인덱스
-
                             Log.Write("SLD-200", "SpiralSearch", $"Try Mark {markIndex}");
 
                             if (mark.MarkType != (int)MarkTypeList.Circle)
@@ -21509,7 +21581,6 @@ namespace QMC.Common.Modules
                 SiriusViewObjectEntitySelect(list);
                 m_bSelected = true;
             }
-
 
             //  Select 된 객체가 있으면 회전 Offset 이동
             if (m_bSelected)
