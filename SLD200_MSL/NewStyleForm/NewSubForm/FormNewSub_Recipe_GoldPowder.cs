@@ -1701,14 +1701,15 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
             //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
-            if (workStage.m_bPreAlignCompleted && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
             {
                 xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
                 Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
                     $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
             }
-            else if(workStage.m_bPreAlignCompleted && workStage.m_bAlignCompleted && workStage.m_bSocketAlign_OK)
+            else if(workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
             {
+                //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y), false);
                 Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
                     $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
             }
@@ -1764,18 +1765,21 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //XyCoordinate xyCurrentDrawPos = new XyCoordinate();
             //xyCurrentDrawPos = workStage.ConvertPointFineCam(xyCurrentPos);
-            //XyCoordinate xyTargetDrawPos = new XyCoordinate();
-            //xyTargetDrawPos = workStage.ConvertPointFineCam(TargetXyCoordinate[0]);
+            GetGoldPowderDrawingPositions_FromDrawing(0, out TargetXyCoordinate[0]);
+            XyCoordinate xyTargetPos = new XyCoordinate();
+            xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[0]);
+            //double dX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1_Offset.Text);
+            //double dY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1_Offset.Text);
+            //xyTargetPos.X += dX;
+            //xyTargetPos.Y += dY;
             ////도면
             //XyCoordinate xyCalPos = new XyCoordinate();
             //xyCalPos = xyCurrentDrawPos - xyTargetDrawPos;
             //모터
             XyCoordinate xyCalPos = new XyCoordinate();
-            xyCalPos = xyCurrentPos - TargetXyCoordinate[0];
-            textBox_Recipe_GoldPowder_Position_X1_Offset.Text = FormatPos(xyCalPos.X);
-            textBox_Recipe_GoldPowder_Position_Y1_Offset.Text = FormatPos(xyCalPos.Y);
-
-            //모터 offset 값을 적용하자.
+            xyCalPos = xyCurrentPos - xyTargetPos;
+            textBox_Recipe_GoldPowder_Position_X1_Offset.Text = FormatPos(xyCalPos.X * -1);
+            textBox_Recipe_GoldPowder_Position_Y1_Offset.Text = FormatPos(xyCalPos.Y * -1);
         }
 
         private void button_Recipe_GoldPowder_Position_Cal_XY2_Offset_Click(object sender, EventArgs e)
@@ -1786,17 +1790,21 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //XyCoordinate xyCurrentDrawPos = new XyCoordinate();
             //xyCurrentDrawPos = workStage.ConvertPointFineCam(xyCurrentPos);
-            //XyCoordinate xyTargetDrawPos = new XyCoordinate();
-            //xyTargetDrawPos = workStage.ConvertPointFineCam(TargetXyCoordinate[0]);
+            GetGoldPowderDrawingPositions_FromDrawing(1, out TargetXyCoordinate[1]);
+            XyCoordinate xyTargetPos = new XyCoordinate();
+            xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[1]);
+            //double dX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1_Offset.Text);
+            //double dY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1_Offset.Text);
+            //xyTargetPos.X += dX;
+            //xyTargetPos.Y += dY;
             ////도면
             //XyCoordinate xyCalPos = new XyCoordinate();
             //xyCalPos = xyCurrentDrawPos - xyTargetDrawPos;
             //모터
             XyCoordinate xyCalPos = new XyCoordinate();
-            xyCalPos = xyCurrentPos - TargetXyCoordinate[1];
-
-            textBox_Recipe_GoldPowder_Position_X2_Offset.Text = FormatPos(xyCalPos.X);
-            textBox_Recipe_GoldPowder_Position_Y2_Offset.Text = FormatPos(xyCalPos.Y);
+            xyCalPos = xyCurrentPos - xyTargetPos;
+            textBox_Recipe_GoldPowder_Position_X2_Offset.Text = FormatPos(xyCalPos.X * -1);
+            textBox_Recipe_GoldPowder_Position_Y2_Offset.Text = FormatPos(xyCalPos.Y * -1);
         }
 
         private void button_Recipe_GoldPowder_Position_Cal_XY3_Offset_Click(object sender, EventArgs e)
@@ -1807,17 +1815,21 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //XyCoordinate xyCurrentDrawPos = new XyCoordinate();
             //xyCurrentDrawPos = workStage.ConvertPointFineCam(xyCurrentPos);
-            //XyCoordinate xyTargetDrawPos = new XyCoordinate();
-            //xyTargetDrawPos = workStage.ConvertPointFineCam(TargetXyCoordinate[0]);
+            GetGoldPowderDrawingPositions_FromDrawing(2, out TargetXyCoordinate[2]);
+            XyCoordinate xyTargetPos = new XyCoordinate();
+            xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[2]);
+            //double dX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1_Offset.Text);
+            //double dY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1_Offset.Text);
+            //xyTargetPos.X += dX;
+            //xyTargetPos.Y += dY;
             ////도면
             //XyCoordinate xyCalPos = new XyCoordinate();
             //xyCalPos = xyCurrentDrawPos - xyTargetDrawPos;
             //모터
             XyCoordinate xyCalPos = new XyCoordinate();
-            xyCalPos = xyCurrentPos - TargetXyCoordinate[2];
-
-            textBox_Recipe_GoldPowder_Position_X3_Offset.Text = FormatPos(xyCalPos.X);
-            textBox_Recipe_GoldPowder_Position_Y3_Offset.Text = FormatPos(xyCalPos.Y);
+            xyCalPos = xyCurrentPos - xyTargetPos;
+            textBox_Recipe_GoldPowder_Position_X3_Offset.Text = FormatPos(xyCalPos.X * -1);
+            textBox_Recipe_GoldPowder_Position_Y3_Offset.Text = FormatPos(xyCalPos.Y * -1);
         }
 
         private void button_Recipe_GoldPowder_Position_Cal_XY4_Offset_Click(object sender, EventArgs e)
@@ -1828,17 +1840,21 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //XyCoordinate xyCurrentDrawPos = new XyCoordinate();
             //xyCurrentDrawPos = workStage.ConvertPointFineCam(xyCurrentPos);
-            //XyCoordinate xyTargetDrawPos = new XyCoordinate();
-            //xyTargetDrawPos = workStage.ConvertPointFineCam(TargetXyCoordinate[0]);
+            GetGoldPowderDrawingPositions_FromDrawing(3, out TargetXyCoordinate[3]);
+            XyCoordinate xyTargetPos = new XyCoordinate();
+            xyTargetPos = workStage.ConvertPointFineCam(TargetXyCoordinate[3]);
+            //double dX = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1_Offset.Text);
+            //double dY = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1_Offset.Text);
+            //xyTargetPos.X += dX;
+            //xyTargetPos.Y += dY;
             ////도면
             //XyCoordinate xyCalPos = new XyCoordinate();
             //xyCalPos = xyCurrentDrawPos - xyTargetDrawPos;
             //모터
             XyCoordinate xyCalPos = new XyCoordinate();
-            xyCalPos = xyCurrentPos - TargetXyCoordinate[3];
-
-            textBox_Recipe_GoldPowder_Position_X4_Offset.Text = FormatPos(xyCalPos.X);
-            textBox_Recipe_GoldPowder_Position_Y4_Offset.Text = FormatPos(xyCalPos.Y);
+            xyCalPos = xyCurrentPos - xyTargetPos;
+            textBox_Recipe_GoldPowder_Position_X4_Offset.Text = FormatPos(xyCalPos.X * -1);
+            textBox_Recipe_GoldPowder_Position_Y4_Offset.Text = FormatPos(xyCalPos.Y * -1);
         }
 
         private void button_Recipe_GoldPowder_Position_Apply_All_Click(object sender, EventArgs e)
