@@ -32,12 +32,9 @@ namespace SpiralLab.Sirius
                         this.Refresh();
 
                     }));
-
-
                 }
                 //view.Render();
             }
-
         }
 
         void RenameNewLayer(int Count)
@@ -46,7 +43,9 @@ namespace SpiralLab.Sirius
             List<string> list = new List<string>();
 
             list.Add("Hole1");
-            list.Add("Thruhole");
+
+            if (Count >= 4)
+                list.Add("Thruhole");
 
             if (Count >= 5)
                 list.Add("Outline");
@@ -77,33 +76,6 @@ namespace SpiralLab.Sirius
                     layers.Add(layer);
                 }
             }
-
-            //List<string> list = new List<string>();
-            //list.Add("Hole1");
-            //list.Add("Thruhole");
-            //list.Add("Outline");
-            //list.Add("Marking");
-            //list.Add("Fiducial");
-            //list.Add("PreAlign");
-            //if (Count > list.Count)
-            //{
-            //    Count = list.Count;
-            //}
-            //var Document = this.Document;
-            //for (int iter = 0; iter < Count; iter++)
-            //{
-            //    var l = Document.Layers;
-            //    if (l.Count > iter)
-            //    {
-            //        l[iter].Name = list[iter];
-            //    }
-            //    else
-            //    {
-            //        var layer = new Layer();
-            //        layer.Name = list[iter];
-            //        l.Add(layer);
-            //    }
-            //}
         }
         private void AddHoleLayer()
         {
