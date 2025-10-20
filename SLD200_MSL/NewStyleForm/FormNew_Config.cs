@@ -2207,21 +2207,20 @@ namespace SLD200_MSL
             workStage.Teaching_Position_Save();
             workStage.Move_Properties_Save();
         }
+        private static void SetKeyPadTag(Control ctrl, double min, double max, double origin, string format = "0.###")
+        {
+            if (ctrl == null) return;
+            ctrl.Tag = KeyPadMeta.ToTag(min, max, origin, format);
+        }
         private void listBox_Config_WorkStage_TeachingPositions_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  Teaching 항목 선택에 따른 Position
             int nPosIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
-
             if (nPosIndex >= 0)
             {
-                // 기존 데이터 표시
-                //textBox_Config_WorkStage_TeachingPos_StageX.Text = workStage.stWorkStageTeachingPos[nPosIndex].Stage_X.ToString();
-                //textBox_Config_WorkStage_TeachingPos_StageY.Text = workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y.ToString();
-
-                //공용척 사용시.
                 double dTeachingPosX = workStage.stWorkStageTeachingPos[nPosIndex].Stage_X;
                 double dTeachingPosY = workStage.stWorkStageTeachingPos[nPosIndex].Stage_Y;
-                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable)
+                if (Equipment.stLayerRecipeSet[0].ChuckMSL_Enable) //공용척 사용시.
                 {
                     if (nPosIndex == (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos)
                     {
@@ -2241,6 +2240,81 @@ namespace SLD200_MSL
                 }
                 textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", dTeachingPosX.ToString());
                 textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", dTeachingPosY.ToString());
+
+                double min = double.MinValue, max = double.MaxValue, origin = 0.0;
+                string format = "0.###";
+
+                switch(nPosIndex)
+                {
+                    case (int)WorkStage.WorkStage_TeachingPosList.STAGE_OriginPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                    case (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_LowMagCamPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_HighMagCamPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                    case (int)WorkStage.WorkStage_TeachingPosList.STAGE_Scanner_PMPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                    case (int)WorkStage.WorkStage_TeachingPosList.STAGE_Scanner_CalPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                    case (int)WorkStage.WorkStage_TeachingPosList.STAGE_HighMagCam_ReticlePos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                    case (int)WorkStage.WorkStage_TeachingPosList.STAGE_LaserHeightSensorPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                    case (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                    case (int)WorkStage.WorkStage_TeachingPosList.STAGE_SafetyPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         private void button_Config_Vision_TeachingPositions_Save_Click(object sender, EventArgs e)
@@ -6531,6 +6605,7 @@ namespace SLD200_MSL
                 var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
                 dlg.MinValue = meta.Min;
                 dlg.MaxValue = meta.Max;
+                dlg.OriginValue = meta.Origin;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);
@@ -6693,6 +6768,11 @@ namespace SLD200_MSL
 
         private void button_MaskSizeSave_Click(object sender, EventArgs e)
         {
+            var mb = new MessageBoxYesNo();
+            mb.ShowDialog("Question ?", "Mask Size 값을 저장하시겠습니까?");
+            if (mb.DialogResult != DialogResult.Yes)
+                return;
+
             SaveMaskSizesToIni();
         }
 

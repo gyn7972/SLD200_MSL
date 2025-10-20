@@ -18,22 +18,16 @@ namespace SLD200_MSL
 
     public partial class FormSetRoi : Form
     {
-
         public RoiButtonClickHandler RoiButtonClick { get; set; }
-
         public FormBaseConfiguration Configuration { get; set; }
         public double CenterX { get; set; }
         public double CenterY { get; set; }
         public double RoiWidth { get; set; }
         public double RoiHeight { get; set; }
-
         public Size FullSize { get; set; }
-
         public int MaxXSize { get; set; }
         public int MaxYSize { get; set; }
         public RoiVisionTool RoiVisionTool { get; set; }
-
-
 
         public FormSetRoi(RoiVisionTool roiVisionTool, Size fullsize)
         {
@@ -50,12 +44,10 @@ namespace SLD200_MSL
             baseTextBoxCenterY.Text = RoiVisionTool.Parameter.CenterLocation.Y.ToString();
             baseTextBoxWidth.Text = RoiVisionTool.Parameter.Size.Width.ToString();
             baseTextBoxHeight.Text = RoiVisionTool.Parameter.Size.Height.ToString();
-
             CenterX = RoiVisionTool.Parameter.CenterLocation.X;
             CenterY = RoiVisionTool.Parameter.CenterLocation.Y;
             RoiWidth = RoiVisionTool.Parameter.Size.Width;
             RoiHeight = RoiVisionTool.Parameter.Size.Height;
-
             baseTextBoxMoveToke.Text = "10";
             baseTextBoxSizeToke.Text = "10";
         }
@@ -63,10 +55,8 @@ namespace SLD200_MSL
         {
             CenterX = long.Parse(baseTextBoxCenterX.Text);
             CenterY = long.Parse(baseTextBoxCenterY.Text);
-
             RoiHeight = long.Parse(baseTextBoxHeight.Text);
             RoiWidth = long.Parse(baseTextBoxHeight.Text);
-
             if(RoiHeight >= FullSize.Height ||  RoiWidth >= FullSize.Width)
             {
                 RoiVisionTool.Parameter.IsFull =  true;

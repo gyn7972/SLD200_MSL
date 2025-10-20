@@ -14,8 +14,6 @@ namespace QMC.Common.UI
 {
     public delegate void RoiButtonClickHandler(RoiVisionTool roiVisionTool);
 
-
-
     public partial class FormSetRoi : Form
     {
 

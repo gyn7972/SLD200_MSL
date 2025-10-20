@@ -167,6 +167,12 @@ namespace SLD200.NewStyleForm.NewSubForm
                         (workStage._semiAutoRequest == WorkStage.SemiAutoStep.FiducialAlign),
                         workStage.IsStageComplete(WorkStage.SemiAutoStep.FiducialAlign));
                     break;
+                case WorkStage.SemiAutoStep.GoldPowderAlign:
+                    UpdateButtonStatusByState(
+                        button_SemiAuto_GoldPowderAlign,
+                        (workStage._semiAutoRequest == WorkStage.SemiAutoStep.GoldPowderAlign),
+                        workStage.IsStageComplete(WorkStage.SemiAutoStep.GoldPowderAlign));
+                    break;
                 case WorkStage.SemiAutoStep.Drilling:
                     UpdateButtonStatusByState(
                         button_SemiAuto_LaserDrilling,
@@ -385,28 +391,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            // 사용 유/무 필요없이 사용하자. 
-            //if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
-            //{
-            //    // 이 조건 빼자.
-            //    // 변위 측정 시에 PreAlign 하고 측정 할 수 있도록.
-            //    //if (workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight) == false)
-            //    //{
-            //    //    var mb = new MessageBoxOk();
-            //    //    mb.ShowDialog("Information !", "PreAlign 은 Height Sensor 측정 후에만 가능합니다.");
-            //    //    return;
-            //    //}
-            //}
-            //else
-            //{
-            //    strTemp = string.Format("ProcessOption_SocketAlign_Use : false");
-            //    Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
-
-            //    var mb = new MessageBoxOk();
-            //    mb.ShowDialog("Information !", "Align 사용 모드가 아닙니다.");
-            //    return;
-            //}
-
             Equipment.LaserDrillingCycStop_Reservation = false;
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
             workStage.m_bPreAlignCompleted = false;
@@ -445,31 +429,47 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            //if(Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
-            //{
-            //    if (workStage.IsStageComplete(WorkStage.SemiAutoStep.MeasureHeight) == false &&
-            //        workStage.IsStageComplete(WorkStage.SemiAutoStep.PreAlign) == false)
-            //    {
-            //        var mb = new MessageBoxOk();
-            //        mb.ShowDialog("Information !", "Fiducial Align 은 PreAlign 후에만 가능합니다.");
-            //        return;
-            //    }
-            //}
-            //else
-            //{
-            //    strTemp = string.Format("ProcessOption_SocketAlign_Use : false");
-            //    Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
-
-            //    var mb = new MessageBoxOk();
-            //    mb.ShowDialog("Information !", "Align 사용 모드가 아닙니다.");
-            //    return;
-            //}
-
             Equipment.LaserDrillingCycStop_Reservation = false;
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
 
             Equipment.SemiAutoEnable = true;
             workStage.SetSemiAutoRequest(WorkStage.SemiAutoStep.FiducialAlign);
+        }
+        private void button_SemiAuto_GoldPowderAlign_Click(object sender, EventArgs e)
+        {
+            Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_SemiAuto_GoldPowderAlign_Click");
+            string strTemp = "";
+
+            var mb1 = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "시작하시겠습니까?"))
+                return;
+
+            if (Equipment.AutoRunStatus || Equipment.SelectRunEnable_New)
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");
+                return;
+            }
+
+            if (!Equipment.AutoManualStatus)
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "장비가 [[ AUTO ]] 상태가 아닙니다.");
+                return;
+            }
+
+            if (!CheckStageinterlock())
+            {
+                strTemp = string.Format("CheckStageinterlock - Fail");
+                Log.Write("GUI", Equipment.User_Name, "ButtonClick", strTemp);
+                return;
+            }
+
+            Equipment.LaserDrillingCycStop_Reservation = false;
+            Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
+
+            Equipment.SemiAutoEnable = true;
+            workStage.SetSemiAutoRequest(WorkStage.SemiAutoStep.GoldPowderAlign);
         }
 
         private void button_SemiAuto_LaserDrilling_Click(object sender, EventArgs e)
@@ -847,5 +847,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 mb1.ShowDialog("Reset", "workStage - 자재 확인 바랍니다.");
             }
         }
+
+        
     }
 }

@@ -5071,24 +5071,7 @@ namespace SLD200_MSL
             //workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);
 
             return;
-            try
-            {
-                var moduleUI = new FormNewSub_SemiAuto();
-                //moduleUI.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
-                //moduleUI.Text = "모듈 상태 확인";
-                //moduleUI.StartPosition = FormStartPosition.CenterParent;
-                moduleUI.Show();  // 모달리스
-                Log.Write("UI", "FormNewSub_SemiAuto 창이 열렸습니다.");
-            }
-            catch (Exception ex)
-            {
-                Log.Write("UI", $"FormNewSub_SemiAuto 창 열기 실패: {ex.Message}");
-                MessageBox.Show("모듈 상태 창 열기 실패:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return;
-
-
+            
             Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
             // 시작 Test
             workStage.timer_Motion_Home.Enabled = true;
@@ -5668,6 +5651,7 @@ namespace SLD200_MSL
 
                 dlg.MinValue = meta.Min;
                 dlg.MaxValue = meta.Max;
+                dlg.OriginValue = meta.Origin;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);

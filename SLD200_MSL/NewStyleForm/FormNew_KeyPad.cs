@@ -30,6 +30,7 @@ namespace SLD200_MSL
         public void SetInitialValue(double value)
         {
             label_NumPad.Text = value.ToString();
+            label_OriginValue.Text = OriginValue.ToString();
             label_MaxValue.Text = MaxValue.ToString();
             label_MinValue.Text = MinValue.ToString();
         }
@@ -88,6 +89,7 @@ namespace SLD200_MSL
         public double EnteredValue { get; private set; }
         public double MinValue { get; set; } = -999999999;
         public double MaxValue { get; set; } = 999999999;
+        public double OriginValue { get; set; } = 0;
 
         private void button_Apply_Click(object sender, EventArgs e)
         {
@@ -158,7 +160,14 @@ namespace SLD200_MSL
     {
         public double Min { get; set; } = double.MinValue;
         public double Max { get; set; } = double.MaxValue;
+        public double Origin { get; set; } = 0;
         public string Format { get; set; } = "0.###";
+
+        // 신규: 태그 문자열 생성기
+        public static string ToTag(double min, double max, double origin, string format = "0.###")
+        {
+            return $"KeyPad;Min={min};Max={max};Origin={origin};Format={format}";
+        }
 
         public static KeyPadMeta ParseFromTag(string tag)
         {
@@ -168,16 +177,23 @@ namespace SLD200_MSL
                 return meta;
 
             var parts = tag.Split(';');
-            foreach (var part in parts)
+            foreach (var raw in parts)
             {
-                if (part.StartsWith("Min=") && double.TryParse(part.Substring(4), out double min))
+                var part = raw?.Trim();
+                if (string.IsNullOrEmpty(part)) 
+                    continue;
+
+                // 대소문자 무시
+                var lower = part.ToLowerInvariant();
+
+                if (lower.StartsWith("min=") && double.TryParse(part.Substring(4), out double min))
                     meta.Min = min;
-
-                else if (part.StartsWith("Max=") && double.TryParse(part.Substring(4), out double max))
+                else if (lower.StartsWith("max=") && double.TryParse(part.Substring(4), out double max))
                     meta.Max = max;
-
-                else if (part.StartsWith("Format="))
+                else if (lower.StartsWith("format="))
                     meta.Format = part.Substring(7);
+                else if (lower.StartsWith("origin=") && double.TryParse(part.Substring(7), out double origin))
+                    meta.Origin = origin;
             }
 
             return meta;

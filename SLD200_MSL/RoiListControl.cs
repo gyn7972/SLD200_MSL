@@ -37,7 +37,6 @@ namespace SLD200_MSL
         FormBaseConfiguration Configuration { get; set; }
 
         public RoiVisionTool RoiTrainVisionTool { get; set; }
-
         public RoiVisionTool RoiAlignVisionTool { get; set; }
         public Size FullSize { get; set; }
 

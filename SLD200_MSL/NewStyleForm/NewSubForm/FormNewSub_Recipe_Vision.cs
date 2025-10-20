@@ -2199,6 +2199,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 dlg.MinValue = meta.Min;
                 dlg.MaxValue = meta.Max;
+                dlg.OriginValue = meta.Origin;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);
