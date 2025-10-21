@@ -27053,7 +27053,6 @@ namespace QMC.Common.Modules
                         m_ptLast.Y = 0.0;
 
                         m_nThruholeSocket_Count = 0;
-
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_THRUHOLE;
                         m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Thruhole;
 
@@ -27067,12 +27066,13 @@ namespace QMC.Common.Modules
                             {
                                 LayerIsGroup = false;
                                 m_nCount = layer.Count;
+                                Log.Write("SLD-200", "layer.Name == \"Thruhole\" -> group == null");
                             }
                             else
                             {
                                 LayerIsGroup = true;
-
                                 m_nCount = 1;
+                                Log.Write("SLD-200", "layer.Name == \"Thruhole\" -> group != null");
                             }
                             //break;
                         }
@@ -27096,7 +27096,7 @@ namespace QMC.Common.Modules
                         if (LayerIsGroup)               //  MSL 은 Thruhole 을 Group 으로 해야 한다. 
                         {
                             //  전체 Socket 개수만큼 공간 할당
-                            m_stThruHole_SocketData = new stThruHole_SocketData[layer.Count];
+                            m_stThruHole_SocketData = new stThruHole_SocketData[layer.Count];  //layer.Count
                             m_stThruHole_SocketData[0].nSocket_Num = layer.Count;
 
                             //  Thruhole Fiducial 마크 공간 할당
