@@ -46,9 +46,6 @@ namespace QMC.Common.UI
         public double RoiWidth { get; set; }
         public double RoiHeight { get; set; }
 
-
-
-
         public RoiListControl(RoiVisionTool roiTrainVisionTool, RoiVisionTool roiAlignVisionTool, Size fullsize)
         {
             InitializeComponent();
@@ -177,8 +174,6 @@ namespace QMC.Common.UI
                         roiAlignSaveButtonClick(FormSetRoi.RoiVisionTool, false);
                     }
                 }
-                
-                //
             }
         }
 

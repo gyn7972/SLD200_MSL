@@ -32,12 +32,20 @@ namespace SLD200_MSL
         public RoiTrainSaveClickHandler roiTrainSaveButtonClick { get; set; }
         public RoiAlignSaveClickHandler roiAlignSaveButtonClick { get; set; }
 
+
+        public RoiTrainbuttonClickHandler roiFiducialButtonClick { get; set; }
+        public RoiAlignSaveClickHandler roiFiducialSaveButtonClick { get; set; }
+
+        public RoiTrainbuttonClickHandler roiGoldpowderButtonClick { get; set; }
+        public RoiAlignSaveClickHandler roiGoldpowderSaveButtonClick { get; set; }
+
+
+
         public RoiTrainClickHandler roiTrainClick { get; set; }
         public RoiAlignClickHandler roiAlignClick { get; set; }
         FormBaseConfiguration Configuration { get; set; }
 
         public RoiVisionTool RoiTrainVisionTool { get; set; }
-
         public RoiVisionTool RoiAlignVisionTool { get; set; }
         public Size FullSize { get; set; }
 
@@ -114,6 +122,14 @@ namespace SLD200_MSL
             if (roiTrainClick != null)
                 roiTrainClick();
         }
+
+        public void RoiFiducialButton_Click(RoiVisionTool roiVisionTool)
+        {
+            if (roiFiducialButtonClick != null)
+                roiFiducialButtonClick(roiVisionTool);
+        }
+
+
 
         public void RoiAlignClick()
         {
@@ -218,7 +234,7 @@ namespace SLD200_MSL
         public void RoiAlignClickNew()
         {
             FormSetRoi FormSetRoi = new FormSetRoi(RoiAlignVisionTool, FullSize);
-            FormSetRoi.RoiButtonClick += RoiAlignButton_Click;
+            FormSetRoi.RoiButtonClick += RoiFiducialButton_Click;
             FormSetRoi.Location = this.Location;
             FormSetRoi.StartPosition = FormStartPosition.CenterScreen;
             if (FormSetRoi.ShowDialog() == DialogResult.OK)
@@ -238,5 +254,60 @@ namespace SLD200_MSL
                 roiAlignSaveButtonClick(FormSetRoi.RoiVisionTool, false);
             }
         }
+
+        public void RoiFiducialClickNew()
+        {
+            FormSetRoi FormSetRoi = new FormSetRoi(RoiAlignVisionTool, FullSize);
+            FormSetRoi.RoiButtonClick += RoiAlignButton_Click;
+            FormSetRoi.Location = this.Location;
+            FormSetRoi.StartPosition = FormStartPosition.CenterScreen;
+            if (FormSetRoi.ShowDialog() == DialogResult.OK)
+            {
+                CenterX = FormSetRoi.CenterX;
+                CenterY = FormSetRoi.CenterY;
+                Width = FormSetRoi.Width;
+                Height = FormSetRoi.Height;
+                roiFiducialSaveButtonClick(FormSetRoi.RoiVisionTool, true);
+            }
+            else
+            {
+                CenterX = FormSetRoi.CenterX;
+                CenterY = FormSetRoi.CenterY;
+                Width = FormSetRoi.Width;
+                Height = FormSetRoi.Height;
+                roiFiducialSaveButtonClick(FormSetRoi.RoiVisionTool, false);
+            }
+        }
+
+        public void RoiGoldpowderButton_Click(RoiVisionTool roiVisionTool)
+        {
+            if (roiGoldpowderButtonClick != null)
+                roiGoldpowderButtonClick(roiVisionTool);
+        }
+
+        public void RoiGoldpowderClickNew()
+        {
+            FormSetRoi FormSetRoi = new FormSetRoi(RoiAlignVisionTool, FullSize);
+            FormSetRoi.RoiButtonClick += RoiAlignButton_Click;
+            FormSetRoi.Location = this.Location;
+            FormSetRoi.StartPosition = FormStartPosition.CenterScreen;
+            if (FormSetRoi.ShowDialog() == DialogResult.OK)
+            {
+                CenterX = FormSetRoi.CenterX;
+                CenterY = FormSetRoi.CenterY;
+                Width = FormSetRoi.Width;
+                Height = FormSetRoi.Height;
+                roiGoldpowderSaveButtonClick(FormSetRoi.RoiVisionTool, true);
+            }
+            else
+            {
+                CenterX = FormSetRoi.CenterX;
+                CenterY = FormSetRoi.CenterY;
+                Width = FormSetRoi.Width;
+                Height = FormSetRoi.Height;
+                roiGoldpowderSaveButtonClick(FormSetRoi.RoiVisionTool, false);
+            }
+        }
+
     }
 }

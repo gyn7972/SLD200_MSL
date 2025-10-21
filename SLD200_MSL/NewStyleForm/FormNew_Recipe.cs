@@ -4323,6 +4323,7 @@ namespace SLD200_MSL
                 var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
                 dlg.MinValue = meta.Min;
                 dlg.MaxValue = meta.Max;
+                dlg.OriginValue = meta.Origin;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);
@@ -4930,115 +4931,6 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Enabled = false;
             }
         }
-
-        //    /// <summary>
-        //    /// 선택된 레이어 이름(layerName)에 따라 Hole Size 와 Resizing 결과 라벨을 갱신한다.
-        //    /// Hole 레이어: workStage.m_stLaserDrilling_SocketData 경로 사용
-        //    /// Thruhole, Outline 레이어: 구조가 불확실하므로 Reflection으로 dEdgePoint[*].X 탐색 (첫 번째/두 번째 점)
-        //    /// </summary>
-        //private void UpdateHoleSizeAndResizingDisplay(string layerName)
-        //{
-        //    if (workStage == null)
-        //    {
-        //        label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = "";
-        //        label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = "";
-        //        return;
-        //    }
-
-        //    // 1. Resizing 입력 파싱 (지름 입력이라 가정하고 /2)
-        //    double resizingHalf = 0.0;
-        //    {
-        //        string txt = textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text?.Trim();
-        //        double v = Equipment.ToDouble(txt);
-        //        resizingHalf = v;/// 2.0;
-        //    }
-
-        //    double? holeSize = null;
-
-        //    try
-        //    {
-        //        if (layerName != null && layerName.StartsWith("Hole", StringComparison.OrdinalIgnoreCase))
-        //        {
-        //            // HoleN → N 추출 (1~50 범위)
-        //            int n;
-        //            if (int.TryParse(layerName.Substring(4), out n) && n >= 1 && n <= 50)
-        //            {
-        //                int holeIndex = n - 1;
-        //                // 안전 체크
-        //                if (workStage.m_stLaserDrilling_SocketData != null &&
-        //                    workStage.m_stLaserDrilling_SocketData.Length > 0 &&
-        //                    holeIndex < workStage.m_stLaserDrilling_SocketData.Length)
-        //                {
-        //                    var g = workStage.m_stLaserDrilling_SocketData[0]; // Socket(0) 기준 (기존 코드 유지)
-        //                    var regionArrField = g.GetType().GetField("m_stDividedRegion_RegionData");
-        //                    if (regionArrField != null)
-        //                    {
-        //                        var regions = regionArrField.GetValue(g) as Array;
-        //                        if (regions != null && regions.Length > 0)
-        //                        {
-        //                            var region0 = regions.GetValue(0);
-        //                            var objArrField = region0.GetType().GetField("m_stDividedRegion_ObjectData");
-        //                            if (objArrField != null)
-        //                            {
-        //                                var objs = objArrField.GetValue(region0) as Array;
-        //                                if (objs != null && objs.Length > 0)
-        //                                {
-        //                                    var obj0 = objs.GetValue(0);
-        //                                    var edgeField = obj0.GetType().GetField("dEdgePoint");
-        //                                    if (edgeField != null)
-        //                                    {
-        //                                        var edgeArray = edgeField.GetValue(obj0) as Array;
-        //                                        if (edgeArray != null && edgeArray.Length > 0)
-        //                                        {
-        //                                            // 기존 코드: [1].X 사용 → 길이 부족 시 [0]
-        //                                            int idx = edgeArray.Length > 1 ? 1 : 0;
-        //                                            var pt = edgeArray.GetValue(idx);
-        //                                            var xProp = pt.GetType().GetProperty("X");
-        //                                            if (xProp != null)
-        //                                            {
-        //                                                holeSize = Equipment.ToDouble(xProp.GetValue(pt)?.ToString());
-        //                                            }
-        //                                        }
-        //                                    }
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        else if (string.Equals(layerName, "Thruhole", StringComparison.OrdinalIgnoreCase))
-        //        {
-        //            holeSize = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
-        //        }
-        //        else if (string.Equals(layerName, "Outline", StringComparison.OrdinalIgnoreCase))
-        //        {
-        //            holeSize = TryExtractFirstEdgePointX_Generic(workStage.m_stOutLine_SocketData);
-        //        }
-        //        else
-        //        {
-        //            // Marking / Fiducial / PreAlign 등은 표시 초기화
-        //            holeSize = null;
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        // 파싱 실패시 표시 초기화
-        //        holeSize = null;
-        //    }
-
-        //    if (holeSize.HasValue)
-        //    {
-        //        holeSize *= 2.0;
-        //        label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = holeSize.Value.ToString("0.###");
-        //        label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = (holeSize.Value + resizingHalf).ToString("0.###");
-        //    }
-        //    else
-        //    {
-        //        label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = "";
-        //        label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = "";
-        //    }
-        //}
 
         /// <summary>
         /// ThruHole / Outline 등 구조가 명확하지 않은 배열(혹은 단일객체)에 대해

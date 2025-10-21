@@ -4,6 +4,7 @@ using QMC.Common.Global;
 using QMC.Common.Modules;
 using QMC.Common.Parts;
 using QMC.Common.Recipe;
+using QMC.Common.Vision.Tools;
 using QMC.Common.VisionPart;
 using QMC.Core;
 using SLD200_MSL;
@@ -18,6 +19,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using QMC.Common.Recipe;
+
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
@@ -41,6 +44,9 @@ namespace SLD200.NewStyleForm.NewSubForm
         //private int GoldPowderSocketTotal => Math.Max(1, m_recipe?.GoldPowderSocketPosList?.Count ?? 1);
         // GoldPowder 소켓 총수 (동적으로 갱신)
         private int m_goldPowderSocketTotal = 1;
+
+        private int m_currentGoldPowderMarkIndex = 0;
+
 
         public FormNewSub_Recipe_GoldPowder()
         {
@@ -89,7 +95,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             workStage.UpdateResultOveray += OnUpdateResultOverlay;
 
-
             // 타이머 초기화
             timer_Status = new System.Windows.Forms.Timer();
             timer_Status.Interval = 200; // 200ms 주기
@@ -105,6 +110,12 @@ namespace SLD200.NewStyleForm.NewSubForm
             SetScroll();
 
             InitRecipeUI_KeyPad();
+
+            this.RoiTrain = Owner.GetTrainRoi();
+            this.RoiInspect = Owner.GetInspectRoi();
+            this.m_RoiListControl = new SLD200_MSL.RoiListControl(RoiTrain, RoiInspect, workStage.Camera_HighRes.Resolution);
+            this.m_RoiListControl.roiGoldpowderButtonClick += RoiGoldpowderButtonClick;
+            this.m_RoiListControl.roiGoldpowderSaveButtonClick += RoiGoldpowderSaveButtonClick;
 
             m_bInitialized = true;
         }
@@ -133,10 +144,16 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (!m_bInitialized)
                 return;
             LoadRecipe();
+
+            // (추가) 마크 콤보 먼저 초기화
+            InitGoldPowderMarkCombo();
+
             InitGoldPowderSocketCombo(); // (추가)
+
             // 없을 경우 최소 1개 확보 후 첫 소켓 UI 표시
             m_recipe?.EnsureGoldPowderSocketPosCount(m_goldPowderSocketTotal);
             m_recipe?.EnsureGoldPowderSocketPosCount_Offset(m_goldPowderSocketTotal);
+            
             ApplyRecipeToUI();
 
             // (추가) 비어있는 소켓 포지션 자동 초기화 후 저장
@@ -151,6 +168,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             UpdateRecipeFromUI();
             timer_Status.Stop();
         }
+
+        // (추가) GoldPowder 마크 콤보 초기화/갱신
+        
 
         private void OnUpdateResultOverlay(object sender, EventArgs e)
         {
@@ -191,15 +211,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 comboBox_Recipe_GoldPowder_Socket_Offset.SelectedIndex =
                     Math.Min(m_currentGoldPowderSocketIndexOffset, comboBox_Recipe_GoldPowder_Socket_Offset.Items.Count - 1);
         }
-
-
-
-
-
-
-
-
-
 
         private void button_Recipe_GoldPowder_Save_Click(object sender, EventArgs e)
         {
@@ -347,196 +358,6 @@ namespace SLD200.NewStyleForm.NewSubForm
         }
 
 
-
-        private void ApplyRecipeToUI()
-        {
-            if (m_recipe == null || m_recipePath == "")
-                return;
-
-            radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Checked = true;
-
-            // 정렬 방식
-            if (m_recipe.dGoldPowderAlignType == 0)
-            {
-                radioButton_Recipe_GoldPowder_Fiducial_Pattern.Checked = true;
-                radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = false;
-            }
-            else
-            {
-                radioButton_Recipe_GoldPowder_Fiducial_Pattern.Checked = false;
-                radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = true;
-            }
-
-            // 마크 타입
-            if (m_recipe.dGoldPowderMarkType == 0)
-            {
-                radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = true;
-                radioButton_Recipe_GoldPowder_Fiducial_Type_Circle.Checked = false;
-                
-            }
-            else
-            {
-                radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = true;
-                radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = false;
-            }
-
-            // 마크 색상
-            if (m_recipe.bGoldPowderCircleColor)
-            {
-                radioButton_Recipe_GoldPowder_Fiducial_White.Checked = false;
-                radioButton_Recipe_GoldPowder_Fiducial_Black.Checked = true;
-            }
-            else
-            {
-                radioButton_Recipe_GoldPowder_Fiducial_White.Checked = true;
-                radioButton_Recipe_GoldPowder_Fiducial_Black.Checked = false;
-            }
-
-            // 마크 스펙
-            textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text = m_recipe.dGoldPowderCircleMarkRadius.ToString("F3");
-            textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text = m_recipe.nGoldPowderCircleMarkMaxInstance.ToString();
-            textBox_Recipe_GoldPowder_Fiducial_FindCount.Text = m_recipe.nGoldPowderCircleMarkFindCount.ToString();
-            //textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text = m_recipe.dGoldPowderCircleMarkSpec.ToString("F3");
-            //textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text = m_recipe.dGoldPowderCircleMarkScore.ToString("F3");
-            // 내부 값 (0~1)을 퍼센트 문자열로 표시
-            textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text =
-                (m_recipe.dGoldPowderCircleMarkSpec * 100).ToString("F2");
-            // 내부 값 (0~1)을 퍼센트 문자열로 표시
-            textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text =
-                (m_recipe.dGoldPowderCircleMarkScore * 100).ToString("F2");
-
-
-            // 조명 사용 여부
-            checkBox_Recipe_GoldPowder_Illuminator_Red.Checked = m_recipe.bGoldPowderIlluminationRedUse;
-            if (checkBox_Recipe_GoldPowder_Illuminator_Red.Checked)
-            {
-                checkBox_Recipe_GoldPowder_Illuminator_Red.Text = "USE";
-            }
-            else
-            {
-                checkBox_Recipe_GoldPowder_Illuminator_Red.Text = "UnUSE";
-            }
-            
-            checkBox_Recipe_GoldPowder_Illuminator_IR.Checked = m_recipe.bGoldPowderIlluminationIRUse;
-            if (checkBox_Recipe_GoldPowder_Illuminator_IR.Checked)
-            {
-                checkBox_Recipe_GoldPowder_Illuminator_IR.Text = "USE";
-            }
-            else
-            {
-                checkBox_Recipe_GoldPowder_Illuminator_IR.Text = "UnUSE";
-            }
-
-            // 노출 시간
-            textBox_Recipe_GoldPowder_Camera_ExposureTime.Text = m_recipe.dGoldPowderIlluminationExposureTime.ToString("F1");
-
-            // Z축 오프셋
-            textBox_Recipe_GoldPowder_AxisZ_Setting.Text = m_recipe.dGoldPowderAxisZ_Offset.ToString("F3");
-
-            // 조명 세기
-            Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed = m_recipe.nGoldPowderIlluminationRed;
-            Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR = m_recipe.nGoldPowderIlluminationIR;
-            textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text = m_recipe.nGoldPowderIlluminationRed.ToString();
-            textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = m_recipe.nGoldPowderIlluminationIR.ToString();
-
-            // 최초 호출 시 현재 소켓 UI 로드
-            ApplyGoldPowderSocketPosToUI(m_currentGoldPowderSocketIndex);
-            ApplyGoldPowderSocketPosToUI_Offset(m_currentGoldPowderSocketIndexOffset);
-
-            //textBox_Recipe_GoldPowder_Position_X1.Text = m_recipe.dGoldPowderPos1X.ToString("F3");
-            //textBox_Recipe_GoldPowder_Position_Y1.Text = m_recipe.dGoldPowderPos1Y.ToString("F3");
-            //textBox_Recipe_GoldPowder_Position_X2.Text = m_recipe.dGoldPowderPos2X.ToString("F3");
-            //textBox_Recipe_GoldPowder_Position_Y2.Text = m_recipe.dGoldPowderPos2Y.ToString("F3");
-            //textBox_Recipe_GoldPowder_Position_X3.Text = m_recipe.dGoldPowderPos3X.ToString("F3");
-            //textBox_Recipe_GoldPowder_Position_Y3.Text = m_recipe.dGoldPowderPos3Y.ToString("F3");
-            //textBox_Recipe_GoldPowder_Position_X4.Text = m_recipe.dGoldPowderPos4X.ToString("F3");
-            //textBox_Recipe_GoldPowder_Position_Y4.Text = m_recipe.dGoldPowderPos4Y.ToString("F3");
-
-            //// (수정) 기존 ApplyRecipeToUI 끝부분 GoldPowder 포지션 설정 부분 교체
-            //// 기존 전역 변수 -> 최초 소켓[0] 동기화 후 UI 반영
-            //textBox_Recipe_GoldPowder_Position_X1.Text = m_recipe.GoldPowderSocketPosList.Count > 0 ?
-            //    m_recipe.GoldPowderSocketPosList[0].X[0].ToString("F3") : m_recipe.dGoldPowderPos1X.ToString("F3");
-            //// 나머지 동일하게 호출 대신 아래 한줄로 대체:
-            //ApplyGoldPowderSocketPosToUI(m_currentGoldPowderSocketIndex);
-
-            //// (수정) UpdateRecipeFromUI 끝부분 전역 포지션 저장 직후 추가
-            //UpdateGoldPowderSocketPosFromUI(m_currentGoldPowderSocketIndex);
-
-
-            SetScroll();
-        }
-
-        private void UpdateRecipeFromUI()
-        {
-            if (m_recipe == null)
-                return;
-
-            try
-            {
-                // 정렬 방식
-                m_recipe.dGoldPowderAlignType = radioButton_Recipe_GoldPowder_Fiducial_Pattern.Checked ? 0 : 1;
-
-                // 마크 타입
-                m_recipe.dGoldPowderMarkType = radioButton_Recipe_GoldPowder_Fiducial_Type_Circle.Checked ? 0 : 1;
-
-                // 마크 색상
-                m_recipe.bGoldPowderCircleColor = radioButton_Recipe_GoldPowder_Fiducial_White.Checked ? false : true;
-
-                // Z 오프셋 및 노출 시간
-                m_recipe.dGoldPowderAxisZ_Offset = Equipment.ToDouble(textBox_Recipe_GoldPowder_AxisZ_Setting.Text);
-                m_recipe.dGoldPowderIlluminationExposureTime = Equipment.ToDouble(textBox_Recipe_GoldPowder_Camera_ExposureTime.Text);
-
-                // 조명 사용 여부
-                m_recipe.bGoldPowderIlluminationIRUse = checkBox_Recipe_GoldPowder_Illuminator_IR.Checked;
-                m_recipe.bGoldPowderIlluminationRedUse = checkBox_Recipe_GoldPowder_Illuminator_Red.Checked;
-
-                // 조명 세기
-                m_recipe.nGoldPowderIlluminationIR = Equipment.ToInt(textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text);
-                m_recipe.nGoldPowderIlluminationRed = Equipment.ToInt(textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text);
-
-                // 마크 조건
-                m_recipe.dGoldPowderCircleMarkRadius = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text);
-                m_recipe.nGoldPowderCircleMarkMaxInstance = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text);
-                m_recipe.nGoldPowderCircleMarkFindCount = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_FindCount.Text);
-                //m_recipe.dGoldPowderCircleMarkSpec = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text);
-                //m_recipe.dGoldPowderCircleMarkScore = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text);
-                double percentValue = 0.0;
-                if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text, out percentValue))
-                {
-                    // UI에서 입력받은 %를 내부 0~1 값으로 변환
-                    m_recipe.dGoldPowderCircleMarkSpec = percentValue / 100.0;
-                }
-                if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text, out percentValue))
-                {
-                    // UI에서 입력받은 %를 내부 0~1 값으로 변환
-                    m_recipe.dGoldPowderCircleMarkScore = percentValue / 100.0;
-                }
-
-                //m_recipe.dGoldPowderPos1X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1.Text);
-                //m_recipe.dGoldPowderPos1Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1.Text);
-                //m_recipe.dGoldPowderPos2X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X2.Text);
-                //m_recipe.dGoldPowderPos2Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y2.Text);
-                //m_recipe.dGoldPowderPos3X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X3.Text);
-                //m_recipe.dGoldPowderPos3Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y3.Text);
-                //m_recipe.dGoldPowderPos4X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X4.Text);
-                //m_recipe.dGoldPowderPos4Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y4.Text);
-
-                // 현재 소켓 포지션 구조에 반영
-                UpdateGoldPowderSocketPosFromUI(m_currentGoldPowderSocketIndex);
-                UpdateGoldPowderSocketPosFromUI_Offset(m_currentGoldPowderSocketIndexOffset);
-                // 레거시 필드 (첫 소켓) 동기화
-                SyncLegacyGoldPowderPosFromSocket0();
-                SyncLegacyGoldPowderPosFromSocket0_Offset();
-
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-                //MessageBox.Show("UI 값 중 잘못된 항목이 있습니다.\r\n숫자 형식을 확인하세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-
         private double ParseDouble(string text)
         {
             return double.TryParse(text, out double result) ? result : 0.0;
@@ -588,6 +409,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             int nImage_Height = 0;
             double dTargetSize_Radius = 0.0;
             int nTargetColor = 0;
+            bool bTargetColor = false;
             double dSpec = 0.0;
             double dScore = 0.0;
             int nMaxInstance = 0;
@@ -595,13 +417,10 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             if (Equipment.Machine_LaserType_CO2)
             {
-                // Model에 따라 다르다. 나만 알듯..
-                workStage.m_bCO2_repairMode = false;  //1.2T Model - Repair 적용.
                 workStage.m_bCO2_MultyMode = true;    // 386 Model시에 적용.
             }
             else
             {
-                workStage.m_bCO2_repairMode = false;
                 workStage.m_bCO2_MultyMode = false;
             }
 
@@ -629,20 +448,22 @@ namespace SLD200.NewStyleForm.NewSubForm
                 // UI에서 입력받은 %를 내부 0~1 값으로 변환
                 dSpec = percentValue / 100.0;
             }
+
             if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text, out percentValue))
             {
                 // UI에서 입력받은 %를 내부 0~1 값으로 변환
                 dScore = percentValue / 100.0;
             }
 
-
             if (radioButton_Recipe_GoldPowder_Fiducial_White.Checked)
             {
                 nTargetColor = 1;          //  Fiducial 마크 색깔 //  0: Black, 1: White
+                bTargetColor = false;
             }
             else if (radioButton_Recipe_GoldPowder_Fiducial_Black.Checked)
             {
                 nTargetColor = 0;          //  Fiducial 마크 색깔 //  0: Black, 1: White
+                bTargetColor = true;
             }
 
             QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
@@ -657,16 +478,29 @@ namespace SLD200.NewStyleForm.NewSubForm
                 double m_dradius = 0.0;
                 m_dradius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
 
-                if(workStage.m_bCO2_repairMode)
-                {
-                    result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
-                                                    workStage.Camera_HighRes.LatestImage.RawData,
-                                                    w, h, (int)m_dradius, dSpec,
-                                                    ref bFindCircle, 0, 0, nTargetColor == 0,
-                                                    Equipment.stVisionRecipeSet.dGoldPowderCircleMarkScore,
-                                                                            false);
-                }
-                else
+                //Rectangle rectangle = new Rectangle(0, 0, w, h);
+                //rectangle.X = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_X.Text);
+                //rectangle.Y = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_Y.Text);
+                //rectangle.Width = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_X.Text);
+                //rectangle.Height = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_Y.Text);
+                // 교체
+                int sx = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_X.Text);
+                int sy = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_Y.Text);
+                int ex = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_X.Text);
+                int ey = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_Y.Text);
+
+                // 좌표 정규화 + 영상 경계 클램프
+                int left = Math.Max(0, Math.Min(sx, ex));
+                int top = Math.Max(0, Math.Min(sy, ey));
+                int right = Math.Min(w, Math.Max(sx, ex));
+                int bottom = Math.Min(h, Math.Max(sy, ey));
+
+                // 폭/높이 계산 (음수 방지)
+                int roiW = Math.Max(0, right - left);
+                int roiH = Math.Max(0, bottom - top);
+
+                // 최종 ROI
+                Rectangle rectangle = new Rectangle(left, top, roiW, roiH);
                 {
                     if(workStage.m_bCO2_MultyMode)
                     {
@@ -676,9 +510,11 @@ namespace SLD200.NewStyleForm.NewSubForm
                                         w, h,
                                         (int)m_dradius,
                                         dSpec,
-                                        nMaxInstance,                     // 최대 20개 원 탐색
-                                        true,                  // 검은 원
-                                        dScore
+                                        nMaxInstance,          // 최대 20개 원 탐색
+                                        bTargetColor,                  // 검은 원 :: true
+                                        dScore,
+                                        false,
+                                        rectangle
                                     );
                     }
                     else
@@ -717,7 +553,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else
             {
-                MessageBox.Show("원 찾기 실패", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "원 찾기 실패");
+                //MessageBox.Show("원 찾기 실패", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 listBox_Recipe_GoldPowder_Fiducial_Result.Items.Clear();
             }
 
@@ -776,6 +614,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
                 dlg.MinValue = meta.Min;
                 dlg.MaxValue = meta.Max;
+                dlg.OriginValue = meta.Origin;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);
@@ -874,8 +713,12 @@ namespace SLD200.NewStyleForm.NewSubForm
         // (추가) UI -> 소켓 데이터
         private void UpdateGoldPowderSocketPosFromUI(int socketIndex)
         {
-            if (m_recipe == null) return;
-            if (socketIndex < 0) return;
+            if (m_recipe == null) 
+                return;
+
+            if (socketIndex < 0) 
+                return;
+
             m_recipe.EnsureGoldPowderSocketPosCount(socketIndex + 1);
 
             double x1 = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1.Text);
@@ -2106,6 +1949,602 @@ namespace SLD200.NewStyleForm.NewSubForm
                 var mb = new QMC.Common.UI.MessageBoxOk();
                 mb.ShowDialog("Error !", "Z 이동 중 예외가 발생했습니다.");
             }
+        }
+
+        //Vision ROI 및 마크 추가의 건
+        public RoiVisionTool RoiTrain { get; set; }
+        public RoiVisionTool RoiInspect { get; set; }
+        private SLD200_MSL.RoiListControl m_RoiListControl;
+
+
+
+        private void button_Recipe_Goldpowder_ROI_Click(object sender, EventArgs e)
+        {
+            Point startLocation = new Point();
+            Point endLocation = new Point();
+            startLocation.X = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_X.Text);
+            startLocation.Y = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_Y.Text);
+            endLocation.X = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_X.Text);
+            endLocation.Y = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_Y.Text);
+            
+            RoiInspect.Parameter.StartLocation = startLocation;
+            RoiInspect.Parameter.EndLocation = endLocation;     //recipe.InspectRoiEndLocation;
+            RoiTrain.Parameter.Overlay.Visible = false;
+            RoiInspect.Parameter.Overlay.Visible = true;
+
+            this.ImageViewer_Recipe_GoldPowder_highs.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+            this.ImageViewer_Recipe_GoldPowder_highs.Display();
+            this.m_RoiListControl.RoiGoldpowderClickNew();
+
+            // (추가) 현재 선택 마크에 ROI 반영
+            if (m_recipe != null 
+                && m_currentGoldPowderMarkIndex >= 0 
+                && m_currentGoldPowderMarkIndex < m_recipe.GoldPowderMarkList.Count)
+            {
+                var mark = m_recipe.GoldPowderMarkList[m_currentGoldPowderMarkIndex];
+                mark.InspectRoiStart = startLocation;
+                mark.InspectRoiEnd = endLocation;
+            }
+        }
+
+        private void RoiGoldpowderButtonClick(RoiVisionTool roiVisionTool)
+        {
+            //if (Owner != null)
+            {
+                RoiInspect.Parameter.CenterLocation = roiVisionTool.Parameter.CenterLocation;
+                RoiInspect.Parameter.Size = roiVisionTool.Parameter.Size;
+
+                this.ImageViewer_Recipe_GoldPowder_highs.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+                RoiInspect.Parameter.Overlay.Visible = true;
+                this.ImageViewer_Recipe_GoldPowder_highs.Display();
+            }
+        }
+
+        private void RoiGoldpowderSaveButtonClick(RoiVisionTool roiVisionTool, bool bOk)
+        {
+            if (bOk == true)
+            {
+
+
+                textBox_Recipe_Goldpowder_ROI_START_X.Text = roiVisionTool.Parameter.StartLocation.X.ToString();
+                textBox_Recipe_Goldpowder_ROI_START_Y.Text = roiVisionTool.Parameter.StartLocation.Y.ToString();
+                textBox_Recipe_Goldpowder_ROI_END_X.Text = roiVisionTool.Parameter.EndLocation.X.ToString();
+                textBox_Recipe_Goldpowder_ROI_END_Y.Text = roiVisionTool.Parameter.EndLocation.Y.ToString();
+
+                // (추가) 현재 선택 마크에 ROI 반영
+                if (m_recipe != null 
+                    && m_currentGoldPowderMarkIndex >= 0 
+                    && m_currentGoldPowderMarkIndex < m_recipe.GoldPowderMarkList.Count)
+                {
+                    var mark = m_recipe.GoldPowderMarkList[m_currentGoldPowderMarkIndex];
+                    mark.InspectRoiStart = roiVisionTool.Parameter.StartLocation;
+                    mark.InspectRoiEnd = roiVisionTool.Parameter.EndLocation;
+                }
+            }
+            else
+            {
+                textBox_Recipe_Goldpowder_ROI_START_X.Text = "000";
+                textBox_Recipe_Goldpowder_ROI_START_Y.Text = "000";
+                textBox_Recipe_Goldpowder_ROI_END_X.Text = "000";
+                textBox_Recipe_Goldpowder_ROI_END_Y.Text = "000";
+
+                // (추가) 현재 선택 마크 ROI 초기화
+                if (m_recipe != null 
+                    && m_currentGoldPowderMarkIndex >= 0 
+                    && m_currentGoldPowderMarkIndex < m_recipe.GoldPowderMarkList.Count)
+                {
+                    var mark = m_recipe.GoldPowderMarkList[m_currentGoldPowderMarkIndex];
+                    mark.InspectRoiStart = new Point(0, 0);
+                    mark.InspectRoiEnd = new Point(0, 0);
+                }
+            }
+
+            this.ImageViewer_Recipe_GoldPowder_highs.Display();
+
+        }
+
+        private void InitGoldPowderMarkCombo()
+        {
+            if (m_recipe == null) 
+                return;
+
+            // 마크 리스트 최소 1개 보장
+            if (m_recipe.GoldPowderMarkList == null)
+            {
+                m_recipe.GoldPowderMarkList = new List<GoldPowderMarkInfo>();
+            }
+            if (m_recipe.GoldPowderMarkList.Count == 0)
+                m_recipe.GoldPowderMarkList.Add(new GoldPowderMarkInfo());
+
+            var cb = comboBox_Recipe_Goldpowder_MarkIndex;
+            if (cb == null)
+                return;
+
+            int keepIndex = Math.Max(0, Math.Min(m_currentGoldPowderMarkIndex, m_recipe.GoldPowderMarkList.Count - 1));
+
+            // 초기화 중에는 이벤트 분리하여 0번 마크가 0으로 덮이는 문제 방지
+            cb.SelectedIndexChanged -= comboBox_Recipe_Goldpowder_MarkIndex_SelectedIndexChanged;
+
+            cb.Items.Clear();
+            for (int i = 0; i < m_recipe.GoldPowderMarkList.Count; i++)
+                cb.Items.Add($"Mark {i + 1}");
+
+            cb.SelectedIndex = keepIndex;
+            m_currentGoldPowderMarkIndex = keepIndex;
+
+            // 초기화 완료 후 이벤트 재연결
+            cb.SelectedIndexChanged += comboBox_Recipe_Goldpowder_MarkIndex_SelectedIndexChanged;
+        }
+
+        // (추가) 선택된 마크 → UI 반영
+        private void ApplyGoldPowderMarkToUI(int index)
+        {
+            if (m_recipe == null) 
+                return;
+
+            if (index < 0 || index >= m_recipe.GoldPowderMarkList.Count) 
+                return;
+
+            var mark = m_recipe.GoldPowderMarkList[index];
+
+            // 정렬 방식: 0 = Pattern, 그 외 = Circle (기존 UI 로직 유지)
+            if (mark.AlignType == 0)
+            {
+                radioButton_Recipe_GoldPowder_Fiducial_Pattern.Checked = true;
+                radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = false;
+            }
+            else
+            {
+                radioButton_Recipe_GoldPowder_Fiducial_Pattern.Checked = false;
+                radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = true;
+            }
+
+            // 마크 타입: 0 = GoldPowder, 1 = Circle (기존 UI 로직 유지)
+            if (mark.MarkType == 0)
+            {
+                radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = true;
+                radioButton_Recipe_GoldPowder_Fiducial_Type_Circle.Checked = false;
+            }
+            else
+            {
+                radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = false;
+                radioButton_Recipe_GoldPowder_Fiducial_Type_Circle.Checked = true;
+            }
+
+            // 색상: true = Black, false = White
+            if (mark.CircleColor)
+            {
+                radioButton_Recipe_GoldPowder_Fiducial_White.Checked = false;
+                radioButton_Recipe_GoldPowder_Fiducial_Black.Checked = true;
+            }
+            else
+            {
+                radioButton_Recipe_GoldPowder_Fiducial_White.Checked = true;
+                radioButton_Recipe_GoldPowder_Fiducial_Black.Checked = false;
+            }
+
+            // 마크 스펙/스코어/사이즈
+            textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text = mark.CircleMarkRadius.ToString("F3");
+            textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text = (mark.CircleMarkSpec * 100.0).ToString("F2");
+            textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text = (mark.CircleMarkScore * 100.0).ToString("F2");
+
+            // 최대 개수/찾기 개수
+            textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text = mark.CircleMarkMaxInstance.ToString();
+            textBox_Recipe_GoldPowder_Fiducial_FindCount.Text = mark.CircleMarkFindCount.ToString();
+
+            // 조명 사용 여부
+            checkBox_Recipe_GoldPowder_Illuminator_IR.Checked = mark.UseIR;
+            checkBox_Recipe_GoldPowder_Illuminator_Red.Checked = mark.UseRed;
+            checkBox_Recipe_GoldPowder_Illuminator_IR.Text = mark.UseIR ? "USE" : "UnUSE";
+            checkBox_Recipe_GoldPowder_Illuminator_Red.Text = mark.UseRed ? "USE" : "UnUSE";
+
+            // 조명 세기 텍스트
+            textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = mark.IllumIR.ToString();
+            textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text = mark.IllumRed.ToString();
+
+            // 노출/축Z
+            textBox_Recipe_GoldPowder_Camera_ExposureTime.Text = mark.ExposureTime.ToString("F1");
+            textBox_Recipe_GoldPowder_AxisZ_Setting.Text = mark.AxisZOffset.ToString("F3");
+
+            // (추가) ROI 텍스트 박스 반영
+            textBox_Recipe_Goldpowder_ROI_START_X.Text = mark.InspectRoiStart.X.ToString();
+            textBox_Recipe_Goldpowder_ROI_START_Y.Text = mark.InspectRoiStart.Y.ToString();
+            textBox_Recipe_Goldpowder_ROI_END_X.Text = mark.InspectRoiEnd.X.ToString();
+            textBox_Recipe_Goldpowder_ROI_END_Y.Text = mark.InspectRoiEnd.Y.ToString();
+
+            // (선택) 뷰어 오버레이 파라미터도 동기화
+            if (RoiInspect != null)
+            {
+                RoiInspect.Parameter.StartLocation = mark.InspectRoiStart;
+                RoiInspect.Parameter.EndLocation = mark.InspectRoiEnd;
+            }
+
+            // 스크롤바 세팅을 위해 Equipment.stVisionRecipeSet 값을 동기화
+            Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed = mark.IllumRed;
+            Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR = mark.IllumIR;
+            SetScroll();
+
+            // 선택 마크를 레거시 단일 변수에도 반영(후방 호환)
+            SyncLegacyGoldPowderFromMark(mark);
+        }
+
+        // (추가) UI → 선택된 마크 반영
+        private void UpdateGoldPowderMarkFromUI(int index)
+        {
+            if (m_recipe == null) 
+                return;
+
+            if (index < 0 || index >= m_recipe.GoldPowderMarkList.Count) 
+                return;
+
+            var mark = m_recipe.GoldPowderMarkList[index];
+
+            // 정렬 방식 (UI 로직 유지: Pattern=0, Circle=기타)
+            mark.AlignType = radioButton_Recipe_GoldPowder_Fiducial_Pattern.Checked ? 0 : 1;
+
+            // 마크 타입
+            mark.MarkType = radioButton_Recipe_GoldPowder_Fiducial_Type_Circle.Checked ? 1 : 0;
+
+            // 색상
+            mark.CircleColor = radioButton_Recipe_GoldPowder_Fiducial_White.Checked ? false : true;
+
+            // 노출/축Z
+            mark.AxisZOffset = Equipment.ToDouble(textBox_Recipe_GoldPowder_AxisZ_Setting.Text);
+            mark.ExposureTime = Equipment.ToDouble(textBox_Recipe_GoldPowder_Camera_ExposureTime.Text);
+
+            // 조명 사용 여부
+            mark.UseIR = checkBox_Recipe_GoldPowder_Illuminator_IR.Checked;
+            mark.UseRed = checkBox_Recipe_GoldPowder_Illuminator_Red.Checked;
+
+            // 조명 세기
+            mark.IllumIR = Equipment.ToInt(textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text);
+            mark.IllumRed = Equipment.ToInt(textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text);
+
+            // 마크 조건
+            mark.CircleMarkRadius = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text);
+            mark.CircleMarkMaxInstance = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text);
+            mark.CircleMarkFindCount = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_FindCount.Text);
+
+            double percentValue;
+            if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text, out percentValue))
+                mark.CircleMarkSpec = percentValue / 100.0;
+            if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text, out percentValue))
+                mark.CircleMarkScore = percentValue / 100.0;
+
+            // (추가) ROI 텍스트 박스 → 마크 반영
+            int sX = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_X.Text);
+            int sY = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_Y.Text);
+            int eX = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_X.Text);
+            int eY = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_Y.Text);
+            mark.InspectRoiStart = new Point(sX, sY);
+            mark.InspectRoiEnd = new Point(eX, eY);
+
+            // (선택) 뷰어 오버레이 파라미터도 동기화
+            if (RoiInspect != null)
+            {
+                RoiInspect.Parameter.StartLocation = mark.InspectRoiStart;
+                RoiInspect.Parameter.EndLocation = mark.InspectRoiEnd;
+            }
+
+            // 선택 마크를 레거시 단일 변수에도 반영(후방 호환)
+            SyncLegacyGoldPowderFromMark(mark);
+        }
+
+        // (추가) 선택 마크 → 레거시 단일 변수 동기화
+        private void SyncLegacyGoldPowderFromMark(GoldPowderMarkInfo mark)
+        {
+            if (mark == null || m_recipe == null) return;
+            m_recipe.dGoldPowderAlignType = mark.AlignType;
+            m_recipe.dGoldPowderMarkType = mark.MarkType;
+            m_recipe.bGoldPowderCircleColor = mark.CircleColor;
+            m_recipe.dGoldPowderCircleMarkRadius = mark.CircleMarkRadius;
+            m_recipe.dGoldPowderCircleMarkSpec = mark.CircleMarkSpec;
+            m_recipe.dGoldPowderCircleMarkScore = mark.CircleMarkScore;
+            m_recipe.nGoldPowderIlluminationIR = mark.IllumIR;
+            m_recipe.nGoldPowderIlluminationRed = mark.IllumRed;
+            m_recipe.bGoldPowderIlluminationIRUse = mark.UseIR;
+            m_recipe.bGoldPowderIlluminationRedUse = mark.UseRed;
+            m_recipe.dGoldPowderIlluminationExposureTime = mark.ExposureTime;
+            m_recipe.dGoldPowderAxisZ_Offset = mark.AxisZOffset;
+            m_recipe.nGoldPowderCircleMarkMaxInstance = mark.CircleMarkMaxInstance;
+            m_recipe.nGoldPowderCircleMarkFindCount = mark.CircleMarkFindCount;
+        }
+
+        private void ApplyRecipeToUI()
+        {
+            if (m_recipe == null || m_recipePath == "")
+                return;
+
+            radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Checked = true;
+
+            // (변경) 선택된 마크 기준으로 UI 반영
+            ApplyGoldPowderMarkToUI(m_currentGoldPowderMarkIndex);
+
+            // 최초 호출 시 현재 소켓 UI 로드
+            ApplyGoldPowderSocketPosToUI(m_currentGoldPowderSocketIndex);
+            ApplyGoldPowderSocketPosToUI_Offset(m_currentGoldPowderSocketIndexOffset);
+        }
+
+        //private void ApplyRecipeToUI()
+        //{
+        //    if (m_recipe == null || m_recipePath == "")
+        //        return;
+
+        //    radioButton_Recipe_GoldPowder_CameraSelection_HighMag.Checked = true;
+
+        //    // 정렬 방식
+        //    if (m_recipe.dGoldPowderAlignType == 0)
+        //    {
+        //        radioButton_Recipe_GoldPowder_Fiducial_Pattern.Checked = true;
+        //        radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = false;
+        //    }
+        //    else
+        //    {
+        //        radioButton_Recipe_GoldPowder_Fiducial_Pattern.Checked = false;
+        //        radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = true;
+        //    }
+
+        //    // 마크 타입
+        //    if (m_recipe.dGoldPowderMarkType == 0)
+        //    {
+        //        radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = true;
+        //        radioButton_Recipe_GoldPowder_Fiducial_Type_Circle.Checked = false;
+
+        //    }
+        //    else
+        //    {
+        //        radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = true;
+        //        radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = false;
+        //    }
+
+        //    // 마크 색상
+        //    if (m_recipe.bGoldPowderCircleColor)
+        //    {
+        //        radioButton_Recipe_GoldPowder_Fiducial_White.Checked = false;
+        //        radioButton_Recipe_GoldPowder_Fiducial_Black.Checked = true;
+        //    }
+        //    else
+        //    {
+        //        radioButton_Recipe_GoldPowder_Fiducial_White.Checked = true;
+        //        radioButton_Recipe_GoldPowder_Fiducial_Black.Checked = false;
+        //    }
+
+        //    // 마크 스펙
+        //    textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text = m_recipe.dGoldPowderCircleMarkRadius.ToString("F3");
+        //    textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text = m_recipe.nGoldPowderCircleMarkMaxInstance.ToString();
+        //    textBox_Recipe_GoldPowder_Fiducial_FindCount.Text = m_recipe.nGoldPowderCircleMarkFindCount.ToString();
+        //    //textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text = m_recipe.dGoldPowderCircleMarkSpec.ToString("F3");
+        //    //textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text = m_recipe.dGoldPowderCircleMarkScore.ToString("F3");
+        //    // 내부 값 (0~1)을 퍼센트 문자열로 표시
+        //    textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text =
+        //        (m_recipe.dGoldPowderCircleMarkSpec * 100).ToString("F2");
+        //    // 내부 값 (0~1)을 퍼센트 문자열로 표시
+        //    textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text =
+        //        (m_recipe.dGoldPowderCircleMarkScore * 100).ToString("F2");
+
+
+        //    // 조명 사용 여부
+        //    checkBox_Recipe_GoldPowder_Illuminator_Red.Checked = m_recipe.bGoldPowderIlluminationRedUse;
+        //    if (checkBox_Recipe_GoldPowder_Illuminator_Red.Checked)
+        //    {
+        //        checkBox_Recipe_GoldPowder_Illuminator_Red.Text = "USE";
+        //    }
+        //    else
+        //    {
+        //        checkBox_Recipe_GoldPowder_Illuminator_Red.Text = "UnUSE";
+        //    }
+
+        //    checkBox_Recipe_GoldPowder_Illuminator_IR.Checked = m_recipe.bGoldPowderIlluminationIRUse;
+        //    if (checkBox_Recipe_GoldPowder_Illuminator_IR.Checked)
+        //    {
+        //        checkBox_Recipe_GoldPowder_Illuminator_IR.Text = "USE";
+        //    }
+        //    else
+        //    {
+        //        checkBox_Recipe_GoldPowder_Illuminator_IR.Text = "UnUSE";
+        //    }
+
+        //    // 노출 시간
+        //    textBox_Recipe_GoldPowder_Camera_ExposureTime.Text = m_recipe.dGoldPowderIlluminationExposureTime.ToString("F1");
+
+        //    // Z축 오프셋
+        //    textBox_Recipe_GoldPowder_AxisZ_Setting.Text = m_recipe.dGoldPowderAxisZ_Offset.ToString("F3");
+
+        //    // 조명 세기
+        //    Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed = m_recipe.nGoldPowderIlluminationRed;
+        //    Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR = m_recipe.nGoldPowderIlluminationIR;
+        //    textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text = m_recipe.nGoldPowderIlluminationRed.ToString();
+        //    textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text = m_recipe.nGoldPowderIlluminationIR.ToString();
+
+        //    // 최초 호출 시 현재 소켓 UI 로드
+        //    ApplyGoldPowderSocketPosToUI(m_currentGoldPowderSocketIndex);
+        //    ApplyGoldPowderSocketPosToUI_Offset(m_currentGoldPowderSocketIndexOffset);
+
+        //    //textBox_Recipe_GoldPowder_Position_X1.Text = m_recipe.dGoldPowderPos1X.ToString("F3");
+        //    //textBox_Recipe_GoldPowder_Position_Y1.Text = m_recipe.dGoldPowderPos1Y.ToString("F3");
+        //    //textBox_Recipe_GoldPowder_Position_X2.Text = m_recipe.dGoldPowderPos2X.ToString("F3");
+        //    //textBox_Recipe_GoldPowder_Position_Y2.Text = m_recipe.dGoldPowderPos2Y.ToString("F3");
+        //    //textBox_Recipe_GoldPowder_Position_X3.Text = m_recipe.dGoldPowderPos3X.ToString("F3");
+        //    //textBox_Recipe_GoldPowder_Position_Y3.Text = m_recipe.dGoldPowderPos3Y.ToString("F3");
+        //    //textBox_Recipe_GoldPowder_Position_X4.Text = m_recipe.dGoldPowderPos4X.ToString("F3");
+        //    //textBox_Recipe_GoldPowder_Position_Y4.Text = m_recipe.dGoldPowderPos4Y.ToString("F3");
+
+        //    //// (수정) 기존 ApplyRecipeToUI 끝부분 GoldPowder 포지션 설정 부분 교체
+        //    //// 기존 전역 변수 -> 최초 소켓[0] 동기화 후 UI 반영
+        //    //textBox_Recipe_GoldPowder_Position_X1.Text = m_recipe.GoldPowderSocketPosList.Count > 0 ?
+        //    //    m_recipe.GoldPowderSocketPosList[0].X[0].ToString("F3") : m_recipe.dGoldPowderPos1X.ToString("F3");
+        //    //// 나머지 동일하게 호출 대신 아래 한줄로 대체:
+        //    //ApplyGoldPowderSocketPosToUI(m_currentGoldPowderSocketIndex);
+
+        //    //// (수정) UpdateRecipeFromUI 끝부분 전역 포지션 저장 직후 추가
+        //    //UpdateGoldPowderSocketPosFromUI(m_currentGoldPowderSocketIndex);
+
+
+        //    SetScroll();
+        //}
+
+        private void UpdateRecipeFromUI()
+        {
+            if (m_recipe == null)
+                return;
+
+            try
+            {
+                // (변경) UI → 선택된 마크 갱신
+                UpdateGoldPowderMarkFromUI(m_currentGoldPowderMarkIndex);
+
+                // 현재 소켓 포지션 구조에 반영
+                UpdateGoldPowderSocketPosFromUI(m_currentGoldPowderSocketIndex);
+                UpdateGoldPowderSocketPosFromUI_Offset(m_currentGoldPowderSocketIndexOffset);
+
+                // 레거시 필드 (첫 소켓) 동기화
+                SyncLegacyGoldPowderPosFromSocket0();
+                SyncLegacyGoldPowderPosFromSocket0_Offset();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
+        //private void UpdateRecipeFromUI()
+        //{
+        //    if (m_recipe == null)
+        //        return;
+
+        //    try
+        //    {
+        //        // 정렬 방식
+        //        m_recipe.dGoldPowderAlignType = radioButton_Recipe_GoldPowder_Fiducial_Pattern.Checked ? 0 : 1;
+
+        //        // 마크 타입
+        //        m_recipe.dGoldPowderMarkType = radioButton_Recipe_GoldPowder_Fiducial_Type_Circle.Checked ? 0 : 1;
+
+        //        // 마크 색상
+        //        m_recipe.bGoldPowderCircleColor = radioButton_Recipe_GoldPowder_Fiducial_White.Checked ? false : true;
+
+        //        // Z 오프셋 및 노출 시간
+        //        m_recipe.dGoldPowderAxisZ_Offset = Equipment.ToDouble(textBox_Recipe_GoldPowder_AxisZ_Setting.Text);
+        //        m_recipe.dGoldPowderIlluminationExposureTime = Equipment.ToDouble(textBox_Recipe_GoldPowder_Camera_ExposureTime.Text);
+
+        //        // 조명 사용 여부
+        //        m_recipe.bGoldPowderIlluminationIRUse = checkBox_Recipe_GoldPowder_Illuminator_IR.Checked;
+        //        m_recipe.bGoldPowderIlluminationRedUse = checkBox_Recipe_GoldPowder_Illuminator_Red.Checked;
+
+        //        // 조명 세기
+        //        m_recipe.nGoldPowderIlluminationIR = Equipment.ToInt(textBox_Recipe_GoldPowder_Illuminator_FineCamIR.Text);
+        //        m_recipe.nGoldPowderIlluminationRed = Equipment.ToInt(textBox_Recipe_GoldPowder_Illuminator_FineCamRed.Text);
+
+        //        // 마크 조건
+        //        m_recipe.dGoldPowderCircleMarkRadius = Equipment.ToDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSize.Text);
+        //        m_recipe.nGoldPowderCircleMarkMaxInstance = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text);
+        //        m_recipe.nGoldPowderCircleMarkFindCount = Equipment.ToInt(textBox_Recipe_GoldPowder_Fiducial_FindCount.Text);
+        //        //m_recipe.dGoldPowderCircleMarkSpec = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text);
+        //        //m_recipe.dGoldPowderCircleMarkScore = ParseDouble(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text);
+        //        double percentValue = 0.0;
+        //        if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleSpec.Text, out percentValue))
+        //        {
+        //            // UI에서 입력받은 %를 내부 0~1 값으로 변환
+        //            m_recipe.dGoldPowderCircleMarkSpec = percentValue / 100.0;
+        //        }
+        //        if (double.TryParse(textBox_Recipe_GoldPowder_Fiducial_CircleScore.Text, out percentValue))
+        //        {
+        //            // UI에서 입력받은 %를 내부 0~1 값으로 변환
+        //            m_recipe.dGoldPowderCircleMarkScore = percentValue / 100.0;
+        //        }
+
+        //        //m_recipe.dGoldPowderPos1X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X1.Text);
+        //        //m_recipe.dGoldPowderPos1Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y1.Text);
+        //        //m_recipe.dGoldPowderPos2X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X2.Text);
+        //        //m_recipe.dGoldPowderPos2Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y2.Text);
+        //        //m_recipe.dGoldPowderPos3X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X3.Text);
+        //        //m_recipe.dGoldPowderPos3Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y3.Text);
+        //        //m_recipe.dGoldPowderPos4X = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_X4.Text);
+        //        //m_recipe.dGoldPowderPos4Y = Equipment.ToDouble(textBox_Recipe_GoldPowder_Position_Y4.Text);
+
+        //        // 현재 소켓 포지션 구조에 반영
+        //        UpdateGoldPowderSocketPosFromUI(m_currentGoldPowderSocketIndex);
+        //        UpdateGoldPowderSocketPosFromUI_Offset(m_currentGoldPowderSocketIndexOffset);
+        //        // 레거시 필드 (첫 소켓) 동기화
+        //        SyncLegacyGoldPowderPosFromSocket0();
+        //        SyncLegacyGoldPowderPosFromSocket0_Offset();
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Write(ex);
+        //        //MessageBox.Show("UI 값 중 잘못된 항목이 있습니다.\r\n숫자 형식을 확인하세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+        private void comboBox_Recipe_Goldpowder_MarkIndex_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (m_recipe == null) 
+                return;
+
+            // 변경사항 먼저 반영
+            UpdateGoldPowderMarkFromUI(m_currentGoldPowderMarkIndex);
+
+            // 선택 인덱스 갱신
+            m_currentGoldPowderMarkIndex = Math.Max(0, comboBox_Recipe_Goldpowder_MarkIndex.SelectedIndex);
+
+            // 선택된 마크로 UI 새로고침
+            ApplyGoldPowderMarkToUI(m_currentGoldPowderMarkIndex);
+        }
+
+        private void button_Recipe_Goldpowder_Mark_Add_Click(object sender, EventArgs e)
+        {
+            if (m_recipe == null) 
+                return;
+
+            // 선택 변경 전 현재 UI 값을 커밋 (기존 SelectedIndexChanged의 선반영 동작 유지)
+            UpdateGoldPowderMarkFromUI(m_currentGoldPowderMarkIndex);
+
+            // 현재 마크를 복제해서 추가(초기값 유지)
+            GoldPowderMarkInfo newMark;
+            if (m_recipe.GoldPowderMarkList.Count > 0)
+            {
+                var curr = m_recipe.GoldPowderMarkList[Math.Max(0, m_currentGoldPowderMarkIndex)];
+                newMark = curr.Clone();
+            }
+            else
+            {
+                newMark = new GoldPowderMarkInfo();
+            }
+
+            m_recipe.GoldPowderMarkList.Add(newMark);
+
+            // 콤보 갱신(이때 SelectedIndexChanged는 일시 분리됨)
+            InitGoldPowderMarkCombo();
+
+            // 마지막 항목 선택 후 UI 반영
+            comboBox_Recipe_Goldpowder_MarkIndex.SelectedIndex = m_recipe.GoldPowderMarkList.Count - 1;
+            ApplyGoldPowderMarkToUI(comboBox_Recipe_Goldpowder_MarkIndex.SelectedIndex);
+        }
+
+        private void button_Recipe_Goldpowder_Mark_Delete_Click(object sender, EventArgs e)
+        {
+            if (m_recipe == null) 
+                return;
+
+            if (m_recipe.GoldPowderMarkList.Count <= 1)
+            {
+                MessageBox.Show("최소 1개 마크는 유지되어야 합니다.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // 선택 변경 전 현재 UI 값을 커밋
+            UpdateGoldPowderMarkFromUI(m_currentGoldPowderMarkIndex);
+
+            int idx = Math.Max(0, comboBox_Recipe_Goldpowder_MarkIndex.SelectedIndex);
+            m_recipe.GoldPowderMarkList.RemoveAt(idx);
+
+            // 인덱스 보정 및 콤보 갱신
+            m_currentGoldPowderMarkIndex = Math.Max(0, Math.Min(idx, m_recipe.GoldPowderMarkList.Count - 1));
+            InitGoldPowderMarkCombo();
+            comboBox_Recipe_Goldpowder_MarkIndex.SelectedIndex = m_currentGoldPowderMarkIndex;
+
+            // 선택 마크로 UI 반영
+            ApplyGoldPowderMarkToUI(m_currentGoldPowderMarkIndex);
         }
     }
 }

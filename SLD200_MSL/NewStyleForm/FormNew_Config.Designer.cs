@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl_Config = new System.Windows.Forms.TabControl();
             this.tabPage_Config_LDUL = new System.Windows.Forms.TabPage();
             this.groupBox_Config_LDUL_DIO = new System.Windows.Forms.GroupBox();
@@ -469,6 +469,8 @@
             this.checkedListBox_Config_Laser_DIO_Input = new System.Windows.Forms.CheckedListBox();
             this.label16 = new System.Windows.Forms.Label();
             this.groupBox_Config_Laser_Laser_Warning = new System.Windows.Forms.GroupBox();
+            this.label_Config_Laser_Laser_warning_Code_Comm = new System.Windows.Forms.Label();
+            this.label_Config_Laser_Laser_warning_Comm = new System.Windows.Forms.Label();
             this.label_Config_Laser_Laser_warning = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -570,8 +572,6 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
-            this.label_Config_Laser_Laser_warning_Comm = new System.Windows.Forms.Label();
-            this.label_Config_Laser_Laser_warning_Code_Comm = new System.Windows.Forms.Label();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -2324,7 +2324,7 @@
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Name = "textBox_Config_LDUL_TeachingPos_RPortZ";
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_LDUL_TeachingPos_RPortZ.TabIndex = 28;
-            this.textBox_Config_LDUL_TeachingPos_RPortZ.Tag = "KeyPad;Min=-100;Max=500;Format=0.000";
+            this.textBox_Config_LDUL_TeachingPos_RPortZ.Tag = "KeyPad;Min=-100;Max=500;Format=0.000;Origin=120";
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_RPortZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -2395,7 +2395,7 @@
             this.textBox_Config_LDUL_TeachingPos_TransferX.Name = "textBox_Config_LDUL_TeachingPos_TransferX";
             this.textBox_Config_LDUL_TeachingPos_TransferX.Size = new System.Drawing.Size(97, 24);
             this.textBox_Config_LDUL_TeachingPos_TransferX.TabIndex = 22;
-            this.textBox_Config_LDUL_TeachingPos_TransferX.Tag = "KeyPad;Min=-2000;Max=2000;Format=0.000";
+            this.textBox_Config_LDUL_TeachingPos_TransferX.Tag = "KeyPad;Min=-2000;Max=2000;Format=0.000;Origin=120";
             this.textBox_Config_LDUL_TeachingPos_TransferX.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_TransferX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -6538,6 +6538,34 @@
             this.groupBox_Config_Laser_Laser_Warning.TabStop = false;
             this.groupBox_Config_Laser_Laser_Warning.Text = "Laser Warning";
             // 
+            // label_Config_Laser_Laser_warning_Code_Comm
+            // 
+            this.label_Config_Laser_Laser_warning_Code_Comm.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Config_Laser_Laser_warning_Code_Comm.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Config_Laser_Laser_warning_Code_Comm.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_Laser_Laser_warning_Code_Comm.ForeColor = System.Drawing.Color.Lime;
+            this.label_Config_Laser_Laser_warning_Code_Comm.Location = new System.Drawing.Point(10, 88);
+            this.label_Config_Laser_Laser_warning_Code_Comm.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Config_Laser_Laser_warning_Code_Comm.Name = "label_Config_Laser_Laser_warning_Code_Comm";
+            this.label_Config_Laser_Laser_warning_Code_Comm.Size = new System.Drawing.Size(465, 25);
+            this.label_Config_Laser_Laser_warning_Code_Comm.TabIndex = 14;
+            this.label_Config_Laser_Laser_warning_Code_Comm.Text = "No Errors";
+            this.label_Config_Laser_Laser_warning_Code_Comm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label_Config_Laser_Laser_warning_Comm
+            // 
+            this.label_Config_Laser_Laser_warning_Comm.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Config_Laser_Laser_warning_Comm.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Config_Laser_Laser_warning_Comm.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_Laser_Laser_warning_Comm.ForeColor = System.Drawing.Color.Lime;
+            this.label_Config_Laser_Laser_warning_Comm.Location = new System.Drawing.Point(10, 58);
+            this.label_Config_Laser_Laser_warning_Comm.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Config_Laser_Laser_warning_Comm.Name = "label_Config_Laser_Laser_warning_Comm";
+            this.label_Config_Laser_Laser_warning_Comm.Size = new System.Drawing.Size(465, 25);
+            this.label_Config_Laser_Laser_warning_Comm.TabIndex = 13;
+            this.label_Config_Laser_Laser_warning_Comm.Text = "No Errors";
+            this.label_Config_Laser_Laser_warning_Comm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // label_Config_Laser_Laser_warning
             // 
             this.label_Config_Laser_Laser_warning.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
@@ -6658,32 +6686,32 @@
             // 
             this.dataGridMaskSize.AllowUserToAddRows = false;
             this.dataGridMaskSize.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.Format = "N0";
-            dataGridViewCellStyle1.NullValue = "0";
-            this.dataGridMaskSize.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.Format = "N0";
+            dataGridViewCellStyle4.NullValue = "0";
+            this.dataGridMaskSize.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridMaskSize.BackgroundColor = System.Drawing.SystemColors.Menu;
             this.dataGridMaskSize.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridMaskSize.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Sunken;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Format = "No";
-            dataGridViewCellStyle2.NullValue = "0";
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
-            this.dataGridMaskSize.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.Format = "No";
+            dataGridViewCellStyle5.NullValue = "0";
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White;
+            this.dataGridMaskSize.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridMaskSize.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.Format = "N0";
-            dataGridViewCellStyle3.NullValue = "0";
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridMaskSize.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.Format = "N0";
+            dataGridViewCellStyle6.NullValue = "0";
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridMaskSize.DefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridMaskSize.Location = new System.Drawing.Point(7, 25);
             this.dataGridMaskSize.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dataGridMaskSize.Name = "dataGridMaskSize";
@@ -7899,34 +7927,6 @@
             this.label51.TabIndex = 49;
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_Config_Laser_Laser_warning_Comm
-            // 
-            this.label_Config_Laser_Laser_warning_Comm.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label_Config_Laser_Laser_warning_Comm.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Config_Laser_Laser_warning_Comm.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Config_Laser_Laser_warning_Comm.ForeColor = System.Drawing.Color.Lime;
-            this.label_Config_Laser_Laser_warning_Comm.Location = new System.Drawing.Point(10, 58);
-            this.label_Config_Laser_Laser_warning_Comm.Margin = new System.Windows.Forms.Padding(5);
-            this.label_Config_Laser_Laser_warning_Comm.Name = "label_Config_Laser_Laser_warning_Comm";
-            this.label_Config_Laser_Laser_warning_Comm.Size = new System.Drawing.Size(465, 25);
-            this.label_Config_Laser_Laser_warning_Comm.TabIndex = 13;
-            this.label_Config_Laser_Laser_warning_Comm.Text = "No Errors";
-            this.label_Config_Laser_Laser_warning_Comm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label_Config_Laser_Laser_warning_Code_Comm
-            // 
-            this.label_Config_Laser_Laser_warning_Code_Comm.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label_Config_Laser_Laser_warning_Code_Comm.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Config_Laser_Laser_warning_Code_Comm.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Config_Laser_Laser_warning_Code_Comm.ForeColor = System.Drawing.Color.Lime;
-            this.label_Config_Laser_Laser_warning_Code_Comm.Location = new System.Drawing.Point(10, 88);
-            this.label_Config_Laser_Laser_warning_Code_Comm.Margin = new System.Windows.Forms.Padding(5);
-            this.label_Config_Laser_Laser_warning_Code_Comm.Name = "label_Config_Laser_Laser_warning_Code_Comm";
-            this.label_Config_Laser_Laser_warning_Code_Comm.Size = new System.Drawing.Size(465, 25);
-            this.label_Config_Laser_Laser_warning_Code_Comm.TabIndex = 14;
-            this.label_Config_Laser_Laser_warning_Code_Comm.Text = "No Errors";
-            this.label_Config_Laser_Laser_warning_Code_Comm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Config
             // 

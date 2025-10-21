@@ -120,6 +120,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             this.m_RoiListControl.roiTrainSaveButtonClick += RoiTrainSaveButtonClick;
             this.m_RoiListControl.roiAlignSaveButtonClick += RoiInspectSaveButtonClick;
 
+            this.m_RoiListControl.roiFiducialButtonClick += RoiFiducialButtonClick;
+            this.m_RoiListControl.roiFiducialSaveButtonClick += RoiFiducialSaveButtonClick;
+
             PatternMatchingParameter = new PatternMatchingParameters();
             PatternMatchingParameter = Owner.Recipe.PatternMatchingParameter;
 
@@ -141,23 +144,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             m_bInitialized = true;
         }
 
-        private void workStage_UpdateResultOveray(object sender, EventArgs e)
-        {
-            if (sender is QMC.Common.Vision.Cameras.Camera camera)
-            {
-                if (camera == workStage.Camera_HighRes)
-                {
-                    ImageViewer_RecipeVision_highs.ResultOverlays = workStage.FineCamResultOveray;
-                }
-                else if (camera == workStage.jigAligner_LowRes.Camera)
-                {
-                    ImageViewer_RecipeVision_Lows.ResultOverlays = workStage.CoarseCamResultOveray;
-                }
-            }
-        }
-
         
-
         private void OnUpdateResultOverlay(object sender, EventArgs e)
         {
             if (sender is QMC.Common.Vision.Cameras.Camera camera)
@@ -615,8 +602,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             recipe.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
 
             this.ImageViewer_RecipeVision_Lows.Display();
-
-
         }
 
         private void button_RecipeVision_Train_Set_Click(object sender, EventArgs e)
@@ -1170,6 +1155,18 @@ namespace SLD200.NewStyleForm.NewSubForm
             mark.IllumRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);
             mark.IllumIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);
 
+
+            //ROI 설정
+            Point markInspectRoiStart = new Point();
+            markInspectRoiStart.X = Equipment.ToInt(textBox_RecipeVision_ROI_START_X.Text);
+            markInspectRoiStart.Y = Equipment.ToInt(textBox_RecipeVision_ROI_START_Y.Text);
+            mark.ptInspectRoiStart = markInspectRoiStart;
+
+            Point markInspectRoiEnd = new Point();
+            markInspectRoiEnd.X = Equipment.ToInt(textBox_RecipeVision_ROI_END_X.Text);
+            markInspectRoiEnd.Y = Equipment.ToInt(textBox_RecipeVision_ROI_END_Y.Text);
+            mark.ptInspectRoiEnd = markInspectRoiEnd;
+
             SaveSocketMarkFromUI();  // 이 함수 내부에서도 SelectedIndex를 사용해야 일관성 있음
 
             //PreAlign
@@ -1239,57 +1236,6 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             // 이미지 저장
             Equipment.stVisionRecipeSet.SaveTrainImage(pictureBox_RecipeVision_TrainImage.Image);
-
-            //기존 코드
-            {
-                //Equipment.stVisionRecipeSet.PrePatternMatching = PatternMatchingParameter;
-                //Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
-                //Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
-                //Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
-                //Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
-                ////Equipment.stVisionRecipeSet.TrainImagePath = Equipment.stVisionRecipeSet.TrainImagePath;
-                //Equipment.stVisionRecipeSet.SaveTrainImage(pictureBox_RecipeVision_TrainImage.Image);
-                //if (this.radioButton_RecipeVision_Pattern.Checked)
-                //{
-                //    Equipment.stVisionRecipeSet.ePreAlgorithmType = VisionAlgorithmType.PatternMatching;
-                //}
-                //else if (this.radioButton_RecipeVision_Blob.Checked)
-                //{
-                //    Equipment.stVisionRecipeSet.ePreAlgorithmType = VisionAlgorithmType.CircleDetection;
-                //}
-                //if (this.radioButton_RecipeVision_Type_Cross.Checked)
-                //{
-                //    Equipment.stVisionRecipeSet.ePreMarkType = MarkTypeList.Cross;
-                //}
-                //else if (this.radioButton_RecipeVision_Circle.Checked)
-                //{
-                //    Equipment.stVisionRecipeSet.ePreMarkType = MarkTypeList.Circle;
-                //}
-                //if (radioButton_RecipeVision_Black.Checked)
-                //{
-                //    Equipment.stVisionRecipeSet.nPreCircleColor = 0;
-                //}
-                //else if (radioButton_RecipeVision_White.Checked)
-                //{
-                //    Equipment.stVisionRecipeSet.nPreCircleColor = 1;
-                //}
-                //else if (radioButton_RecipeVision_Ignore.Checked)
-                //{
-                //    Equipment.stVisionRecipeSet.nPreCircleColor = 2;
-                //}
-                //else
-                //{
-                //    Equipment.stVisionRecipeSet.nPreCircleColor = 0;
-                //}
-                //Equipment.stVisionRecipeSet.dPreCircleMarkRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
-                //Equipment.stVisionRecipeSet.dPreCircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
-                //Equipment.stVisionRecipeSet.dPreCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
-                //Equipment.stVisionRecipeSet.nPreIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text);//workStage.Config.ListIlluminationChannel[2].Value;
-                //Equipment.stVisionRecipeSet.nPreIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text);//workStage.Config.ListIlluminationChannel[2].Value;
-                //Equipment.stVisionRecipeSet.dPreAlignIlluminationExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime_Low.Text);
-
-            }
-
 
             // ======= 저장 =======
             //Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe);
@@ -1806,9 +1752,35 @@ namespace SLD200.NewStyleForm.NewSubForm
                 double dRadius = 0.0;
                 dRadius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
 
+                //Rectangle rectangle = new Rectangle(0, 0, w, h);
+                //rectangle.X = Equipment.ToInt(textBox_RecipeVision_ROI_START_X.Text);
+                //rectangle.Y = Equipment.ToInt(textBox_RecipeVision_ROI_START_Y.Text);
+                //rectangle.Width = Equipment.ToInt(textBox_RecipeVision_ROI_END_X.Text);
+                //rectangle.Height = Equipment.ToInt(textBox_RecipeVision_ROI_END_Y.Text);
+
+                // 교체
+                int sx = Equipment.ToInt(textBox_RecipeVision_ROI_START_X.Text);
+                int sy = Equipment.ToInt(textBox_RecipeVision_ROI_START_Y.Text);
+                int ex = Equipment.ToInt(textBox_RecipeVision_ROI_END_X.Text);
+                int ey = Equipment.ToInt(textBox_RecipeVision_ROI_END_Y.Text);
+
+                // 좌표 정규화 + 영상 경계 클램프
+                int left = Math.Max(0, Math.Min(sx, ex));
+                int top = Math.Max(0, Math.Min(sy, ey));
+                int right = Math.Min(w, Math.Max(sx, ex));
+                int bottom = Math.Min(h, Math.Max(sy, ey));
+
+                // 폭/높이 계산 (음수 방지)
+                int roiW = Math.Max(0, right - left);
+                int roiH = Math.Max(0, bottom - top);
+
+                // 최종 ROI
+                Rectangle rectangle = new Rectangle(left, top, roiW, roiH);
+
                 if (nTargetColor <= 1)
                 {
-                    result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
+                    result = aligner.FindCirclesWidthCircleBoundary(
+                                                    circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData, 
                                                     w, 
                                                     h, 
@@ -1818,7 +1790,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                                                     0, 0, 
                                                     nTargetColor == 0, 
                                                     dScore, 
-                                                    false);
+                                                    false,
+                                                    rectangle);
 
                 }
                 else if(nTargetColor == 2)
@@ -1828,7 +1801,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                                                       h,
                                                       (int)dRadius,
                                                       dSpec,
-                                                      dScore);
+                                                      dScore,
+                                                      rectangle);
                     circlesResult.Clear();
                     foreach (var circle in result.Circles)
                     {
@@ -1989,6 +1963,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 defaultMark.IllumIR = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
                 defaultMark.IllumRed = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
 
+                //defaultMark.ptInspectRoiStart = Equipment.stVisionRecipeSet.ptSocketInspectRoiStart;
+
                 Equipment.stVisionRecipeSet.SocketMarkList.Add(defaultMark);
             }
 
@@ -2046,6 +2022,12 @@ namespace SLD200.NewStyleForm.NewSubForm
             textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text = mark.IllumIR.ToString();
 
 
+            textBox_RecipeVision_ROI_START_X.Text = mark.ptInspectRoiStart.X.ToString();
+            textBox_RecipeVision_ROI_START_Y.Text = mark.ptInspectRoiStart.Y.ToString();
+            textBox_RecipeVision_ROI_END_X.Text = mark.ptInspectRoiEnd.X.ToString();
+            textBox_RecipeVision_ROI_END_Y.Text = mark.ptInspectRoiEnd.Y.ToString();
+
+
             radioButton_RecipeVision_CameraSelection_HighMag_CheckedChanged(null, null); // HighMag 카메라 설정 적용
 
             this.Refresh();
@@ -2099,6 +2081,18 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             mark.IllumRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);
             mark.IllumIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);
+
+            //ROI 설정
+            Point markInspectRoiStart = new Point();
+            markInspectRoiStart.X = Equipment.ToInt(textBox_RecipeVision_ROI_START_X.Text);
+            markInspectRoiStart.Y = Equipment.ToInt(textBox_RecipeVision_ROI_START_Y.Text);
+            mark.ptInspectRoiStart = markInspectRoiStart;
+
+            Point markInspectRoiEnd = new Point();
+            markInspectRoiEnd.X = Equipment.ToInt(textBox_RecipeVision_ROI_END_X.Text);
+            markInspectRoiEnd.Y = Equipment.ToInt(textBox_RecipeVision_ROI_END_Y.Text);
+            mark.ptInspectRoiEnd = markInspectRoiEnd;
+
         }
 
         private void button_Recipe_Fiducial_Mark_Add_Click(object sender, EventArgs e)
@@ -2199,6 +2193,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 dlg.MinValue = meta.Min;
                 dlg.MaxValue = meta.Max;
+                dlg.OriginValue = meta.Origin;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);
@@ -2583,6 +2578,61 @@ namespace SLD200.NewStyleForm.NewSubForm
                 var mb = new QMC.Common.UI.MessageBoxOk();
                 mb.ShowDialog("Error !", "Z 이동 중 예외가 발생했습니다.");
             }
+        }
+
+        private void button_Recipe_Fiducial_ROI_Click(object sender, EventArgs e)
+        {
+            //JigAlignerRecipe recipe = Owner.Recipe;
+            Point startLocation = new Point();
+            Point endLocation = new Point();
+            startLocation.X = Equipment.ToInt(textBox_RecipeVision_ROI_START_X.Text);
+            startLocation.Y = Equipment.ToInt(textBox_RecipeVision_ROI_START_Y.Text);
+            endLocation.X = Equipment.ToInt(textBox_RecipeVision_ROI_END_X.Text);
+            endLocation.Y = Equipment.ToInt(textBox_RecipeVision_ROI_END_Y.Text);
+            RoiInspect.Parameter.StartLocation = startLocation;
+            RoiInspect.Parameter.EndLocation = endLocation;     //recipe.InspectRoiEndLocation;
+            RoiTrain.Parameter.Overlay.Visible = false;
+            RoiInspect.Parameter.Overlay.Visible = true;
+
+            this.ImageViewer_RecipeVision_highs.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+            this.ImageViewer_RecipeVision_highs.Display();
+            this.m_RoiListControl.RoiFiducialClickNew();
+        }
+
+        private void RoiFiducialButtonClick(RoiVisionTool roiVisionTool)
+        {
+            if (Owner != null)
+            {
+                RoiInspect.Parameter.CenterLocation = roiVisionTool.Parameter.CenterLocation;
+                RoiInspect.Parameter.Size = roiVisionTool.Parameter.Size;
+
+                this.ImageViewer_RecipeVision_highs.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+                RoiInspect.Parameter.Overlay.Visible = true;
+                this.ImageViewer_RecipeVision_highs.Display();
+            }
+        }
+
+        private void RoiFiducialSaveButtonClick(RoiVisionTool roiVisionTool, bool bOk)
+        {
+            if(bOk == true)
+            {
+
+
+                textBox_RecipeVision_ROI_START_X.Text = roiVisionTool.Parameter.StartLocation.X.ToString();
+                textBox_RecipeVision_ROI_START_Y.Text = roiVisionTool.Parameter.StartLocation.Y.ToString();
+                textBox_RecipeVision_ROI_END_X.Text = roiVisionTool.Parameter.EndLocation.X.ToString();
+                textBox_RecipeVision_ROI_END_Y.Text = roiVisionTool.Parameter.EndLocation.Y.ToString();
+            }
+            else
+            {
+                textBox_RecipeVision_ROI_START_X.Text = "000";
+                textBox_RecipeVision_ROI_START_Y.Text = "000";
+                textBox_RecipeVision_ROI_END_X.Text = "000";
+                textBox_RecipeVision_ROI_END_Y.Text = "000";
+            }
+
+            this.ImageViewer_RecipeVision_highs.Display();
+
         }
     }
 }

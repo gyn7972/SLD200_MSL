@@ -135,204 +135,6 @@ namespace SLD200_MSL
             set { m_formModuleMonitor = value; }
         }
 
-        // ====================== Viewer 렌더링 제어 필드 ======================
-        private readonly TimeSpan _viewerRefreshInterval = TimeSpan.FromMilliseconds(100);
-        private DateTime _lastViewerRefreshTime = DateTime.MinValue;
-        private bool _viewerRefreshPending = false;
-        private System.Threading.Timer _viewerRefreshTimer;
-
-        private readonly object _viewerLock = new object();
-        // ====================== Viewer 렌더링 요청 함수 ======================
-
-        private void SafeInvalidateViewer(Control viewer)
-        {
-            if (viewer == null || !viewer.IsHandleCreated || viewer.IsDisposed)
-                return;
-
-            lock (_viewerLock)
-            {
-                var now = DateTime.Now;
-                if (now - _lastViewerRefreshTime < _viewerRefreshInterval)
-                {
-                    _viewerRefreshPending = true;
-                    return;
-                }
-                _lastViewerRefreshTime = now;
-                _viewerRefreshPending = false;
-            }
-
-            try
-            {
-                viewer.BeginInvoke(new System.Action(() =>
-                {
-                    if (viewer.IsDisposed) return;
-
-                    // 🔧 SiriusViewerForm의 View 렌더(1회만)
-                    if (viewer is SiriusViewerForm siriusForm)
-                    {
-                        var doc = siriusForm.Document;
-                        if (doc != null && doc.Views != null && doc.Views.Count > 0)
-                        {
-                            try
-                            {
-                                // 마지막 View만 강제 Render (전체 렌더 방지)
-                                var v = doc.Views.Last();
-                                v.Render();
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Write("SiriusViewer", "Render", "예외 발생: " + ex.Message);
-                            }
-                        }
-                    }
-
-                    viewer.Invalidate(); // 이건 빠르게 화면 업데이트만
-                }));
-            }
-            catch { }
-
-            if (_viewerRefreshTimer == null)
-            {
-                _viewerRefreshTimer = new System.Threading.Timer(_ =>
-                {
-                    if (_viewerRefreshPending)
-                    {
-                        lock (_viewerLock)
-                        {
-                            _viewerRefreshPending = false;
-                            _lastViewerRefreshTime = DateTime.Now;
-                        }
-
-                        try
-                        {
-                            if (viewer.IsHandleCreated && !viewer.IsDisposed)
-                            {
-                                viewer.BeginInvoke(new System.Action(() =>
-                                {
-                                    if (viewer is SiriusViewerForm siriusForm)
-                                    {
-                                        var doc = siriusForm.Document;
-                                        if (doc != null && doc.Views != null && doc.Views.Count > 0)
-                                        {
-                                            try
-                                            {
-                                                // 타이머에서 지연 렌더도 동일하게 마지막 뷰만 수행
-                                                var v = doc.Views.Last();
-                                                v.Render();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Log.Write("SiriusViewer", "TimerRender", "예외 발생: " + ex.Message);
-                                            }
-                                        }
-                                    }
-
-                                    viewer.Invalidate();
-                                }));
-                            }
-                        }
-                        catch { }
-                    }
-                }, null, 100, 100);
-            }
-        }
-
-
-
-        //private void SafeInvalidateViewer(Control viewer)
-        //{
-        //    if (viewer == null || !viewer.IsHandleCreated || viewer.IsDisposed)
-        //        return;
-
-        //    lock (_viewerLock)
-        //    {
-        //        var now = DateTime.Now;
-        //        if (now - _lastViewerRefreshTime < _viewerRefreshInterval)
-        //        {
-        //            _viewerRefreshPending = true;
-        //            return;
-        //        }
-        //        _lastViewerRefreshTime = now;
-        //        _viewerRefreshPending = false;
-        //    }
-
-        //    try
-        //    {
-        //        viewer.BeginInvoke(new System.Action(() =>
-        //        {
-        //            if (!viewer.IsDisposed)
-        //                viewer.Invalidate();
-        //        }));
-        //    }
-        //    catch { }
-
-        //    if (_viewerRefreshTimer == null)
-        //    {
-        //        _viewerRefreshTimer = new System.Threading.Timer(_ =>
-        //        {
-        //            if (_viewerRefreshPending)
-        //            {
-        //                lock (_viewerLock)
-        //                {
-        //                    _viewerRefreshPending = false;
-        //                    _lastViewerRefreshTime = DateTime.Now;
-        //                }
-        //                try
-        //                {
-        //                    if (viewer.IsHandleCreated && !viewer.IsDisposed)
-        //                        viewer.BeginInvoke(new System.Action(() => viewer.Invalidate()));
-        //                }
-        //                catch { }
-        //            }
-        //        }, null, 100, 100);
-        //    }
-        //}
-
-        private int _isClearingViewer = 0;
-        private void ClearViewerDocument()
-        {
-            if (Interlocked.Exchange(ref _isClearingViewer, 1) == 1)
-                return; // 중복 방지
-
-            try
-            {
-                if (SiriusViewer_Main == null || !SiriusViewer_Main.IsHandleCreated)
-                    return;
-
-                SiriusViewer_Main.BeginInvoke(new System.Action(async () =>
-                {
-                    try
-                    {
-                        var doc = SiriusViewer_Main.Document;
-                        if (doc?.Views == null)
-                            return;
-
-                        int delayMs = doc.Views.Count > 1000 ? 300 : 0;
-                        await Task.Delay(delayMs);
-
-                        doc.Views.Clear();
-                        Log.Write("SiriusViewer", "Clear", $"Views cleared ({delayMs}ms delay)");
-                        SafeInvalidateViewer(SiriusViewer_Main);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Write("SiriusViewer", "Clear", "예외 발생: " + ex.Message);
-                    }
-                    finally
-                    {
-                        Interlocked.Exchange(ref _isClearingViewer, 0);
-                    }
-                }));
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-                Interlocked.Exchange(ref _isClearingViewer, 0);
-            }
-        }
-
-
-
         public FormNew_Main()
         {
             InitializeComponent();
@@ -561,7 +363,7 @@ namespace SLD200_MSL
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            ClearViewerDocument();
+            //ClearViewerDocument();
         }
 
         private bool m_bFormVisible = false; // 실제 Show 상태 여부
@@ -571,29 +373,6 @@ namespace SLD200_MSL
 
             if (!this.Created)
                 return;
-
-            if (this.Visible)
-            {
-                if (_viewerRefreshTimer == null)
-                {
-                    _viewerRefreshTimer = new System.Threading.Timer(
-                        _ => SafeInvalidateViewer(SiriusViewer_Main),
-                        null,
-                        100,
-                        100
-                    );
-                }
-            }
-            else
-            {
-                if (_viewerRefreshTimer != null)
-                {
-                    _viewerRefreshTimer.Dispose();
-                    _viewerRefreshTimer = null;
-                }
-
-                ClearViewerDocument();
-            }
 
             if (this.Visible && !m_bFormVisible)
             {
@@ -1258,74 +1037,42 @@ namespace SLD200_MSL
             if (m_NeedDocumentSync)
             {
                 m_NeedDocumentSync = false;
-                // 장비가 가공 중이면 동기화 연기
-                //if (workStage != null &&
-                //    workStage.m_nLaserDrilling_MainStep != (int)WorkStage.LaserDrilling_Step.None)
-                //{
-                //    m_NeedDocumentSync = true;
-                //    return;
-                //}
-
                 try
                 {
-                    ClearViewerDocument();
-                    var newDoc = Equipment.GetEqpSiriusViewerDocument();
-                    if (newDoc != null)
+                    if (SiriusViewer_Main.Document.Views != null)
                     {
                         if (SiriusViewer_Main.InvokeRequired)
-                            SiriusViewer_Main.BeginInvoke(new System.Action(() => SiriusViewer_Main.Document = newDoc));
+                        {
+                            this.Invoke(new System.Action(() =>
+                            {
+                                //화면에 출력.
+                                SiriusViewer_Main.Document.Views.Clear();
+                            }));
+
+                        }
                         else
-                            SiriusViewer_Main.Document = newDoc;
+                        {
+                            SiriusViewer_Main.Document.Views.Clear();
+                        }
                     }
-                    SafeInvalidateViewer(SiriusViewer_Main);
                 }
                 catch (Exception ex)
                 {
                     Log.Write(ex);
                 }
-                //try
-                //{
-                //    if (SiriusViewer_Main.Document != null)
-                //    {
-                //        // 큰 도면일 경우에도 프리즈 없이 안전하게 클리어
-                //        ClearViewerDocument();
-                //    }
-                //    //if (SiriusViewer_Main.Document.Views != null)
-                //    //{
-                //    //    if (SiriusViewer_Main.InvokeRequired)
-                //    //    {
-                //    //        this.Invoke(new System.Action(() =>
-                //    //        {
-                //    //            //화면에 출력.
-                //    //            SiriusViewer_Main.Document.Views.Clear();
-                //    //        }));
 
-                //    //    }
-                //    //    else
-                //    //    {
-                //    //        SiriusViewer_Main.Document.Views.Clear();
-                //    //    }
-                //    //}
-                //}
-                //catch (Exception ex)
-                //{
-                //    Log.Write(ex);
-                //}
+                if (SiriusViewer_Main.InvokeRequired)
+                {
+                    this.Invoke(new System.Action(() =>
+                    {
+                        //화면에 출력.
+                        SiriusViewer_Main.Document = (IDocument)Equipment.GetEqpSiriusViewerDocument();
+                    }));
 
-                //if (SiriusViewer_Main.InvokeRequired)
-                //{
-                //    this.Invoke(new System.Action(() =>
-                //    {
-                //        //화면에 출력.
-                //        SiriusViewer_Main.Document = (IDocument)Equipment.GetEqpSiriusViewerDocument();
-                //    }));
-
-                //}
-                //else
-                //{
-
-                //    SiriusViewer_Main.Document = (IDocument)Equipment.GetEqpSiriusViewerDocument();
-                //}
+                }
+                else
+                {
+                }
 
             }
 
@@ -5071,24 +4818,7 @@ namespace SLD200_MSL
             //workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);
 
             return;
-            try
-            {
-                var moduleUI = new FormNewSub_SemiAuto();
-                //moduleUI.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
-                //moduleUI.Text = "모듈 상태 확인";
-                //moduleUI.StartPosition = FormStartPosition.CenterParent;
-                moduleUI.Show();  // 모달리스
-                Log.Write("UI", "FormNewSub_SemiAuto 창이 열렸습니다.");
-            }
-            catch (Exception ex)
-            {
-                Log.Write("UI", $"FormNewSub_SemiAuto 창 열기 실패: {ex.Message}");
-                MessageBox.Show("모듈 상태 창 열기 실패:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return;
-
-
+            
             Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
             // 시작 Test
             workStage.timer_Motion_Home.Enabled = true;
@@ -5337,46 +5067,62 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
 
-            string strTemp = string.Empty;
-            button_Main_Reset.Enabled = false;
-
-            CancellationTokenSource cts = new CancellationTokenSource();
-            Task<int> resetTask = ResetSequenceAsync(cts.Token);
-
-            var pf = new ProgressForm("Reset 중", "시퀀스 완료까지 기다리는 중입니다...", resetTask);
-            pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
-            pf.StopProcess += (obj) =>
+            try
             {
-                cts.Cancel();
+                string strTemp = string.Empty;
+                button_Main_Reset.Enabled = false;
 
-                Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
-                checkBox_Main_AutoRun.Checked = false;
-                button_Main_Start.BackColor = Color.LightGray;
-                button_Main_Start.ForeColor = Color.Black;
+                CancellationTokenSource cts = new CancellationTokenSource();
+                Task<int> resetTask = ResetSequenceAsync(cts.Token);
 
-                strTemp = "Reset이 중단되었습니다.";
-                new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-                button_Main_Reset.Enabled = true;
-            }; 
+                var pf = new ProgressForm("Reset 중", "시퀀스 완료까지 기다리는 중입니다...", resetTask);
+                pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
+                pf.StopProcess += (obj) =>
+                {
+                    cts.Cancel();
 
-            pf.ShowDialog();
+                    Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                    checkBox_Main_AutoRun.Checked = false;
+                    button_Main_Start.BackColor = Color.LightGray;
+                    button_Main_Start.ForeColor = Color.Black;
 
-           
-            Log.Write("SLD-200", Equipment.User_Name, strTemp);
-            //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-            if (resetTask.Result == 0)
-            {
-                strTemp = "Reset 완료";
-                new QMC.Core.MessageBoxOk().ShowDialog("Information !", strTemp);
-                button_Main_Reset.Enabled = true;
+                    strTemp = "Reset이 중단되었습니다.";
+                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                    button_Main_Reset.Enabled = true;
+                };
+                pf.ShowDialog();
 
-                Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
-                checkBox_Main_AutoRun.Checked = false;
-                button_Main_Start.BackColor = Color.LightGray;
-                button_Main_Start.ForeColor = Color.Black;
+
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                if (resetTask.Result == 0)
+                {
+                    strTemp = "Reset 완료";
+                    new QMC.Core.MessageBoxOk().ShowDialog("Information !", strTemp);
+                    button_Main_Reset.Enabled = true;
+
+                    Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                    checkBox_Main_AutoRun.Checked = false;
+                    button_Main_Start.BackColor = Color.LightGray;
+                    button_Main_Start.ForeColor = Color.Black;
+                }
+                else
+                {
+                    strTemp = "Reset이 중단되었습니다.";
+                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                    button_Main_Reset.Enabled = true;
+
+                    Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                    checkBox_Main_AutoRun.Checked = false;
+                    button_Main_Start.BackColor = Color.LightGray;
+                    button_Main_Start.ForeColor = Color.Black;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                Log.Write(ex);
+
+                string strTemp = string.Empty;
                 strTemp = "Reset이 중단되었습니다.";
                 new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
                 button_Main_Reset.Enabled = true;
@@ -5539,10 +5285,6 @@ namespace SLD200_MSL
                 if (!await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, dPosX) ||
                     !await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY))
                     return ShowErrorAndReturn("Stage X/Y 축 이동 실패");
-                
-
-
-
 
                 // Vacuum 해제
                 if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
@@ -5668,6 +5410,7 @@ namespace SLD200_MSL
 
                 dlg.MinValue = meta.Min;
                 dlg.MaxValue = meta.Max;
+                dlg.OriginValue = meta.Origin;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);

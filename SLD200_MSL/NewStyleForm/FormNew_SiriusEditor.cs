@@ -42,111 +42,6 @@ namespace SLD200_MSL
 
         private static FormNew_QMCSiriusEditorStatus m_formUserGuide = null;
 
-        // === Viewer refresh throttle (C# 7.3 호환) ===
-        private readonly TimeSpan _viewerRefreshInterval = TimeSpan.FromMilliseconds(100);
-        private DateTime _lastViewerRefreshTime = DateTime.MinValue;
-        private bool _viewerRefreshPending = false;
-        private System.Threading.Timer _viewerRefreshTimer;
-        private bool _formVisible = false;
-
-        // === RTC 재초기화 중복 방지 플래그 ===
-        private volatile bool _rtcInitRunning = false;
-        private bool _rtcInitDone = false;
-
-        // 1) Invalidate 스로틀
-        private void SafeInvalidateViewer(System.Windows.Forms.Control viewer)
-        {
-            if (viewer == null || !viewer.IsHandleCreated)
-                return;
-
-            var now = DateTime.Now;
-            if (now - _lastViewerRefreshTime < _viewerRefreshInterval)
-            {
-                _viewerRefreshPending = true;
-                return;
-            }
-
-            _lastViewerRefreshTime = now;
-            _viewerRefreshPending = false;
-
-            try { viewer.BeginInvoke(new System.Action(() => viewer.Invalidate())); } catch { }
-
-            if (_viewerRefreshTimer == null)
-            {
-                _viewerRefreshTimer = new System.Threading.Timer(_ =>
-                {
-                    if (_viewerRefreshPending)
-                    {
-                        _viewerRefreshPending = false;
-                        _lastViewerRefreshTime = DateTime.Now;
-                        try
-                        {
-                            if (viewer.IsHandleCreated)
-                                viewer.BeginInvoke(new System.Action(() => viewer.Invalidate()));
-                        }
-                        catch { }
-                    }
-                }, null, 100, 100);
-            }
-        }
-
-        // 2) 커스텀 드로우 핸들러 일괄 부착/해제
-        private void AttachCustomDrawToAllViews()
-        {
-            try
-            {
-                if (SiriusEditor != null && SiriusEditor.Document != null && SiriusEditor.Document.Views != null)
-                {
-                    foreach (var v in SiriusEditor.Document.Views)
-                        v.OnCustomDraw += SiriusView_OnCustomDraw;
-                }
-            }
-            catch { }
-        }
-        private void DetachCustomDrawFromAllViews()
-        {
-            try
-            {
-                if (SiriusEditor != null && SiriusEditor.Document != null && SiriusEditor.Document.Views != null)
-                {
-                    foreach (var v in SiriusEditor.Document.Views)
-                        v.OnCustomDraw -= SiriusView_OnCustomDraw;
-                }
-            }
-            catch { }
-        }
-
-        // 3) 기존 OpenGL View 리소스 정리 (뷰어 버벅임 방지)
-        private void ClearViewerDocument()
-        {
-            try
-            {
-                var viewer = SiriusEditor;                 // 폼의 에디터 컨트롤
-                if (viewer == null || !viewer.IsHandleCreated)
-                    return;
-
-                viewer.BeginInvoke(new System.Action(() =>
-                {
-                    try
-                    {
-                        if (viewer.Document != null && viewer.Document.Views != null)
-                        {
-                            viewer.Document.Views.Clear(); // GL 뷰 객체들 제거(버퍼/리소스 해제)
-                            SafeInvalidateViewer(viewer);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Write("SiriusEditor", "Clear", "예외: " + ex.Message);
-                    }
-                }));
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-            }
-        }
-
         public FormNew_SiriusEditor()
         {
             InitializeComponent();
@@ -188,8 +83,6 @@ namespace SLD200_MSL
 
             m_formUserGuide = new FormNew_QMCSiriusEditorStatus();
 
-            this.VisibleChanged += FormNew_SiriusEditor_VisibleChanged;
-
             //HookEditorToolbarButtons();
             //this.Load += (s, e) => HookEditorToolbarButtons(); // Load 이후 실행
         }
@@ -203,81 +96,32 @@ namespace SLD200_MSL
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void FormNew_SiriusEditor_VisibleChanged(object sender, EventArgs e)
-        {
-            _formVisible = this.Visible;
-            if (_formVisible)
-            {
-                if (_viewerRefreshTimer == null)
-                    _viewerRefreshTimer = new System.Threading.Timer(_ => SafeInvalidateViewer(SiriusEditor), null, 100, 100);
-            }
-            else
-            {
-                if (_viewerRefreshTimer != null) { _viewerRefreshTimer.Dispose(); _viewerRefreshTimer = null; }
-            }
-        }
-
-        private void FormNew_SiriusEditor_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-
-                e.Cancel = true;
-                Hide();
-            }
-
-            if (_viewerRefreshTimer != null) { _viewerRefreshTimer.Dispose(); _viewerRefreshTimer = null; }
-            DetachCustomDrawFromAllViews();
-            ClearViewerDocument();
-        }
-
-
-
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
         {
-            // 1) 이전 문서의 커스텀 드로우 핸들러 완전 분리
-            DetachCustomDrawFromAllViews();
+            try
+            {
+                foreach (var v in SiriusEditor.Document.Views)
+                {
+                    v.OnCustomDraw -= SiriusView_OnCustomDraw;
+                }
+            }
+            catch (Exception ex)
+            {
 
-            // 2) 이전 GL 뷰 리소스 정리 (버퍼 누적/중복 렌더 방지)
-            ClearViewerDocument();
-
-            // 3) 문서 교체
+            }
             SiriusEditor.Document = doc;
+            try
+            {
 
-            // 4) 새 문서의 모든 뷰에 커스텀 드로우 핸들러 등록
-            AttachCustomDrawToAllViews();
+                foreach (var v in SiriusEditor.Document.Views)
+                {
+                    v.OnCustomDraw += SiriusView_OnCustomDraw; ;
+                }
+            }
+            catch (Exception ex)
+            {
 
-            // 5) 다른 폼과 문서 공유 상태 유지(메인/조그팝업과 동기화)
-            if (doc != null)
-                Equipment.SetEqpSiriusViewerDocument(doc);
-
-            // 6) 화면 반영은 스로틀을 타게
-            SafeInvalidateViewer(SiriusEditor);
-
-            //try
-            //{
-            //    foreach (var v in SiriusEditor.Document.Views)
-            //    {
-            //        v.OnCustomDraw -= SiriusView_OnCustomDraw;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-
-            //}
-            //SiriusEditor.Document = doc;
-            //try
-            //{
-
-            //    foreach (var v in SiriusEditor.Document.Views)
-            //    {
-            //        v.OnCustomDraw += SiriusView_OnCustomDraw;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-
-            //}
+            }
         }
 
         private void SiriusView_OnCustomDraw(IView view)
@@ -619,37 +463,17 @@ namespace SLD200_MSL
 
                 if (doc != null)
                 {
-                    // 1) 기존 커스텀드로우 핸들러/뷰 정리
-                    DetachCustomDrawFromAllViews();
+                    // 기존 View 정리
                     if (SiriusEditor.Document != null && SiriusEditor.Document.Views != null)
                         SiriusEditor.Document.Views.Clear();
 
-                    // 2) 문서 교체
                     SiriusEditor.Document = doc;
-
-                    // 3) 새 문서의 모든 뷰에 커스텀 드로우 핸들러 등록
-                    AttachCustomDrawToAllViews();
-
-                    // 4) 공유 문서로 등록(메인/조그 팝업과 동기화)
-                    Equipment.SetEqpSiriusViewerDocument(doc);
-
-                    // 5) 화면 반영 (스로틀)
-                    SafeInvalidateViewer(SiriusEditor);
                 }
-
-                //if (doc != null)
-                //{
-                //    // 기존 View 정리
-                //    if (SiriusEditor.Document != null && SiriusEditor.Document.Views != null)
-                //        SiriusEditor.Document.Views.Clear();
-
-                //    SiriusEditor.Document = doc;
-                //}
-                //else
-                //{
-                //    Log.Write("SLD-200", "Import_DrawingFile", "문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
-                //    //throw new Exception("문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
-                //}
+                else
+                {
+                    Log.Write("SLD-200", "Import_DrawingFile", "문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
+                    //throw new Exception("문서를 불러올 수 없습니다. 파일 형식이 잘못되었거나 파싱 실패.");
+                }
             }
             catch (Exception ex)
             {
@@ -922,71 +746,7 @@ namespace SLD200_MSL
 
         private void Timer_RtcInit_Func(object sender, EventArgs e)
         {
-            //// 한 번만 처리
-            //if (_rtcInitDone || _rtcInitRunning)
-            //    return;
-
-            //// 사용자 요청 플래그 확인
-            ////if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6)
-            ////    return;
-
-            //// 마킹 중/오토런 중이면 대기
-            //try
-            //{
-            //    if (workStage != null && workStage.rtc != null)
-            //    {
-            //        if (workStage.rtc.CtlGetStatus(RtcStatus.Busy))
-            //            return;
-            //    }
-            //    if (Equipment.AutoRunStatus) // 오토런 중에는 초기화 금지
-            //        return;
-            //}
-            //catch { /* status 조회 예외 무시 */ }
-
-            //_rtcInitRunning = true;
-            //Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화 시도");
-
-            //try
-            //{
-            //    Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
-
-            //    bool ok = false;
-            //    // 이미 RTC 살아 있으면 안전 종료 후 재초기화
-            //    if (workStage.rtc != null && Equipment._InitDeviceStatus.Scanner)
-            //    {
-            //        try
-            //        {
-            //            workStage.Sirius_Close();                 // 안전 종료 (기존 Rtc_Close 대체 케이스)
-            //            Equipment._InitDeviceStatus.Scanner = false;
-            //            Thread.Sleep(100);
-            //        }
-            //        catch { }
-            //        ok = Rtc_Init(true);
-            //    }
-            //    else
-            //    {
-            //        ok = Rtc_Init();
-            //    }
-
-            //    Equipment._InitDeviceStatus.Scanner = ok;
-            //    if (!ok)
-            //        MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            //    Log.Write("SLD-200", "RTC_Initialize", ok ? "초기화 성공" : "초기화 실패");
-            //}
-            //catch (Exception ex)
-            //{
-            //    Equipment._InitDeviceStatus.Scanner = false;
-            //    Log.Write(ex);
-            //}
-            //finally
-            //{
-            //    _rtcInitRunning = false;
-            //    _rtcInitDone = true;          // 한 번만 돌도록
-            //    timer_RtcInit.Enabled = false; // 타이머 중단
-            //}
-
-            //기존 코드
+            //timer_RtcInit.Enabled = false;
             if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6)
             {
                 //시컨스에서 초기화 했다 안했다 할거니깐.. 죽이면 안됨.
@@ -1046,7 +806,15 @@ namespace SLD200_MSL
             //timer_Status.Enabled = false;
         }
 
-        
+        private void FormNew_SiriusEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+
+                e.Cancel = true;
+                Hide();
+            }
+        }
 
         private void button_DataParsing_Click(object sender, EventArgs e)
         {

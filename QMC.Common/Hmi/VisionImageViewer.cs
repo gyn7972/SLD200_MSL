@@ -1540,7 +1540,6 @@ namespace QMC.Common.Hmi
                     m_Graphics.Render(this.m_GraphicsDisplay);
                 }
             }
-            
         }
 
 

@@ -413,19 +413,8 @@ namespace QMC.Common.Modules
                     else
                         Log.Write("LaserCO2", "Connect", "Laser TCP 연결 실패");
                 });
-
-                ////  레이저 연결 - 여기서? Test니깐?
-                //if (!LaserCO2Manager.Connect())
-                //{
-                //    Log.Write("SLD-200", "LaserTCP", "Laser TCP 연결 실패!");
-                //    //AlarmPost(AlarmKey.LaserComm_ConnectFail);
-                //}
-                //else
-                //{
-                //    Log.Write("SLD-200", "LaserTCP", "Laser TCP 연결 성공");
-                //}
             }
-            
+
             //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
             m_taskTimer_BDS_MainStatus_Tick = Task.Factory.StartNew(() =>
             {

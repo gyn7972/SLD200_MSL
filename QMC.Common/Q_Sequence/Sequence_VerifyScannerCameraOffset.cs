@@ -1100,30 +1100,6 @@ namespace QMC.Common.Q_Sequence
                                     return workStage.AlarmPost(AlarmKey.Scan_Area_Fail);
                                 }
                             }
-
-                            // 기존 코드
-                            {
-                                //m_dCurrentCalPosX = Equipment.Scanner_Calibration_PosX_Last - (dCalWidth + dCalPitchOffset);
-                                //m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last;
-
-                                //if (m_dCurrentCalPosX < dScannerCalAreaPosX_Min)
-                                //{
-                                //    // 다음 Y 줄로 이동
-                                //    m_dCurrentCalPosX = dScannerCalAreaPosX_Max;
-                                //    m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last - dCalPitchOffset;
-
-                                //    Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset",
-                                //        $"X 범위 초과로 다음 Y줄 이동 시도 → X: {m_dCurrentCalPosX:F3}, Y: {m_dCurrentCalPosY:F3}");
-
-                                //    if (m_dCurrentCalPosY < dScannerCalAreaPosY_Min)
-                                //    {
-                                //        strTemp = string.Format("캘판 범위 모두 처리 완료. 캘판을 교체해 주세요.");
-                                //        Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", strTemp);
-                                //        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
-                                //        return workStage.AlarmPost(AlarmKey.Scan_Area_Fail);
-                                //    }
-                                //}
-                            }
                         }
 
                         // 최종 위치가 유효한지 검사

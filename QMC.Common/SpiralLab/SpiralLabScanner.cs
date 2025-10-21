@@ -458,9 +458,6 @@ namespace QMC.Common.Parts
             return true;
         }
 
-        // DrawCalibrationCrosses, DrawCross, DrawCalibrationArc, DrawArc 등 기존 메서드들은 그대로 유지됨
-        // ... (기존 코드 생략)
-
         public bool LaserSetting()
         {
             if (rtc == null)

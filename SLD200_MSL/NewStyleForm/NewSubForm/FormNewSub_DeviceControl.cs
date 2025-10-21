@@ -161,9 +161,13 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             if (Equipment.Machine_LaserType_CO2)
             {
-                TryDeviceControl("레이저", () => workStage.workStageParameter.DO_Laser_Enable(true), picLaser, true);
+                TryDeviceControl("레이저", 
+                    () => workStage.workStageParameter.DO_Laser_Enable(true), picLaser, true);
                 Equipment._InitDeviceStatus.Laser = true;
-
+                TryDeviceControl("레이저", () =>
+                {
+                    workStage.LaserCo2_Init();
+                }, picLaser, true);
             }
             else
             {
@@ -184,6 +188,11 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 TryDeviceControl("레이저", () => workStage.workStageParameter.DO_Laser_Enable(false), picLaser, false);
                 Equipment._InitDeviceStatus.Laser = false;
+
+                TryDeviceControl("레이저", () =>
+                {
+                    workStage.LaserCo2_Close();
+                }, picLaser, false);
             }
             else
                 TryDeviceControl("레이저", () =>

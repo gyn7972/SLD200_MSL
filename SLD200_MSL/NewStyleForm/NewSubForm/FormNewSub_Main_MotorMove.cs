@@ -465,18 +465,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
             }
 
-            //기존 코드
-            {
-                //XyCoordinate xyInterpolatedCoordinate = new XyCoordinate(0.0,0.0);
-                //double dZPos = 0.0;
-                //dZPos = vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z;
-                //xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-                //xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-                //workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
-                //workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
-                //workStage.MovetoWorkStage_ABS_PositionsZ(dZPos, Equipment.Type_Motor_Speed.Fine);
-            }
-
             Equipment.Type_Motor_Speed motor_Speed;
             motor_Speed = Equipment.Type_Motor_Speed.Coarse;
             int nTeachingPosIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos;

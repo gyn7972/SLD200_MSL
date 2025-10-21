@@ -38,6 +38,7 @@
             this.button_SemiAuto_Stage_Reset = new System.Windows.Forms.Button();
             this.button_SemiAuto_Load_Reset = new System.Windows.Forms.Button();
             this.button_SemiAuto_Unload_Reset = new System.Windows.Forms.Button();
+            this.button_SemiAuto_GoldPowderAlign = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -111,6 +112,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button_SemiAuto_GoldPowderAlign);
             this.groupBox1.Controls.Add(this.button_SemiAuto_Stage_Reset);
             this.groupBox1.Controls.Add(this.button_SemiAuto_Load_Reset);
             this.groupBox1.Controls.Add(this.button_SemiAuto_Unload_Reset);
@@ -123,7 +125,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(390, 150);
+            this.groupBox1.Size = new System.Drawing.Size(390, 160);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "SemiAuto";
@@ -132,7 +134,7 @@
             // 
             this.button_SemiAuto_Stage_Reset.Enabled = false;
             this.button_SemiAuto_Stage_Reset.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_SemiAuto_Stage_Reset.Location = new System.Drawing.Point(128, 113);
+            this.button_SemiAuto_Stage_Reset.Location = new System.Drawing.Point(6, 82);
             this.button_SemiAuto_Stage_Reset.Name = "button_SemiAuto_Stage_Reset";
             this.button_SemiAuto_Stage_Reset.Size = new System.Drawing.Size(115, 30);
             this.button_SemiAuto_Stage_Reset.TabIndex = 8;
@@ -167,13 +169,24 @@
             this.button_SemiAuto_Unload_Reset.Visible = false;
             this.button_SemiAuto_Unload_Reset.Click += new System.EventHandler(this.button_SemiAuto_Unload_Reset_Click);
             // 
+            // button_SemiAuto_GoldPowderAlign
+            // 
+            this.button_SemiAuto_GoldPowderAlign.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_SemiAuto_GoldPowderAlign.Location = new System.Drawing.Point(128, 114);
+            this.button_SemiAuto_GoldPowderAlign.Name = "button_SemiAuto_GoldPowderAlign";
+            this.button_SemiAuto_GoldPowderAlign.Size = new System.Drawing.Size(115, 40);
+            this.button_SemiAuto_GoldPowderAlign.TabIndex = 9;
+            this.button_SemiAuto_GoldPowderAlign.Text = "GoldPowder Align";
+            this.button_SemiAuto_GoldPowderAlign.UseVisualStyleBackColor = true;
+            this.button_SemiAuto_GoldPowderAlign.Click += new System.EventHandler(this.button_SemiAuto_GoldPowderAlign_Click);
+            // 
             // FormNewSub_Main_SemiAuto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox1);
             this.Name = "FormNewSub_Main_SemiAuto";
-            this.Size = new System.Drawing.Size(400, 160);
+            this.Size = new System.Drawing.Size(400, 170);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -191,5 +204,6 @@
         private System.Windows.Forms.Button button_SemiAuto_Stage_Reset;
         private System.Windows.Forms.Button button_SemiAuto_Load_Reset;
         private System.Windows.Forms.Button button_SemiAuto_Unload_Reset;
+        private System.Windows.Forms.Button button_SemiAuto_GoldPowderAlign;
     }
 }
