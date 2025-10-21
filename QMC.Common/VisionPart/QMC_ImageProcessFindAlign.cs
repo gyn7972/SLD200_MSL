@@ -3655,8 +3655,16 @@ namespace QMC.Common.VisionPart
             int roiW = Math.Max(0, roiRight - roiX);
             int roiH = Math.Max(0, roiBottom - roiY);
 
-            bool useRoiBuffer = !(roiX == 0 && roiY == 0 && roiW == w && roiH == h);
+            bool useRoiBuffer = !(roiX == 0 && roiY == 0 && roiW == 0 && roiH == 0);
             byte[] src = useRoiBuffer ? ExtractROI(pixelData, w, h, roiX, roiY, roiW, roiH) : pixelData;
+            
+            if(useRoiBuffer == false)
+            {
+                if (roiW == 0)
+                    roiW = w;
+                if (roiH == 0)
+                    roiH = h;
+            }
 
             // 2) ROI 로컬 좌표계에서 스캔 (ROI 외부로는 절대 접근하지 않음)
             int xStartLocal = Math.Max(radius, 0);

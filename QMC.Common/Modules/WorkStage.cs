@@ -15216,8 +15216,8 @@ namespace QMC.Common.Modules
                     m_bAlignCompleted = true;
                     timer_VisionAlign.Enabled = false; //필요한가?
 
-                    if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) ||
-                        (m_st4PointAlign_Result.dCenterOffsetY == 0.0) ||
+                    if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) &&
+                        (m_st4PointAlign_Result.dCenterOffsetY == 0.0) &&
                         (m_st4PointAlign_Result.dRotationAngle == 0.0))
                     {
                         m_bSocketAlign_OK = false;
@@ -39312,9 +39312,23 @@ namespace QMC.Common.Modules
                                 }
                                 else
                                 {
-                                    m_AlignMode = AlignMode.Socket;
-                                    m_nDrillingWork_Group_Count++;              // 소켓 Index 증가
-                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    if (Equipment.SemiAutoEnable
+                                        && (_semiAutoRequest == SemiAutoStep.FiducialAlign
+                                        || _semiAutoRequest == SemiAutoStep.GoldPowderAlign))
+                                    {
+                                        //Equipment.SemiAutoEnable = false;
+                                        //m_LaserDrillingWork_Start = false;
+                                        //m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+                                        //m_bSocketAlign_OK = false;
+
+                                        Log.Write("Fail", Equipment.User_Name, "Auto Run", "SemiAutoEnable - Fail.");
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Complete;
+                                    }
+                                    else
+                                    {
+                                        m_nDrillingWork_Group_Count++;              // 소켓 Index 증가
+                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    }
                                 }
                             }
                         }
@@ -39382,8 +39396,8 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 시간 초과.");
 
                         if (Equipment.SemiAutoEnable
-                        && _semiAutoRequest == SemiAutoStep.FiducialAlign
-                        && _semiAutoRequest == SemiAutoStep.GoldPowderAlign)
+                        && (_semiAutoRequest == SemiAutoStep.FiducialAlign
+                        || _semiAutoRequest == SemiAutoStep.GoldPowderAlign))
                         {
                             Equipment.SemiAutoEnable = false;
                             m_LaserDrillingWork_Start = false;
@@ -39528,6 +39542,8 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
+                            m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+
                             //  메인 화면의 뷰어 갱신
                             m_bMain_SiriusViewer_Refresh = true;
                             ActionSiriusViewerRefresy?.Invoke(m_bMain_SiriusViewer_Refresh);
@@ -39632,6 +39648,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 완료");
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Reload;
+
 
                     if (Equipment.SemiAutoEnable
                     && _semiAutoRequest == SemiAutoStep.FiducialAlign)
