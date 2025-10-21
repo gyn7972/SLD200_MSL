@@ -3028,31 +3028,6 @@ namespace SLD200_MSL
             workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            // 기존 코드
-            //if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-            //{
-            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
-            //    lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-            //    lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-            //}
-            //else
-            //{
-            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-            //    //TEST
-            //    //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-            //    //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-            //    //  Z축은 빠르게 움직일 필요 없으니 일단 Fine 속도로 이동
-            //    lfVelocity_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-            //    lfAccDec_Z = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-            //}
-            //xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-            //xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-            //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-            //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Laser_FocusPos].Vision_Z,
-            //                                lfVelocity_Z, lfAccDec_Z, lfAccDec_Z);
-
             Equipment.Type_Motor_Speed motor_Speed;
             motor_Speed = Equipment.Type_Motor_Speed.Coarse;
             int nTeachingPosIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos;

@@ -95,9 +95,6 @@ namespace SLD200_MSL
             dVelocity = m_AxisX.Configuration.Velocity;
             //axis.MoveDistance(Step[axis] * nDirection, dVelocity, dVelocity * 5, dVelocity * 5); //참고 Step Move
 
-            //  2022. 09. 16.  SCH : 기존 코드 (Ajin 모션)
-            //  MC_Func.MC_MoveRelPosition(m_AxisX.No, dDistance * nDirection, m_AxisX.Configuration.Velocity, m_AxisX.Configuration.Acceleration, m_AxisX.Configuration.Deceleration);
-
             //  ACS 일 경우 ACS 모션 함수 사용해야 함.
             //lfVelocity = 50.0;     // Convert.ToDouble(tb_TestVelocity.Text.Trim());
             lfVelocity = m_AxisX.Configuration.Velocity;

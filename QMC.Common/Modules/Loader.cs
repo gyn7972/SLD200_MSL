@@ -2896,32 +2896,6 @@ namespace QMC.Common.Modules
                 Equipment.Loader_LPort_Empty = true;
             }
 
-            //기존 코드 
-            {
-                //if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
-                //{
-                //    //감지 센서에 감지가 안되는게 문제인데.
-                //    if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
-                //    {
-                //        Equipment.Loader_LPort_Pause = true;
-                //    }
-                //    else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && 
-                //        (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000))) //여기를 늘려놔야하나?
-                //    {
-                //        Equipment.Loader_LPort_Pause = true;
-                //    }
-
-                //    Equipment.Loader_LPort_Empty = true;    // 자재 없음 알림.
-                //}
-                //else
-                //{
-                //    TickCount_Start((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT);
-
-                //    Equipment.Loader_LPort_Empty = false;    // 자재 있음 알림.
-                //}
-
-            }
-
             //  Stacker1 이 Pause 되는 시점에 Stacker1 을 아래로 내림
             if (Equipment.Loader_LPort_Pause && !Equipment.Loader_LPort_Pause_Before)// &&
 
@@ -6183,54 +6157,6 @@ namespace QMC.Common.Modules
                         // m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
                     }
 
-                    // 기존 코드
-                    {
-                        //if ((workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_LoadingZone) &&
-                        //(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) >
-                        //(workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
-                        //(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) <
-                        //(workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
-                        //(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) >
-                        //(workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
-                        //(workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) <
-                        //(workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치로 이동이 완료된 상태이므로 PutDown 진행");
-
-                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
-                        //}
-                        //else if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
-                        //        (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&
-                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) >
-                        //        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
-                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) <
-                        //        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
-                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) >
-                        //        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
-                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) <
-                        //        (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치에 있으므로 PutDown 진행, (위치 및 로딩 조건 OK)");
-
-                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
-                        //}
-                        //else
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치로 이동 시작");
-
-                        //    TickCount_Start((int)TickType.TICK_LDTR);
-
-                        //    // Todo: Work Stage 이동 시작을 여기서 한다.
-                        //    //  Work Stage 이동 시작 
-                        //    workStage.m_nWorkStageMoveType = (int)WorkStage.WorkStageMoveType.MoveTo_LoadingPos;
-                        //    workStage.m_nWorkStage_Move_Step = (int)WorkStage.WorkStage_Move_Step.Start;
-
-                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_CompleteCheck;
-
-                        //    //  Unloading 위치에 있는 Work Stage 를, Loading 위치로 보냄과 동시에 Loader Transfer 를 Loading 위치로 이동시키려면, 윗줄 주석으로 변경, 아랫줄 주석해제
-                        //    //m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
-                        //}
-                    }
                     break;
 
                 case (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_CompleteCheck:                       //  M-Aligner 에서 Align 완료 확인 (M-Aligner Vacuum 이 Off 이면 Pick Up 하지 않음 --> 자재가 없다고 판단)
@@ -6318,35 +6244,6 @@ namespace QMC.Common.Modules
                         return AlarmPost(AlarmKey.LD_TransferX_Move_LoadingPos_Timeout);
                     }
 
-                    // 기존 코드
-                    {
-                        ////  Stage 가 Module Put Down 위치에 있는지 한번더 체크
-                        ////  (Work Stage 와 Loader Transfer 가 동시에 움직이도록 할 경우 인터락)
-                        //if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
-
-                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) >
-                        //    (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
-                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) <
-                        //    (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
-                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) >
-                        //    (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
-                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) <
-                        //    (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage 가 Module Loading 위치에 있음");
-
-                        //    // 내부에서 10mm 위로 들어올림.
-                        //    Loader_Transfer_Step_WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep(out m_dSpeed, out m_dAccDec);
-
-                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck;
-                        //}
-                        //else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage 가 Module Loading 위치에 있지 않음");
-
-                        //    return AlarmPost(AlarmKey.LD_TransferX_Move_LoadingPos_Timeout);
-                        //}
-                    }
                     break;
 
                 case (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck:                       //  Transfer Z 축, Module Put Down 위치로 이동 완료 확인
