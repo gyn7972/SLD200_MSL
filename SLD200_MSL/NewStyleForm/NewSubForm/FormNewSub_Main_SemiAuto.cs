@@ -120,6 +120,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 button_SemiAuto_HeightSensor.Enabled = false;
                 button_SemiAuto_PreAlign.Enabled = false;
                 button_SemiAuto_FiducialAlign.Enabled = false;
+                button_SemiAuto_GoldPowderAlign.Enabled = false;
                 button_SemiAuto_LaserDrilling.Enabled = false;
                 button_SemiAuto_Loading.Enabled = false;
                 button_SemiAuto_Load_Reset.Enabled = false;
@@ -132,6 +133,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 button_SemiAuto_HeightSensor.Enabled = true;
                 button_SemiAuto_PreAlign.Enabled = true;
                 button_SemiAuto_FiducialAlign.Enabled = true;
+                button_SemiAuto_GoldPowderAlign.Enabled = true;
                 button_SemiAuto_LaserDrilling.Enabled = true;
                 button_SemiAuto_Loading.Enabled = true;
                 button_SemiAuto_Load_Reset.Enabled = true;
