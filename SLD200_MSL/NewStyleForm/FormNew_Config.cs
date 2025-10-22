@@ -858,10 +858,10 @@ namespace SLD200_MSL
                 }
                 else
                 {
-                    label_Config_Laser_Laser_warning.Text = "Laser Status(IO) : -----";
+                    label_Config_Laser_Laser_warning.Text = "Laser Status(IO) : Normal";
                 }
 
-                    var StatusLaser = bds.LaserCO2Status;
+                var StatusLaser = bds.LaserCO2Status;
                 var FaultLaser = bds.LaserCO2Faults;
 
                 if(StatusLaser != null)
@@ -891,26 +891,26 @@ namespace SLD200_MSL
                         }
                         workStage.AlarmPost(WorkStage.AlarmKey.Laser_CO2_System_Fault);
                     }
-                    else if (bLaserEnable == false)
-                    {
-                        label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser Not Enable";
-                        label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
-                    }
-                    else if (bOverTemp)
-                    {
-                        label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser Over Temperature";
-                        label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
-                    }
-                    else if (dVoltage48V < 48.0)
-                    {
-                        label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser 48V Under Voltage";
-                        label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
-                    }
-                    else if (dLaserTemp > 30.0)
-                    {
-                        label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser Head Over Temperature";
-                        label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
-                    }
+                    //else if (bLaserEnable == false)
+                    //{
+                    //    label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser Not Enable";
+                    //    label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
+                    //}
+                    //else if (bOverTemp)
+                    //{
+                    //    label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser Over Temperature";
+                    //    label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
+                    //}
+                    //else if (dVoltage48V < 48.0)
+                    //{
+                    //    label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser 48V Under Voltage";
+                    //    label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
+                    //}
+                    //else if (dLaserTemp > 30.0)
+                    //{
+                    //    label_Config_Laser_Laser_warning_Comm.Text = "Laser Status(Comm): Laser Head Over Temperature";
+                    //    label_Config_Laser_Laser_warning_Comm.ForeColor = Color.Red;
+                    //}
                     //else if (dShutterTemp > 45.0)
                     //{
                     //    label_Config_Laser_Laser_warning.Text = "Laser Shutter Over Temperature";

@@ -580,11 +580,12 @@ namespace QMC.Common.Modules
 
                                 if (status != null)
                                 {
-                                    Log.Write("LaserCO2", "Status", status.ToString());
+                                    //Log.Write("LaserCO2", "Status", status.ToString());
 
                                     //if (status.SystemFault || status.Interlock || status.OverTemp)
-                                    if (status.SystemFault || status.OverTemp)
+                                    if (status.SystemFault)// || status.OverTemp)
                                     {
+                                        Log.Write("LaserCO2", "Status", status.ToString());
                                         Log.Write("LaserCO2", "Status", "⚠ Fault Detected!");
                                         // 예: AlarmPost(AlarmKey.LaserFaultDetected, "CO₂ Laser fault 발생");
                                     }
@@ -608,7 +609,10 @@ namespace QMC.Common.Modules
                         {
                             // 연결이 끊어졌으면 재시도
                             if (LaserCO2Manager.Connect())
+                            {
                                 Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
+
+                            }
                         }
                     }
                 }
