@@ -618,11 +618,6 @@ namespace SLD200_MSL
                 //Log.Write("DustCollector", "집진기 상태: 정지");
             }
 
-
-
-
-
-
             /////////////////////////////////////////////////////////////////////////////////////
             /// VarioScan
             float? zOffset = bds.CurrentRtcZOffset;
