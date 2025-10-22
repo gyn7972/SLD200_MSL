@@ -6351,6 +6351,7 @@ namespace QMC.Common.Modules
 
                                 m_strTemp = "Work Stage Vacuum On 실패. (Timeout)";
                                 Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                                Log.Write("Fail", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
 
                                 m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
                             }
@@ -6388,6 +6389,7 @@ namespace QMC.Common.Modules
 
                             m_strTemp = "Work Stage Vacuum On 실패. (Timeout)";
                             Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                            Log.Write("Fail", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
 
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
                         }
@@ -6464,6 +6466,7 @@ namespace QMC.Common.Modules
                                     m_bworkStageVacuumFail = true;
                                     m_strTemp = "Module 을 Work Stage 에 정상적으로 내려놓지 못함. Work Stage 에 공압이 확인되지 않음.";
                                     Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                                    Log.Write("Fail", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
 
                                     Equipment.AUTORUN_WorkStage_PickUpPort = Equipment.AUTORUN_Loader_PickUpPort;
                                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;

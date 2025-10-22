@@ -7705,7 +7705,6 @@ namespace QMC.Common.Modules
             for (int i = 0; i < System.Enum.GetValues(typeof(WorkStage_TeachingPosList)).Length; i++)
             {
                 strTemp = string.Format("PosIndex_{0}", i);
-
                 //  Transfer X
                 NativeMethods.WritePrivateProfileString(strTemp, "StageX", stWorkStageTeachingPos[i].Stage_X.ToString(), strFIle);
                 //  Transfer Z
@@ -14486,20 +14485,6 @@ namespace QMC.Common.Modules
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = centerX;
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = centerY;
 
-                            //기존코드
-                            {
-                                //double xOffset = ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) -
-                                //                    (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
-
-                                //double yOffset = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y +
-                                //                    ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
-
-                                ////  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경.
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) - xOffset;
-                                //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) - yOffset;
-
-                            }
-
                             Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() + "  FineVision Fiducial Makr No : " + m_nSocketAlign_FiducialCount.ToString()
                                 + " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString()
                                 + ", Y : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y.ToString());
@@ -14643,16 +14628,6 @@ namespace QMC.Common.Modules
                                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y =
                                             dScannerCalTeachingPosY - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
 
-                                        //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width =
-                                        //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount-1].dFiducial_Width;
-                                        //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height =
-                                        //    m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount-1].dFiducial_Height;
-
-                                        //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width; //=
-                                        //Equipment.stVisionRecipeSet.SocketMarkList[0].MarkRadius * 2;
-                                        //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height; //=
-                                        //Equipment.stVisionRecipeSet.SocketMarkList[0].MarkRadius * 2;
-
                                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width =
                                             m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width * 2;
                                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height =
@@ -14761,6 +14736,8 @@ namespace QMC.Common.Modules
                                     Log.Write("SLD-200", "Align", "[Interlock] GoldPowder 정렬 실패: 매칭된 포인트가 없습니다.");
                                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
 
+                                    Log.Write("Fail", "Align", "[Interlock] GoldPowder 정렬 실패: 매칭된 포인트가 없습니다.");
+
                                     m_bAlignCompleted = true;
                                     m_bSocketAlign_OK = false;
                                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
@@ -14813,6 +14790,7 @@ namespace QMC.Common.Modules
                                 else
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
+                                    Log.Write("Fail", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
 
                                     m_bAlignCompleted = true;
                                     m_bSocketAlign_OK = false;
@@ -14961,6 +14939,7 @@ namespace QMC.Common.Modules
                     {
                         strTemp = string.Format("align Data '0'으로 실패. Socket Index ({0})", nSocketNum);
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
+                        Log.Write("Fail", Equipment.User_Name, "Socket Align", strTemp);
                         m_bSocketAlign_OK = false;
                     }
                     else
@@ -15021,6 +15000,7 @@ namespace QMC.Common.Modules
                                                             m_st4PointPosition_InspectedPos[i].dFiducial_Width, m_st4PointPosition_InspectedPos[i].dFiducial_Height);
 
                                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
+                                        Log.Write("Fail", Equipment.User_Name, "Socket Align", strTemp);
 
                                         m_bSocketAlign_OK = false;
                                     }
@@ -15029,12 +15009,12 @@ namespace QMC.Common.Modules
                                 {
                                     strTemp = string.Format("찾은 마크 크기가 없음. Socket Index ({0}), Fiducial Index ({1})", nSocketNum, i);
                                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
+                                    Log.Write("Fail", Equipment.User_Name, "Socket Align", strTemp);
 
                                     m_bSocketAlign_OK = false;
                                 }
                             }
                         }
-                            
                     }
 
                     //  가공 중에 얼라인을 하는 것이면, 여기에서 마무리
@@ -15223,6 +15203,7 @@ namespace QMC.Common.Modules
                         m_bSocketAlign_OK = false;
                         strTemp = string.Format("Align 이동량 계산 실패. [AlignMode: {0}]", alignMode);
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
+                        Log.Write("Fail", Equipment.User_Name, "Socket Align", strTemp);
                         return AlarmPost(AlarmKey.SocketAlignMovePositionCalcFail);
                     }
                     else
@@ -15255,7 +15236,6 @@ namespace QMC.Common.Modules
 
             m_bAlignMarkErrorCheck = false;
             m_bAlignCompleted = false;
-
             m_bSocketAlign_OK = false;
 
 
@@ -34306,6 +34286,7 @@ namespace QMC.Common.Modules
                     if(jumpBackStep == (int)SocketAlign_Step.SocketAlignXY_MoveFiducialPos)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "SocketAlignXY_MoveFiducialPos - Motion Move Fail. Retry 횟수 초과");
+                        Log.Write("Fail", Equipment.User_Name, "Socket Align", "SocketAlignXY_MoveFiducialPos - Motion Move Fail. Retry 횟수 초과");
                         m_bAlignCompleted = true;
                         m_bSocketAlign_OK = false;
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
@@ -39316,11 +39297,6 @@ namespace QMC.Common.Modules
                                         && (_semiAutoRequest == SemiAutoStep.FiducialAlign
                                         || _semiAutoRequest == SemiAutoStep.GoldPowderAlign))
                                     {
-                                        //Equipment.SemiAutoEnable = false;
-                                        //m_LaserDrillingWork_Start = false;
-                                        //m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
-                                        //m_bSocketAlign_OK = false;
-
                                         Log.Write("Fail", Equipment.User_Name, "Auto Run", "SemiAutoEnable - Fail.");
                                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Complete;
                                     }
@@ -39391,7 +39367,7 @@ namespace QMC.Common.Modules
                         //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "m_nSocketAlign_MainStep:XXX - 들어오면 안되는 구간인데..");
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 5)               //  60 sec * 5
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 2)               //  60 sec * 5
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 시간 초과.");
 
@@ -41933,7 +41909,9 @@ namespace QMC.Common.Modules
 
                     m_bworkStageVacuumFail = true;
                     m_bSocketAlign_OK = false;
-                    Log.Write("DrillStatus", "[Fail] 레이저 가공 시퀀스 실패 종료");
+                    Log.Write("SLD-200", "Auto Run", "[Fail] 레이저 가공 시퀀스 실패 종료");
+                    Log.Write("Fail", "Auto Run", "[Fail] 레이저 가공 시퀀스 실패 종료");
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
                     break;
 

@@ -4516,8 +4516,15 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-            Equipment.m_GoldPowderOffsetX = 1.234;
-            Equipment.m_GoldPowderOffsetY = 5.678;
+
+            workStage.AlignedDrillingData_Select_and_OffsetMove(0, 0, 0, 1, 1, 1);
+
+
+
+
+            return;
+            //Equipment.m_GoldPowderOffsetX = 1.234;
+            //Equipment.m_GoldPowderOffsetY = 5.678;
 
             return;
             int nNextStep = 0;
