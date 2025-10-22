@@ -434,6 +434,19 @@ namespace SLD200.NewStyleForm.NewSubForm
             Equipment.LaserDrillingCycStop_Reservation = false;
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
 
+            try
+            {
+                //도면을 현재 recipe로 불러온다.
+                if (Equipment.RecipeOpen_DrawingFilePath != null && Equipment.RecipeOpen_DrawingFilePath != "")
+                {
+                    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
             Equipment.SemiAutoEnable = true;
             workStage.SetSemiAutoRequest(WorkStage.SemiAutoStep.FiducialAlign);
         }

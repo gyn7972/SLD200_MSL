@@ -234,7 +234,7 @@ namespace SLD200_MSL
         public void RoiAlignClickNew()
         {
             FormSetRoi FormSetRoi = new FormSetRoi(RoiAlignVisionTool, FullSize);
-            FormSetRoi.RoiButtonClick += RoiFiducialButton_Click;
+            FormSetRoi.RoiButtonClick += RoiAlignButton_Click;
             FormSetRoi.Location = this.Location;
             FormSetRoi.StartPosition = FormStartPosition.CenterScreen;
             if (FormSetRoi.ShowDialog() == DialogResult.OK)
@@ -258,7 +258,7 @@ namespace SLD200_MSL
         public void RoiFiducialClickNew()
         {
             FormSetRoi FormSetRoi = new FormSetRoi(RoiAlignVisionTool, FullSize);
-            FormSetRoi.RoiButtonClick += RoiAlignButton_Click;
+            FormSetRoi.RoiButtonClick += RoiFiducialButton_Click;
             FormSetRoi.Location = this.Location;
             FormSetRoi.StartPosition = FormStartPosition.CenterScreen;
             if (FormSetRoi.ShowDialog() == DialogResult.OK)

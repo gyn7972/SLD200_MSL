@@ -50,6 +50,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         private SLD200_MSL.RoiListControl m_RoiListControl;
 
         private System.Windows.Forms.Timer RecipeVisionTimer;
+        private bool m_bRoiInspectSocket = true;
 
         public FormNewSub_Recipe_Vision()
         {
@@ -490,6 +491,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             PatternMatchingResult result = Owner.GetResult();
             this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiTrain.Parameter.Overlay);
+            this.ImageViewer_RecipeVision_highs.NormalOverlays.Remove(RoiTrain.Parameter.Overlay);
             foreach (var overlay in result.ResultOverlays)
             {
                 this.ImageViewer_RecipeVision_Lows.NormalOverlays.Remove(overlay);
@@ -501,6 +503,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_RecipeVision_Inspect_Click(object sender, EventArgs e)
         {
+            m_bRoiInspectSocket = false;
+            
             JigAlignerRecipe recipe = Owner.Recipe;
             RoiInspect.Parameter.StartLocation = recipe.InspectRoiStartLocation;
             RoiInspect.Parameter.EndLocation = recipe.InspectRoiEndLocation;
@@ -510,6 +514,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             PatternMatchingResult result = Owner.GetResult();
             this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+            this.ImageViewer_RecipeVision_highs.NormalOverlays.Remove(RoiInspect.Parameter.Overlay);
             foreach (var overlay in result.ResultOverlays)
             {
                 this.ImageViewer_RecipeVision_Lows.NormalOverlays.Remove(overlay);
@@ -527,6 +532,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 RoiTrain.Parameter.Size = roiVisionTool.Parameter.Size;
 
                 this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiTrain.Parameter.Overlay);
+                this.ImageViewer_RecipeVision_highs.NormalOverlays.Remove(RoiInspect.Parameter.Overlay);
                 RoiTrain.Parameter.Overlay.Visible = true;
                 this.ImageViewer_RecipeVision_Lows.Display();
 
@@ -537,13 +543,29 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             if (Owner != null)
             {
-                RoiInspect.Parameter.CenterLocation = roiVisionTool.Parameter.CenterLocation;
-                RoiInspect.Parameter.Size = roiVisionTool.Parameter.Size;
+                if(m_bRoiInspectSocket)
+                {
+                    RoiInspect.Parameter.CenterLocation = roiVisionTool.Parameter.CenterLocation;
+                    RoiInspect.Parameter.Size = roiVisionTool.Parameter.Size;
 
-                this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
-                RoiInspect.Parameter.Overlay.Visible = true;
-                this.ImageViewer_RecipeVision_Lows.Display();
+                    this.ImageViewer_RecipeVision_highs.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+                    this.ImageViewer_RecipeVision_Lows.NormalOverlays.Remove(RoiInspect.Parameter.Overlay);
+                    RoiInspect.Parameter.Overlay.Visible = true;
+                    this.ImageViewer_RecipeVision_highs.Display();
+                }
+                else
+                {
+                    RoiInspect.Parameter.CenterLocation = roiVisionTool.Parameter.CenterLocation;
+                    RoiInspect.Parameter.Size = roiVisionTool.Parameter.Size;
+
+                    this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+                    this.ImageViewer_RecipeVision_highs.NormalOverlays.Remove(RoiInspect.Parameter.Overlay);
+                    RoiInspect.Parameter.Overlay.Visible = true;
+                    this.ImageViewer_RecipeVision_Lows.Display();
+                }
             }
+
+                    
         }
 
         private void RoiTrainSaveButtonClick(RoiVisionTool roiVisionTool, bool bOk)
@@ -614,6 +636,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 RoiTrain.Parameter.Size = roiVisionTool.Parameter.Size;
 
                 this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiTrain.Parameter.Overlay);
+                this.ImageViewer_RecipeVision_highs.NormalOverlays.Remove(RoiTrain.Parameter.Overlay);
                 RoiTrain.Parameter.Overlay.Visible = true;
                 this.ImageViewer_RecipeVision_Lows.Display();
             }
@@ -2582,6 +2605,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_Recipe_Fiducial_ROI_Click(object sender, EventArgs e)
         {
+            m_bRoiInspectSocket = true;
             //JigAlignerRecipe recipe = Owner.Recipe;
             Point startLocation = new Point();
             Point endLocation = new Point();
@@ -2595,6 +2619,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             RoiInspect.Parameter.Overlay.Visible = true;
 
             this.ImageViewer_RecipeVision_highs.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+            this.ImageViewer_RecipeVision_Lows.NormalOverlays.Remove(RoiInspect.Parameter.Overlay);
             this.ImageViewer_RecipeVision_highs.Display();
             this.m_RoiListControl.RoiFiducialClickNew();
         }
@@ -2607,6 +2632,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 RoiInspect.Parameter.Size = roiVisionTool.Parameter.Size;
 
                 this.ImageViewer_RecipeVision_highs.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+                this.ImageViewer_RecipeVision_Lows.NormalOverlays.Remove(RoiInspect.Parameter.Overlay);
                 RoiInspect.Parameter.Overlay.Visible = true;
                 this.ImageViewer_RecipeVision_highs.Display();
             }
