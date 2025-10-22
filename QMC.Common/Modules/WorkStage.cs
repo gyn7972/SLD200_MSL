@@ -5692,7 +5692,6 @@ namespace QMC.Common.Modules
             return m_bRet;
         }
 
-
         //  Get Current Status and Position
         public bool BeamExpander_Send_GetCurrentStatusPosition()
         {
@@ -5743,7 +5742,6 @@ namespace QMC.Common.Modules
             int m_nCheckSum = 0;
             string m_strSendData = "";
             byte[] m_cSendCmd = null;
-
 
             m_DataNum = 7;
             m_cSendCmd = new byte[m_DataNum];

@@ -838,12 +838,10 @@ namespace SLD200_MSL
                         textBox_Config_BDS_BET_Zoom.Text = workStage.m_dBET_ZoomValue.ToString();
                         textBox_Config_BDS_BET_Mrad.Text = workStage.m_dBET_MradValue.ToString();
 
-
                         //  프로그램 구동 후 BET Zoom, Mrad 위치값을 세팅 edit 에 1회만 표시하기 위한 Flag
                         if (!m_bBET_Status_1time)
                         {
                             m_bBET_Status_1time = true;
-
                             textBox_Config_BDS_BET_Zoom_Position.Text = workStage.m_dBET_ZoomValue.ToString();
                             textBox_Config_BDS_BET_Mrad_Position.Text = workStage.m_dBET_MradValue.ToString();
                         }
@@ -861,7 +859,7 @@ namespace SLD200_MSL
                     label_Config_Laser_Laser_warning.Text = "Laser Status(IO) : -----";
                 }
 
-                    var StatusLaser = bds.LaserCO2Status;
+                var StatusLaser = bds.LaserCO2Status;
                 var FaultLaser = bds.LaserCO2Faults;
 
                 if(StatusLaser != null)
