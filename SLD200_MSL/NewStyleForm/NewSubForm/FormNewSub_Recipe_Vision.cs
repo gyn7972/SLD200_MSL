@@ -2068,23 +2068,14 @@ namespace SLD200.NewStyleForm.NewSubForm
             mark.AlignType = radioButton_Fiducial_Pattern.Checked ? 2 : 0;
             mark.MarkType = radioButton_Fiducial_Type_GoldPowder.Checked ? 1 : 0;
 
-			if (radioButton_Fiducial_White.Checked)
+            if (radioButton_Fiducial_Black.Checked)
                 mark.MarkColor = 0;
-            else if (radioButton_Fiducial_Black.Checked)
+            else if (radioButton_Fiducial_White.Checked)
                 mark.MarkColor = 1;
             else
                 mark.MarkColor = 2;
-                
-            //if (radioButton_Fiducial_Black.Checked)
-            //    mark.MarkColor = 0;
-            //else if (radioButton_Fiducial_White.Checked)
-            //    mark.MarkColor = 1;
-            //else
-            //    mark.MarkColor = 2;
 
             mark.MarkRadius = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
-            //mark.MarkSpec = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
-            //mark.MarkScore = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text);
             double percentValue = 0.0;
             if (double.TryParse(textBox_Recipe_Fiducial_CircleSpec.Text, out percentValue))
             {

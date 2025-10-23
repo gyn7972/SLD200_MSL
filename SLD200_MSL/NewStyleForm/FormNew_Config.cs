@@ -2238,9 +2238,9 @@ namespace SLD200_MSL
                         break;
 
                     case (int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos:
-                        min = -1500.0; max = 1500.0; origin = 800;
+                        min = -1500.0; max = 1500.0; origin = 788.265;
                         SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
-                        min = -1500.0; max = 1500.0; origin = 0;
+                        min = -1500.0; max = 1500.0; origin = -15;
                         SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
                         break;
 
