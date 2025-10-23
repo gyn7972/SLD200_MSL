@@ -1863,7 +1863,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     {
                         listBox_Recipe_Fiducial_Result.Items.Add(result.FailMessage);
 
-                        mb.ShowDialog("원 찾기 실패", result.FailMessage);
+                        //mb.ShowDialog("원 찾기 실패", result.FailMessage);
                         strMes = result.FailMessage;
                     }
 
@@ -1876,8 +1876,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                             listBox_Recipe_Fiducial_Result.Items.Add(line);
                         }
 
-                        mb.ShowDialog("원 찾기 실패", result.UserGuide);
-                        strMes = result.FailMessage + result.UserGuide;
+                        //mb.ShowDialog("원 찾기 실패", result.UserGuide);
+                        strMes = result.FailMessage + "\r\n" + result.UserGuide;
 
                     }
                     else if (!string.IsNullOrEmpty(result.Recommendation))
@@ -1888,8 +1888,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                             listBox_Recipe_Fiducial_Result.Items.Add(line);
                         }
 
-                        mb.ShowDialog("원 찾기 실패", result.Recommendation);
-                        strMes = result.FailMessage + result.UserGuide + result.Recommendation;
+                        //mb.ShowDialog("원 찾기 실패", result.Recommendation);
+                        strMes = result.FailMessage + "\r\n" + result.UserGuide + "\r\n" + result.Recommendation;
                     }
 
                     mb.ShowDialog("원 찾기 실패", strMes);
