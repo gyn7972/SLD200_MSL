@@ -752,12 +752,6 @@
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_Vision.Designer.cs">
       <DependentUpon>FormNewSub_Recipe_Vision.cs</DependentUpon>
     </Compile>
-    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_SemiAuto.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_SemiAuto.Designer.cs">
-      <DependentUpon>FormNewSub_SemiAuto.cs</DependentUpon>
-    </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Main_SemiAuto.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1622,9 +1616,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_Vision.resx">
       <DependentUpon>FormNewSub_Recipe_Vision.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_SemiAuto.resx">
-      <DependentUpon>FormNewSub_SemiAuto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Main_SemiAuto.resx">
       <DependentUpon>FormNewSub_Main_SemiAuto.cs</DependentUpon>

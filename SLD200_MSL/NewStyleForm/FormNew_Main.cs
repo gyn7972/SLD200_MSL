@@ -360,6 +360,12 @@ namespace SLD200_MSL
             }
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            //ClearViewerDocument();
+        }
+
         private bool m_bFormVisible = false; // 실제 Show 상태 여부
         protected override void OnVisibleChanged(EventArgs e)
         {
@@ -765,30 +771,6 @@ namespace SLD200_MSL
 
                 System.Windows.Forms.MessageBox.Show("도면 로드 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            
-            //if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
-            //{
-            //    workStage.m_bHomeProgressForm_Close = false;
-            //    m_bHomeProgress_Show = false;
-
-            //    m_FormProgress.Hide();
-            //}
-
-            ////  메인 화면 도면 갱신 (요상스럽도다... 메인 화면에 도면을 불러온 후 다른 화면으로 넘어갔다가 돌아오면, 메인 화면의 Viewer 에 도면이 사라진다. 보이기만 안보이는 게 아니라 데이터도 사라진다. 
-            ////                      그래서 Equipment 에 SiriusView 를 하나 임시로 두고, 서로 데이터가 다를 경우(로드된 파일명) 임시 Viewer 의 데이터를 메인 화면의 Viewer 로 가져온다.
-            //if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
-            //{
-            //    //if ((SiriusViewer_Main.Document.FileName != Equipment.EqpSiriusViewer.Document.FileName) &&
-            //    //    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
-            //    if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
-            //        (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
-            //    {
-            //        SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
-            //        //workStage.SiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
-            //        //workStage.MainSiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
-            //    }
-            //}
-
             return ret;
         }
 
@@ -1090,10 +1072,23 @@ namespace SLD200_MSL
                 }
                 else
                 {
-
-                    SiriusViewer_Main.Document = (IDocument)Equipment.GetEqpSiriusViewerDocument();
                 }
-                
+
+            }
+
+            if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+            {
+                double dGoldPowerOffsetX = Equipment.m_GoldPowderOffsetX;
+                double dGoldPowerOffsetY = Equipment.m_GoldPowderOffsetY;
+                strText = string.Format("GoldOffset(mm): X:{0:0.000}, Y:{1:0.000}", dGoldPowerOffsetX, dGoldPowerOffsetY);
+                SetValue(label_Main_GoldPowder, strText);
+                SetColor(label_Main_GoldPowder, Color.Black, Color.Lime);
+            }
+            else
+            {
+                strText = "GoldPowder 미사용.";
+                SetValue(label_Main_GoldPowder, strText);
+                SetColor(label_Main_GoldPowder, Color.Black, Color.DarkRed);
             }
 
             var markingLayer = workStage.DrillingManager.GetLayer(LayerList.Marking);
@@ -1108,6 +1103,12 @@ namespace SLD200_MSL
                     SetValue(label_Main_Serial_Number, strText);
                     SetColor(label_Main_Serial_Number, Color.Black, Color.Lime);
                 }
+            }
+            else
+            {
+                strText = string.Format("Serial Number : Not Use");
+                SetValue(label_Main_Serial_Number, strText);
+                SetColor(label_Main_Serial_Number, Color.Black, Color.DarkRed);
             }
 
             if (workStage.m_stLaserDrilling_SocketData != null)
@@ -1244,7 +1245,7 @@ namespace SLD200_MSL
                         {
                             strText = "Height Check : Not Use";
                             SetValue(label_Main_Title_Status, strText);
-                            SetColor(label_Main_Title_Status, Color.Black, Color.Lime);
+                            SetColor(label_Main_Title_Status, Color.Black, Color.Red);
                             m_blinkToggle = true;
                         }
 
@@ -4142,6 +4143,10 @@ namespace SLD200_MSL
                     {
                         var view = Document.Views.Last();
 
+                        //SiriusViewer_Main.GLcontrol.Invalidate();
+                        //SiriusViewer_Main.GLcontrol.Update();
+                        //view.Render();
+
                         view.Dp2Lp(e.Location, out float dX, out float dY);
                         XyzCoordinate ptReal = new XyzCoordinate(dX, dY, 0);
                         //double dScale = view.Scale;
@@ -4511,6 +4516,17 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+
+            workStage.AlignedDrillingData_Select_and_OffsetMove(0, 0, 0, 1, 1, 1);
+
+
+
+
+            return;
+            //Equipment.m_GoldPowderOffsetX = 1.234;
+            //Equipment.m_GoldPowderOffsetY = 5.678;
+
+            return;
             int nNextStep = 0;
 
             workStage.m_nHoleLayer_ProcessIndex_Count = 0;
@@ -4809,24 +4825,7 @@ namespace SLD200_MSL
             //workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);
 
             return;
-            try
-            {
-                var moduleUI = new FormNewSub_SemiAuto();
-                //moduleUI.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
-                //moduleUI.Text = "모듈 상태 확인";
-                //moduleUI.StartPosition = FormStartPosition.CenterParent;
-                moduleUI.Show();  // 모달리스
-                Log.Write("UI", "FormNewSub_SemiAuto 창이 열렸습니다.");
-            }
-            catch (Exception ex)
-            {
-                Log.Write("UI", $"FormNewSub_SemiAuto 창 열기 실패: {ex.Message}");
-                MessageBox.Show("모듈 상태 창 열기 실패:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return;
-
-
+            
             Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
             // 시작 Test
             workStage.timer_Motion_Home.Enabled = true;
@@ -5075,46 +5074,62 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
 
-            string strTemp = string.Empty;
-            button_Main_Reset.Enabled = false;
-
-            CancellationTokenSource cts = new CancellationTokenSource();
-            Task<int> resetTask = ResetSequenceAsync(cts.Token);
-
-            var pf = new ProgressForm("Reset 중", "시퀀스 완료까지 기다리는 중입니다...", resetTask);
-            pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
-            pf.StopProcess += (obj) =>
+            try
             {
-                cts.Cancel();
+                string strTemp = string.Empty;
+                button_Main_Reset.Enabled = false;
 
-                Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
-                checkBox_Main_AutoRun.Checked = false;
-                button_Main_Start.BackColor = Color.LightGray;
-                button_Main_Start.ForeColor = Color.Black;
+                CancellationTokenSource cts = new CancellationTokenSource();
+                Task<int> resetTask = ResetSequenceAsync(cts.Token);
 
-                strTemp = "Reset이 중단되었습니다.";
-                new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-                button_Main_Reset.Enabled = true;
-            }; 
+                var pf = new ProgressForm("Reset 중", "시퀀스 완료까지 기다리는 중입니다...", resetTask);
+                pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
+                pf.StopProcess += (obj) =>
+                {
+                    cts.Cancel();
 
-            pf.ShowDialog();
+                    Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                    checkBox_Main_AutoRun.Checked = false;
+                    button_Main_Start.BackColor = Color.LightGray;
+                    button_Main_Start.ForeColor = Color.Black;
 
-           
-            Log.Write("SLD-200", Equipment.User_Name, strTemp);
-            //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-            if (resetTask.Result == 0)
-            {
-                strTemp = "Reset 완료";
-                new QMC.Core.MessageBoxOk().ShowDialog("Information !", strTemp);
-                button_Main_Reset.Enabled = true;
+                    strTemp = "Reset이 중단되었습니다.";
+                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                    button_Main_Reset.Enabled = true;
+                };
+                pf.ShowDialog();
 
-                Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
-                checkBox_Main_AutoRun.Checked = false;
-                button_Main_Start.BackColor = Color.LightGray;
-                button_Main_Start.ForeColor = Color.Black;
+
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                if (resetTask.Result == 0)
+                {
+                    strTemp = "Reset 완료";
+                    new QMC.Core.MessageBoxOk().ShowDialog("Information !", strTemp);
+                    button_Main_Reset.Enabled = true;
+
+                    Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                    checkBox_Main_AutoRun.Checked = false;
+                    button_Main_Start.BackColor = Color.LightGray;
+                    button_Main_Start.ForeColor = Color.Black;
+                }
+                else
+                {
+                    strTemp = "Reset이 중단되었습니다.";
+                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                    button_Main_Reset.Enabled = true;
+
+                    Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                    checkBox_Main_AutoRun.Checked = false;
+                    button_Main_Start.BackColor = Color.LightGray;
+                    button_Main_Start.ForeColor = Color.Black;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                Log.Write(ex);
+
+                string strTemp = string.Empty;
                 strTemp = "Reset이 중단되었습니다.";
                 new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
                 button_Main_Reset.Enabled = true;
@@ -5153,7 +5168,8 @@ namespace SLD200_MSL
                     return -1;
                 }
 
-                if (token.IsCancellationRequested) return -1;
+                if (token.IsCancellationRequested) 
+                    return -1;
 
                 try
                 {
@@ -5209,7 +5225,7 @@ namespace SLD200_MSL
 
                 nIndex = (int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos;
                 unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-                double dPosZ_Unloader = loader.stLDULTeachingPos[nIndex].UL_Transfer_Z;
+                double dPosZ_Unloader = loader.stLDULTeachingPos[nIndex].ULD_Transfer_Z;
 
                 await Task.Delay(500, token);
 
@@ -5219,6 +5235,23 @@ namespace SLD200_MSL
                     return ShowErrorAndReturn("Loader Z-Axis 이동 실패");
                 if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, dPosZ_Unloader))
                     return ShowErrorAndReturn("Unloader Z-Axis 이동 실패");
+
+                //Picker TR 축 이동
+                nIndex = (int)Loader.LDUL_TeachingPosList.LD_TR_SafetyPos;
+                loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed);
+                double dPosX_Loader = loader.stLDULTeachingPos[nIndex].LD_Transfer_X;
+
+                nIndex = (int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos;
+                unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed);
+                double dPosX_Unloader = loader.stLDULTeachingPos[nIndex].ULD_Transfer_X;
+
+                await Task.Delay(500, token);
+
+                if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_X, dPosX_Loader))
+                    return ShowErrorAndReturn("Loader Z-Axis 이동 실패");
+                if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_X, dPosX_Unloader))
+                    return ShowErrorAndReturn("Unloader Z-Axis 이동 실패");
+
 
                 // Port Z축 이동
                 nIndex = (int)Loader.LDUL_TeachingPosList.LD_RPort_ReadyPos;
@@ -5384,6 +5417,7 @@ namespace SLD200_MSL
 
                 dlg.MinValue = meta.Min;
                 dlg.MaxValue = meta.Max;
+                dlg.OriginValue = meta.Origin;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);

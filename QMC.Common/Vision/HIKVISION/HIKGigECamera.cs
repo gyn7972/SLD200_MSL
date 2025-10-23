@@ -1,24 +1,25 @@
 ﻿using MvCamCtrl.NET;
+using QMC.Common.Modules;
 using QMC.Common.Vision.Cameras;
 using QMC.Common.Vision.HIKVISION;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.Windows;
 using System.Windows.Forms;
-using System.IO;
-
-using System.Drawing.Imaging;
-using System.Diagnostics;
-using QMC.Common.Modules;
-using System.Globalization;
+using Size = System.Drawing.Size;
 
 namespace QMC.Common.Vision.HIKVISION
 {
@@ -223,8 +224,8 @@ namespace QMC.Common.Vision.HIKVISION
                 //Log.Write("FrameEnd", string.Format("{0},{1} ", Owner.Name, endTime - startTime));
             }
             Console.WriteLine(pEventInfo.EventName);
-
         }
+
         public void EventCallbackFunc(ref MyCamera.MV_EVENT_OUT_INFO pEventInfo, IntPtr pUser)
         {
             if (pEventInfo.EventName == "ExposureEnd")
@@ -898,6 +899,11 @@ namespace QMC.Common.Vision.HIKVISION
             if (m_hReceiveThread != null)
             {
                 m_hReceiveThread.Join();
+            }
+
+            if (this.Opened == false)
+            {
+                return;
             }
 
             int nRet = m_MyCamera.MV_CC_StopGrabbing_NET();

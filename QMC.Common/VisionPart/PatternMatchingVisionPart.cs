@@ -118,8 +118,7 @@ namespace QMC.Common.VisionPart
 
             // 2. 초기 원본 이미지 저장
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
-            //string rawImagePath = Path.Combine(baseDir, $"CrossImage_{timestamp}.bmp");
-            string rawImagePath = Path.Combine(baseDir, $"CrossImage_{timestamp}");
+            string rawImagePath = Path.Combine(baseDir, $"CrossImage_{timestamp}.bmp");
             image.Save(rawImagePath, VisionImage.FileFilter.jpg);
 
             m_PatternMatchingTool.Parameter.AngleTolerance = new RangeD(parameter.MinTolerance, parameter.MaxTolerance);            

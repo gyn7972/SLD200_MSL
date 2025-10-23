@@ -58,12 +58,16 @@ namespace SLD200_MSL
             this.button_Multiply = new System.Windows.Forms.Button();
             this.button_Minus = new System.Windows.Forms.Button();
             this.button_Plus = new System.Windows.Forms.Button();
+            this.label_OriginValue = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Controls.Add(this.label_OriginValue);
+            this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.button_Cancel);
             this.panel1.Controls.Add(this.label_MinValue);
             this.panel1.Controls.Add(this.button_Apply);
@@ -87,13 +91,13 @@ namespace SLD200_MSL
             this.panel1.Controls.Add(this.button_Num_0);
             this.panel1.Location = new System.Drawing.Point(10, 10);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(559, 355);
+            this.panel1.Size = new System.Drawing.Size(560, 371);
             this.panel1.TabIndex = 0;
             // 
             // button_Cancel
             // 
             this.button_Cancel.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Cancel.Location = new System.Drawing.Point(369, 280);
+            this.button_Cancel.Location = new System.Drawing.Point(369, 295);
             this.button_Cancel.Name = "button_Cancel";
             this.button_Cancel.Size = new System.Drawing.Size(178, 63);
             this.button_Cancel.TabIndex = 20;
@@ -105,9 +109,9 @@ namespace SLD200_MSL
             // 
             this.label_MinValue.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold);
             this.label_MinValue.ForeColor = System.Drawing.Color.Red;
-            this.label_MinValue.Location = new System.Drawing.Point(429, 37);
+            this.label_MinValue.Location = new System.Drawing.Point(467, 63);
             this.label_MinValue.Name = "label_MinValue";
-            this.label_MinValue.Size = new System.Drawing.Size(96, 27);
+            this.label_MinValue.Size = new System.Drawing.Size(80, 27);
             this.label_MinValue.TabIndex = 23;
             this.label_MinValue.Text = "0";
             this.label_MinValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -115,7 +119,7 @@ namespace SLD200_MSL
             // button_Apply
             // 
             this.button_Apply.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Apply.Location = new System.Drawing.Point(369, 213);
+            this.button_Apply.Location = new System.Drawing.Point(369, 228);
             this.button_Apply.Name = "button_Apply";
             this.button_Apply.Size = new System.Drawing.Size(178, 63);
             this.button_Apply.TabIndex = 19;
@@ -127,9 +131,9 @@ namespace SLD200_MSL
             // 
             this.label_MaxValue.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold);
             this.label_MaxValue.ForeColor = System.Drawing.Color.Red;
-            this.label_MaxValue.Location = new System.Drawing.Point(429, 9);
+            this.label_MaxValue.Location = new System.Drawing.Point(467, 36);
             this.label_MaxValue.Name = "label_MaxValue";
-            this.label_MaxValue.Size = new System.Drawing.Size(96, 27);
+            this.label_MaxValue.Size = new System.Drawing.Size(80, 27);
             this.label_MaxValue.TabIndex = 22;
             this.label_MaxValue.Text = "100,000";
             this.label_MaxValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -137,9 +141,9 @@ namespace SLD200_MSL
             // label3
             // 
             this.label3.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold);
-            this.label3.Location = new System.Drawing.Point(366, 37);
+            this.label3.Location = new System.Drawing.Point(385, 63);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 27);
+            this.label3.Size = new System.Drawing.Size(70, 27);
             this.label3.TabIndex = 21;
             this.label3.Text = "Min :";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -147,9 +151,9 @@ namespace SLD200_MSL
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold);
-            this.label2.Location = new System.Drawing.Point(366, 9);
+            this.label2.Location = new System.Drawing.Point(385, 36);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(56, 27);
+            this.label2.Size = new System.Drawing.Size(70, 27);
             this.label2.TabIndex = 20;
             this.label2.Text = "Max :";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -170,7 +174,7 @@ namespace SLD200_MSL
             // button_PlusMinus
             // 
             this.button_PlusMinus.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_PlusMinus.Location = new System.Drawing.Point(369, 146);
+            this.button_PlusMinus.Location = new System.Drawing.Point(369, 161);
             this.button_PlusMinus.Name = "button_PlusMinus";
             this.button_PlusMinus.Size = new System.Drawing.Size(178, 63);
             this.button_PlusMinus.TabIndex = 13;
@@ -181,7 +185,7 @@ namespace SLD200_MSL
             // button_Clear
             // 
             this.button_Clear.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Clear.Location = new System.Drawing.Point(461, 77);
+            this.button_Clear.Location = new System.Drawing.Point(461, 92);
             this.button_Clear.Name = "button_Clear";
             this.button_Clear.Size = new System.Drawing.Size(86, 63);
             this.button_Clear.TabIndex = 12;
@@ -192,7 +196,7 @@ namespace SLD200_MSL
             // button_BackSpace
             // 
             this.button_BackSpace.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_BackSpace.Location = new System.Drawing.Point(369, 77);
+            this.button_BackSpace.Location = new System.Drawing.Point(369, 92);
             this.button_BackSpace.Name = "button_BackSpace";
             this.button_BackSpace.Size = new System.Drawing.Size(86, 63);
             this.button_BackSpace.TabIndex = 11;
@@ -203,7 +207,7 @@ namespace SLD200_MSL
             // button_Num_9
             // 
             this.button_Num_9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_9.Location = new System.Drawing.Point(248, 77);
+            this.button_Num_9.Location = new System.Drawing.Point(248, 92);
             this.button_Num_9.Name = "button_Num_9";
             this.button_Num_9.Size = new System.Drawing.Size(112, 63);
             this.button_Num_9.TabIndex = 10;
@@ -214,7 +218,7 @@ namespace SLD200_MSL
             // button_Num_8
             // 
             this.button_Num_8.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_8.Location = new System.Drawing.Point(128, 77);
+            this.button_Num_8.Location = new System.Drawing.Point(128, 92);
             this.button_Num_8.Name = "button_Num_8";
             this.button_Num_8.Size = new System.Drawing.Size(112, 63);
             this.button_Num_8.TabIndex = 9;
@@ -225,7 +229,7 @@ namespace SLD200_MSL
             // button_Num_7
             // 
             this.button_Num_7.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_7.Location = new System.Drawing.Point(9, 77);
+            this.button_Num_7.Location = new System.Drawing.Point(9, 92);
             this.button_Num_7.Name = "button_Num_7";
             this.button_Num_7.Size = new System.Drawing.Size(112, 63);
             this.button_Num_7.TabIndex = 8;
@@ -236,7 +240,7 @@ namespace SLD200_MSL
             // button_Num_6
             // 
             this.button_Num_6.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_6.Location = new System.Drawing.Point(248, 145);
+            this.button_Num_6.Location = new System.Drawing.Point(248, 160);
             this.button_Num_6.Name = "button_Num_6";
             this.button_Num_6.Size = new System.Drawing.Size(112, 63);
             this.button_Num_6.TabIndex = 7;
@@ -247,7 +251,7 @@ namespace SLD200_MSL
             // button_Num_5
             // 
             this.button_Num_5.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_5.Location = new System.Drawing.Point(128, 145);
+            this.button_Num_5.Location = new System.Drawing.Point(128, 160);
             this.button_Num_5.Name = "button_Num_5";
             this.button_Num_5.Size = new System.Drawing.Size(112, 63);
             this.button_Num_5.TabIndex = 6;
@@ -258,7 +262,7 @@ namespace SLD200_MSL
             // button_Num_4
             // 
             this.button_Num_4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_4.Location = new System.Drawing.Point(9, 145);
+            this.button_Num_4.Location = new System.Drawing.Point(9, 160);
             this.button_Num_4.Name = "button_Num_4";
             this.button_Num_4.Size = new System.Drawing.Size(112, 63);
             this.button_Num_4.TabIndex = 5;
@@ -269,7 +273,7 @@ namespace SLD200_MSL
             // button_Num_3
             // 
             this.button_Num_3.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_3.Location = new System.Drawing.Point(248, 213);
+            this.button_Num_3.Location = new System.Drawing.Point(248, 228);
             this.button_Num_3.Name = "button_Num_3";
             this.button_Num_3.Size = new System.Drawing.Size(112, 63);
             this.button_Num_3.TabIndex = 4;
@@ -280,7 +284,7 @@ namespace SLD200_MSL
             // button_Num_2
             // 
             this.button_Num_2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_2.Location = new System.Drawing.Point(128, 213);
+            this.button_Num_2.Location = new System.Drawing.Point(128, 228);
             this.button_Num_2.Name = "button_Num_2";
             this.button_Num_2.Size = new System.Drawing.Size(112, 63);
             this.button_Num_2.TabIndex = 3;
@@ -291,7 +295,7 @@ namespace SLD200_MSL
             // button_Num_1
             // 
             this.button_Num_1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_1.Location = new System.Drawing.Point(9, 213);
+            this.button_Num_1.Location = new System.Drawing.Point(9, 228);
             this.button_Num_1.Name = "button_Num_1";
             this.button_Num_1.Size = new System.Drawing.Size(112, 63);
             this.button_Num_1.TabIndex = 2;
@@ -302,7 +306,7 @@ namespace SLD200_MSL
             // button_Num_Dot
             // 
             this.button_Num_Dot.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_Dot.Location = new System.Drawing.Point(248, 281);
+            this.button_Num_Dot.Location = new System.Drawing.Point(248, 296);
             this.button_Num_Dot.Name = "button_Num_Dot";
             this.button_Num_Dot.Size = new System.Drawing.Size(112, 63);
             this.button_Num_Dot.TabIndex = 1;
@@ -313,7 +317,7 @@ namespace SLD200_MSL
             // button_Num_0
             // 
             this.button_Num_0.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.button_Num_0.Location = new System.Drawing.Point(9, 281);
+            this.button_Num_0.Location = new System.Drawing.Point(9, 296);
             this.button_Num_0.Name = "button_Num_0";
             this.button_Num_0.Size = new System.Drawing.Size(232, 63);
             this.button_Num_0.TabIndex = 0;
@@ -381,11 +385,32 @@ namespace SLD200_MSL
             this.button_Plus.Visible = false;
             this.button_Plus.Click += new System.EventHandler(this.button_Plus_Click);
             // 
+            // label_OriginValue
+            // 
+            this.label_OriginValue.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold);
+            this.label_OriginValue.ForeColor = System.Drawing.Color.Gray;
+            this.label_OriginValue.Location = new System.Drawing.Point(467, 9);
+            this.label_OriginValue.Name = "label_OriginValue";
+            this.label_OriginValue.Size = new System.Drawing.Size(80, 27);
+            this.label_OriginValue.TabIndex = 25;
+            this.label_OriginValue.Text = "100,000";
+            this.label_OriginValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label4
+            // 
+            this.label4.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold);
+            this.label4.Location = new System.Drawing.Point(385, 9);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(70, 27);
+            this.label4.TabIndex = 24;
+            this.label4.Text = "Origin :";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormNew_KeyPad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(607, 373);
+            this.ClientSize = new System.Drawing.Size(607, 388);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.button_Plus);
             this.Controls.Add(this.button_Minus);
@@ -431,5 +456,7 @@ namespace SLD200_MSL
         private Label label_MaxValue;
         private Button button_Apply;
         private Button button_Cancel;
+        private Label label_OriginValue;
+        private Label label4;
     }
 }

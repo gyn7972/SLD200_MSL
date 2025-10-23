@@ -117,7 +117,6 @@ namespace QMC.Common
                 ApplyConfigData(module);
                 module.UpdateConfigData();
             }
-
         }
 
 

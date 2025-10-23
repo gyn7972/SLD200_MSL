@@ -53,6 +53,8 @@ namespace QMC.Common.Q_Sequence
         public bool _isMainStatusRunning = false; // 중복 실행 방지 플래그
         public bool m_MainTick_Start = false;
 
+        private CancellationTokenSource m_mainTickCts = null;
+
         #region Tick Count Check
         public enum TickType : int
         {
@@ -83,16 +85,19 @@ namespace QMC.Common.Q_Sequence
 
         ~Sequence_FlatnessMeasure()
         {
-            // 리소스 해제 로직이 필요하다면 여기에 작성
             isModuleClose = true;
+            try { m_mainTickCts?.Cancel(); } catch { }
+
             foreach (var task in listTask)
             {
-                task.Wait();
-                task.Dispose();
-
+                try { task?.Wait(1000); } catch { }
+                try { task?.Dispose(); } catch { }
             }
             listTask.Clear();
+
             m_taskTimer_Main_Tick = null;
+            try { m_mainTickCts?.Dispose(); } catch { }
+            m_mainTickCts = null;
         }
 
         public void Init()
@@ -111,25 +116,8 @@ namespace QMC.Common.Q_Sequence
                 }
             }
 
-            //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
-            m_taskTimer_Main_Tick = Task.Factory.StartNew(() =>
-            {
-                Thread.CurrentThread.Name = "m_taskTimer_FlatnessMeasure_Tick";
-
-                while (true)
-                {
-                    Thread.Sleep(20);
-
-                    if (isModuleClose)
-                    {
-                        break;
-                    }
-
-                    Timer_MainStatus_Tick(null, null);
-                }
-            });
-            listTask.Add(m_taskTimer_Main_Tick);
-
+            // 장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
+            StartMainTickLoop();
         }
 
         private async void Timer_MainStatus_Tick(object sender, ElapsedEventArgs e)
@@ -662,6 +650,100 @@ namespace QMC.Common.Q_Sequence
             double dMeasurePosZ = Equipment.ToDouble(temp.ToString());
             Log.Write("HeightMeasure", $"Teaching Z 위치 불러오기 완료: {dMeasurePosZ:F3}");
             return dMeasurePosZ;
+        }
+
+        // 실행 상태 확인용
+        public bool IsMainTickAlive
+        {
+            get
+            {
+                var t = m_taskTimer_Main_Tick;
+                return t != null && !(t.IsCanceled || t.IsCompleted || t.IsFaulted);
+            }
+        }
+
+        private void CleanupCompletedTasks()
+        {
+            for (int i = listTask.Count - 1; i >= 0; i--)
+            {
+                var t = listTask[i];
+                if (t == null || t.IsCompleted || t.IsCanceled || t.IsFaulted)
+                {
+                    try { t?.Dispose(); } catch { }
+                    listTask.RemoveAt(i);
+                }
+            }
+        }
+
+        private void StartMainTickLoop()
+        {
+            // 기존 것 정리
+            m_mainTickCts?.Cancel();
+            m_mainTickCts?.Dispose();
+            m_mainTickCts = new CancellationTokenSource();
+            var token = m_mainTickCts.Token;
+
+            CleanupCompletedTasks();
+
+            m_taskTimer_Main_Tick = Task.Factory.StartNew(() =>
+            {
+                // 스레드 이름은 한 번만 설정 가능
+                var th = Thread.CurrentThread;
+                if (th.Name == null)
+                {
+                    try { th.Name = "m_taskTimer_FlatnessMeasure_Tick"; } catch { /* 이미 이름 있음 */ }
+                }
+
+                while (!token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        Thread.Sleep(20);
+
+                        if (isModuleClose)
+                            break;
+
+                        // 내부에서 자체 try/catch 있으나, 혹시 모를 예외 보호
+                        Timer_MainStatus_Tick(null, null);
+                    }
+                    catch (Exception ex)
+                    {
+                        // 예외로 인해 Task가 죽지 않도록 루프 레벨에서 흡수
+                        Log.Write(ex);
+                        Console.WriteLine($"Error in m_taskTimer_FlatnessMeasure_Tick: {ex.Message}");
+                    }
+                }
+            },
+            token,
+            TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
+
+            listTask.Add(m_taskTimer_Main_Tick);
+
+            // 비정상 종료 시 자동 재시작
+            m_taskTimer_Main_Tick.ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                    Log.Write("FlatnessMeasure", Equipment.User_Name, $"Main tick faulted: {t.Exception?.GetBaseException().Message}");
+                else
+                    Log.Write("FlatnessMeasure", Equipment.User_Name, $"Main tick completed. Status={t.Status}");
+
+                // 의도치 않은 종료라면 재시작
+                if (!isModuleClose && !(m_mainTickCts?.IsCancellationRequested ?? true))
+                {
+                    StartMainTickLoop();
+                }
+            }, TaskScheduler.Default);
+        }
+
+        // 외부에서 수동 확인/재가동하고 싶을 때 호출
+        public void EnsureMainTickRunning()
+        {
+            if (!IsMainTickAlive && !isModuleClose)
+            {
+                Log.Write("FlatnessMeasure", Equipment.User_Name, "Main tick not alive. Restarting...");
+                StartMainTickLoop();
+            }
         }
     }
 }

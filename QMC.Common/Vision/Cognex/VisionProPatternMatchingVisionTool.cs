@@ -237,7 +237,7 @@ namespace QMC.Common.Vision.Cognex
             {
                 if ((ret = VisionProCustomizedVisionImage.Create(ref image)) != 0) return ret;
             }
-            image.Save("d:\\TrainImage.bmp", VisionImage.FileFilter.bmp);
+            image.Save("d:\\SLD-200\\TrainImage.bmp", VisionImage.FileFilter.bmp);
             cognexVisionImage = image.CustomizedData as VisionProCustomizedVisionImage;
             cognexImage = image.CustomizedData.Image as ICogImage;
 
@@ -459,8 +459,7 @@ namespace QMC.Common.Vision.Cognex
             if ((ret = this.SetValue(image)) != 0) return ret;
             if ((ret = this.GetValue()) != 0) return ret;
 
-
-            image.Save("D:\\Pattern"  + this.Result.Values.Count . ToString() +"_"+ DateTime.Now.Ticks.ToString() + ".bmp", VisionImage.FileFilter.bmp);
+            //image.Save("D:\\Pattern"  + this.Result.Values.Count . ToString() +"_"+ DateTime.Now.Ticks.ToString() + ".bmp", VisionImage.FileFilter.bmp);
             this.OutputImage = this.InputImage;
             return ret;
         }

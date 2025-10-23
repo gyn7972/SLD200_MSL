@@ -320,6 +320,7 @@ namespace SLD200.NewStyleForm
                 var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
                 dlg.MinValue = meta.Min;
                 dlg.MaxValue = meta.Max;
+                dlg.OriginValue = meta.Origin;
 
                 if (double.TryParse(currentText, out double value))
                     dlg.SetInitialValue(value);

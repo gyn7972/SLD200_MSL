@@ -63,7 +63,9 @@
             this.checkBox_Main_SocketStop = new System.Windows.Forms.CheckBox();
             this.buttonForceMaterialOut = new System.Windows.Forms.Button();
             this.groupBox_FineCam = new System.Windows.Forms.GroupBox();
+            this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.groupBox_CoarseCam = new System.Windows.Forms.GroupBox();
+            this.ImageViewer_Main_Lows = new QMC.Common.Hmi.VisionImageViewer();
             this.checkBox_Main_AutoRun = new System.Windows.Forms.CheckBox();
             this.button_TEST12 = new System.Windows.Forms.Button();
             this.button_TestbyUser_LPort_Start = new System.Windows.Forms.Button();
@@ -147,6 +149,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label_Main_Height_Stage = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.label_Main_GoldPowder = new System.Windows.Forms.Label();
             this.baseLabel_Module_WaitTime_sec = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_Illuminator = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_CameraPre = new SLD200_MSL.BaseLabel();
@@ -163,8 +166,6 @@
             this.baseLabel_Main_Divice_Status_Motion = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_IO = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_Laser = new SLD200_MSL.BaseLabel();
-            this.ImageViewer_Main_Lows = new QMC.Common.Hmi.VisionImageViewer();
-            this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.baseGroupBox_Progress = new SLD200_MSL.WATGroupBox();
@@ -210,7 +211,9 @@
             this.groupBoxMain_MaterialInformation.SuspendLayout();
             this.groupBox_ProcessingData.SuspendLayout();
             this.groupBox_FineCam.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.groupBox_CoarseCam.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).BeginInit();
             this.groupBox_Main_AxisPositions.SuspendLayout();
             this.groupBox_Main_AxisPositions_Unloader.SuspendLayout();
             this.groupBox_Main_AxisPositions_UnloadTransfer.SuspendLayout();
@@ -239,8 +242,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Upper)).BeginInit();
             this.groupBox_ModuleStatus.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.baseGroupBox_Progress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).BeginInit();
             this.baseGroupBox_WorkingTime.SuspendLayout();
@@ -518,6 +519,7 @@
             this.button_Main_Pause.TabIndex = 21;
             this.button_Main_Pause.Text = "Pause";
             this.button_Main_Pause.UseVisualStyleBackColor = false;
+            this.button_Main_Pause.Visible = false;
             this.button_Main_Pause.Click += new System.EventHandler(this.button_Main_Pause_Click);
             // 
             // button_Main_Start
@@ -696,13 +698,14 @@
             this.buttonForceMaterialOut.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.buttonForceMaterialOut.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.buttonForceMaterialOut.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1357, 419);
+            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1490, 723);
             this.buttonForceMaterialOut.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonForceMaterialOut.Name = "buttonForceMaterialOut";
-            this.buttonForceMaterialOut.Size = new System.Drawing.Size(192, 59);
+            this.buttonForceMaterialOut.Size = new System.Drawing.Size(66, 44);
             this.buttonForceMaterialOut.TabIndex = 158;
             this.buttonForceMaterialOut.Text = "강제배출";
             this.buttonForceMaterialOut.UseVisualStyleBackColor = false;
+            this.buttonForceMaterialOut.Visible = false;
             this.buttonForceMaterialOut.Click += new System.EventHandler(this.buttonForceMaterialOut_Click);
             // 
             // groupBox_FineCam
@@ -716,6 +719,26 @@
             this.groupBox_FineCam.TabStop = false;
             this.groupBox_FineCam.Text = " Fine Camera ";
             // 
+            // ImageViewer_Main_highs
+            // 
+            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_highs.Camera = null;
+            this.ImageViewer_Main_highs.CameraSwitch = null;
+            this.ImageViewer_Main_highs.FrameRate = 1D;
+            this.ImageViewer_Main_highs.InputImage = null;
+            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(6, 18);
+            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
+            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_highs.Simulated = false;
+            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(317, 265);
+            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_highs.TabIndex = 189;
+            this.ImageViewer_Main_highs.TabStop = false;
+            this.ImageViewer_Main_highs.UpdateDelayTime = 200;
+            this.ImageViewer_Main_highs.VisibleCrossLine = true;
+            // 
             // groupBox_CoarseCam
             // 
             this.groupBox_CoarseCam.Controls.Add(this.ImageViewer_Main_Lows);
@@ -726,6 +749,26 @@
             this.groupBox_CoarseCam.TabIndex = 192;
             this.groupBox_CoarseCam.TabStop = false;
             this.groupBox_CoarseCam.Text = " Coarse Camera ";
+            // 
+            // ImageViewer_Main_Lows
+            // 
+            this.ImageViewer_Main_Lows.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_Lows.Camera = null;
+            this.ImageViewer_Main_Lows.CameraSwitch = null;
+            this.ImageViewer_Main_Lows.FrameRate = 1D;
+            this.ImageViewer_Main_Lows.InputImage = null;
+            this.ImageViewer_Main_Lows.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_Lows.Location = new System.Drawing.Point(6, 18);
+            this.ImageViewer_Main_Lows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_Lows.Name = "ImageViewer_Main_Lows";
+            this.ImageViewer_Main_Lows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_Lows.Simulated = false;
+            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(317, 265);
+            this.ImageViewer_Main_Lows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_Lows.TabIndex = 190;
+            this.ImageViewer_Main_Lows.TabStop = false;
+            this.ImageViewer_Main_Lows.UpdateDelayTime = 160;
+            this.ImageViewer_Main_Lows.VisibleCrossLine = true;
             // 
             // checkBox_Main_AutoRun
             // 
@@ -1694,7 +1737,7 @@
             this.button_Main_SelectedProcess.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_Main_SelectedProcess.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_SelectedProcess.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Main_SelectedProcess.Location = new System.Drawing.Point(1357, 485);
+            this.button_Main_SelectedProcess.Location = new System.Drawing.Point(1357, 419);
             this.button_Main_SelectedProcess.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_SelectedProcess.Name = "button_Main_SelectedProcess";
             this.button_Main_SelectedProcess.Size = new System.Drawing.Size(192, 59);
@@ -1809,6 +1852,20 @@
             this.label6.TabIndex = 49;
             this.label6.Text = "Stage (mm) :";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_GoldPowder
+            // 
+            this.label_Main_GoldPowder.BackColor = System.Drawing.Color.Black;
+            this.label_Main_GoldPowder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_GoldPowder.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Main_GoldPowder.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_GoldPowder.Location = new System.Drawing.Point(1275, 233);
+            this.label_Main_GoldPowder.Name = "label_Main_GoldPowder";
+            this.label_Main_GoldPowder.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Main_GoldPowder.Size = new System.Drawing.Size(380, 26);
+            this.label_Main_GoldPowder.TabIndex = 222;
+            this.label_Main_GoldPowder.Text = "- - - - -";
+            this.label_Main_GoldPowder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // baseLabel_Module_WaitTime_sec
             // 
@@ -2001,46 +2058,6 @@
             this.baseLabel_Main_Divice_Status_Laser.Size = new System.Drawing.Size(38, 13);
             this.baseLabel_Main_Divice_Status_Laser.TabIndex = 130;
             this.baseLabel_Main_Divice_Status_Laser.Text = "Laser";
-            // 
-            // ImageViewer_Main_Lows
-            // 
-            this.ImageViewer_Main_Lows.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_Lows.Camera = null;
-            this.ImageViewer_Main_Lows.CameraSwitch = null;
-            this.ImageViewer_Main_Lows.FrameRate = 1D;
-            this.ImageViewer_Main_Lows.InputImage = null;
-            this.ImageViewer_Main_Lows.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_Lows.Location = new System.Drawing.Point(6, 18);
-            this.ImageViewer_Main_Lows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_Lows.Name = "ImageViewer_Main_Lows";
-            this.ImageViewer_Main_Lows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_Lows.Simulated = false;
-            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(317, 265);
-            this.ImageViewer_Main_Lows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Main_Lows.TabIndex = 190;
-            this.ImageViewer_Main_Lows.TabStop = false;
-            this.ImageViewer_Main_Lows.UpdateDelayTime = 160;
-            this.ImageViewer_Main_Lows.VisibleCrossLine = true;
-            // 
-            // ImageViewer_Main_highs
-            // 
-            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_highs.Camera = null;
-            this.ImageViewer_Main_highs.CameraSwitch = null;
-            this.ImageViewer_Main_highs.FrameRate = 1D;
-            this.ImageViewer_Main_highs.InputImage = null;
-            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(6, 18);
-            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
-            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_highs.Simulated = false;
-            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(317, 265);
-            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Main_highs.TabIndex = 189;
-            this.ImageViewer_Main_highs.TabStop = false;
-            this.ImageViewer_Main_highs.UpdateDelayTime = 200;
-            this.ImageViewer_Main_highs.VisibleCrossLine = true;
             // 
             // baseTextBox_DryRun_ProcessingTime
             // 
@@ -2504,6 +2521,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 875);
             this.ControlBox = false;
+            this.Controls.Add(this.label_Main_GoldPowder);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label_Main_Serial_Number);
             this.Controls.Add(this.button_Main_SelectedProcess);
@@ -2572,7 +2590,9 @@
             this.groupBoxMain_MaterialInformation.PerformLayout();
             this.groupBox_ProcessingData.ResumeLayout(false);
             this.groupBox_FineCam.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.groupBox_CoarseCam.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
             this.groupBox_Main_AxisPositions.ResumeLayout(false);
             this.groupBox_Main_AxisPositions_Unloader.ResumeLayout(false);
             this.groupBox_Main_AxisPositions_UnloadTransfer.ResumeLayout(false);
@@ -2602,8 +2622,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_DustCollector_Upper)).EndInit();
             this.groupBox_ModuleStatus.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.baseGroupBox_Progress.ResumeLayout(false);
             this.baseGroupBox_Progress.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).EndInit();
@@ -2785,5 +2803,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label_Main_heightSensor;
+        private System.Windows.Forms.Label label_Main_GoldPowder;
     }
 }

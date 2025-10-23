@@ -270,6 +270,11 @@ namespace SLD200.NewStyleForm.NewSubForm
                                         isLastHoleDrilled = true;
                                 }
                                 brush = isLastHoleDrilled ? Brushes.LightGreen : Brushes.LightGray;
+                                if(isLastHoleDrilled && socket.IsSuccess == false)
+                                {
+                                    socket.IsSuccess = true;
+                                }
+                                brush = GetBrushBySocketStatus(socket);
                             }
                         }
                         else
@@ -309,6 +314,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private Brush GetBrushBySocketStatus(SocketProcessData socket)
         {
+            if (socket.IsSuccess)
+                return Brushes.LightGreen;
+
             if (!socket.IsDrilled)
                 return Brushes.LightGray;
 

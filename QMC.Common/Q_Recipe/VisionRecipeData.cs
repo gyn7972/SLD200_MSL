@@ -27,6 +27,9 @@ namespace QMC.Common.Recipe
         public double ExposureTime { get; set; } = 0.0;
         public double AxisZOffset { get; set; } = 0.0;
 
+        public System.Drawing.Point ptInspectRoiStart { get; set; } = new System.Drawing.Point(0, 0);
+        public System.Drawing.Point ptInspectRoiEnd { get; set; } = new System.Drawing.Point(0, 0);
+
         public SocketMarkInfo Clone()
         {
             return new SocketMarkInfo
@@ -42,7 +45,10 @@ namespace QMC.Common.Recipe
                 ExposureTime = this.ExposureTime,
                 AxisZOffset = this.AxisZOffset,
                 IllumIR = this.IllumIR,
-                IllumRed = this.IllumRed
+                IllumRed = this.IllumRed,
+                ptInspectRoiStart = this.ptInspectRoiStart,
+                ptInspectRoiEnd = this.ptInspectRoiEnd
+
             };
         }
     }
@@ -96,6 +102,33 @@ namespace QMC.Common.Recipe
         }
     }
 
+    public class GoldPowderMarkInfo
+    {
+        public int AlignType { get; set; } = 0;                 // 0: Circle, 2: PatternMatching (기존 기본값 1 사용)
+        public int MarkType { get; set; } = 0;                   // 0: Circle, 1: Gold Powder
+        public bool CircleColor { get; set; } = true;            // true: Black, false: White (기존 bool 유지)
+        public double CircleMarkRadius { get; set; } = 0.5;
+        public double CircleMarkSpec { get; set; } = 0.05;
+        public double CircleMarkScore { get; set; } = 0.7;
+
+        public int IllumIR { get; set; } = 250;
+        public int IllumRed { get; set; } = 0;
+        public bool UseIR { get; set; } = true;
+        public bool UseRed { get; set; } = true;
+        public double ExposureTime { get; set; } = 20000.0;
+        public double AxisZOffset { get; set; } = 0.0;
+
+        public int CircleMarkMaxInstance { get; set; } = 10;
+        public int CircleMarkFindCount { get; set; } = 2;
+        public Point InspectRoiStart { get; set; } = new Point(0, 0);
+        public Point InspectRoiEnd { get; set; } = new Point(0, 0);
+
+        public GoldPowderMarkInfo Clone()
+        {
+            return (GoldPowderMarkInfo)this.MemberwiseClone();
+        }
+    }
+
     // === (추가) GoldPowder 소켓별 포지션 구조 선언 ===
     public class GoldPowderSocketPos
     {
@@ -120,8 +153,8 @@ namespace QMC.Common.Recipe
     {
         // (추가) GoldPowder 소켓별 포지션 리스트
         public List<GoldPowderSocketPos> GoldPowderSocketPosList { get; private set; } = new List<GoldPowderSocketPos>();
+        public List<GoldPowderSocketPos> GoldPowderSocketPosListOffset { get; private set; } = new List<GoldPowderSocketPos>();
 
-        // (추가) 헬퍼
         public void EnsureGoldPowderSocketPosCount(int count)
         {
             while (GoldPowderSocketPosList.Count < count)
@@ -143,6 +176,31 @@ namespace QMC.Common.Recipe
             GoldPowderSocketPosList[socketIndex].Y[idx] = y;
         }
 
+        public void EnsureGoldPowderSocketPosCount_Offset(int count)
+        {
+            while (GoldPowderSocketPosListOffset.Count < count)
+                GoldPowderSocketPosListOffset.Add(new GoldPowderSocketPos());
+        }
+        public GoldPowderSocketPos GetGoldPowderSocketPos_Offset(int socketIndex)
+        {
+            if (socketIndex < 0 || socketIndex >= GoldPowderSocketPosListOffset.Count)
+                return null;
+            return GoldPowderSocketPosListOffset[socketIndex];
+        }
+        public void SetGoldPowderPos_Offset(int socketIndex, int posIndex01to04, double x, double y)
+        {
+            if (posIndex01to04 < 1 || posIndex01to04 > 4) 
+                return;
+            if (socketIndex < 0) 
+                return;
+
+            EnsureGoldPowderSocketPosCount_Offset(socketIndex + 1);
+            int idx = posIndex01to04 - 1;
+            GoldPowderSocketPosListOffset[socketIndex].X[idx] = x;
+            GoldPowderSocketPosListOffset[socketIndex].Y[idx] = y;
+        }
+
+
 
 
         public VisionRecipeData()
@@ -157,6 +215,7 @@ namespace QMC.Common.Recipe
         //Socket
         public List<SocketMarkInfo> SocketMarkList { get; private set; } = new List<SocketMarkInfo>();
         public List<PreAlignMarkInfo> PreAlignMarkList { get; private set; } = new List<PreAlignMarkInfo>();
+        public List<GoldPowderMarkInfo> GoldPowderMarkList { get; set; } = new List<GoldPowderMarkInfo>();
 
 
         // 기존과의 호환을 위한 속성 매핑 (SocketMarkList[0] 기반)
@@ -172,6 +231,8 @@ namespace QMC.Common.Recipe
         public bool bSocketIlluminationIRUse => SocketMarkList.Count > 0 ? SocketMarkList[0].UseIR : false;
         public double dSocketIlluminationExposureTime => SocketMarkList.Count > 0 ? SocketMarkList[0].ExposureTime : 0.0;
         public double dSocketAxisZ_Offset => SocketMarkList.Count > 0 ? SocketMarkList[0].AxisZOffset : 0.0;
+
+
 
         //PreAlign
         public PatternMatchingParameters PrePatternMatching => PreAlignMarkList.Count > 0 ? PreAlignMarkList[0].PatternMatching : new PatternMatchingParameters();
@@ -206,12 +267,17 @@ namespace QMC.Common.Recipe
         public double dGoldPowderAxisZ_Offset;
         public int nGoldPowderCircleMarkMaxInstance;
         public int nGoldPowderCircleMarkFindCount;
+
         // 추가 : GoldPowder 위치 포지션 4개 (X,Y)
         public double dGoldPowderPos1X; public double dGoldPowderPos1Y;
         public double dGoldPowderPos2X; public double dGoldPowderPos2Y;
         public double dGoldPowderPos3X; public double dGoldPowderPos3Y;
         public double dGoldPowderPos4X; public double dGoldPowderPos4Y;
-        
+        public double dGoldPowderPos1XOffset; public double dGoldPowderPos1YOffset;
+        public double dGoldPowderPos2XOffset; public double dGoldPowderPos2YOffset;
+        public double dGoldPowderPos3XOffset; public double dGoldPowderPos3YOffset;
+        public double dGoldPowderPos4XOffset; public double dGoldPowderPos4YOffset;
+
 
         public bool SaveToIni(string path)
         {
@@ -219,7 +285,6 @@ namespace QMC.Common.Recipe
 
             // SocketAlign
             NativeMethods.WritePrivateProfileString("SocketAlign", "Count", SocketMarkList.Count.ToString(), path);
-
             for (int i = 0; i < SocketMarkList.Count; i++)
             {
                 string section = $"SocketMark_{i}";
@@ -237,6 +302,12 @@ namespace QMC.Common.Recipe
                 NativeMethods.WritePrivateProfileString(section, "UseIR", mark.UseIR.ToString(), path);
                 NativeMethods.WritePrivateProfileString(section, "ExposureTime", mark.ExposureTime.ToString(), path);
                 NativeMethods.WritePrivateProfileString(section, "AxisZOffset", mark.AxisZOffset.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString(section, "InspectRoiStartX", mark.ptInspectRoiStart.X.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "InspectRoiStartY", mark.ptInspectRoiStart.Y.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "InspectRoiEndX", mark.ptInspectRoiEnd.X.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "InspectRoiEndY", mark.ptInspectRoiEnd.Y.ToString(), path);
+
             }
 
             //PreAlign
@@ -286,10 +357,57 @@ namespace QMC.Common.Recipe
                     NativeMethods.WritePrivateProfileString(section, "TrainImagePath", mark.TrainImagePath, path);
             }
 
-            //기존코드 (주석 처리 유지)
+            // === (추가) GoldPowder 다중 마크 저장 ===
+            NativeMethods.WritePrivateProfileString("GoldPowder", "Count", GoldPowderMarkList.Count.ToString(), path);
+            for (int i = 0; i < GoldPowderMarkList.Count; i++)
             {
+                string section = $"GoldPowderMark_{i}";
+                var mark = GoldPowderMarkList[i];
+
+                NativeMethods.WritePrivateProfileString(section, "Aligntype", mark.AlignType.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "MarkType", mark.MarkType.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString(section, "MarkColor", mark.CircleColor.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "MarkSize", mark.CircleMarkRadius.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "MarkSpec", mark.CircleMarkSpec.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "MarkScore", mark.CircleMarkScore.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString(section, "IR", mark.IllumIR.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "Red", mark.IllumRed.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "IRUse", mark.UseIR.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "RedUse", mark.UseRed.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "ExposureTime", mark.ExposureTime.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "AxisZ_Offset", mark.AxisZOffset.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString(section, "CircleMarkMaxInstance", mark.CircleMarkMaxInstance.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "CircleMarkFindCount", mark.CircleMarkFindCount.ToString(), path);
+
+                // (추가) ROI 저장
+                NativeMethods.WritePrivateProfileString(section, "InspectRoiStartX", mark.InspectRoiStart.X.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "InspectRoiStartY", mark.InspectRoiStart.Y.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "InspectRoiEndX", mark.InspectRoiEnd.X.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "InspectRoiEndY", mark.InspectRoiEnd.Y.ToString(), path);
             }
 
+            // === (추가) 후방 호환: 리스트가 있으면 첫 번째 항목을 기존 단일 필드에 동기화 ===
+            if (GoldPowderMarkList.Count > 0)
+            {
+                var m = GoldPowderMarkList[0];
+                dGoldPowderAlignType = m.AlignType;
+                dGoldPowderMarkType = m.MarkType;
+                bGoldPowderCircleColor = m.CircleColor;
+                dGoldPowderCircleMarkRadius = m.CircleMarkRadius;
+                dGoldPowderCircleMarkSpec = m.CircleMarkSpec;
+                dGoldPowderCircleMarkScore = m.CircleMarkScore;
+                nGoldPowderIlluminationIR = m.IllumIR;
+                nGoldPowderIlluminationRed = m.IllumRed;
+                bGoldPowderIlluminationIRUse = m.UseIR;
+                bGoldPowderIlluminationRedUse = m.UseRed;
+                dGoldPowderIlluminationExposureTime = m.ExposureTime;
+                dGoldPowderAxisZ_Offset = m.AxisZOffset;
+                nGoldPowderCircleMarkMaxInstance = m.CircleMarkMaxInstance;
+                nGoldPowderCircleMarkFindCount = m.CircleMarkFindCount;
+            }
 
             // GoldPowder
             NativeMethods.WritePrivateProfileString("GoldPowder", "Aligntype", dGoldPowderAlignType.ToString(), path);
@@ -309,6 +427,10 @@ namespace QMC.Common.Recipe
             NativeMethods.WritePrivateProfileString("GoldPowder", "AxisZ_Offset", dGoldPowderAxisZ_Offset.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "CircleMarkMaxInstance", nGoldPowderCircleMarkMaxInstance.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "CircleMarkFindCount", nGoldPowderCircleMarkFindCount.ToString(), path);
+            
+
+
+
             // 위치 4개 저장
             NativeMethods.WritePrivateProfileString("GoldPowder", "Pos1X", dGoldPowderPos1X.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "Pos1Y", dGoldPowderPos1Y.ToString(), path);
@@ -318,6 +440,15 @@ namespace QMC.Common.Recipe
             NativeMethods.WritePrivateProfileString("GoldPowder", "Pos3Y", dGoldPowderPos3Y.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "Pos4X", dGoldPowderPos4X.ToString(), path);
             NativeMethods.WritePrivateProfileString("GoldPowder", "Pos4Y", dGoldPowderPos4Y.ToString(), path);
+            // 위치 4개 저장
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos1X", dGoldPowderPos1XOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos1Y", dGoldPowderPos1YOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos2X", dGoldPowderPos2XOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos2Y", dGoldPowderPos2YOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos3X", dGoldPowderPos3XOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos3Y", dGoldPowderPos3YOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos4X", dGoldPowderPos4XOffset.ToString(), path);
+            NativeMethods.WritePrivateProfileString("GoldPowderOffset", "Pos4Y", dGoldPowderPos4YOffset.ToString(), path);
 
             // === (추가) 소켓별 GoldPowder 포지션 저장 ===
             NativeMethods.WritePrivateProfileString("GoldPowderSocketPos", "Count", GoldPowderSocketPosList.Count.ToString(), path);
@@ -333,6 +464,19 @@ namespace QMC.Common.Recipe
                 }
             }
 
+            // === (추가) 소켓별 GoldPowder Offset 포지션 저장 ===
+            NativeMethods.WritePrivateProfileString("GoldPowderSocketPosOffset", "Count", GoldPowderSocketPosListOffset.Count.ToString(), path);
+            for (int s = 0; s < GoldPowderSocketPosListOffset.Count; s++)
+            {
+                var gp = GoldPowderSocketPosListOffset[s];
+                string section = $"GoldPowderSocketOffset_{s}";
+                for (int p = 0; p < 4; p++)
+                {
+                    int posNo = p + 1;
+                    NativeMethods.WritePrivateProfileString(section, $"Pos{posNo}X", gp.X[p].ToString(), path);
+                    NativeMethods.WritePrivateProfileString(section, $"Pos{posNo}Y", gp.Y[p].ToString(), path);
+                }
+            }
 
             bRet = true;
             return bRet;
@@ -349,7 +493,6 @@ namespace QMC.Common.Recipe
                 // SocketMarkList.Clear(); // 기존 리스트 초기화
                 NativeMethods.GetPrivateProfileString("SocketAlign", "Count", "0", sb, sb.Capacity, path);
                 int count = Equipment.ToInt(sb.ToString());
-
                 for (int i = 0; i < count; i++)
                 {
                     string section = $"SocketMark_{i}";
@@ -391,9 +534,20 @@ namespace QMC.Common.Recipe
                     NativeMethods.GetPrivateProfileString(section, "AxisZOffset", "0.0", sb, sb.Capacity, path);
                     mark.AxisZOffset = Equipment.ToDouble(sb.ToString());
 
+                    NativeMethods.GetPrivateProfileString(section, "InspectRoiStartX", "100", sb, sb.Capacity, path);
+                    int inspectRoiStartX = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString(section, "InspectRoiStartY", "100", sb, sb.Capacity, path);
+                    int inspectRoiStartY = Equipment.ToInt(sb.ToString());
+                    mark.ptInspectRoiStart = new Point(inspectRoiStartX, inspectRoiStartY);
+                    NativeMethods.GetPrivateProfileString(section, "InspectRoiEndX", "2000", sb, sb.Capacity, path);
+                    int inspectRoiEndX = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString(section, "InspectRoiEndY", "2000", sb, sb.Capacity, path);
+                    int inspectRoiEndY = Equipment.ToInt(sb.ToString());
+                    mark.ptInspectRoiEnd = new Point(inspectRoiEndX, inspectRoiEndY);
+
+
                     data.SocketMarkList.Add(mark);
                 }
-
                 // 마이그레이션: SocketAlign 섹션만 존재할 경우 → SocketMarkList[0]에 자동 등록
                 if (count == 0)
                 {
@@ -438,10 +592,7 @@ namespace QMC.Common.Recipe
                     data.SocketMarkList.Add(mark);
                 }
 
-                //// SocketAlign //기존 코드
-                {
-                }
-
+                
                 NativeMethods.GetPrivateProfileString("PreAlign", "Count", "0", sb, sb.Capacity, path);
                 int preAlignCount = Equipment.ToInt(sb.ToString());
                 for (int i = 0; i < preAlignCount; i++)
@@ -521,7 +672,6 @@ namespace QMC.Common.Recipe
 
                     data.PreAlignMarkList.Add(mark);
                 }
-
                 // 2. 구버전 ini (다중 마크 없음): 단일값 로드 + PreAlignMarkList[0]로 변환
                 if (preAlignCount == 0)
                 {
@@ -628,10 +778,9 @@ namespace QMC.Common.Recipe
                     data.PreAlignMarkList.Add(mark);
                 }
 
-                //기존 코드
-                {
-                }
 
+
+                // (기존) GoldPowder 단일 섹션에서 우선 기본값 로드
                 // GoldPowder
                 NativeMethods.GetPrivateProfileString("GoldPowder", "Aligntype", "1", sb, sb.Capacity, path);
                 data.dGoldPowderAlignType = 1;  // Equipment.ToInt(sb.ToString());
@@ -664,15 +813,141 @@ namespace QMC.Common.Recipe
                 data.nGoldPowderCircleMarkMaxInstance = Equipment.ToInt(sb.ToString());
                 NativeMethods.GetPrivateProfileString("GoldPowder", "CircleMarkFindCount", "7", sb, sb.Capacity, path);
                 data.nGoldPowderCircleMarkFindCount = Equipment.ToInt(sb.ToString());
+
+                // (기존) 위치/오프셋/소켓별 포지션 로드 로직 그대로 ...
+
+                // === (추가) GoldPowder 다중 마크 로드 ===
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Count", "0", sb, sb.Capacity, path);
+                int gpCount = Equipment.ToInt(sb.ToString());
+                if (gpCount > 0)
+                {
+                    for (int i = 0; i < gpCount; i++)
+                    {
+                        string section = $"GoldPowderMark_{i}";
+                        GoldPowderMarkInfo mark = new GoldPowderMarkInfo();
+
+                        NativeMethods.GetPrivateProfileString(section, "Aligntype", "1", sb, sb.Capacity, path);
+                        mark.AlignType = Equipment.ToInt(sb.ToString());
+                        NativeMethods.GetPrivateProfileString(section, "MarkType", "0", sb, sb.Capacity, path);
+                        mark.MarkType = Equipment.ToInt(sb.ToString());
+
+                        NativeMethods.GetPrivateProfileString(section, "MarkColor", "true", sb, sb.Capacity, path);
+                        mark.CircleColor = Equipment.ToBoolean(sb.ToString());
+                        NativeMethods.GetPrivateProfileString(section, "MarkSize", "0.5", sb, sb.Capacity, path);
+                        mark.CircleMarkRadius = Equipment.ToDouble(sb.ToString());
+                        NativeMethods.GetPrivateProfileString(section, "MarkSpec", "0.05", sb, sb.Capacity, path);
+                        mark.CircleMarkSpec = Equipment.ToDouble(sb.ToString());
+                        NativeMethods.GetPrivateProfileString(section, "MarkScore", "0.7", sb, sb.Capacity, path);
+                        mark.CircleMarkScore = Equipment.ToDouble(sb.ToString());
+
+                        NativeMethods.GetPrivateProfileString(section, "IR", "250", sb, sb.Capacity, path);
+                        mark.IllumIR = Equipment.ToInt(sb.ToString());
+                        NativeMethods.GetPrivateProfileString(section, "Red", "0", sb, sb.Capacity, path);
+                        mark.IllumRed = Equipment.ToInt(sb.ToString());
+                        NativeMethods.GetPrivateProfileString(section, "IRUse", "True", sb, sb.Capacity, path);
+                        mark.UseIR = Equipment.ToBoolean(sb.ToString());
+                        NativeMethods.GetPrivateProfileString(section, "RedUse", "True", sb, sb.Capacity, path);
+                        mark.UseRed = Equipment.ToBoolean(sb.ToString());
+                        NativeMethods.GetPrivateProfileString(section, "ExposureTime", "20000", sb, sb.Capacity, path);
+                        mark.ExposureTime = Equipment.ToDouble(sb.ToString());
+                        NativeMethods.GetPrivateProfileString(section, "AxisZ_Offset", "0.0", sb, sb.Capacity, path);
+                        mark.AxisZOffset = Equipment.ToDouble(sb.ToString());
+
+                        NativeMethods.GetPrivateProfileString(section, "CircleMarkMaxInstance", "1", sb, sb.Capacity, path);
+                        mark.CircleMarkMaxInstance = Equipment.ToInt(sb.ToString());
+                        NativeMethods.GetPrivateProfileString(section, "CircleMarkFindCount", "7", sb, sb.Capacity, path);
+                        mark.CircleMarkFindCount = Equipment.ToInt(sb.ToString());
+
+                        // (추가) ROI 로드
+                        int sX = Equipment.ToInt(ReadIni(section, "InspectRoiStartX", path, "0"));
+                        int sY = Equipment.ToInt(ReadIni(section, "InspectRoiStartY", path, "0"));
+                        int eX = Equipment.ToInt(ReadIni(section, "InspectRoiEndX", path, "0"));
+                        int eY = Equipment.ToInt(ReadIni(section, "InspectRoiEndY", path, "0"));
+                        mark.InspectRoiStart = new Point(sX, sY);
+                        mark.InspectRoiEnd = new Point(eX, eY);
+
+                        data.GoldPowderMarkList.Add(mark);
+                    }
+
+                    // 후방 호환: 첫 번째 마크를 기존 단일 필드에 반영
+                    if (data.GoldPowderMarkList.Count > 0)
+                    {
+                        var m = data.GoldPowderMarkList[0];
+                        data.dGoldPowderAlignType = m.AlignType;
+                        data.dGoldPowderMarkType = m.MarkType;
+                        data.bGoldPowderCircleColor = m.CircleColor;
+                        data.dGoldPowderCircleMarkRadius = m.CircleMarkRadius;
+                        data.dGoldPowderCircleMarkSpec = m.CircleMarkSpec;
+                        data.dGoldPowderCircleMarkScore = m.CircleMarkScore;
+                        data.nGoldPowderIlluminationIR = m.IllumIR;
+                        data.nGoldPowderIlluminationRed = m.IllumRed;
+                        data.bGoldPowderIlluminationIRUse = m.UseIR;
+                        data.bGoldPowderIlluminationRedUse = m.UseRed;
+                        data.dGoldPowderIlluminationExposureTime = m.ExposureTime;
+                        data.dGoldPowderAxisZ_Offset = m.AxisZOffset;
+                        data.nGoldPowderCircleMarkMaxInstance = m.CircleMarkMaxInstance;
+                        data.nGoldPowderCircleMarkFindCount = m.CircleMarkFindCount;
+                    }
+                }
+                else
+                {
+                    // (마이그레이션) 기존 단일 필드에서 리스트[0] 생성
+                    var mark = new GoldPowderMarkInfo
+                    {
+                        AlignType = data.dGoldPowderAlignType,
+                        MarkType = data.dGoldPowderMarkType,
+                        CircleColor = data.bGoldPowderCircleColor,
+                        CircleMarkRadius = data.dGoldPowderCircleMarkRadius,
+                        CircleMarkSpec = data.dGoldPowderCircleMarkSpec,
+                        CircleMarkScore = data.dGoldPowderCircleMarkScore,
+                        IllumIR = data.nGoldPowderIlluminationIR,
+                        IllumRed = data.nGoldPowderIlluminationRed,
+                        UseIR = data.bGoldPowderIlluminationIRUse,
+                        UseRed = data.bGoldPowderIlluminationRedUse,
+                        ExposureTime = data.dGoldPowderIlluminationExposureTime,
+                        AxisZOffset = data.dGoldPowderAxisZ_Offset,
+                        CircleMarkMaxInstance = data.nGoldPowderCircleMarkMaxInstance,
+                        CircleMarkFindCount = data.nGoldPowderCircleMarkFindCount
+                    };
+                    data.GoldPowderMarkList.Add(mark);
+                }
+
+
                 // 위치 4개 로드
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos1X", "0", sb, sb.Capacity, path); data.dGoldPowderPos1X = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos1Y", "0", sb, sb.Capacity, path); data.dGoldPowderPos1Y = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos2X", "0", sb, sb.Capacity, path); data.dGoldPowderPos2X = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos2Y", "0", sb, sb.Capacity, path); data.dGoldPowderPos2Y = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos3X", "0", sb, sb.Capacity, path); data.dGoldPowderPos3X = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos3Y", "0", sb, sb.Capacity, path); data.dGoldPowderPos3Y = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos4X", "0", sb, sb.Capacity, path); data.dGoldPowderPos4X = Equipment.ToDouble(sb.ToString());
-                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos4Y", "0", sb, sb.Capacity, path); data.dGoldPowderPos4Y = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos1X", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos1X = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos1Y", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos1Y = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos2X", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos2X = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos2Y", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos2Y = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos3X", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos3X = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos3Y", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos3Y = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos4X", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos4X = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowder", "Pos4Y", "0", sb, sb.Capacity, path); 
+                data.dGoldPowderPos4Y = Equipment.ToDouble(sb.ToString());
+
+                // 위치 4개 로드
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos1X", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos1XOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos1Y", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos1YOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos2X", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos2XOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos2Y", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos2YOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos3X", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos3XOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos3Y", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos3YOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos4X", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos4XOffset = Equipment.ToDouble(sb.ToString());
+                NativeMethods.GetPrivateProfileString("GoldPowderOffset", "Pos4Y", "0", sb, sb.Capacity, path);
+                data.dGoldPowderPos4YOffset = Equipment.ToDouble(sb.ToString());
 
                 // === (추가) 소켓별 GoldPowder 포지션 로드 ===
                 NativeMethods.GetPrivateProfileString("GoldPowderSocketPos", "Count", "0", sb, sb.Capacity, path);
@@ -703,6 +978,37 @@ namespace QMC.Common.Recipe
                     legacy.X[2] = data.dGoldPowderPos3X; legacy.Y[2] = data.dGoldPowderPos3Y;
                     legacy.X[3] = data.dGoldPowderPos4X; legacy.Y[3] = data.dGoldPowderPos4Y;
                     data.GoldPowderSocketPosList.Add(legacy);
+                }
+
+                // === (추가) 소켓별 GoldPowder 포지션 로드 ===
+                NativeMethods.GetPrivateProfileString("GoldPowderSocketPosOffset", "Count", "0", sb, sb.Capacity, path);
+                int socketCountOffset = Equipment.ToInt(sb.ToString());
+                if (socketCountOffset > 0)
+                {
+                    for (int s = 0; s < socketCountOffset; s++)
+                    {
+                        string section = $"GoldPowderSocketOffset_{s}";
+                        GoldPowderSocketPos gp = new GoldPowderSocketPos();
+                        for (int p = 0; p < 4; p++)
+                        {
+                            int posNo = p + 1;
+                            NativeMethods.GetPrivateProfileString(section, $"Pos{posNo}X", "0", sb, sb.Capacity, path);
+                            gp.X[p] = Equipment.ToDouble(sb.ToString());
+                            NativeMethods.GetPrivateProfileString(section, $"Pos{posNo}Y", "0", sb, sb.Capacity, path);
+                            gp.Y[p] = Equipment.ToDouble(sb.ToString());
+                        }
+                        data.GoldPowderSocketPosListOffset.Add(gp);
+                    }
+                }
+                else
+                {
+                    // (마이그레이션) 기존 단일 전역 포지션을 Socket 0 에 넣는다.
+                    GoldPowderSocketPos legacy = new GoldPowderSocketPos();
+                    legacy.X[0] = data.dGoldPowderPos1XOffset; legacy.Y[0] = data.dGoldPowderPos1YOffset;
+                    legacy.X[1] = data.dGoldPowderPos2XOffset; legacy.Y[1] = data.dGoldPowderPos2YOffset;
+                    legacy.X[2] = data.dGoldPowderPos3XOffset; legacy.Y[2] = data.dGoldPowderPos3YOffset;
+                    legacy.X[3] = data.dGoldPowderPos4XOffset; legacy.Y[3] = data.dGoldPowderPos4YOffset;
+                    data.GoldPowderSocketPosListOffset.Add(legacy);
                 }
 
             }

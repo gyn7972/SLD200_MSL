@@ -160,7 +160,6 @@ namespace QMC.Common.VisionPart
             XyCoordinate MillimeterValue = new XyCoordinate();
             XyCoordinate PixelValue = new XyCoordinate();
 
-
             try
             {
                 MoveDirection[] moveDirection = GetMoveDirections();

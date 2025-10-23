@@ -1283,7 +1283,6 @@ namespace QMC.Common.Modules
                 m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
             }
             else if(Equipment.SemiAutoEnable &&
-
                 m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None &&
                 m_nStacker0_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None &&
 
@@ -3122,43 +3121,6 @@ namespace QMC.Common.Modules
 
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_WorkStageCycle_UnloadingPos_CompleteCheck;
                     }
-
-                    // 기존 코드
-                    {
-                        //if ((workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_UnloadingZone) &&
-                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X - 0.1)) &&
-                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X + 0.1)) &&
-                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y - 0.1)) &&
-                        //    (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y + 0.1)))
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치로 이동이 완료된 상태이므로 Pick Up 진행");
-
-                        //    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferX_Move_WorkStagePos;
-                        //}
-                        //else if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
-                        //        (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&
-                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X - 0.1)) &&
-                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X + 0.1)) &&
-                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y - 0.1)) &&
-                        //        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y + 0.1)))
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치에 있으므로 Pick Up 진행, (위치 및 로딩 조건 OK)");
-
-                        //    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferX_Move_WorkStagePos;
-                        //}
-                        //else
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치로 이동 시작");
-
-                        //    TickCount_Start((int)TickType.TICK_ULTR);
-
-                        //    //  Work Stage 이동 시작
-                        //    workStage.m_nWorkStageMoveType = (int)WorkStage.WorkStageMoveType.MoveTo_UnloadingPos;
-                        //    workStage.m_nWorkStage_Move_Step = (int)WorkStage.WorkStage_Move_Step.Start;
-
-                        //    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_WorkStageCycle_UnloadingPos_CompleteCheck;
-                        //}
-                    }
                     
                     break;
 
@@ -3668,7 +3630,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
                     //  Target Position 변경 : 대기 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -3723,7 +3685,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
                     //  Target Position 변경 : Stacker0 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_RPortPos].UL_Transfer_X;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_RPortPos].ULD_Transfer_X;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_X].Common_Speed_Coarse;
@@ -3778,7 +3740,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
                     //  Target Position 변경 : Module Pickup 대기 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_RPortPos].UL_Transfer_Z + 10.0;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_RPortPos].ULD_Transfer_Z + 10.0;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -3833,7 +3795,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
                     //  Target Position 변경 : Module Put Down 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_RPortPos].UL_Transfer_Z;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_RPortPos].ULD_Transfer_Z;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -3938,7 +3900,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
                     //  Target Position 변경 : 대기 위치 1단계
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_RPortPos].UL_Transfer_Z + 10.0;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_RPortPos].ULD_Transfer_Z + 10.0;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -3994,7 +3956,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
                     //  Target Position 변경 : 대기 위치 2단계 (최종 위치)
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -4139,7 +4101,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
                     //  Target Position 변경 : 대기 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -4195,7 +4157,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
                     //  Target Position 변경 : Stacker1 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_LPortPos].UL_Transfer_X;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_LPortPos].ULD_Transfer_X;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_X].Common_Speed_Coarse;
@@ -4251,7 +4213,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
                     //  Target Position 변경 : Module Pickup 대기 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_LPortPos].UL_Transfer_Z + 10.0;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_LPortPos].ULD_Transfer_Z + 10.0;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -4306,7 +4268,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
                     //  Target Position 변경 : Module Put Down 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_LPortPos].UL_Transfer_Z;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_LPortPos].ULD_Transfer_Z;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -4411,7 +4373,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
                     //  Target Position 변경 : 대기 위치 1단계
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_LPortPos].UL_Transfer_Z + 10.0;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_LPortPos].ULD_Transfer_Z + 10.0;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -4467,7 +4429,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
                     //  Target Position 변경 : 대기 위치 2단계 (최종 위치)
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -4591,7 +4553,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_F_Port");
 
                     //  Target Position 변경 : 대기 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -4648,7 +4610,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_F_Port");
 
                     //  Target Position 변경 : M-Aligner 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_FPortPos].UL_Transfer_X;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_FPortPos].ULD_Transfer_X;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_X].Common_Speed_Coarse;
@@ -4705,7 +4667,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_F_Port");
 
                     //  Target Position 변경 : Module Pickup 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_FPortPos].UL_Transfer_Z;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_FPortPos].ULD_Transfer_Z;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -4811,7 +4773,7 @@ namespace QMC.Common.Modules
                     unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
                     //  Target Position 변경 : 대기 위치 2단계 (최종 위치)
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -5012,7 +4974,7 @@ namespace QMC.Common.Modules
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
             //  Target Position 변경 : 대기 위치 2단계 (최종 위치)
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -5037,7 +4999,7 @@ namespace QMC.Common.Modules
 
             //  Target Position 변경 : 현재 위치 에서 10 mm 위, 1단계 --> 현재 위치에서 10mm 올리던 것을, Table 위치에서 10mm 올리는 것으로 변경
             //unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) + 10.0;
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_WorkTablePos].UL_Transfer_Z + 10.0;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_WorkTablePos].ULD_Transfer_Z + 10.0;
 
             //  Dry Run 모드이면 10mm 더 위로
             if (workStage.m_bMainWorkCycle_DryRun)
@@ -5072,7 +5034,7 @@ namespace QMC.Common.Modules
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_WorkStage");
 
             //  Target Position 변경 : Module Pickup 위치
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_WorkTablePos].UL_Transfer_Z;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_WorkTablePos].ULD_Transfer_Z;
 
             //  Dry Run 모드이면 10mm 더 위로
             if (workStage.m_bMainWorkCycle_DryRun)
@@ -5107,7 +5069,7 @@ namespace QMC.Common.Modules
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_WorkStage");
 
             //  Target Position 변경 : Module Pickup 대기 위치
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_WorkTablePos].UL_Transfer_Z + 10.0;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_WorkTablePos].ULD_Transfer_Z + 10.0;
 
             //  Dry Run 모드이면 10mm 더 위로
             if (workStage.m_bMainWorkCycle_DryRun)
@@ -5141,7 +5103,7 @@ namespace QMC.Common.Modules
 
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_WorkStage");
 
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_WorkTablePos].UL_Transfer_X;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_WorkTablePos].ULD_Transfer_X;
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_X].Common_Speed_Coarse;
@@ -5165,7 +5127,7 @@ namespace QMC.Common.Modules
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_WorkStage");
 
             //  Target Position 변경 : 대기 위치
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -5189,7 +5151,7 @@ namespace QMC.Common.Modules
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
             //  Target Position 변경 : Stacker0 위치
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_X;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_X;
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_X].Common_Speed_Coarse;
@@ -5212,7 +5174,7 @@ namespace QMC.Common.Modules
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
             //  Target Position 변경 : 대기 위치
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
@@ -7262,13 +7224,13 @@ namespace QMC.Common.Modules
                                 break;
                         }
 
-                        MC_Func.MC_MovePosition((int)Unloader.nAxis.TR_Z, loader.stLDULTeachingPos[nTeachingPos].UL_Transfer_Z,
+                        MC_Func.MC_MovePosition((int)Unloader.nAxis.TR_Z, loader.stLDULTeachingPos[nTeachingPos].ULD_Transfer_Z,
                                                 dVelocity, dAcc, dAcc);
 
                         if (bSynchronous)
                         {
                             Thread.Sleep(500);
-                            bool bWaitX = WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, loader.stLDULTeachingPos[nTeachingPos].UL_Transfer_Z).Result;
+                            bool bWaitX = WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, loader.stLDULTeachingPos[nTeachingPos].ULD_Transfer_Z).Result;
                             if (!bWaitX)
                             {
                                 strTemp = string.Format("MovetoUnloader_TeachingPositionsTransferZ [Fail]: UnloaderTransferZ Axis이 이동 실패.");
@@ -7303,7 +7265,7 @@ namespace QMC.Common.Modules
             bool bRtn = false;
 
             if (MC_Func.MC_GetDone((int)Unloader.nAxis.TR_Z) &&
-                MC_Func.MC_PosTolerance((int)Unloader.nAxis.TR_Z, loader.stLDULTeachingPos[nTeachingPos].UL_Transfer_Z))
+                MC_Func.MC_PosTolerance((int)Unloader.nAxis.TR_Z, loader.stLDULTeachingPos[nTeachingPos].ULD_Transfer_Z))
             {
                 bRtn = true;
             }
@@ -7331,7 +7293,7 @@ namespace QMC.Common.Modules
                 return bRtn;
             }
 
-            double dTargetZ = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
+            double dTargetZ = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].ULD_Transfer_Z;
             if (!MC_Func.MC_GetDone((int)Unloader.nAxis.TR_Z) ||
                 !MC_Func.MC_PosTolerance((int)Unloader.nAxis.TR_Z, dTargetZ))
             {
@@ -7389,14 +7351,14 @@ namespace QMC.Common.Modules
                                     break;
                             }
 
-                            MC_Func.MC_MovePosition((int)Unloader.nAxis.TR_X, loader.stLDULTeachingPos[nTeachingPos].UL_Transfer_X,
+                            MC_Func.MC_MovePosition((int)Unloader.nAxis.TR_X, loader.stLDULTeachingPos[nTeachingPos].ULD_Transfer_X,
                                                     dVelocity, dAcc, dAcc);
                         }
 
                         if (bSynchronous)
                         {
                             Thread.Sleep(500);
-                            bool bWaitX = WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_X, loader.stLDULTeachingPos[nTeachingPos].UL_Transfer_X).Result;
+                            bool bWaitX = WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_X, loader.stLDULTeachingPos[nTeachingPos].ULD_Transfer_X).Result;
                             if (!bWaitX)
                             {
                                 strTemp = string.Format("MovetoUnloader_TeachingPositionsTransferX [Fail]: UnloaderTransferX Axis이 이동 실패.");
@@ -7475,7 +7437,7 @@ namespace QMC.Common.Modules
             bool bRtn = false;
 
             if (MC_Func.MC_GetDone((int)Unloader.nAxis.TR_X) &&
-                MC_Func.MC_PosTolerance((int)Unloader.nAxis.TR_X, loader.stLDULTeachingPos[nTeachingPos].UL_Transfer_X))
+                MC_Func.MC_PosTolerance((int)Unloader.nAxis.TR_X, loader.stLDULTeachingPos[nTeachingPos].ULD_Transfer_X))
             {
                 bRtn = true;
             }

@@ -28,19 +28,9 @@ using System.Xml.Linq;
 using SpiralLab;
 using System.Threading;
 using SLD200.NewStyleForm;
-
-//using OpenTK;
-//using OpenTK.Graphics.OpenGL;
-//using SpiralLab.Sirius2;
-//using SpiralLab.Sirius2.Laser;
-//using SpiralLab.Sirius2.PowerMeter;
-//using SpiralLab.Sirius2.Scanner;
-//using SpiralLab.Sirius2.Scanner.Rtc;
-//using SpiralLab.Sirius2.Winforms;
-//using SpiralLab.Sirius2.Winforms.Entity;
-//using SpiralLab.Sirius2.Winforms.Marker;
-//using SpiralLab.Sirius2.Winforms.UI;
-
+using Control = System.Windows.Forms.Control;
+using TextBox = System.Windows.Forms.TextBox;
+using RichTextBox = System.Windows.Forms.RichTextBox;
 
 namespace SLD200_MSL
 {
@@ -95,6 +85,9 @@ namespace SLD200_MSL
             checkBox_SiriusEditor_Divided.Checked = false;
 
             m_formUserGuide = new FormNew_QMCSiriusEditorStatus();
+
+
+            InitRecipeUI_KeyPad();
 
             //HookEditorToolbarButtons();
             //this.Load += (s, e) => HookEditorToolbarButtons(); // Load 이후 실행
@@ -164,52 +157,112 @@ namespace SLD200_MSL
 
         private void DrawGrid(IView view, Layer layer)
         {
+            if (layer == null || !layer.IsSelected)
+                return;
+
+            var renderer = view.Renderer;
+            if (renderer == null)
+                return;
+
             if (layer != null)
             {
-                if (layer.Name.Contains("Hole1"))
+                // Hole1 계열만 그리드 처리
+                if (layer.Name.IndexOf("Hole1", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    foreach (var v in layer.Items)
+                    foreach (var it in layer.Items)
                     {
-                        double width = v.BoundRect.Width;
-                        double height = v.BoundRect.Height;
-                        double centerX = v.BoundRect.Center.X;
-                        double centerY = v.BoundRect.Center.Y;
+                        var br = it.BoundRect;
                         double dSplitW = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize;
                         double dSplitH = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize_Height;
-                        int colCount = (int)Math.Ceiling(width / dSplitW);
-                        int rowCount = (int)Math.Ceiling(height / dSplitH);
-                        double dStartX = centerX - (colCount * dSplitW) / 2;
-                        double dStartY = centerY - (rowCount * dSplitH) / 2;
-                        double dEndX = centerX + (colCount * dSplitW) / 2;
-                        double dEndY = centerY + (rowCount * dSplitH) / 2;
 
-                        OpenGL renderer = view.Renderer;
-                        // 바둑판의 크기와 간격 설정
-                        float squareSize = 10.0f;   // 각 셀의 크기
-                        int gridCount = 10;         // 가로, 세로로 그릴 셀의 개수
-                        float gridSize = squareSize * gridCount; // 전체 그리드 크기
+                        if (dSplitW <= 0 || dSplitH <= 0)
+                            continue;
 
-                        // 라임색 설정
-                        renderer.Color(200.0f, 200.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
-                        for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
+                        int colCount = Math.Max(1, (int)Math.Ceiling(br.Width / dSplitW));
+                        int rowCount = Math.Max(1, (int)Math.Ceiling(br.Height / dSplitH));
+
+                        // 선 개수 예산(성능 보호) : 총 선이 예산을 넘으면 샘플링(간격 늘리기)
+                        int lineBudget = 4000; // 필요시 2000~8000 사이 조정
+                        int decimate = 1;
+                        int totalLines = colCount + rowCount;
+                        if (totalLines > lineBudget)
+                            decimate = (int)Math.Ceiling((double)totalLines / lineBudget);
+
+                        double startX = br.Center.X - (colCount * dSplitW) / 2.0;
+                        double endX = br.Center.X + (colCount * dSplitW) / 2.0;
+                        double startY = br.Center.Y - (rowCount * dSplitH) / 2.0;
+                        double endY = br.Center.Y + (rowCount * dSplitH) / 2.0;
+
+                        // 색상
+                        renderer.Color(200.0f, 200.0f, 0.0f);
+
+                        // 세로선: Begin/End 1회
+                        renderer.Begin(OpenGL.GL_LINES);
+                        for (int c = 0; c <= colCount; c += decimate)
                         {
-                            renderer.Begin(OpenGL.GL_LINES);
-                            renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
-                            renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
-                            renderer.End();
+                            double x = startX + c * dSplitW;
+                            renderer.Vertex(x, startY, 0.0f);
+                            renderer.Vertex(x, endY, 0.0f);
                         }
-                        for (double dY = dStartY; dY <= dEndY; dY += dSplitH)
+                        renderer.End();
+
+                        // 가로선: Begin/End 1회
+                        renderer.Begin(OpenGL.GL_LINES);
+                        for (int r = 0; r <= rowCount; r += decimate)
                         {
-                            renderer.Begin(OpenGL.GL_LINES);
-                            renderer.Vertex(dStartX, dY, 0.0f);          // 아래쪽 끝
-                            renderer.Vertex(dEndX, dY, 0.0f);   // 위쪽 끝
-                            renderer.End();
+                            double y = startY + r * dSplitH;
+                            renderer.Vertex(startX, y, 0.0f);
+                            renderer.Vertex(endX, y, 0.0f);
                         }
+                        renderer.End();
                     }
+                    return;
                 }
+                //if (layer.Name.Contains("Hole1"))
+                //{
+                //    foreach (var v in layer.Items)
+                //    {
+                //        double width = v.BoundRect.Width;
+                //        double height = v.BoundRect.Height;
+                //        double centerX = v.BoundRect.Center.X;
+                //        double centerY = v.BoundRect.Center.Y;
+                //        double dSplitW = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize;
+                //        double dSplitH = Equipment.stLayerRecipeSet[(int)LayerList.Hole1].Miscellaneous_GroupSplitSize_Height;
+                //        int colCount = (int)Math.Ceiling(width / dSplitW);
+                //        int rowCount = (int)Math.Ceiling(height / dSplitH);
+                //        double dStartX = centerX - (colCount * dSplitW) / 2;
+                //        double dStartY = centerY - (rowCount * dSplitH) / 2;
+                //        double dEndX = centerX + (colCount * dSplitW) / 2;
+                //        double dEndY = centerY + (rowCount * dSplitH) / 2;
+
+                //        OpenGL renderer = view.Renderer;
+                //        // 바둑판의 크기와 간격 설정
+                //        float squareSize = 10.0f;   // 각 셀의 크기
+                //        int gridCount = 10;         // 가로, 세로로 그릴 셀의 개수
+                //        float gridSize = squareSize * gridCount; // 전체 그리드 크기
+
+                //        // 라임색 설정
+                //        renderer.Color(200.0f, 200.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
+                //        for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
+                //        {
+                //            renderer.Begin(OpenGL.GL_LINES);
+                //            renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
+                //            renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
+                //            renderer.End();
+                //        }
+                //        for (double dY = dStartY; dY <= dEndY; dY += dSplitH)
+                //        {
+                //            renderer.Begin(OpenGL.GL_LINES);
+                //            renderer.Vertex(dStartX, dY, 0.0f);          // 아래쪽 끝
+                //            renderer.Vertex(dEndX, dY, 0.0f);   // 위쪽 끝
+                //            renderer.End();
+                //        }
+                //    }
+                //}
                 else if (layer.Name.Contains("Outline"))
                 {
-                    OpenGL renderer = view.Renderer;
+                    //OpenGL renderer = view.Renderer;
+                    renderer = view.Renderer;
 
                     if (Equipment.stLayerRecipeSet == null ||
                         (int)LayerList.Outline >= Equipment.stLayerRecipeSet.Length)
@@ -389,11 +442,6 @@ namespace SLD200_MSL
 
         public void Import_DrawingFile(string strFileName)
         {
-            // Auto인 경우에는 파일명없으면 아에 들어오면 안됨.
-            //  Sirius2
-            //var doc = DocumentFactory.CreateDefault();
-            //doc.ActOpen(strFileName);
-            //siriusEditor.Document = doc;
             if (File.Exists(strFileName) == false)
             {
                 MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -443,33 +491,6 @@ namespace SLD200_MSL
 
                 SiriusEditor.Document.FileName = "New Document";
                 SiriusEditor.Document.Action.ActNew();
-            }
-
-            //기존 코드
-            {
-                ////  Sirius1
-                //if (m_strExt.ToUpper() == ".DXF")
-                //{
-                //    //SiriusEditor.Document.New();
-                //    doc = DocumentSerializer.OpenDxf(strFileName);
-                //    SiriusEditor.Document = doc;
-                //}
-                //else if (m_strExt.ToUpper() == ".SIRIUS")
-                //{
-                //    //SiriusEditor.Document.New();
-                //    doc = DocumentSerializer.OpenSirius(strFileName);
-                //}
-                //if(doc!=null)
-                //{
-                //    if (SiriusEditor.Document != null)
-                //    {
-                //        if (SiriusEditor.Document.Views != null)
-                //        {
-                //            SiriusEditor.Document.Views.Clear();
-                //        }
-                //    }
-                //    SiriusEditor.Document = doc;
-                //}
             }
         }
 
@@ -536,10 +557,8 @@ namespace SLD200_MSL
                     Config.LwPolylineBulgePrecision = Equipment.Machine_PolylineCurve_Resolution;
 
 
-                SpiralLab.Sirius.Config.IsDocumentDrawGrids = true;
-                SpiralLab.Sirius.Config.IsDocumentDrawAxes = false;
-
-
+                //SpiralLab.Sirius.Config.IsDocumentDrawGrids = true;
+                //SpiralLab.Sirius.Config.IsDocumentDrawAxes = false;
                 //SpiralLab.Sirius.Config.SimulationStepDistance = 0.5f;
 
                 //SpiralLab.Sirius.Config.BezierSplineMicroStepDistance = 0.3f;
@@ -553,10 +572,7 @@ namespace SLD200_MSL
 
                 //SpiralLab.Sirius.Config.UndoStackSize = 50;
                 //SpiralLab.Sirius.Config.IsSnapToGridHatchInterval = true;
-
-
-
-
+                
 
                 if (SiriusEditor == null)
                 {
@@ -2560,5 +2576,92 @@ namespace SLD200_MSL
             m_formUserGuide.Owner = this;
             m_formUserGuide.Show();
         }
+
+
+
+        // 이거 각각 폼에 만들어야함.
+        private void InitRecipeUI_KeyPad()
+        {
+            RegisterKeyPadDoubleClickHandlers(this); // 폼 전체에 대해 수행
+        }
+        private void RegisterKeyPadDoubleClickHandlers(Control parent)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                // 조건: 숫자 입력용 TextBox 또는 RichTextBox만
+                bool isTargetTextBox = ctrl is TextBox || ctrl is RichTextBox;
+
+                if (isTargetTextBox && ctrl.Tag?.ToString().Contains("KeyPad") == true)
+                {
+                    ctrl.DoubleClick -= textBox_DoubleClick_OpenKeyPad; // 중복 연결 방지
+                    ctrl.DoubleClick += textBox_DoubleClick_OpenKeyPad;
+
+                    // 키보드 입력 제한용 Validating 연결
+                    ctrl.Validating -= textBox_Validate_KeyPadRange;
+                    ctrl.Validating += textBox_Validate_KeyPadRange;
+                }
+
+                // 하위 컨트롤 재귀 탐색
+                if (ctrl.HasChildren)
+                    RegisterKeyPadDoubleClickHandlers(ctrl);
+            }
+        }
+        private void textBox_DoubleClick_OpenKeyPad(object sender, EventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                string currentText = ctrl.Text ?? "0";
+                var dlg = new FormNew_KeyPad();
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+
+                // Tag 파싱
+                var meta = KeyPadMeta.ParseFromTag(ctrl.Tag?.ToString());
+                dlg.MinValue = meta.Min;
+                dlg.MaxValue = meta.Max;
+                dlg.OriginValue = meta.Origin;
+
+                if (double.TryParse(currentText, out double value))
+                    dlg.SetInitialValue(value);
+                else
+                    dlg.SetInitialValue(0);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string result = dlg.EnteredValue.ToString(meta.Format);
+                    ctrl.Text = result;
+                }
+            }
+        }
+        private void textBox_Validate_KeyPadRange(object sender, CancelEventArgs e)
+        {
+            if (sender is TextBox tb && tb.Tag != null)
+            {
+                var meta = KeyPadMeta.ParseFromTag(tb.Tag.ToString());
+
+                if (double.TryParse(tb.Text, out double val))
+                {
+                    if (val < meta.Min)
+                    {
+                        tb.Text = meta.Min.ToString(meta.Format);
+                        //MessageBox.Show($"최소값 {meta.Min}보다 작습니다."); // 또는 자동 보정만
+                    }
+                    else if (val > meta.Max)
+                    {
+                        tb.Text = meta.Max.ToString(meta.Format);
+                        //MessageBox.Show($"최대값 {meta.Max}보다 큽니다.");
+                    }
+                    else
+                    {
+                        tb.Text = val.ToString(meta.Format);
+                    }
+                }
+                else
+                {
+                    // 숫자 아님 → 초기화
+                    tb.Text = meta.Min.ToString(meta.Format);
+                }
+            }
+        }
+
     }
 }

@@ -75,9 +75,6 @@ namespace QMC.Common
         #endregion
 
         public static AlignMode m_AlignMode = AlignMode.Socket;
-
-
-
         public class InitDeviceStatus
         {
             public bool MotionIo { get; set; }
@@ -488,6 +485,10 @@ namespace QMC.Common
             public string Miscellaneous_ReferenceLayer;                 //  Reference Layer
             public double Miscellaneous_DefocusingDistance;             //  Defocusing Distance (mm)
             public double Miscellaneous_Resizing;                       //  Resizing (mm)
+
+            //Add
+            public double Miscellaneous_HoleSize;                       //  HoleSize (mm)
+
             public int Miscellaneous_HoleDrilling_StartPosDivision;     //  Hole Drilling Start Position Division(등분)
             public double Miscellaneous_GroupSplitSize;                 //  Group Split Size - Width (mm)
             public double Miscellaneous_GroupSplitSize_Height;          //  Group Split Size - Height (mm)
@@ -1065,6 +1066,22 @@ namespace QMC.Common
         public static bool m_bMainProcessStatus_UL_Module_PortPutDown_Complete { set; get; } = false;       //  Unloader Port 에 Module Put Down 완료
 
 
+
+        // Gold Powder Align 결과가 이번 사이클에서 유효하게 생성되었는지 여부
+        public static bool GoldPowderAlign_ResultValid { get; set; } = false;
+        public static double m_GoldPowderOffsetX = 0.0;            //  Gold Powder Offset X
+        public static double m_GoldPowderOffsetY = 0.0;            //  Gold Powder Offset Y
+
+        // 필요 시 사용: 소켓/사이클 시작 시 초기화
+        public static void GoldPowderAlignResult_Reset()
+        {
+            GoldPowderAlign_ResultValid = false;
+            m_GoldPowderOffsetX = 0.0;
+            m_GoldPowderOffsetY = 0.0;
+        }
+
+        
+
         // Serial Number 마킹 시 증가되는 Count 확인용. (프로그램 재시작, Count Clear 시에는 초기화 됨)
         // 무조건 1번 부터 시작.
         public static int m_nSerialNumberMarkingCount = 1;            //  Serial Number 마킹 Count
@@ -1269,6 +1286,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = "";                              //  어떤 Layer 의 데이터를 사용할 것인지
                 stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = 0.0;                         //  가공 시 초점 위치에서 얼마나 이동해서 가공할 것인지
                 stLayerRecipeSet[i].Miscellaneous_Resizing = 0.0;                                   //  가공 시 데이터를 얼마나 확대/축소할 것인지 (전체 길이를 입력하면 2등분 하여 양방향으로 크기 조정)
+                stLayerRecipeSet[i].Miscellaneous_HoleSize = 0.0; //Miscellaneous_HoleSize
                 stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = 1;                //  Hole Drilling 가공 시 시작 위치를 몇개로 나눌 것인지 (Only 1, 2, 3, 4, 5, 6, 8, 9, 10, 12)
                 stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = 3.0;                             //  Group 분할 크기 Width (mm, default : 4mm)
                 stLayerRecipeSet[i].Miscellaneous_GroupSplitSize_Height = 3.0;                      //  Group 분할 크기 Height (mm, default : 4mm)
@@ -1533,7 +1551,7 @@ namespace QMC.Common
             //stageLoader.Create();
             //Modules.Add(stageLoader);
 
-            CommonModule common = CommonModule.Instance;
+             CommonModule common = CommonModule.Instance;
             common.Create();
             Modules.Add(common);
 

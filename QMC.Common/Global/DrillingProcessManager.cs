@@ -524,105 +524,105 @@ namespace QMC.Common.Global
             }
         }
 
+        public bool HasAnyGoldOffsetXZero(double epsilon = 1e-6, bool onlyUsedSockets = false)
+        {
+            foreach (var layer in LayerList)
+            {
+                foreach (var socket in layer.SocketList)
+                {
+                    if (onlyUsedSockets && !socket.IsUsedInThisLayer)
+                        continue;
 
-        //public void SaveLotLog(bool bOkNg = true)
-        //{
-        //    string logFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LotLog");
-        //    if (!Directory.Exists(logFolder))
-        //        Directory.CreateDirectory(logFolder);
+                    if (Math.Abs(socket.GoldOffsetX) <= epsilon)
+                        return true;
+                }
+            }
+            return false;
+        }
 
-        //    string logFile = Path.Combine(logFolder, $"LotLog_{DateTime.Now:yyyyMMdd}.csv");
+        public bool HasAnyGoldOffsetXZero(string layerName, double epsilon = 1e-6, bool onlyUsedSockets = false)
+        {
+            var layer = GetLayer(layerName);
+            if (layer == null)
+                return false;
 
-        //    string startTime = CycleTimer_LaserDrilling.ProcessStartTime.ToString("yyyy-MM-dd HH:mm:ss");
-        //    string endTime = CycleTimer_LaserDrilling.ProcessEndTime.ToString("yyyy-MM-dd HH:mm:ss");
-        //    TimeSpan avg = CycleTimer_LaserDrilling.Average;
-        //    string averageTime = string.Format("{0:D2}:{1:D2}:{2:D2}",
-        //        (int)avg.TotalHours, avg.Minutes, avg.Seconds);
-        //    string recipeName = Path.GetFileName(Equipment.Current_Recipe);
-        //    string drawingName = Path.GetFileName(Equipment.Current_DrawingFileName);
-        //    int count = 0;      // 전체 제품 수
-        //    int countNg = 0;    // NG 수
-        //    int markingNumber = Equipment.m_nSerialNumberMarkingCount;  // 넣기에는 또.. 경우의 수가 너무 많다.
+            foreach (var socket in layer.SocketList)
+            {
+                if (onlyUsedSockets && !socket.IsUsedInThisLayer)
+                    continue;
 
-        //    List<string> lines = new List<string>();
-        //    try
-        //    {
-        //        if (File.Exists(logFile))
-        //        {
-        //            using (FileStream fs = new FileStream(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-        //            using (StreamReader reader = new StreamReader(fs, Encoding.UTF8))
-        //            {
-        //                while (!reader.EndOfStream)
-        //                    lines.Add(reader.ReadLine());
-        //            }
-        //        }
-        //        else
-        //        {
-        //            // 새 파일이라면 헤더 추가
-        //            lines.Add("StartTime,EndTime,RecipeName,DrawingName,Count,CountNG,AverageTime");
-        //        }
+                if (Math.Abs(socket.GoldOffsetX) <= epsilon)
+                    return true;
+            }
+            return false;
+        }
 
-        //        bool isUpdated = false;
-        //        int updatedCount = 0;
-        //        int updatedCountNg = 0;
+        public bool HasAnyGoldOffsetXZero(Equipment.LayerList layerEnum, double epsilon = 1e-6, bool onlyUsedSockets = false)
+        {
+            var layer = GetLayer(layerEnum);
+            if (layer == null)
+                return false;
 
-        //        if (lines.Count > 0)
-        //        {
-        //            string lastLine = lines.Last();
-        //            var parts = lastLine.Split(',');
-        //            if (parts.Length >= 7 && parts[2] == recipeName)
-        //            {
-        //                string originalStartTime = parts[0];
-        //                if (int.TryParse(parts[4], out int prevCount) && int.TryParse(parts[5], out int prevCountNg))
-        //                {
-        //                    updatedCount = prevCount + 1;
-        //                    if(bOkNg)
-        //                    {
-        //                        updatedCountNg = prevCountNg;
-        //                    }
-        //                    else
-        //                    {
-        //                        updatedCountNg = prevCountNg + 1;
-        //                    }
-        //                    string updatedLine = $"{originalStartTime},{endTime},{recipeName},{drawingName},{updatedCount},{updatedCountNg},{averageTime}";
-        //                    lines[lines.Count - 1] = updatedLine;
-        //                    isUpdated = true;
+            foreach (var socket in layer.SocketList)
+            {
+                if (onlyUsedSockets && !socket.IsUsedInThisLayer)
+                    continue;
 
-        //                    Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={updatedCount}, NG={updatedCountNg}, Avg={averageTime}");
-        //                }
-        //            }
-        //        }
+                if (Math.Abs(socket.GoldOffsetX) <= epsilon)
+                    return true;
+            }
+            return false;
+        }
 
-        //        if (!isUpdated)
-        //        {
-        //            count += 1;
-        //            if (bOkNg)
-        //            {
-        //                countNg = 0;
-        //            }
-        //            else
-        //            {
-        //                countNg += 1;
-        //            }
+        public bool HasAnyGoldOffsetYZero(double epsilon = 1e-6, bool onlyUsedSockets = false)
+        {
+            foreach (var layer in LayerList)
+            {
+                foreach (var socket in layer.SocketList)
+                {
+                    if (onlyUsedSockets && !socket.IsUsedInThisLayer)
+                        continue;
 
-        //            string newLine = $"{startTime},{endTime},{recipeName},{drawingName},{count},{countNg},{averageTime}";
-        //            lines.Add(newLine);
+                    if (Math.Abs(socket.GoldOffsetY) <= epsilon)
+                        return true;
+                }
+            }
+            return false;
+        }
 
-        //            Log.Write("DrillStatus", $"LOT 로그 저장 완료: Recipe={recipeName}, Count={count}, NG={countNg}, Avg={averageTime}");
-        //        }
+        public bool HasAnyGoldOffsetYZero(string layerName, double epsilon = 1e-6, bool onlyUsedSockets = false)
+        {
+            var layer = GetLayer(layerName);
+            if (layer == null)
+                return false;
 
-        //        using (FileStream fs = new FileStream(logFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-        //        using (StreamWriter writer = new StreamWriter(fs, new UTF8Encoding(true)))
-        //        {
-        //            foreach (string line in lines)
-        //                writer.WriteLine(line);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Write("DrillStatus", $"LOT 로그 저장 실패: {ex.Message}");
-        //    }
-        //}
+            foreach (var socket in layer.SocketList)
+            {
+                if (onlyUsedSockets && !socket.IsUsedInThisLayer)
+                    continue;
+
+                if (Math.Abs(socket.GoldOffsetY) <= epsilon)
+                    return true;
+            }
+            return false;
+        }
+
+        public bool HasAnyGoldOffsetYZero(Equipment.LayerList layerEnum, double epsilon = 1e-6, bool onlyUsedSockets = false)
+        {
+            var layer = GetLayer(layerEnum);
+            if (layer == null)
+                return false;
+
+            foreach (var socket in layer.SocketList)
+            {
+                if (onlyUsedSockets && !socket.IsUsedInThisLayer)
+                    continue;
+
+                if (Math.Abs(socket.GoldOffsetY) <= epsilon)
+                    return true;
+            }
+            return false;
+        }
 
     }
 }

@@ -319,6 +319,7 @@ namespace SLD200_MSL
             this.textBox_SiriusEditor_Divided_W.Name = "textBox_SiriusEditor_Divided_W";
             this.textBox_SiriusEditor_Divided_W.Size = new System.Drawing.Size(41, 23);
             this.textBox_SiriusEditor_Divided_W.TabIndex = 98;
+            this.textBox_SiriusEditor_Divided_W.Tag = "KeyPad;Min=1;Max=35;Format=0.000";
             this.textBox_SiriusEditor_Divided_W.Text = "0";
             this.textBox_SiriusEditor_Divided_W.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -340,6 +341,7 @@ namespace SLD200_MSL
             this.textBox_SiriusEditor_Divided_H.Name = "textBox_SiriusEditor_Divided_H";
             this.textBox_SiriusEditor_Divided_H.Size = new System.Drawing.Size(41, 23);
             this.textBox_SiriusEditor_Divided_H.TabIndex = 100;
+            this.textBox_SiriusEditor_Divided_H.Tag = "KeyPad;Min=1;Max=35;Format=0.000";
             this.textBox_SiriusEditor_Divided_H.Text = "0";
             this.textBox_SiriusEditor_Divided_H.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 

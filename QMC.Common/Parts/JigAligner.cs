@@ -713,34 +713,6 @@ namespace QMC.Common.Parts
                         }
                     }
 
-                    //기존 코드
-                    {
-                        //if (Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
-                        //{
-                        //    this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
-                        //}
-                        //else if (Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
-                        //{
-                        //    double dSpec = 0.05;
-                        //    double dScore = 0.7;
-                        //    double dRadius = 0;
-                        //    dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
-                        //    dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
-                        //    dRadius = m_dRadius[1];// m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
-                        //    int nColor = Equipment.stVisionRecipeSet.nPreCircleColor;
-                        //    if (m_dRadius[1] == 0)
-                        //        dRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
-
-                        //    this.FindCircleDetection(dRadius, nColor, dSpec, dScore, out secondPointSearchResult, out secondPointCoordinate);
-                        
-                        //}
-                        //else
-                        //{
-                        //    this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
-                        //}
-
-                    }
-
                     if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우, 여기서 Out
                     {
                         if (secondPointSearchResult != null)

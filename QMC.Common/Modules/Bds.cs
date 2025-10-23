@@ -94,7 +94,9 @@ namespace QMC.Common.Modules
         public DustCollectorController DustCollector_Upper { get; private set; } = null;
         public DustCollectorController DustCollector_Lower { get; private set; } = null;
 
-        public LaserDiagnosticManager LaserCO2Manager { get; private set; }
+        public LaserDiagnosticManager LaserCO2Manager { get; set; }
+        public ControllerStatus LaserCO2Status { get; private set; } = null;
+        public List<LaserFault> LaserCO2Faults { get; private set; } = null;
 
         //  레시피 변경 시 위치값을 갱신하기 위해
         public bool m_bParameterSetting_PosData_Reload { set; get; }            //  위치 데이터 다시 로드
@@ -396,24 +398,22 @@ namespace QMC.Common.Modules
 
             if(Equipment.Machine_LaserType_CO2)
             {
-                //LaserCO2Manager = new LaserDiagnosticManager("LaserCO2", "169.254.12.13", 5000);
-                LaserCO2Manager = new LaserDiagnosticManager("LaserCO2", "169.254.12.13", 23);
+                LaserCO2Manager = new LaserDiagnosticManager("LaserCO2", "169.254.12.13", 5000);
                 LaserCO2Manager.Create();
                 LaserCO2Manager.Owner = this;
                 Parts.Add(LaserCO2Manager);
-                //  레이저 연결 - 여기서? Test니깐?
-                //if (!LaserCO2Manager.Connect())
-                //{
-                //    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 실패!");
-                //    //AlarmPost(AlarmKey.LaserComm_ConnectFail);
-                //}
-                //else
-                //{
-                //    Log.Write("SLD-200", "Laser TCP", "Laser TCP 연결 성공");
-                //}
-            }
-            
 
+                LaserCO2Manager.OnAlarmRaised += msg => Console.WriteLine("[ALARM] " + msg);
+
+                // 초기 연결은 장비 Init 단계에서 시도
+                Task.Run(() =>
+                {
+                    if (LaserCO2Manager.Connect())
+                        Log.Write("LaserCO2", "Connect", "Laser TCP 연결 성공");
+                    else
+                        Log.Write("LaserCO2", "Connect", "Laser TCP 연결 실패");
+                });
+            }
 
             //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
             m_taskTimer_BDS_MainStatus_Tick = Task.Factory.StartNew(() =>
@@ -506,11 +506,12 @@ namespace QMC.Common.Modules
                             // spiralLabScanner.CheckAndLogAllStatuses();
                             // 1초 안됨. 한 번 들어왔다가 가공 후 부터 안됨.
                             // 업체 측 -> 20초로 수정 요청하여 수정.
-                            // 똑같음.
-                            if(Equipment.Machine_LaserType_CO2)
-                            {
-                                spiralLabScanner.IsOverTemperatureWarning();
-                            }
+                            
+                            //20250923 - 주석. 필요없음.
+                            //if(Equipment.Machine_LaserType_CO2)
+                            //{
+                            //    spiralLabScanner.IsOverTemperatureWarning();
+                            //}
 
                             //double dPosX = 0.0, dPosY = 0.0;
                             //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
@@ -567,63 +568,50 @@ namespace QMC.Common.Modules
 
                 if(Equipment.Machine_LaserType_CO2)
                 {
-                    if (LaserCO2Manager?.IsConnected == true)
+                    if (Equipment.Machine_LaserType_CO2 && LaserCO2Manager != null)
                     {
-                        var now = DateTime.Now;
-                        if (now - _lastLaserCO2CheckTime > _LaserCO2CheckInterval)
+                        if (LaserCO2Manager.IsConnected)
                         {
-                            _lastLaserCO2CheckTime = now;
-
-                            var status = LaserCO2Manager.RequestControllerStatus();
-                            if (status != null)
+                            var now = DateTime.Now;
+                            if (now - _lastLaserCO2CheckTime > _LaserCO2CheckInterval)
                             {
-                                // 상태 정보 UI 표시 또는 로그
-                                Log.Write("LaserCO2", "LaserStatus", status.ToString());
+                                _lastLaserCO2CheckTime = now;
+                                var status = LaserCO2Manager.GetStatus(); // ✅ 기존 RequestControllerStatus → GetStatus()
 
-                                if (!status.Enable)
-                                    Log.Write("LaserCO2", "LaserStatus", "레이저 Enable 상태 아님");
-                                else
-                                    Log.Write("LaserCO2", "LaserStatus", "레이저 Enable 상태");
-
-                                if (!status.ShutterClosed)
-                                    Log.Write("LaserCO2", "LaserStatus", "셔터가 열려 있음");
-                                else
-                                    Log.Write("LaserCO2", "LaserStatus", "셔터가 닫혀 있음");
-
-                                if (status.DutyCyclePercent > 0)
-                                    Log.Write("LaserCO2", "LaserStatus", $"Duty Cycle: {status.DutyCyclePercent}%");
-
-                                if (status.SystemFault || status.ShutterFault || status.TempFault || status.SystemInterlock)
+                                if (status != null)
                                 {
-                                    Log.Write("LaserCO2", "LaserStatus", "LaserCO2Manager Fault Detected");
-                                    if (status.SystemFault)
+                                    //Log.Write("LaserCO2", "Status", status.ToString());
+
+                                    //if (status.SystemFault || status.Interlock || status.OverTemp)
+                                    if (status.SystemFault)// || status.OverTemp)
                                     {
-                                        Log.Write("LaserCO2", "LaserStatus", "System Fault 발생");
-                                        //AlarmPost(AlarmKey.Laser_Fault_System, "CO2 레이저: System Fault 발생");
+                                        Log.Write("LaserCO2", "Status", status.ToString());
+                                        Log.Write("LaserCO2", "Status", "⚠ Fault Detected!");
+                                        // 예: AlarmPost(AlarmKey.LaserFaultDetected, "CO₂ Laser fault 발생");
                                     }
 
-                                    if (status.ShutterFault)
-                                    {
-                                        Log.Write("LaserCO2", "LaserStatus", "Shutter Fault 발생");
-                                        //AlarmPost(AlarmKey.Laser_Fault_Shutter, "CO2 레이저: Shutter Fault 발생");
-                                    }
+                                    LaserCO2Status = status;
+                                }
 
-                                    if (status.TempFault)
+                                var faults = LaserCO2Manager.GetFaults();
+                                if (faults != null && faults.Count > 0)
+                                {
+                                    LaserCO2Faults = faults;
+                                    foreach (var f in faults)
                                     {
-                                        Log.Write("LaserCO2", "LaserStatus", "Temperature Fault 발생");
-                                        //AlarmPost(AlarmKey.Laser_Fault_Temperature, "CO2 레이저: 온도 이상 발생");
-                                    }
-
-                                    if (status.SystemInterlock)
-                                    {
-                                        Log.Write("LaserCO2", "LaserStatus", "System Interlock 동작 중");
-                                        //AlarmPost(AlarmKey.Laser_Fault_Interlock, "CO2 레이저: System Interlock 감지");
+                                        Log.Write("LaserCO2", "Fault", f.ToString());
+                                        // AlarmPost(AlarmKey.Laser_Fault_Generic, f.Description);
                                     }
                                 }
-                                else
-                                {
-                                    Log.Write("LaserCO2", "LaserStatus", "상태 응답 없음 (null)");
-                                }
+                            }
+                        }
+                        else
+                        {
+                            // 연결이 끊어졌으면 재시도
+                            if (LaserCO2Manager.Connect())
+                            {
+                                Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
+
                             }
                         }
                     }
@@ -705,8 +693,6 @@ namespace QMC.Common.Modules
                 Log.Write("SLD-200", "DisposespiralLabScannerModule", "Scanner 모듈 해제 완료");
             }
         }
-
-
 
         public float? GetRtcZOffset()
         {
@@ -861,23 +847,19 @@ namespace QMC.Common.Modules
             foreach (var task in listTask)
             {
                 task.Wait();
-
                 task.Dispose();
-
             }
             listTask.Clear();
 
             m_taskTimer_BDS_MainStatus_Tick = null;
 
-            base.Close();
-
-            //if (Stage != null)
-            //{
-            //    Stage.Close();
-            //}
-
             DustCollector_Upper?.Close();
             DustCollector_Lower?.Close();
+
+            LaserCO2Manager.Close();
+            LaserCO2Manager = null;
+
+            base.Close();
         }
 
         public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)

@@ -147,6 +147,14 @@
             this.baseTextBox_RecipeVision_PositionX = new SLD200_MSL.BaseTextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.groupBox_RecipeVision_Fine_Camera = new System.Windows.Forms.GroupBox();
+            this.textBox_RecipeVision_ROI_END_Y = new System.Windows.Forms.TextBox();
+            this.textBox_RecipeVision_ROI_END_X = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox_RecipeVision_ROI_START_Y = new System.Windows.Forms.TextBox();
+            this.textBox_RecipeVision_ROI_START_X = new System.Windows.Forms.TextBox();
+            this.button_Recipe_Fiducial_ROI = new System.Windows.Forms.Button();
+            this.button_Recipe_Fiducial_Position_Move_Z = new System.Windows.Forms.Button();
             this.button_Recipe_Fiducial_Mark_Delete = new System.Windows.Forms.Button();
             this.button_Recipe_Fiducial_Mark_Add = new System.Windows.Forms.Button();
             this.comboBox_Recipe_Fiducial_MarkIndex = new System.Windows.Forms.ComboBox();
@@ -167,6 +175,10 @@
             this.button_Recipe_Fiducial_Search = new System.Windows.Forms.Button();
             this.label_Recipe_Fiducial_CircleScore = new System.Windows.Forms.Label();
             this.groupBox_RecipeVision_Illuminator = new System.Windows.Forms.GroupBox();
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR = new System.Windows.Forms.Button();
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed = new System.Windows.Forms.Button();
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR = new System.Windows.Forms.Button();
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed = new System.Windows.Forms.Button();
             this.textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed = new System.Windows.Forms.TextBox();
             this.label_RecipeVision_Low_Red = new System.Windows.Forms.Label();
             this.textBox_Recipe_RecipeVision_Illuminator_FineCamRed = new System.Windows.Forms.TextBox();
@@ -187,10 +199,6 @@
             this.button_RecipeVision_Camera_ExposureTime_Low = new System.Windows.Forms.Button();
             this.label_RecipeVision_Camera_ExposureTime_Low = new System.Windows.Forms.Label();
             this.textBox_RecipeVision_Camera_ExposureTime_Low = new System.Windows.Forms.TextBox();
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed = new System.Windows.Forms.Button();
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR = new System.Windows.Forms.Button();
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed = new System.Windows.Forms.Button();
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR = new System.Windows.Forms.Button();
             this.groupBox_RecipeVision_Illumination.SuspendLayout();
             this.groupBox_RecipeVision_MarkMatching.SuspendLayout();
             this.groupBox_RecipeVision_MarkType.SuspendLayout();
@@ -277,7 +285,7 @@
             this.groupBox_RecipeVision_Illumination.Controls.Add(this.textBox_RecipeVision_IlluminationValue_IR);
             this.groupBox_RecipeVision_Illumination.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_RecipeVision_Illumination.Location = new System.Drawing.Point(1059, 59);
-            this.groupBox_RecipeVision_Illumination.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox_RecipeVision_Illumination.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox_RecipeVision_Illumination.Name = "groupBox_RecipeVision_Illumination";
             this.groupBox_RecipeVision_Illumination.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBox_RecipeVision_Illumination.Size = new System.Drawing.Size(373, 90);
@@ -311,7 +319,7 @@
             // 
             this.label_RecipeVision_Light_Red.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_RecipeVision_Light_Red.Location = new System.Drawing.Point(71, 23);
-            this.label_RecipeVision_Light_Red.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Light_Red.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_RecipeVision_Light_Red.Name = "label_RecipeVision_Light_Red";
             this.label_RecipeVision_Light_Red.Size = new System.Drawing.Size(36, 25);
             this.label_RecipeVision_Light_Red.TabIndex = 220;
@@ -322,7 +330,7 @@
             // 
             this.label_RecipeVision_Light_IR.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_RecipeVision_Light_IR.Location = new System.Drawing.Point(71, 56);
-            this.label_RecipeVision_Light_IR.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Light_IR.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_RecipeVision_Light_IR.Name = "label_RecipeVision_Light_IR";
             this.label_RecipeVision_Light_IR.Size = new System.Drawing.Size(36, 25);
             this.label_RecipeVision_Light_IR.TabIndex = 219;
@@ -437,6 +445,7 @@
             // 
             // button_RecipeVision_Inspect
             // 
+            this.button_RecipeVision_Inspect.Enabled = false;
             this.button_RecipeVision_Inspect.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_RecipeVision_Inspect.Location = new System.Drawing.Point(494, 246);
             this.button_RecipeVision_Inspect.Margin = new System.Windows.Forms.Padding(2);
@@ -449,6 +458,7 @@
             // 
             // button_RecipeVision_Train
             // 
+            this.button_RecipeVision_Train.Enabled = false;
             this.button_RecipeVision_Train.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_RecipeVision_Train.Location = new System.Drawing.Point(494, 193);
             this.button_RecipeVision_Train.Margin = new System.Windows.Forms.Padding(2);
@@ -465,7 +475,7 @@
             this.groupBox_RecipeVision_MarkMatching.Controls.Add(this.radioButton_RecipeVision_Pattern);
             this.groupBox_RecipeVision_MarkMatching.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_RecipeVision_MarkMatching.Location = new System.Drawing.Point(494, 23);
-            this.groupBox_RecipeVision_MarkMatching.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox_RecipeVision_MarkMatching.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox_RecipeVision_MarkMatching.Name = "groupBox_RecipeVision_MarkMatching";
             this.groupBox_RecipeVision_MarkMatching.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBox_RecipeVision_MarkMatching.Size = new System.Drawing.Size(250, 48);
@@ -477,7 +487,7 @@
             // 
             this.radioButton_RecipeVision_Blob.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_Blob.Location = new System.Drawing.Point(96, 23);
-            this.radioButton_RecipeVision_Blob.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_RecipeVision_Blob.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_RecipeVision_Blob.Name = "radioButton_RecipeVision_Blob";
             this.radioButton_RecipeVision_Blob.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_Blob.TabIndex = 6;
@@ -487,9 +497,10 @@
             // radioButton_RecipeVision_Pattern
             // 
             this.radioButton_RecipeVision_Pattern.Checked = true;
+            this.radioButton_RecipeVision_Pattern.Enabled = false;
             this.radioButton_RecipeVision_Pattern.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_Pattern.Location = new System.Drawing.Point(13, 23);
-            this.radioButton_RecipeVision_Pattern.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_RecipeVision_Pattern.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_RecipeVision_Pattern.Name = "radioButton_RecipeVision_Pattern";
             this.radioButton_RecipeVision_Pattern.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_Pattern.TabIndex = 5;
@@ -503,7 +514,7 @@
             this.groupBox_RecipeVision_MarkType.Controls.Add(this.radioButton_RecipeVision_Type_Cross);
             this.groupBox_RecipeVision_MarkType.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_RecipeVision_MarkType.Location = new System.Drawing.Point(494, 81);
-            this.groupBox_RecipeVision_MarkType.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox_RecipeVision_MarkType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox_RecipeVision_MarkType.Name = "groupBox_RecipeVision_MarkType";
             this.groupBox_RecipeVision_MarkType.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBox_RecipeVision_MarkType.Size = new System.Drawing.Size(250, 48);
@@ -515,7 +526,7 @@
             // 
             this.radioButton_RecipeVision_Circle.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_Circle.Location = new System.Drawing.Point(96, 23);
-            this.radioButton_RecipeVision_Circle.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_RecipeVision_Circle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_RecipeVision_Circle.Name = "radioButton_RecipeVision_Circle";
             this.radioButton_RecipeVision_Circle.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_Circle.TabIndex = 6;
@@ -528,7 +539,7 @@
             this.radioButton_RecipeVision_Type_Cross.Enabled = false;
             this.radioButton_RecipeVision_Type_Cross.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_Type_Cross.Location = new System.Drawing.Point(13, 23);
-            this.radioButton_RecipeVision_Type_Cross.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_RecipeVision_Type_Cross.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_RecipeVision_Type_Cross.Name = "radioButton_RecipeVision_Type_Cross";
             this.radioButton_RecipeVision_Type_Cross.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_Type_Cross.TabIndex = 5;
@@ -544,9 +555,9 @@
             this.groupBox_RecipeVision_JogMove.Controls.Add(this.groupBox_RecipeVision_Stage);
             this.groupBox_RecipeVision_JogMove.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_RecipeVision_JogMove.Location = new System.Drawing.Point(1059, 376);
-            this.groupBox_RecipeVision_JogMove.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_RecipeVision_JogMove.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox_RecipeVision_JogMove.Name = "groupBox_RecipeVision_JogMove";
-            this.groupBox_RecipeVision_JogMove.Padding = new System.Windows.Forms.Padding(5);
+            this.groupBox_RecipeVision_JogMove.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox_RecipeVision_JogMove.Size = new System.Drawing.Size(329, 364);
             this.groupBox_RecipeVision_JogMove.TabIndex = 200;
             this.groupBox_RecipeVision_JogMove.TabStop = false;
@@ -633,9 +644,9 @@
             this.groupBox_RecipeVision_MoveSpeed.Controls.Add(this.radioButton_RecipeVision_Move_MoveMode_Fine);
             this.groupBox_RecipeVision_MoveSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
             this.groupBox_RecipeVision_MoveSpeed.Location = new System.Drawing.Point(17, 29);
-            this.groupBox_RecipeVision_MoveSpeed.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_RecipeVision_MoveSpeed.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox_RecipeVision_MoveSpeed.Name = "groupBox_RecipeVision_MoveSpeed";
-            this.groupBox_RecipeVision_MoveSpeed.Padding = new System.Windows.Forms.Padding(5);
+            this.groupBox_RecipeVision_MoveSpeed.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox_RecipeVision_MoveSpeed.Size = new System.Drawing.Size(294, 70);
             this.groupBox_RecipeVision_MoveSpeed.TabIndex = 109;
             this.groupBox_RecipeVision_MoveSpeed.TabStop = false;
@@ -646,7 +657,7 @@
             this.radioButton_RecipeVision_Move_MoveMode_Coarse.Checked = true;
             this.radioButton_RecipeVision_Move_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_Move_MoveMode_Coarse.Location = new System.Drawing.Point(133, 27);
-            this.radioButton_RecipeVision_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
+            this.radioButton_RecipeVision_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.radioButton_RecipeVision_Move_MoveMode_Coarse.Name = "radioButton_RecipeVision_Move_MoveMode_Coarse";
             this.radioButton_RecipeVision_Move_MoveMode_Coarse.Size = new System.Drawing.Size(85, 24);
             this.radioButton_RecipeVision_Move_MoveMode_Coarse.TabIndex = 6;
@@ -658,7 +669,7 @@
             // 
             this.radioButton_RecipeVision_Move_MoveMode_Fine.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_Move_MoveMode_Fine.Location = new System.Drawing.Point(11, 27);
-            this.radioButton_RecipeVision_Move_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5);
+            this.radioButton_RecipeVision_Move_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.radioButton_RecipeVision_Move_MoveMode_Fine.Name = "radioButton_RecipeVision_Move_MoveMode_Fine";
             this.radioButton_RecipeVision_Move_MoveMode_Fine.Size = new System.Drawing.Size(80, 24);
             this.radioButton_RecipeVision_Move_MoveMode_Fine.TabIndex = 5;
@@ -673,9 +684,9 @@
             this.groupBox_RecipeVision_Vision.Controls.Add(this.button_RecipeVision_Z_Pos);
             this.groupBox_RecipeVision_Vision.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox_RecipeVision_Vision.Location = new System.Drawing.Point(222, 200);
-            this.groupBox_RecipeVision_Vision.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_RecipeVision_Vision.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox_RecipeVision_Vision.Name = "groupBox_RecipeVision_Vision";
-            this.groupBox_RecipeVision_Vision.Padding = new System.Windows.Forms.Padding(5);
+            this.groupBox_RecipeVision_Vision.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox_RecipeVision_Vision.Size = new System.Drawing.Size(89, 154);
             this.groupBox_RecipeVision_Vision.TabIndex = 65;
             this.groupBox_RecipeVision_Vision.TabStop = false;
@@ -745,9 +756,9 @@
             this.groupBox_RecipeVision_Stage.Controls.Add(this.button_RecipeVision_Y_Pos);
             this.groupBox_RecipeVision_Stage.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox_RecipeVision_Stage.Location = new System.Drawing.Point(17, 200);
-            this.groupBox_RecipeVision_Stage.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_RecipeVision_Stage.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox_RecipeVision_Stage.Name = "groupBox_RecipeVision_Stage";
-            this.groupBox_RecipeVision_Stage.Padding = new System.Windows.Forms.Padding(5);
+            this.groupBox_RecipeVision_Stage.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox_RecipeVision_Stage.Size = new System.Drawing.Size(195, 154);
             this.groupBox_RecipeVision_Stage.TabIndex = 64;
             this.groupBox_RecipeVision_Stage.TabStop = false;
@@ -867,7 +878,7 @@
             this.groupBox_RecipeVision_ABS.Controls.Add(this.label_RecipeVision_X);
             this.groupBox_RecipeVision_ABS.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox_RecipeVision_ABS.Location = new System.Drawing.Point(1394, 605);
-            this.groupBox_RecipeVision_ABS.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_RecipeVision_ABS.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox_RecipeVision_ABS.Name = "groupBox_RecipeVision_ABS";
             this.groupBox_RecipeVision_ABS.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox_RecipeVision_ABS.Size = new System.Drawing.Size(145, 133);
@@ -891,7 +902,7 @@
             // 
             this.textBox_RecipeVision_WorkStage_TempPos1_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
             this.textBox_RecipeVision_WorkStage_TempPos1_StageY.Location = new System.Drawing.Point(57, 52);
-            this.textBox_RecipeVision_WorkStage_TempPos1_StageY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_RecipeVision_WorkStage_TempPos1_StageY.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.textBox_RecipeVision_WorkStage_TempPos1_StageY.Name = "textBox_RecipeVision_WorkStage_TempPos1_StageY";
             this.textBox_RecipeVision_WorkStage_TempPos1_StageY.Size = new System.Drawing.Size(83, 24);
             this.textBox_RecipeVision_WorkStage_TempPos1_StageY.TabIndex = 45;
@@ -903,7 +914,7 @@
             // 
             this.label_RecipeVision_Y.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_RecipeVision_Y.Location = new System.Drawing.Point(3, 51);
-            this.label_RecipeVision_Y.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Y.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_RecipeVision_Y.Name = "label_RecipeVision_Y";
             this.label_RecipeVision_Y.Size = new System.Drawing.Size(47, 24);
             this.label_RecipeVision_Y.TabIndex = 44;
@@ -926,7 +937,7 @@
             // 
             this.textBox_RecipeVision_WorkStage_TempPos1_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
             this.textBox_RecipeVision_WorkStage_TempPos1_StageX.Location = new System.Drawing.Point(57, 28);
-            this.textBox_RecipeVision_WorkStage_TempPos1_StageX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_RecipeVision_WorkStage_TempPos1_StageX.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.textBox_RecipeVision_WorkStage_TempPos1_StageX.Name = "textBox_RecipeVision_WorkStage_TempPos1_StageX";
             this.textBox_RecipeVision_WorkStage_TempPos1_StageX.Size = new System.Drawing.Size(83, 24);
             this.textBox_RecipeVision_WorkStage_TempPos1_StageX.TabIndex = 22;
@@ -938,7 +949,7 @@
             // 
             this.label_RecipeVision_X.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_RecipeVision_X.Location = new System.Drawing.Point(3, 27);
-            this.label_RecipeVision_X.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_X.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_RecipeVision_X.Name = "label_RecipeVision_X";
             this.label_RecipeVision_X.Size = new System.Drawing.Size(47, 24);
             this.label_RecipeVision_X.TabIndex = 21;
@@ -1057,7 +1068,7 @@
             this.groupBox_RecipeVision_Color.Controls.Add(this.radioButton_RecipeVision_White);
             this.groupBox_RecipeVision_Color.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_RecipeVision_Color.Location = new System.Drawing.Point(494, 139);
-            this.groupBox_RecipeVision_Color.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox_RecipeVision_Color.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox_RecipeVision_Color.Name = "groupBox_RecipeVision_Color";
             this.groupBox_RecipeVision_Color.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBox_RecipeVision_Color.Size = new System.Drawing.Size(250, 48);
@@ -1069,7 +1080,7 @@
             // 
             this.radioButton_RecipeVision_Ignore.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_Ignore.Location = new System.Drawing.Point(166, 24);
-            this.radioButton_RecipeVision_Ignore.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_RecipeVision_Ignore.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_RecipeVision_Ignore.Name = "radioButton_RecipeVision_Ignore";
             this.radioButton_RecipeVision_Ignore.Size = new System.Drawing.Size(76, 18);
             this.radioButton_RecipeVision_Ignore.TabIndex = 8;
@@ -1080,7 +1091,7 @@
             // 
             this.radioButton_RecipeVision_Black.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_Black.Location = new System.Drawing.Point(13, 23);
-            this.radioButton_RecipeVision_Black.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_RecipeVision_Black.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_RecipeVision_Black.Name = "radioButton_RecipeVision_Black";
             this.radioButton_RecipeVision_Black.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_Black.TabIndex = 6;
@@ -1092,7 +1103,7 @@
             this.radioButton_RecipeVision_White.Checked = true;
             this.radioButton_RecipeVision_White.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_White.Location = new System.Drawing.Point(96, 23);
-            this.radioButton_RecipeVision_White.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_RecipeVision_White.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_RecipeVision_White.Name = "radioButton_RecipeVision_White";
             this.radioButton_RecipeVision_White.Size = new System.Drawing.Size(74, 18);
             this.radioButton_RecipeVision_White.TabIndex = 5;
@@ -1128,7 +1139,7 @@
             // 
             this.label_RecipeVision_Circle_Size.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_RecipeVision_Circle_Size.Location = new System.Drawing.Point(776, 55);
-            this.label_RecipeVision_Circle_Size.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Circle_Size.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_RecipeVision_Circle_Size.Name = "label_RecipeVision_Circle_Size";
             this.label_RecipeVision_Circle_Size.Size = new System.Drawing.Size(165, 25);
             this.label_RecipeVision_Circle_Size.TabIndex = 47;
@@ -1139,7 +1150,7 @@
             // 
             this.label_RecipeVision_Circle_Spec.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_RecipeVision_Circle_Spec.Location = new System.Drawing.Point(776, 23);
-            this.label_RecipeVision_Circle_Spec.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Circle_Spec.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_RecipeVision_Circle_Spec.Name = "label_RecipeVision_Circle_Spec";
             this.label_RecipeVision_Circle_Spec.Size = new System.Drawing.Size(165, 25);
             this.label_RecipeVision_Circle_Spec.TabIndex = 206;
@@ -1174,7 +1185,7 @@
             // 
             this.label_Recipe_Fiducial_CicleSpec.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_Recipe_Fiducial_CicleSpec.Location = new System.Drawing.Point(776, 28);
-            this.label_Recipe_Fiducial_CicleSpec.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Recipe_Fiducial_CicleSpec.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_Recipe_Fiducial_CicleSpec.Name = "label_Recipe_Fiducial_CicleSpec";
             this.label_Recipe_Fiducial_CicleSpec.Size = new System.Drawing.Size(165, 25);
             this.label_Recipe_Fiducial_CicleSpec.TabIndex = 212;
@@ -1209,7 +1220,7 @@
             // 
             this.label_Recipe_Fiducial_CicleSize.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_Recipe_Fiducial_CicleSize.Location = new System.Drawing.Point(776, 56);
-            this.label_Recipe_Fiducial_CicleSize.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Recipe_Fiducial_CicleSize.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_Recipe_Fiducial_CicleSize.Name = "label_Recipe_Fiducial_CicleSize";
             this.label_Recipe_Fiducial_CicleSize.Size = new System.Drawing.Size(165, 25);
             this.label_Recipe_Fiducial_CicleSize.TabIndex = 209;
@@ -1248,7 +1259,7 @@
             this.groupBox_RecipeVision_Camera.Controls.Add(this.button_RecipeVision_CameraStop);
             this.groupBox_RecipeVision_Camera.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_RecipeVision_Camera.Location = new System.Drawing.Point(1059, 6);
-            this.groupBox_RecipeVision_Camera.Margin = new System.Windows.Forms.Padding(6);
+            this.groupBox_RecipeVision_Camera.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.groupBox_RecipeVision_Camera.Name = "groupBox_RecipeVision_Camera";
             this.groupBox_RecipeVision_Camera.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.groupBox_RecipeVision_Camera.Size = new System.Drawing.Size(373, 46);
@@ -1261,7 +1272,7 @@
             this.radioButton_RecipeVision_CameraSelection_HighMag.Checked = true;
             this.radioButton_RecipeVision_CameraSelection_HighMag.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_CameraSelection_HighMag.Location = new System.Drawing.Point(124, 16);
-            this.radioButton_RecipeVision_CameraSelection_HighMag.Margin = new System.Windows.Forms.Padding(6);
+            this.radioButton_RecipeVision_CameraSelection_HighMag.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.radioButton_RecipeVision_CameraSelection_HighMag.Name = "radioButton_RecipeVision_CameraSelection_HighMag";
             this.radioButton_RecipeVision_CameraSelection_HighMag.Size = new System.Drawing.Size(86, 27);
             this.radioButton_RecipeVision_CameraSelection_HighMag.TabIndex = 6;
@@ -1274,7 +1285,7 @@
             // 
             this.radioButton_RecipeVision_CameraSelection_LowMag.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_CameraSelection_LowMag.Location = new System.Drawing.Point(12, 16);
-            this.radioButton_RecipeVision_CameraSelection_LowMag.Margin = new System.Windows.Forms.Padding(6);
+            this.radioButton_RecipeVision_CameraSelection_LowMag.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.radioButton_RecipeVision_CameraSelection_LowMag.Name = "radioButton_RecipeVision_CameraSelection_LowMag";
             this.radioButton_RecipeVision_CameraSelection_LowMag.Size = new System.Drawing.Size(108, 27);
             this.radioButton_RecipeVision_CameraSelection_LowMag.TabIndex = 5;
@@ -1352,7 +1363,7 @@
             // 
             this.label_RecipeVision_Circle_Score.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_RecipeVision_Circle_Score.Location = new System.Drawing.Point(776, 87);
-            this.label_RecipeVision_Circle_Score.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Circle_Score.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_RecipeVision_Circle_Score.Name = "label_RecipeVision_Circle_Score";
             this.label_RecipeVision_Circle_Score.Size = new System.Drawing.Size(165, 25);
             this.label_RecipeVision_Circle_Score.TabIndex = 209;
@@ -1431,6 +1442,7 @@
             // button_RecipeVision_Train_Set
             // 
             this.button_RecipeVision_Train_Set.BackColor = System.Drawing.Color.White;
+            this.button_RecipeVision_Train_Set.Enabled = false;
             this.button_RecipeVision_Train_Set.FlatAppearance.BorderColor = System.Drawing.Color.Aqua;
             this.button_RecipeVision_Train_Set.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_RecipeVision_Train_Set.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1630,7 +1642,7 @@
             // 
             this.radioButton_RecipeVision_mm.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_mm.Location = new System.Drawing.Point(209, 29);
-            this.radioButton_RecipeVision_mm.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_RecipeVision_mm.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_RecipeVision_mm.Name = "radioButton_RecipeVision_mm";
             this.radioButton_RecipeVision_mm.Size = new System.Drawing.Size(60, 18);
             this.radioButton_RecipeVision_mm.TabIndex = 13;
@@ -1643,7 +1655,7 @@
             this.radioButton_RecipeVision_Pixel.Checked = true;
             this.radioButton_RecipeVision_Pixel.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_RecipeVision_Pixel.Location = new System.Drawing.Point(209, 9);
-            this.radioButton_RecipeVision_Pixel.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_RecipeVision_Pixel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_RecipeVision_Pixel.Name = "radioButton_RecipeVision_Pixel";
             this.radioButton_RecipeVision_Pixel.Size = new System.Drawing.Size(60, 18);
             this.radioButton_RecipeVision_Pixel.TabIndex = 12;
@@ -1735,6 +1747,14 @@
             // 
             // groupBox_RecipeVision_Fine_Camera
             // 
+            this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.textBox_RecipeVision_ROI_END_Y);
+            this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.textBox_RecipeVision_ROI_END_X);
+            this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.label2);
+            this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.label1);
+            this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.textBox_RecipeVision_ROI_START_Y);
+            this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.textBox_RecipeVision_ROI_START_X);
+            this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.button_Recipe_Fiducial_ROI);
+            this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.button_Recipe_Fiducial_Position_Move_Z);
             this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.button_Recipe_Fiducial_Mark_Delete);
             this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.button_Recipe_Fiducial_Mark_Add);
             this.groupBox_RecipeVision_Fine_Camera.Controls.Add(this.comboBox_Recipe_Fiducial_MarkIndex);
@@ -1760,6 +1780,100 @@
             this.groupBox_RecipeVision_Fine_Camera.TabIndex = 221;
             this.groupBox_RecipeVision_Fine_Camera.TabStop = false;
             this.groupBox_RecipeVision_Fine_Camera.Text = " Fine Camera ";
+            // 
+            // textBox_RecipeVision_ROI_END_Y
+            // 
+            this.textBox_RecipeVision_ROI_END_Y.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_RecipeVision_ROI_END_Y.Location = new System.Drawing.Point(662, 324);
+            this.textBox_RecipeVision_ROI_END_Y.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox_RecipeVision_ROI_END_Y.Name = "textBox_RecipeVision_ROI_END_Y";
+            this.textBox_RecipeVision_ROI_END_Y.Size = new System.Drawing.Size(88, 24);
+            this.textBox_RecipeVision_ROI_END_Y.TabIndex = 240;
+            this.textBox_RecipeVision_ROI_END_Y.Tag = "KeyPad;Min=0;Max=9000000;Format=0";
+            this.textBox_RecipeVision_ROI_END_Y.Text = "000";
+            this.textBox_RecipeVision_ROI_END_Y.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_RecipeVision_ROI_END_X
+            // 
+            this.textBox_RecipeVision_ROI_END_X.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_RecipeVision_ROI_END_X.Location = new System.Drawing.Point(662, 298);
+            this.textBox_RecipeVision_ROI_END_X.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox_RecipeVision_ROI_END_X.Name = "textBox_RecipeVision_ROI_END_X";
+            this.textBox_RecipeVision_ROI_END_X.Size = new System.Drawing.Size(88, 24);
+            this.textBox_RecipeVision_ROI_END_X.TabIndex = 239;
+            this.textBox_RecipeVision_ROI_END_X.Tag = "KeyPad;Min=0;Max=9000000;Format=0";
+            this.textBox_RecipeVision_ROI_END_X.Text = "000";
+            this.textBox_RecipeVision_ROI_END_X.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label2
+            // 
+            this.label2.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label2.Location = new System.Drawing.Point(494, 322);
+            this.label2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(70, 25);
+            this.label2.TabIndex = 238;
+            this.label2.Text = "ROI Y:";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label1.Location = new System.Drawing.Point(494, 298);
+            this.label1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(70, 25);
+            this.label1.TabIndex = 225;
+            this.label1.Text = "ROI X:";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_RecipeVision_ROI_START_Y
+            // 
+            this.textBox_RecipeVision_ROI_START_Y.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_RecipeVision_ROI_START_Y.Location = new System.Drawing.Point(571, 324);
+            this.textBox_RecipeVision_ROI_START_Y.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox_RecipeVision_ROI_START_Y.Name = "textBox_RecipeVision_ROI_START_Y";
+            this.textBox_RecipeVision_ROI_START_Y.Size = new System.Drawing.Size(88, 24);
+            this.textBox_RecipeVision_ROI_START_Y.TabIndex = 237;
+            this.textBox_RecipeVision_ROI_START_Y.Tag = "KeyPad;Min=0;Max=9000000;Format=0";
+            this.textBox_RecipeVision_ROI_START_Y.Text = "000";
+            this.textBox_RecipeVision_ROI_START_Y.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_RecipeVision_ROI_START_X
+            // 
+            this.textBox_RecipeVision_ROI_START_X.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_RecipeVision_ROI_START_X.Location = new System.Drawing.Point(571, 298);
+            this.textBox_RecipeVision_ROI_START_X.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox_RecipeVision_ROI_START_X.Name = "textBox_RecipeVision_ROI_START_X";
+            this.textBox_RecipeVision_ROI_START_X.Size = new System.Drawing.Size(88, 24);
+            this.textBox_RecipeVision_ROI_START_X.TabIndex = 225;
+            this.textBox_RecipeVision_ROI_START_X.Tag = "KeyPad;Min=0;Max=9000000;Format=0";
+            this.textBox_RecipeVision_ROI_START_X.Text = "000";
+            this.textBox_RecipeVision_ROI_START_X.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // button_Recipe_Fiducial_ROI
+            // 
+            this.button_Recipe_Fiducial_ROI.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Recipe_Fiducial_ROI.Location = new System.Drawing.Point(764, 298);
+            this.button_Recipe_Fiducial_ROI.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_Fiducial_ROI.Name = "button_Recipe_Fiducial_ROI";
+            this.button_Recipe_Fiducial_ROI.Size = new System.Drawing.Size(92, 49);
+            this.button_Recipe_Fiducial_ROI.TabIndex = 236;
+            this.button_Recipe_Fiducial_ROI.Text = "Inspect ROI";
+            this.button_Recipe_Fiducial_ROI.UseVisualStyleBackColor = true;
+            this.button_Recipe_Fiducial_ROI.Click += new System.EventHandler(this.button_Recipe_Fiducial_ROI_Click);
+            // 
+            // button_Recipe_Fiducial_Position_Move_Z
+            // 
+            this.button_Recipe_Fiducial_Position_Move_Z.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Recipe_Fiducial_Position_Move_Z.Location = new System.Drawing.Point(764, 195);
+            this.button_Recipe_Fiducial_Position_Move_Z.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_Fiducial_Position_Move_Z.Name = "button_Recipe_Fiducial_Position_Move_Z";
+            this.button_Recipe_Fiducial_Position_Move_Z.Size = new System.Drawing.Size(85, 37);
+            this.button_Recipe_Fiducial_Position_Move_Z.TabIndex = 233;
+            this.button_Recipe_Fiducial_Position_Move_Z.Text = "Move Z";
+            this.button_Recipe_Fiducial_Position_Move_Z.UseVisualStyleBackColor = true;
+            this.button_Recipe_Fiducial_Position_Move_Z.Click += new System.EventHandler(this.button_Recipe_Fiducial_Position_Move_Z_Click);
             // 
             // button_Recipe_Fiducial_Mark_Delete
             // 
@@ -1802,7 +1916,7 @@
             this.listBox_Recipe_Fiducial_Result.ItemHeight = 16;
             this.listBox_Recipe_Fiducial_Result.Location = new System.Drawing.Point(764, 117);
             this.listBox_Recipe_Fiducial_Result.Name = "listBox_Recipe_Fiducial_Result";
-            this.listBox_Recipe_Fiducial_Result.Size = new System.Drawing.Size(278, 68);
+            this.listBox_Recipe_Fiducial_Result.Size = new System.Drawing.Size(278, 52);
             this.listBox_Recipe_Fiducial_Result.TabIndex = 224;
             // 
             // groupBox_Fiducial_MarkMatching
@@ -1811,7 +1925,7 @@
             this.groupBox_Fiducial_MarkMatching.Controls.Add(this.radioButton_Fiducial_Pattern);
             this.groupBox_Fiducial_MarkMatching.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_Fiducial_MarkMatching.Location = new System.Drawing.Point(494, 28);
-            this.groupBox_Fiducial_MarkMatching.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox_Fiducial_MarkMatching.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox_Fiducial_MarkMatching.Name = "groupBox_Fiducial_MarkMatching";
             this.groupBox_Fiducial_MarkMatching.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBox_Fiducial_MarkMatching.Size = new System.Drawing.Size(263, 48);
@@ -1823,7 +1937,7 @@
             // 
             this.radioButton_Fiducial_Circle.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Fiducial_Circle.Location = new System.Drawing.Point(96, 23);
-            this.radioButton_Fiducial_Circle.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_Fiducial_Circle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_Fiducial_Circle.Name = "radioButton_Fiducial_Circle";
             this.radioButton_Fiducial_Circle.Size = new System.Drawing.Size(60, 18);
             this.radioButton_Fiducial_Circle.TabIndex = 6;
@@ -1836,7 +1950,7 @@
             this.radioButton_Fiducial_Pattern.Enabled = false;
             this.radioButton_Fiducial_Pattern.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Fiducial_Pattern.Location = new System.Drawing.Point(13, 23);
-            this.radioButton_Fiducial_Pattern.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_Fiducial_Pattern.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_Fiducial_Pattern.Name = "radioButton_Fiducial_Pattern";
             this.radioButton_Fiducial_Pattern.Size = new System.Drawing.Size(74, 18);
             this.radioButton_Fiducial_Pattern.TabIndex = 5;
@@ -1850,7 +1964,7 @@
             this.groupBox_Fiducial_MarkType.Controls.Add(this.radioButton_Fiducial_Type_GoldPowder);
             this.groupBox_Fiducial_MarkType.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_Fiducial_MarkType.Location = new System.Drawing.Point(494, 86);
-            this.groupBox_Fiducial_MarkType.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox_Fiducial_MarkType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox_Fiducial_MarkType.Name = "groupBox_Fiducial_MarkType";
             this.groupBox_Fiducial_MarkType.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBox_Fiducial_MarkType.Size = new System.Drawing.Size(263, 48);
@@ -1862,7 +1976,7 @@
             // 
             this.radioButton_Fiducial_Type_Circle.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Fiducial_Type_Circle.Location = new System.Drawing.Point(13, 23);
-            this.radioButton_Fiducial_Type_Circle.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_Fiducial_Type_Circle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_Fiducial_Type_Circle.Name = "radioButton_Fiducial_Type_Circle";
             this.radioButton_Fiducial_Type_Circle.Size = new System.Drawing.Size(74, 18);
             this.radioButton_Fiducial_Type_Circle.TabIndex = 6;
@@ -1875,7 +1989,7 @@
             this.radioButton_Fiducial_Type_GoldPowder.Enabled = false;
             this.radioButton_Fiducial_Type_GoldPowder.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Fiducial_Type_GoldPowder.Location = new System.Drawing.Point(96, 23);
-            this.radioButton_Fiducial_Type_GoldPowder.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_Fiducial_Type_GoldPowder.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_Fiducial_Type_GoldPowder.Name = "radioButton_Fiducial_Type_GoldPowder";
             this.radioButton_Fiducial_Type_GoldPowder.Size = new System.Drawing.Size(109, 18);
             this.radioButton_Fiducial_Type_GoldPowder.TabIndex = 5;
@@ -1890,7 +2004,7 @@
             this.groupBox_Fiducial_Color.Controls.Add(this.radioButton_Fiducial_White);
             this.groupBox_Fiducial_Color.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_Fiducial_Color.Location = new System.Drawing.Point(494, 144);
-            this.groupBox_Fiducial_Color.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox_Fiducial_Color.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox_Fiducial_Color.Name = "groupBox_Fiducial_Color";
             this.groupBox_Fiducial_Color.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBox_Fiducial_Color.Size = new System.Drawing.Size(263, 48);
@@ -1902,7 +2016,7 @@
             // 
             this.radioButton_Fiducial_Ignor.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Fiducial_Ignor.Location = new System.Drawing.Point(179, 22);
-            this.radioButton_Fiducial_Ignor.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_Fiducial_Ignor.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_Fiducial_Ignor.Name = "radioButton_Fiducial_Ignor";
             this.radioButton_Fiducial_Ignor.Size = new System.Drawing.Size(76, 18);
             this.radioButton_Fiducial_Ignor.TabIndex = 7;
@@ -1913,7 +2027,7 @@
             // 
             this.radioButton_Fiducial_Black.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Fiducial_Black.Location = new System.Drawing.Point(13, 23);
-            this.radioButton_Fiducial_Black.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_Fiducial_Black.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_Fiducial_Black.Name = "radioButton_Fiducial_Black";
             this.radioButton_Fiducial_Black.Size = new System.Drawing.Size(74, 18);
             this.radioButton_Fiducial_Black.TabIndex = 6;
@@ -1925,7 +2039,7 @@
             this.radioButton_Fiducial_White.Checked = true;
             this.radioButton_Fiducial_White.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Fiducial_White.Location = new System.Drawing.Point(96, 23);
-            this.radioButton_Fiducial_White.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_Fiducial_White.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_Fiducial_White.Name = "radioButton_Fiducial_White";
             this.radioButton_Fiducial_White.Size = new System.Drawing.Size(76, 18);
             this.radioButton_Fiducial_White.TabIndex = 5;
@@ -1993,7 +2107,7 @@
             // 
             this.label_Recipe_Fiducial_CircleScore.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_Recipe_Fiducial_CircleScore.Location = new System.Drawing.Point(776, 84);
-            this.label_Recipe_Fiducial_CircleScore.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Recipe_Fiducial_CircleScore.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_Recipe_Fiducial_CircleScore.Name = "label_Recipe_Fiducial_CircleScore";
             this.label_Recipe_Fiducial_CircleScore.Size = new System.Drawing.Size(165, 25);
             this.label_Recipe_Fiducial_CircleScore.TabIndex = 229;
@@ -2016,13 +2130,61 @@
             this.groupBox_RecipeVision_Illuminator.Controls.Add(this.label_RecipeVision_High_IR);
             this.groupBox_RecipeVision_Illuminator.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox_RecipeVision_Illuminator.Location = new System.Drawing.Point(1375, 153);
-            this.groupBox_RecipeVision_Illuminator.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_RecipeVision_Illuminator.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox_RecipeVision_Illuminator.Name = "groupBox_RecipeVision_Illuminator";
             this.groupBox_RecipeVision_Illuminator.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox_RecipeVision_Illuminator.Size = new System.Drawing.Size(164, 216);
             this.groupBox_RecipeVision_Illuminator.TabIndex = 223;
             this.groupBox_RecipeVision_Illuminator.TabStop = false;
             this.groupBox_RecipeVision_Illuminator.Text = " Illuminator";
+            // 
+            // button_Recipe_RecipeVision_Illuminator_CoarseCamIR
+            // 
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Location = new System.Drawing.Point(108, 175);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Name = "button_Recipe_RecipeVision_Illuminator_CoarseCamIR";
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Size = new System.Drawing.Size(51, 25);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.TabIndex = 228;
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text = "적용";
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.UseVisualStyleBackColor = true;
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR_Click);
+            // 
+            // button_Recipe_RecipeVision_Illuminator_CoarseCamRed
+            // 
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Location = new System.Drawing.Point(108, 133);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Name = "button_Recipe_RecipeVision_Illuminator_CoarseCamRed";
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Size = new System.Drawing.Size(51, 25);
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.TabIndex = 227;
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text = "적용";
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.UseVisualStyleBackColor = true;
+            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed_Click);
+            // 
+            // button_Recipe_RecipeVision_Illuminator_FineCamIR
+            // 
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Location = new System.Drawing.Point(108, 85);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Name = "button_Recipe_RecipeVision_Illuminator_FineCamIR";
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Size = new System.Drawing.Size(51, 25);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.TabIndex = 226;
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Text = "적용";
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.UseVisualStyleBackColor = true;
+            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_FineCamIR_Click);
+            // 
+            // button_Recipe_RecipeVision_Illuminator_FineCamRed
+            // 
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Location = new System.Drawing.Point(108, 44);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Name = "button_Recipe_RecipeVision_Illuminator_FineCamRed";
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Size = new System.Drawing.Size(51, 25);
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.TabIndex = 225;
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Text = "적용";
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.UseVisualStyleBackColor = true;
+            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_FineCamRed_Click);
             // 
             // textBox_Recipe_RecipeVision_Illuminator_CoarseCamRed
             // 
@@ -2141,7 +2303,7 @@
             // 
             this.label_RecipeVision_Camera_ExposureTime_High.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_RecipeVision_Camera_ExposureTime_High.Location = new System.Drawing.Point(14, 25);
-            this.label_RecipeVision_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Camera_ExposureTime_High.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_RecipeVision_Camera_ExposureTime_High.Name = "label_RecipeVision_Camera_ExposureTime_High";
             this.label_RecipeVision_Camera_ExposureTime_High.Size = new System.Drawing.Size(130, 25);
             this.label_RecipeVision_Camera_ExposureTime_High.TabIndex = 224;
@@ -2190,7 +2352,7 @@
             // 
             this.label_RecipeVision_AxisZ_Setting.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_RecipeVision_AxisZ_Setting.Location = new System.Drawing.Point(14, 25);
-            this.label_RecipeVision_AxisZ_Setting.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_AxisZ_Setting.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_RecipeVision_AxisZ_Setting.Name = "label_RecipeVision_AxisZ_Setting";
             this.label_RecipeVision_AxisZ_Setting.Size = new System.Drawing.Size(130, 25);
             this.label_RecipeVision_AxisZ_Setting.TabIndex = 224;
@@ -2238,7 +2400,7 @@
             // 
             this.label_RecipeVision_Camera_ExposureTime_Low.Font = new System.Drawing.Font("Tahoma", 10F);
             this.label_RecipeVision_Camera_ExposureTime_Low.Location = new System.Drawing.Point(14, 25);
-            this.label_RecipeVision_Camera_ExposureTime_Low.Margin = new System.Windows.Forms.Padding(5);
+            this.label_RecipeVision_Camera_ExposureTime_Low.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.label_RecipeVision_Camera_ExposureTime_Low.Name = "label_RecipeVision_Camera_ExposureTime_Low";
             this.label_RecipeVision_Camera_ExposureTime_Low.Size = new System.Drawing.Size(130, 25);
             this.label_RecipeVision_Camera_ExposureTime_Low.TabIndex = 224;
@@ -2256,54 +2418,6 @@
             this.textBox_RecipeVision_Camera_ExposureTime_Low.Tag = "KeyPad;Min=0;Max=9000000;Format=0";
             this.textBox_RecipeVision_Camera_ExposureTime_Low.Text = "000";
             this.textBox_RecipeVision_Camera_ExposureTime_Low.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // button_Recipe_RecipeVision_Illuminator_FineCamRed
-            // 
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Location = new System.Drawing.Point(108, 44);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(2);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Name = "button_Recipe_RecipeVision_Illuminator_FineCamRed";
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Size = new System.Drawing.Size(51, 25);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.TabIndex = 225;
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Text = "적용";
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.UseVisualStyleBackColor = true;
-            this.button_Recipe_RecipeVision_Illuminator_FineCamRed.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_FineCamRed_Click);
-            // 
-            // button_Recipe_RecipeVision_Illuminator_FineCamIR
-            // 
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Location = new System.Drawing.Point(108, 85);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(2);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Name = "button_Recipe_RecipeVision_Illuminator_FineCamIR";
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Size = new System.Drawing.Size(51, 25);
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.TabIndex = 226;
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Text = "적용";
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.UseVisualStyleBackColor = true;
-            this.button_Recipe_RecipeVision_Illuminator_FineCamIR.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_FineCamIR_Click);
-            // 
-            // button_Recipe_RecipeVision_Illuminator_CoarseCamRed
-            // 
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Location = new System.Drawing.Point(108, 133);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Margin = new System.Windows.Forms.Padding(2);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Name = "button_Recipe_RecipeVision_Illuminator_CoarseCamRed";
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Size = new System.Drawing.Size(51, 25);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.TabIndex = 227;
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Text = "적용";
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.UseVisualStyleBackColor = true;
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_CoarseCamRed_Click);
-            // 
-            // button_Recipe_RecipeVision_Illuminator_CoarseCamIR
-            // 
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Location = new System.Drawing.Point(108, 175);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Margin = new System.Windows.Forms.Padding(2);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Name = "button_Recipe_RecipeVision_Illuminator_CoarseCamIR";
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Size = new System.Drawing.Size(51, 25);
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.TabIndex = 228;
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text = "적용";
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.UseVisualStyleBackColor = true;
-            this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR.Click += new System.EventHandler(this.button_Recipe_RecipeVision_Illuminator_CoarseCamIR_Click);
             // 
             // FormNewSub_Recipe_Vision
             // 
@@ -2537,5 +2651,13 @@
         private System.Windows.Forms.Button button_Recipe_RecipeVision_Illuminator_CoarseCamRed;
         private System.Windows.Forms.Button button_Recipe_RecipeVision_Illuminator_FineCamIR;
         private System.Windows.Forms.Button button_Recipe_RecipeVision_Illuminator_FineCamRed;
+        private System.Windows.Forms.Button button_Recipe_Fiducial_Position_Move_Z;
+        private System.Windows.Forms.Button button_Recipe_Fiducial_ROI;
+        private System.Windows.Forms.TextBox textBox_RecipeVision_ROI_START_X;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox_RecipeVision_ROI_START_Y;
+        private System.Windows.Forms.TextBox textBox_RecipeVision_ROI_END_Y;
+        private System.Windows.Forms.TextBox textBox_RecipeVision_ROI_END_X;
     }
 }
