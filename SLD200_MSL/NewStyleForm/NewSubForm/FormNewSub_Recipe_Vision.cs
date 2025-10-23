@@ -1778,15 +1778,34 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 if (nTargetColor <= 1)
                 {
-                    result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
-                                                    workStage.Camera_HighRes.LatestImage.RawData, 
-                                                    w, h, (int)dRadius, dSpec,
-                                                    ref bFindCircle, 0, 0, nTargetColor == 0);
+                    //result = aligner.FindCirclesWidthCircleBoundary(
+                    //    circlesResult,           
+                    //    workStage.Camera_HighRes.LatestImage.RawData, 
+                    //                                w, 
+                    //                                h, 
+                    //                                (int)dRadius, 
+                    //                                dSpec,
+                    //                                ref bFindCircle, 
+                    //                                0, 0, 
+                    //                                nTargetColor == 0);
+                    result = aligner.FindCirclesWidthCircleBoundary(
+                        circlesResult,
+                        workStage.Camera_HighRes.LatestImage.RawData,
+                                                    w,
+                                                    h,
+                                                    (int)dRadius,
+                                                    dSpec,
+                                                    ref bFindCircle,
+                                                    0, 0,
+                                                    nTargetColor == 0,
+                                                    dScore,
+                                                    false);
 
                 }
                 else if(nTargetColor == 2)
                 {
-                    result = aligner.FindCircleForFR4(workStage.Camera_HighRes.LatestImage.RawData,
+                    result = aligner.FindCircleForFR4(
+                        workStage.Camera_HighRes.LatestImage.RawData,
                                                       w,
                                                       h,
                                                       (int)dRadius,
@@ -1944,8 +1963,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             radioButton_Fiducial_Type_Circle.Checked = mark.MarkType == 0;
             radioButton_Fiducial_Type_GoldPowder.Checked = mark.MarkType == 1;
 
-            radioButton_Fiducial_White.Checked = mark.MarkColor == 0;
-            radioButton_Fiducial_Black.Checked = mark.MarkColor == 1;
+            radioButton_Fiducial_Black.Checked = mark.MarkColor == 0;
+            radioButton_Fiducial_White.Checked = mark.MarkColor == 1;
             radioButton_Fiducial_Ignor.Checked = mark.MarkColor == 2;
 
             textBox_Recipe_Fiducial_CircleSize.Text = mark.MarkRadius.ToString("F3");
@@ -1985,9 +2004,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             mark.AlignType = radioButton_Fiducial_Pattern.Checked ? 2 : 0;
             mark.MarkType = radioButton_Fiducial_Type_GoldPowder.Checked ? 1 : 0;
 
-            if (radioButton_Fiducial_White.Checked)
+            if (radioButton_Fiducial_Black.Checked)
                 mark.MarkColor = 0;
-            else if (radioButton_Fiducial_Black.Checked)
+            else if (radioButton_Fiducial_White.Checked)
                 mark.MarkColor = 1;
             else
                 mark.MarkColor = 2;

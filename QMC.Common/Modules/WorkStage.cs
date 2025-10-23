@@ -15867,6 +15867,19 @@ namespace QMC.Common.Modules
                             // Circle Color 0: White, 1: Black
                             if (mark.MarkColor <= 1)
                             {
+                                //result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
+                                //    Fiducial_circlesResult,
+                                //    bm_AlignRawData,
+                                //    Camera_HighRes.Resolution.Width,
+                                //    Camera_HighRes.Resolution.Height,
+                                //    nWidthImageCount,
+                                //    mark.MarkSpec,
+                                //    ref Fiducial_circleFound,
+                                //    0, 0,
+                                //    (mark.MarkType == 0), // GoldPowder 여부?
+                                //    mark.MarkScore,
+                                //    false);
+
                                 result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
                                     Fiducial_circlesResult,
                                     bm_AlignRawData,
@@ -15876,7 +15889,7 @@ namespace QMC.Common.Modules
                                     mark.MarkSpec,
                                     ref Fiducial_circleFound,
                                     0, 0,
-                                    (mark.MarkType == 0), // GoldPowder 여부?
+                                    (mark.MarkColor == 0), // GoldPowder 여부?
                                     mark.MarkScore,
                                     false);
 

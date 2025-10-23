@@ -594,8 +594,17 @@ namespace QMC.Common.Q_Sequence
                                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
                             }
                         }
+                        else
+                        {
+                            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE)
+                            {
+                                TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
 
-                        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Scanner_Init_Check;
+                                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                            }
+                        }
+
+                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Scanner_Init_Check;
                     }
                     break;
 
@@ -622,7 +631,23 @@ namespace QMC.Common.Q_Sequence
                         }
                         else
                         {
-                            m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.LaserShutter_Open;
+                            if (Equipment.ScannerMode_Change_byUser == (int)RtcMode.RTC_RTC6_COMPLETE &&
+                                Equipment._InitDeviceStatus.Scanner == true &&
+                                TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > 5000)
+                            {
+                                //workStage.workStageParameter.DO_Laser_Enable(true);
+                                Thread.Sleep(100);
+
+                                m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.LaserShutter_Open;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > 120000)
+                            {
+                                Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", "Scanner init 실패.");
+
+                                m_VerifyScannerCameraOffsetStep = (int)VerifyScannerCameraOffset_Step.None;
+                                return workStage.AlarmPost(AlarmKey.InitFail_Scanner);
+                            }
+                            //m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.LaserShutter_Open;
                         }
                     }
                     break;

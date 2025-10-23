@@ -538,21 +538,21 @@ namespace SLD200_MSL
 
                 SpiralLab.Sirius.Config.IsDocumentDrawGrids = true;
                 SpiralLab.Sirius.Config.IsDocumentDrawAxes = false;
-                //SpiralLab.Sirius.Config.AngleFactor = 25;
-                SpiralLab.Sirius.Config.SimulationStepDistance = 0.5f;
 
-                SpiralLab.Sirius.Config.BezierSplineMicroStepDistance = 0.3f;
-                SpiralLab.Sirius.Config.SplineControlPointPrecision = 4f;
-                //SpiralLab.Sirius.Config.LwPolylineBulgeToLines = true;
-                SpiralLab.Sirius.Config.LwPolylineBulgePrecision = 10;
-                SpiralLab.Sirius.Config.LwPolylineBulgeToLineMinThreshold = 0.05f;
 
-                SpiralLab.Sirius.Config.IsDxfCircleOverride = true;
-                SpiralLab.Sirius.Config.DxfCircleOverrideAngleFactor = 60;
-                SpiralLab.Sirius.Config.DxfCircleOverrideRepeats = 1;
+                //SpiralLab.Sirius.Config.SimulationStepDistance = 0.5f;
 
-                SpiralLab.Sirius.Config.UndoStackSize = 50;
-                SpiralLab.Sirius.Config.IsSnapToGridHatchInterval = true;
+                //SpiralLab.Sirius.Config.BezierSplineMicroStepDistance = 0.3f;
+                //SpiralLab.Sirius.Config.SplineControlPointPrecision = 4f;
+                //SpiralLab.Sirius.Config.LwPolylineBulgePrecision = 10;
+                //SpiralLab.Sirius.Config.LwPolylineBulgeToLineMinThreshold = 0.05f;
+
+                //SpiralLab.Sirius.Config.IsDxfCircleOverride = true;
+                //SpiralLab.Sirius.Config.DxfCircleOverrideAngleFactor = 60;
+                //SpiralLab.Sirius.Config.DxfCircleOverrideRepeats = 1;
+
+                //SpiralLab.Sirius.Config.UndoStackSize = 50;
+                //SpiralLab.Sirius.Config.IsSnapToGridHatchInterval = true;
 
 
 
