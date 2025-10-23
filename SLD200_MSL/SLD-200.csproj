@@ -37,7 +37,7 @@
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
     <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>2</WarningLevel>
+    <WarningLevel>0</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>

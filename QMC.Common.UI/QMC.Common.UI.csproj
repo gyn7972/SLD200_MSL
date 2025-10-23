@@ -20,7 +20,7 @@
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
     <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>2</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

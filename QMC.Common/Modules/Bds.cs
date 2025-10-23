@@ -406,13 +406,14 @@ namespace QMC.Common.Modules
                 LaserCO2Manager.OnAlarmRaised += msg => Console.WriteLine("[ALARM] " + msg);
 
                 // 초기 연결은 장비 Init 단계에서 시도
-                Task.Run(() =>
-                {
-                    if (LaserCO2Manager.Connect())
-                        Log.Write("LaserCO2", "Connect", "Laser TCP 연결 성공");
-                    else
-                        Log.Write("LaserCO2", "Connect", "Laser TCP 연결 실패");
-                });
+                // 하지마.
+                //Task.Run(() =>
+                //{
+                //    if (LaserCO2Manager.Connect())
+                //        Log.Write("LaserCO2", "Connect", "Laser TCP 연결 성공");
+                //    else
+                //        Log.Write("LaserCO2", "Connect", "Laser TCP 연결 실패");
+                //});
             }
 
             //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
