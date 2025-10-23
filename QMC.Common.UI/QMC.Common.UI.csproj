@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\SLD-200\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\SLD-200\</OutputPath>
     <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>2</WarningLevel>
