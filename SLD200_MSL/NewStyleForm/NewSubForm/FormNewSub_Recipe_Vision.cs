@@ -52,6 +52,8 @@ namespace SLD200.NewStyleForm.NewSubForm
         private System.Windows.Forms.Timer RecipeVisionTimer;
         private bool m_bRoiInspectSocket = true;
 
+        private static FormNew_QMCVisionSettingStatus m_formUserGuide = null;
+
         public FormNewSub_Recipe_Vision()
         {
             InitializeComponent();
@@ -141,6 +143,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             InitPreAlignMarkCombo();
 
             InitRecipeUI_KeyPad();
+
+            m_formUserGuide = new FormNew_QMCVisionSettingStatus();
 
             m_bInitialized = true;
         }
@@ -1850,7 +1854,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else
             {
-                // 실패 시
+                
                 if (!result.Success)
                 {
                     listBox_Recipe_Fiducial_Result.Items.Clear();
@@ -1874,7 +1878,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                         foreach (var line in result.UserGuide.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
                         {
                             listBox_Recipe_Fiducial_Result.Items.Add(line);
-                        }
+                        }// 실패 시
 
                         //mb.ShowDialog("원 찾기 실패", result.UserGuide);
                         strMes = result.FailMessage + "\r\n" + result.UserGuide;
@@ -2646,6 +2650,14 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             this.ImageViewer_RecipeVision_highs.Display();
 
+        }
+
+        
+
+        private void button_HelpGuide_Click(object sender, EventArgs e)
+        {
+            m_formUserGuide.Owner = this.FindForm();
+            m_formUserGuide.Show();
         }
     }
 }

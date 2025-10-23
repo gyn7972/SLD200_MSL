@@ -478,12 +478,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 double m_dradius = 0.0;
                 m_dradius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
 
-                //Rectangle rectangle = new Rectangle(0, 0, w, h);
-                //rectangle.X = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_X.Text);
-                //rectangle.Y = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_Y.Text);
-                //rectangle.Width = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_X.Text);
-                //rectangle.Height = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_Y.Text);
-                // 교체
                 int sx = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_X.Text);
                 int sy = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_START_Y.Text);
                 int ex = Equipment.ToInt(textBox_Recipe_Goldpowder_ROI_END_X.Text);
@@ -499,7 +493,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 int roiW = Math.Max(0, right - left);
                 int roiH = Math.Max(0, bottom - top);
 
-                // 최종 ROI
                 Rectangle rectangle = new Rectangle(left, top, roiW, roiH);
                 {
                     if(workStage.m_bCO2_MultyMode)
@@ -553,10 +546,51 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else
             {
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "원 찾기 실패");
-                //MessageBox.Show("원 찾기 실패", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                listBox_Recipe_GoldPowder_Fiducial_Result.Items.Clear();
+                // 실패 시
+                if (!result.Success)
+                {
+                    listBox_Recipe_GoldPowder_Fiducial_Result.Items.Clear();
+                    listBox_Recipe_GoldPowder_Fiducial_Result.Items.Add("[원 찾기 실패]");
+                    listBox_Recipe_GoldPowder_Fiducial_Result.Items.Add("Reason : " + result.FailReason);
+
+                    var mb = new MessageBoxOk();
+                    string strMes = string.Empty;
+                    if (!string.IsNullOrEmpty(result.FailMessage))
+                    {
+                        listBox_Recipe_GoldPowder_Fiducial_Result.Items.Add(result.FailMessage);
+
+                        //mb.ShowDialog("원 찾기 실패", result.FailMessage);
+                        strMes = result.FailMessage;
+                    }
+
+                    // 새 가이드 출력
+                    if (!string.IsNullOrEmpty(result.UserGuide))
+                    {
+                        listBox_Recipe_GoldPowder_Fiducial_Result.Items.Add("---- Guide ----");
+                        foreach (var line in result.UserGuide.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            listBox_Recipe_GoldPowder_Fiducial_Result.Items.Add(line);
+                        }
+
+                        //mb.ShowDialog("원 찾기 실패", result.UserGuide);
+                        strMes = result.FailMessage + "\r\n" + result.UserGuide;
+
+                    }
+                    else if (!string.IsNullOrEmpty(result.Recommendation))
+                    {
+                        listBox_Recipe_GoldPowder_Fiducial_Result.Items.Add("---- Recommendation ----");
+                        foreach (var line in result.Recommendation.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            listBox_Recipe_GoldPowder_Fiducial_Result.Items.Add(line);
+                        }
+
+                        //mb.ShowDialog("원 찾기 실패", result.Recommendation);
+                        strMes = result.FailMessage + "\r\n" + result.UserGuide + "\r\n" + result.Recommendation;
+                    }
+
+                    mb.ShowDialog("원 찾기 실패", strMes);
+
+                }
             }
 
             //  원 찾기 후 다시 Live
@@ -564,6 +598,11 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 workStage.Camera_HighRes.StartLive();
             }
+
+            //var mb = new MessageBoxOk();
+            //mb.ShowDialog("Information !", "원 찾기 실패");
+            ////MessageBox.Show("원 찾기 실패", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //listBox_Recipe_GoldPowder_Fiducial_Result.Items.Clear();
         }
 
         private void button_Recipe_GoldPowder_Camera_ExposureTime_Click(object sender, EventArgs e)
