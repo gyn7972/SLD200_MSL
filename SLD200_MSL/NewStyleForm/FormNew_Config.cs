@@ -618,11 +618,6 @@ namespace SLD200_MSL
                 //Log.Write("DustCollector", "집진기 상태: 정지");
             }
 
-
-
-
-
-
             /////////////////////////////////////////////////////////////////////////////////////
             /// VarioScan
             float? zOffset = bds.CurrentRtcZOffset;
@@ -838,12 +833,10 @@ namespace SLD200_MSL
                         textBox_Config_BDS_BET_Zoom.Text = workStage.m_dBET_ZoomValue.ToString();
                         textBox_Config_BDS_BET_Mrad.Text = workStage.m_dBET_MradValue.ToString();
 
-
                         //  프로그램 구동 후 BET Zoom, Mrad 위치값을 세팅 edit 에 1회만 표시하기 위한 Flag
                         if (!m_bBET_Status_1time)
                         {
                             m_bBET_Status_1time = true;
-
                             textBox_Config_BDS_BET_Zoom_Position.Text = workStage.m_dBET_ZoomValue.ToString();
                             textBox_Config_BDS_BET_Mrad_Position.Text = workStage.m_dBET_MradValue.ToString();
                         }
@@ -2245,9 +2238,9 @@ namespace SLD200_MSL
                         break;
 
                     case (int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos:
-                        min = -1500.0; max = 1500.0; origin = 800;
+                        min = -1500.0; max = 1500.0; origin = 788.265;
                         SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
-                        min = -1500.0; max = 1500.0; origin = 0;
+                        min = -1500.0; max = 1500.0; origin = -15;
                         SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
                         break;
 
@@ -2308,7 +2301,145 @@ namespace SLD200_MSL
             }
             else
             {
+                switch (nIndex)
+                {
+                    case (int)Loader.LDUL_TeachingPosList.LD_RPort_ReadyPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_RPortZ, min, max, origin, format);
+                        break;
 
+                    case (int)Loader.LDUL_TeachingPosList.LD_RPort_TopPos:
+                        min = -1500.0; max = 1500.0; origin = 175;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_RPortZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.LD_LPort_ReadyPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_LPortZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.LD_LPort_TopPos:
+                        min = -1500.0; max = 1500.0; origin = 175;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_LPortZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.LD_TR_SafetyPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.LD_TR_RPortPos:
+                        min = -1500.0; max = 1500.0; origin = 1333.642;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = -27;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.LD_TR_LPortPos:
+                        min = -1500.0; max = 1500.0; origin = 949.642;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = -27;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.LD_TR_MAlignPos:
+                        min = -1500.0; max = 1500.0; origin = 484.642;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = -23;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.LD_TR_WorkTablePos:
+                        min = -1500.0; max = 1500.0; origin = -15.536;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = -23;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.MAligner_OpenPos:
+                        min = -500.0; max = 500.0; origin = -5;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_MAlignerX, min, max, origin, format);
+                        min = -500.0; max = 500.0; origin = -5;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_MAlignerY, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.MAligner_ClosePos:
+                        min = -500.0; max = 500.0; origin = -221.824;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_MAlignerX, min, max, origin, format);
+                        min = -500.0; max = 500.0; origin = -211.83175;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_MAlignerY, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.MAligner_Gap100mmPos:
+                        min = -500.0; max = 500.0; origin = -171.113;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_MAlignerX, min, max, origin, format);
+                        min = -500.0; max = 500.0; origin = -161.8455;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_MAlignerY, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos:
+                        min = -1500.0; max = 1500.0; origin = 788.265;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.UL_TR_WorkTablePos:
+                        min = -1500.0; max = 1500.0; origin = 1356.448;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = -28;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.UL_TR_FPortPos:
+                        min = -1500.0; max = 1500.0; origin = 800;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.UL_TR_RPortPos:
+                        min = -1500.0; max = 1500.0; origin = 372.199;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = -24;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.UL_TR_LPortPos:
+                        min = -1500.0; max = 1500.0; origin = -7.208;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferX, min, max, origin, format);
+                        min = -1500.0; max = 1500.0; origin = -24;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_TransferZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.UL_RPort_ReadyPos:
+
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_RPortZ, min, max, origin, format);
+                        break;
+
+
+                    case (int)Loader.LDUL_TeachingPosList.UL_RPort_TopPos:
+                        min = -1500.0; max = 1500.0; origin = 169.473;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_RPortZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.UL_LPort_ReadyPos:
+
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_LPortZ, min, max, origin, format);
+                        break;
+
+                    case (int)Loader.LDUL_TeachingPosList.UL_LPort_TopPos:
+                        min = -1500.0; max = 1500.0; origin = 176.043;
+                        SetKeyPadTag(textBox_Config_LDUL_TeachingPos_LPortZ, min, max, origin, format);
+                        break;
+
+                    default:
+                        break;
+                }
             }
                 
 
@@ -2473,7 +2604,77 @@ namespace SLD200_MSL
                 }
                 else
                 {
-
+                    switch (nPosIndex)
+                    {
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_OriginPos:
+                            min = -1500.0; max = 1500.0; origin = 396;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = 0;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos:
+                            min = -1500.0; max = 1500.0; origin = 1008;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = -14.1;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_LowMagCamPos:
+                            min = -1500.0; max = 1500.0; origin = 297.464;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = 408.069;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_HighMagCamPos:
+                            min = -1500.0; max = 1500.0; origin = 215.592;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = 414.119;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_ProcessingPos:
+                            min = -1500.0; max = 1500.0; origin = 467.206;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = 415.446;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_Scanner_PMPos:
+                            min = -1500.0; max = 1500.0; origin = 678.796;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = 251.606;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_Scanner_CalPos:
+                            min = -1500.0; max = 1500.0; origin = 580.241;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = 642.769;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_HighMagCam_ReticlePos:
+                            min = -1500.0; max = 1500.0; origin = 0;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = 0;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_LaserHeightSensorPos:
+                            min = -1500.0; max = 1500.0; origin = 0;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = 0;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_UnloadingPos:
+                            min = -1500.0; max = 1500.0; origin = -37.618;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = -12.055;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        case (int)WorkStage.WorkStage_TeachingPosList.STAGE_SafetyPos:
+                            min = -1500.0; max = 1500.0; origin = 396;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageX, min, max, origin, format);
+                            min = -1500.0; max = 1500.0; origin = 0;
+                            SetKeyPadTag(textBox_Config_WorkStage_TeachingPos_StageY, min, max, origin, format);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -2538,6 +2739,35 @@ namespace SLD200_MSL
             }
             else
             {
+                switch (nIndex)
+                {
+                    case (int)Vision.Vision_TeachingPosList.Vision_FocusPos:
+                        min = -1500.0; max = 1500.0; origin = -39.33;
+                        SetKeyPadTag(textBox_Config_Vision_TeachingPos_VisionZ, min, max, origin, format);
+                        break;
+                    case (int)Vision.Vision_TeachingPosList.Laser_FocusPos:
+                        min = -1500.0; max = 1500.0; origin = -39.33;
+                        SetKeyPadTag(textBox_Config_Vision_TeachingPos_VisionZ, min, max, origin, format);
+                        break;
+                    case (int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos:
+                        min = -1500.0; max = 1500.0; origin = -39.33;
+                        SetKeyPadTag(textBox_Config_Vision_TeachingPos_VisionZ, min, max, origin, format);
+                        break;
+                    case (int)Vision.Vision_TeachingPosList.Vision_SafetyPos:
+                        min = -1500.0; max = 1500.0; origin = 0;
+                        SetKeyPadTag(textBox_Config_Vision_TeachingPos_VisionZ, min, max, origin, format);
+                        break;
+                    case (int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos:
+                        min = -1500.0; max = 1500.0; origin = -39.402;
+                        SetKeyPadTag(textBox_Config_Vision_TeachingPos_VisionZ, min, max, origin, format);
+                        break;
+                    case (int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos:
+                        min = -1500.0; max = 1500.0; origin = -39.330;
+                        SetKeyPadTag(textBox_Config_Vision_TeachingPos_VisionZ, min, max, origin, format);
+                        break;
+                    default:
+                        break;
+                }
             }
 
             

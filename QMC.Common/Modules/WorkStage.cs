@@ -4286,7 +4286,6 @@ namespace QMC.Common.Modules
                     // CO2 - Test 확인하고 하자.
                     // workStage.workStageParameter.DO_Laser_Enable(true);
                 }
-
                 LaserCo2_Init();
             }
             else
@@ -5692,7 +5691,6 @@ namespace QMC.Common.Modules
             return m_bRet;
         }
 
-
         //  Get Current Status and Position
         public bool BeamExpander_Send_GetCurrentStatusPosition()
         {
@@ -5743,7 +5741,6 @@ namespace QMC.Common.Modules
             int m_nCheckSum = 0;
             string m_strSendData = "";
             byte[] m_cSendCmd = null;
-
 
             m_DataNum = 7;
             m_cSendCmd = new byte[m_DataNum];
@@ -8093,148 +8090,16 @@ namespace QMC.Common.Modules
             {
                 _isMainStatusRunning = true;
 
-                // I/O - Read 분할
-                Equipment.PollingAllInputModules();
-
                 if (!m_MainStatus_Start)
                 {
                     return;
                 }
 
+                // I/O - Read 분할
+                Equipment.PollingAllInputModules();
+
                 //  타워램프 상태 갱신
                 UpdateTowerLampByCondition();
-                //기존코드
-                {
-                    //  Alarm 상태
-                    //if (AlarmManager.Instance.IsAlarm)
-                    //{
-                    //    if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Green_Off();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Yellow_Off();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Red_On() == 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Red_On();
-                    //    }
-
-                    //    if (CommonModule.Instance.TowerLamp_BuzzerStop)
-                    //    {
-                    //        if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.Buzzer_Off();
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() == 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.Buzzer_On();
-                    //        }
-                    //    }
-
-                    //    //  버튼 색깔 변경
-                    //    CommonModule.Instance.OperationButtons.StartLamp(false);
-                    //    CommonModule.Instance.OperationButtons.StopLamp(true);
-                    //    CommonModule.Instance.OperationButtons.ResetLamp(false);
-                    //}
-                    //else if (Equipment.AutoRunStatus &&
-                    //         loader.m_nLoader_Transfer_Step != (int)Loader.Loader_Transfer_Step.None &&
-                    //         m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
-                    //{
-                    //    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Green_On();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Yellow_On();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Red_Off();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Buzzer_Off();
-                    //    }
-                    //}
-                    //else if (Equipment.AutoRunStatus &&
-                    //         m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
-                    //{
-                    //    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Green_On();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Yellow_Off();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Red_On() == 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Red_On();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Buzzer_Off();
-                    //    }
-                    //}
-                    //else if (Equipment.AutoRunStatus) //  자동운전
-                    //{
-                    //    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Green_On();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Yellow_Off();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Red_Off();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Buzzer_Off();
-                    //    }
-
-                    //    //  버튼 색깔 변경
-                    //    CommonModule.Instance.OperationButtons.StartLamp(true);
-                    //    CommonModule.Instance.OperationButtons.StopLamp(false);
-                    //    CommonModule.Instance.OperationButtons.ResetLamp(false);
-
-                    //    CommonModule.Instance.TowerLamp_BuzzerStop = false;
-                    //}
-                    //else //  Stop
-                    //{
-                    //    if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Green_Off();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() == 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Yellow_On();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Red_Off();
-                    //    }
-                    //    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
-                    //    {
-                    //        CommonModule.Instance.TowerLamp.Buzzer_Off();
-                    //    }
-
-                    //    //  버튼 색깔 변경
-                    //    CommonModule.Instance.OperationButtons.StartLamp(false);
-                    //    CommonModule.Instance.OperationButtons.StopLamp(true);
-                    //    CommonModule.Instance.OperationButtons.ResetLamp(false);
-
-                    //    CommonModule.Instance.TowerLamp_BuzzerStop = false;
-                    //}
-                }
 
                 // Home 잡기 전에는 Device 알람 X
                 if (!m_bHomeOK)
@@ -8392,7 +8257,7 @@ namespace QMC.Common.Modules
             catch (Exception ex)
             {
                 Log.Write(ex);
-                Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
+                //Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
             }
             finally
             {
@@ -15679,6 +15544,19 @@ namespace QMC.Common.Modules
                             // Circle Color 0: White, 1: Black
                             if (mark.MarkColor <= 1)
                             {
+                                //result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
+                                //    Fiducial_circlesResult,
+                                //    bm_AlignRawData,
+                                //    Camera_HighRes.Resolution.Width,
+                                //    Camera_HighRes.Resolution.Height,
+                                //    nWidthImageCount,
+                                //    mark.MarkSpec,
+                                //    ref Fiducial_circleFound,
+                                //    0, 0,
+                                //    (mark.MarkType == 0), // GoldPowder 여부?
+                                //    mark.MarkScore,
+                                //    false);
+
                                 result = Fiducial_aligner.FindCirclesWidthCircleBoundary(
                                     Fiducial_circlesResult,
                                     bm_AlignRawData,
@@ -15688,7 +15566,7 @@ namespace QMC.Common.Modules
                                     mark.MarkSpec,
                                     ref Fiducial_circleFound,
                                     0, 0,
-                                    (mark.MarkType == 0), // GoldPowder 여부?
+                                    (mark.MarkColor == 0), // GoldPowder 여부?
                                     mark.MarkScore,
                                     false,
                                     rectangle);
