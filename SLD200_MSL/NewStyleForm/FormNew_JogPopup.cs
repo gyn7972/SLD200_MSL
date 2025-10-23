@@ -481,11 +481,19 @@ namespace SLD200.NewStyleForm
             {
                 while (true)
                 {
-                    if (workStage != null && workStage.IsModuleClose) break;
+                    if (workStage != null && workStage.IsModuleClose) 
+                        break;
+
                     Thread.Sleep(200);
                     Timer_Status_Tick(null, null);
-                    if (_pendingDocSync && workStage != null && workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
+                    if (_pendingDocSync && workStage != null 
+                    && workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None
+                    && Equipment.AutoManualStatus == false
+                    && Equipment.AutoRunStatus == false)
+                    {
                         SyncSiriusDocumentIfNeeded(true);
+
+                    }
                 }
             });
             m_bInitialized = true;

@@ -1435,95 +1435,152 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void button_Recipe_GoldPowder_Position_Move_XY1_Offset_Click(object sender, EventArgs e)
         {
             int nPositionIndex = 0;
-            XyCoordinate xyCoordinate;
-            GetGoldPowderDrawingPositions_FromDrawing(nPositionIndex, out xyCoordinate);
-            
+            XyCoordinate xyCoord;
+            XyCoordinate xyDrawConverted;
+            GetGoldPowderDrawingPositions_FromDrawing(nPositionIndex, out xyCoord);
+            xyDrawConverted = xyCoord;
+
             string strX = textBox_Recipe_GoldPowder_Position_X1_Offset.Text;
             string strY = textBox_Recipe_GoldPowder_Position_Y1_Offset.Text;
             double dX = Equipment.ToDouble(strX);
             double dY = Equipment.ToDouble(strY);
-            xyCoordinate.X += dX;
-            xyCoordinate.Y += dY;
-            xyCoordinate = xyCoordinate;
+            xyCoord.X += dX;
+            xyCoord.Y += dY;
+            xyCoord = xyCoord;
+
+            XyCoordinate xyTargetConverted;
+            xyTargetConverted = workStage.ConvertPointFineCam(xyDrawConverted);
+            if (Math.Abs(xyTargetConverted.X) < 0.0001 && Math.Abs(xyTargetConverted.Y) < 0.0001)
+            {
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyDrawConverted.X:F4},{xyDrawConverted.Y:F4})" +
+                    $" -> Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            }
+
+            // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
+            //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
+            //if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            //{
+            //    xyTargetConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyTargetConverted.X, xyTargetConverted.Y));
+            //    Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+            //        $"[Warn] PreAlign : Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            //}
+            //else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            {
+                //여기서 얼라인 안하는게 맞음!!
+                //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            }
+            TargetXyCoordinate[nPositionIndex] = xyTargetConverted;
+
 
             XyCoordinate xyConverted;
-            xyConverted = workStage.ConvertPointFineCam(xyCoordinate);
+            xyConverted = workStage.ConvertPointFineCam(xyCoord);
             if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
             {
                 Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoordinate.X:F4},{xyCoordinate.Y:F4})" +
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoord.X:F4},{xyCoord.Y:F4})" +
                     $" -> Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
             }
 
             // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
             //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
-             if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
-            {
-                xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
-                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
-            }
-            else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            //if (workStage.m_bPreAlignCompleted == true && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            //{
+            //    xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+            //    Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+            //        $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            //}
+            //else if (workStage.m_bPreAlignCompleted && ( workStage.m_bAlignCompleted && workStage.m_bSocketAlign_OK))
             {
                 //여기서 얼라인 안하는게 맞음!!
                 //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
                 Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
                     $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
             }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
-            }
+            //else
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
+            //}
 
-            TargetXyCoordinate[nPositionIndex] = xyConverted;
+            //TargetXyCoordinate[nPositionIndex] = xyConverted;
             MoveGoldPowderPointOffset(nPositionIndex, xyConverted);
         }
         private void button_Recipe_GoldPowder_Position_Move_XY2_Offset_Click(object sender, EventArgs e)
         {
             int nPositionIndex = 1;
-            XyCoordinate xyCoordinate;
-            GetGoldPowderDrawingPositions_FromDrawing(nPositionIndex, out xyCoordinate);
+            XyCoordinate xyCoord;
+            XyCoordinate xyDrawConverted;
+            GetGoldPowderDrawingPositions_FromDrawing(nPositionIndex, out xyCoord);
+            xyDrawConverted = xyCoord;
 
             string strX = textBox_Recipe_GoldPowder_Position_X2_Offset.Text;
             string strY = textBox_Recipe_GoldPowder_Position_Y2_Offset.Text;
             double dX = Equipment.ToDouble(strX);
             double dY = Equipment.ToDouble(strY);
-            xyCoordinate.X += dX;
-            xyCoordinate.Y += dY;
-            xyCoordinate = xyCoordinate;
+            xyCoord.X += dX;
+            xyCoord.Y += dY;
+            xyCoord = xyCoord;
+
+            XyCoordinate xyTargetConverted;
+            xyTargetConverted = workStage.ConvertPointFineCam(xyDrawConverted);
+            if (Math.Abs(xyTargetConverted.X) < 0.0001 && Math.Abs(xyTargetConverted.Y) < 0.0001)
+            {
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyDrawConverted.X:F4},{xyDrawConverted.Y:F4})" +
+                    $" -> Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            }
+
+            // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
+            //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
+            //if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            //{
+            //    xyTargetConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyTargetConverted.X, xyTargetConverted.Y));
+            //    Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+            //        $"[Warn] PreAlign : Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            //}
+            //else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            {
+                //여기서 얼라인 안하는게 맞음!!
+                //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            }
+            TargetXyCoordinate[nPositionIndex] = xyTargetConverted;
 
             XyCoordinate xyConverted;
-            xyConverted = workStage.ConvertPointFineCam(xyCoordinate);
+            xyConverted = workStage.ConvertPointFineCam(xyCoord);
             if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
             {
                 Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoordinate.X:F4},{xyCoordinate.Y:F4})" +
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoord.X:F4},{xyCoord.Y:F4})" +
                     $" -> Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
             }
 
             // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
             //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
-            if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
-            {
-                xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
-                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
-            }
-            else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            //if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            //{
+            //    xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+            //    Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+            //        $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            //}
+            //else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
             {
                 //여기서 얼라인 안하는게 맞음!!
                 //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
                 Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
                     $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
             }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
-            }
+            //else
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
+            //}
 
-            TargetXyCoordinate[nPositionIndex] = xyConverted;
+            //TargetXyCoordinate[nPositionIndex] = xyConverted;
             MoveGoldPowderPointOffset(nPositionIndex, xyConverted);
 
         }
@@ -1531,48 +1588,76 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void button_Recipe_GoldPowder_Position_Move_XY3_Offset_Click(object sender, EventArgs e)
         {
             int nPositionIndex = 2;
-            XyCoordinate xyCoordinate;
-            GetGoldPowderDrawingPositions_FromDrawing(nPositionIndex, out xyCoordinate);
+            XyCoordinate xyCoord;
+            XyCoordinate xyDrawConverted;
+            GetGoldPowderDrawingPositions_FromDrawing(nPositionIndex, out xyCoord);
+            xyDrawConverted = xyCoord;
 
             string strX = textBox_Recipe_GoldPowder_Position_X3_Offset.Text;
             string strY = textBox_Recipe_GoldPowder_Position_Y3_Offset.Text;
             double dX = Equipment.ToDouble(strX);
             double dY = Equipment.ToDouble(strY);
-            xyCoordinate.X += dX;
-            xyCoordinate.Y += dY;
-            xyCoordinate = xyCoordinate;
+            xyCoord.X += dX;
+            xyCoord.Y += dY;
+            xyCoord = xyCoord;
+
+            XyCoordinate xyTargetConverted;
+            xyTargetConverted = workStage.ConvertPointFineCam(xyDrawConverted);
+            if (Math.Abs(xyTargetConverted.X) < 0.0001 && Math.Abs(xyTargetConverted.Y) < 0.0001)
+            {
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyDrawConverted.X:F4},{xyDrawConverted.Y:F4})" +
+                    $" -> Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            }
+
+            // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
+            //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
+            //if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            //{
+            //    xyTargetConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyTargetConverted.X, xyTargetConverted.Y));
+            //    Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+            //        $"[Warn] PreAlign : Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            //}
+            //else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            {
+                //여기서 얼라인 안하는게 맞음!!
+                //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            }
+            TargetXyCoordinate[nPositionIndex] = xyTargetConverted;
 
             XyCoordinate xyConverted;
-            xyConverted = workStage.ConvertPointFineCam(xyCoordinate);
+            xyConverted = workStage.ConvertPointFineCam(xyCoord);
             if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
             {
                 Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoordinate.X:F4},{xyCoordinate.Y:F4})" +
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoord.X:F4},{xyCoord.Y:F4})" +
                     $" -> Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
             }
 
             // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
             //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
-            if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
-            {
-                xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
-                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
-            }
-            else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            //if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            //{
+            //    xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+            //    Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+            //        $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            //}
+            //else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
             {
                 //여기서 얼라인 안하는게 맞음!!
                 //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
                 Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
                     $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
             }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
-            }
+            //else
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
+            //}
 
-            TargetXyCoordinate[nPositionIndex] = xyConverted;
+            //TargetXyCoordinate[nPositionIndex] = xyConverted;
             MoveGoldPowderPointOffset(nPositionIndex, xyConverted);
 
         }
@@ -1580,47 +1665,77 @@ namespace SLD200.NewStyleForm.NewSubForm
         private void button_Recipe_GoldPowder_Position_Move_XY4_Offset_Click(object sender, EventArgs e)
         {
             int nPositionIndex = 3;
-            XyCoordinate xyCoordinate;
-            GetGoldPowderDrawingPositions_FromDrawing(nPositionIndex, out xyCoordinate);
+            XyCoordinate xyCoord;
+            XyCoordinate xyDrawConverted;
+            GetGoldPowderDrawingPositions_FromDrawing(nPositionIndex, out xyCoord);
+            xyDrawConverted = xyCoord;
 
             string strX = textBox_Recipe_GoldPowder_Position_X4_Offset.Text;
             string strY = textBox_Recipe_GoldPowder_Position_Y4_Offset.Text;
             double dX = Equipment.ToDouble(strX);
             double dY = Equipment.ToDouble(strY);
-            xyCoordinate.X += dX;
-            xyCoordinate.Y += dY;
-            xyCoordinate = xyCoordinate;
+            xyCoord.X += dX;
+            xyCoord.Y += dY;
+            xyCoord = xyCoord;
+
+            XyCoordinate xyTargetConverted;
+            xyTargetConverted = workStage.ConvertPointFineCam(xyDrawConverted);
+            if (Math.Abs(xyTargetConverted.X) < 0.0001 && Math.Abs(xyTargetConverted.Y) < 0.0001)
+            {
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyDrawConverted.X:F4},{xyDrawConverted.Y:F4})" +
+                    $" -> Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            }
+
+            // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
+            //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
+            //if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            //{
+            //    xyTargetConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyTargetConverted.X, xyTargetConverted.Y));
+            //    Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+            //        $"[Warn] PreAlign : Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            //}
+            //else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            {
+                //여기서 얼라인 안하는게 맞음!!
+                //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+                    $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyTargetConverted.X:F4},{xyTargetConverted.Y:F4})");
+            }
+            TargetXyCoordinate[nPositionIndex] = xyTargetConverted;
+
+
             XyCoordinate xyConverted;
-            xyConverted = workStage.ConvertPointFineCam(xyCoordinate);
+            xyConverted = workStage.ConvertPointFineCam(xyCoord);
             if (Math.Abs(xyConverted.X) < 0.0001 && Math.Abs(xyConverted.Y) < 0.0001)
             {
                 Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoordinate.X:F4},{xyCoordinate.Y:F4})" +
+                    $"[Warn] ConvertPointFineCam (0,0) Draw({xyCoord.X:F4},{xyCoord.Y:F4})" +
                     $" -> Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
             }
 
             // PreAlign Data 적용/미적용 :: 이 위치에서 변경되면 안됨!!
             //if (Equipment.Machine_PreAlign_First_Enable && workStage.m_bPreAlignCompleted)
-            if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
-            {
-                xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
-                Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
-                    $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
-            }
-            else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
+            //if (workStage.m_bPreAlignCompleted == false && workStage.m_bAlignCompleted == false && workStage.m_bSocketAlign_OK == false)
+            //{
+            //    xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
+            //    Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
+            //        $"[Warn] PreAlign : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
+            //}
+            //else if (workStage.m_bPreAlignCompleted || workStage.m_bAlignCompleted || workStage.m_bSocketAlign_OK)
             {
                 //여기서 얼라인 안하는게 맞음!!
                 //xyConverted = workStage.ConvertPreAlignData(new XyCoordinate(xyConverted.X, xyConverted.Y));
                 Log.Write("Goldpowder", "MoveGoldPowderPointOffset",
                     $"[Warn] PreAlign/Align/SocketAlign 완료 : Stage({xyConverted.X:F4},{xyConverted.Y:F4})");
             }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
-            }
+            //else
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "PreAlign Data 가 적용되지 않았습니다.");
+            //}
 
-            TargetXyCoordinate[nPositionIndex] = xyConverted;
+            //TargetXyCoordinate[nPositionIndex] = xyConverted;
             MoveGoldPowderPointOffset(nPositionIndex, xyConverted);
         }
 

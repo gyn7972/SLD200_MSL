@@ -14076,9 +14076,9 @@ namespace QMC.Common.Modules
                             if ((nSocketNum >= 0) && (nSocketNum < m_stLaserDrilling_SocketData[0].nGroup_Num))
                             {
                                 {
-                                    int nMaxInstance = Equipment.stVisionRecipeSet.nGoldPowderCircleMarkMaxInstance;
-                                    //var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stLaserDrilling_SocketData);
-                                    var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stLaserDrilling_SocketData, nMaxInstance);
+                                    //int nMaxInstance = Equipment.stVisionRecipeSet.nGoldPowderCircleMarkMaxInstance;
+                                    var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stLaserDrilling_SocketData);
+                                    //var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stLaserDrilling_SocketData, nMaxInstance);
                                     for (int i = 0; i < 4; i++)
                                     {
                                         // PreAlign-> SocketAlign 이후 4-Point 의 도면상 위치 데이터
@@ -29519,39 +29519,49 @@ namespace QMC.Common.Modules
             //var doc = DocumentFactory.CreateDefault();
             //doc.ActOpen(strFileName);
             //siriusEditor.Document = doc;
-            if (bIsInvoke)
-            {
-                Equipment.formMain.Invoke(new System.Action(() =>
-                {
-                    //화면에 출력.
-                    Import_DrawingFile(strFileName , false);
-                }));
-                return;
-            }
 
-            //  확장자 확인
-            string m_strExt = System.IO.Path.GetExtension(strFileName);
-            IDocument doc = null;
             try
             {
-                if (m_strExt.ToUpper() == ".DXF")
+                if (bIsInvoke)
                 {
-                    doc = DocumentSerializer.OpenDxf(strFileName);
-                    Equipment.SetEqpSiriusViewerDocument(doc);
+                    Equipment.formMain.Invoke(new System.Action(() =>
+                    {
+                        //화면에 출력.
+                        Import_DrawingFile(strFileName, false);
+                    }));
+                    return;
                 }
-                else if (m_strExt.ToUpper() == ".SIRIUS")
+
+                //  확장자 확인
+                string m_strExt = System.IO.Path.GetExtension(strFileName);
+                IDocument doc = null;
+                try
                 {
-                    doc = DocumentSerializer.OpenSirius(strFileName);
-                    Equipment.SetEqpSiriusViewerDocument(doc);
+                    if (m_strExt.ToUpper() == ".DXF")
+                    {
+                        doc = DocumentSerializer.OpenDxf(strFileName);
+                        Equipment.SetEqpSiriusViewerDocument(doc);
+                    }
+                    else if (m_strExt.ToUpper() == ".SIRIUS")
+                    {
+                        doc = DocumentSerializer.OpenSirius(strFileName);
+                        Equipment.SetEqpSiriusViewerDocument(doc);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                    //MessageBox.Show("도면 파일을 불러오는 중 오류가 발생했습니다.\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                //도면이 로딩되고 잠깐 대기. 밖에서 출동 발생. (구조상...)
+                Thread.Sleep(100);
             }
             catch (Exception ex)
             {
                 Log.Write(ex);
-                //MessageBox.Show("도면 파일을 불러오는 중 오류가 발생했습니다.\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            //도면이 로딩되고 잠깐 대기. 밖에서 출동 발생. (구조상...)
-            Thread.Sleep(100);
+
+            
         }
 
         //// 4개의 원 좌표를 좌하단, 좌상단, 우상단, 우하단 순서로 정렬하는 메서드 (LB 에서 시작하여 CW 방향으로 정렬)
@@ -39620,12 +39630,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Complete:                                  //  가공 데이터 회전 및 Offset 이동
 
-                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
-
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 완료");
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Reload;
-
-
+                   
                     if (Equipment.SemiAutoEnable
                     && _semiAutoRequest == SemiAutoStep.FiducialAlign)
                     {
@@ -39637,6 +39642,8 @@ namespace QMC.Common.Modules
                         m_SubWork_Start = false;
                         m_ProductAlign_Start = false;
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 완료 :: FiducialAlign");
+                        break;
                     }
                     else if (Equipment.SemiAutoEnable
                           && _semiAutoRequest == SemiAutoStep.GoldPowderAlign)
@@ -39649,7 +39656,14 @@ namespace QMC.Common.Modules
                         m_SubWork_Start = false;
                         m_ProductAlign_Start = false;
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 완료 :: GoldPowderAlign");
+                        break;
                     }
+
+                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 완료");
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Reload;
+
                     break;
 
                 case (int)LaserDrilling_Step.DrillingData_Reload:                                  //  Drilling 데이터 다시 불러오기
