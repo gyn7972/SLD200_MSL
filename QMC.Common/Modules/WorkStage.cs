@@ -8090,14 +8090,14 @@ namespace QMC.Common.Modules
             {
                 _isMainStatusRunning = true;
 
+                // I/O - Read 분할
+                Equipment.PollingAllInputModules();
+
                 if (!m_MainStatus_Start)
                 {
                     return;
                 }
-
-                // I/O - Read 분할
-                Equipment.PollingAllInputModules();
-
+                
                 //  타워램프 상태 갱신
                 UpdateTowerLampByCondition();
 
