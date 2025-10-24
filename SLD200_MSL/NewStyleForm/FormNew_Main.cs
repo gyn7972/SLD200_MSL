@@ -1068,12 +1068,10 @@ namespace SLD200_MSL
                         //화면에 출력.
                         SiriusViewer_Main.Document = (IDocument)Equipment.GetEqpSiriusViewerDocument();
                     }));
-
                 }
                 else
                 {
                 }
-
             }
 
             if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
@@ -1124,7 +1122,7 @@ namespace SLD200_MSL
                 SetValue(baseTextBox_Socket_Index, strText);
             }
 
-            strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF"; ;
+            strText = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF";
             SetValue(label_Main_LaserStatus, strText);
             Color backcolor = workStage.GetLaserBusyStatus() ? Color.Red : Color.Black;
             Color foreColor = workStage.GetLaserBusyStatus() ? Color.White : Color.Lime;
@@ -5173,8 +5171,11 @@ namespace SLD200_MSL
 
                 try
                 {
+                    // RTC Abort 및 Reset :: Reset 시 무조건 수행?
                     if(workStage.GetLaserBusyStatus())
                     {
+                        //workStage.rtc?.CtlLaserOff();
+                        //await Task.Delay(100, token);
                         workStage.rtc?.CtlAbort();
                         await Task.Delay(2000, token);
                         workStage.rtc?.CtlReset();

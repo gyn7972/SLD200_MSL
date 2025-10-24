@@ -7916,24 +7916,7 @@ namespace QMC.Common.Modules
         {
             return m_bLaserBusy;
         }
-        public void UpdateLaserStatus()
-        {
-            try
-            {
-                if(rtc != null &&
-                   Equipment._InitDeviceStatus.Scanner)
-                {
-                    //Todo : ...이거 말고 다른 방법 생각해보자.
-                    //m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-            }
-        }
-
-
+        
         private readonly Dictionary<AlarmKey, TimeSpan> _alarmHoldDurations = new Dictionary<AlarmKey, TimeSpan>()
         {
             { AlarmKey.Chiller_Alarm, TimeSpan.FromSeconds(2) },
