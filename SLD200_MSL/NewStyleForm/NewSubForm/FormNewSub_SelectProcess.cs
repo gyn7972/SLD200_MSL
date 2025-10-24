@@ -697,6 +697,27 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "가공을 중지하시겠습니까?\r\n\r\n[레이저도 Off 됩니다.]"))
                 return;
 
+            Equipment.AutoRunStatus = false;        // 자동운전중
+            Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+            workStage.SetRunStatus(RunStatus.Stop);
+
+            workStage._isMainWorkRunning = false;
+            workStage._isLaserDrillingWorkRunning = false;
+            loader._isLoaderWorkRunning = false;
+            unloader._isUnloaderWorkRunning = false;
+
+            // 아래 변수가 자동운전 Tick 돌리는 변수임.
+            workStage.m_MainWork_Start = false;
+            //workStage.m_LaserDrillingWork_Start = false;              //  Laser Drilling Cycle 은 바로 Stop 하지 않고, 가공중이던 영역이 완료되면 Stop 하도록 예약을 걸어둔다.
+            Equipment.LaserDrillingCycStop_Reservation = true;          //  Stop 예약
+            workStage.m_ProductAlign_Start = false;
+            workStage.m_SubWork_Start = false;
+            loader.m_LoaderWork_Start = false;
+            unloader.m_UnloaderWork_Start = false;
+
+
+
+
             Equipment.MachineStop_byUser = true;
             WorkStartTick = 0;
             WorkStartTick_Outline = 0;
@@ -722,6 +743,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             try
             {
+                Equipment.SelectRunEnable_New = false; //  수동 가공 시작
+                workStage.StopProcess();
+               
                 //신호 보지말고 무조건 레이저 정지
                 //if (workStage.GetLaserBusyStatus())
                 {
@@ -740,8 +764,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             finally
             {
-                Equipment.SelectRunEnable_New = false; //  수동 가공 시작
-                workStage.StopProcess();
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 중지 버튼");
             }
 
