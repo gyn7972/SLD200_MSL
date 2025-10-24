@@ -35918,7 +35918,7 @@ namespace QMC.Common.Modules
                     break;
 
                 case (int)LaserDrilling_Step.ThruHole_ScannerOnly_ListOpen:                                  //  List Buffer Open
-                    if (!rtc.CtlGetStatus(RtcStatus.Busy))
+                    if (rtc.CtlGetStatus(RtcStatus.Busy) == false)
                     {
                         strTemp = LaserDrillingStepThruHoleScannerOnlyListOpen(strTemp);
 
@@ -36024,7 +36024,6 @@ namespace QMC.Common.Modules
                         ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6) && rtc.CtlGetStatus(RtcStatus.Busy)))
                     {
                         TickCount_Start((int)TickType.TICK_MAIN);
-
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_LaserBusyCheck;
                     }
                     break;

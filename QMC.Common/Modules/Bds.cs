@@ -420,15 +420,13 @@ namespace QMC.Common.Modules
             m_taskTimer_BDS_MainStatus_Tick = Task.Factory.StartNew(() =>
             {
                 Thread.CurrentThread.Name = "m_taskTimer_BDS_MainStatus_Tick";
-
                 while (true)
                 {
-                    Thread.Sleep(20);
-
                     if (isModuleClose)
                     {
                         break;
                     }
+
                     try
                     {
                         Timer_BDS_MainStatus_Tick(null, null);
@@ -437,9 +435,10 @@ namespace QMC.Common.Modules
                     {
                         Log.Write(ex);
                     }
-                    
+
+                    Thread.Sleep(100);
                 }
-            }); ;
+            });
             listTask.Add(m_taskTimer_BDS_MainStatus_Tick);
 
             return ret; 
@@ -449,6 +448,8 @@ namespace QMC.Common.Modules
         private DateTime _lastLaserCO2CheckTime = DateTime.MinValue;
         private TimeSpan _scannerCheckInterval = TimeSpan.FromMilliseconds(500); //0.5초
         private TimeSpan _LaserCO2CheckInterval = TimeSpan.FromMilliseconds(1000); //1초
+        private DateTime _lastLaserCO2ReconnectTryTime = DateTime.MinValue;
+        private TimeSpan _LaserCO2ReconnectInterval = TimeSpan.FromSeconds(5);
 
         private TimeSpan _laserAccumulatedTime = TimeSpan.Zero;
         private DateTime _laserStartTime = DateTime.MinValue;
@@ -465,13 +466,12 @@ namespace QMC.Common.Modules
             try
             {
                 _isMainStatusRunning = true;
-
-                if (!m_MainStatus_Start)
+                if (m_MainStatus_Start == false)
                 {
                     return;
                 }
                 // Home 잡기 전에는 Device 알람 X
-                if (!workStage.m_bHomeOK)
+                if (workStage.m_bHomeOK == false)
                 {
                     return;
                 }
@@ -483,40 +483,33 @@ namespace QMC.Common.Modules
                 {
                 }
 
-                if(!Equipment._InitDeviceStatus.Scanner)
+                if(Equipment._InitDeviceStatus.Scanner == false)
                 {
                     return;
                 }
 
+                if (workStage.rtc.CtlGetStatus(RtcStatus.Busy) == false)
+                {
+                    workStage.m_bLaserBusy = false;
+                }
+                else
+                {
+                    workStage.m_bLaserBusy = true;
+                }
+
                 // --- 레이져 누적 시간 계산용 현재 시각 ---
                 DateTime LaserOn_Now = DateTime.Now;
-
                 if (spiralLabScanner != null && spiralLabScanner.IsInitialized)
                 {
                     var now = DateTime.Now;
                     if (now - _lastScannerCheckTime > _scannerCheckInterval)
                     {
                         _lastScannerCheckTime = now;
-
-                        //spiralLabScanner.CheckAndLogAllStatuses();
-                        //if (!spiralLabScanner.IsRtcBusy &&
-                        //    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
-                        if(!workStage.rtc.CtlGetStatus(RtcStatus.Busy) &&
-                           (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
+                        if (workStage.m_bLaserBusy == false 
+                          &&  (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
                         {
-                            // spiralLabScanner.CheckAndLogAllStatuses();
-                            // 1초 안됨. 한 번 들어왔다가 가공 후 부터 안됨.
-                            // 업체 측 -> 20초로 수정 요청하여 수정.
-                            
-                            //20250923 - 주석. 필요없음.
-                            //if(Equipment.Machine_LaserType_CO2)
-                            //{
-                            //    spiralLabScanner.IsOverTemperatureWarning();
-                            //}
-
                             //double dPosX = 0.0, dPosY = 0.0;
                             //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
-
                             if (spiralLabVario != null && spiralLabVario.IsInitialized)
                             {
                                 CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();
@@ -524,14 +517,15 @@ namespace QMC.Common.Modules
                             }
                         }
                         
-                        if(!workStage.rtc.CtlGetStatus(RtcStatus.Busy))
-                        {
-                            workStage.m_bLaserBusy = false;
-                        }
-                        else
-                        {
-                            workStage.m_bLaserBusy = true;
-                        }
+                        //밖으로 이동
+                        //if(workStage.rtc.CtlGetStatus(RtcStatus.Busy) == false)
+                        //{
+                        //    workStage.m_bLaserBusy = false;
+                        //}
+                        //else
+                        //{
+                        //    workStage.m_bLaserBusy = true;
+                        //}
                     }
                 }
 
@@ -571,9 +565,10 @@ namespace QMC.Common.Modules
                 {
                     if (Equipment.Machine_LaserType_CO2 && LaserCO2Manager != null)
                     {
+                        var now = DateTime.Now;
+
                         if (LaserCO2Manager.IsConnected)
                         {
-                            var now = DateTime.Now;
                             if (now - _lastLaserCO2CheckTime > _LaserCO2CheckInterval)
                             {
                                 _lastLaserCO2CheckTime = now;
@@ -582,7 +577,6 @@ namespace QMC.Common.Modules
                                 if (status != null)
                                 {
                                     //Log.Write("LaserCO2", "Status", status.ToString());
-
                                     //if (status.SystemFault || status.Interlock || status.OverTemp)
                                     if (status.SystemFault)// || status.OverTemp)
                                     {
@@ -608,12 +602,31 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            // 연결이 끊어졌으면 재시도
-                            if (LaserCO2Manager.Connect())
+                            // 재연결은 일정 간격으로만 시도
+                            if (now - _lastLaserCO2ReconnectTryTime > _LaserCO2ReconnectInterval)
                             {
-                                Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
-
+                                _lastLaserCO2ReconnectTryTime = now;
+                                try
+                                {
+                                    if (LaserCO2Manager.Connect())
+                                    {
+                                        Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
+                                        // 다음 폴링을 즉시 수행할 수 있도록 초기화
+                                        _lastLaserCO2CheckTime = DateTime.MinValue;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.Write("LaserCO2", "Reconnect", $"재연결 실패: {ex.Message}");
+                                }
                             }
+
+                            //// 연결이 끊어졌으면 재시도
+                            //if (LaserCO2Manager.Connect())
+                            //{
+                            //    Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
+
+                            //}
                         }
                     }
                 }
@@ -628,6 +641,7 @@ namespace QMC.Common.Modules
                 _isMainStatusRunning = false; // 플래그 해제
             }
         }
+
         public void ClearLaserAccumulatedTime()
         {
             _laserAccumulatedTime = TimeSpan.Zero;
