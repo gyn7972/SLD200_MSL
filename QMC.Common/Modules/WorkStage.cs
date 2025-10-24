@@ -14176,6 +14176,7 @@ namespace QMC.Common.Modules
                             string msg = $"[좌표 범위 초과] X={xyCoordinateAlign.X:F3}, Y={xyCoordinateAlign.Y:F3} " +
                                          $"(허용 범위: X[{limitXMin}, {limitXMax}], Y[{limitYMin}, {limitYMax}])";
                             Log.Write("StageScannerPos", msg);
+                            Log.Write("Fail", msg);
 
                             m_bAlignCompleted = true;
                             m_bSocketAlign_OK = false;
@@ -14506,7 +14507,12 @@ namespace QMC.Common.Modules
                                     {
                                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align",
                                         $"Socket: {nSocketNum + 1} : Align 마크 찾기 실패 → 다음 마크로 이동 (총 마크 수: {m_nSocketAlign_FiducialCount + 1}");
+
+                                        Log.Write("Fail", Equipment.User_Name, "Socket Align",
+                                        $"Socket: {nSocketNum + 1} : Align 마크 찾기 실패 → 다음 마크로 이동 (총 마크 수: {m_nSocketAlign_FiducialCount + 1}");
+
                                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "마크 2개 못찾음. - m_bSocketAlign_Fiducial_3PointNg = true");
+                                        
                                         m_bAlignCompleted = true;
                                         m_bSocketAlign_OK = false;
                                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
@@ -14515,6 +14521,7 @@ namespace QMC.Common.Modules
                                 else
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
+                                    Log.Write("Fail", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
                                     m_bAlignCompleted = true;
                                     m_bSocketAlign_OK = false;
                                     m_bSocketAlign_Fiducial_3PointNg = false;
@@ -14644,7 +14651,7 @@ namespace QMC.Common.Modules
                             else
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry");
-                                m_nSocketAlign_Retry_Max = 3;
+                                m_nSocketAlign_Retry_Max = 2;
                                 if (m_nSocketAlign_Retry_Count < m_nSocketAlign_Retry_Max)
                                 {
                                     m_nSocketAlign_Retry_Count++;
@@ -14798,6 +14805,7 @@ namespace QMC.Common.Modules
                         }
                     }
 
+                    // || -> && 수정.
                     if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) &&
                         (m_st4PointAlign_Result.dCenterOffsetY == 0.0) &&
                         (m_st4PointAlign_Result.dRotationAngle == 0.0))
@@ -14882,207 +14890,210 @@ namespace QMC.Common.Modules
                         }
                     }
 
+                    // 20251024 : GYN
+                    // 무조건 여기서 마무리 하고 나가자. 
+                    // 버그 나올꺼 같다.....
                     //  가공 중에 얼라인을 하는 것이면, 여기에서 마무리
-                    if (Equipment.AutoRunStatus ||
-                        Equipment.SemiAutoEnable ||
-                        m_nLaserDrilling_MainStep != (int)LaserDrilling_Step.None)
+                    //if (Equipment.AutoRunStatus ||
+                    //    Equipment.SemiAutoEnable ||
+                    //    m_nLaserDrilling_MainStep != (int)LaserDrilling_Step.None)
                     {
                         m_bAlignCompleted = true;
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                     }
-                    else
-                    {
-                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2;
-                    }
-
+                    //else
+                    //{
+                    //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2;
+                    //}
                     break;
 
-                case (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2:                                                 //  Satge Z 축, 대기위치(높이)로 이동                       --> 자동운전 중이면 pass
+                //아래는 나중에 필요하면 사용하자.
+                //case (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2:                                                 //  Satge Z 축, 대기위치(높이)로 이동                       --> 자동운전 중이면 pass
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축, 대기위치로 이동 시작");
+                //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축, 대기위치로 이동 시작");
 
-                    //  속도 설정 (스트로크 짧은 Z축은 느리게)
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                //    //  속도 설정 (스트로크 짧은 Z축은 느리게)
+                //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+                //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
 
-                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z,
-                                          lfVelocity, lfAccDec, lfAccDec);
+                //    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z,
+                //                          lfVelocity, lfAccDec, lfAccDec);
 
-                    TickCount_Start((int)TickType.TICK_ALIGN);
+                //    TickCount_Start((int)TickType.TICK_ALIGN);
 
-                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2DoneCheck;
-                    break;
+                //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2DoneCheck;
+                //    break;
 
-                case (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2DoneCheck:                                        //  Stage Z 축, 대기위치(높이)로 이동 완료 확인
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
-                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z))
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축, 대기위치로 이동 완료");
+                //case (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2DoneCheck:                                        //  Stage Z 축, 대기위치(높이)로 이동 완료 확인
+                //    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                //        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z))
+                //    {
+                //        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축, 대기위치로 이동 완료");
 
-                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignXY_MoveReadyPos;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) >= 60000)
-                    {
-                        strTemp = string.Format("Z 축 비전 안전 위치로 이동 실패. (Timeout) [AlignMode: {0}]", alignMode);
-                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
+                //        m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignXY_MoveReadyPos;
+                //    }
+                //    else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) >= 60000)
+                //    {
+                //        strTemp = string.Format("Z 축 비전 안전 위치로 이동 실패. (Timeout) [AlignMode: {0}]", alignMode);
+                //        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
 
-                        return AlarmPost(AlarmKey.SocketAlignZMoveFail);
-                    }
-                    break;
+                //        return AlarmPost(AlarmKey.SocketAlignZMoveFail);
+                //    }
+                //    break;
 
-                case (int)SocketAlign_Step.SocketAlignXY_MoveReadyPos:                                               //  Stage XY 축, 대기위치로 이동                             --> 자동운전 중이면 pass
+                //case (int)SocketAlign_Step.SocketAlignXY_MoveReadyPos:                                               //  Stage XY 축, 대기위치로 이동                             --> 자동운전 중이면 pass
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "XY 축, 대기위치로 이동 시작");
+                //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "XY 축, 대기위치로 이동 시작");
 
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                //    //  속도 설정
+                //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
-                    xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_SafetyPos].Stage_X;
-                    xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_SafetyPos].Stage_Y;
-                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                //    xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_SafetyPos].Stage_X;
+                //    xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_SafetyPos].Stage_Y;
+                //    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
-                    TickCount_Start((int)TickType.TICK_ALIGN);
+                //    TickCount_Start((int)TickType.TICK_ALIGN);
 
-                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignXY_MoveReadyPosDoneCheck;
-                    break;
+                //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignXY_MoveReadyPosDoneCheck;
+                //    break;
 
-                case (int)SocketAlign_Step.SocketAlignXY_MoveReadyPosDoneCheck:                                      //  Stage XY 축, 대기위치로 이동 완료 확인
+                //case (int)SocketAlign_Step.SocketAlignXY_MoveReadyPosDoneCheck:                                      //  Stage XY 축, 대기위치로 이동 완료 확인
 
-                    tempStep = m_nSocketAlign_MainStep;
-                    if (CheckAxesMotionDoneWithRetry(
-                        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
-                        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
-                        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
-                        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
-                        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
-                        ref tempStep,
-                        (int)SocketAlign_Step.SocketAlignXY_MoveReadyPos))                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
-                    {
-                        strTemp = string.Format("XY 축, SocketAlign 대기위치로 이동 완료 [AlignMode: {0}]", alignMode);
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RotAndOffsetMove;
-                    }
-                    else
-                    {
-                        m_nSocketAlign_MainStep = tempStep;
-                    }
-                        break;
+                //    tempStep = m_nSocketAlign_MainStep;
+                //    if (CheckAxesMotionDoneWithRetry(
+                //        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
+                //        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
+                //        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
+                //        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
+                //        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
+                //        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
+                //        ref tempStep,
+                //        (int)SocketAlign_Step.SocketAlignXY_MoveReadyPos))                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
+                //    {
+                //        strTemp = string.Format("XY 축, SocketAlign 대기위치로 이동 완료 [AlignMode: {0}]", alignMode);
+                //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                //        m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RotAndOffsetMove;
+                //    }
+                //    else
+                //    {
+                //        m_nSocketAlign_MainStep = tempStep;
+                //    }
+                //        break;
 
-                case (int)SocketAlign_Step.SocketAlign_RotAndOffsetMove:                                        //  가공 데이터 회전 및 Offset 이동
+                //case (int)SocketAlign_Step.SocketAlign_RotAndOffsetMove:                                        //  가공 데이터 회전 및 Offset 이동
 
-                    m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  전체 가공 도면 회전 중심 X
-                    m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  전체 가공 도면 회전 중심 Y
-                    m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  전체 가공 도면 이동 Offset X
-                    m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  전체 가공 도면 이동 Offset Y
-                    m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+                //    m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  전체 가공 도면 회전 중심 X
+                //    m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  전체 가공 도면 회전 중심 Y
+                //    m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  전체 가공 도면 이동 Offset X
+                //    m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  전체 가공 도면 이동 Offset Y
+                //    m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
 
-                    AlignedDrillingData_Select_and_OffsetMove(m_nSocketNum_forAlign, m_dALIGN_FACTOR_RotationCenter_X, 
-                        m_dALIGN_FACTOR_RotationCenter_Y, m_dALIGN_FACTOR_Offset_X, m_dALIGN_FACTOR_Offset_Y, m_dALIGN_FACTOR_Theta);
+                //    AlignedDrillingData_Select_and_OffsetMove(m_nSocketNum_forAlign, m_dALIGN_FACTOR_RotationCenter_X, 
+                //        m_dALIGN_FACTOR_RotationCenter_Y, m_dALIGN_FACTOR_Offset_X, m_dALIGN_FACTOR_Offset_Y, m_dALIGN_FACTOR_Theta);
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Socket 각도 보정 완료");
+                //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Socket 각도 보정 완료");
 
-                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_Reload;
-                    break;
+                //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_Reload;
+                //    break;
 
-                case (int)SocketAlign_Step.SocketAlign_Reload:                                                  //  가공 데이터를 회전했으면 데이터를 다시 불러온다.
+                //case (int)SocketAlign_Step.SocketAlign_Reload:                                                  //  가공 데이터를 회전했으면 데이터를 다시 불러온다.
 
-                    //  Get Data
-                    int m_nReturn = (int)WorkStage.nGetDataResult.GETDATA_FAIL;
+                //    //  Get Data
+                //    int m_nReturn = (int)WorkStage.nGetDataResult.GETDATA_FAIL;
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 후 가공 데이터 다시 Parsing 시작");
+                //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 후 가공 데이터 다시 Parsing 시작");
 
-                    //GetDrillingData(); -> 사용 변수들 전부 초기화하고 도면 데이터를 다시 읽어온다. (원본!)
-                    //
-                    // 변위센서 Data 저장( 소캣 갯수) ( 전체 / 선택 된 소켓 번호만 ( 1, 2, 3 )
-                    // 
-                    // 프리얼라인 1번 하고 소켓 얼라인 수행.
-                    //
-                    // -> 얼라인 데이터 저장( 소켓 갯수) ( 전체 / 선택 된 소켓 번호만 ( 1, 2, 3 )
-                    //
-                    // -> AlignedDrillingData_Select_and_OffsetMove <- 여기서 도면에 얼라인 정보 입력.
-                    //
-                    // -> ReGetDrillingData();에서는 도면만 업데이트 하여 각 소켓에 정보 전달. (얼라인 후 도면)
+                //    //GetDrillingData(); -> 사용 변수들 전부 초기화하고 도면 데이터를 다시 읽어온다. (원본!)
+                //    //
+                //    // 변위센서 Data 저장( 소캣 갯수) ( 전체 / 선택 된 소켓 번호만 ( 1, 2, 3 )
+                //    // 
+                //    // 프리얼라인 1번 하고 소켓 얼라인 수행.
+                //    //
+                //    // -> 얼라인 데이터 저장( 소켓 갯수) ( 전체 / 선택 된 소켓 번호만 ( 1, 2, 3 )
+                //    //
+                //    // -> AlignedDrillingData_Select_and_OffsetMove <- 여기서 도면에 얼라인 정보 입력.
+                //    //
+                //    // -> ReGetDrillingData();에서는 도면만 업데이트 하여 각 소켓에 정보 전달. (얼라인 후 도면)
 
 
-                    m_nReturn = GetDrillingData(); 
-                    switch (m_nReturn)
-                    {
-                        case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
-                            Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "가공 데이터 Parsing 성공");
+                //    m_nReturn = GetDrillingData(); 
+                //    switch (m_nReturn)
+                //    {
+                //        case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
+                //            Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "가공 데이터 Parsing 성공");
 
-                            m_nLaserDrilling_LayerCount = 0;
-                            m_bAlignCompleted = true;
-                            timer_VisionAlign.Enabled = false;
-                            m_nSocketAlign_MainStep = (int)SocketAlign_Step.Complete;
-                            break;
+                //            m_nLaserDrilling_LayerCount = 0;
+                //            m_bAlignCompleted = true;
+                //            timer_VisionAlign.Enabled = false;
+                //            m_nSocketAlign_MainStep = (int)SocketAlign_Step.Complete;
+                //            break;
 
-                        case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
-                            Log.Write("SLD-200", "Socket Align", "가공 데이터가 정상적으로 로드 되지 않았습니다.");
-                            return AlarmPost(AlarmKey.eGetDataFaile);
+                //        case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
+                //            Log.Write("SLD-200", "Socket Align", "가공 데이터가 정상적으로 로드 되지 않았습니다.");
+                //            return AlarmPost(AlarmKey.eGetDataFaile);
                             
-                        case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
-                            Log.Write("SLD-200", "Socket Align", "가공 데이터가 Group 이 아닙니다.");
-                            return AlarmPost(AlarmKey.eGetdata_Drildata_not_group);
+                //        case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
+                //            Log.Write("SLD-200", "Socket Align", "가공 데이터가 Group 이 아닙니다.");
+                //            return AlarmPost(AlarmKey.eGetdata_Drildata_not_group);
 
-                        case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
-                            Log.Write("SLD-200", "Socket Align", "가공 데이터를 Group 해제 해야 합니다.");
-                            return AlarmPost(AlarmKey.eGetdata_Ungroup);
+                //        case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
+                //            Log.Write("SLD-200", "Socket Align", "가공 데이터를 Group 해제 해야 합니다.");
+                //            return AlarmPost(AlarmKey.eGetdata_Ungroup);
 
-                        case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
-                            Log.Write("SLD-200", "Socket Align", "가공 데이터 Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.");
-                            return AlarmPost(AlarmKey.eGetdata_Layername_ng);
+                //        case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
+                //            Log.Write("SLD-200", "Socket Align", "가공 데이터 Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.");
+                //            return AlarmPost(AlarmKey.eGetdata_Layername_ng);
 
-                        case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
-                            Log.Write("SLD-200", "Socket Align", "가공 데이터 Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.");
-                            return AlarmPost(AlarmKey.eGetdata_Motiontype_ng);
+                //        case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
+                //            Log.Write("SLD-200", "Socket Align", "가공 데이터 Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.");
+                //            return AlarmPost(AlarmKey.eGetdata_Motiontype_ng);
 
-                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
-                            Log.Write("SLD-200", "Socket Align", "가공 데이터 중 Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지로만 구성되어야 합니다.");
-                            return AlarmPost(AlarmKey.eGetdata_Drildata_ng);
+                //        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
+                //            Log.Write("SLD-200", "Socket Align", "가공 데이터 중 Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지로만 구성되어야 합니다.");
+                //            return AlarmPost(AlarmKey.eGetdata_Drildata_ng);
 
-                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
-                            Log.Write("SLD-200", "Socket Align", "가공 데이터 중 Drilling Data 의 Line 데이터 개수가 4의 배수가 아닙니다.");
-                            return AlarmPost(AlarmKey.eGetdata_Drildata_linecnt);
+                //        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
+                //            Log.Write("SLD-200", "Socket Align", "가공 데이터 중 Drilling Data 의 Line 데이터 개수가 4의 배수가 아닙니다.");
+                //            return AlarmPost(AlarmKey.eGetdata_Drildata_linecnt);
 
-                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
-                            Log.Write("SLD-200", "Socket Align", "가공 데이터 중 Drilling Data 의 Line 이 닫힌 도형이 아닙니다.");
-                            return AlarmPost(AlarmKey.eGetdata_Drildata_not_closed);
+                //        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
+                //            Log.Write("SLD-200", "Socket Align", "가공 데이터 중 Drilling Data 의 Line 이 닫힌 도형이 아닙니다.");
+                //            return AlarmPost(AlarmKey.eGetdata_Drildata_not_closed);
 
-                        case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
-                            Log.Write("SLD-200", "Socket Align", "RTC 보드가 초기화 되지 않았습니다.");
-                            return AlarmPost(AlarmKey.eGetdata_Rtcinit);
-                    }
-                    break;
+                //        case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
+                //            Log.Write("SLD-200", "Socket Align", "RTC 보드가 초기화 되지 않았습니다.");
+                //            return AlarmPost(AlarmKey.eGetdata_Rtcinit);
+                //    }
+                //    break;
 
-                case (int)SocketAlign_Step.Complete:
+                //case (int)SocketAlign_Step.Complete:
 
-                    m_bAlignCompleted = true;
-                    timer_VisionAlign.Enabled = false; //필요한가?
+                //    m_bAlignCompleted = true;
+                //    timer_VisionAlign.Enabled = false; //필요한가?
 
-                    if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) &&
-                        (m_st4PointAlign_Result.dCenterOffsetY == 0.0) &&
-                        (m_st4PointAlign_Result.dRotationAngle == 0.0))
-                    {
-                        m_bSocketAlign_OK = false;
-                        strTemp = string.Format("Align 이동량 계산 실패. [AlignMode: {0}]", alignMode);
-                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
-                        Log.Write("Fail", Equipment.User_Name, "Socket Align", strTemp);
-                        return AlarmPost(AlarmKey.SocketAlignMovePositionCalcFail);
-                    }
-                    else
-                    {
-                        m_bSocketAlign_OK = true;
-                        strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                                    "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                                    "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
-                                    "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
-                        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
-                    }
+                //    if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) &&
+                //        (m_st4PointAlign_Result.dCenterOffsetY == 0.0) &&
+                //        (m_st4PointAlign_Result.dRotationAngle == 0.0))
+                //    {
+                //        m_bSocketAlign_OK = false;
+                //        strTemp = string.Format("Align 이동량 계산 실패. [AlignMode: {0}]", alignMode);
+                //        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
+                //        Log.Write("Fail", Equipment.User_Name, "Socket Align", strTemp);
+                //        return AlarmPost(AlarmKey.SocketAlignMovePositionCalcFail);
+                //    }
+                //    else
+                //    {
+                //        m_bSocketAlign_OK = true;
+                //        strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
+                //                    "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
+                //                    "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
+                //                    "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
+                //        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
+                //    }
 
-                    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
-                    break;
+                //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+                //    break;
             }
 
             if (currentStep != m_prevSocketAlignStep)
@@ -29921,7 +29932,6 @@ namespace QMC.Common.Modules
 
             {
                 double dLimit = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit;
-
                 for (int iter = 0; iter < 4; iter++)
                 {
                     dOffsetX1 = m_st4PointPosition_InspectedPos[iter].ptFiducial_Center.X;
