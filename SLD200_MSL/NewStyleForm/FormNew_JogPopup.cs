@@ -94,40 +94,6 @@ namespace SLD200.NewStyleForm
             {
                 Log.Write(ex);
             }
-
-            //기존코드
-            {
-                //try
-                //{
-                //    if (_viewerContextMenu == null)
-                //    {
-                //        _viewerContextMenu = new ContextMenuStrip();
-                //        _viewerContextMenu.Items.Add("Select Socket", null, ContextMenu_SelectSocket_Click);
-                //        _viewerContextMenu.Items.Add("이 위치로 이동", null, ContextMenu_MoveToThisPosition_Click);
-                //        _viewerContextMenu.Items.Add("선택된 중심으로 이동", null, ContextMenu_MoveToSelectedGroupCenter_Click);
-                //    }
-
-                //    // 메인에서 공유 Document 가져오기
-                //    try
-                //    {
-                //        var mi = typeof(Equipment).GetMethod("GetEqpSiriusViewerDocument");
-                //        if (mi != null)
-                //        {
-                //            var doc = mi.Invoke(null, null) as IDocument;
-                //            if (doc != null && SiriusViewer_JogPopup.Document != doc)
-                //                SiriusViewer_JogPopup.Document = doc;
-                //        }
-                //    }
-                //    catch { }
-
-                //    HookViewerEvents();
-                //    SiriusViewer_JogPopup.Invalidate();
-                //}
-                //catch (Exception ex)
-                //{
-                //    Log.Write(ex);
-                //}
-            }
         }
 
         // ===================== 컨텍스트 메뉴 동작 (Main 과 동일 로직 적용) =====================
@@ -475,7 +441,10 @@ namespace SLD200.NewStyleForm
                 else if (m.Name == "Unloader") unloader = m as Unloader;
             }
             if (workStage != null)
-            { workStage.ActionSiriusViewerRefresy -= OnWorkStageSiriusRefresh; workStage.ActionSiriusViewerRefresy += OnWorkStageSiriusRefresh; }
+            { 
+                workStage.ActionSiriusViewerRefresy -= OnWorkStageSiriusRefresh; 
+                workStage.ActionSiriusViewerRefresy += OnWorkStageSiriusRefresh; 
+            }
             InitializeTabs();
             Task.Factory.StartNew(() =>
             {
@@ -525,12 +494,32 @@ namespace SLD200.NewStyleForm
         {
             try
             {
+                // UI 스레드 마샬링
+                if (this.IsDisposed || !this.IsHandleCreated) return;
+                if (this.InvokeRequired)
+                {
+                    this.BeginInvoke((EventHandler)Timer_Status_Tick, sender, e);
+                    return;
+                }
+
                 if (SelectedTabPage == tabPage_Loader) userform_Loader?.UpdateStatus();
                 else if (SelectedTabPage == tabPage_Stage) userform_Stage?.UpdateStatus();
                 else if (SelectedTabPage == tabPage_Unloader) userform_Unloader?.UpdateStatus();
             }
+            catch (ObjectDisposedException) { /* 폼/컨트롤 종료 중이면 무시 */ }
             catch (Exception ex) { Log.Write(ex); }
         }
+
+        //private void Timer_Status_Tick(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (SelectedTabPage == tabPage_Loader) userform_Loader?.UpdateStatus();
+        //        else if (SelectedTabPage == tabPage_Stage) userform_Stage?.UpdateStatus();
+        //        else if (SelectedTabPage == tabPage_Unloader) userform_Unloader?.UpdateStatus();
+        //    }
+        //    catch (Exception ex) { Log.Write(ex); }
+        //}
 
         private void InitializeTabs()
         {
@@ -612,21 +601,98 @@ namespace SLD200.NewStyleForm
         private bool IsJogMoveStep(string unit) => GetJogProviderByUnit(unit)?.IsJogMoveStep ?? false;
         private double GetStepDistance(string unit) => GetJogProviderByUnit(unit)?.JogStepDistance ?? 0.0;
 
+
+        // 클래스 필드 추가
+        private volatile bool _docSyncInProgress = false;
+
         private void SyncSiriusDocumentIfNeeded(bool force = false)
         {
             try
             {
-                if (workStage == null) return;
+                // UI 스레드 마샬링 및 종료/핸들 체크
+                if (this.IsDisposed || !this.IsHandleCreated) return;
+                if (this.InvokeRequired)
+                {
+                    this.BeginInvoke((MethodInvoker)(() => SyncSiriusDocumentIfNeeded(force)));
+                    return;
+                }
+
+                // 재진입 방지
+                if (_docSyncInProgress)
+                {
+                    _pendingDocSync = true;
+                    return;
+                }
+                _docSyncInProgress = true;
+
+                if (workStage == null)
+                    return;
+
                 var doc = Equipment.GetEqpSiriusViewerDocument();
-                if (doc == null) return;
+                if (doc == null)
+                    return;
+
                 bool busy = workStage.m_nLaserDrilling_MainStep != (int)WorkStage.LaserDrilling_Step.None;
-                if (!force && busy) { _pendingDocSync = true; return; }
-                if (SiriusViewer_JogPopup.Document != doc) SiriusViewer_JogPopup.Document = doc;
-                SiriusViewer_JogPopup.Invalidate();
+                busy = busy && Equipment.AutoManualStatus == false && Equipment.AutoRunStatus == false;
+                if (!force && busy)
+                {
+                    _pendingDocSync = true;
+                    return;
+                }
+
+                var viewer = this.SiriusViewer_JogPopup;
+                if (viewer == null || viewer.IsDisposed || !viewer.IsHandleCreated)
+                    return;
+
+                if (viewer.Document != doc)
+                    viewer.Document = doc;
+
+                // View가 없으면 생성 (일부 환경에서 필요)
+                if (viewer.Document != null && viewer.Document.Views != null && viewer.Document.Views.Count == 0)
+                {
+                    var viewNew = new ViewDefault(viewer.Document, viewer.GLcontrol);
+                    viewer.Document.Views.Add(viewNew);
+                }
+
+                viewer.Invalidate();
                 _pendingDocSync = false;
             }
-            catch (Exception ex) { Log.Write(ex); }
+            catch (ObjectDisposedException)
+            {
+                // 폼/컨트롤/문서 종료 중이면 무시
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            finally
+            {
+                _docSyncInProgress = false;
+            }
         }
+
+
+        //private void SyncSiriusDocumentIfNeeded(bool force = false)
+        //{
+        //    try
+        //    {
+        //        if (workStage == null) return;
+        //        var doc = Equipment.GetEqpSiriusViewerDocument();
+        //        if (doc == null) return;
+        //        bool busy = workStage.m_nLaserDrilling_MainStep != (int)WorkStage.LaserDrilling_Step.None;
+        //        if (!force && busy) 
+        //        { 
+        //            _pendingDocSync = true; 
+        //            return; 
+        //        }
+        //        if (SiriusViewer_JogPopup.Document != doc) 
+        //            SiriusViewer_JogPopup.Document = doc;
+        //        SiriusViewer_JogPopup.Invalidate();
+
+        //        _pendingDocSync = false;
+        //    }
+        //    catch (Exception ex) { Log.Write(ex); }
+        //}
 
         private void OnWorkStageSiriusRefresh(bool req)
         { if (req) SyncSiriusDocumentIfNeeded(false); }

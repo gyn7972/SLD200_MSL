@@ -403,6 +403,21 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_SemiAuto_FiducialAlign_Click(object sender, EventArgs e)
         {
+            //Test
+            try
+            {
+                //도면을 현재 recipe로 불러온다.
+                if (Equipment.RecipeOpen_DrawingFilePath != null && Equipment.RecipeOpen_DrawingFilePath != "")
+                {
+                    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+
             Log.Write("GUI", Equipment.User_Name, "ButtonClick", "button_SemiAuto_FiducialAlign_Click");
             string strTemp = "";
 

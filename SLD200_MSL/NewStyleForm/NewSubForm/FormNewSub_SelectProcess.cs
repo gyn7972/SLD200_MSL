@@ -722,7 +722,12 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             try
             {
-                if (workStage.GetLaserBusyStatus())
+                //신호 보지말고 무조건 레이저 정지
+                //if (workStage.GetLaserBusyStatus())
+                {
+                    workStage.rtc?.CtlLaserOff();
+                    Thread.Sleep(500); // Off 후 잠시 대기
+                }
                 {
                     workStage.rtc?.CtlAbort();
                     Thread.Sleep(2000); // Abort 후 잠시 대기
@@ -733,10 +738,14 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 Log.Write(ex);
             }
+            finally
+            {
+                Equipment.SelectRunEnable_New = false; //  수동 가공 시작
+                workStage.StopProcess();
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 중지 버튼");
+            }
 
-            Equipment.SelectRunEnable_New = false; //  수동 가공 시작
 
-            workStage.StopProcess();
         }
 
         private void Button_SelectAllInLayer_Click_Click(object sender, EventArgs e)

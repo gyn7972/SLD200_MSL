@@ -356,6 +356,11 @@ namespace QMC.Common.VisionPart
             int stepsTaken = 0;
             int directionChangeCount = 0;
 
+            // 최고 후보 추적용
+            Circle bestCandidate = new Circle();
+            double bestCandidateRadius = 0;
+            double bestCandidateScore = -1.0;
+
             PointF currentPosition;
             if (bRoiUse)
             {
@@ -437,7 +442,19 @@ namespace QMC.Common.VisionPart
                             double dRadius2 = 0;
                             Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2, radius, dSpec);
 
-                            if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.05)
+                            // 최고 후보 갱신
+                            if (dRadius2 > 0)
+                            {
+                                double tmpScore = IsRealCircle(center, dRadius2, points, dSpec);
+                                if (tmpScore > bestCandidateScore)
+                                {
+                                    bestCandidateScore = tmpScore;
+                                    bestCandidateRadius = dRadius2;
+                                    bestCandidate = center;
+                                }
+                            }
+
+                            if (Math.Abs((dRadius - dRadius2) / Math.Max(1e-6, dRadius2)) < 0.05)
                             {
                                 double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
                                 if (dScoreCheck > 0.8)
@@ -476,12 +493,52 @@ namespace QMC.Common.VisionPart
 
                 if (!bFindCircle)
                 {
+                    // 실패 통계 및 최고 후보 기반 분류
+                    var statsRoiFail = ComputeBrightnessStats(pixelData);
+                    result.AvgBrightness = statsRoiFail.avg;
+                    result.Contrast = statsRoiFail.std;
+                    result.ExpectedRadius = radius;
+                    result.MeasuredRadius = bestCandidateRadius;
+                    result.Score = bestCandidateScore;
+
+                    if (bestCandidateRadius > 0 && bestCandidateRadius < radius)
+                    {
+                        double diffPx = radius - bestCandidateRadius;
+                        double diffPct = (diffPx / Math.Max(1, radius)) * 100.0;
+                        FillFailure(result, CircleSearchFailReason.RadiusOutOfTolerance,
+                            $"설정한 사이즈보다 작아 미검출 (요청반경={radius}, 측정반경={bestCandidateRadius:0.0}, 차이={diffPx:0.0}px, {diffPct:0.0}%)"
+                            , "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                        //"Circle Size 재확인 또는 Spec 완화, 조명/포커스 조정 권장.");
+                    }
+                    else if (bestCandidateRadius > 0 && bestCandidateRadius > radius)
+                    {
+                        double diffPx = bestCandidateRadius - radius;
+                        double diffPct = (diffPx / Math.Max(1, radius)) * 100.0;
+                        FillFailure(result, CircleSearchFailReason.RadiusOutOfTolerance,
+                            $"설정한 사이즈보다 커서 미검출 (요청반경={radius}, 측정반경={bestCandidateRadius:0.0}, 차이=+{diffPx:0.0}px, {diffPct:0.0}%)"
+                            , "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                        //"Circle Size 재확인 또는 Spec 완화, 조명/포커스 조정 권장.");
+                    }
+                    else if (bestCandidateScore >= 0 && bestCandidateScore < miscellaneous_FiducialMarkSocre)
+                    {
+                        FillFailure(result, CircleSearchFailReason.ScoreTooLow,
+                            $"설정한 Score({miscellaneous_FiducialMarkSocre:0.00})보다 낮아 미검출 (측정Score={bestCandidateScore:0.00})"
+                            , "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                        //"Score 기준을 약간 낮추거나 조명/노출로 대비 향상 후 재시도.");
+                    }
+                    else
+                    {
+                        FillFailure(result, CircleSearchFailReason.NotFound,
+                            "원 미검출. 마크 색상/극성 구분 또는 조명 변경 필요.", "");
+                            //"Black/White(극성) 전환, 조명(RED/IR)/Exposure 조정 후 재시도.");
+                    }
+
                     circlesResult.Clear();
                     timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
-                    rawImagePath = Path.Combine(baseDir, $"AlignFail_{timestamp}.bmp");
+                    rawImagePath = Path.Combine(baseDir, $"Align_NG_{timestamp}.bmp");
                     IsImageSave = true;
                     SaveImage(pixelData, w, h, rawImagePath);
-                    return new QMC_ImageProcessFindAlignResult();
+                    return result;
                 }
 
                 // 마지막 정밀 탐색 (ROI 좌표로 계산 후 원본으로 보정)
@@ -520,6 +577,14 @@ namespace QMC.Common.VisionPart
                 }
                 else
                 {
+                    // 실패 시에도 최고 후보 갱신
+                    if (dScore > bestCandidateScore)
+                    {
+                        bestCandidateScore = dScore;
+                        bestCandidateRadius = dRadius;
+                        bestCandidate = resultCircle;
+                    }
+
                     circlesResult.Clear();
                 }
             }
@@ -600,7 +665,19 @@ namespace QMC.Common.VisionPart
                             double dRadius2 = 0;
                             Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2, radius, dSpec);
 
-                            if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.05)
+                            // 최고 후보 갱신
+                            if (dRadius2 > 0)
+                            {
+                                double tmpScore = IsRealCircle(center, dRadius2, points, dSpec);
+                                if (tmpScore > bestCandidateScore)
+                                {
+                                    bestCandidateScore = tmpScore;
+                                    bestCandidateRadius = dRadius2;
+                                    bestCandidate = center;
+                                }
+                            }
+
+                            if (Math.Abs((dRadius - dRadius2) / Math.Max(1e-6, dRadius2)) < 0.05)
                             {
                                 double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
                                 if (dScoreCheck > 0.8)
@@ -639,7 +716,6 @@ namespace QMC.Common.VisionPart
                             }
                         }
                     }
-
                 }
 
                 //  원을 찾았는지 여부 Ref.
@@ -652,6 +728,8 @@ namespace QMC.Common.VisionPart
                     result.AvgBrightness = stats.avg;
                     result.Contrast = stats.std;
                     result.ExpectedRadius = radius;
+                    result.MeasuredRadius = bestCandidateRadius;
+                    result.Score = bestCandidateScore;
 
                     if (pixelData == null || pixelData.Length == 0)
                     {
@@ -697,22 +775,39 @@ namespace QMC.Common.VisionPart
                         return result;
                     }
 
-                    if (!circleFound)
+                    // 최종 분류: Score 미달 / 사이즈 작음 / 사이즈 큼 / 기타
+                    if (bestCandidateRadius > 0 && bestCandidateRadius < radius)
                     {
-                        FillFailure(result, CircleSearchFailReason.NotFound, "원 미검출",
-                            BuildGenericRecommendation(result, dSpec));
-                        result.UserGuide = BuildUserGuide(result, dSpec * 100.0, miscellaneous_FiducialMarkSocre * 100.0);
-
-                        circlesResult.Clear();
-                        timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
-                        rawImagePath = Path.Combine(baseDir, $"Align_NG_{timestamp}.bmp");
-                        IsImageSave = true;
-                        SaveImage(pixelData, w, h, rawImagePath);
-                        return result;
+                        double diffPx = radius - bestCandidateRadius;
+                        double diffPct = (diffPx / Math.Max(1, radius)) * 100.0;
+                        FillFailure(result, CircleSearchFailReason.RadiusOutOfTolerance,
+                            $"설정한 사이즈보다 작아 미검출 (요청반경={radius}, 측정반경={bestCandidateRadius:0.0}, 차이={diffPx:0.0}px, {diffPct:0.0}%)"
+                            , "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                        //"Circle Size 재확인 또는 Spec 완화, 조명/포커스 조정 권장.");
                     }
-
-                    FillFailure(result, CircleSearchFailReason.ScoreTooLow,
-                        "Score Threshold 미달", "Score 기준 하향 또는 조명/Spec 조정");
+                    else if (bestCandidateRadius > 0 && bestCandidateRadius > radius)
+                    {
+                        double diffPx = bestCandidateRadius - radius;
+                        double diffPct = (diffPx / Math.Max(1, radius)) * 100.0;
+                        FillFailure(result, CircleSearchFailReason.RadiusOutOfTolerance,
+                            $"설정한 사이즈보다 커서 미검출 (요청반경={radius}, 측정반경={bestCandidateRadius:0.0}, 차이=+{diffPx:0.0}px, {diffPct:0.0}%)"
+                            , "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                        //"Circle Size 재확인 또는 Spec 완화, 조명/포커스 조정 권장.");
+                    }
+                    else if (bestCandidateScore >= 0 && bestCandidateScore < miscellaneous_FiducialMarkSocre)
+                    {
+                        FillFailure(result, CircleSearchFailReason.ScoreTooLow,
+                            $"설정한 Score({miscellaneous_FiducialMarkSocre:0.00})보다 낮아 미검출 (측정Score={bestCandidateScore:0.00})"
+                            , "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                        //"Score 기준을 약간 낮추거나 조명/노출로 대비 향상 후 재시도.");
+                    }
+                    
+                    else
+                    {
+                        FillFailure(result, CircleSearchFailReason.NotFound,
+                            "원 미검출",
+                            BuildGenericRecommendation(result, dSpec));
+                    }
                     result.UserGuide = BuildUserGuide(result, dSpec * 100.0, miscellaneous_FiducialMarkSocre * 100.0);
 
                     circlesResult.Clear();
@@ -731,17 +826,25 @@ namespace QMC.Common.VisionPart
                 points = polygon;
 
                 circlesResult.Clear();
-                Circle resultCircle = FindCircleFitter(circlesResult, points, out dRadius, 4, radius, dSpec);
+                Circle resultCircle2 = FindCircleFitter(circlesResult, points, out dRadius, 4, radius, dSpec);
 
-                double dScore = IsRealCircle(resultCircle, dRadius, points, dSpec);
-                resultCircle.Score = (float)dScore;
+                double dScore2 = IsRealCircle(resultCircle2, dRadius, points, dSpec);
+                resultCircle2.Score = (float)dScore2;
 
-                if (dScore > miscellaneous_FiducialMarkSocre)
+                // 최고 후보 갱신
+                if (dScore2 > bestCandidateScore)
+                {
+                    bestCandidateScore = dScore2;
+                    bestCandidateRadius = dRadius;
+                    bestCandidate = resultCircle2;
+                }
+
+                if (dScore2 > miscellaneous_FiducialMarkSocre)
                 {
                     bFindCircle = true;
-                    result.Circles.Add(resultCircle);
-                    result.ScoreCollection.Add(dScore);
-                    result.Score = dScore;
+                    result.Circles.Add(resultCircle2);
+                    result.ScoreCollection.Add(dScore2);
+                    result.Score = dScore2;
 
                     timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
                     rawImagePath = Path.Combine(baseDir, $"Align_OK_{timestamp}.bmp");
@@ -766,12 +869,13 @@ namespace QMC.Common.VisionPart
                 {
                     FillFailure(result,
                         CircleSearchFailReason.RadiusOutOfTolerance,
-                        $"반경 편차 초과 (요청:{radius}, 측정:{result.MeasuredRadius:0.0})",
-                        "Circle Size(Spec) 값을 키우거나 ROI/조명 재조정.");
+                        $"반경 편차 초과 (요청:{radius}, 측정:{result.MeasuredRadius:0.0})", "");
+                        //"Circle Size(Spec) 값을 키우거나 ROI/조명 재조정.");
                 }
                 return result;
             }
 
+            // 실패 공통 가드
             if (pixelData == null || pixelData.Length == 0)
             {
                 FillFailure(result,
@@ -822,27 +926,46 @@ namespace QMC.Common.VisionPart
                 return result;
             }
 
-            if (!circleFound)
+            // 최종 분류 (미검출 도달 시)
+            result.MeasuredRadius = bestCandidateRadius;
+            result.Score = bestCandidateScore;
+
+            if (bestCandidateRadius > 0 && bestCandidateRadius < radius)
+            {
+                double diffPx = radius - bestCandidateRadius;
+                double diffPct = (diffPx / Math.Max(1, radius)) * 100.0;
+                FillFailure(result,
+                    CircleSearchFailReason.RadiusOutOfTolerance,
+                    $"설정한 사이즈보다 작아 미검출 (요청반경={radius}, 측정반경={bestCandidateRadius:0.0}, 차이={diffPx:0.0}px, {diffPct:0.0}%)"
+                    , "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                //"Circle Size 재확인 또는 Spec 완화, 조명/포커스 조정 권장.");
+            }
+            else if (bestCandidateRadius > 0 && bestCandidateRadius > radius)
+            {
+                double diffPx = bestCandidateRadius - radius;
+                double diffPct = (diffPx / Math.Max(1, radius)) * 100.0;
+                FillFailure(result,
+                    CircleSearchFailReason.RadiusOutOfTolerance,
+                    $"설정한 사이즈보다 커서 미검출 (요청반경={radius}, 측정반경={bestCandidateRadius:0.0}, 차이=+{diffPx:0.0}px, {diffPct:0.0}%)"
+                    , "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                //"Circle Size 재확인 또는 Spec 완화, 조명/포커스 조정 권장.");
+            }
+            else if (bestCandidateScore >= 0 && bestCandidateScore < miscellaneous_FiducialMarkSocre)
+            {
+                FillFailure(result,
+                    CircleSearchFailReason.ScoreTooLow,
+                    $"설정한 Score({miscellaneous_FiducialMarkSocre:0.00})보다 낮아 미검출 (측정Score={bestCandidateScore:0.00})"
+                    , "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                //"Score 기준을 약간 낮추거나 조명/노출로 대비 향상 후 재시도.");
+            }
+            else
             {
                 FillFailure(result,
                     CircleSearchFailReason.NotFound,
-                    "원 미검출",
-                    BuildGenericRecommendation(result, dSpec));
-                result.UserGuide = BuildUserGuide(result, dSpec * 100.0, miscellaneous_FiducialMarkSocre * 100.0);
-
-                circlesResult.Clear();
-                timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
-                rawImagePath = Path.Combine(baseDir, $"Align_NG_{timestamp}.bmp");
-                IsImageSave = true;
-                SaveImage(pixelData, w, h, rawImagePath);
-
-                return result;
+                    "원 미검출. 마크 색상/극성 구분 또는 조명 변경 필요.",
+                    "Black/White(극성) 전환, 조명(RED/IR)/Exposure 조정 후 재시도.");
             }
 
-            FillFailure(result,
-                CircleSearchFailReason.ScoreTooLow,
-                "Score Threshold 미달",
-                "Score 기준 하향 또는 조명/Spec 조정");
             result.UserGuide = BuildUserGuide(result, dSpec * 100.0, miscellaneous_FiducialMarkSocre * 100.0);
 
             circlesResult.Clear();
@@ -853,7 +976,6 @@ namespace QMC.Common.VisionPart
 
             return result;
         }
-
 
         private double IsRealCircle(Circle center, double dRadius, List<PointF> points, double dSpec)
         {
@@ -1158,186 +1280,13 @@ namespace QMC.Common.VisionPart
             return result;
         }
 
-
-        //public QMC_ImageProcessFindAlignResult FindCircleForFR4(byte[] imageRaw, int w, int h, int r, double dSpec, double dScore)
-        //{
-        //    // 결과 후보 추적
-        //    Circle bestCircle = new Circle(0, 0, 0);
-        //    double bestScore = 0.0;
-        //    double bestRadius = 0.0;
-        //    int bestThreshold = -1;
-        //    int bestEdgeCount = 0;
-
-        //    List<RectangleF> circlesResult = new List<RectangleF>();
-        //    QMC_ImageProcessFindAlignResult Qmcresult = new QMC_ImageProcessFindAlignResult();
-        //    byte[] pixelData = new byte[imageRaw.Length];
-        //    byte[,] image = new byte[w, h];
-
-        //    // 1. 폴더 생성 (날짜 기준)
-        //    string dateFolder = DateTime.Now.ToString("yyyyMMdd");
-        //    string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
-        //    if (!Directory.Exists(baseDir))
-        //        Directory.CreateDirectory(baseDir);
-
-        //    // 2. 초기 원본 이미지 저장
-        //    //string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{DateTime.Now.Ticks}.bmp");
-        //    string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
-        //    string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
-        //    IsImageSave = false;
-        //    SaveImage(pixelData, w, h, rawImagePath);
-
-        //    for (int y = 0; y < h; y++)
-        //    {
-        //        for (int x = 0; x < w; x++)
-        //        {
-        //            image[x, y] = imageRaw[y * w + x];
-
-        //        }
-        //    }
-
-        //    Sobel(image, pixelData, w, h, w, 5);
-
-        //    // 밝기/대비 통계 (원본 기준 또는 Sobel 후 판단 — 여기서는 원본)
-        //    var stats = ComputeBrightnessStats(imageRaw);
-        //    Qmcresult.AvgBrightness = stats.avg;
-        //    Qmcresult.Contrast = stats.std;
-
-        //    // 히스토그램 기반 초기 Threshold 후보
-        //    int[] nHisto = new int[256];
-        //    for (int i = 0; i < pixelData.Length; i++)
-        //        nHisto[pixelData[i]]++;
-
-        //    int nNeedCount = (int)(r * r * Math.PI * 2); // 대략적 필요 엣지 개수 추정
-        //    int accum = 0;
-        //    int initialThreshold = 0;
-        //    for (int i = 0; i < 256; i++)
-        //    {
-        //        accum += nHisto[255 - i];
-        //        if (accum > nNeedCount)
-        //        {
-        //            initialThreshold = 255 - i;
-        //            break;
-        //        }
-        //    }
-
-        //    IsImageSave = true;
-        //    SaveImage(pixelData, w, h, Path.Combine(baseDir, $"Sobel_{timestamp}.bmp"));
-
-        //    // 탐색 루프
-        //    int nThreshold = initialThreshold;
-        //    int safetyIter = 0;
-        //    const int MAX_THRESHOLD = 255;
-
-        //    while (nThreshold <= MAX_THRESHOLD)
-        //    {
-        //        safetyIter++;
-        //        if (safetyIter > 100) // 무한 루프 방지
-        //            break;
-
-        //        circlesResult.Clear();
-
-        //        List<PointF> polygons;
-        //        IOrderedEnumerable<List<Point>> blobSorted;
-        //        double dRadius;
-        //        Circle resultCircle;
-
-        //        FindCircleFR4(pixelData, w, h, r, circlesResult, nThreshold,
-        //                      out polygons, out blobSorted, out dRadius, out resultCircle);
-
-        //        // polygons 수를 엣지 포인트로 간주
-        //        int edgeCount = polygons != null ? polygons.Count : 0;
-
-        //        if (resultCircle.Radius > 0)
-        //        {
-        //            // 반경 허용 범위 우선 확인
-        //            bool radiusInRange = (r * (1 - dSpec) <= resultCircle.Radius) &&
-        //                                 (resultCircle.Radius <= r * (1 + dSpec));
-
-        //            // 스코어 (FindCircleFR4 내부에서 sqrt(score) 적용됨)
-        //            double score = resultCircle.Score;
-
-        //            // 즉시 성공 조건: 반경 허용 + Score > dScore
-        //            if (radiusInRange && score > dScore)
-        //            {
-        //                Qmcresult.Circles.Add(resultCircle);
-        //                Qmcresult.ScoreCollection.Add(score);
-        //                Qmcresult.MeasuredRadius = resultCircle.Radius;
-        //                Qmcresult.Score = score;
-        //                Qmcresult.EdgePointCount = edgeCount;
-        //                Qmcresult.EdgeInlierRatio = score;
-        //                return Qmcresult; // 성공 종료
-        //            }
-
-        //            // 최고 후보 갱신 (향후 실패 시 진단용)
-        //            if (score > bestScore)
-        //            {
-        //                bestScore = score;
-        //                bestCircle = resultCircle;
-        //                bestRadius = resultCircle.Radius;
-        //                bestThreshold = nThreshold;
-        //                bestEdgeCount = edgeCount;
-        //            }
-        //        }
-
-        //        nThreshold += 5; // 임계값 증가
-
-        //        //if (r * 0.95 < result.Radius && result.Radius < r * 1.05)
-        //        //{
-        //        //    if (result.Score > dScore)
-        //        //    {
-        //        //        bFind = true;
-        //        //        Qmcresult.Circles.Add(result);
-        //        //        Qmcresult.ScoreCollection.Add(result.Score);
-        //        //        return Qmcresult;
-        //        //    }
-
-        //        //}
-        //        //nThreshold += 5;
-        //        //if (nThreshold > 255)
-        //        //    break;
-        //    }
-        //    //return Qmcresult;
-
-        //    // 여기까지 왔다면 미검출 (최종 실패 진단)
-        //    Qmcresult.MeasuredRadius = bestRadius;
-        //    Qmcresult.Score = bestScore;
-        //    Qmcresult.EdgePointCount = bestEdgeCount;
-        //    Qmcresult.EdgeInlierRatio = bestScore; // (Score를 inlier ratio 성격으로 활용)
-
-        //    //if (bestCircle == null)
-        //    //{
-        //    //    FillFailure(Qmcresult,
-        //    //        CircleSearchFailReason.NotFound,
-        //    //        "FR4 마크(원)를 찾지 못했습니다.",
-        //    //        BuildGenericRecommendation(Qmcresult, dSpec));
-        //    //    return Qmcresult;
-        //    //}
-
-        //    // 후보는 있으나 반경 편차 문제
-        //    if (Math.Abs(bestRadius - r) / Math.Max(1, r) > dSpec)
-        //    {
-        //        FillFailure(Qmcresult,
-        //            CircleSearchFailReason.RadiusOutOfTolerance,
-        //            $"반경 편차 초과 (요청:{r}, 측정:{bestRadius:0.0})",
-        //            "Circle Size 정확도 재확인 또는 Spec(dSpec) 완화, 조명/포커스 조정.");
-        //        return Qmcresult;
-        //    }
-
-        //    // 반경은 괜찮지만 Score 부족
-        //    FillFailure(Qmcresult,
-        //        CircleSearchFailReason.ScoreTooLow,
-        //        $"Score 부족 (기준:{dScore:0.00}, 측정:{bestScore:0.00}, Threshold:{bestThreshold})",
-        //        "조명(RED/IR) 또는 Exposure 조정 → 대비 향상\nSpec(dSpec) 완화 또는 Score 기준 하향(예: 0.80→0.60)\nFiducial 표면 청소/포커스 재조정 후 재시도.");
-        //    return Qmcresult;
-        //}
-
         public QMC_ImageProcessFindAlignResult FindCircleForFR4(
-                                            byte[] imageRaw, int w, int h, int r, double dSpec, double dScore,
-                                            Rectangle? roiRect = null) // ROI 파라미터 추가(옵션)
+    byte[] imageRaw, int w, int h, int r, double dSpec, double dScore,
+    Rectangle? roiRect = null) // ROI 파라미터 추가(옵션)
         {
             // 결과 후보 추적
             Circle bestCircle = new Circle(0, 0, 0);
-            double bestScore = 0.0;
+            double bestScore = -1.0;
             double bestRadius = 0.0;
             int bestThreshold = -1;
             int bestEdgeCount = 0;
@@ -1393,6 +1342,7 @@ namespace QMC.Common.VisionPart
             var stats = ComputeBrightnessStats(imageRaw);
             Qmcresult.AvgBrightness = stats.avg;
             Qmcresult.Contrast = stats.std;
+            Qmcresult.ExpectedRadius = r;
 
             // 히스토그램 기반 초기 Threshold (Sobel-ROI 기반)
             int[] hist = new int[256];
@@ -1439,7 +1389,7 @@ namespace QMC.Common.VisionPart
 
                 if (resultCircle.Radius > 0)
                 {
-                    // 1) ROI(로컬) 완전 포함성 검사 추가
+                    // 1) ROI(로컬) 완전 포함성 검사
                     bool insideLocal = !useRoi ||
                                        (resultCircle.CenterX - resultCircle.Radius >= 0 &&
                                         resultCircle.CenterX + resultCircle.Radius <= roiW &&
@@ -1501,25 +1451,54 @@ namespace QMC.Common.VisionPart
                 nThreshold += 5; // 임계값 증가
             }
 
-            // 미검출 (최종 실패 진단)
+            // 미검출 (최종 실패 진단: FindCirclesWidthCircleBoundary와 동일한 분류)
             Qmcresult.MeasuredRadius = bestRadius;
             Qmcresult.Score = bestScore;
             Qmcresult.EdgePointCount = bestEdgeCount;
-            Qmcresult.EdgeInlierRatio = bestScore;
+            Qmcresult.EdgeInlierRatio = bestScore; // inlier ratio 성격으로 사용
 
-            if (Math.Abs(bestRadius - r) / Math.Max(1, r) > dSpec)
+            // 최종 분류: 사이즈 작음/큼/Score 미달/기타
+            if (bestRadius > 0 && bestRadius < r)
             {
+                double diffPx = r - bestRadius;
+                double diffPct = (diffPx / Math.Max(1, r)) * 100.0;
                 FillFailure(Qmcresult,
                     CircleSearchFailReason.RadiusOutOfTolerance,
-                    $"반경 편차 초과 (요청:{r}, 측정:{bestRadius:0.0})",
-                    "Circle Size 정확도 재확인 또는 Spec(dSpec) 완화, 조명/포커스 조정.");
-                return Qmcresult;
+                    $"설정한 사이즈보다 작아 미검출 (요청반경={r}, 측정반경={bestRadius:0.0}, 차이={diffPx:0.0}px, {diffPct:0.0}%)",
+                    "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+            }
+            else if (bestRadius > 0 && bestRadius > r)
+            {
+                double diffPx = bestRadius - r;
+                double diffPct = (diffPx / Math.Max(1, r)) * 100.0;
+                FillFailure(Qmcresult,
+                    CircleSearchFailReason.RadiusOutOfTolerance,
+                    $"설정한 사이즈보다 커서 미검출 (요청반경={r}, 측정반경={bestRadius:0.0}, 차이=+{diffPx:0.0}px, {diffPct:0.0}%)",
+                    "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+            }
+            else if (bestScore >= 0 && bestScore < dScore)
+            {
+                FillFailure(Qmcresult,
+                    CircleSearchFailReason.ScoreTooLow,
+                    $"설정한 Score({dScore:0.00})보다 낮아 미검출 (측정Score={bestScore:0.00}, Threshold:{bestThreshold})",
+                    "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+            }
+            else
+            {
+                FillFailure(Qmcresult,
+                    CircleSearchFailReason.NotFound,
+                    "원 미검출",
+                    BuildGenericRecommendation(Qmcresult, dSpec));
             }
 
-            FillFailure(Qmcresult,
-                CircleSearchFailReason.ScoreTooLow,
-                $"Score 부족 (기준:{dScore:0.00}, 측정:{bestScore:0.00}, Threshold:{bestThreshold})",
-                "조명(RED/IR) 또는 Exposure 조정 → 대비 향상\nSpec(dSpec) 완화 또는 Score 기준 하향(예: 0.80→0.60)\nFiducial 표면 청소/포커스 재조정 후 재시도.");
+            Qmcresult.UserGuide = BuildUserGuide(Qmcresult, dSpec * 100.0, dScore * 100.0);
+
+            // NG 저장
+            timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
+            string ngPath = Path.Combine(baseDir, $"Align_NG_{timestamp}.bmp");
+            IsImageSave = true;
+            SaveImage(imageRaw, w, h, ngPath);
+
             return Qmcresult;
         }
 
@@ -1631,6 +1610,18 @@ namespace QMC.Common.VisionPart
 
         //        if (resultCircle.Radius > 0)
         //        {
+        //            // 1) ROI(로컬) 완전 포함성 검사 추가
+        //            bool insideLocal = !useRoi ||
+        //                               (resultCircle.CenterX - resultCircle.Radius >= 0 &&
+        //                                resultCircle.CenterX + resultCircle.Radius <= roiW &&
+        //                                resultCircle.CenterY - resultCircle.Radius >= 0 &&
+        //                                resultCircle.CenterY + resultCircle.Radius <= roiH);
+        //            if (!insideLocal)
+        //            {
+        //                nThreshold += 5;
+        //                continue;
+        //            }
+
         //            bool radiusInRange = (r * (1 - dSpec) <= resultCircle.Radius) &&
         //                                 (resultCircle.Radius <= r * (1 + dSpec));
 
@@ -1643,6 +1634,19 @@ namespace QMC.Common.VisionPart
         //                {
         //                    resultCircle.CenterX += roiX;
         //                    resultCircle.CenterY += roiY;
+        //                }
+
+        //                // 2) ROI(글로벌) 완전 포함성 재검사
+        //                if (useRoi)
+        //                {
+        //                    if (resultCircle.CenterX - resultCircle.Radius < roiX ||
+        //                        resultCircle.CenterX + resultCircle.Radius > roiX + roiW ||
+        //                        resultCircle.CenterY - resultCircle.Radius < roiY ||
+        //                        resultCircle.CenterY + resultCircle.Radius > roiY + roiH)
+        //                    {
+        //                        nThreshold += 5;
+        //                        continue;
+        //                    }
         //                }
 
         //                Qmcresult.Circles.Add(resultCircle);
@@ -1678,17 +1682,18 @@ namespace QMC.Common.VisionPart
         //    {
         //        FillFailure(Qmcresult,
         //            CircleSearchFailReason.RadiusOutOfTolerance,
-        //            $"반경 편차 초과 (요청:{r}, 측정:{bestRadius:0.0})",
-        //            "Circle Size 정확도 재확인 또는 Spec(dSpec) 완화, 조명/포커스 조정.");
+        //            $"반경 편차 초과 (요청:{r}, 측정:{bestRadius:0.0})", "");
+        //            //"Circle Size 정확도 재확인 또는 Spec(dSpec) 완화, 조명/포커스 조정.");
         //        return Qmcresult;
         //    }
 
         //    FillFailure(Qmcresult,
         //        CircleSearchFailReason.ScoreTooLow,
-        //        $"Score 부족 (기준:{dScore:0.00}, 측정:{bestScore:0.00}, Threshold:{bestThreshold})",
-        //        "조명(RED/IR) 또는 Exposure 조정 → 대비 향상\nSpec(dSpec) 완화 또는 Score 기준 하향(예: 0.80→0.60)\nFiducial 표면 청소/포커스 재조정 후 재시도.");
+        //        $"Score 부족 (기준:{dScore:0.00}, 측정:{bestScore:0.00}, Threshold:{bestThreshold})", "");
+        //        //"조명(RED/IR) 또는 Exposure 조정 → 대비 향상\nSpec(dSpec) 완화 또는 Score 기준 하향(예: 0.80→0.60)\nFiducial 표면 청소/포커스 재조정 후 재시도.");
         //    return Qmcresult;
         //}
+
 
         private void FindCircleFR4(byte[] pixelData, int w, int h, int r, List<RectangleF> circlesResult, int nThreshold, out List<PointF> polygons, out IOrderedEnumerable<List<Point>> blobSorted, out double dRadius, out Circle result)
         {
@@ -2777,6 +2782,184 @@ namespace QMC.Common.VisionPart
             }
         }
 
+        //public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundaryMultipleCircles(
+        //                                        List<RectangleF> circlesResult,
+        //                                        byte[] pixelData, int w, int h, int radius, double dSpec,
+        //                                        int maxCircleCount = 20,
+        //                                        bool bIsDarkCircleSearch = true,
+        //                                        double scoreThreshold = 0.7,
+        //                                        bool bSpiralSearch = true,
+        //                                        Rectangle? roiRect = null)
+        //{
+        //    QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+
+        //    // [1] 날짜 기반 폴더 생성
+        //    string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+        //    string baseDir = Path.Combine("d:\\TempGoldpowder", dateFolder);
+        //    if (!Directory.Exists(baseDir))
+        //        Directory.CreateDirectory(baseDir);
+
+        //    // [2] 초기 원본 이미지 저장
+        //    string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");  // ex: 20250612_154512_123
+        //    string rawImagePath = Path.Combine(baseDir, $"Goldpowder_Raw_{timestamp}.bmp");
+        //    IsImageSave = true;
+        //    SaveImage(pixelData, w, h, rawImagePath);
+
+        //    circlesResult.Clear();
+        //    List<PointF> polygon = new List<PointF>();
+        //    List<PointF> points = new List<PointF>();
+        //    int step = (int)(radius * 0.8);
+        //    int foundCount = 0;
+
+        //    // 1) ROI 정규화 및 픽셀 버퍼 추출
+        //    Rectangle roiIn = roiRect ?? new Rectangle(0, 0, w, h);
+        //    int roiX = Math.Max(0, roiIn.Left);
+        //    int roiY = Math.Max(0, roiIn.Top);
+        //    int roiRight = Math.Min(w, roiIn.Right);
+        //    int roiBottom = Math.Min(h, roiIn.Bottom);
+        //    int roiW = Math.Max(0, roiRight - roiX);
+        //    int roiH = Math.Max(0, roiBottom - roiY);
+
+        //    bool useRoiBuffer = !(roiX == 0 && roiY == 0 && roiW == 0 && roiH == 0);
+        //    byte[] src = useRoiBuffer ? ExtractROI(pixelData, w, h, roiX, roiY, roiW, roiH) : pixelData;
+
+        //    if(useRoiBuffer == false)
+        //    {
+        //        if (roiW == 0)
+        //            roiW = w;
+        //        if (roiH == 0)
+        //            roiH = h;
+        //    }
+
+        //    // 2) ROI 로컬 좌표계에서 스캔 (ROI 외부로는 절대 접근하지 않음)
+        //    int xStartLocal = Math.Max(radius, 0);
+        //    int yStartLocal = Math.Max(radius, 0);
+        //    int xEndLocal = Math.Max(0, roiW - radius);
+        //    int yEndLocal = Math.Max(0, roiH - radius);
+
+        //    for (int y = yStartLocal; y < yEndLocal; y += step)
+        //    {
+        //        for (int x = xStartLocal; x < xEndLocal; x += step)
+        //        {
+        //            if (foundCount >= maxCircleCount)
+        //                break;
+
+        //            int nMaxCircle = (int)(radius * (1 + dSpec));
+        //            int nMinCircle = (int)(radius * (1 - dSpec));
+
+        //            double dFirstSpec = Math.Min(dSpec * 3, 0.5);
+        //            int nMaxCircleFirst = Math.Min((int)(radius * 2), 2000);
+        //            int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
+
+        //            // ROI 버퍼만 사용
+        //            polygon = FindCircleBoundary(src, roiW, roiH, x, y,
+        //                                         (int)(radius / 2), nMaxCircleFirst,
+        //                                         2, 10, bIsDarkCircleSearch);
+        //            points = polygon;
+
+        //            double dRadius1 = 0;
+        //            List<RectangleF> tempCircleList = new List<RectangleF>();
+        //            FindCircleFitter(tempCircleList, points, out dRadius1, 5, radius, dSpec);
+
+        //            if (dRadius1 > nMinCircle && dRadius1 < nMaxCircle)
+        //            {
+        //                float cxLocal = tempCircleList[0].X + tempCircleList[0].Width / 2;
+        //                float cyLocal = tempCircleList[0].Y + tempCircleList[0].Height / 2;
+        //                double dErrorRatio = Math.Max(dSpec * 2, 0.2);
+
+        //                polygon = FindCircleBoundary(src, roiW, roiH, cxLocal, cyLocal,
+        //                                             (int)(dRadius1 * (1 - dErrorRatio)),
+        //                                             (int)(dRadius1 * (1 + dErrorRatio)),
+        //                                             1, 2, bIsDarkCircleSearch);
+        //                points = polygon;
+
+        //                double dRadius2 = 0;
+        //                Circle finalCircleLocal = FindCircleFitter(tempCircleList, points, out dRadius2, 2, radius, dSpec);
+
+        //                if (Math.Abs((dRadius1 - dRadius2) / Math.Max(1e-6, dRadius2)) < 0.05)
+        //                {
+        //                    double dScore = IsRealCircle(finalCircleLocal, dRadius2, points, dSpec);
+        //                    finalCircleLocal.Score = (float)dScore;
+
+        //                    if (dScore >= scoreThreshold)
+        //                    {
+        //                        // 3) ROI 로컬 → 원본 좌표계 변환
+        //                        float gx = finalCircleLocal.CenterX + (useRoiBuffer ? roiX : 0);
+        //                        float gy = finalCircleLocal.CenterY + (useRoiBuffer ? roiY : 0);
+        //                        float rr = (float)dRadius2;
+
+        //                        // 4) 최종 ROI 포함성 검증 (바운더리 전체가 ROI 내부인지)
+        //                        if (gx - rr < roiX || gx + rr > roiX + roiW || gy - rr < roiY || gy + rr > roiY + roiH)
+        //                        {
+        //                            continue; // ROI 밖으로 나가면 폐기
+        //                        }
+
+        //                        // 좌표 업데이트 후 결과 반영
+        //                        finalCircleLocal.CenterX = gx;
+        //                        finalCircleLocal.CenterY = gy;
+
+        //                        circlesResult.Add(new RectangleF(gx - rr, gy - rr, rr * 2, rr * 2));
+        //                        result.Circles.Add(finalCircleLocal);
+        //                        result.ScoreCollection.Add(dScore);
+        //                        foundCount++;
+
+        //                        if (foundCount >= maxCircleCount)
+        //                            break;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    // 5) 중복 제거 + 점수 기준 필터링 (그대로 유지)
+        //    double minCenterDistance = radius * 0.75;
+        //    List<Circle> filteredCircles = new List<Circle>();
+        //    List<double> filteredScores = new List<double>();
+
+        //    for (int i = 0; i < result.Circles.Count; i++)
+        //    {
+        //        var circleA = result.Circles[i];
+        //        var scoreA = result.ScoreCollection[i];
+        //        PointF centerA = new PointF(circleA.CenterX, circleA.CenterY);
+
+        //        bool isOverlapping = false;
+        //        foreach (var circleB in filteredCircles)
+        //        {
+        //            PointF centerB = new PointF(circleB.CenterX, circleB.CenterY);
+        //            double dist = Math.Sqrt(Math.Pow(centerA.X - centerB.X, 2) + Math.Pow(centerA.Y - centerB.Y, 2));
+        //            if (dist < minCenterDistance)
+        //            {
+        //                isOverlapping = true;
+        //                break;
+        //            }
+        //        }
+
+        //        // ROI 포함성 재확인(안전장치)
+        //        float r = result.Circles[i].Radius;
+        //        if (!isOverlapping && scoreA >= scoreThreshold &&
+        //            circleA.CenterX - r >= roiX && circleA.CenterX + r <= roiX + roiW &&
+        //            circleA.CenterY - r >= roiY && circleA.CenterY + r <= roiY + roiH)
+        //        {
+        //            filteredCircles.Add(circleA);
+        //            filteredScores.Add(scoreA);
+        //        }
+        //    }
+
+        //    result.Circles = filteredCircles;
+        //    result.ScoreCollection = filteredScores;
+
+        //    // 🔹 결과 Rect 목록 반영
+        //    circlesResult.Clear();
+        //    foreach (var c in filteredCircles)
+        //    {
+        //        float r = (float)c.Radius;
+        //        circlesResult.Add(new RectangleF(c.CenterX - r, c.CenterY - r, r * 2, r * 2));
+        //    }
+
+        //    return result;
+        //}
+
+
         public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundaryMultipleCircles(
                                                 List<RectangleF> circlesResult,
                                                 byte[] pixelData, int w, int h, int radius, double dSpec,
@@ -2806,6 +2989,11 @@ namespace QMC.Common.VisionPart
             int step = (int)(radius * 0.8);
             int foundCount = 0;
 
+            // 실패 진단용 추적값
+            double bestCandidateRadius = 0.0;
+            double bestCandidateScore = -1.0;
+            int maxEdgePointCount = 0;
+
             // 1) ROI 정규화 및 픽셀 버퍼 추출
             Rectangle roiIn = roiRect ?? new Rectangle(0, 0, w, h);
             int roiX = Math.Max(0, roiIn.Left);
@@ -2817,8 +3005,8 @@ namespace QMC.Common.VisionPart
 
             bool useRoiBuffer = !(roiX == 0 && roiY == 0 && roiW == 0 && roiH == 0);
             byte[] src = useRoiBuffer ? ExtractROI(pixelData, w, h, roiX, roiY, roiW, roiH) : pixelData;
-            
-            if(useRoiBuffer == false)
+
+            if (useRoiBuffer == false)
             {
                 if (roiW == 0)
                     roiW = w;
@@ -2851,6 +3039,7 @@ namespace QMC.Common.VisionPart
                                                  (int)(radius / 2), nMaxCircleFirst,
                                                  2, 10, bIsDarkCircleSearch);
                     points = polygon;
+                    if (points != null) maxEdgePointCount = Math.Max(maxEdgePointCount, points.Count);
 
                     double dRadius1 = 0;
                     List<RectangleF> tempCircleList = new List<RectangleF>();
@@ -2867,6 +3056,7 @@ namespace QMC.Common.VisionPart
                                                      (int)(dRadius1 * (1 + dErrorRatio)),
                                                      1, 2, bIsDarkCircleSearch);
                         points = polygon;
+                        if (points != null) maxEdgePointCount = Math.Max(maxEdgePointCount, points.Count);
 
                         double dRadius2 = 0;
                         Circle finalCircleLocal = FindCircleFitter(tempCircleList, points, out dRadius2, 2, radius, dSpec);
@@ -2875,6 +3065,13 @@ namespace QMC.Common.VisionPart
                         {
                             double dScore = IsRealCircle(finalCircleLocal, dRadius2, points, dSpec);
                             finalCircleLocal.Score = (float)dScore;
+
+                            // 최고 후보 갱신 (성공여부와 무관하게 항상 추적)
+                            if (dRadius2 > 0 && dScore > bestCandidateScore)
+                            {
+                                bestCandidateScore = dScore;
+                                bestCandidateRadius = dRadius2;
+                            }
 
                             if (dScore >= scoreThreshold)
                             {
@@ -2951,283 +3148,95 @@ namespace QMC.Common.VisionPart
                 circlesResult.Add(new RectangleF(c.CenterX - r, c.CenterY - r, r * 2, r * 2));
             }
 
+            // 🔹 미검출 시 실패 사유 진단 (FindCirclesWidthCircleBoundary 와 동일한 톤)
+            if (result.Circles.Count == 0)
+            {
+                var stats1 = ComputeBrightnessStats(pixelData);
+                result.AvgBrightness = stats1.avg;
+                result.Contrast = stats1.std;
+                result.ExpectedRadius = radius;
+                result.MeasuredRadius = bestCandidateRadius;
+                result.Score = bestCandidateScore;
+                result.EdgePointCount = maxEdgePointCount;
+
+                if (pixelData == null || pixelData.Length == 0)
+                {
+                    FillFailure(result, CircleSearchFailReason.ImageNullOrEmpty,
+                        "이미지 데이터가 비어 있음",
+                        "카메라 Live / 이미지 캡처 상태 및 케이블, 노출 확인.");
+
+                    string ngPath = Path.Combine(baseDir, $"Goldpowder_NG_{DateTime.Now:yyyyMMdd_HHmmss_fff}.bmp");
+                    IsImageSave = true;
+                    SaveImage(pixelData, w, h, ngPath);
+                    return result;
+                }
+
+                if (radius <= 0)
+                {
+                    FillFailure(result, CircleSearchFailReason.InvalidInput,
+                        $"입력 반경이 0 이하 (radius={radius})",
+                        "레시피 Fiducial Circle Size 설정을 확인.");
+
+                    string ngPath = Path.Combine(baseDir, $"Goldpowder_NG_{DateTime.Now:yyyyMMdd_HHmmss_fff}.bmp");
+                    IsImageSave = true;
+                    SaveImage(pixelData, w, h, ngPath);
+                    return result;
+                }
+
+                if (maxEdgePointCount < 50)
+                {
+                    FillFailure(result, CircleSearchFailReason.EdgePointInsufficient,
+                        $"경계 후보 점 부족 (count={maxEdgePointCount})",
+                        "Spec 확장 / 조명 또는 노출 증가");
+                    result.UserGuide = BuildUserGuide(result, dSpec * 100.0, scoreThreshold * 100.0);
+
+                    string ngPath = Path.Combine(baseDir, $"Goldpowder_NG_{DateTime.Now:yyyyMMdd_HHmmss_fff}.bmp");
+                    IsImageSave = true;
+                    SaveImage(pixelData, w, h, ngPath);
+                    return result;
+                }
+
+                // 최종 분류: 사이즈 작음/큼/Score 미달/기타
+                if (bestCandidateRadius > 0 && bestCandidateRadius < radius)
+                {
+                    double diffPx = radius - bestCandidateRadius;
+                    double diffPct = (diffPx / Math.Max(1, radius)) * 100.0;
+                    FillFailure(result, CircleSearchFailReason.RadiusOutOfTolerance,
+                        $"설정한 사이즈보다 작아 미검출 (요청반경={radius}, 측정반경={bestCandidateRadius:0.0}, 차이={diffPx:0.0}px, {diffPct:0.0}%)",
+                        "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                }
+                else if (bestCandidateRadius > 0 && bestCandidateRadius > radius)
+                {
+                    double diffPx = bestCandidateRadius - radius;
+                    double diffPct = (diffPx / Math.Max(1, radius)) * 100.0;
+                    FillFailure(result, CircleSearchFailReason.RadiusOutOfTolerance,
+                        $"설정한 사이즈보다 커서 미검출 (요청반경={radius}, 측정반경={bestCandidateRadius:0.0}, 차이=+{diffPx:0.0}px, {diffPct:0.0}%)",
+                        "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                }
+                else if (bestCandidateScore >= 0 && bestCandidateScore < scoreThreshold)
+                {
+                    FillFailure(result, CircleSearchFailReason.ScoreTooLow,
+                        $"설정한 Score({scoreThreshold:0.00})보다 낮아 미검출 (측정Score={bestCandidateScore:0.00})",
+                        "Circle Spec 완화: 20~40% 사이 조정 | Score는 70% 이상 설정 권고");
+                }
+                else
+                {
+                    FillFailure(result, CircleSearchFailReason.NotFound,
+                        "원 미검출",
+                        BuildGenericRecommendation(result, dSpec));
+                }
+
+                result.UserGuide = BuildUserGuide(result, dSpec * 100.0, scoreThreshold * 100.0);
+
+                string ngPath2 = Path.Combine(baseDir, $"Goldpowder_NG_{DateTime.Now:yyyyMMdd_HHmmss_fff}.bmp");
+                IsImageSave = true;
+                SaveImage(pixelData, w, h, ngPath2);
+            }
+
             return result;
         }
 
 
-        //public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundaryMultipleCircles(
-        //                                         List<RectangleF> circlesResult,
-        //                                         byte[] pixelData, int w, int h, int radius, double dSpec,
-        //                                         int maxCircleCount = 20,
-        //                                         bool bIsDarkCircleSearch = true,
-        //                                         double scoreThreshold = 0.7,
-        //                                         bool bSpiralSearch = true)
-        //{
-        //    QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
-        //    string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
-        //    string dateFolder = DateTime.Now.ToString("yyyyMMdd");
-        //    string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
-        //    if (!Directory.Exists(baseDir))
-        //        Directory.CreateDirectory(baseDir);
-
-        //    string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
-        //    SaveImage(pixelData, w, h, rawImagePath);
-
-        //    List<PointF> polygon = new List<PointF>();
-        //    List<PointF> points = new List<PointF>();
-        //    int step = (int)(radius * 0.8);  // 겹치지 않고 잘 찾도록 스텝 설정
-        //    circlesResult.Clear();
-        //    int foundCount = 0;
-
-        //    for (int y = radius; y < h - radius; y += step)
-        //    {
-        //        for (int x = radius; x < w - radius; x += step)
-        //        {
-        //            if (foundCount >= maxCircleCount)
-        //                break;
-
-        //            int nCx = x;
-        //            int nCy = y;
-
-        //            int nMaxCircle = (int)(radius * (1 + dSpec));
-        //            int nMinCircle = (int)(radius * (1 - dSpec));
-
-        //            double dFirstSpec = Math.Min(dSpec * 3, 0.5);
-        //            int nMaxCircleFirst = Math.Min((int)(radius * 2), 2000);
-        //            int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
-
-        //            polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius / 2), nMaxCircleFirst, 2, 10, bIsDarkCircleSearch);
-        //            points = polygon;
-
-        //            double dRadius1 = 0;
-        //            List<RectangleF> tempCircleList = new List<RectangleF>();
-        //            FindCircleFitter(tempCircleList, points, out dRadius1, 5, radius, dSpec);
-
-        //            if (dRadius1 < nMaxCircle && dRadius1 > nMinCircle)
-        //            {
-        //                float cx = tempCircleList[0].X + tempCircleList[0].Width / 2;
-        //                float cy = tempCircleList[0].Y + tempCircleList[0].Height / 2;
-        //                double dErrorRatio = Math.Max(dSpec * 2, 0.2);
-
-        //                polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius1 * (1 - dErrorRatio)), (int)(dRadius1 * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
-        //                points = polygon;
-
-        //                double dRadius2 = 0;
-        //                Circle finalCircle = FindCircleFitter(tempCircleList, points, out dRadius2, 2, radius, dSpec);
-
-        //                if (Math.Abs((dRadius1 - dRadius2) / dRadius2) < 0.05)
-        //                {
-        //                    double dScore = IsRealCircle(finalCircle, dRadius2, points, dSpec);
-        //                    if (dScore >= scoreThreshold)
-        //                    {
-        //                        circlesResult.Add(new RectangleF(finalCircle.CenterX - (float)dRadius2, finalCircle.CenterY - (float)dRadius2, (float)dRadius2 * 2, (float)dRadius2 * 2));
-        //                        result.Circles.Add(finalCircle);
-        //                        result.ScoreCollection.Add(dScore);
-        //                        foundCount++;
-
-        //                        if (foundCount >= maxCircleCount)
-        //                            break;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    // 중복 제거 + 점수 기준 필터링
-        //    double minCenterDistance = radius * 0.75;
-        //    List<Circle> filteredCircles = new List<Circle>();
-        //    List<double> filteredScores = new List<double>();
-
-        //    for (int i = 0; i < result.Circles.Count; i++)
-        //    {
-        //        var circleA = result.Circles[i];
-        //        var scoreA = result.ScoreCollection[i];
-        //        PointF centerA = new PointF(circleA.CenterX, circleA.CenterY);
-
-        //        bool isOverlapping = false;
-        //        foreach (var circleB in filteredCircles)
-        //        {
-        //            PointF centerB = new PointF(circleB.CenterX, circleB.CenterY);
-        //            double dist = Math.Sqrt(Math.Pow(centerA.X - centerB.X, 2) + Math.Pow(centerA.Y - centerB.Y, 2));
-        //            if (dist < minCenterDistance)
-        //            {
-        //                isOverlapping = true;
-        //                break;
-        //            }
-        //        }
-
-        //        if (!isOverlapping && scoreA >= scoreThreshold)
-        //        {
-        //            filteredCircles.Add(circleA);
-        //            filteredScores.Add(scoreA);
-        //        }
-        //    }
-
-        //    // 결과 반영
-        //    result.Circles = filteredCircles;
-        //    result.ScoreCollection = filteredScores;
-        //    circlesResult.Clear();
-        //    for (int i = 0; i < filteredCircles.Count; i++)
-        //    {
-        //        var c = filteredCircles[i];
-        //        var r = (float)c.Radius;
-        //        circlesResult.Add(new RectangleF(c.CenterX - r, c.CenterY - r, r * 2, r * 2));
-        //    }
-
-        //    return result;
-
-        //}
-
-        //public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundaryMultipleCircles(
-        //List<RectangleF> circlesResult,
-        //byte[] pixelData, int w, int h, int radius, double dSpec,
-        //int maxCircleCount = 20,
-        //bool bIsDarkCircleSearch = true,
-        //double scoreThreshold = 0.7,
-        //bool bSpiralSearch = true,
-        //Rectangle? roiRect = null) // ROI 선택적 인자 추가
-        //{
-        //    QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
-
-        //    // 디버깅용 이미지 저장
-        //    string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
-        //    string dateFolder = DateTime.Now.ToString("yyyyMMdd");
-        //    string baseDir = Path.Combine("d:\\TempAlign", dateFolder);
-        //    if (!Directory.Exists(baseDir))
-        //        Directory.CreateDirectory(baseDir);
-
-        //    string rawImagePath = Path.Combine(baseDir, $"AlignRaw_{timestamp}.bmp");
-        //    SaveImage(pixelData, w, h, rawImagePath);
-
-        //    List<PointF> polygon = new List<PointF>();
-        //    List<PointF> points = new List<PointF>();
-        //    int step = (int)(radius * 0.8);
-        //    circlesResult.Clear();
-        //    int foundCount = 0;
-
-        //    // 🔹 ROI 보정 적용
-        //    Rectangle roi = roiRect ?? new Rectangle(0, 0, w, h);
-        //    int xStart = Math.Max(radius, roi.Left);
-        //    int xEnd = Math.Min(w - radius, roi.Right);
-        //    int yStart = Math.Max(radius, roi.Top);
-        //    int yEnd = Math.Min(h - radius, roi.Bottom);
-
-        //    // ROI 고정 사용 (roiRect 무시)
-        //    //Rectangle roi = new Rectangle(924, 0, 300, 2048);
-        //    //Rectangle roi = new Rectangle(200, 0, 1500, 2048);
-        //    //int xStart = Math.Max(radius, roi.Left);
-        //    //int xEnd = Math.Min(w - radius, roi.Right);
-        //    //int yStart = Math.Max(radius, roi.Top);
-        //    //int yEnd = Math.Min(h - radius, roi.Bottom);
-
-
-        //    for (int y = yStart; y < yEnd; y += step)
-        //    {
-        //        for (int x = xStart; x < xEnd; x += step)
-        //        {
-        //            if (foundCount >= maxCircleCount)
-        //                break;
-
-        //            int nMaxCircle = (int)(radius * (1 + dSpec));
-        //            int nMinCircle = (int)(radius * (1 - dSpec));
-
-        //            double dFirstSpec = Math.Min(dSpec * 3, 0.5);
-        //            int nMaxCircleFirst = Math.Min((int)(radius * 2), 2000);
-        //            int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
-
-        //            polygon = FindCircleBoundary(pixelData, w, h, x, y, (int)(radius / 2), nMaxCircleFirst, 2, 10, bIsDarkCircleSearch);
-        //            points = polygon;
-
-        //            double dRadius1 = 0;
-        //            List<RectangleF> tempCircleList = new List<RectangleF>();
-        //            FindCircleFitter(tempCircleList, points, out dRadius1, 5, radius, dSpec);
-
-        //            if (dRadius1 > nMinCircle && dRadius1 < nMaxCircle)
-        //            {
-        //                float cx = tempCircleList[0].X + tempCircleList[0].Width / 2;
-        //                float cy = tempCircleList[0].Y + tempCircleList[0].Height / 2;
-        //                double dErrorRatio = Math.Max(dSpec * 2, 0.2);
-
-        //                polygon = FindCircleBoundary(pixelData, w, h, cx, cy,
-        //                                             (int)(dRadius1 * (1 - dErrorRatio)),
-        //                                             (int)(dRadius1 * (1 + dErrorRatio)),
-        //                                             1, 2, bIsDarkCircleSearch);
-        //                points = polygon;
-
-        //                double dRadius2 = 0;
-        //                Circle finalCircle = FindCircleFitter(tempCircleList, points, out dRadius2, 2, radius, dSpec);
-
-        //                if (Math.Abs((dRadius1 - dRadius2) / dRadius2) < 0.05)
-        //                {
-        //                    double dScore = IsRealCircle(finalCircle, dRadius2, points, dSpec);
-        //                    finalCircle.Score = (float)dScore;
-
-        //                    if (dScore >= scoreThreshold)
-        //                    {
-        //                        circlesResult.Add(new RectangleF(
-        //                            finalCircle.CenterX - (float)dRadius2,
-        //                            finalCircle.CenterY - (float)dRadius2,
-        //                            (float)dRadius2 * 2,
-        //                            (float)dRadius2 * 2));
-
-        //                        result.Circles.Add(finalCircle);
-        //                        result.ScoreCollection.Add(dScore);
-        //                        foundCount++;
-
-        //                        if (foundCount >= maxCircleCount)
-        //                            break;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    // 중복 제거 + 점수 기준 필터링
-        //    double minCenterDistance = radius * 0.75;
-        //    List<Circle> filteredCircles = new List<Circle>();
-        //    List<double> filteredScores = new List<double>();
-
-        //    for (int i = 0; i < result.Circles.Count; i++)
-        //    {
-        //        var circleA = result.Circles[i];
-        //        var scoreA = result.ScoreCollection[i];
-        //        PointF centerA = new PointF(circleA.CenterX, circleA.CenterY);
-
-        //        bool isOverlapping = false;
-        //        foreach (var circleB in filteredCircles)
-        //        {
-        //            PointF centerB = new PointF(circleB.CenterX, circleB.CenterY);
-        //            double dist = Math.Sqrt(Math.Pow(centerA.X - centerB.X, 2) + Math.Pow(centerA.Y - centerB.Y, 2));
-        //            if (dist < minCenterDistance)
-        //            {
-        //                isOverlapping = true;
-        //                break;
-        //            }
-        //        }
-
-        //        if (!isOverlapping && scoreA >= scoreThreshold)
-        //        {
-        //            filteredCircles.Add(circleA);
-        //            filteredScores.Add(scoreA);
-        //        }
-        //    }
-
-        //    result.Circles = filteredCircles;
-        //    result.ScoreCollection = filteredScores;
-
-        //    // 🔹 결과 Rect 목록 반영
-        //    circlesResult.Clear();
-        //    foreach (var c in filteredCircles)
-        //    {
-        //        float r = (float)c.Radius;
-        //        circlesResult.Add(new RectangleF(c.CenterX - r, c.CenterY - r, r * 2, r * 2));
-        //    }
-
-        //    return result;
-        //}
-
-
-        // QMC_ImageProcessFindAlign 클래스 내부 (기존 메서드들과 같은 레벨)
         private (double avg, double std) ComputeBrightnessStats(byte[] data, int lengthSampleLimit = 50000)
         {
             if (data == null || data.Length == 0) return (0, 0);
@@ -3282,45 +3291,45 @@ namespace QMC.Common.VisionPart
         private string BuildUserGuide(QMC_ImageProcessFindAlignResult r, double uiSpecPercent, double uiScorePercent)
         {
             var sb = new StringBuilder();
-            switch (r.FailReason)
-            {
-                case CircleSearchFailReason.EdgePointInsufficient:
-                    sb.AppendLine($"경계 포인트 부족 (수집 {r.EdgePointCount}개).");
-                    sb.AppendLine("1) Circle Spec(%)를 높여 범위를 넓혀보세요.");
-                    sb.AppendLine("2) Circle Size 를 ±10% 조정 후 재시도.");
-                    sb.AppendLine("3) Black/White 전환 또는 Ignore(FR4).");
-                    sb.AppendLine("4) 조명(RED/IR)/Exposure ↑ 로 대비 확보.");
-                    break;
-                case CircleSearchFailReason.NotFound:
-                    sb.AppendLine("원 미검출.");
-                    sb.AppendLine("1) Circle Size 재확인 (실제 반경과 오차?).");
-                    sb.AppendLine("2) Circle Spec(%) 확대.");
-                    sb.AppendLine("3) Mark Color 변경 또는 Ignore 사용.");
-                    sb.AppendLine("4) 조명/노출 재조정.");
-                    break;
-                case CircleSearchFailReason.RadiusOutOfTolerance:
-                    sb.AppendLine($"반경 편차 초과 (요청 {r.ExpectedRadius}, 측정 {r.MeasuredRadius:0.0}).");
-                    sb.AppendLine("1) Circle Size를 측정값에 맞게 수정.");
-                    sb.AppendLine("2) Spec(%) 소폭 증가.");
-                    sb.AppendLine("3) 필요 시 Score 기준 약간 낮춤.");
-                    break;
-                case CircleSearchFailReason.ScoreTooLow:
-                    sb.AppendLine($"Score 부족 (기준 {uiScorePercent:0.0}%, 측정 {r.Score * 100:0.0}%).");
-                    sb.AppendLine("1) Spec(%) 증가 (정밀도 vs 안정성).");
-                    sb.AppendLine("2) Score(%) 임계값 5~10p 낮춤.");
-                    sb.AppendLine("3) Circle Size ±5% 조정.");
-                    sb.AppendLine("4) 조명/포커스 개선.");
-                    break;
-                case CircleSearchFailReason.ImageNullOrEmpty:
-                    sb.AppendLine("이미지 없음/잘못됨. 카메라 Live/케이블/노출 확인.");
-                    break;
-                case CircleSearchFailReason.InvalidInput:
-                    sb.AppendLine("입력 파라미터 오류 (반경/Spec). UI 값 확인.");
-                    break;
-                default:
-                    sb.AppendLine("세부 원인 분석 불가. Spec/Size/Score/Color 순서로 변경 후 재시도.");
-                    break;
-            }
+            //switch (r.FailReason)
+            //{
+            //    case CircleSearchFailReason.EdgePointInsufficient:
+            //        sb.AppendLine($"경계 포인트 부족 (수집 {r.EdgePointCount}개).");
+            //        sb.AppendLine("1) Circle Spec(%)를 높여 범위를 넓혀보세요.");
+            //        sb.AppendLine("2) Circle Size 를 ±10% 조정 후 재시도.");
+            //        sb.AppendLine("3) Black/White 전환 또는 Ignore(FR4).");
+            //        sb.AppendLine("4) 조명(RED/IR)/Exposure ↑ 로 대비 확보.");
+            //        break;
+            //    case CircleSearchFailReason.NotFound:
+            //        sb.AppendLine("원 미검출.");
+            //        sb.AppendLine("1) Circle Size 재확인 (실제 반경과 오차?).");
+            //        sb.AppendLine("2) Circle Spec(%) 확대.");
+            //        sb.AppendLine("3) Mark Color 변경 또는 Ignore 사용.");
+            //        sb.AppendLine("4) 조명/노출 재조정.");
+            //        break;
+            //    case CircleSearchFailReason.RadiusOutOfTolerance:
+            //        sb.AppendLine($"반경 편차 초과 (요청 {r.ExpectedRadius}, 측정 {r.MeasuredRadius:0.0}).");
+            //        sb.AppendLine("1) Circle Size를 측정값에 맞게 수정.");
+            //        sb.AppendLine("2) Spec(%) 소폭 증가.");
+            //        sb.AppendLine("3) 필요 시 Score 기준 약간 낮춤.");
+            //        break;
+            //    case CircleSearchFailReason.ScoreTooLow:
+            //        sb.AppendLine($"Score 부족 (기준 {uiScorePercent:0.0}%, 측정 {r.Score * 100:0.0}%).");
+            //        sb.AppendLine("1) Spec(%) 증가 (정밀도 vs 안정성).");
+            //        sb.AppendLine("2) Score(%) 임계값 5~10p 낮춤.");
+            //        sb.AppendLine("3) Circle Size ±5% 조정.");
+            //        sb.AppendLine("4) 조명/포커스 개선.");
+            //        break;
+            //    case CircleSearchFailReason.ImageNullOrEmpty:
+            //        sb.AppendLine("이미지 없음/잘못됨. 카메라 Live/케이블/노출 확인.");
+            //        break;
+            //    case CircleSearchFailReason.InvalidInput:
+            //        sb.AppendLine("입력 파라미터 오류 (반경/Spec). UI 값 확인.");
+            //        break;
+            //    default:
+            //        sb.AppendLine("세부 원인 분석 불가. Spec/Size/Score/Color 순서로 변경 후 재시도.");
+            //        break;
+            //}
             return sb.ToString();
         }
 

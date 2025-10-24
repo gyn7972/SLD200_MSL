@@ -347,6 +347,12 @@
     <Compile Include="NewStyleForm\FormNew_JogPopup.Designer.cs">
       <DependentUpon>FormNew_JogPopup.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\FormNew_QMCVisionSettingStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_QMCVisionSettingStatus.Designer.cs">
+      <DependentUpon>FormNew_QMCVisionSettingStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStyleForm\FormNew_QMCSiriusEditorStatus.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1466,6 +1472,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_JogPopup.resx">
       <DependentUpon>FormNew_JogPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\FormNew_QMCVisionSettingStatus.resx">
+      <DependentUpon>FormNew_QMCVisionSettingStatus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_QMCSiriusEditorStatus.resx">
       <DependentUpon>FormNew_QMCSiriusEditorStatus.cs</DependentUpon>
