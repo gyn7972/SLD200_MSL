@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl_Config = new System.Windows.Forms.TabControl();
             this.tabPage_Config_LDUL = new System.Windows.Forms.TabPage();
             this.groupBox_Config_LDUL_DIO = new System.Windows.Forms.GroupBox();
@@ -761,7 +761,7 @@
             this.checkedListBox_Config_LDUL_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_LDUL_DIO_Output.Name = "checkedListBox_Config_LDUL_DIO_Output";
             this.checkedListBox_Config_LDUL_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(279, 214);
+            this.checkedListBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(279, 196);
             this.checkedListBox_Config_LDUL_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_LDUL_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_LDUL_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_LDUL_DIO_Output_MouseClick);
@@ -811,7 +811,7 @@
             this.checkedListBox_Config_LDUL_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_LDUL_DIO_Input.Name = "checkedListBox_Config_LDUL_DIO_Input";
             this.checkedListBox_Config_LDUL_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_LDUL_DIO_Input.Size = new System.Drawing.Size(279, 214);
+            this.checkedListBox_Config_LDUL_DIO_Input.Size = new System.Drawing.Size(279, 196);
             this.checkedListBox_Config_LDUL_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_LDUL_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -870,7 +870,7 @@
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Location = new System.Drawing.Point(181, 60);
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Name = "textBox_Config_LDUL_Move_Recipe_MAlignerY";
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Size = new System.Drawing.Size(105, 24);
+            this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Size = new System.Drawing.Size(105, 32);
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.TabIndex = 60;
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_LDUL_Move_Recipe_MAlignerY.Text = "000.000";
@@ -905,7 +905,7 @@
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Location = new System.Drawing.Point(181, 30);
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Name = "textBox_Config_LDUL_Move_Recipe_MAlignerX";
-            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Size = new System.Drawing.Size(105, 24);
+            this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Size = new System.Drawing.Size(105, 32);
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.TabIndex = 58;
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_LDUL_Move_Recipe_MAlignerX.Text = "000.000";
@@ -1058,7 +1058,7 @@
             this.textBox33.Location = new System.Drawing.Point(181, 177);
             this.textBox33.Margin = new System.Windows.Forms.Padding(5);
             this.textBox33.Name = "textBox33";
-            this.textBox33.Size = new System.Drawing.Size(97, 24);
+            this.textBox33.Size = new System.Drawing.Size(97, 32);
             this.textBox33.TabIndex = 54;
             this.textBox33.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox33.Text = "000.000";
@@ -1081,7 +1081,7 @@
             this.textBox34.Location = new System.Drawing.Point(181, 147);
             this.textBox34.Margin = new System.Windows.Forms.Padding(5);
             this.textBox34.Name = "textBox34";
-            this.textBox34.Size = new System.Drawing.Size(97, 24);
+            this.textBox34.Size = new System.Drawing.Size(97, 32);
             this.textBox34.TabIndex = 52;
             this.textBox34.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox34.Text = "000.000";
@@ -1116,7 +1116,7 @@
             this.textBox35.Location = new System.Drawing.Point(181, 117);
             this.textBox35.Margin = new System.Windows.Forms.Padding(5);
             this.textBox35.Name = "textBox35";
-            this.textBox35.Size = new System.Drawing.Size(97, 24);
+            this.textBox35.Size = new System.Drawing.Size(97, 32);
             this.textBox35.TabIndex = 49;
             this.textBox35.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox35.Text = "000.000";
@@ -1151,7 +1151,7 @@
             this.textBox36.Location = new System.Drawing.Point(181, 87);
             this.textBox36.Margin = new System.Windows.Forms.Padding(5);
             this.textBox36.Name = "textBox36";
-            this.textBox36.Size = new System.Drawing.Size(97, 24);
+            this.textBox36.Size = new System.Drawing.Size(97, 32);
             this.textBox36.TabIndex = 46;
             this.textBox36.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox36.Text = "000.000";
@@ -1198,7 +1198,7 @@
             this.textBox37.Location = new System.Drawing.Point(181, 57);
             this.textBox37.Margin = new System.Windows.Forms.Padding(5);
             this.textBox37.Name = "textBox37";
-            this.textBox37.Size = new System.Drawing.Size(97, 24);
+            this.textBox37.Size = new System.Drawing.Size(97, 32);
             this.textBox37.TabIndex = 42;
             this.textBox37.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox37.Text = "000.000";
@@ -1221,7 +1221,7 @@
             this.textBox38.Location = new System.Drawing.Point(181, 27);
             this.textBox38.Margin = new System.Windows.Forms.Padding(5);
             this.textBox38.Name = "textBox38";
-            this.textBox38.Size = new System.Drawing.Size(97, 24);
+            this.textBox38.Size = new System.Drawing.Size(97, 32);
             this.textBox38.TabIndex = 40;
             this.textBox38.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox38.Text = "000.000";
@@ -1328,7 +1328,7 @@
             this.textBox_Config_LDUL_JogMove_StepSize.Location = new System.Drawing.Point(217, 51);
             this.textBox_Config_LDUL_JogMove_StepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_LDUL_JogMove_StepSize.Name = "textBox_Config_LDUL_JogMove_StepSize";
-            this.textBox_Config_LDUL_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Config_LDUL_JogMove_StepSize.Size = new System.Drawing.Size(71, 32);
             this.textBox_Config_LDUL_JogMove_StepSize.TabIndex = 75;
             this.textBox_Config_LDUL_JogMove_StepSize.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_LDUL_JogMove_StepSize.Text = "1.000";
@@ -2063,7 +2063,7 @@
             this.textBox_Config_LDUL_Module_Size_Set.Location = new System.Drawing.Point(150, 429);
             this.textBox_Config_LDUL_Module_Size_Set.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_Module_Size_Set.Name = "textBox_Config_LDUL_Module_Size_Set";
-            this.textBox_Config_LDUL_Module_Size_Set.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_Module_Size_Set.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_LDUL_Module_Size_Set.TabIndex = 44;
             this.textBox_Config_LDUL_Module_Size_Set.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_LDUL_Module_Size_Set.Text = "000.000";
@@ -2229,7 +2229,7 @@
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Location = new System.Drawing.Point(147, 177);
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Name = "textBox_Config_LDUL_TeachingPos_MAlignerY";
-            this.textBox_Config_LDUL_TeachingPos_MAlignerY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_MAlignerY.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.TabIndex = 36;
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Tag = "KeyPad;Min=-2000;Max=2000;Format=0.000";
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Text = "000.000";
@@ -2252,7 +2252,7 @@
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Location = new System.Drawing.Point(147, 147);
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Name = "textBox_Config_LDUL_TeachingPos_MAlignerX";
-            this.textBox_Config_LDUL_TeachingPos_MAlignerX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_MAlignerX.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.TabIndex = 34;
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Tag = "KeyPad;Min=-2000;Max=2000;Format=0.000";
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Text = "000.000";
@@ -2287,7 +2287,7 @@
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Location = new System.Drawing.Point(147, 117);
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Name = "textBox_Config_LDUL_TeachingPos_LPortZ";
-            this.textBox_Config_LDUL_TeachingPos_LPortZ.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_LPortZ.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_LDUL_TeachingPos_LPortZ.TabIndex = 31;
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Tag = "KeyPad;Min=-100;Max=500;Format=0.000";
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Text = "000.000";
@@ -2322,7 +2322,7 @@
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Location = new System.Drawing.Point(147, 87);
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Name = "textBox_Config_LDUL_TeachingPos_RPortZ";
-            this.textBox_Config_LDUL_TeachingPos_RPortZ.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_RPortZ.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_LDUL_TeachingPos_RPortZ.TabIndex = 28;
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Tag = "KeyPad;Min=-100;Max=500;Format=0.000;Origin=120";
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Text = "000.000";
@@ -2370,7 +2370,7 @@
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Location = new System.Drawing.Point(147, 57);
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Name = "textBox_Config_LDUL_TeachingPos_TransferZ";
-            this.textBox_Config_LDUL_TeachingPos_TransferZ.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_TransferZ.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_LDUL_TeachingPos_TransferZ.TabIndex = 24;
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Tag = "KeyPad;Min=-10;Max=200;Format=0.000";
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Text = "000.000";
@@ -2393,7 +2393,7 @@
             this.textBox_Config_LDUL_TeachingPos_TransferX.Location = new System.Drawing.Point(147, 27);
             this.textBox_Config_LDUL_TeachingPos_TransferX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_TransferX.Name = "textBox_Config_LDUL_TeachingPos_TransferX";
-            this.textBox_Config_LDUL_TeachingPos_TransferX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_TransferX.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_LDUL_TeachingPos_TransferX.TabIndex = 22;
             this.textBox_Config_LDUL_TeachingPos_TransferX.Tag = "KeyPad;Min=-2000;Max=2000;Format=0.000;Origin=120";
             this.textBox_Config_LDUL_TeachingPos_TransferX.Text = "000.000";
@@ -2414,7 +2414,7 @@
             // 
             this.listBox_Config_LDUL_TeachingPositions.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBox_Config_LDUL_TeachingPositions.FormattingEnabled = true;
-            this.listBox_Config_LDUL_TeachingPositions.ItemHeight = 18;
+            this.listBox_Config_LDUL_TeachingPositions.ItemHeight = 28;
             this.listBox_Config_LDUL_TeachingPositions.Items.AddRange(new object[] {
             "Load R-Port Ready Position",
             "Load R-Port Top Position",
@@ -2440,7 +2440,7 @@
             this.listBox_Config_LDUL_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_LDUL_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_LDUL_TeachingPositions.Name = "listBox_Config_LDUL_TeachingPositions";
-            this.listBox_Config_LDUL_TeachingPositions.Size = new System.Drawing.Size(285, 400);
+            this.listBox_Config_LDUL_TeachingPositions.Size = new System.Drawing.Size(285, 396);
             this.listBox_Config_LDUL_TeachingPositions.TabIndex = 0;
             this.listBox_Config_LDUL_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_LDUL_TeachingPositions_SelectedIndexChanged);
             // 
@@ -2560,7 +2560,7 @@
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Location = new System.Drawing.Point(76, 60);
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Margin = new System.Windows.Forms.Padding(6);
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Name = "textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue";
-            this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Size = new System.Drawing.Size(58, 27);
+            this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Size = new System.Drawing.Size(58, 36);
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.TabIndex = 43;
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text = "20.0";
@@ -2662,7 +2662,7 @@
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Location = new System.Drawing.Point(76, 60);
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Margin = new System.Windows.Forms.Padding(6);
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Name = "textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue";
-            this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Size = new System.Drawing.Size(58, 27);
+            this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Size = new System.Drawing.Size(58, 36);
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.TabIndex = 43;
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text = "20.0";
@@ -2805,7 +2805,7 @@
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Location = new System.Drawing.Point(159, 104);
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Margin = new System.Windows.Forms.Padding(6);
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Name = "textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue";
-            this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Size = new System.Drawing.Size(87, 27);
+            this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Size = new System.Drawing.Size(87, 36);
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.TabIndex = 43;
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text = "0";
@@ -2982,7 +2982,7 @@
             this.textBox_Config_WorkStage_TempPos3_StageName.Location = new System.Drawing.Point(60, 181);
             this.textBox_Config_WorkStage_TempPos3_StageName.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos3_StageName.Name = "textBox_Config_WorkStage_TempPos3_StageName";
-            this.textBox_Config_WorkStage_TempPos3_StageName.Size = new System.Drawing.Size(178, 24);
+            this.textBox_Config_WorkStage_TempPos3_StageName.Size = new System.Drawing.Size(178, 32);
             this.textBox_Config_WorkStage_TempPos3_StageName.TabIndex = 61;
             this.textBox_Config_WorkStage_TempPos3_StageName.Text = "Temp Pos3";
             this.textBox_Config_WorkStage_TempPos3_StageName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2993,7 +2993,7 @@
             this.textBox_Config_WorkStage_TempPos2_StageName.Location = new System.Drawing.Point(60, 101);
             this.textBox_Config_WorkStage_TempPos2_StageName.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos2_StageName.Name = "textBox_Config_WorkStage_TempPos2_StageName";
-            this.textBox_Config_WorkStage_TempPos2_StageName.Size = new System.Drawing.Size(178, 24);
+            this.textBox_Config_WorkStage_TempPos2_StageName.Size = new System.Drawing.Size(178, 32);
             this.textBox_Config_WorkStage_TempPos2_StageName.TabIndex = 60;
             this.textBox_Config_WorkStage_TempPos2_StageName.Text = "Temp Pos2";
             this.textBox_Config_WorkStage_TempPos2_StageName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3004,7 +3004,7 @@
             this.textBox_Config_WorkStage_TempPos1_StageName.Location = new System.Drawing.Point(60, 20);
             this.textBox_Config_WorkStage_TempPos1_StageName.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos1_StageName.Name = "textBox_Config_WorkStage_TempPos1_StageName";
-            this.textBox_Config_WorkStage_TempPos1_StageName.Size = new System.Drawing.Size(178, 24);
+            this.textBox_Config_WorkStage_TempPos1_StageName.Size = new System.Drawing.Size(178, 32);
             this.textBox_Config_WorkStage_TempPos1_StageName.TabIndex = 59;
             this.textBox_Config_WorkStage_TempPos1_StageName.Text = "Temp Pos1";
             this.textBox_Config_WorkStage_TempPos1_StageName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3027,7 +3027,7 @@
             this.textBox_Config_WorkStage_TempPos3_StageY.Location = new System.Drawing.Point(60, 231);
             this.textBox_Config_WorkStage_TempPos3_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos3_StageY.Name = "textBox_Config_WorkStage_TempPos3_StageY";
-            this.textBox_Config_WorkStage_TempPos3_StageY.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos3_StageY.Size = new System.Drawing.Size(70, 32);
             this.textBox_Config_WorkStage_TempPos3_StageY.TabIndex = 57;
             this.textBox_Config_WorkStage_TempPos3_StageY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos3_StageY.Text = "000.000";
@@ -3062,7 +3062,7 @@
             this.textBox_Config_WorkStage_TempPos3_StageX.Location = new System.Drawing.Point(60, 207);
             this.textBox_Config_WorkStage_TempPos3_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos3_StageX.Name = "textBox_Config_WorkStage_TempPos3_StageX";
-            this.textBox_Config_WorkStage_TempPos3_StageX.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos3_StageX.Size = new System.Drawing.Size(70, 32);
             this.textBox_Config_WorkStage_TempPos3_StageX.TabIndex = 54;
             this.textBox_Config_WorkStage_TempPos3_StageX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos3_StageX.Text = "000.000";
@@ -3097,7 +3097,7 @@
             this.textBox_Config_WorkStage_TempPos2_StageY.Location = new System.Drawing.Point(60, 150);
             this.textBox_Config_WorkStage_TempPos2_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos2_StageY.Name = "textBox_Config_WorkStage_TempPos2_StageY";
-            this.textBox_Config_WorkStage_TempPos2_StageY.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos2_StageY.Size = new System.Drawing.Size(70, 32);
             this.textBox_Config_WorkStage_TempPos2_StageY.TabIndex = 51;
             this.textBox_Config_WorkStage_TempPos2_StageY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos2_StageY.Text = "000.000";
@@ -3132,7 +3132,7 @@
             this.textBox_Config_WorkStage_TempPos2_StageX.Location = new System.Drawing.Point(60, 126);
             this.textBox_Config_WorkStage_TempPos2_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos2_StageX.Name = "textBox_Config_WorkStage_TempPos2_StageX";
-            this.textBox_Config_WorkStage_TempPos2_StageX.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos2_StageX.Size = new System.Drawing.Size(70, 32);
             this.textBox_Config_WorkStage_TempPos2_StageX.TabIndex = 48;
             this.textBox_Config_WorkStage_TempPos2_StageX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos2_StageX.Text = "000.000";
@@ -3167,7 +3167,7 @@
             this.textBox_Config_WorkStage_TempPos1_StageY.Location = new System.Drawing.Point(60, 71);
             this.textBox_Config_WorkStage_TempPos1_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos1_StageY.Name = "textBox_Config_WorkStage_TempPos1_StageY";
-            this.textBox_Config_WorkStage_TempPos1_StageY.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos1_StageY.Size = new System.Drawing.Size(70, 32);
             this.textBox_Config_WorkStage_TempPos1_StageY.TabIndex = 45;
             this.textBox_Config_WorkStage_TempPos1_StageY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos1_StageY.Text = "000.000";
@@ -3202,7 +3202,7 @@
             this.textBox_Config_WorkStage_TempPos1_StageX.Location = new System.Drawing.Point(60, 47);
             this.textBox_Config_WorkStage_TempPos1_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos1_StageX.Name = "textBox_Config_WorkStage_TempPos1_StageX";
-            this.textBox_Config_WorkStage_TempPos1_StageX.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos1_StageX.Size = new System.Drawing.Size(70, 32);
             this.textBox_Config_WorkStage_TempPos1_StageX.TabIndex = 22;
             this.textBox_Config_WorkStage_TempPos1_StageX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TempPos1_StageX.Text = "000.000";
@@ -3306,7 +3306,7 @@
             this.checkedListBox_Config_WorkStage_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_WorkStage_DIO_Output.Name = "checkedListBox_Config_WorkStage_DIO_Output";
             this.checkedListBox_Config_WorkStage_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_WorkStage_DIO_Output.Size = new System.Drawing.Size(279, 277);
+            this.checkedListBox_Config_WorkStage_DIO_Output.Size = new System.Drawing.Size(279, 260);
             this.checkedListBox_Config_WorkStage_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_WorkStage_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_WorkStage_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_WorkStage_DIO_Output_MouseClick);
@@ -3359,7 +3359,7 @@
             this.checkedListBox_Config_WorkStage_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_WorkStage_DIO_Input.Name = "checkedListBox_Config_WorkStage_DIO_Input";
             this.checkedListBox_Config_WorkStage_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_WorkStage_DIO_Input.Size = new System.Drawing.Size(279, 298);
+            this.checkedListBox_Config_WorkStage_DIO_Input.Size = new System.Drawing.Size(279, 292);
             this.checkedListBox_Config_WorkStage_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_WorkStage_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -3526,7 +3526,7 @@
             this.textBox14.Location = new System.Drawing.Point(181, 87);
             this.textBox14.Margin = new System.Windows.Forms.Padding(5);
             this.textBox14.Name = "textBox14";
-            this.textBox14.Size = new System.Drawing.Size(97, 24);
+            this.textBox14.Size = new System.Drawing.Size(97, 32);
             this.textBox14.TabIndex = 46;
             this.textBox14.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox14.Text = "000.000";
@@ -3573,7 +3573,7 @@
             this.textBox15.Location = new System.Drawing.Point(181, 57);
             this.textBox15.Margin = new System.Windows.Forms.Padding(5);
             this.textBox15.Name = "textBox15";
-            this.textBox15.Size = new System.Drawing.Size(97, 24);
+            this.textBox15.Size = new System.Drawing.Size(97, 32);
             this.textBox15.TabIndex = 42;
             this.textBox15.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox15.Text = "000.000";
@@ -3596,7 +3596,7 @@
             this.textBox18.Location = new System.Drawing.Point(181, 27);
             this.textBox18.Margin = new System.Windows.Forms.Padding(5);
             this.textBox18.Name = "textBox18";
-            this.textBox18.Size = new System.Drawing.Size(97, 24);
+            this.textBox18.Size = new System.Drawing.Size(97, 32);
             this.textBox18.TabIndex = 40;
             this.textBox18.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox18.Text = "000.000";
@@ -3663,7 +3663,7 @@
             this.textBox_Config_WorkStage_JogMove_StepSize.Location = new System.Drawing.Point(217, 51);
             this.textBox_Config_WorkStage_JogMove_StepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_WorkStage_JogMove_StepSize.Name = "textBox_Config_WorkStage_JogMove_StepSize";
-            this.textBox_Config_WorkStage_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Config_WorkStage_JogMove_StepSize.Size = new System.Drawing.Size(71, 32);
             this.textBox_Config_WorkStage_JogMove_StepSize.TabIndex = 75;
             this.textBox_Config_WorkStage_JogMove_StepSize.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_JogMove_StepSize.Text = "1.000";
@@ -4128,7 +4128,7 @@
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Location = new System.Drawing.Point(181, 77);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Size = new System.Drawing.Size(87, 23);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Size = new System.Drawing.Size(87, 31);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.TabIndex = 46;
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccY.Text = "000.000";
@@ -4140,7 +4140,7 @@
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Location = new System.Drawing.Point(181, 47);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Size = new System.Drawing.Size(87, 23);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Size = new System.Drawing.Size(87, 31);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.TabIndex = 45;
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_AccX.Text = "000.000";
@@ -4199,7 +4199,7 @@
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Location = new System.Drawing.Point(60, 77);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Size = new System.Drawing.Size(87, 23);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Size = new System.Drawing.Size(87, 31);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.TabIndex = 24;
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedY.Text = "000.000";
@@ -4222,7 +4222,7 @@
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Location = new System.Drawing.Point(60, 47);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Name = "textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX";
-            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Size = new System.Drawing.Size(87, 23);
+            this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Size = new System.Drawing.Size(87, 31);
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.TabIndex = 22;
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPositions_ProcessSpeed_SpeedX.Text = "000.000";
@@ -4388,7 +4388,7 @@
             this.textBox_Config_WorkStage_TeachingPos_StageY.Location = new System.Drawing.Point(147, 57);
             this.textBox_Config_WorkStage_TeachingPos_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TeachingPos_StageY.Name = "textBox_Config_WorkStage_TeachingPos_StageY";
-            this.textBox_Config_WorkStage_TeachingPos_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_WorkStage_TeachingPos_StageY.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_WorkStage_TeachingPos_StageY.TabIndex = 24;
             this.textBox_Config_WorkStage_TeachingPos_StageY.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPos_StageY.Text = "000.000";
@@ -4411,7 +4411,7 @@
             this.textBox_Config_WorkStage_TeachingPos_StageX.Location = new System.Drawing.Point(147, 27);
             this.textBox_Config_WorkStage_TeachingPos_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TeachingPos_StageX.Name = "textBox_Config_WorkStage_TeachingPos_StageX";
-            this.textBox_Config_WorkStage_TeachingPos_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_WorkStage_TeachingPos_StageX.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_WorkStage_TeachingPos_StageX.TabIndex = 22;
             this.textBox_Config_WorkStage_TeachingPos_StageX.Tag = "KeyPad;Min=-100;Max=2000;Format=0.000";
             this.textBox_Config_WorkStage_TeachingPos_StageX.Text = "000.000";
@@ -4432,7 +4432,7 @@
             // 
             this.listBox_Config_WorkStage_TeachingPositions.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBox_Config_WorkStage_TeachingPositions.FormattingEnabled = true;
-            this.listBox_Config_WorkStage_TeachingPositions.ItemHeight = 18;
+            this.listBox_Config_WorkStage_TeachingPositions.ItemHeight = 28;
             this.listBox_Config_WorkStage_TeachingPositions.Items.AddRange(new object[] {
             "Origin Position",
             "Loading Position",
@@ -4448,7 +4448,7 @@
             this.listBox_Config_WorkStage_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_WorkStage_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_WorkStage_TeachingPositions.Name = "listBox_Config_WorkStage_TeachingPositions";
-            this.listBox_Config_WorkStage_TeachingPositions.Size = new System.Drawing.Size(301, 220);
+            this.listBox_Config_WorkStage_TeachingPositions.Size = new System.Drawing.Size(301, 200);
             this.listBox_Config_WorkStage_TeachingPositions.TabIndex = 0;
             this.listBox_Config_WorkStage_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_WorkStage_TeachingPositions_SelectedIndexChanged);
             // 
@@ -4538,7 +4538,7 @@
             this.textBox_Config_Vision_JogMove_StepSize.Location = new System.Drawing.Point(217, 51);
             this.textBox_Config_Vision_JogMove_StepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_Vision_JogMove_StepSize.Name = "textBox_Config_Vision_JogMove_StepSize";
-            this.textBox_Config_Vision_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Config_Vision_JogMove_StepSize.Size = new System.Drawing.Size(71, 32);
             this.textBox_Config_Vision_JogMove_StepSize.TabIndex = 75;
             this.textBox_Config_Vision_JogMove_StepSize.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox_Config_Vision_JogMove_StepSize.Text = "1.000";
@@ -4908,7 +4908,7 @@
             this.textBox7.Location = new System.Drawing.Point(181, 87);
             this.textBox7.Margin = new System.Windows.Forms.Padding(5);
             this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(97, 24);
+            this.textBox7.Size = new System.Drawing.Size(97, 32);
             this.textBox7.TabIndex = 46;
             this.textBox7.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox7.Text = "000.000";
@@ -4955,7 +4955,7 @@
             this.textBox8.Location = new System.Drawing.Point(181, 57);
             this.textBox8.Margin = new System.Windows.Forms.Padding(5);
             this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(97, 24);
+            this.textBox8.Size = new System.Drawing.Size(97, 32);
             this.textBox8.TabIndex = 42;
             this.textBox8.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox8.Text = "000.000";
@@ -4978,7 +4978,7 @@
             this.textBox9.Location = new System.Drawing.Point(181, 27);
             this.textBox9.Margin = new System.Windows.Forms.Padding(5);
             this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(97, 24);
+            this.textBox9.Size = new System.Drawing.Size(97, 32);
             this.textBox9.TabIndex = 40;
             this.textBox9.Tag = "KeyPad;Min=-9999;Max=9999;Format=0.000";
             this.textBox9.Text = "000.000";
@@ -5320,7 +5320,7 @@
             this.textBox_Config_Vision_TeachingPos_VisionZ.Location = new System.Drawing.Point(147, 27);
             this.textBox_Config_Vision_TeachingPos_VisionZ.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_Vision_TeachingPos_VisionZ.Name = "textBox_Config_Vision_TeachingPos_VisionZ";
-            this.textBox_Config_Vision_TeachingPos_VisionZ.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_Vision_TeachingPos_VisionZ.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_Vision_TeachingPos_VisionZ.TabIndex = 22;
             this.textBox_Config_Vision_TeachingPos_VisionZ.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
             this.textBox_Config_Vision_TeachingPos_VisionZ.Text = "000.000";
@@ -5341,7 +5341,7 @@
             // 
             this.listBox_Config_Vision_TeachingPositions.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.listBox_Config_Vision_TeachingPositions.FormattingEnabled = true;
-            this.listBox_Config_Vision_TeachingPositions.ItemHeight = 18;
+            this.listBox_Config_Vision_TeachingPositions.ItemHeight = 28;
             this.listBox_Config_Vision_TeachingPositions.Items.AddRange(new object[] {
             "Vision Image Focus Z Axis Position",
             "Laser Focus Z Axis Position",
@@ -5352,7 +5352,7 @@
             this.listBox_Config_Vision_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_Vision_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_Vision_TeachingPositions.Name = "listBox_Config_Vision_TeachingPositions";
-            this.listBox_Config_Vision_TeachingPositions.Size = new System.Drawing.Size(285, 184);
+            this.listBox_Config_Vision_TeachingPositions.Size = new System.Drawing.Size(285, 172);
             this.listBox_Config_Vision_TeachingPositions.TabIndex = 0;
             this.listBox_Config_Vision_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_Vision_TeachingPositions_SelectedIndexChanged);
             // 
@@ -5491,7 +5491,7 @@
             this.textBox_Config_BDS_BET_Mrad_Position.Location = new System.Drawing.Point(126, 95);
             this.textBox_Config_BDS_BET_Mrad_Position.Margin = new System.Windows.Forms.Padding(6);
             this.textBox_Config_BDS_BET_Mrad_Position.Name = "textBox_Config_BDS_BET_Mrad_Position";
-            this.textBox_Config_BDS_BET_Mrad_Position.Size = new System.Drawing.Size(67, 23);
+            this.textBox_Config_BDS_BET_Mrad_Position.Size = new System.Drawing.Size(67, 31);
             this.textBox_Config_BDS_BET_Mrad_Position.TabIndex = 49;
             this.textBox_Config_BDS_BET_Mrad_Position.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
             this.textBox_Config_BDS_BET_Mrad_Position.Text = "0.24";
@@ -5537,7 +5537,7 @@
             this.textBox_Config_BDS_BET_Zoom_Position.Location = new System.Drawing.Point(126, 67);
             this.textBox_Config_BDS_BET_Zoom_Position.Margin = new System.Windows.Forms.Padding(6);
             this.textBox_Config_BDS_BET_Zoom_Position.Name = "textBox_Config_BDS_BET_Zoom_Position";
-            this.textBox_Config_BDS_BET_Zoom_Position.Size = new System.Drawing.Size(67, 23);
+            this.textBox_Config_BDS_BET_Zoom_Position.Size = new System.Drawing.Size(67, 31);
             this.textBox_Config_BDS_BET_Zoom_Position.TabIndex = 45;
             this.textBox_Config_BDS_BET_Zoom_Position.Tag = "KeyPad;Min=-100;Max=100;Format=0.000";
             this.textBox_Config_BDS_BET_Zoom_Position.Text = "1.0";
@@ -5698,7 +5698,7 @@
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Location = new System.Drawing.Point(199, 63);
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Name = "textBox_Config_TabLaser_VarioScan_ZDefocus";
-            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Size = new System.Drawing.Size(57, 23);
+            this.textBox_Config_TabLaser_VarioScan_ZDefocus.Size = new System.Drawing.Size(57, 31);
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.TabIndex = 16;
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Tag = "KeyPad;Min=-10;Max=100;Format=0.000";
             this.textBox_Config_TabLaser_VarioScan_ZDefocus.Text = "10";
@@ -5709,7 +5709,7 @@
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Location = new System.Drawing.Point(199, 27);
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Name = "textBox_Config_TabLaser_VarioScan_ZOffset";
-            this.textBox_Config_TabLaser_VarioScan_ZOffset.Size = new System.Drawing.Size(57, 23);
+            this.textBox_Config_TabLaser_VarioScan_ZOffset.Size = new System.Drawing.Size(57, 31);
             this.textBox_Config_TabLaser_VarioScan_ZOffset.TabIndex = 15;
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Tag = "KeyPad;Min=-10;Max=100;Format=0.000";
             this.textBox_Config_TabLaser_VarioScan_ZOffset.Text = "10";
@@ -5947,7 +5947,7 @@
             this.textBox_Config_TabLaser_PercentOfEnergy.Location = new System.Drawing.Point(291, 29);
             this.textBox_Config_TabLaser_PercentOfEnergy.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Config_TabLaser_PercentOfEnergy.Name = "textBox_Config_TabLaser_PercentOfEnergy";
-            this.textBox_Config_TabLaser_PercentOfEnergy.Size = new System.Drawing.Size(150, 24);
+            this.textBox_Config_TabLaser_PercentOfEnergy.Size = new System.Drawing.Size(150, 32);
             this.textBox_Config_TabLaser_PercentOfEnergy.TabIndex = 120;
             this.textBox_Config_TabLaser_PercentOfEnergy.Tag = "KeyPad;Min=0;Max=100;Format=0.000";
             this.textBox_Config_TabLaser_PercentOfEnergy.Text = "0";
@@ -6052,7 +6052,7 @@
             this.textBox_Config_TabLaser_Amplifier.Location = new System.Drawing.Point(291, 55);
             this.textBox_Config_TabLaser_Amplifier.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Config_TabLaser_Amplifier.Name = "textBox_Config_TabLaser_Amplifier";
-            this.textBox_Config_TabLaser_Amplifier.Size = new System.Drawing.Size(150, 23);
+            this.textBox_Config_TabLaser_Amplifier.Size = new System.Drawing.Size(150, 31);
             this.textBox_Config_TabLaser_Amplifier.TabIndex = 120;
             this.textBox_Config_TabLaser_Amplifier.Tag = "KeyPad;Min=0;Max=9999;Format=0.000";
             this.textBox_Config_TabLaser_Amplifier.Text = "0";
@@ -6093,7 +6093,7 @@
             this.comboBox_Config_TabLaser_PulseMode.Location = new System.Drawing.Point(291, 25);
             this.comboBox_Config_TabLaser_PulseMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Config_TabLaser_PulseMode.Name = "comboBox_Config_TabLaser_PulseMode";
-            this.comboBox_Config_TabLaser_PulseMode.Size = new System.Drawing.Size(150, 24);
+            this.comboBox_Config_TabLaser_PulseMode.Size = new System.Drawing.Size(150, 32);
             this.comboBox_Config_TabLaser_PulseMode.TabIndex = 117;
             this.comboBox_Config_TabLaser_PulseMode.Text = "Internal+ & gated";
             // 
@@ -6475,7 +6475,7 @@
             this.checkedListBox_Config_Laser_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_Laser_DIO_Output.Name = "checkedListBox_Config_Laser_DIO_Output";
             this.checkedListBox_Config_Laser_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_Laser_DIO_Output.Size = new System.Drawing.Size(455, 246);
+            this.checkedListBox_Config_Laser_DIO_Output.Size = new System.Drawing.Size(455, 235);
             this.checkedListBox_Config_Laser_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_Laser_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_Laser_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_Laser_DIO_Output_MouseClick);
@@ -6507,7 +6507,7 @@
             this.checkedListBox_Config_Laser_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_Laser_DIO_Input.Name = "checkedListBox_Config_Laser_DIO_Input";
             this.checkedListBox_Config_Laser_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_Laser_DIO_Input.Size = new System.Drawing.Size(455, 246);
+            this.checkedListBox_Config_Laser_DIO_Input.Size = new System.Drawing.Size(455, 235);
             this.checkedListBox_Config_Laser_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_Laser_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -6686,32 +6686,32 @@
             // 
             this.dataGridMaskSize.AllowUserToAddRows = false;
             this.dataGridMaskSize.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.Format = "N0";
-            dataGridViewCellStyle4.NullValue = "0";
-            this.dataGridMaskSize.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.Format = "N0";
+            dataGridViewCellStyle1.NullValue = "0";
+            this.dataGridMaskSize.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridMaskSize.BackgroundColor = System.Drawing.SystemColors.Menu;
             this.dataGridMaskSize.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridMaskSize.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Sunken;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.Format = "No";
-            dataGridViewCellStyle5.NullValue = "0";
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White;
-            this.dataGridMaskSize.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.Format = "No";
+            dataGridViewCellStyle2.NullValue = "0";
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
+            this.dataGridMaskSize.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridMaskSize.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.Format = "N0";
-            dataGridViewCellStyle6.NullValue = "0";
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridMaskSize.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.Format = "N0";
+            dataGridViewCellStyle3.NullValue = "0";
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridMaskSize.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridMaskSize.Location = new System.Drawing.Point(7, 25);
             this.dataGridMaskSize.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dataGridMaskSize.Name = "dataGridMaskSize";
@@ -6811,7 +6811,7 @@
             this.checkedListBox_Config_BDS_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_BDS_DIO_Output.Name = "checkedListBox_Config_BDS_DIO_Output";
             this.checkedListBox_Config_BDS_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_BDS_DIO_Output.Size = new System.Drawing.Size(279, 156);
+            this.checkedListBox_Config_BDS_DIO_Output.Size = new System.Drawing.Size(279, 149);
             this.checkedListBox_Config_BDS_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_BDS_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_BDS_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_BDS_DIO_Output_MouseClick);
@@ -6842,7 +6842,7 @@
             this.checkedListBox_Config_BDS_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_BDS_DIO_Input.Name = "checkedListBox_Config_BDS_DIO_Input";
             this.checkedListBox_Config_BDS_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_BDS_DIO_Input.Size = new System.Drawing.Size(279, 156);
+            this.checkedListBox_Config_BDS_DIO_Input.Size = new System.Drawing.Size(279, 149);
             this.checkedListBox_Config_BDS_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_BDS_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -6973,7 +6973,7 @@
             this.textBox3.Location = new System.Drawing.Point(181, 27);
             this.textBox3.Margin = new System.Windows.Forms.Padding(5);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(97, 24);
+            this.textBox3.Size = new System.Drawing.Size(97, 32);
             this.textBox3.TabIndex = 40;
             this.textBox3.Tag = "KeyPad;Min=-200;Max=200;Format=0.000";
             this.textBox3.Text = "000.000";
@@ -7068,7 +7068,7 @@
             this.textBox_Config_BDS_JogMove_StepSize.Location = new System.Drawing.Point(217, 51);
             this.textBox_Config_BDS_JogMove_StepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_BDS_JogMove_StepSize.Name = "textBox_Config_BDS_JogMove_StepSize";
-            this.textBox_Config_BDS_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Config_BDS_JogMove_StepSize.Size = new System.Drawing.Size(71, 32);
             this.textBox_Config_BDS_JogMove_StepSize.TabIndex = 75;
             this.textBox_Config_BDS_JogMove_StepSize.Tag = "KeyPad;Min=-200;Max=200;Format=0.000";
             this.textBox_Config_BDS_JogMove_StepSize.Text = "1.000";
@@ -7372,7 +7372,7 @@
             this.textBox_Config_BDS_TeachingPos_MaskY.Location = new System.Drawing.Point(147, 27);
             this.textBox_Config_BDS_TeachingPos_MaskY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_BDS_TeachingPos_MaskY.Name = "textBox_Config_BDS_TeachingPos_MaskY";
-            this.textBox_Config_BDS_TeachingPos_MaskY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_BDS_TeachingPos_MaskY.Size = new System.Drawing.Size(97, 32);
             this.textBox_Config_BDS_TeachingPos_MaskY.TabIndex = 22;
             this.textBox_Config_BDS_TeachingPos_MaskY.Tag = "KeyPad;Min=-200;Max=200;Format=0.000";
             this.textBox_Config_BDS_TeachingPos_MaskY.Text = "000.000";
@@ -7393,7 +7393,7 @@
             // 
             this.listBox_Config_BDS_TeachingPositions.Font = new System.Drawing.Font("Tahoma", 11F);
             this.listBox_Config_BDS_TeachingPositions.FormattingEnabled = true;
-            this.listBox_Config_BDS_TeachingPositions.ItemHeight = 18;
+            this.listBox_Config_BDS_TeachingPositions.ItemHeight = 27;
             this.listBox_Config_BDS_TeachingPositions.Items.AddRange(new object[] {
             "None Mask Position",
             "#1 Mask Position",
@@ -7930,7 +7930,7 @@
             // 
             // FormNew_Config
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;

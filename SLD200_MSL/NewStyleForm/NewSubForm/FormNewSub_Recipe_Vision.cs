@@ -1810,7 +1810,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                                                     nTargetColor == 0, 
                                                     dScore, 
                                                     false,
-                                                    rectangle);
+                                                    rectangle,
+                                                    workStage.Config.ParamConfig.UpperVision_Scale_X);
 
                 }
                 else if(nTargetColor == 2)
@@ -1854,7 +1855,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else
             {
-                
                 if (!result.Success)
                 {
                     listBox_Recipe_Fiducial_Result.Items.Clear();
