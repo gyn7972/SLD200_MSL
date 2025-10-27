@@ -4517,8 +4517,15 @@ namespace SLD200_MSL
 
             workStage.AlignedDrillingData_Select_and_OffsetMove(0, 0, 0, 1, 1, 1);
 
+            //  메인 화면의 뷰어 갱신
+            workStage.m_bMain_SiriusViewer_Refresh = true;
+            workStage.ActionSiriusViewerRefresy?.Invoke(workStage.m_bMain_SiriusViewer_Refresh);
 
+            int nReturn = 0;
+            nReturn = workStage.GetDrillingData();
 
+            var mbb = new MessageBoxOk();
+            mbb.ShowDialog("End", "End");
 
             return;
             //Equipment.m_GoldPowderOffsetX = 1.234;
