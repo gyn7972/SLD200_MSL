@@ -4514,7 +4514,7 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-
+            return;
             workStage.AlignedDrillingData_Select_and_OffsetMove(0, 0, 0, 1, 1, 1);
 
             //  메인 화면의 뷰어 갱신
