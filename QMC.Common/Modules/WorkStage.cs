@@ -39192,6 +39192,7 @@ namespace QMC.Common.Modules
                                         m_AlignMode = AlignMode.Socket;
                                         m_nDrillingWork_Group_Count++;              // 소켓 Index 증가
                                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                        Log.Write("Fail", Equipment.User_Name, "Auto Run", "Goldpowder - Fail.");
                                     }
                                 }
                             }
@@ -39537,7 +39538,8 @@ namespace QMC.Common.Modules
                         break;
                     }
 
-                    m_AlignMode = AlignMode.Socket;
+                    //20251027 :: 정상일대는 여기서 하면 안되...
+                    //m_AlignMode = AlignMode.Socket;
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 완료");
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Reload;
@@ -39650,6 +39652,7 @@ namespace QMC.Common.Modules
                             }
                             return AlarmPost(AlarmKey.eGetdata_Rtcinit);
                     }
+
 
                     if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use &&
                        m_AlignMode == AlignMode.Socket)
@@ -43295,6 +43298,8 @@ namespace QMC.Common.Modules
 
             m_bSocketAlign_Start_Batch_Complete = false;
             m_bPreAlign_First_Complete = false;
+
+            m_bworkStageVacuumFail = false;
 
             try
             {
