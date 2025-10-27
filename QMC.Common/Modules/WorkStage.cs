@@ -14591,7 +14591,7 @@ namespace QMC.Common.Modules
                                     Log.Write("SLD-200", "Align", "[Interlock] GoldPowder 정렬 실패: 매칭된 포인트가 없습니다.");
                                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
 
-                                    Log.Write("Fail", "Align", "[Interlock] GoldPowder 정렬 실패: 매칭된 포인트가 없습니다.");
+                                    Log.Write("Fail", "GoldPowder", "[Interlock] GoldPowder 정렬 실패: 매칭된 포인트가 없습니다.");
 
                                     m_bAlignCompleted = true;
                                     m_bSocketAlign_OK = false;
@@ -14633,7 +14633,7 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry");
+                                Log.Write("SLD-200", Equipment.User_Name, "GoldPowder", "Align 마크 찾기 실패. Retry");
                                 m_nSocketAlign_Retry_Max = 2;
                                 if (m_nSocketAlign_Retry_Count < m_nSocketAlign_Retry_Max)
                                 {
@@ -14644,8 +14644,8 @@ namespace QMC.Common.Modules
                                 }
                                 else
                                 {
-                                    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
-                                    Log.Write("Fail", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
+                                    Log.Write("SLD-200", Equipment.User_Name, "GoldPowder", "Align 마크 찾기 실패. Retry 횟수 초과");
+                                    Log.Write("Fail", Equipment.User_Name, "GoldPowder", "Align 마크 찾기 실패. Retry 횟수 초과");
 
                                     m_bAlignCompleted = true;
                                     m_bSocketAlign_OK = false;
@@ -29912,7 +29912,6 @@ namespace QMC.Common.Modules
             double dOffsetX1 = 0;
             double dOffsetY1 = 0;
             int nSumCount = 0;
-
             {
                 double dLimit = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit;
                 for (int iter = 0; iter < 4; iter++)
@@ -39013,158 +39012,164 @@ namespace QMC.Common.Modules
                                     DrillingManager.MarkAsChanged();
                                 }
 
-                                // 소켓 얼라인 실패했으니 화면 갱신해야 한다.
-                                m_nDrillingData_SocketAlign_NGCount++; //소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
-                                switch (m_LayerType)
+                                //Socket Align 실패 시 처리
+                                if (m_AlignMode == AlignMode.Socket)
                                 {
-                                    case LayerType.LAYER_DRILLING:
-                                        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
-                                        Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
-                                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
-                                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag //  단일 선택 가공이면, Align 실패 시 Out
-                                        {
-                                            //  Thruhole Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
-                                            if (m_stThruHole_SocketData_ProcessingFlag != null)
+                                    // 소켓 얼라인 실패했으니 화면 갱신해야 한다.
+                                    m_nDrillingData_SocketAlign_NGCount++; //소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
+                                    switch (m_LayerType)
+                                    {
+                                        case LayerType.LAYER_DRILLING:
+                                            Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                            Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                            GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+                                            Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag //  단일 선택 가공이면, Align 실패 시 Out
                                             {
-                                                if (m_AlignMode == AlignMode.Socket)
+                                                //  Thruhole Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                                if (m_stThruHole_SocketData_ProcessingFlag != null)
                                                 {
-                                                    if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stLaserDrilling_SocketData.Length)
+                                                    if (m_AlignMode == AlignMode.Socket)
                                                     {
-                                                        m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;//  true:가공, false:Skip
-                                                        Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false __4");
-                                                    }
-                                                    //else if(m_stThruHole_SocketData_ProcessingFlag.Length < m_stLaserDrilling_SocketData.Length)
-                                                    //{
-                                                    //    m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;
-                                                    //    strTemp = "Thruhole 과 Hole 의 Socket 개수가 작습니다." +
-                                                    //                "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
-                                                    //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-                                                    //}
-                                                    else if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData_ProcessingFlag.Length)
-                                                    {
-                                                        m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
-                                                        strTemp = "Thruhole 과 Hole 의 Socket 개수가 작습니다." +
-                                                                    "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
-                                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-                                                        Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false __5");
-                                                    }
-                                                    else
-                                                    {
-                                                        // 여긴 필요가 없다.
-                                                        //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 과 Hole 의 Socket 개수가 큽니다.");
+                                                        if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stLaserDrilling_SocketData.Length)
+                                                        {
+                                                            m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;//  true:가공, false:Skip
+                                                            Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false __4");
+                                                        }
+                                                        //else if(m_stThruHole_SocketData_ProcessingFlag.Length < m_stLaserDrilling_SocketData.Length)
+                                                        //{
+                                                        //    m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;
+                                                        //    strTemp = "Thruhole 과 Hole 의 Socket 개수가 작습니다." +
+                                                        //                "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
+                                                        //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                                                        //}
+                                                        else if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData_ProcessingFlag.Length)
+                                                        {
+                                                            m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                            strTemp = "Thruhole 과 Hole 의 Socket 개수가 작습니다." +
+                                                                        "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
+                                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                                                            Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false __5");
+                                                        }
+                                                        else
+                                                        {
+                                                            // 여긴 필요가 없다.
+                                                            //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 과 Hole 의 Socket 개수가 큽니다.");
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Processing Skip Flag 저장 변수가 Null 입니다.");
-                                            }
-
-                                            //  Outline Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
-                                            if (m_stOutLine_SocketData_ProcessingFlag != null)
-                                            {
-                                                if (m_AlignMode == AlignMode.Socket)
+                                                else
                                                 {
-                                                    if (m_stOutLine_SocketData_ProcessingFlag.Length == m_stLaserDrilling_SocketData.Length)
+                                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Processing Skip Flag 저장 변수가 Null 입니다.");
+                                                }
+
+                                                //  Outline Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                                if (m_stOutLine_SocketData_ProcessingFlag != null)
+                                                {
+                                                    if (m_AlignMode == AlignMode.Socket)
                                                     {
-                                                        m_stOutLine_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
-                                                    }
-                                                    else if (m_nDrillingWork_Group_Count < m_stOutLine_SocketData_ProcessingFlag.Length)
-                                                    {
-                                                        m_stOutLine_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
-                                                        strTemp = "Outline 과 Hole 의 Socket 개수가 작습니다." +
-                                                                    "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
-                                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-                                                    }
-                                                    else
-                                                    {
-                                                        // 여긴 필요가 없다.
-                                                        //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 과 Hole 의 Socket 개수가 큽니다.");
+                                                        if (m_stOutLine_SocketData_ProcessingFlag.Length == m_stLaserDrilling_SocketData.Length)
+                                                        {
+                                                            m_stOutLine_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                        }
+                                                        else if (m_nDrillingWork_Group_Count < m_stOutLine_SocketData_ProcessingFlag.Length)
+                                                        {
+                                                            m_stOutLine_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                            strTemp = "Outline 과 Hole 의 Socket 개수가 작습니다." +
+                                                                        "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
+                                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                                                        }
+                                                        else
+                                                        {
+                                                            // 여긴 필요가 없다.
+                                                            //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 과 Hole 의 Socket 개수가 큽니다.");
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline Processing Skip Flag 저장 변수가 Null 입니다.");
-                                            }
-
-                                            //  Marking Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
-                                            if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData != null)
-                                            {
-                                                if (m_AlignMode == AlignMode.Socket)
+                                                else
                                                 {
-                                                    if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length == m_stLaserDrilling_SocketData.Length)
+                                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline Processing Skip Flag 저장 변수가 Null 입니다.");
+                                                }
+
+                                                //  Marking Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                                if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData != null)
+                                                {
+                                                    if (m_AlignMode == AlignMode.Socket)
                                                     {
-                                                        m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
-                                                    }
-                                                    else if (m_nDrillingWork_Group_Count < m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length)
-                                                    {
-                                                        m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
-                                                        strTemp = "Marking 과 Hole 의 Socket 개수가 작습니다." +
-                                                                    "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
-                                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-                                                    }
-                                                    else
-                                                    {
-                                                        // 여긴 필요가 없다.
-                                                        //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 과 Hole 의 Socket 개수가 큽니다.");
+                                                        if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length == m_stLaserDrilling_SocketData.Length)
+                                                        {
+                                                            m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                        }
+                                                        else if (m_nDrillingWork_Group_Count < m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData.Length)
+                                                        {
+                                                            m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                            strTemp = "Marking 과 Hole 의 Socket 개수가 작습니다." +
+                                                                        "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
+                                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                                                        }
+                                                        else
+                                                        {
+                                                            // 여긴 필요가 없다.
+                                                            //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking 과 Hole 의 Socket 개수가 큽니다.");
+                                                        }
                                                     }
                                                 }
+                                                else
+                                                {
+                                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking Processing Skip Flag 저장 변수가 Null 입니다.");
+                                                }
                                             }
-                                            else
+                                            break;
+
+                                        case LayerType.LAYER_OUTLINE:
+
+                                            Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                            Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                            GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+                                            Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                                                                                    //  단일 선택 가공이면, Align 실패 시 Out
+
                                             {
-                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Marking Processing Skip Flag 저장 변수가 Null 입니다.");
+                                                m_AlignMode = AlignMode.Socket;
+                                                m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                                             }
-                                        }
-                                        break;
+                                            break;
+                                        case LayerType.LAYER_THRUHOLE:
 
-                                    case LayerType.LAYER_OUTLINE:
+                                            Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                            Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                            GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+                                            Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                                                                                    //  단일 선택 가공이면, Align 실패 시 Out
+                                            {
+                                                m_AlignMode = AlignMode.Socket;
 
-                                        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
-                                        Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
-                                        GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
-                                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
-                                                                                                //  단일 선택 가공이면, Align 실패 시 Out
+                                                m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                                //  Thruhole 은 기본적으로 전부 가공한다고는 했는데, 단독으로 Thruhole 가공하는 제품도 그렇게 해야 하는지는 확인이 필요
+                                            }
+                                            break;
+                                        case LayerType.LAYER_MARKING:
+                                            Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                            Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                            GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+                                            Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                                                                                    //  단일 선택 가공이면, Align 실패 시 Out
+                                            {
+                                                m_AlignMode = AlignMode.Socket;
 
-                                        {
-                                            m_AlignMode = AlignMode.Socket;
-                                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                                        }
-                                        break;
-                                    case LayerType.LAYER_THRUHOLE:
-
-                                        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
-                                        Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
-                                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
-                                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
-                                                                                                //  단일 선택 가공이면, Align 실패 시 Out
-                                        {
-                                            m_AlignMode = AlignMode.Socket;
-
-                                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                                            //  Thruhole 은 기본적으로 전부 가공한다고는 했는데, 단독으로 Thruhole 가공하는 제품도 그렇게 해야 하는지는 확인이 필요
-                                        }
-                                        break;
-                                    case LayerType.LAYER_MARKING:
-                                        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
-                                        Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
-                                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
-                                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
-                                                                                                //  단일 선택 가공이면, Align 실패 시 Out
-                                        {
-                                            m_AlignMode = AlignMode.Socket;
-
-                                            m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                                        }
-                                        break;
+                                                m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                            }
+                                            break;
+                                    }
                                 }
 
-                                if (Equipment.Machine_SocketVision_Batch_Use &&
-                                    m_bSocketAlign_Start_Batch_Complete == false &&
-                                    !Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
+
+                                if (Equipment.Machine_SocketVision_Batch_Use == true
+                                    && m_bSocketAlign_Start_Batch_Complete == false
+                                    && Equipment.SelectRunEnable_New == false
+                                    && Equipment.SemiAutoEnable == false)
                                 {
                                     if (m_nDrillingWork_Group_Count < (m_stLaserDrilling_SocketData[0].nGroup_Num - 1))
                                     {
@@ -39184,17 +39189,21 @@ namespace QMC.Common.Modules
                                 }
                                 else
                                 {
-                                    if (Equipment.SemiAutoEnable
+                                    if (Equipment.SemiAutoEnable == true
                                         && (_semiAutoRequest == SemiAutoStep.FiducialAlign
                                         || _semiAutoRequest == SemiAutoStep.GoldPowderAlign))
                                     {
+                                        m_AlignMode = AlignMode.Socket;
                                         Log.Write("Fail", Equipment.User_Name, "Auto Run", "SemiAutoEnable - Fail.");
                                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Complete;
                                     }
                                     else
                                     {
+                                        //2025.10.27 :: 다음 소켓으로 진행 시 alignMdoe Socket 으로 변경.
+                                        m_AlignMode = AlignMode.Socket;
                                         m_nDrillingWork_Group_Count++;              // 소켓 Index 증가
                                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                        Log.Write("Fail", Equipment.User_Name, "Auto Run", "Goldpowder - Fail.");
                                     }
                                 }
                             }
@@ -39274,7 +39283,6 @@ namespace QMC.Common.Modules
 
                         Log.Write("Fail", Equipment.User_Name, "Auto Run", "Socket Align 시간 초과.");
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
-                        //AlarmPost(AlarmKey.SocketAlignMovePositionCalcFail);
                     }
                     break;
 
@@ -39541,6 +39549,8 @@ namespace QMC.Common.Modules
                         break;
                     }
 
+                    //20251027 :: 정상일대는 여기서 하면 안되...
+                    //m_AlignMode = AlignMode.Socket;
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 완료");
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Reload;
@@ -39653,6 +39663,7 @@ namespace QMC.Common.Modules
                             }
                             return AlarmPost(AlarmKey.eGetdata_Rtcinit);
                     }
+
 
                     if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use &&
                        m_AlignMode == AlignMode.Socket)
@@ -43300,6 +43311,8 @@ namespace QMC.Common.Modules
 
             m_bSocketAlign_Start_Batch_Complete = false;
             m_bPreAlign_First_Complete = false;
+
+            m_bworkStageVacuumFail = false;
 
             try
             {

@@ -4514,11 +4514,18 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
-
+            return;
             workStage.AlignedDrillingData_Select_and_OffsetMove(0, 0, 0, 1, 1, 1);
 
+            //  메인 화면의 뷰어 갱신
+            workStage.m_bMain_SiriusViewer_Refresh = true;
+            workStage.ActionSiriusViewerRefresy?.Invoke(workStage.m_bMain_SiriusViewer_Refresh);
 
+            int nReturn = 0;
+            nReturn = workStage.GetDrillingData();
 
+            var mbb = new MessageBoxOk();
+            mbb.ShowDialog("End", "End");
 
             return;
             //Equipment.m_GoldPowderOffsetX = 1.234;
@@ -5066,78 +5073,209 @@ namespace SLD200_MSL
 
 
         // 최종 수정 버전 - 실장비 대응 안전 강화 포함
-        private void button_Main_Reset_Click(object sender, EventArgs e)
+        // [추가] 리셋 중 강제 중지 시 즉시 정지용 유틸
+        private void ResetEmergencyStop()
+        {
+            try
+            {
+                // 모션 즉시 정지
+                if (Equipment.AjinBoard_Opened)
+                {
+                    // Loader
+                    loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
+                    loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z1, 2000);
+                    loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.TR_X, 2000);
+                    loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.TR_Z, 2000);
+                    loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.ALN_X, 2000);
+                    loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.ALN_Y, 2000);
+                    // Unloader
+                    unloader.MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.Z0, 2000);
+                    unloader.MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.Z1, 2000);
+                    unloader.MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.TR_X, 2000);
+                    unloader.MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.TR_Z, 2000);
+                    // WorkStage
+                    workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.X, 2000);
+                    workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Y, 2000);
+                    workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Z, 2000);
+                    if (Equipment.Machine_LaserType_CO2)
+                        workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
+                }
+
+                // 레이저/RTC 즉시 중단
+                try
+                {
+                    workStage.rtc?.CtlAbort();
+                    workStage.rtc?.CtlReset();
+                }
+                catch { /* ignore */ }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
+
+        // [변경] 동기 대기 제거: async/await 기반으로 변경
+        private async void button_Main_Reset_Click(object sender, EventArgs e)
         {
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
 
+            string strTemp = string.Empty;
+            button_Main_Reset.Enabled = false;
+
+            var cts = new CancellationTokenSource();
+            Task<int> resetTask = null;
+
             try
             {
-                string strTemp = string.Empty;
-                button_Main_Reset.Enabled = false;
+                resetTask = ResetSequenceAsync(cts.Token);
 
-                CancellationTokenSource cts = new CancellationTokenSource();
-                Task<int> resetTask = ResetSequenceAsync(cts.Token);
-
+                // 진행창과 작업 연결: 작업 완료 시 창 닫기
                 var pf = new ProgressForm("Reset 중", "시퀀스 완료까지 기다리는 중입니다...", resetTask);
-                pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
+                pf.StartPosition = FormStartPosition.CenterScreen;
+
+                // 중지 요청 시 즉시 취소 + 모션 에머전시 스탑
                 pf.StopProcess += (obj) =>
                 {
-                    cts.Cancel();
-
-                    Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
-                    checkBox_Main_AutoRun.Checked = false;
-                    button_Main_Start.BackColor = Color.LightGray;
-                    button_Main_Start.ForeColor = Color.Black;
-
-                    strTemp = "Reset이 중단되었습니다.";
-                    new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-                    button_Main_Reset.Enabled = true;
+                    try
+                    {
+                        cts.Cancel();
+                        ResetEmergencyStop(); // 즉시 모션 정지
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write(ex);
+                    }
                 };
+
+                // 작업 완료되면 진행창 닫기
+                resetTask.ContinueWith(_ =>
+                {
+                    try
+                    {
+                        if (pf.IsHandleCreated && !pf.IsDisposed)
+                            pf.BeginInvoke(new System.Action(() => pf.Close()));
+                    }
+                    catch { /* ignore */ }
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                // 모달로 표시(메시지 펌프 동작, UI 프리징 없음)
                 pf.ShowDialog();
 
+                // 여기서 동기 Result 접근 금지! 반드시 await
+                var code = await resetTask.ConfigureAwait(true);
 
-                Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-                if (resetTask.Result == 0)
+                if (code == 0)
                 {
                     strTemp = "Reset 완료";
                     new QMC.Core.MessageBoxOk().ShowDialog("Information !", strTemp);
-                    button_Main_Reset.Enabled = true;
-
-                    Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
-                    checkBox_Main_AutoRun.Checked = false;
-                    button_Main_Start.BackColor = Color.LightGray;
-                    button_Main_Start.ForeColor = Color.Black;
                 }
                 else
                 {
                     strTemp = "Reset이 중단되었습니다.";
                     new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
-                    button_Main_Reset.Enabled = true;
-
-                    Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
-                    checkBox_Main_AutoRun.Checked = false;
-                    button_Main_Start.BackColor = Color.LightGray;
-                    button_Main_Start.ForeColor = Color.Black;
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                strTemp = "Reset이 중단되었습니다.";
+                new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
             }
             catch (Exception ex)
             {
                 Log.Write(ex);
-
-                string strTemp = string.Empty;
                 strTemp = "Reset이 중단되었습니다.";
                 new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+            }
+            finally
+            {
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+
                 button_Main_Reset.Enabled = true;
 
-                Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+                Equipment.AutoManualStatus = false;
                 checkBox_Main_AutoRun.Checked = false;
                 button_Main_Start.BackColor = Color.LightGray;
                 button_Main_Start.ForeColor = Color.Black;
+
+                cts.Dispose();
             }
         }
+
+        //private void button_Main_Reset_Click(object sender, EventArgs e)
+        //{
+        //    var mb = new MessageBoxYesNo();
+        //    if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
+        //        return;
+
+        //    try
+        //    {
+        //        string strTemp = string.Empty;
+        //        button_Main_Reset.Enabled = false;
+
+        //        CancellationTokenSource cts = new CancellationTokenSource();
+        //        Task<int> resetTask = ResetSequenceAsync(cts.Token);
+
+        //        var pf = new ProgressForm("Reset 중", "시퀀스 완료까지 기다리는 중입니다...", resetTask);
+        //        pf.StartPosition = FormStartPosition.CenterScreen;  // 화면 중심에 표시되도록 설정
+        //        pf.StopProcess += (obj) =>
+        //        {
+        //            cts.Cancel();
+
+        //            Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+        //            checkBox_Main_AutoRun.Checked = false;
+        //            button_Main_Start.BackColor = Color.LightGray;
+        //            button_Main_Start.ForeColor = Color.Black;
+
+        //            strTemp = "Reset이 중단되었습니다.";
+        //            new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+        //            button_Main_Reset.Enabled = true;
+        //        };
+        //        pf.ShowDialog();
+
+
+        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //        //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+        //        if (resetTask.Result == 0)
+        //        {
+        //            strTemp = "Reset 완료";
+        //            new QMC.Core.MessageBoxOk().ShowDialog("Information !", strTemp);
+        //            button_Main_Reset.Enabled = true;
+
+        //            Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+        //            checkBox_Main_AutoRun.Checked = false;
+        //            button_Main_Start.BackColor = Color.LightGray;
+        //            button_Main_Start.ForeColor = Color.Black;
+        //        }
+        //        else
+        //        {
+        //            strTemp = "Reset이 중단되었습니다.";
+        //            new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+        //            button_Main_Reset.Enabled = true;
+
+        //            Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+        //            checkBox_Main_AutoRun.Checked = false;
+        //            button_Main_Start.BackColor = Color.LightGray;
+        //            button_Main_Start.ForeColor = Color.Black;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Write(ex);
+
+        //        string strTemp = string.Empty;
+        //        strTemp = "Reset이 중단되었습니다.";
+        //        new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+        //        button_Main_Reset.Enabled = true;
+
+        //        Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+        //        checkBox_Main_AutoRun.Checked = false;
+        //        button_Main_Start.BackColor = Color.LightGray;
+        //        button_Main_Start.ForeColor = Color.Black;
+        //    }
+        //}
 
         private readonly object _resetLock = new object();
         private async Task<int> ResetSequenceAsync(CancellationToken token)
@@ -5149,9 +5287,9 @@ namespace SLD200_MSL
                 Equipment.ResetProcess = true;
             }
 
-            string strTemp = string.Empty;
             try
             {
+                // UI 접근은 Invoke 내부에서만
                 checkBox_Main_SocketDrilling_Pass.Checked = false;
                 selectedRow = -1;
                 selectedColumn = -1;
@@ -5166,21 +5304,19 @@ namespace SLD200_MSL
                     return -1;
                 }
 
-                if (token.IsCancellationRequested) 
-                    return -1;
+                token.ThrowIfCancellationRequested();
 
                 try
                 {
-                    // RTC Abort 및 Reset :: Reset 시 무조건 수행?
-                    if(workStage.GetLaserBusyStatus())
+                    // RTC Abort/Reset (필요 시)
+                    if (workStage.GetLaserBusyStatus())
                     {
-                        //workStage.rtc?.CtlLaserOff();
-                        //await Task.Delay(100, token);
                         workStage.rtc?.CtlAbort();
-                        await Task.Delay(2000, token);
+                        await Task.Delay(2000, token).ConfigureAwait(false);
                         workStage.rtc?.CtlReset();
                     }
                 }
+                catch (OperationCanceledException) { throw; }
                 catch (Exception ex)
                 {
                     Log.Write(ex);
@@ -5188,14 +5324,12 @@ namespace SLD200_MSL
                     return -1;
                 }
 
-                bool result = await DoResetMotionAndIOAsync(token);
+                bool result = await DoResetMotionAndIOAsync(token).ConfigureAwait(false);
                 return result ? 0 : -1;
             }
             catch (OperationCanceledException)
             {
-                strTemp = "workStage - 자재 확인 바랍니다. Reset";
-                Log.Write("SLD-200", Equipment.User_Name, strTemp);
-                //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+                Log.Write("SLD-200", Equipment.User_Name, "workStage - 자재 확인 바랍니다. Reset");
                 return -1;
             }
             catch (Exception ex)
@@ -5208,12 +5342,98 @@ namespace SLD200_MSL
                 Equipment.ResetProcess = false;
             }
         }
+        //private async Task<int> ResetSequenceAsync(CancellationToken token)
+        //{
+        //    lock (_resetLock)
+        //    {
+        //        if (Equipment.ResetProcess)
+        //            return 0;
+        //        Equipment.ResetProcess = true;
+        //    }
 
+        //    string strTemp = string.Empty;
+        //    try
+        //    {
+        //        checkBox_Main_SocketDrilling_Pass.Checked = false;
+        //        selectedRow = -1;
+        //        selectedColumn = -1;
+        //        checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+        //        checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
+
+        //        workStage.ResetProcess();
+
+        //        if (!workStage.m_bHomeOK)
+        //        {
+        //            ShowError("초기화 진행 바랍니다.");
+        //            return -1;
+        //        }
+
+        //        if (token.IsCancellationRequested) 
+        //            return -1;
+
+        //        try
+        //        {
+        //            // RTC Abort 및 Reset :: Reset 시 무조건 수행?
+        //            if(workStage.GetLaserBusyStatus())
+        //            {
+        //                //workStage.rtc?.CtlLaserOff();
+        //                //await Task.Delay(100, token);
+        //                workStage.rtc?.CtlAbort();
+        //                await Task.Delay(2000, token);
+        //                workStage.rtc?.CtlReset();
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Log.Write(ex);
+        //            ShowError("RTC Abort 또는 Reset 실패");
+        //            return -1;
+        //        }
+
+        //        bool result = await DoResetMotionAndIOAsync(token);
+        //        return result ? 0 : -1;
+        //    }
+        //    catch (OperationCanceledException)
+        //    {
+        //        strTemp = "workStage - 자재 확인 바랍니다. Reset";
+        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //        //new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+        //        return -1;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Write(ex);
+        //        return -1;
+        //    }
+        //    finally
+        //    {
+        //        Equipment.ResetProcess = false;
+        //    }
+        //}
+
+        // [추가] In-Position 대기에 타임아웃/취소 부여
+        private async Task<bool> WaitAxisInPosition(Func<Task<bool>> waiter, CancellationToken token, int timeoutMs = 10000)
+        {
+            using (var lts = CancellationTokenSource.CreateLinkedTokenSource(token))
+            {
+                var waitTask = waiter();
+                var timeoutTask = Task.Delay(timeoutMs, lts.Token);
+                var completed = await Task.WhenAny(waitTask, timeoutTask).ConfigureAwait(false);
+                if (completed == waitTask)
+                {
+                    lts.Cancel(); // 타임아웃 Task 취소
+                    return await waitTask.ConfigureAwait(false);
+                }
+                return false; // 타임아웃
+            }
+        }
+
+        // [변경] Thread.Sleep 제거, 취소/타임아웃 가능하게
         private async Task<bool> DoResetMotionAndIOAsync(CancellationToken token)
         {
             var motor_Speed = Equipment.Type_Motor_Speed.Coarse;
-            var mb2 = new MessageBoxOk();
             string strTemp = string.Empty;
+
             try
             {
                 int nIndex = (int)Vision.Vision_TeachingPosList.Vision_SafetyPos;
@@ -5228,16 +5448,16 @@ namespace SLD200_MSL
                 unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
                 double dPosZ_Unloader = loader.stLDULTeachingPos[nIndex].ULD_Transfer_Z;
 
-                await Task.Delay(500, token);
+                await Task.Delay(200, token).ConfigureAwait(false);
 
-                if (!await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Z, dPosZ))
+                if (!await WaitAxisInPosition(() => workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Z, dPosZ), token))
                     return ShowErrorAndReturn("Stage Z-Axis 이동 실패");
-                if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_Z, dPosZ_Loader))
+                if (!await WaitAxisInPosition(() => loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_Z, dPosZ_Loader), token))
                     return ShowErrorAndReturn("Loader Z-Axis 이동 실패");
-                if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, dPosZ_Unloader))
+                if (!await WaitAxisInPosition(() => unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, dPosZ_Unloader), token))
                     return ShowErrorAndReturn("Unloader Z-Axis 이동 실패");
 
-                //Picker TR 축 이동
+                // Picker TR 축 이동
                 nIndex = (int)Loader.LDUL_TeachingPosList.LD_TR_SafetyPos;
                 loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed);
                 double dPosX_Loader = loader.stLDULTeachingPos[nIndex].LD_Transfer_X;
@@ -5246,13 +5466,12 @@ namespace SLD200_MSL
                 unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed);
                 double dPosX_Unloader = loader.stLDULTeachingPos[nIndex].ULD_Transfer_X;
 
-                await Task.Delay(500, token);
+                await Task.Delay(200, token).ConfigureAwait(false);
 
-                if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_X, dPosX_Loader))
-                    return ShowErrorAndReturn("Loader Z-Axis 이동 실패");
-                if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_X, dPosX_Unloader))
-                    return ShowErrorAndReturn("Unloader Z-Axis 이동 실패");
-
+                if (!await WaitAxisInPosition(() => loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_X, dPosX_Loader), token))
+                    return ShowErrorAndReturn("Loader X-Axis 이동 실패");
+                if (!await WaitAxisInPosition(() => unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_X, dPosX_Unloader), token))
+                    return ShowErrorAndReturn("Unloader X-Axis 이동 실패");
 
                 // Port Z축 이동
                 nIndex = (int)Loader.LDUL_TeachingPosList.LD_RPort_ReadyPos;
@@ -5271,15 +5490,15 @@ namespace SLD200_MSL
                 unloader.MovetoUnloader_TeachingPositionsPortL(nIndex, motor_Speed);
                 double dPosZ_UnPortL = loader.stLDULTeachingPos[nIndex].UL_Stacker_Z1;
 
-                await Task.Delay(500, token);
+                await Task.Delay(200, token).ConfigureAwait(false);
 
-                if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z0, dPosZ_PortR))
+                if (!await WaitAxisInPosition(() => loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z0, dPosZ_PortR), token))
                     return ShowErrorAndReturn("Loader PortR Z-Axis 이동 실패");
-                if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z1, dPosZ_PortL))
+                if (!await WaitAxisInPosition(() => loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z1, dPosZ_PortL), token))
                     return ShowErrorAndReturn("Loader PortL Z-Axis 이동 실패");
-                if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z0, dPosZ_UnPortR))
+                if (!await WaitAxisInPosition(() => unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z0, dPosZ_UnPortR), token))
                     return ShowErrorAndReturn("Unloader PortR Z-Axis 이동 실패");
-                if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z1, dPosZ_UnPortL))
+                if (!await WaitAxisInPosition(() => unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z1, dPosZ_UnPortL), token))
                     return ShowErrorAndReturn("Unloader PortL Z-Axis 이동 실패");
 
                 // Stage XY 이동
@@ -5288,19 +5507,20 @@ namespace SLD200_MSL
                 double dPosX = workStage.stWorkStageTeachingPos[nIndex].Stage_X;
                 double dPosY = workStage.stWorkStageTeachingPos[nIndex].Stage_Y;
 
-                await Task.Delay(500, token);
+                await Task.Delay(200, token).ConfigureAwait(false);
 
-                if (!await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, dPosX) ||
-                    !await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY))
+                if (!await WaitAxisInPosition(() => workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, dPosX), token) ||
+                    !await WaitAxisInPosition(() => workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY), token))
                     return ShowErrorAndReturn("Stage X/Y 축 이동 실패");
 
-                // Vacuum 해제
+                // Vacuum 해제 (취소 가능)
                 if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
                 {
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
-                    Thread.Sleep(200);
+                    await Task.Delay(200, token).ConfigureAwait(false);
                     workStage.workStageParameter.DO_Stage_Blow(false);
-                    Thread.Sleep(200);
+                    await Task.Delay(200, token).ConfigureAwait(false);
+
                     strTemp = "workStage - 자재 확인 바랍니다. Reset";
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
                     new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
@@ -5308,50 +5528,52 @@ namespace SLD200_MSL
                 else
                 {
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    await Task.Delay(50, token).ConfigureAwait(false);
                     workStage.workStageParameter.DO_Stage_Blow(false);
+                    await Task.Delay(50, token).ConfigureAwait(false);
                 }
 
+                // Aligner Vacuum Off
                 foreach (var pos in Enum.GetValues(typeof(LoaderParameter.MAlignerVacuumPos)))
                 {
+                    token.ThrowIfCancellationRequested();
                     int index = (int)pos;
-                    //if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck(index)) // 그냥 무조건 OFF
-                    {
-                        loader.loaderParameter.DO_Loader_Aligner_Vacuum(index, false);
-                        Thread.Sleep(200);
-                        loader.loaderParameter.DO_Loader_Aligner_Blow(index, false);
-                        Thread.Sleep(200);
-                    }
+                    loader.loaderParameter.DO_Loader_Aligner_Vacuum(index, false);
+                    await Task.Delay(100, token).ConfigureAwait(false);
+                    loader.loaderParameter.DO_Loader_Aligner_Blow(index, false);
+                    await Task.Delay(100, token).ConfigureAwait(false);
                 }
 
+                // Picker Vacuum Off (Loader/Unloader)
                 foreach (var pos in Enum.GetValues(typeof(LoaderParameter.PickerVacuumPos)))
                 {
+                    token.ThrowIfCancellationRequested();
                     int index = (int)pos;
-                    //if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck(index)) // 그냥 무조건 OFF
-                    {
-                        loader.loaderParameter.DO_Loader_Picker_Vacuum(index, false);
-                        Thread.Sleep(200);
-                        loader.loaderParameter.DO_Loader_Picker_Blow(false);
-                        Thread.Sleep(200);
-                    }
 
-                    //if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index)) // 그냥 무조건 OFF
-                    {
-                        unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
-                        Thread.Sleep(100);
-                        unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
-                        Thread.Sleep(200);
-                    }
+                    loader.loaderParameter.DO_Loader_Picker_Vacuum(index, false);
+                    await Task.Delay(100, token).ConfigureAwait(false);
+                    loader.loaderParameter.DO_Loader_Picker_Blow(false);
+                    await Task.Delay(100, token).ConfigureAwait(false);
+
+                    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
+                    await Task.Delay(100, token).ConfigureAwait(false);
+                    unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
+                    await Task.Delay(100, token).ConfigureAwait(false);
                 }
 
-                //집진기 상/하부 | 이오나이저 Off
+                // 집진기/이오나이저 Off
                 workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-                Thread.Sleep(100);
+                await Task.Delay(50, token).ConfigureAwait(false);
                 workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
-                Thread.Sleep(100);
+                await Task.Delay(50, token).ConfigureAwait(false);
                 loader.loaderParameter.DO_Loader_Ionizer(false);
-                Thread.Sleep(100);
+                await Task.Delay(50, token).ConfigureAwait(false);
 
                 return true;
+            }
+            catch (OperationCanceledException)
+            {
+                return false;
             }
             catch (Exception ex)
             {
@@ -5360,6 +5582,157 @@ namespace SLD200_MSL
                 return false;
             }
         }
+        //private async Task<bool> DoResetMotionAndIOAsync(CancellationToken token)
+        //{
+        //    var motor_Speed = Equipment.Type_Motor_Speed.Coarse;
+        //    var mb2 = new MessageBoxOk();
+        //    string strTemp = string.Empty;
+        //    try
+        //    {
+        //        int nIndex = (int)Vision.Vision_TeachingPosList.Vision_SafetyPos;
+        //        workStage.MovetoWorkStage_TeachingPositionsZ(nIndex, motor_Speed);
+        //        double dPosZ = vision.stVisionTeachingPos[nIndex].Vision_Z;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.LD_TR_SafetyPos;
+        //        loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+        //        double dPosZ_Loader = loader.stLDULTeachingPos[nIndex].LD_Transfer_Z;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos;
+        //        unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+        //        double dPosZ_Unloader = loader.stLDULTeachingPos[nIndex].ULD_Transfer_Z;
+
+        //        await Task.Delay(500, token);
+
+        //        if (!await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Z, dPosZ))
+        //            return ShowErrorAndReturn("Stage Z-Axis 이동 실패");
+        //        if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_Z, dPosZ_Loader))
+        //            return ShowErrorAndReturn("Loader Z-Axis 이동 실패");
+        //        if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, dPosZ_Unloader))
+        //            return ShowErrorAndReturn("Unloader Z-Axis 이동 실패");
+
+        //        //Picker TR 축 이동
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.LD_TR_SafetyPos;
+        //        loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed);
+        //        double dPosX_Loader = loader.stLDULTeachingPos[nIndex].LD_Transfer_X;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.UL_TR_SafetyPos;
+        //        unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed);
+        //        double dPosX_Unloader = loader.stLDULTeachingPos[nIndex].ULD_Transfer_X;
+
+        //        await Task.Delay(500, token);
+
+        //        if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_X, dPosX_Loader))
+        //            return ShowErrorAndReturn("Loader Z-Axis 이동 실패");
+        //        if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_X, dPosX_Unloader))
+        //            return ShowErrorAndReturn("Unloader Z-Axis 이동 실패");
+
+
+        //        // Port Z축 이동
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.LD_RPort_ReadyPos;
+        //        loader.MovetoLoader_TeachingPositionsPortR(nIndex, motor_Speed);
+        //        double dPosZ_PortR = loader.stLDULTeachingPos[nIndex].LD_Stacker_Z0;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.LD_LPort_ReadyPos;
+        //        loader.MovetoLoader_TeachingPositionsPortL(nIndex, motor_Speed);
+        //        double dPosZ_PortL = loader.stLDULTeachingPos[nIndex].LD_Stacker_Z1;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.UL_RPort_ReadyPos;
+        //        unloader.MovetoUnloader_TeachingPositionsPortR(nIndex, motor_Speed);
+        //        double dPosZ_UnPortR = loader.stLDULTeachingPos[nIndex].UL_Stacker_Z0;
+
+        //        nIndex = (int)Loader.LDUL_TeachingPosList.UL_LPort_ReadyPos;
+        //        unloader.MovetoUnloader_TeachingPositionsPortL(nIndex, motor_Speed);
+        //        double dPosZ_UnPortL = loader.stLDULTeachingPos[nIndex].UL_Stacker_Z1;
+
+        //        await Task.Delay(500, token);
+
+        //        if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z0, dPosZ_PortR))
+        //            return ShowErrorAndReturn("Loader PortR Z-Axis 이동 실패");
+        //        if (!await loader.WaitUntilLoaderInPositionAsync(Loader.nAxis.Z1, dPosZ_PortL))
+        //            return ShowErrorAndReturn("Loader PortL Z-Axis 이동 실패");
+        //        if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z0, dPosZ_UnPortR))
+        //            return ShowErrorAndReturn("Unloader PortR Z-Axis 이동 실패");
+        //        if (!await unloader.WaitUntilUnloaderInPositionAsync(Unloader.nAxis.Z1, dPosZ_UnPortL))
+        //            return ShowErrorAndReturn("Unloader PortL Z-Axis 이동 실패");
+
+        //        // Stage XY 이동
+        //        nIndex = (int)WorkStage.WorkStage_TeachingPosList.STAGE_SafetyPos;
+        //        workStage.MovetoWorkStage_TeachingPositionsXY(nIndex, motor_Speed);
+        //        double dPosX = workStage.stWorkStageTeachingPos[nIndex].Stage_X;
+        //        double dPosY = workStage.stWorkStageTeachingPos[nIndex].Stage_Y;
+
+        //        await Task.Delay(500, token);
+
+        //        if (!await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, dPosX) ||
+        //            !await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, dPosY))
+        //            return ShowErrorAndReturn("Stage X/Y 축 이동 실패");
+
+        //        // Vacuum 해제
+        //        if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
+        //        {
+        //            workStage.workStageParameter.DO_Stage_Vacuum(false);
+        //            Thread.Sleep(200);
+        //            workStage.workStageParameter.DO_Stage_Blow(false);
+        //            Thread.Sleep(200);
+        //            strTemp = "workStage - 자재 확인 바랍니다. Reset";
+        //            Log.Write("SLD-200", Equipment.User_Name, strTemp);
+        //            new QMC.Core.MessageBoxOk().ShowDialog("Error !", strTemp);
+        //        }
+        //        else
+        //        {
+        //            workStage.workStageParameter.DO_Stage_Vacuum(false);
+        //            workStage.workStageParameter.DO_Stage_Blow(false);
+        //        }
+
+        //        foreach (var pos in Enum.GetValues(typeof(LoaderParameter.MAlignerVacuumPos)))
+        //        {
+        //            int index = (int)pos;
+        //            //if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck(index)) // 그냥 무조건 OFF
+        //            {
+        //                loader.loaderParameter.DO_Loader_Aligner_Vacuum(index, false);
+        //                Thread.Sleep(200);
+        //                loader.loaderParameter.DO_Loader_Aligner_Blow(index, false);
+        //                Thread.Sleep(200);
+        //            }
+        //        }
+
+        //        foreach (var pos in Enum.GetValues(typeof(LoaderParameter.PickerVacuumPos)))
+        //        {
+        //            int index = (int)pos;
+        //            //if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck(index)) // 그냥 무조건 OFF
+        //            {
+        //                loader.loaderParameter.DO_Loader_Picker_Vacuum(index, false);
+        //                Thread.Sleep(200);
+        //                loader.loaderParameter.DO_Loader_Picker_Blow(false);
+        //                Thread.Sleep(200);
+        //            }
+
+        //            //if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck(index)) // 그냥 무조건 OFF
+        //            {
+        //                unloader.unloaderParameter.DO_Unloader_Picker_Vacuum(index, false);
+        //                Thread.Sleep(100);
+        //                unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
+        //                Thread.Sleep(200);
+        //            }
+        //        }
+
+        //        //집진기 상/하부 | 이오나이저 Off
+        //        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+        //        Thread.Sleep(100);
+        //        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+        //        Thread.Sleep(100);
+        //        loader.loaderParameter.DO_Loader_Ionizer(false);
+        //        Thread.Sleep(100);
+
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Write(ex);
+        //        ShowError("Motion 또는 IO 처리 중 예외 발생");
+        //        return false;
+        //    }
+        //}
 
         private bool ShowErrorAndReturn(string msg)
         {
