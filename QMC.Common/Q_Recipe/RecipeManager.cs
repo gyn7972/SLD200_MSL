@@ -95,6 +95,7 @@ namespace QMC.Common.Q_Recipe
                     // === Miscellaneous (가공 공통) ===
                     sb.AppendLine($"Reference_Layer={p.Miscellaneous_ReferenceLayer}");
                     sb.AppendLine($"Defocusing_Distance={p.Miscellaneous_DefocusingDistance.ToString(inv)}");
+                    sb.AppendLine($"Defocusing_Use={p.Miscellaneous_DefocusingDistance_Use.ToString(inv)}");
                     sb.AppendLine($"Resizing={p.Miscellaneous_Resizing.ToString(inv)}");
                     sb.AppendLine($"HoleDrilling_StartPosDivision={p.Miscellaneous_HoleDrilling_StartPosDivision.ToString(inv)}");
                     sb.AppendLine($"GroupSplitSize={p.Miscellaneous_GroupSplitSize.ToString(inv)}");
@@ -271,6 +272,7 @@ namespace QMC.Common.Q_Recipe
 
                 Equipment.stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = ReadValue(data, "Reference_Layer", "");
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = ReadDouble(data, "Defocusing_Distance", 0.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance_Use = ReadBool(data, "Defocusing_Use", false);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing = ReadDouble(data, "Resizing", 0.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = ReadInt(data, "HoleDrilling_StartPosDivision", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = ReadDouble(data, "GroupSplitSize", 0.0);

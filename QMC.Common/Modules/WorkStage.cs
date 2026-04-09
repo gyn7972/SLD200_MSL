@@ -8019,6 +8019,10 @@ namespace QMC.Common.Modules
                              m_bLaserDrilling_Complete;
             bool CycleSocketStop = Equipment.CycleSocketStop;
 
+            //Port에 제품 유/무 상태
+            bool isProductExistZ0 = loader.m_bStackerZ0_DownWhenEmpty;
+            bool isProductExistZ1 = loader.m_bStackerZ1_DownWhenEmpty;
+
             if (isAlarm)
             {
                 // Alarm: Red ON, Green/Yellow OFF, Buzzer 플래그에 따름
@@ -8040,6 +8044,11 @@ namespace QMC.Common.Modules
                 // SelecteMode + 가공 Idle: Green ON, Yellow OFF, Red ON, Buzzer OFF
                 ApplyTowerLamp(green: true, yellow: true, red: false, buzzerDesired: false);
             }
+            else if(isProductExistZ0 == true && isProductExistZ1 == true)
+            {
+                // Port에 제품이 없는 경우임. Green ON, Yellow OFF, Red ON, Buzzer OFF
+                ApplyTowerLamp(green: false, yellow: true, red: true, buzzerDesired: false);
+            }
             else if (isAuto && laserIdle)
             {
                 // Auto + 가공 Idle: Green ON, Yellow OFF, Red ON, Buzzer OFF
@@ -8052,7 +8061,7 @@ namespace QMC.Common.Modules
                 ApplyOperationButtons(start: true, stop: false, reset: false);
                 CommonModule.Instance.TowerLamp_BuzzerStop = false;
             }
-            else
+            else //정지 상태  
             {
                 // Stop: Green OFF, Yellow ON, Red OFF, Buzzer OFF
                 ApplyTowerLamp(green: false, yellow: true, red: false, buzzerDesired: false);
@@ -17132,7 +17141,15 @@ namespace QMC.Common.Modules
             switch (m_LayerType)
             {
                 case LayerType.LAYER_DRILLING:
-                    m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
+                    {
+                        m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
+                    }
+                    else
+                    {
+                        //VarioScan 적용.
+                    }
+                    
                     m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
 
                     //  Layer 별로 다르게 해야 하는 파라미터
@@ -17147,15 +17164,23 @@ namespace QMC.Common.Modules
                 case LayerType.LAYER_THRUHOLE:
                     break;
                 case LayerType.LAYER_MARKING:
-                    m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DefocusingDistance;
-                    m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Resizing;
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
+                    {
+                        m_dMarkingLayer_Defocusing = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DefocusingDistance;
+                    }
+                    else
+                    {
+                        //VarioScan 적용.
+                    }
+                    
+                    m_dMarkingLayer_Resizing = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Resizing;
 
                     //  Layer 별로 다르게 해야 하는 파라미터
                     m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DrillingRepetition;            //  총 반복 회수
                     m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
                     strTemp = string.Format("Stage Z 축, Layer{0} Z Offset 이동 시작, Dofocusing Distance ({1:0.000}), Resizing ({2:0.000})",
-                                                        (int)LayerList.Marking, m_dHoleLayer_Defocusing, m_dHoleLayer_Resizing);
+                                                        (int)LayerList.Marking, m_dMarkingLayer_Defocusing, m_dMarkingLayer_Resizing);
 
                     break;
             }
@@ -42844,7 +42869,15 @@ namespace QMC.Common.Modules
                                                                           //  ~~
                                                                           //  m_nHoleLayer_ProcessIndex : 10 (Hole10)
 
-                    m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
+                    {
+                        m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
+                    }
+                    else
+                    {
+                        //VarioScan 적용.
+                    }
+                    
                     m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
 
                     if (!Equipment.SemiAutoEnable)
@@ -42904,7 +42937,15 @@ namespace QMC.Common.Modules
 
                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
 
-                    m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
+                    {
+                        m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
+                    }
+                    else
+                    {
+                        //VarioScan 적용.
+                    }
+                    
                     m_dOutlineLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
 
                     //  Layer 별로 다르게 해야 하는 파라미터
@@ -42934,7 +42975,15 @@ namespace QMC.Common.Modules
 
                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
 
-                    m_dThruholeLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance;
+                    if(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
+                    {
+                        m_dThruholeLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance;
+                    }
+                    else
+                    {
+                        //VarioScan 적용.
+                    }
+
                     m_dThruholeLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_Resizing;
                     //  Layer 별로 다르게 해야 하는 파라미터
                     m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
@@ -42962,7 +43011,15 @@ namespace QMC.Common.Modules
                     m_nMarkingLayer_SerialNumber_Count = 0;         //  마킹 데이터가 시리얼넘버이면, 증가하는 카운트를 초기화 한다. (여기는 Marking Layer 의 맨 처음)
                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
 
-                    m_dMarkingLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_DefocusingDistance;
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
+                    {
+                        m_dMarkingLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_DefocusingDistance;
+                    }
+                    else
+                    {
+                        //VarioScan 적용.
+                    }
+                    
                     m_dMarkingLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_Resizing;
 
                     //  Layer 별로 다르게 해야 하는 파라미터

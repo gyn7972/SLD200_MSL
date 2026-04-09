@@ -54,7 +54,6 @@ namespace QMC.Common.VisionPart
         {
             Circles = new List<Circle>();
             ScoreCollection = new List<double>();
-
         }
     }
 
@@ -251,9 +250,6 @@ namespace QMC.Common.VisionPart
 
             return new PointF(x, y);
         }
-
-
-
 
         public void SaveOutLine(List<PointF> outline, int w, int h, string filename)
         {

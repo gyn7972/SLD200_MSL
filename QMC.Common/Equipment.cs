@@ -484,6 +484,7 @@ namespace QMC.Common
 
             public string Miscellaneous_ReferenceLayer;                 //  Reference Layer
             public double Miscellaneous_DefocusingDistance;             //  Defocusing Distance (mm)
+            public bool Miscellaneous_DefocusingDistance_Use;              //  Defocusing Distance Use (true: Use, false: Not Use)
             public double Miscellaneous_Resizing;                       //  Resizing (mm)
 
             //Add
@@ -1285,6 +1286,7 @@ namespace QMC.Common
                 //  Miscellaneous
                 stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = "";                              //  어떤 Layer 의 데이터를 사용할 것인지
                 stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = 0.0;                         //  가공 시 초점 위치에서 얼마나 이동해서 가공할 것인지
+                stLayerRecipeSet[i].Miscellaneous_DefocusingDistance_Use = false;                     //  Defocusing Distance Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].Miscellaneous_Resizing = 0.0;                                   //  가공 시 데이터를 얼마나 확대/축소할 것인지 (전체 길이를 입력하면 2등분 하여 양방향으로 크기 조정)
                 stLayerRecipeSet[i].Miscellaneous_HoleSize = 0.0; //Miscellaneous_HoleSize
                 stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = 1;                //  Hole Drilling 가공 시 시작 위치를 몇개로 나눌 것인지 (Only 1, 2, 3, 4, 5, 6, 8, 9, 10, 12)

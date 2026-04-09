@@ -1,44 +1,45 @@
-﻿using System;
+﻿using Cognex.VisionPro.Exceptions;
+using Newtonsoft.Json;
+using OpenCvSharp.Internal;
+using QMC.Common;
+using QMC.Common.Hmi;
+using QMC.Common.Modules;
+using QMC.Common.Motion.Ajin;
+using QMC.Common.Parts;
+using QMC.Common.Q_Config;
+using QMC.Common.Q_Sequence;
+using QMC.Common.Vision;
+using QMC.Common.Vision.Tools;
+using QMC.Common.VisionPart;
+using QMC.Core;
+using QMC.Vision;
+using SLD200.NewStyleForm.NewSubForm;
+using SpiralLab.Sirius;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using QMC.Common;
-using QMC.Common.Modules;
-using QMC.Common.Motion.Ajin;
-using QMC.Vision;
-using QMC.Core;
-using static QMC.Common.Equipment;
-using QMC.Common.Parts;
-using System.Numerics;
-using SpiralLab.Sirius;
-using Point = System.Drawing.Point;
 using System.Windows.Controls;
-using ListViewItem = System.Windows.Forms.ListViewItem;
-using QMC.Common.Hmi;
-using QMC.Common.Vision.Tools;
-using QMC.Common.Vision;
-using QMC.Common.VisionPart;
-using static OpenCvSharp.LineIterator;
-using static QMC.Common.Vision.Tools.PatternMatchingResult;
-using Cognex.VisionPro.Exceptions;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
+using static OpenCvSharp.LineIterator;
+using static QMC.Common.Equipment;
 using static QMC.Common.Part;
-using QMC.Common.Q_Config;
-using QMC.Common.Q_Sequence;
-using OpenCvSharp.Internal;
-using NativeMethods = QMC.Core.NativeMethods;
-using SLD200.NewStyleForm.NewSubForm;
-using TextBox = System.Windows.Forms.TextBox;
+using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using Control = System.Windows.Forms.Control;
+using ListViewItem = System.Windows.Forms.ListViewItem;
+using NativeMethods = QMC.Core.NativeMethods;
+using Point = System.Drawing.Point;
 using RichTextBox = System.Windows.Forms.RichTextBox;
+using TextBox = System.Windows.Forms.TextBox;
 //using OpenCvSharp;
 
 namespace SLD200_MSL
@@ -90,6 +91,9 @@ namespace SLD200_MSL
         private float m_kfactor = 0; // = (float)Math.Pow(2, 20) / m_fieldSize;
         private Correction2DRtc m_correction2DRtc = null;
         private Correction2DRtcForm m_correction2DRtcForm = null;
+
+        private Correction3DRtc m_correction3DRtc = null;
+        private Correction3DRtcForm m_correction3DRtcForm = null;
 
         //private FormScannerCompensatorMaint m_formScannerCompensatorMaint = null;
         //protected VisionImageViewer m_visionImageViewer_Upper;
@@ -4889,5 +4893,36 @@ namespace SLD200_MSL
                 Equipment.Machine_SocketVision_Batch_Use = false;
             }
         }
+
+        //3D 보정 결과 저장 (Z Plane 별 측정 데이터)
+        private void SaveCurrentZPlaneMeasureFile(string filePath, float zMm, QMCFindLenzCenter list)
+        {
+            // list.SldData 안에 m_nIndexX, m_nindexY, m_dX, m_dY, m_dMeasureX, m_dMeasureY 사용
+            var plane = new ZPlaneMeasureFile
+            {
+                Z = zMm,
+                Rows = m_row,
+                Cols = m_col,
+                PitchX = m_colInterval,
+                PitchY = m_rowInterval
+            };
+
+            foreach (var d in list.SldData)
+            {
+                plane.Points.Add(new GridMeasurePoint
+                {
+                    IndexX = d.m_nIndexX,
+                    IndexY = d.m_nindexY,
+                    RefX = (float)d.m_dX,
+                    RefY = (float)d.m_dY,
+                    MeasuredX = (float)d.m_dMeasureX,
+                    MeasuredY = (float)d.m_dMeasureY
+                });
+            }
+
+            var opt = new JsonSerializerOptions { WriteIndented = true };
+            File.WriteAllText(filePath, JsonSerializer.Serialize(plane, opt));
+        }
+
     }
 }
