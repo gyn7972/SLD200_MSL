@@ -34421,13 +34421,23 @@ namespace QMC.Common.Modules
                     DrillingManager.CycleTimer_LaserDrilling.Start();
                     workStageParameter.DO_AirCurtain_Purge(true);
                     
-                    //Loader에서 Stage로 제품 이송시 vacuum 안잡히면 Ng로 그냥 뺀다.
-                    if (m_bworkStageVacuumFail)
+                    if(Equipment.AutoRunStatus == true)
                     {
-                        strTemp = "Work Stage Vacuum On 실패.";
-                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Start", strTemp);
-                        Log.Write("Fail", Equipment.User_Name, "LaserDrilling_Step::Start", strTemp);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                        //Loader에서 Stage로 제품 이송시 vacuum 안잡히면 Ng로 그냥 뺀다.
+                        if (m_bworkStageVacuumFail)
+                        {
+                            strTemp = "Work Stage Vacuum On 실패.";
+                            Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Start", strTemp);
+                            Log.Write("Fail", Equipment.User_Name, "LaserDrilling_Step::Start", strTemp);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                        }
+                        else
+                        {
+                            TickCount_Start((int)TickType.TICK_MAIN);
+                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_ScannerBoard_Init;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_LaserOnOffCheck;
+                        }
                     }
                     else
                     {
@@ -34436,6 +34446,7 @@ namespace QMC.Common.Modules
                         //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_ScannerBoard_Init;
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Step_LaserOnOffCheck;
                     }
+
                     break;
 
                 case (int)LaserDrilling_Step.Step_LaserOnOffCheck:
@@ -43226,6 +43237,8 @@ namespace QMC.Common.Modules
             {
                 Log.Write(ex);
             }
+
+            m_bworkStageVacuumFail = false;
 
             //  가공 Sequence Index 초기화 (Loading 부터 시작)
             Equipment.m_bMainProcessStatus_LD_LPort_Complete = false;                       //  Loader LPort 투입 완료
