@@ -1147,6 +1147,8 @@ namespace SLD200_MSL
 
                 NativeMethods.GetPrivateProfileString(strTemp, "ZCalFile_OffsetZ", "0.0", temp, 255, strFIle);
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "ZCalFile_OffsetDefocuseZ", "0.0", temp, 255, strFIle);
+                stLayerRecipeSet[i].CalfileOffsetDefocusZAxismm = Equipment.ToDouble(temp.ToString());
 
                 NativeMethods.GetPrivateProfileString(strTemp, "ChuckMSL_Use", "false", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].ChuckMSL_Enable = Equipment.ToBoolean(temp.ToString());
@@ -1265,6 +1267,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = ReadDouble(data, "DustCollector_Frequency_Lower", 20.0);
                 Equipment.stLayerRecipeSet[i].DustCollectorLower_Disable = ReadBool(data, "DustCollector_Lower_Disable", false);
                 Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm = ReadDouble(data, "ZCalFile_OffsetZ", 0.0);
+                Equipment.stLayerRecipeSet[i].CalfileOffsetDefocusZAxismm = ReadDouble(data, "ZCalFile_OffsetDefocusZ", 0.0);
                 Equipment.stLayerRecipeSet[i].ChuckMSL_Enable = ReadBool(data, "ChuckMSL_Use", false);
                 Equipment.stLayerRecipeSet[i].Align3Point_Enable = ReadBool(data, "Align3Point_Enable", false);
 
@@ -1427,6 +1430,7 @@ namespace SLD200_MSL
                     Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_Hatch_Spacing = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_Hatch_Spacing;
                     Equipment.stLayerRecipeSet[nIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = Equipment.stLayerRecipeSet[nIndex - 1].MarkingTemplate_EntityData_SerialNumberIncreaseType;
                     Equipment.stLayerRecipeSet[nIndex].CalfileOffsetZAxismm = Equipment.stLayerRecipeSet[nIndex - 1].CalfileOffsetZAxismm;
+                    Equipment.stLayerRecipeSet[nIndex].CalfileOffsetDefocusZAxismm = Equipment.stLayerRecipeSet[nIndex - 1].CalfileOffsetDefocusZAxismm;
                     Equipment.stLayerRecipeSet[nIndex].ChuckMSL_Enable = Equipment.stLayerRecipeSet[nIndex - 1].ChuckMSL_Enable;
                     Equipment.stLayerRecipeSet[nIndex].Align3Point_Enable = Equipment.stLayerRecipeSet[nIndex - 1].Align3Point_Enable;
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_BETPositionIndex = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_BETPositionIndex;
@@ -1612,6 +1616,8 @@ namespace SLD200_MSL
 
             //m_nIndex <- 이거 먹나?
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[nIndex].CalfileOffsetZAxismm.ToString();
+            richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text = Equipment.stLayerRecipeSet[nIndex].CalfileOffsetDefocusZAxismm.ToString();
+
             //  Chuck MSL 사용 여부
             checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Enable;
             //  3-Point Align 사용 여부
@@ -1646,6 +1652,8 @@ namespace SLD200_MSL
             checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked = Equipment.stLayerRecipeSet[0].Align3Point_Enable;
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text =
                 Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
+            richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text =
+                Equipment.stLayerRecipeSet[0].CalfileOffsetDefocusZAxismm.ToString();
 
             // 3) 마킹 템플릿(Barcode/TTF/Serial 등) 전체 바인딩
             checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked =
@@ -1892,8 +1900,8 @@ namespace SLD200_MSL
             comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(layerData.Miscellaneous_MaskIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(layerData.Miscellaneous_HoleProcessingType.ToString());
 
-            //richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = CommonData.CalfileOffsetZAxismm.ToString();
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = layerData.CalfileOffsetZAxismm.ToString();
+            richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text = layerData.CalfileOffsetDefocusZAxismm.ToString();
 
             //  Spiral Parameter
             textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = layerData.SpiralParam_OuterDiameter.ToString();
@@ -2313,6 +2321,7 @@ namespace SLD200_MSL
 
                 //  Z-Axis Offset mm
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetDefocusZAxismm.ToString();
 
                 //  Chuck MSL 사용 여부
                 checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Enable;
@@ -2598,6 +2607,9 @@ namespace SLD200_MSL
                 
                 //  ZCalFile Offset Z Axis (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "ZCalFile_OffsetZ", Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString(), strFIle);
+                //  ZCalFile Offset Defocus Z Axis (mm)
+                NativeMethods.WritePrivateProfileString(strTemp, "ZCalFile_OffsetDefocusZ", Equipment.stLayerRecipeSet[i].CalfileOffsetDefocusZAxismm.ToString(), strFIle);
+
                 //  Chuck MSL Use
                 NativeMethods.WritePrivateProfileString(strTemp, "ChuckMSL_Use", Equipment.stLayerRecipeSet[i].ChuckMSL_Enable.ToString(), strFIle);
                 //  Align 3 Point Use
@@ -2712,6 +2724,7 @@ namespace SLD200_MSL
                 layerDict["MarkingData_SiriusTemplate_EntityData_SerialNumberType_IncreaseType"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType.ToString();
 
                 layerDict["ZCalFile_OffsetZ"] = Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString();
+                layerDict["ZCalFile_OffsetDefocusZ"] = Equipment.stLayerRecipeSet[i].CalfileOffsetDefocusZAxismm.ToString();
                 layerDict["ChuckMSL_Use"] = Equipment.stLayerRecipeSet[i].ChuckMSL_Enable.ToString();
                 layerDict["Align3Point_Enable"] = Equipment.stLayerRecipeSet[i].Align3Point_Enable.ToString();
 
@@ -3146,6 +3159,7 @@ namespace SLD200_MSL
 
                     //  Z-Axis Offset mm
                     richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
+                    richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetDefocusZAxismm.ToString();
                     //  Chuck MSL 사용 여부
                     checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked = Equipment.stLayerRecipeSet[0].ChuckMSL_Enable;
                     //  3-Point Align 사용 여부
@@ -3482,6 +3496,8 @@ namespace SLD200_MSL
             }
 
             Equipment.stLayerRecipeSet[m_nLayerIndex].CalfileOffsetZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text) : 0.0;     //  Z-Axis Offset mm
+            Equipment.stLayerRecipeSet[m_nLayerIndex].CalfileOffsetDefocusZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text) : 0.0;     //  Z-Axis Offset Percent
+
             Equipment.stLayerRecipeSet[0].ChuckMSL_Enable = checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked; //  Chuck MSL 사용 여부
             Equipment.stLayerRecipeSet[0].Align3Point_Enable = checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked; //  3-Point Align 사용 여부
 
@@ -3984,6 +4000,8 @@ namespace SLD200_MSL
                 // 공통 //Hole1에서 설정.
                 button_Recipe_TabRecipe_Cal_ZAxisOffset,
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
+                button_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus,
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus,
                 textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel,
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore,
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Outer,
@@ -4072,6 +4090,8 @@ namespace SLD200_MSL
                 // 공통 //Hole1에서 설정.
                 button_Recipe_TabRecipe_Cal_ZAxisOffset,
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
+                button_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus,
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus,
                 textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel,
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore,
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Outer,
@@ -4141,6 +4161,8 @@ namespace SLD200_MSL
                 //공정 Param
                 button_Recipe_TabRecipe_Cal_ZAxisOffset,
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
+                button_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus,
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus,
                 textBox_Recipe_TabRecipe_LaserParam_Frequency,
                 button_PulseWidth_Calc,
                 textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
@@ -4204,6 +4226,8 @@ namespace SLD200_MSL
                 //공정 Param
                 button_Recipe_TabRecipe_Cal_ZAxisOffset,
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
+                button_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus,
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus,
                 textBox_Recipe_TabRecipe_LaserParam_Frequency,
                 button_PulseWidth_Calc,
                 textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
@@ -4747,6 +4771,25 @@ namespace SLD200_MSL
             }
 
             MessageBox.Show("CalfileOffsetZAxismm 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void button_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus_Click(object sender, EventArgs e)
+        {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Hole1 ~ Hole50 레이어에 일괄 적용하시겠습니까?"))
+                return;
+
+            if (richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text.Length == 0)
+                return;
+
+            double value = Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text);
+
+            for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
+            {
+                Equipment.stLayerRecipeSet[i].CalfileOffsetDefocusZAxismm = value;
+            }
+
+            MessageBox.Show("CalfileOffsetDefocusZAxismm 값이 Hole1~Hole50 레이어에 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void button_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision_Click(object sender, EventArgs e)
@@ -5439,6 +5482,7 @@ namespace SLD200_MSL
                 }
 
                 Equipment.stLayerRecipeSet[nLayerIndex].CalfileOffsetZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text) : 0.0;     //  Z-Axis Offset mm
+                Equipment.stLayerRecipeSet[nLayerIndex].CalfileOffsetDefocusZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text) : 0.0;     //  Z-Axis Offset Percent
                 Equipment.stLayerRecipeSet[0].ChuckMSL_Enable = checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked; //  Chuck MSL 사용 여부
                 Equipment.stLayerRecipeSet[0].Align3Point_Enable = checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked; //  3-Point Align 사용 여부
 
@@ -5514,5 +5558,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DefocusingDistance_Use = isChecked;
             }
         }
+
+        
     }
 }

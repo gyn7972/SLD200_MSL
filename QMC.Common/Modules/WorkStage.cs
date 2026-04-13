@@ -39,6 +39,7 @@ using static QMC.Common.Equipment;
 using static QMC.Common.Global.HoleAlignHelper;
 using static QMC.Common.Modules.Loader;
 using static QMC.Common.Modules.Unloader;
+using static QMC.Common.Modules.WorkStage;
 using Bitmap = System.Drawing.Bitmap;
 using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
 using LwPolyline = SpiralLab.Sirius.LwPolyline;
@@ -17153,8 +17154,10 @@ namespace QMC.Common.Modules
             {
                 //VarioScan 이동.
                 double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetDefocusZAxismm;
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
                 bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
             TickCount_Start((int)TickType.TICK_MAIN);
@@ -17264,8 +17267,10 @@ namespace QMC.Common.Modules
             {
                 //VarioScan 이동.
                 double dZAxisOffset = Equipment.stLayerRecipeSet[nLayerType].CalfileOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[nLayerType].CalfileOffsetDefocusZAxismm;
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
                 bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
             TickCount_Start((int)TickType.TICK_MAIN);
@@ -18517,8 +18522,11 @@ namespace QMC.Common.Modules
             {
                 //VarioScan 이동.
                 double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_OUTLINE].CalfileOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_OUTLINE].CalfileOffsetDefocusZAxismm;
+
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
                 bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
             TickCount_Start((int)TickType.TICK_MAIN);
@@ -18609,8 +18617,10 @@ namespace QMC.Common.Modules
             {
                 //VarioScan 이동.
                 double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE].CalfileOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE].CalfileOffsetDefocusZAxismm;
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
                 bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
             TickCount_Start((int)TickType.TICK_MAIN);
@@ -18690,8 +18700,11 @@ namespace QMC.Common.Modules
             {
                 //VarioScan 이동.
                 double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_MARKING].CalfileOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_MARKING].CalfileOffsetDefocusZAxismm;
+
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
                 bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
             TickCount_Start((int)TickType.TICK_MAIN);
