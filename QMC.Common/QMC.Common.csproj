@@ -220,6 +220,7 @@
     <Compile Include="Q_Recipe\VisionRecipeData.cs" />
     <Compile Include="Q_Sequence\Sequence_FlatnessMeasure.cs" />
     <Compile Include="Q_Sequence\Sequence_LaserPowerMeasure.cs" />
+    <Compile Include="Q_Sequence\Sequence_ScannerCalibration.cs" />
     <Compile Include="Q_Sequence\Sequence_VerifyScannerCameraOffset.cs" />
     <Compile Include="SpiralLab\Sirius\QMCSiriusEditorForm.cs">
       <SubType>UserControl</SubType>

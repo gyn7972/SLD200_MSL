@@ -1179,8 +1179,6 @@ namespace SLD200_MSL
                 return;
             }
 
-            
-
             if (workStage.rtc == null)
             {
                 MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");

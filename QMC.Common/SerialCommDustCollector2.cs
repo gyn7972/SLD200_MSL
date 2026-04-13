@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows.Forms;
+using QMC.Common;
 
 namespace SerialCommDustCollector2
 {
@@ -61,7 +62,7 @@ namespace SerialCommDustCollector2
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
                 return false;
             }
         }
@@ -79,7 +80,7 @@ namespace SerialCommDustCollector2
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
         }
 
@@ -95,7 +96,7 @@ namespace SerialCommDustCollector2
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
             return false;
         }
@@ -112,7 +113,8 @@ namespace SerialCommDustCollector2
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
+                return false;
             }
             return false;
         }
@@ -129,7 +131,7 @@ namespace SerialCommDustCollector2
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
             return false;
         }

@@ -543,6 +543,9 @@ namespace QMC.Common.Vision.Cameras
         {
             int ret = 0;
 
+            if (Opened == false)
+                return -1;
+
             if(exposureTime > 0)
             {
                 if ((ret = this.OnSetExposureTime(exposureTime)) != 0) return ret;

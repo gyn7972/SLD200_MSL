@@ -1,20 +1,8 @@
-﻿
-
-using ACS.SPiiPlusNET;
-using AsyncSocket;
-using Cognex.VisionPro.ImageProcessing;
-using Cognex.VisionPro.Implementation.Internal;
-using Microsoft.VisualBasic.ApplicationServices;
-using Microsoft.VisualBasic.Devices;
-using netDxf.Entities;
-using netDxf.Tables;
-using QMC.Common;
+﻿using AsyncSocket;
 using QMC.Common.Global;
 using QMC.Common.Hmi;
 using QMC.Common.Interpolator;
-using QMC.Common.Laser;
 using QMC.Common.Laser.Coherent_CO2;
-using QMC.Common.Motion.ACS.Motions;
 using QMC.Common.Motion.Ajin.Motions;
 using QMC.Common.Parts;
 using QMC.Common.Q_Config;
@@ -25,59 +13,37 @@ using QMC.Common.Vision.HIKVISION;
 using QMC.Common.Vision.Tools;
 using QMC.Common.VisionPart;
 using QMC.Core;
-using QMC.Process.WorkStage.Parts;
 using SerialCommBeamExpander;                               //  Motorized Beam Expander - COM4
 using SerialCommDustCollector1;                             //  Dust Collector 1 - COM5
 using SerialCommDustCollector2;                             //  Dust Collector 2 - COM6
 using SerialCommElectroPneumaticRegulator;                  //  Electro Pneumatic Regulator - COM7
-using SerialCommHoneywellBarcodeReader;
 using SerialCommLaserPowerMeter1;                           //  PowerMeter (Source Pos.) - COM2
 using SerialCommLaserPowerMeter2;                           //  PowerMeter (Target Pos.) - COM3
 using SerialCommRapidLxLaser;                               //  RapidLx Laser - COM11
-using SocketLaser;
-using SocketLaserHeightSensor;
 //  Sirius1
 using SpiralLab.Sirius;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Numerics;
-using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Runtime.Remoting.Channels;
-using System.Security.Policy;
-using System.ServiceModel.Channels;
 //using SpiralLab.Sirius2.Vision.Camera;
-using System.ServiceModel.Syndication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows;
 using System.Windows.Forms;
 using static QMC.Common.Equipment;
 using static QMC.Common.Global.HoleAlignHelper;
 using static QMC.Common.Modules.Loader;
 using static QMC.Common.Modules.Unloader;
-using static QMC.Common.Modules.WorkStage;
-using static QMC.Common.Parts.ActionItem;
-using static QMC.Common.Parts.WorkStageParameter;
-using static QMC.Common.Q_Sequence.Sequence_VerifyScannerCameraOffset;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Bitmap = System.Drawing.Bitmap;
 using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
 using LwPolyline = SpiralLab.Sirius.LwPolyline;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Point = System.Drawing.Point;
-using PositionOffset = QMC.Common.Parts.PositionOffset;
 
 
 namespace QMC.Common.Modules
@@ -871,7 +837,6 @@ namespace QMC.Common.Modules
 
         public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
 
-        public bool _isVerifyScannerCamOffsetRunning = false; // 중복 실행 방지 플래그
         public bool _isMotionHome = false; // 중복 실행 방지 플래그
         public bool _isProductAlign = false; // 중복 실행 방지 플래그
         public bool _isCommRunning = false; // 중복 실행 방지 플래그
@@ -881,7 +846,6 @@ namespace QMC.Common.Modules
         public bool _isMainWorkRunning = false; // 중복 실행 방지 플래그
         public bool _isMainStatusRunning = false; // 중복 실행 방지 플래그
 
-        public bool m_VerifyScannerCamOffset_Start = false;
         public bool m_MotionHome_Start = false;
         public bool m_ProductAlign_Start = false;
         public bool m_Comm_Start = false;
@@ -918,8 +882,6 @@ namespace QMC.Common.Modules
         // Data 관리를 위한 객체 선언.
         public DrillingProcessManager DrillingManager { get; private set; } = new DrillingProcessManager();
        
-
-
         //  다른 모듈에 접근하기 위함
         static Loader loader;
         static Unloader unloader;
@@ -1086,6 +1048,7 @@ namespace QMC.Common.Modules
             eRTC_FAIL ,
             eDustCollectorFail,
             eBeamShutterOpenFail,
+            eBeamShutterCloseFail,
             eBETIndexFail,
             eBETChangeFail,
             eChillerOpenFail,
@@ -1170,10 +1133,11 @@ namespace QMC.Common.Modules
 
             Laser_On_Fail,
             LaserPowerMeasureFail,
-            BeamShutterCloseFail,
+            
             LaserPowerMeasureLimitFail,
 
-
+            LoadCorrectionDataFail,
+            UnexpectedLayerTypeFail,
 
             SoftLimitFail,
 
@@ -1808,7 +1772,7 @@ namespace QMC.Common.Modules
             m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.BeamShutterCloseFail;
+            alarm.Code = (int)AlarmKey.eBeamShutterCloseFail;
             alarm.Title = "BeamShutterCloseFail";
             alarm.Cause = "BeamShutterCloseFail이 발생하였습니다. shutter 상태 확인 바랍니다.";
             alarm.Source = Name;
@@ -1819,6 +1783,22 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.LaserPowerMeasureLimitFail;
             alarm.Title = "LaserPowerMeasureLimitFail";
             alarm.Cause = "LaserPowerMeasureLimitFail이 발생하였습니다. Laser Power 확인 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LoadCorrectionDataFail;
+            alarm.Title = "LoadCorrectionDataFail";
+            alarm.Cause = "LoadCorrectionDataFail이 발생하였습니다. 보정 데이터 확인 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UnexpectedLayerTypeFail;
+            alarm.Title = "UnexpectedLayerTypeFail";
+            alarm.Cause = "UnexpectedLayerTypeFail이 발생하였습니다. Layer Type 확인 바랍니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -1988,19 +1968,11 @@ namespace QMC.Common.Modules
         }
         #endregion
 
-        #region LaserStatus Status
-        private int LaserStatus { set; get; }
-        #endregion
-
         //  --> 얘네들 초기화는 "EditMode_SLD100.cs" 의 생성자에서 한다. 여기서는 선언만...
         #region RTC Variable
-        public RtcVirtual rtcVirtual { set; get; }
         //public Rtc6SyncAxis rtcSyncAxis { set; get; }
         public Rtc6 rtc { set; get; }
         public LaserVirtual laser { set; get; }
-        //public SpectraPhysicsTalon laser { set; get; }
-
-        //public MarkerBase marker { set; get; }                    //  Sirius2 꺼
         public MarkerDefault marker { set; get; }                   //  Sirius1 꺼
         #endregion
 
@@ -2061,7 +2033,6 @@ namespace QMC.Common.Modules
             Fail,                                                           //  실패
             Complete                                                        //  완료
         }
-
         public int m_nPowerMeterBDSCommRecvData_CR_Count { set; get; }             //  chrCR 이 2개씩 있어야 함.
         public string m_strPowerMeterBDS_PowerValue { set; get; }
         public string m_strPowerMeterBDS_DataStatus { set; get; }
@@ -2115,9 +2086,7 @@ namespace QMC.Common.Modules
 
 
         public int m_nLaserCommStep { set; get; }
-
         public int m_nLaserCommRecvData_LF_Count { set; get; }
-
         public string m_strLaser_HostName { set; get; }
         public string m_strLaser_SystemFaults { set; get; }
         public int m_nLaser_SystemStatus { set; get; }
@@ -2125,12 +2094,10 @@ namespace QMC.Common.Modules
         public double m_dLaser_AmplifierRR { set; get; }
         public double m_dLaser_OutputRR { set; get; }
         public double m_dLaser_OutputEnergy { set; get; }
-
         public double m_dLaser_OperatingHours { set; get; }
         public double m_dLaser_WaterTemperature { set; get; }
         public double m_dLaser_SHGTemperature { set; get; }
         public double m_dLaser_THGTemperature { set; get; }
-
         public int m_nLaserComm_SetValue_Get_Process { set; get; }              //  Laser Comm 최초 연결 시 세팅된 값을 읽기 위함. (User 세팅 파라미터를 현재 세팅값으로 표시하기 위해서). (0 : Get, 1 : Get Complete, 2 : Set Complete)
         public int m_nLaserComm_ReadSetValue_PulseMode_Index { set; get; }      //  Laser Comm Pulse Mode Index (0 : Internal, 1 : External, 2 : Internal + gated, 3 : External + gated)
         public double m_dLaserComm_ReadSetValue_Amplifier { set; get; }         //  Laser Comm Amplifier
@@ -2178,9 +2145,7 @@ namespace QMC.Common.Modules
             THGTemperature_Get,
             THGTemperature_Received,
         }
-
         public int m_nEPROCommStep { set; get; }
-
         public int m_nEPROCommRecvData_LF_Count { set; get; }
         public double m_dEPRO_Value { set; get; }
         public double m_dEPRO_SetValue { set; get; }
@@ -2246,11 +2211,6 @@ namespace QMC.Common.Modules
             LaserHeightSensorSocket_Read,
             LaserHeightSensorSocket_Received,
         }
-
-        
-        
-        
-        
 
         public int m_nWorkStage_Move_Step { set; get; }                     //  Work Stage Move Step
         public bool m_bWorkStageMove_Complete { set; get; }                 //  Work Stage Move 완료 여부 
@@ -2461,7 +2421,6 @@ namespace QMC.Common.Modules
             Complete                                                            //  완료
         }
         #endregion
-
 
         #region Reticle Glass Check
         public int m_nReticleCheck_Step_forALIGN;               //  레시피 변경 시 무조건 레티클 확인하도록 한다.
@@ -3256,7 +3215,6 @@ namespace QMC.Common.Modules
         protected Task m_taskTimer_LaserDrillingWork_Tick = null;
         protected Task m_taskTimer_SubWork_Tick = null;
         protected Task m_taskTimer_ProductAlign_tick = null;
-        protected Task m_taskTimer_VerifyScannerCamOffset_Tick = null;
         protected Task m_taskTimer_ScannerCalibration_Tick = null;
         private bool isModuleClose = false;
         protected List<Task> listTask = new List<Task>();
@@ -3489,6 +3447,7 @@ namespace QMC.Common.Modules
         }
         
         //VerifyScannerCameraOffset
+        public Sequence_ScannerCalibration m_ScannerCalibrationSequence { get; set; } = new Sequence_ScannerCalibration();
         public Sequence_VerifyScannerCameraOffset m_ScannerCameraOffsetSequence { get; set; } = new Sequence_VerifyScannerCameraOffset();
         public Sequence_LaserPowerMeasure m_Sequence_LaserPowerMeasure { get; set; } = new Sequence_LaserPowerMeasure();
         public Sequence_FlatnessMeasure m_Sequence_FlatnessMeasure { get; set; } = new Sequence_FlatnessMeasure();
@@ -4118,27 +4077,7 @@ namespace QMC.Common.Modules
 
                 }
             });
-            m_taskTimer_VerifyScannerCamOffset_Tick =  Task.Factory.StartNew(() =>
-            {
-
-                Thread.CurrentThread.Name = "m_taskTimer_VerifyScannerCamOffset_Tick";
-
-                while (true)
-                {
-                    Thread.Sleep(10);
-                    if (IsAlarm())
-                    {
-                        continue;
-                    }
-                    if (IsModuleClose)
-                    {
-                        break;
-                    }
-                    Timer_VerifyScannerCamOffset_Tick(null, null);
-
-                }
-            });
-
+           
             m_taskTimer_ScannerCalibration_Tick  = Task.Factory.StartNew(() =>
             {
                 Thread.CurrentThread.Name = "m_taskTimer_ScannerCalibration_Tick";
@@ -4165,7 +4104,6 @@ namespace QMC.Common.Modules
             listTask.Add(m_taskTimer_LaserDrillingWork_Tick);
             listTask.Add(m_taskTimer_SubWork_Tick);
             listTask.Add(m_taskTimer_ProductAlign_tick);
-            listTask.Add(m_taskTimer_VerifyScannerCamOffset_Tick);
             listTask.Add(m_taskTimer_ScannerCalibration_Tick);
 
             return ret;
@@ -4591,7 +4529,6 @@ namespace QMC.Common.Modules
             m_taskTimer_LaserDrillingWork_Tick = null;
             m_taskTimer_SubWork_Tick = null;
             m_taskTimer_ProductAlign_tick = null;
-            m_taskTimer_VerifyScannerCamOffset_Tick = null;
             m_taskTimer_ScannerCalibration_Tick = null;
 
             m_taskTimer_Comm_Tick = null;
@@ -5409,6 +5346,9 @@ namespace QMC.Common.Modules
         public bool BeamExpander_Send_Motor_SetPosition(int m_nMotor, double m_dPosition)
         {
             bool m_bRet = false;
+
+            if (m_beamExpander_Comm == null)
+                return false;
 
             int m_DataNum = 0;
             int m_nCheckSum = 0;
@@ -8853,55 +8793,6 @@ namespace QMC.Common.Modules
                 timer_Motion_Home.Enabled = true;
             }
         }
-
-        private void Timer_VerifyScannerCamOffset_Tick(object sender, ElapsedEventArgs e)
-        {
-            // 중복 실행 방지
-            if (_isVerifyScannerCamOffsetRunning)
-            {
-                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
-                return;
-            }
-
-            try
-            {
-                _isVerifyScannerCamOffsetRunning = true;
-
-                // Scanner Calibration이 활성화되지 않은 경우 종료
-                if (!m_VerifyScannerCamOffset_Start)
-                {
-                    return;
-                }
-
-                // 현재 단계가 None이면 타이머 중지
-                if (m_nScanner_Calibration_Step == (int)ScannerCalibration_Step.None)
-                {
-                    return;
-                }
-
-                // 단계별 실행
-                Run_LaserHeightCheck_Func();
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-            }
-            finally
-            {
-                _isVerifyScannerCamOffsetRunning = false; // 플래그 해제
-            }
-        }
-
-        private void Timer_VerifyScannerCamOffset_Func(object sender, EventArgs e)
-        {
-            timer_VerifyScannerCamOffset.Enabled = false;
-
-            Run_LaserHeightCheck_Func();
-
-            timer_VerifyScannerCamOffset.Enabled = true;
-        }
-
-
 
         private void Timer_ScannerCalibration_Tick(object sender, ElapsedEventArgs e)
         {
@@ -17135,19 +17026,54 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
-        private void LaserDrilling_StepDividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move(out string m_strTemp, out double lfVelocity, out double lfAccDec, out double m_dOffset)
+        private int LaserDrilling_StepDividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move()
         {
+            double lfVelocity = 0.0;
+            double lfAccDec = 0.0;
+            double dOffset = 0.0;
             string strTemp = "";
+
             switch (m_LayerType)
             {
                 case LayerType.LAYER_DRILLING:
-                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
+                    if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance_Use == false)
                     {
                         m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
                     }
                     else
                     {
+                        m_dHoleLayer_Defocusing = 0;
                         //VarioScan 적용.
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
+                        var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
+                        if (nearest != null)
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 시작, Offset(mm):{0}, File:{1})",
+                                nearest.OffsetZ_mm.ToString(), nearest.CalFilePath);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                            Log.Write("Test", "Auto Run", strTemp);
+                        }
+                        else
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 실패, Offset(mm):{0}, File:{없음})",
+                                nearest.OffsetZ_mm.ToString());
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                            Log.Write("Test", "Auto Run", strTemp);
+                        }
+
+                        //tableIndex 0 으로 고정.
+                        bool bRtn = bds.spiralLabScanner.LoadCorrectionData(0, nearest.CalFilePath);
+                        if(bRtn)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 성공");
+                            Log.Write("Test", "Auto Run", strTemp);
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 실패");
+                            Log.Write("Test", "Auto Run", strTemp);
+                            return AlarmPost(AlarmKey.LoadCorrectionDataFail);
+                        }
                     }
                     
                     m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
@@ -17159,35 +17085,15 @@ namespace QMC.Common.Modules
                     strTemp = string.Format("Stage Z 축, Layer{0} Z Offset 이동 시작, Dofocusing Distance ({1:0.000}), Resizing ({2:0.000})",
                                                         m_nHoleLayer_ProcessIndex, m_dHoleLayer_Defocusing, m_dHoleLayer_Resizing);
                     break;
-                case LayerType.LAYER_OUTLINE:
-                    break;
-                case LayerType.LAYER_THRUHOLE:
-                    break;
-                case LayerType.LAYER_MARKING:
-                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
-                    {
-                        m_dMarkingLayer_Defocusing = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DefocusingDistance;
-                    }
-                    else
-                    {
-                        //VarioScan 적용.
-                    }
-                    
-                    m_dMarkingLayer_Resizing = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_Resizing;
 
-                    //  Layer 별로 다르게 해야 하는 파라미터
-                    m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-                    m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)LayerList.Marking].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
-
-                    strTemp = string.Format("Stage Z 축, Layer{0} Z Offset 이동 시작, Dofocusing Distance ({1:0.000}), Resizing ({2:0.000})",
-                                                        (int)LayerList.Marking, m_dMarkingLayer_Defocusing, m_dMarkingLayer_Resizing);
-
-                    break;
+                default:
+                    // 이 함수에서는 다른 LayerType이 들어오면 안됨.
+                    // 알람이 울려야 됨.
+                    return AlarmPost(AlarmKey.UnexpectedLayerTypeFail);
             }
-            m_strTemp = strTemp;
-            Log.Write("SLD-200", "Auto Run", m_strTemp);
-            Log.Write("Test", "Auto Run", m_strTemp);
 
+            Log.Write("SLD-200", "Auto Run", strTemp);
+            Log.Write("Test", "Auto Run", strTemp);
 
             if (Equipment.Machine_SocketHeight_Batch_Use && 
                !Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
@@ -17197,7 +17103,6 @@ namespace QMC.Common.Modules
                 if (socket != null && socket.IsSocketDisplacement)
                 {
                     m_dZOffset_SocketHeightCheck = socket.DisplacementZ;
-
                     strTemp = string.Format("Layer = {0}, Socket No = {1}, DisplacementZ = {2:F3} mm",
                                             layerEnum,
                                             m_nDrillingWork_Group_Count,
@@ -17228,45 +17133,42 @@ namespace QMC.Common.Modules
                 }
             }
 
-
+            // 높이 정보에 따라 Z축 이동
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
             //  속도 설정
             lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
             lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
             //  가공 할 Layer 의 Z Offset 값으로 이동
             //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
-            m_dOffset = m_dHoleLayer_Defocusing;
-
+            dOffset = m_dHoleLayer_Defocusing;
             //  좌표계 (기존)
-            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
-                vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dOffset;
-
+                vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + dOffset;
             //  Target 위치 변경 (소켓 높이를측정했다면, 가공 높이를 변경해야 한다.)
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] += m_dZOffset_SocketHeightCheck;
-
             MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
                                   lfVelocity, lfAccDec, lfAccDec);
 
+            if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance_Use)
+            {
+                //VarioScan 이동.
+                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
+                bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+            }
+
             TickCount_Start((int)TickType.TICK_MAIN);
+            return 0;
         }
        
-        private void LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move(out string m_strTemp, out double lfVelocity, out double lfAccDec, out double m_dOffset)
+        private void LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move()
         {
-            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 가공 높이로 조정 시작.");
-
-            m_strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Focus 편차 ({1:0.000}), Dofocusing Distance ({2:0.000})",
-                                                m_nDrillingWork_Group_Count, m_dZOffset_SocketHeightCheck, m_dHoleLayer_Defocusing);
-
-            Log.Write("SLD-200", "Auto Run", m_strTemp);
-
-            workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-            //  속도 설정
-            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-
             string strTemp = string.Empty;
+            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 가공 높이로 조정 시작.");
+            strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Focus 편차 ({1:0.000}), Dofocusing Distance ({2:0.000})",
+                                                m_nDrillingWork_Group_Count, m_dZOffset_SocketHeightCheck, m_dHoleLayer_Defocusing);
+            Log.Write("SLD-200", "Auto Run", strTemp);
+
             if (Equipment.Machine_SocketHeight_Batch_Use &&
                 !Equipment.SelectRunEnable_New && !Equipment.SemiAutoEnable)
             {
@@ -17309,33 +17211,62 @@ namespace QMC.Common.Modules
             //  가공 할 Layer 의 Z Offset 값으로 이동
             //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
             //LaserDrilling_StepDividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move <- 여기에서 Data 가져 왔음.
-            m_dOffset = m_dHoleLayer_Defocusing;
-            //  성부장 작업
+            workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+            double lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+            double lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+            double dOffset = m_dHoleLayer_Defocusing;
             switch(m_LayerType)
             {
                 case LayerType.LAYER_DRILLING:
-                    m_dOffset = m_dHoleLayer_Defocusing;
+                    dOffset = m_dHoleLayer_Defocusing;
                     break;
                 case LayerType.LAYER_OUTLINE:
-                    m_dOffset = m_dOutlineLayer_Defocusing;
+                    dOffset = m_dOutlineLayer_Defocusing;
                     break;
                 case LayerType.LAYER_THRUHOLE:
-                    m_dOffset = m_dThruholeLayer_Defocusing;
+                    dOffset = m_dThruholeLayer_Defocusing;
                     break;
                 case LayerType.LAYER_MARKING:
-                    m_dOffset = m_dMarkingLayer_Defocusing;
+                    dOffset = m_dMarkingLayer_Defocusing;
                     break;
                 default:
-                    m_dOffset = 0.0;
+                    dOffset = 0.0;
                     break;
             }
 
             //  좌표계 (기존)
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
-                vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset;
-
+                vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + dOffset;
             MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
                                   lfVelocity, lfAccDec, lfAccDec);
+
+            //Move
+            int nLayerType = 0;
+            switch (m_LayerType)
+            {
+                case LayerType.LAYER_DRILLING:
+                    nLayerType = (int)LayerType.LAYER_DRILLING;
+                    break;
+                case LayerType.LAYER_OUTLINE:
+                    nLayerType = (int)LayerType.LAYER_OUTLINE;
+                    break;
+                case LayerType.LAYER_THRUHOLE:
+                    nLayerType = (int)LayerType.LAYER_THRUHOLE;
+                    break;
+                case LayerType.LAYER_MARKING:
+                    nLayerType = (int)LayerType.LAYER_MARKING;
+                    break;
+                default:
+                    nLayerType = (int)LayerType.LAYER_DRILLING;
+                    break;
+            }
+            if (Equipment.stLayerRecipeSet[nLayerType].Miscellaneous_DefocusingDistance_Use)
+            {
+                //VarioScan 이동.
+                double dZAxisOffset = Equipment.stLayerRecipeSet[nLayerType].CalfileOffsetZAxismm;
+                bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+            }
 
             TickCount_Start((int)TickType.TICK_MAIN);
         }
@@ -18496,7 +18427,7 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
-        private void LaserDrillingStepSetOutlineLayerParameterZOffsetMove(out double lfVelocity, out double lfAccDec)
+        private void LaserDrillingStepSetOutlineLayerParameterZOffsetMove()
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline Layer Z Offset 이동 시작");
 
@@ -18543,9 +18474,8 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
 
             //  속도 설정
-            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-
+            double lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+            double lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
             //  가공 할 Layer 의 Z Offset 값으로 이동
             //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
             double dOffset = m_dOutlineLayer_Defocusing;
@@ -18582,10 +18512,19 @@ namespace QMC.Common.Modules
             MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
                                   lfVelocity, lfAccDec, lfAccDec);
 
+            //Move
+            if (Equipment.stLayerRecipeSet[(int)LayerType.LAYER_OUTLINE].Miscellaneous_DefocusingDistance_Use)
+            {
+                //VarioScan 이동.
+                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_OUTLINE].CalfileOffsetZAxismm;
+                bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+            }
+
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
-        private void LaserDrillingStepSetThruHoleLayerParameterZOffsetMove(out double lfVelocity, out double lfAccDec)
+        private void LaserDrillingStepSetThruHoleLayerParameterZOffsetMove()
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 시작");
 
@@ -18630,23 +18569,20 @@ namespace QMC.Common.Modules
             }
 
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
             //  속도 설정
-            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-
+            double lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+            double lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
             //  가공 할 Layer 의 Z Offset 값으로 이동
             //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
-            double m_dOffset = m_dThruholeLayer_Defocusing;
-
-            double m_dZOffset_ThruholeSocketHeight = 0.0;
+            double dOffset = m_dThruholeLayer_Defocusing;
+            double dZOffset_ThruholeSocketHeight = 0.0;
             if(m_bDrillingWork_Hole1_Exist)
             {
-                m_dZOffset_ThruholeSocketHeight = m_dZOffset_SocketHeightCheck;
+                dZOffset_ThruholeSocketHeight = m_dZOffset_SocketHeightCheck;
             }
             else
             {
-                m_dZOffset_ThruholeSocketHeight = m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue;
+                dZOffset_ThruholeSocketHeight = m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue;
             }
 
             if ((m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue < -5.0) || (m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue > 5.0))
@@ -18654,7 +18590,7 @@ namespace QMC.Common.Modules
                 string m_strTemp = string.Format("Thruhole 가공을 위한 Z Offset 이동, Laser Height Check 값 이상. 범위 밖이므로 0으로 재설정(-5 < x < 5). Laser Height Check ({0:0.000})", m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue);
                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
-                m_dZOffset_ThruholeSocketHeight = 0.0;
+                dZOffset_ThruholeSocketHeight = 0.0;
             }
             else
             {
@@ -18662,20 +18598,25 @@ namespace QMC.Common.Modules
                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
             }
 
-            //  좌표계 (기존)
-            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
-
-            //20250601 - Z축 가공전 움직이는거 여기인거 같다...
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
-                vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_ThruholeSocketHeight + m_dOffset;
+                vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + dZOffset_ThruholeSocketHeight + dOffset;
 
             MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
                                   lfVelocity, lfAccDec, lfAccDec);
 
+            //Move
+            if (Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE].Miscellaneous_DefocusingDistance_Use)
+            {
+                //VarioScan 이동.
+                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE].CalfileOffsetZAxismm;
+                bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+            }
+
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
-        private void LaserDrillingStepSetMarkingLayerParameterZOffsetMove(out double lfVelocity, out double lfAccDec)
+        private void LaserDrillingStepSetMarkingLayerParameterZOffsetMove()
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Marking Layer Z Offset 이동 시작");
 
@@ -18722,32 +18663,12 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
 
             //  속도 설정
-            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+            double lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+            double lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
 
             //  가공 할 Layer 의 Z Offset 값으로 이동
             //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함.
             double m_dOffset = m_dMarkingLayer_Defocusing;
-
-            //double m_dZOffset_MarkingSocketHeight = m_stMarking_SocketData[m_nMarking_SocketCount].dLaserHeightValue;
-            //if ((m_stMarking_SocketData[m_nMarking_SocketCount].dLaserHeightValue < -5.0) ||
-            //      (m_stMarking_SocketData[m_nMarking_SocketCount].dLaserHeightValue > 5.0))
-            //{
-            //    string m_strTemp = string.Format("Marking 가공을 위한 Z Offset 이동, Laser Height Check 값 이상. 범위 밖이므로 0으로 재설정(-5 < x < 5). Laser Height Check ({0:0.000})", m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue);
-            //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-            //    m_dZOffset_ThruholeSocketHeight = 0.0;
-            //}
-            //else
-            //{
-            //    string m_strTemp = string.Format("Marking 가공을 위한 Z Offset 이동, Laser Height Check 값 정상. Laser Height Check ({0:0.000})", m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue);
-            //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-            //}
-
-            //  좌표계 (기존)
-            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
-            //    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_ThruholeSocketHeight + m_dOffset;
-
             //  가공 품질과는 크게 상관이 없을 듯 하여, Defocusing 만 적용하기로 한다. 
             double m_dZOffset_markingSocketHeight = 0.0;
             if (m_bDrillingWork_Hole1_Exist)
@@ -18763,6 +18684,15 @@ namespace QMC.Common.Modules
 
             MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
                                   lfVelocity, lfAccDec, lfAccDec);
+
+            //Move
+            if (Equipment.stLayerRecipeSet[(int)LayerType.LAYER_MARKING].Miscellaneous_DefocusingDistance_Use)
+            {
+                //VarioScan 이동.
+                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_MARKING].CalfileOffsetZAxismm;
+                bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+            }
 
             TickCount_Start((int)TickType.TICK_MAIN);
         }
@@ -18797,7 +18727,6 @@ namespace QMC.Common.Modules
 
                 if (alarm.Grade.Equals("Error"))
                 {
-                    this.m_VerifyScannerCamOffset_Start = false;
                     this.m_MotionHome_Start = false;
                     //this.m_Comm_Start = false;
                     this.m_ScannerCalibration_Start = false;
@@ -18862,6 +18791,7 @@ namespace QMC.Common.Modules
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "BET 축, 설정된 BET 로 세팅 시작.");
             double m_dZoom = 0.0;
             double m_dMrad = 0.0;
+
             //  BET Zoom, Mrad 변경
             switch(m_nBET_Index)
             {
@@ -19036,9 +18966,12 @@ namespace QMC.Common.Modules
             //  마킹데이터가 1개인 경우, 첫번째 소켓 얼라인과 함께 얼라인 시켜주기 위한 Flag 초기화
             Equipment.m_bOneMarkingData_AlignCompleted = false;
 
+            m_ScannerCalibrationSequence.Reset();
+            m_ScannerCalibrationSequence.m_MainTick_Start = false;
+
             m_ScannerCameraOffsetSequence.Reset();
-            scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
             m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+            scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
 
             m_Sequence_LaserPowerMeasure.Reset();
             m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
@@ -30436,13 +30369,10 @@ namespace QMC.Common.Modules
         int Run_Scanner_Calibration_Func()
         {
             string strTemp = "";
-
             double deltaX = 0.0;
             double deltaY = 0.0;
-
             double lfVelocity = 0.0;
             double lfAccDec = 0.0;
-
             double m_dHeightOffsetVision = Equipment.Scanner_Calibration_VisionZOffset; //Height Offset -> Camera
             double m_dHeightOffsetScanner = 0.0; //Height Offset -> Laser
 
@@ -32155,670 +32085,6 @@ namespace QMC.Common.Modules
             return 0;
         }
 
-        void Run_LaserHeightCheck_Func()
-        {
-            int m_nStableTime = 500;
-            double m_dMarkSpeed = 10.0;
-            double m_dMarkLength = 0.1;
-
-            double m_dCurPos_Y = 0.0;
-            double m_dCurPos_X = 0.0;
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0;
-
-            switch (m_nLaserHeightCheck_Step)
-            {
-                case (int)LaserHeightCheck_Step.Start:
-                    //On_LogFile_Add(LOG_OPERATION, "Lens Focus Check 루틴, 시작.");
-                    //Display_Event("Lens Focus Check 루틴 : 시작.");
-
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Laser Height Check, 시작");
-
-                    m_bLaserHeightCheck_Complete = false;
-                    m_dLaserHeightCheck_Value = 0.0;
-
-                    m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.StageZ_MoveFocusPos;
-                    break;
-
-
-                case (int)LaserHeightCheck_Step.StageZ_MoveFocusPos:                                            //  Stage Z 축, 카메라 Focus 위치로 이동
-
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Laser Height Check 위치로 이동 시작");
-
-                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z;
-
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-
-                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z], lfVelocity, lfAccDec, lfAccDec);
-
-                    TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-                    m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.StageZ_MoveFocusPos_DoneCheck;
-                    break;
-
-
-                case (int)LaserHeightCheck_Step.StageZ_MoveFocusPos_DoneCheck:                                  //  Stage Z 축, 카메라 Focus 위치로 이동 완료 확인
-
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Laser Height Check 위치로 이동 완료");
-
-                        m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.StageXY_LaserHeightSensor_OffsetMove;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Laser Height Check 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_LaserDrillingWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.None;
-
-                        MessageBox.Show("Stage Z 축, Laser Height Check 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    break;
-
-
-                case (int)LaserHeightCheck_Step.StageXY_LaserHeightSensor_OffsetMove:                              //  Stage XY 축, Laser Height Sensor Offset 위치로 이동
-
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Laser Height Check 위치로 이동 시작");
-
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-                    if (m_nLaserHeightCheck_Camera == (int)nCameraType.Cam_HighRes)                 //  Fine Camera
-                    {
-                        xyInterpolatedCoordinate.X = MC_Func.MC_GetEncPos((int)nAxis.X) + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
-                        xyInterpolatedCoordinate.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
-                    }
-                    else if (m_nLaserHeightCheck_Camera == (int)nCameraType.Cam_LowRes)             //  Coarse Camera
-                    {
-                        xyInterpolatedCoordinate.X = MC_Func.MC_GetEncPos((int)nAxis.X) + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X + Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
-                        xyInterpolatedCoordinate.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y + Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
-                    }
-                    else                                                                            //  선택 안하면 High Res Camera 로...
-                    {
-                        xyInterpolatedCoordinate.X = MC_Func.MC_GetEncPos((int)nAxis.X) + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
-                        xyInterpolatedCoordinate.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) + Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
-                    }
-
-                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-                    TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-                    m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.StageXY_LaserHeightSensor_OffsetMove_DoneCheck;
-                    break;
-
-
-                case (int)LaserHeightCheck_Step.StageXY_LaserHeightSensor_OffsetMove_DoneCheck:                 //  Stage XY 축, Laser Height Sensor Offset 위치로 이동 완료 확인
-
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Laser Height Check 위치로 이동 완료");
-
-                        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-                        m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.LaserHeightCheck_StableTime;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Laser Height Check 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_LaserDrillingWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.None;
-
-                        MessageBox.Show("Stage XY 축, Stage Center 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    break;
-
-
-                case (int)LaserHeightCheck_Step.LaserHeightCheck_StableTime:                                     //  Stage 이동 후 안정화 시간
-
-                    if (Equipment.Machine_LaserHeightCheckStableTime_Enable)
-                    {
-                        if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > Equipment.Machine_LaserHeightCheckStableTime)
-                        {
-                            m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.LaserHeightValue_Get;
-                        }
-                    }
-                    else
-                    {
-                        m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.LaserHeightValue_Get;
-                    }
-                    break;
-
-
-                case (int)LaserHeightCheck_Step.LaserHeightValue_Get:                               //  Laser Height Sensor 값 읽기
-
-                    m_dLaserHeightCheck_Value = m_dLaserHeightSensorSocket_Value;
-
-                    m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.Complete;
-                    break;
-
-
-                case (int)LaserHeightCheck_Step.Complete:
-                    m_bLaserHeightCheck_Complete = true;
-
-                    m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.None;
-                    break;
-            }
-        }
-
-        //// Todo : 아래 함수. SpiralLabScanner 정상 동작하면 지우고 옮기자.
-        //public bool DrawCalibrationCrosses(int rows, int cols, float pitchX, float pitchY, double markLength = 0.5)
-        //{
-        //    if (rows <= 0 || cols <= 0)
-        //        throw new ArgumentException("Rows and columns must be greater than zero.");
-
-        //    bool bRtn = false;
-
-        //    float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength; //1.0f; //(float)markLength; 
-
-        //    //if (!Equipment.Machine_LaserType_CO2)
-        //    //{
-        //    //    float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
-        //    //    float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
-
-        //    //    if (fFrequency / 2 <= fPulseWidth)
-        //    //        fPulseWidth = fFrequency / 2;
-        //    //    if (fFrequency <= 0) fFrequency = 0f;
-        //    //    if (fPulseWidth <= 0) fPulseWidth = 0f;
-
-        //    //    if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
-        //    //    {
-        //    //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
-        //    //        return false;
-        //    //    }
-        //    //}
-
-        //    //float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
-        //    //float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
-        //    //if (fJumpSpeed <= 0) fJumpSpeed = 0;
-        //    //if (fMarkSpeed <= 0) fMarkSpeed = 0;
-
-        //    //if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
-        //    //{
-        //    //    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
-        //    //    return false;
-        //    //}
-
-        //    //float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
-        //    //float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
-        //    //float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
-        //    //float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
-        //    //float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
-        //    //if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
-        //    //if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
-        //    //if (fMarkDelay <= 0) fMarkDelay = 0;
-        //    //if (fJumpDelay <= 0) fJumpDelay = 200;
-        //    //if (fPolygonDelay <= 0) fPolygonDelay = 0;
-
-        //    //if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
-        //    //{
-        //    //    Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
-        //    //    return false;
-        //    //}
-
-        //    var rtcMode = rtc as IRtc;
-
-        //    rtcMode.CtlLaserMode(LaserMode.Co2);
-
-        //    rtcMode.ListBegin(laser, ListType.Auto);
-
-        //    //if (Equipment.Machine_LaserType_CO2)
-        //    {
-        //        float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
-        //        float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
-
-        //        if (fFrequency / 2 <= fPulseWidth)
-        //            fPulseWidth = fFrequency / 2;
-        //        if (fFrequency <= 0) fFrequency = 0f;
-        //        if (fPulseWidth <= 0) fPulseWidth = 0f;
-
-        //        if (!rtcMode.ListFrequency(fFrequency, fPulseWidth))
-        //        {
-        //            Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
-        //            return false;
-        //        }
-        //    }
-
-        //    float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
-        //    float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
-        //    float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
-        //    float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
-        //    float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
-        //    if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
-        //    if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
-        //    if (fMarkDelay <= 0) fMarkDelay = 0;
-        //    if (fJumpDelay <= 0) fJumpDelay = 200;
-        //    if (fPolygonDelay <= 0) fPolygonDelay = 0;
-
-        //    if (!rtcMode.ListDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
-        //    {
-        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
-        //        return false;
-        //    }
-
-        //    float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
-        //    float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
-        //    if (fJumpSpeed <= 0) fJumpSpeed = 0;
-        //    if (fMarkSpeed <= 0) fMarkSpeed = 0;
-
-        //    if (!rtcMode.ListSpeed(fJumpSpeed, fMarkSpeed))
-        //    {
-        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
-        //        return false;
-        //    }
-
-        //    // 중심 기준 좌표로 시작점 계산
-        //    float startX = -((cols - 1) * pitchX) / 2.0f;
-        //    float startY = -((rows - 1) * pitchY) / 2.0f;
-
-        //    for (int row = 0; row < rows; row++)
-        //    {
-        //        for (int col = 0; col < cols; col++)
-        //        {
-        //            float centerX = startX + col * pitchX;
-        //            float centerY = startY + row * pitchY;
-
-        //            DrawCross(centerX, centerY, crossSize);
-        //        }
-        //    }
-
-        //    rtcMode.ListEnd();
-        //    rtcMode.ListExecute();
-
-        //    bRtn = true;
-        //    return bRtn;
-        //}
-
-        ///// <summary>
-        ///// 주어진 중심 좌표에 1mm 크기의 십자가를 그리는 함수
-        ///// </summary>
-        ///// <param name="centerX">십자가 중심의 X 좌표</param>
-        ///// <param name="centerY">십자가 중심의 Y 좌표</param>
-        ///// <param name="size">십자가의 크기 (mm)</param>
-        //private void DrawCross(float centerX, float centerY, float size)
-        //{
-        //    var rtcMode = rtc as IRtc;
-
-        //    float halfSize = size / 2;
-
-        //    // 가로선 그리기
-        //    rtcMode.ListJump(centerX - halfSize, centerY);
-        //    rtcMode.ListMark(centerX + halfSize, centerY);
-
-        //    // 세로선 그리기
-        //    rtcMode.ListJump(centerX, centerY - halfSize);
-        //    rtcMode.ListMark(centerX, centerY + halfSize);
-        //}
-
-        ///// <summary>
-        ///// Vacuum 관련 장치에 제품 유무 확인하는 함수 (Auto Run 시 체크하여 메세지 창 Pup-Up)
-        ///// 
-        //private void Check_VacuumParts_Module_Exist()
-        //{
-        //    bool m_bLoader_Exist = false;
-        //    bool m_bWorkStage_Exist = false;
-        //    bool m_bUnloader_Exist = false;
-
-        //    //  Loader Picker Vacuum On
-        //    loader.loaderParameter.DO_Loader_Picker_Blow(false);
-        //    loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
-        //    loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
-
-        //    //  Loader M-Aligner Vacuum On
-        //    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Center, false);
-        //    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
-        //    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
-        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
-        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
-        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
-
-        //    //  Work Stage
-        //    workStageParameter.DO_Stage_Blow(false);
-        //    workStageParameter.DO_Stage_Vacuum(true);
-        //    ElectroPneumaticRegulatorComm_Pressure_Set(-60);
-
-        //    //  Unloader Picker Vacuum On
-        //    unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
-        //    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, true);
-        //    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, true);
-
-        //    int m_nCount = 0;
-
-        //    do
-        //    {
-        //        //  모든 공압을 켠 후 1초 정도 기다린다.
-        //    } while (m_nCount++ < 1000);
-
-        //    //  Loader Picker 에 Module 이 붙어있는지 체크
-        //    if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
-        //        loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
-        //    {
-        //        m_bLoader_Exist = true;
-        //    }
-
-        //    loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, false);
-        //    loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, false);
-        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, false);
-        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
-        //    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
-
-        //    //  Work Stage 에 Module 이 붙어있는지 체크
-        //    if (workStageParameter.DI_Stage_Vacuum_Check())
-        //    {
-        //        m_bWorkStage_Exist = true;
-        //    }
-
-        //    workStageParameter.DO_Stage_Vacuum(false);
-        //    ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
-
-        //    //  Unloader Picker 에 Module 이 붙어있는지 체크
-        //    if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
-        //        unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
-        //    {
-        //        m_bUnloader_Exist = true;
-        //    }
-
-        //    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, false);
-        //    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, false);
-
-
-        //    if (m_bLoader_Exist)
-        //    {
-        //        MessageBox.Show("Loader Transfer Picker 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-
-        //    if (m_bWorkStage_Exist)
-        //    {
-        //        MessageBox.Show("Work Stage 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-
-        //    if (m_bUnloader_Exist)
-        //    {
-        //        MessageBox.Show("Unloader Transfer Picker 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-        //}
-
-        //public bool DrawCalibrationArc(int rows, int cols, float pitchX, float pitchY)
-        //{
-        //    if (rows <= 0 || cols <= 0)
-        //        throw new ArgumentException("Rows and columns must be greater than zero.");
-
-        //    bool bRtn = false;
-
-        //    float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength; //1.0f; //(float)markLength; 
-
-        //    rtc.CtlLaserMode(LaserMode.Co2);
-
-        //    if (Equipment.Machine_LaserType_CO2)
-        //    {
-        //        float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
-        //        float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
-
-        //        if (fFrequency / 2 <= fPulseWidth)
-        //            fPulseWidth = fFrequency / 2;
-        //        if (fFrequency <= 0) fFrequency = 0f;
-        //        if (fPulseWidth <= 0) fPulseWidth = 0f;
-
-        //        if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
-        //        {
-        //            Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
-        //            return false;
-        //        }
-        //    }
-
-        //    float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
-        //    float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
-        //    if (fJumpSpeed <= 0) fJumpSpeed = 0;
-        //    if (fMarkSpeed <= 0) fMarkSpeed = 0;
-
-        //    if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
-        //    {
-        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
-        //        return false;
-        //    }
-
-        //    float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
-        //    float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
-        //    float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
-        //    float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
-        //    float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
-        //    if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
-        //    if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
-        //    if (fMarkDelay <= 0) fMarkDelay = 0;
-        //    if (fJumpDelay <= 0) fJumpDelay = 200;
-        //    if (fPolygonDelay <= 0) fPolygonDelay = 0;
-
-        //    if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
-        //    {
-        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
-        //        return false;
-        //    }
-
-        //    rtc.ListBegin(laser, ListType.Auto);
-        //    // 중심 기준 좌표로 시작점 계산
-        //    float startX = -((cols - 1) * pitchX) / 2.0f;
-        //    float startY = -((rows - 1) * pitchY) / 2.0f;
-
-        //    for (int row = 0; row < rows; row++)
-        //    {
-        //        for (int col = 0; col < cols; col++)
-        //        {
-        //            float centerX = startX + col * pitchX;
-        //            float centerY = startY + row * pitchY;
-
-        //            // DrawArc 호출: 중심 좌표와 반지름, 시작 각도, 끝 각도를 전달
-        //            float radius = crossSize / 2.0f; // 반지름은 crossSize의 절반으로 설정
-        //            float startAngle = 0.0f;         // 시작 각도 (0도)
-        //            float endAngle = 360.0f;         // 끝 각도 (360도, 완전한 원)
-
-        //            DrawArc(centerX, centerY, radius, startAngle, endAngle);
-
-        //            //radius만 가지고 구하기.
-        //            //PointD pointD = new PointD(centerX, centerY);
-        //            //PointD startPoint = new PointD(centerX - radius, centerY);
-        //            //PointD endPoint = new PointD(centerX + radius, centerY);
-        //            //var angles = CalculateAngles(pointD, startPoint, endPoint);
-        //            //// DrawArc 호출: 중심 좌표와 반지름, 시작 각도, 끝 각도를 전달
-        //            //DrawArc(centerX, centerY, radius, (float)angles.startAngle, (float)angles.endAngle);
-
-        //        }
-        //    }
-
-        //    rtc.ListEnd();
-        //    rtc.ListExecute();
-        //    bRtn = true;
-        //    return bRtn;
-        //}
-
-        ///// <summary>
-        ///// FOV기준으로 cal 진행시 사용 함수.
-        ///// <summary>
-        //public bool DrawCalibrationArc(float fovWidth, float fovHeight, int rows, int cols, out float pitchX, out float pitchY)
-        //{
-        //    pitchX = 0;
-        //    pitchY = 0;
-
-        //    if (rows <= 0 || cols <= 0)
-        //        throw new ArgumentException("Rows and columns must be greater than zero.");
-
-        //    bool bRtn = false;
-        //    float crossSize = (float)Equipment.Scanner_Calibration_CrossMarkLength;  //1.0f; // 각 원의 지름을 1mm로 설정
-
-        //    // pitch 자동 계산
-        //    pitchX = (cols > 1) ? fovWidth / (cols - 1) : 0;
-        //    pitchY = (rows > 1) ? fovHeight / (rows - 1) : 0;
-
-        //    rtc.CtlLaserMode(LaserMode.Co2);
-
-        //    if (Equipment.Machine_LaserType_CO2)
-        //    {
-        //        float fFrequency = (float)Equipment.Scanner_Calibration_LaserFrequency;
-        //        float fPulseWidth = (float)Equipment.Scanner_Calibration_LaserPulseWidth;    //2.6f;
-
-        //        if (fFrequency / 2 <= fPulseWidth)
-        //            fPulseWidth = fFrequency / 2;
-        //        if (fFrequency <= 0) fFrequency = 5000;
-        //        if (fPulseWidth <= 0) fPulseWidth = 2.6f;
-
-        //        if (!rtc.CtlFrequency(fFrequency, fPulseWidth))
-        //        {
-        //            Log.Write("SLD-200", "DrawCalibrationArc", "Laser Frequency 설정 실패");
-        //            return false;
-        //        }
-        //    }
-
-        //    float fJumpSpeed = (float)Equipment.Scanner_Calibration_LaserJumpSpeed;
-        //    float fMarkSpeed = (float)Equipment.Scanner_Calibration_LaserMarkSpeed;
-        //    if (fJumpSpeed <= 0) fJumpSpeed = 0; 
-        //    if (fMarkSpeed <= 0) fMarkSpeed = 0; 
-
-        //    if (!rtc.CtlSpeed(fJumpSpeed, fMarkSpeed))
-        //    {
-        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Speed 설정 실패");
-        //        return false;
-        //    }
-
-        //    float fLaserOnDelay = (float)Equipment.Scanner_Calibration_LaserOnDelay;
-        //    float fLaserOffDelay = (float)Equipment.Scanner_Calibration_LaserOffDelay;
-        //    float fMarkDelay = (float)Equipment.Scanner_Calibration_MarkDelay;
-        //    float fJumpDelay = (float)Equipment.Scanner_Calibration_JumpDelay;
-        //    float fPolygonDelay = (float)Equipment.Scanner_Calibration_PolygonDelay;
-        //    if (fLaserOnDelay <= 0) fLaserOnDelay = 0;
-        //    if (fLaserOffDelay <= 0) fLaserOffDelay = 0;
-        //    if (fMarkDelay <= 0) fMarkDelay = 0;
-        //    if (fJumpDelay <= 0) fJumpDelay = 200;
-        //    if (fPolygonDelay <= 0) fPolygonDelay = 0;
-
-        //    if (!rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay))
-        //    {
-        //        Log.Write("SLD-200", "DrawCalibrationArc", "Laser Delay 설정 실패");
-        //        return false;
-        //    }
-
-        //    rtc.ListBegin(laser, ListType.Auto);
-
-        //    float startX = -((cols - 1) * pitchX) / 2.0f;
-        //    float startY = -((rows - 1) * pitchY) / 2.0f;
-
-        //    for (int row = 0; row < rows; row++)
-        //    {
-        //        for (int col = 0; col < cols; col++)
-        //        {
-        //            float centerX = startX + col * pitchX;
-        //            float centerY = startY + row * pitchY;
-
-        //            float radius = crossSize / 2.0f;
-        //            DrawArc(centerX, centerY, radius, 0.0f, 360.0f);
-        //        }
-        //    }
-
-        //    rtc.ListEnd();
-        //    rtc.ListExecute();
-        //    bRtn = true;
-        //    return bRtn;
-        //}
-
-        //private void DrawArc(float centerX, float centerY, float radius, float startAngle, float endAngle)
-        //{
-        //    if (radius <= 0)
-        //        throw new ArgumentException("Radius must be greater than zero.");
-
-        //    // 원호의 sweepAngle 계산
-        //    float sweepAngle = endAngle - startAngle;
-
-        //    // 원호 시작점 계산.
-        //    float startX = centerX + radius * (float)Math.Cos(startAngle * Math.PI / 180.0);
-        //    float startY = centerY + radius * (float)Math.Sin(startAngle * Math.PI / 180.0);
-
-        //    // 먼저 원호의 시작점으로 점프
-        //    if (!rtc.ListJump(startX, startY))
-        //    {
-        //        throw new InvalidOperationException("Failed to jump to arc start position.");
-        //    }
-
-        //    // rtc.ListArc 호출
-        //    if (!rtc.ListArc(centerX, centerY, sweepAngle))
-        //    {
-        //        throw new InvalidOperationException("Failed to draw arc using rtc.ListArc.");
-        //    }
-        //}
-
-        //public static (double startAngle, double endAngle) CalculateAngles(PointD center, PointD startPoint, PointD endPoint)
-        //{
-        //    // 시작 각도 계산
-        //    double startAngle = Math.Atan2(startPoint.Y - center.Y, startPoint.X - center.X) * (180.0 / Math.PI);
-
-        //    // 끝 각도 계산
-        //    double endAngle = Math.Atan2(endPoint.Y - center.Y, endPoint.X - center.X) * (180.0 / Math.PI);
-
-        //    // 각도를 0~360 범위로 변환
-        //    if (startAngle < 0) startAngle += 360;
-        //    if (endAngle < 0) endAngle += 360;
-
-        //    return (startAngle, endAngle);
-        //}
-
-        //// Todo: 구영남 Cal파일 넣기 함수 만들것.
-        //public bool LoadCorrectionData(int tableIndex, string filePath)
-        //{
-        //    // CorrectionData를 처리하는 메서드
-        //    // 초기화를 해야 하냐 말아야 하냐.. 
-        //    // 초기화를 안하고 cal파일이 들어가면 땡큐인데.. 될꺼같다.. select도 있으니깐..
-        //    CorrectionTableIndex index = (CorrectionTableIndex)tableIndex;
-        //    bool bRtn = rtc.CtlLoadCorrectionFile(index, filePath);   //  Sirius1
-        //    if (bRtn == false)
-        //    {
-        //        //MessageBox.Show("파일을 적용하지 못했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        Log.Write("SLD-200", "LoadCorrectionData", "파일을 적용하지 못했습니다.");
-        //        return false;
-        //    }
-        //    //cal 파일 선택하여 사용한다.
-        //    rtc.CtlSelectCorrection(index, 0);
-        //    return true;
-        //}
-
-        ///// <summary>
-        ///// 위치 좌표값 리스트로부터 배열의 Rows와 Columns를 계산합니다.
-        ///// </summary>
-        //public (int Rows, int Columns) CalculateArraySize(List<PointD> positions)
-        //{
-        //    if (positions == null || positions.Count == 0)
-        //    {
-        //        MessageBox.Show("좌표값 리스트가 비어 있습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-
-        //    // 허용 오차 설정 (예: 0.01)
-        //    double tolerance = 0.01;
-
-        //    // X, Y 좌표값을 정렬하여 고유한 값 추출 (허용 오차 적용)
-        //    var uniqueX = positions.Select(p => Math.Round(p.X / tolerance) * tolerance).Distinct().OrderBy(x => x).ToList();
-        //    var uniqueY = positions.Select(p => Math.Round(p.Y / tolerance) * tolerance).Distinct().OrderBy(y => y).ToList();
-
-        //    // 가로(Columns)와 세로(Rows) 계산
-        //    int columns = uniqueX.Count;
-        //    int rows = uniqueY.Count;
-
-        //    return (rows, columns);
-        //}
-
         /// <summary>
         /// 특정 위치 좌표가 배열의 몇 번째 Row와 Column에 해당하는지 반환합니다.
         /// </summary>
@@ -34327,6 +33593,7 @@ namespace QMC.Common.Modules
         private int Run_LaserDrilling_Main_Cycle_SelectMode()
         {
             m_nLaserDrilling_MainStep_Recovery = -1;
+            int nRet = 0;
             string strTemp = "";
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
@@ -35529,7 +34796,7 @@ namespace QMC.Common.Modules
                 /// Layer 가공 시작
                 /// </summary>
                 /// 
-                case (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck:                       //  가공 할 Layer 가 남아있는지 체크
+                case (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck:                       //  가공 할 Layer가 남아있는지 체크.
 
                     // 여기에서 진행하고자 하는 Layer가 없으면 안하고 넘어 갈 수 있다.
                     // 그런데 hole1 Recipe에 공통 파라미터가 있어서 Hole1이 무조건 필요한 상태이다.
@@ -35584,7 +34851,7 @@ namespace QMC.Common.Modules
 
                             //// Hole2 ~ 50까지:: Hole1을 가공 안하는경우... 넣어야함.
                             m_LayerType = LayerType.LAYER_DRILLING;
-                            strTemp = LaserDrillingStepSetDrillingParam_SelectMode();
+                            nRet = LaserDrillingStepSetDrillingParam_SelectMode();
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Start;                       //  Drilling 가공 Layer 파라미터로 변경 시작
                         }
                         else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_THRUHOLE)
@@ -35637,7 +34904,7 @@ namespace QMC.Common.Modules
                             {
                                 m_LayerType = LayerType.LAYER_THRUHOLE;
                                 //  성부장 작업
-                                strTemp = LaserDrillingStepSetDrillingParam_SelectMode();
+                                nRet = LaserDrillingStepSetDrillingParam_SelectMode();
 
                                 // 무조건 Hole1이 있는 상태임...
                                 if (m_nLaserDrilling_LayerCount > 0 &&
@@ -35711,7 +34978,7 @@ namespace QMC.Common.Modules
                             {
                                 m_LayerType = LayerType.LAYER_OUTLINE;
                                 //  성부장 작업
-                                strTemp = LaserDrillingStepSetDrillingParam_SelectMode();
+                                nRet = LaserDrillingStepSetDrillingParam_SelectMode();
 
                                 if (m_nLaserDrilling_LayerCount > 0 &&
                                     m_bDrillingWork_Hole1_Exist)
@@ -35788,7 +35055,7 @@ namespace QMC.Common.Modules
                             {
                                 m_LayerType = LayerType.LAYER_MARKING;
                                 //LaserDrillingStepSetMarkingParam();
-                                strTemp = LaserDrillingStepSetDrillingParam_SelectMode();
+                                nRet = LaserDrillingStepSetDrillingParam_SelectMode();
 
                                 if (m_nLaserDrilling_LayerCount > 0 &&
                                     m_bDrillingWork_Hole1_Exist)
@@ -35828,7 +35095,7 @@ namespace QMC.Common.Modules
                 #region 쓰루홀 가공
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move:                              //  ThruHole 가공 Layer 파라미터, Z Offset 이동
 
-                    LaserDrillingStepSetThruHoleLayerParameterZOffsetMove(out lfVelocity, out lfAccDec);
+                    LaserDrillingStepSetThruHoleLayerParameterZOffsetMove();
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck;
                     break;
@@ -36164,7 +35431,7 @@ namespace QMC.Common.Modules
                 #region 아웃 라인 가공
                 case (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move:                              //  Outline 가공 Layer 파라미터, Z Offset 이동
 
-                    LaserDrillingStepSetOutlineLayerParameterZOffsetMove(out lfVelocity, out lfAccDec);
+                    LaserDrillingStepSetOutlineLayerParameterZOffsetMove();
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move_DoneCheck;
                     break;
@@ -36499,7 +35766,7 @@ namespace QMC.Common.Modules
                 #region 마킹 가공
                 case (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move:                              //  Marking 가공 Layer 파라미터, Z Offset 이동
 
-                    LaserDrillingStepSetMarkingLayerParameterZOffsetMove(out lfVelocity, out lfAccDec);
+                    LaserDrillingStepSetMarkingLayerParameterZOffsetMove();
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_LayerParameter_ZOffset_Move_DoneCheck;
                     break;
@@ -36522,16 +35789,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Marking Layer Z Offset 이동 실패. (Timeout)");
 
-                        //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
-
-                        //timer_LaserDrillingWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
                         return AlarmPost(AlarmKey.eZAxisFail);
-
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-                        MessageBox.Show("Stage Z 축, Marking Layer Z Offset 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -38089,7 +37348,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move:                                 //  Socket 가공 높이 보정 이동
 
-                    LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
+                    LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move();
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move_DoneCheck;
                     break;
@@ -39463,7 +38722,7 @@ namespace QMC.Common.Modules
 
                     //  가공 높이로 보정 이동
                     //LaserDrilling_StepDrillingData_SocketDrillingHeight_ZOffset_Move
-                    LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
+                    LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move();
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move_DoneCheck;
                     break;
@@ -40059,7 +39318,7 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move2:                                           //  Socket 가공 높이로 보정 이동
 
                     //  가공 높이로 보정 이동
-                    LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
+                    LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move();
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move_DoneCheck2;
                     break;
@@ -40129,9 +39388,12 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move:                     //  Socket 가공 중 Z Offset 이동 (Hole2 ~ Hole4의 경우) 
 
-                    LaserDrilling_StepDividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move(out strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
-
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move_DoneCheck;
+                    nRet = 0;
+                    nRet = LaserDrilling_StepDividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move();
+                    if(nRet == 0)
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move_DoneCheck;
+                    }
                     break;
 
 
@@ -42841,33 +42103,31 @@ namespace QMC.Common.Modules
             return layer.SocketList[socketIndex].IsSelected;
         }
 
-        private string LaserDrillingStepSetDrillingParam_SelectMode()
+        private int LaserDrillingStepSetDrillingParam_SelectMode()
         {
-            string m_strTemp = "";
-
+            int nRet = 0;
+            String strTemp = string.Empty;
             switch (m_LayerType)
             {
                 case LayerType.LAYER_DRILLING:
-
                     Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Drilling (Hole)");
-
-                    m_strTemp = string.Format("Layer Count : {0}, Layer Index : {1}",
+                    strTemp = string.Format("Layer Count : {0}, Layer Index : {1}",
                     m_nLaserDrilling_LayerCount, m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]);
-                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    Log.Write("SLD-200", "Auto Run", strTemp);
 
                     m_bDrillingWork_Hole1_Exist = true;
                     //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
                     if (Equipment.SelectRunEnable_New)
                     {
                         m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
-                        m_strTemp = string.Format("선택 가공. 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
-                        Log.Write("선택_가공", "Auto Run", m_strTemp);
+                        strTemp = string.Format("선택 가공. 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
+                        Log.Write("선택_가공", "Auto Run", strTemp);
                     }
                     else
                     {
                         m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
-                        m_strTemp = string.Format("전체 가공. 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
-                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                        strTemp = string.Format("전체 가공. 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
+                        Log.Write("SLD-200", "Auto Run", strTemp);
                     }
 
                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
@@ -42880,27 +42140,53 @@ namespace QMC.Common.Modules
                                                                           //  ~~
                                                                           //  m_nHoleLayer_ProcessIndex : 10 (Hole10)
 
-                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
+                    //VarioScan 사용 유/무에 따른 Data Load.
+                    if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance_Use == false)
                     {
                         m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
                     }
                     else
                     {
+                        m_dHoleLayer_Defocusing = 0;
                         //VarioScan 적용.
-                    }
-                    
-                    m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
+                        var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
+                        if (nearest != null)
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 시작, Offset(mm):{0}, File:{1})",
+                                nearest.OffsetZ_mm.ToString(), nearest.CalFilePath);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                            Log.Write("Test", "Auto Run", strTemp);
 
+                            //tableIndex 0 으로 고정.
+                            bool bRtn = bds.spiralLabScanner.LoadCorrectionData(0, nearest.CalFilePath);
+                            if (bRtn)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 성공");
+                                Log.Write("Test", "Auto Run", strTemp);
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 실패");
+                                Log.Write("Test", "Auto Run", strTemp);
+                                return AlarmPost(AlarmKey.LoadCorrectionDataFail);
+                            }
+                        }
+                        else
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 실패, Offset(mm):{0}, File:{없음})",
+                                dZAxisOffset.ToString());
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                            Log.Write("Test", "Auto Run", strTemp);
+                        }
+                    }
+
+                    m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
                     if (!Equipment.SemiAutoEnable)
                     {
                         m_dZOffset_SocketHeightCheck = 0.0;
                     }
-                    //m_dZOffset_SocketHeightCheck = 0.0;
-
-                    // 현재 설정된 묶음 개수 가져오기 (작업 파일을 Open 할 때마다 묶음 개수를 원래대로)
-                    // m_nRepetation_Bundle = Config.ParamConfig.RepetitionsBundle;
-                    // Equipment.WorkStartTick_Drilling = Environment.TickCount;                   //  Drilling Tick Start
-
+                    
                     //  Layer 별로 다르게 해야 하는 파라미터
                     m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetition;            //  총 반복 회수
                     m_nRepetation_Bundle = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
@@ -42916,7 +42202,6 @@ namespace QMC.Common.Modules
                         (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 10) ||
                         (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 12))
                     {
-                        //m_dCircleDrilling_RotDegree = (double)(360.0 / (double)Config.ParamConfig.CircleStartPosDiv);                                     //  Circle 반복 가공 시, 시작 위치를 돌아가면서 가공할 경우
                         m_dCircleDrilling_RotDegree = (double)(360.0 / (double)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision);          //  Circle 반복 가공 시, 시작 위치를 돌아가면서 가공할 경우
                     }
                     else
@@ -42927,38 +42212,64 @@ namespace QMC.Common.Modules
                     break;
 
                 case LayerType.LAYER_OUTLINE:
-                    //  성부장 작업
                     Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Outline");
-
                     m_bDrillingWork_Outline_Exist = true;
-
                     //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
                     if (Equipment.SelectRunEnable_New)
                     {
                         m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
-                        m_strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
-                        Log.Write("선택_가공", "Auto Run", m_strTemp);
+                        strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
+                        Log.Write("선택_가공", "Auto Run", strTemp);
                     }
                     else
                     {
                         m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
-                        m_strTemp = string.Format("전체 가공. 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
-                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                        strTemp = string.Format("전체 가공. 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
+                        Log.Write("SLD-200", "Auto Run", strTemp);
                     }
 
                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
-
-                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance_Use == false)
                     {
                         m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
                     }
                     else
                     {
+                        m_dOutlineLayer_Defocusing = 0;
                         //VarioScan 적용.
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].CalfileOffsetZAxismm;
+                        var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
+                        if (nearest != null)
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 시작, Offset(mm):{0}, File:{1})",
+                                nearest.OffsetZ_mm.ToString(), nearest.CalFilePath);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                            Log.Write("Test", "Auto Run", strTemp);
+
+                            //tableIndex 0 으로 고정.
+                            bool bRtn = bds.spiralLabScanner.LoadCorrectionData(0, nearest.CalFilePath);
+                            if (bRtn)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 성공");
+                                Log.Write("Test", "Auto Run", strTemp);
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 실패");
+                                Log.Write("Test", "Auto Run", strTemp);
+                                return AlarmPost(AlarmKey.LoadCorrectionDataFail);
+                            }
+                        }
+                        else
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 실패, Offset(mm):{0}, File:{없음})",
+                                dZAxisOffset.ToString());
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                            Log.Write("Test", "Auto Run", strTemp);
+                        }
                     }
                     
                     m_dOutlineLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
-
                     //  Layer 별로 다르게 해야 하는 파라미터
                     m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition;            //  총 반복 회수
                     m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
@@ -42974,14 +42285,14 @@ namespace QMC.Common.Modules
                     if (Equipment.SelectRunEnable_New)
                     {
                         //m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
-                        m_strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
-                        Log.Write("선택_가공", "Auto Run", m_strTemp);
+                        strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
+                        Log.Write("선택_가공", "Auto Run", strTemp);
                     }
                     else
                     {
                         m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
-                        m_strTemp = string.Format("전체 가공. 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
-                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                        strTemp = string.Format("전체 가공. 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
+                        Log.Write("SLD-200", "Auto Run", strTemp);
                     }
 
                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
@@ -42992,7 +42303,38 @@ namespace QMC.Common.Modules
                     }
                     else
                     {
+                        m_dThruholeLayer_Defocusing = 0;
                         //VarioScan 적용.
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].CalfileOffsetZAxismm;
+                        var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
+                        if (nearest != null)
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 시작, Offset(mm):{0}, File:{1})",
+                                nearest.OffsetZ_mm.ToString(), nearest.CalFilePath);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                            Log.Write("Test", "Auto Run", strTemp);
+
+                            //tableIndex 0 으로 고정.
+                            bool bRtn = bds.spiralLabScanner.LoadCorrectionData(0, nearest.CalFilePath);
+                            if (bRtn)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 성공");
+                                Log.Write("Test", "Auto Run", strTemp);
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 실패");
+                                Log.Write("Test", "Auto Run", strTemp);
+                                return AlarmPost(AlarmKey.LoadCorrectionDataFail);
+                            }
+                        }
+                        else
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 실패, Offset(mm):{0}, File:{없음})",
+                                dZAxisOffset.ToString());
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                            Log.Write("Test", "Auto Run", strTemp);
+                        }
                     }
 
                     m_dThruholeLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_Resizing;
@@ -43009,30 +42351,60 @@ namespace QMC.Common.Modules
                     if (Equipment.SelectRunEnable_New)
                     {
                         m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
-                        m_strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
-                        Log.Write("선택_가공", "Auto Run", m_strTemp);
+                        strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
+                        Log.Write("선택_가공", "Auto Run", strTemp);
                     }
                     else
                     {
                         m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
-                        m_strTemp = string.Format("전체 가공. 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
-                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                        strTemp = string.Format("전체 가공. 소켓 번호 : {0}", m_nDrillingWork_Group_Count + 1);
+                        Log.Write("SLD-200", "Auto Run", strTemp);
                     }
 
                     m_nMarkingLayer_SerialNumber_Count = 0;         //  마킹 데이터가 시리얼넘버이면, 증가하는 카운트를 초기화 한다. (여기는 Marking Layer 의 맨 처음)
                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
 
-                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DefocusingDistance_Use == false)
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_DefocusingDistance_Use == false)
                     {
                         m_dMarkingLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_DefocusingDistance;
                     }
                     else
                     {
+                        m_dMarkingLayer_Defocusing = 0;
                         //VarioScan 적용.
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].CalfileOffsetZAxismm;
+                        var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
+                        if (nearest != null)
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 시작, Offset(mm):{0}, File:{1})",
+                                nearest.OffsetZ_mm.ToString(), nearest.CalFilePath);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                            Log.Write("Test", "Auto Run", strTemp);
+
+                            //tableIndex 0 으로 고정.
+                            bool bRtn = bds.spiralLabScanner.LoadCorrectionData(0, nearest.CalFilePath);
+                            if (bRtn)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 성공");
+                                Log.Write("Test", "Auto Run", strTemp);
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 실패");
+                                Log.Write("Test", "Auto Run", strTemp);
+                                return AlarmPost(AlarmKey.LoadCorrectionDataFail);
+                            }
+                        }
+                        else
+                        {
+                            strTemp = string.Format("Socket 가공 중 Cal file 변경 실패, Offset(mm):{0}, File:{없음})",
+                                dZAxisOffset.ToString());
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                            Log.Write("Test", "Auto Run", strTemp);
+                        }
                     }
                     
                     m_dMarkingLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_Resizing;
-
                     //  Layer 별로 다르게 해야 하는 파라미터
                     m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
                     m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
@@ -43040,7 +42412,7 @@ namespace QMC.Common.Modules
                     break;
             }
 
-            return m_strTemp;
+            return nRet;
         }
 
         public int LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck_Selectmode(ref int m_nZigZag_CurrentRow, ref int m_nZigZag_CurRow_FirstIndex, ref int m_nZigZag_CurRow_CurIndex, ref int m_nZigZag_CurRow_LastIndex)
@@ -43657,23 +43029,6 @@ namespace QMC.Common.Modules
                 return false;
             }
         }
-
-        private void OnRecipeFinished()
-        {
-            if (Equipment.RecipeQueue.HasNextRecipe())
-            {
-                string nextRecipe = Equipment.RecipeQueue.GetNextRecipe();
-                
-                // 이거 두 함수 고민된다...
-                //Recipe_Open(nextRecipe);
-                //StartProduction();
-            }
-            else
-            {
-                MessageBox.Show("모든 Recipe 실행 완료");
-            }
-        }
-
 
     }
 }

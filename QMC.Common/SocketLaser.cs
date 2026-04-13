@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using System.Net;
 using System.Net.Sockets;
+using QMC.Common;
 
 namespace SocketLaser
 {
@@ -170,8 +171,9 @@ namespace SocketLaser
 
                 m_bConnected = mainSock.Connected;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                Log.Write(ex);
             }
         }
 

@@ -1892,6 +1892,9 @@ namespace SLD200_MSL
             comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(layerData.Miscellaneous_MaskIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(layerData.Miscellaneous_HoleProcessingType.ToString());
 
+            //richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = CommonData.CalfileOffsetZAxismm.ToString();
+            richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = layerData.CalfileOffsetZAxismm.ToString();
+
             //  Spiral Parameter
             textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = layerData.SpiralParam_OuterDiameter.ToString();
             textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text = layerData.SpiralParam_InnerDiameter.ToString();
@@ -1936,7 +1939,7 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = CommonData.DustCollectorFreq_Lower.ToString();
             checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked = CommonData.DustCollectorLower_Disable;
 
-            richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = CommonData.CalfileOffsetZAxismm.ToString();
+            
             checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked = CommonData.ChuckMSL_Enable;          //  Chuck MSL 사용 여부
             checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked = CommonData.Align3Point_Enable;    //  3-Point Align 사용 여부
 
@@ -4136,6 +4139,8 @@ namespace SLD200_MSL
             Control[] targetControlsMarking = new Control[]
             {
                 //공정 Param
+                button_Recipe_TabRecipe_Cal_ZAxisOffset,
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
                 textBox_Recipe_TabRecipe_LaserParam_Frequency,
                 button_PulseWidth_Calc,
                 textBox_Recipe_TabRecipe_LaserParam_DutyCycle,
@@ -4197,6 +4202,8 @@ namespace SLD200_MSL
             Control[] targetControlsThruhole = new Control[]
             {
                 //공정 Param
+                button_Recipe_TabRecipe_Cal_ZAxisOffset,
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset,
                 textBox_Recipe_TabRecipe_LaserParam_Frequency,
                 button_PulseWidth_Calc,
                 textBox_Recipe_TabRecipe_LaserParam_DutyCycle,

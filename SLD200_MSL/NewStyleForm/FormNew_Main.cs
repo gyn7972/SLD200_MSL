@@ -4514,6 +4514,53 @@ namespace SLD200_MSL
 
         private void button_TEST2_Click(object sender, EventArgs e)
         {
+            int m_nHoleLayer_ProcessIndex = 2;
+            double m_dHoleLayer_Defocusing = 0;
+            String strTemp = string.Empty;
+
+            if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance_Use == false)
+            {
+                m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
+            }
+            else
+            {
+                m_dHoleLayer_Defocusing = 0;
+                //VarioScan 적용.
+                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
+                var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
+                if (nearest != null)
+                {
+                    strTemp = string.Format("Socket 가공 중 Cal file 변경 시작, Offset(mm):{0}, File:{1})",
+                        nearest.OffsetZ_mm.ToString(), nearest.CalFilePath);
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                }
+                else
+                {
+                    strTemp = string.Format("Socket 가공 중 Cal file 변경 실패, Offset(mm):{0}, File:{없음})",
+                        dZAxisOffset.ToString());
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+                }
+
+                //tableIndex 0 으로 고정.
+                bool bRtn = bds.spiralLabScanner.LoadCorrectionData(0, nearest.CalFilePath);
+                if (bRtn)
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 성공");
+                }
+                else
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Cal file 변경 실패");
+                }
+            }
+
+            if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance_Use)
+            {
+                //VarioScan 이동.
+                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
+                bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+            }
+
             return;
             workStage.AlignedDrillingData_Select_and_OffsetMove(0, 0, 0, 1, 1, 1);
 
@@ -4600,7 +4647,6 @@ namespace SLD200_MSL
             //    SetColor(label_Main_Title_Status, Color.Black, Color.Black);
             //}
 
-            string strTemp = string.Empty;
             strTemp = LogManager.Instance.GetLogPath();
 
             var dlg = new FormNewSub_ScannerCal3D();

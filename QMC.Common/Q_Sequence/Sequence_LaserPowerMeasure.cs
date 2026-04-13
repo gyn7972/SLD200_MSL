@@ -394,7 +394,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Top Check Laser Shutter Close Fail.");
-                            return workStage.AlarmPost(WorkStage.AlarmKey.BeamShutterCloseFail); // Top Check 레이저 Shutter Close 실패
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eBeamShutterCloseFail); // Top Check 레이저 Shutter Close 실패
                             return -1; // Top Check 레이저 Shutter Close 실패
                         }
                     }
@@ -411,7 +411,7 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_LASER_POWER_MEASURE) > nLaserPowermeasureTimeout)
                         {
                             Log.Write("SeqLaserPowerMeasure", "Top Check Laser Shutter Close Check Fail.");
-                            return workStage.AlarmPost(WorkStage.AlarmKey.BeamShutterCloseFail); // Top Check 레이저 Shutter Close 실패
+                            return workStage.AlarmPost(WorkStage.AlarmKey.eBeamShutterCloseFail); // Top Check 레이저 Shutter Close 실패
                             return -1; // Top Check 레이저 Shutter Close 확인 실패
                         }
                     }

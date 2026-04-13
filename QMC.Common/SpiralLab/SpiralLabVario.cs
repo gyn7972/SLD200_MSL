@@ -125,11 +125,15 @@ namespace QMC.Common.Parts
             return Rtc3D.CtlMove(new Vector3(0, 0, zMm));
         }
 
+        //실제 가공면 높이 보정 개념
+        //표면 높이, 평탄도, plane 차이 보정
         public bool SetZOffset(float zOffset)
         {
             return Rtc3D.CtlZOffset(zOffset);
         }
 
+        // 초점 깊이 보정 개념. Z Offset과 달리 실제 Z 위치는 안 바뀌고,
+        // 초점 품질/크기 조정용. 표면 상태에 따른 품질 보정이나 Z Table 보정에도 활용 가능
         public bool SetZDefocus(float zDefocus)
         {
             return Rtc3D.CtlZDefocus(zDefocus);

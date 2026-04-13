@@ -1544,6 +1544,17 @@ namespace QMC.Common
             {
                 MessageBox.Show("모터 파라미터 폴더가 없거나, 모터 파라미터 파일이 없습니다.\r\n\r\n[D:\\SLD-200_Parameter\\SLD-200.mot]", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+
+            //
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\ScannerCalFile(Do not delete or modify).ini";
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("ScannerCalFile 파일이 없습니다.\r\n\r\n[Default값(CO₂)으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            Equipment.stConfigScannerCalData.LoadFromIni(strFIle);
         }
 
         private static void CreateModules()
@@ -1582,6 +1593,7 @@ namespace QMC.Common
 
 
             //전부 생성한 후 Init하자
+            workStage.m_ScannerCalibrationSequence.Init();
             workStage.m_ScannerCameraOffsetSequence.Init();
             workStage.m_Sequence_LaserPowerMeasure.Init();
             workStage.m_Sequence_FlatnessMeasure.Init();

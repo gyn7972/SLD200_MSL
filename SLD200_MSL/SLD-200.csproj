@@ -776,6 +776,7 @@
       <DependentUpon>FormNewSub_Main_SemiAuto.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\Scanner3DDataModels.cs" />
+    <Compile Include="NewStyleForm\NewSubForm\ScannerFocusCalibrationBuilder.cs" />
     <Compile Include="NormalDataConfigControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

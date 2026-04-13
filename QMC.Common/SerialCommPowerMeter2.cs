@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows.Forms;
+using QMC.Common;
 
 namespace SerialCommLaserPowerMeter2
 {
@@ -61,7 +62,7 @@ namespace SerialCommLaserPowerMeter2
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
                 return false;
             }
         }
@@ -79,7 +80,7 @@ namespace SerialCommLaserPowerMeter2
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
         }
 
@@ -95,9 +96,11 @@ namespace SerialCommLaserPowerMeter2
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
+                return false;
             }
             return false;
+
         }
 
         public bool Send(byte[] sendData)
@@ -112,7 +115,7 @@ namespace SerialCommLaserPowerMeter2
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
             return false;
         }
@@ -129,7 +132,7 @@ namespace SerialCommLaserPowerMeter2
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
             return false;
         }

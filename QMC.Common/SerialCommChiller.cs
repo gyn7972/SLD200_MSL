@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows.Forms;
+using QMC.Common;
 
 namespace SerialCommChiller
 {
@@ -95,7 +96,7 @@ namespace SerialCommChiller
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
                 return false;
             }
         }
@@ -113,7 +114,7 @@ namespace SerialCommChiller
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
         }
 
@@ -129,9 +130,11 @@ namespace SerialCommChiller
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
+                return false;
             }
             return false;
+
         }
 
         public bool Send(byte[] sendData)
@@ -146,7 +149,7 @@ namespace SerialCommChiller
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
             return false;
         }

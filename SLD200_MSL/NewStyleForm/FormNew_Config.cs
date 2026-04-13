@@ -6795,8 +6795,6 @@ namespace SLD200_MSL
         private void Button_Config_VarioScan_ZOffset_Set_Click(object sender, EventArgs e)
         {
             //  Vario Scan - Z Offset Setting
-            
-
             float zOffset = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZOffset.Text);
             bds.spiralLabVario.SetZOffset(zOffset);
 

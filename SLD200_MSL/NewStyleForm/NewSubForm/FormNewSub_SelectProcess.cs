@@ -715,9 +715,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             loader.m_LoaderWork_Start = false;
             unloader.m_UnloaderWork_Start = false;
 
-
-
-
             Equipment.MachineStop_byUser = true;
             WorkStartTick = 0;
             WorkStartTick_Outline = 0;
