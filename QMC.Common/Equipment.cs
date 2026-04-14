@@ -774,8 +774,8 @@ namespace QMC.Common
         public static double Scanner_Calibration_CalAreaWidth { set; get; } = 0.0;
         public static double Scanner_Calibration_CalAreaHeight { set; get; } = 0.0;
         public static double Scanner_Calibration_CalPitch   { set; get; } = 0.0;
-        public static double Scanner_Calibration_PosX_Last { set; get; } = 0.0;
-        public static double Scanner_Calibration_PosY_Last { set; get; } = 0.0;
+        public static double Scanner_VerifyCameraOffset_PosX_Last { set; get; } = 0.0;
+        public static double Scanner_VerifyCameraOffset_PosY_Last { set; get; } = 0.0;
         public static int Scanner_Calibration_MaskIndex { set; get; } = 0;
         public static int Scanner_Calibration_BETPositionIndex { set; get; } = 0;         //  Scanner Calibration Miscellaneous BET Position Index (0:0.8x, 1:0.9x, 2:1.0x, 3:1.1x, 4:1.2x)
 
@@ -820,6 +820,9 @@ namespace QMC.Common
         public static double Scanner_Vision_Offset_Setting_Y { set; get; } = 0.0;            //  Scanner Calibration OffsetY(mm) (Y축 Offset)
         public static double Scanner_Calibration_VisionZOffset { set; get; } = 0.0;
         
+        public static double Scanner_Calibration_VarioScanZ { set; get; } = 0.0;
+        public static double Scanner_Calibration_VarioScanZ_Defocus { set; get; } = 0.0;
+
         //  Scanner Calibration RTC 및 구동 변수
         public static string Scanner_Calibration_srcFilePath { set; get; } = "";            //  Scanner Calibration Source File Path
         public static string Scanner_Calibration_targetFilePath { set; get; } = "";            //  Scanner Calibration Destination File Path
@@ -1445,8 +1448,8 @@ namespace QMC.Common
             Scanner_Calibration_CalAreaWidth = 0.0;           //  Scanner Calibration Area Width (mm)
             Scanner_Calibration_CalAreaHeight = 0.0;          //  Scanner Calibration Area Height (mm)
             Scanner_Calibration_CalPitch = 0.0;               //  Scanner Calibration Area Pitch (mm)
-            Scanner_Calibration_PosX_Last = 0.0;
-            Scanner_Calibration_PosY_Last = 0.0;
+            Scanner_VerifyCameraOffset_PosX_Last = 0.0;
+            Scanner_VerifyCameraOffset_PosY_Last = 0.0;
             Scanner_Calibration_MaskIndex = 0;
             Scanner_Calibration_BETPositionIndex = 0;
 
@@ -3006,12 +3009,17 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", "2.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_PosX_Last = Equipment.ToDouble(temp.ToString());
+            Equipment.Scanner_VerifyCameraOffset_PosX_Last = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_PosY_Last = Equipment.ToDouble(temp.ToString());
+            Equipment.Scanner_VerifyCameraOffset_PosY_Last = Equipment.ToDouble(temp.ToString());
             
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "VisionZOffset", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_VisionZOffset = Equipment.ToDouble(temp.ToString());
+
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "VarioScanZ", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_VarioScanZ = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "VarioScanZ_Defocus", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_VarioScanZ_Defocus = Equipment.ToDouble(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MaskIndex", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_MaskIndex = Equipment.ToInt(temp.ToString());

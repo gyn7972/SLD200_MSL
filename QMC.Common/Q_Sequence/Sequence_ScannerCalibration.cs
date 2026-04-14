@@ -57,8 +57,8 @@ namespace QMC.Common.Q_Sequence
             BETA_Change,
             BETA_Change_Check,
 
-            Vario_Change,
-            Vario_Change_Check,
+            VarioScan_Change,
+            VarioScan_Change_Check,
 
             StageXY_Move_CenterPos,
             StageXY_Move_CenterPos_Check,
@@ -823,7 +823,7 @@ namespace QMC.Common.Q_Sequence
 
                         if (ok)
                         {
-                            m_ScannerCalibrationStep = ScannerCalibrationSeq_Step.Vario_Change;
+                            m_ScannerCalibrationStep = ScannerCalibrationSeq_Step.VarioScan_Change;
                         }
                         else
                         {
@@ -840,22 +840,24 @@ namespace QMC.Common.Q_Sequence
                     }
                     break;
 
-                case ScannerCalibrationSeq_Step.Vario_Change:
+                case ScannerCalibrationSeq_Step.VarioScan_Change:
                     {
                         if (bds.spiralLabVario != null)
                         {
                             // 여기에서.. 현재 지정한 Z축으로 이동해한다. 
                             // 0 기준으로 이동해야 한다. 
-                            bds.spiralLabVario.fSetZOffset = (float)Equipment.Scanner_Calibration_VisionZOffset;
+                            bds.spiralLabVario.fSetZOffset = (float)Equipment.Scanner_Calibration_VarioScanZ;
                             bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);
+                            double dDefocus = Equipment.Scanner_Calibration_VarioScanZ_Defocus;
+                            bds.spiralLabVario.SetZDefocus((float)dDefocus);
                         }
 
                         TickCount_Start((int)TickType.TICK_SCANNER_CALIBRATION);
-                        m_ScannerCalibrationStep = ScannerCalibrationSeq_Step.Vario_Change_Check;
+                        m_ScannerCalibrationStep = ScannerCalibrationSeq_Step.VarioScan_Change_Check;
                     }
                     break;
 
-                case ScannerCalibrationSeq_Step.Vario_Change_Check:
+                case ScannerCalibrationSeq_Step.VarioScan_Change_Check:
                     {
                         if (bds.spiralLabVario == null ||
                             bds.spiralLabVario.GetCurrentZOffset() == bds.spiralLabVario.fSetZOffset)
@@ -940,8 +942,8 @@ namespace QMC.Common.Q_Sequence
                         {
                             if (bCalPosition)
                             {
-                                Equipment.Scanner_Calibration_PosX_Last = 0.0;
-                                Equipment.Scanner_Calibration_PosY_Last = 0.0;
+                                //Equipment.Scanner_Calibration_PosX_Last = 0.0;
+                                //Equipment.Scanner_Calibration_PosY_Last = 0.0;
 
                                 m_dCurrentCalPosX = dScannerCalAreaPosX_Max;
                                 m_dCurrentCalPosY = dScannerCalAreaPosY_Max;
@@ -960,8 +962,10 @@ namespace QMC.Common.Q_Sequence
                         {
                             if (bCalPosition)
                             {
-                                m_dCurrentCalPosX = Equipment.Scanner_Calibration_PosX_Last - (dCalWidth + dCalPitchOffset);
-                                m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last;
+                                //m_dCurrentCalPosX = Equipment.Scanner_Calibration_PosX_Last - (dCalWidth + dCalPitchOffset);
+                                //m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last;
+                                m_dCurrentCalPosX = dScannerCalTeachingPosX;
+                                m_dCurrentCalPosY = dScannerCalTeachingPosY;
                             }
                             else
                             {
@@ -971,7 +975,7 @@ namespace QMC.Common.Q_Sequence
 
                             if (bCalPosition && m_dCurrentCalPosX < dScannerCalAreaPosX_Min)
                             {
-                                m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last - dCalPitchOffset;
+                                m_dCurrentCalPosY = Equipment.Scanner_VerifyCameraOffset_PosY_Last - dCalPitchOffset;
                                 bIsLeftToRight = !bIsLeftToRight;
                                 m_dCurrentCalPosX = bIsLeftToRight ? dScannerCalAreaPosX_Min : dScannerCalAreaPosX_Max;
 
@@ -994,8 +998,8 @@ namespace QMC.Common.Q_Sequence
                             }
                         }
 
-                        Equipment.Scanner_Calibration_PosX_Last = m_dCurrentCalPosX;
-                        Equipment.Scanner_Calibration_PosY_Last = m_dCurrentCalPosY;
+                        //Equipment.Scanner_Calibration_PosX_Last = m_dCurrentCalPosX;
+                        //Equipment.Scanner_Calibration_PosY_Last = m_dCurrentCalPosY;
 
                         m_ScannerCalibrationStep = ScannerCalibrationSeq_Step.MapDataChange_ScannerCalMap;
                     }

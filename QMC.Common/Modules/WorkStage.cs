@@ -931,10 +931,6 @@ namespace QMC.Common.Modules
 
         public int MAX_IMAGE_WIDTH = 2448;
         public int MAX_IMAGE_HEIGHT = 2048;
-        //public int MAX_IMAGE_WIDTH = 2248;            //  현장에서 조정된 Size (Center Offset X : 100, Offset Y : 84)
-        //public int MAX_IMAGE_HEIGHT = 1880;
-        //public int MAX_IMAGE_WIDTH = 2048;              //  테스트용 카메라
-        //public int MAX_IMAGE_HEIGHT = 1536;
 
         //  패턴 매칭 이미지가 로드 되었는지?
         public bool PatternMatchingImage_Loaded_HighRes = false;
@@ -946,7 +942,6 @@ namespace QMC.Common.Modules
 
         //  레시피 변경 시 Calibration Mode 창의 위치값을 변경하기 위해
         public bool m_bParameterSetting_PosData_Reload { set; get; }            //  위치 데이터 다시 로드
-
 
         public int m_nProductAlign_CameraType { set; get; }
 
@@ -962,6 +957,7 @@ namespace QMC.Common.Modules
         public System.Timers.Timer timer_SubWork;
         public System.Timers.Timer timer_VisionAlign;
         public System.Timers.Timer timer_VerifyScannerCamOffset;
+
         public bool m_btimer_LaserDrillingWork_Stop;
         public bool m_btimer_SubWork_Stop;
         public bool m_btimer_Comm_Stop;
@@ -974,8 +970,6 @@ namespace QMC.Common.Modules
         public bool m_bInManualMoving_SafetySensor_Detected = false;                                //  단일 동작 중 안전센서를 터치할 경우 모터 Stop                
         public bool m_bInCycleMoving_SafetySensor_Detected = false;                                 //  Cycle 동작 중 안전센서를 터치할 경우 모터 Stop        
         public bool m_bInCycleMoving_ElevZOverTorque_Detected = false;                              //  Cycle 동작 중 엘리베이터 Z축 오버 토크가 발생할 경우 모터 Stop
-
-
 
         public WorkStageParameter workStageParameter { set; get; }
         public LoaderParameter loaderParameter { set; get; }
@@ -1021,8 +1015,6 @@ namespace QMC.Common.Modules
         public bool m_bRapidLxLaser_CommData_Received { set; get; }
         public bool m_bRapidLxLaser_UserConnect { set; get; }
         public bool m_bRapidLxLaser_LaserStart { set; get; }
-
-
 
         //  Socket ID
         public enum nSocketID
@@ -3835,13 +3827,11 @@ namespace QMC.Common.Modules
             Parts.Add(Stage);
 
             Camera_LowRes = new HIKGigECamera("Coarse Vision");                                         //  저해상도 카메라
-            //Camera_LowRes = new GrabLinkMultiCamCamera("LaserCamera Low-Res");                          //  하부 비전 카메라
             Camera_LowRes.Create();
             Camera_LowRes.Owner = this;
             Parts.Add(Camera_LowRes);
 
             Camera_HighRes = new HIKGigECamera("Fine Vision");
-            //Camera = new GrabLinkMultiCamCamera("LaserCamera");
             Camera_HighRes.Create();
             Camera_HighRes.Owner = this;
             Parts.Add(Camera_HighRes);
@@ -3852,14 +3842,6 @@ namespace QMC.Common.Modules
             workStageParameter.Axes = Stage.Axes;
             Parts.Add(workStageParameter);
 
-            //visionCalibrator_LowRes = new VisionCalibrator("VisionCalibrator LowRes");
-            //visionCalibrator_LowRes.Create();
-            //visionCalibrator_LowRes.Owner = this;
-            //visionCalibrator_LowRes.Camera = Camera_LowRes;
-            //visionCalibrator_LowRes.XyzyStage = Stage;
-            //visionCalibrator_LowRes.Illuminator = CommonModule.Instance.Illuminator;
-            //Parts.Add(visionCalibrator_LowRes);
-
             visionCalibrator_HighRes = new VisionCalibrator("VisionCalib. HighRes");                            //  조명 제어를 위해서 추가됨
             visionCalibrator_HighRes.Create();
             visionCalibrator_HighRes.Owner = this;
@@ -3867,21 +3849,6 @@ namespace QMC.Common.Modules
             visionCalibrator_HighRes.XyzyStage = Stage;
             visionCalibrator_HighRes.Illuminator = CommonModule.Instance.Illuminator;
             Parts.Add(visionCalibrator_HighRes);                                                                    //  요걸 해줘야 조명 제어가 가능함 (이거 안하면 채널이 안나옴)
-
-            //visionCompensator_HighRes = new VisionCompensator("Vision Compensator HighRes");
-            //visionCompensator_HighRes.Create();
-            //visionCompensator_HighRes.Owner = this;
-            //visionCompensator_HighRes.Camera = Camera_HighRes;
-            //visionCompensator_HighRes.XyzyStage = Stage;
-            //visionCompensator_HighRes.Illuminator = CommonModule.Instance.Illuminator;
-            //Parts.Add(visionCompensator_HighRes);
-
-            //laserPitchMoveShotter = new LaserPitchMoveShotter("LaserPitchMove Shotter");
-            //laserPitchMoveShotter.Create();
-            //laserPitchMoveShotter.Owner = this;
-            //laserPitchMoveShotter.Camera = Camera_HighRes;
-            //laserPitchMoveShotter.XyzyStage = Stage;
-            //Parts.Add(laserPitchMoveShotter);
 
             autoFocuser_LowRes = new AutoFocuser("AutoFocuser LowRes");
             autoFocuser_LowRes.Create();
@@ -3945,11 +3912,6 @@ namespace QMC.Common.Modules
             StagePressureSensor.Owner = this;
             Parts.Add(StagePressureSensor);
 
-            //PosParam_Dispenser = GetConfigData();     //  요건 나중에
-
-            //ACS_Motion_isSimulationMode = false;
-            //ACS_Motion = new Api();
-
             Recipe = new WorkStageRecipe(this);
 
             //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
@@ -3959,11 +3921,6 @@ namespace QMC.Common.Modules
                 while (true)
                 {
                     Thread.Sleep(10);
-                    //Alarm 발생해도 계속 돌아야 함. 
-                    //if (IsAlarm())
-                    //{
-                    //    continue;
-                    //}
                     if (IsModuleClose)
                     {
                         break;
@@ -3997,11 +3954,6 @@ namespace QMC.Common.Modules
                 while (true)
                 {
                     Thread.Sleep(10);
-                    //Alarm 발생해도 계속 돌아야 함. 
-                    //if (IsAlarm())
-                    //{
-                    //    continue;
-                    //}
                     if (IsModuleClose)
                     {
                         break;
@@ -4018,14 +3970,6 @@ namespace QMC.Common.Modules
                 while (true)
                 {
                     Thread.Sleep(10);
-
-                    //if(!m_bLaserBusy)
-                    //{
-                    //    if (IsAlarm())
-                    //    {
-                    //        continue;
-                    //    }
-                    //}
                     if (IsAlarm())
                     {
                         continue;
@@ -4244,13 +4188,6 @@ namespace QMC.Common.Modules
                 }
             }
 
-
-            //  Laser X -> 이거 안쓰는데?
-            //if (workStage.m_SocketLaser == null)
-            //{
-            //    workStage.Laser_Socket_Connect();
-            //}
-
             //  Laser Height Sensor
             if (m_SocketLaserHeightSensor == null)
             {
@@ -4264,14 +4201,9 @@ namespace QMC.Common.Modules
 
             if (!m_bHomeOK)
                 return;
-            //if (workStage.IsAlarm())  // Alarm 이 발생한 경우 상태값은...
-            //    return;
 
             bOn = Equipment.AjinBoard_Opened && m_bHomeOK;
             _InitDeviceStatus.MotionIo = bOn;
-            //if (!_InitDeviceStatus.MotionIo)
-            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
-
             if (!Equipment.Machine_LaserType_CO2)
             {
                 bOn = m_rapidLxLaser_Comm != null && m_rapidLxLaser_Comm.IsOpen;
@@ -4350,7 +4282,6 @@ namespace QMC.Common.Modules
                 AlarmPost(WorkStage.AlarmKey.InitFail_Illuminator);
         }
 
-
         // 20250613 - 현재 연결 구성된 Device 여기서 닫기 해줘야함.!
         public void Device_Close()
         {
@@ -4393,18 +4324,6 @@ namespace QMC.Common.Modules
                 m_beamExpander_Comm.Close();
             }
 
-            //if (m_dustCollector_UpperPos_Comm != null)
-            //{
-            //    m_dustCollector_UpperPos_Comm.CloseComm();
-            //    m_dustCollector_UpperPos_Comm.Close();
-            //}
-
-            //if (m_dustCollector_LowerPos_Comm != null)
-            //{
-            //    m_dustCollector_LowerPos_Comm.CloseComm();
-            //    m_dustCollector_LowerPos_Comm.Close();
-            //}
-
             if (m_electroRegulator_Comm != null)
             {
                 m_electroRegulator_Comm.CloseComm();
@@ -4442,15 +4361,9 @@ namespace QMC.Common.Modules
             Camera_HighRes.Config = Config.CameraConfig_HighRes;                        //  상부 카메라
             Camera_LowRes.Config = Config.CameraConfig_LowRes;                        //  하부 카메라
             visionCalibrator_HighRes.Config = Config.VisonCalibratorConfig_HighRes;
-            //visionCalibrator_LowRes.Config = Config.VisonCalibratorConfig_LowRes;
-            //visionCompensator_HighRes.Config = Config.VisionCompensatorConfig;
             autoFocuser_HighRes.Config = Config.AutoFocuserConfig_HighRes;
             autoFocuser_LowRes.Config = Config.AutoFocuserConfig_LowRes;
             scannerCompensator.Config = Config.ScannerCompensatorConfig;
-            //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
-
-            //Stage.UpdateDirection();                              //  Z 축 방향 바꾸기? (주석 처리)
-            //jigAligner.Config = Config.JigAlignerConfig;
         }
 
         public override object GetConfigData()
@@ -4463,13 +4376,9 @@ namespace QMC.Common.Modules
             Camera_HighRes.Config = Config.CameraConfig_HighRes;
             Camera_LowRes.Config = Config.CameraConfig_LowRes;
             visionCalibrator_HighRes.Config = Config.VisonCalibratorConfig_HighRes;
-            //visionCalibrator_LowRes.Config = Config.VisonCalibratorConfig_LowRes;
-            //visionCompensator_HighRes.Config = Config.VisionCompensatorConfig;
             autoFocuser_HighRes.Config = Config.AutoFocuserConfig_HighRes;
             autoFocuser_LowRes.Config = Config.AutoFocuserConfig_LowRes;
             scannerCompensator.Config = Config.ScannerCompensatorConfig;
-            //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
-            //jigAligner.Config = Config.JigAlignerConfig;
 
             base.UpdateConfigData();
         }
@@ -4487,7 +4396,6 @@ namespace QMC.Common.Modules
             Recipe.Init(this);
 
             visionCalibrator_HighRes.Recipe = Recipe.VisionCalibratorRecipe_HighRes;
-            //visionCalibrator_LowRes.Recipe = Recipe.VisionCalibratorRecipe_LowRes;
             scannerCompensator.Recipe = Recipe.scannerCompensatorRecipe;
             jigAligner_HighRes.Recipe = Recipe.jigAlignerRecipe_HighRes;
             jigAligner_LowRes.Recipe = Recipe.jigAlignerRecipe_LowRes;
@@ -4505,7 +4413,6 @@ namespace QMC.Common.Modules
         public override void UpdateRecipeData()
         {
             visionCalibrator_HighRes.Recipe = Recipe.VisionCalibratorRecipe_HighRes;
-            //visionCalibrator_LowRes.Recipe = Recipe.VisionCalibratorRecipe_LowRes;
             scannerCompensator.Recipe = Recipe.scannerCompensatorRecipe;
             jigAligner_HighRes.Recipe = Recipe.jigAlignerRecipe_HighRes;
             jigAligner_LowRes.Recipe = Recipe.jigAlignerRecipe_LowRes;
@@ -4535,13 +4442,6 @@ namespace QMC.Common.Modules
             m_taskTimer_Comm_Tick = null;
             m_taskTimer_MainWork_Tick = null;
             m_taskTimer_MainStatus_Tick = null;
-
-            // Motion/IO Off인데.. 
-            // 막아보자.
-            //if (Stage != null)
-            //{
-            //    Stage.Close();
-            //}
 
             if (Equipment.Machine_LaserType_CO2)
             {
@@ -4809,7 +4709,6 @@ namespace QMC.Common.Modules
             {
                 Log.Write(ex);
             }
-            
         }
 
         private void PowerMeter_ExitPos_DataReceivedHandler(byte[] receiveData)
@@ -5217,72 +5116,17 @@ namespace QMC.Common.Modules
         private List<byte> receiveBuffer = new List<byte>();
         private void BeamExpander_DataReceivedHandler(byte[] receiveData)
         {
-            //string @string = Encoding.Default.GetString(receiveData);
-
-            //double dPos = 0;
-            //double dMag = 0;
-            //double dAngle = 0;
-
-            //if(receiveData.Length > 2)
-            //{
-            //    int nValue = 0;
-
-            //    switch ((int)receiveData[2])
-            //    {
-            //        case 6: // Position
-            //            nValue += receiveData[7];
-            //            nValue += receiveData[6] * (1 << 8);
-            //            nValue += receiveData[5] * (2 << 8);
-            //            nValue += receiveData[4] * (3 << 8);
-            //            dPos = nValue / 1000.0;
-            //            m_strBeamExpander_Comm_ReceivedData += dPos.ToString("F4.3");
-            //            break;
-
-            //        case 9: //Magnification
-            //            {
-            //                nValue += receiveData[7];
-            //                nValue += receiveData[6] * (1 << 8);
-            //                nValue += receiveData[5] * (2 << 8);
-            //                nValue += receiveData[4] * (3 << 8);
-            //                dMag = nValue / 1000.0;
-            //                m_dBET_ZoomValue = dMag;
-            //                m_strBeamExpander_Comm_ReceivedData += "Mag : " + dMag.ToString("F3");
-
-            //                nValue = 0;
-            //                nValue += receiveData[12];
-            //                nValue += receiveData[11] * (1 << 8);
-            //                nValue += receiveData[10] * (2 << 8);
-            //                nValue += receiveData[9] * (3 << 8);
-            //                dAngle = nValue / 1000.0;
-            //                m_dBET_MradValue = dAngle;
-            //                m_strBeamExpander_Comm_ReceivedData += "Angle : " + dAngle.ToString("F3");
-            //            }
-            //            break;
-            //    }
-            //}
-
             receiveBuffer.AddRange(receiveData);
-
             // 예: 종료문자(예: 0x0D, 0x0A 등)로 패킷 완성 여부 판단
             if (IsPacketComplete(receiveBuffer))
             {
                 // 완성된 패킷 처리
                 m_byteBeamExpander_Comm_ReceivedData = receiveBuffer.ToArray();
-
                 m_bBeamExpander_CommData_Received = true;
 
                 // 처리 후 버퍼 비우기
                 receiveBuffer.Clear();
             }
-
-            //m_strBeamExpander_Comm_ReceivedData += @string;
-            //if (m_strBeamExpander_Comm_ReceivedData.Length >= 1)
-            //{
-            //    if (m_strBeamExpander_Comm_ReceivedData[m_strBeamExpander_Comm_ReceivedData.Length - 1] == chrFooter)           //  마지막이 이거면 다 들어온 것
-            //    {
-            //        m_bBeamExpander_CommData_Received = true;
-            //    }
-            //}
         }
 
         // 패킷 완성 여부 체크 함수 예시
@@ -5306,55 +5150,49 @@ namespace QMC.Common.Modules
         }
         public bool BeamExpander_Send()
         {
-            bool m_bRet = false;
+            bool bRet = false;
+            int DataNum = 0;
+            int nCheckSum = 0;
+            string strSendData = "";
+            byte[] cSendCmd = null;
 
-            int m_nIndex = 0;
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
-
-
-            m_DataNum = 7;
-            m_cSendCmd = new byte[m_DataNum];
-
-            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
-            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
-            m_cSendCmd[2] = 0x01;                                   //  Function Code (1B)
-            m_cSendCmd[3] = 0x55;                                   //  Data
-            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
+            DataNum = 7;
+            cSendCmd = new byte[DataNum];
+            cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            cSendCmd[1] = 0x02;                                   //  Data Length (1B)
+            cSendCmd[2] = 0x01;                                   //  Function Code (1B)
+            cSendCmd[3] = 0x55;                                   //  Data
+            nCheckSum = cSendCmd[2] + cSendCmd[3];            //  CheckSum
 
             // 상위 바이트와 하위 바이트 계산
-            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
-            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+            byte highByte = (byte)((nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(nCheckSum & 0xFF);              // 하위 바이트
 
-            m_cSendCmd[4] = highByte;
-            m_cSendCmd[5] = lowByte;
-            m_cSendCmd[6] = chrFooter;
+            cSendCmd[4] = highByte;
+            cSendCmd[5] = lowByte;
+            cSendCmd[6] = chrFooter;
 
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
-
-
+            strSendData = Encoding.Default.GetString(cSendCmd);
             if (m_beamExpander_Comm.IsOpen)
             {
-                m_beamExpander_Comm.Send(m_strSendData);
-                m_bRet = true;
+                m_beamExpander_Comm.Send(strSendData);
+                bRet = true;
             }
 
-            return m_bRet;
+            return bRet;
         }
         //  Motor Set Position (Zoom / Expander)
         public bool BeamExpander_Send_Motor_SetPosition(int m_nMotor, double m_dPosition)
         {
-            bool m_bRet = false;
+            bool bRet = false;
 
             if (m_beamExpander_Comm == null)
                 return false;
 
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
+            int DataNum = 0;
+            int nCheckSum = 0;
+            string strSendData = "";
+            byte[] cSendCmd = null;
 
             // 1. 숫자 값
             double number = m_dPosition;
@@ -5371,306 +5209,281 @@ namespace QMC.Common.Modules
                 byteValues[i] = (byte)((nPos >> (8 * (3 - i))) & 0xFF);
             }
 
-            m_DataNum = 11;
-            m_cSendCmd = new byte[m_DataNum];
+            DataNum = 11;
+            cSendCmd = new byte[DataNum];
 
-            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
-            m_cSendCmd[1] = 0x06;                                   //  Data Length (1B)
-            m_cSendCmd[2] = 0x05;                                   //  Function Code (1B)
+            cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            cSendCmd[1] = 0x06;                                   //  Data Length (1B)
+            cSendCmd[2] = 0x05;                                   //  Function Code (1B)
 
 
             if (m_nMotor == (int)nMotorizedBET.ZoomMotor)
             {
-                m_cSendCmd[3] = 0x01;                                   //  Function Code (1B)
-                m_cSendCmd[4] = byteValues[0];                          //  Data
-                m_cSendCmd[5] = byteValues[1];                          //  Data
-                m_cSendCmd[6] = byteValues[2];                          //  Data
-                m_cSendCmd[7] = byteValues[3];                          //  Data
+                cSendCmd[3] = 0x01;                                   //  Function Code (1B)
+                cSendCmd[4] = byteValues[0];                          //  Data
+                cSendCmd[5] = byteValues[1];                          //  Data
+                cSendCmd[6] = byteValues[2];                          //  Data
+                cSendCmd[7] = byteValues[3];                          //  Data
             }
             else if (m_nMotor == (int)nMotorizedBET.BeamExpansionMotor)
             {
-                m_cSendCmd[3] = 0x02;                                   //  Function Code (1B)
-                m_cSendCmd[4] = byteValues[0];                          //  Data
-                m_cSendCmd[5] = byteValues[1];                          //  Data
-                m_cSendCmd[6] = byteValues[2];                          //  Data
-                m_cSendCmd[7] = byteValues[3];                          //  Data
+                cSendCmd[3] = 0x02;                                   //  Function Code (1B)
+                cSendCmd[4] = byteValues[0];                          //  Data
+                cSendCmd[5] = byteValues[1];                          //  Data
+                cSendCmd[6] = byteValues[2];                          //  Data
+                cSendCmd[7] = byteValues[3];                          //  Data
             }
 
 
             //  CheckSum
             for ( int i = 2; i <= 7; i++)
             {
-                m_nCheckSum += m_cSendCmd[i];
+                nCheckSum += cSendCmd[i];
             }
 
 
             // 상위 바이트와 하위 바이트 계산
-            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
-            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+            byte highByte = (byte)((nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(nCheckSum & 0xFF);              // 하위 바이트
 
-            m_cSendCmd[8] = highByte;
-            m_cSendCmd[9] = lowByte;
-            m_cSendCmd[10] = chrFooter;
+            cSendCmd[8] = highByte;
+            cSendCmd[9] = lowByte;
+            cSendCmd[10] = chrFooter;
 
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+            strSendData = Encoding.Default.GetString(cSendCmd);
 
 
             if (m_beamExpander_Comm.IsOpen)
             {
-                m_beamExpander_Comm.Send(m_cSendCmd);
-                m_bRet = true;
+                m_beamExpander_Comm.Send(cSendCmd);
+                bRet = true;
             }
 
-            return m_bRet;
+            return bRet;
         }
 
         //  Motor Rotates Forward (Zoom / Expander)
         public bool BeamExpander_Send_Motor_Rotates_Forward(int m_nMotor)
         {
-            bool m_bRet = false;
+            bool bRet = false;
 
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
-
-
-            m_DataNum = 7;
-            m_cSendCmd = new byte[m_DataNum];
-
-            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
-            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
-
+            int DataNum = 0;
+            int nCheckSum = 0;
+            string strSendData = "";
+            byte[] cSendCmd = null;
+            DataNum = 7;
+            cSendCmd = new byte[DataNum];
+            cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            cSendCmd[1] = 0x02;                                   //  Data Length (1B)
 
             if (m_nMotor == (int)nMotorizedBET.ZoomMotor)
             {
-                m_cSendCmd[2] = 0x01;                                   //  Function Code (1B)
-                m_cSendCmd[3] = 0x55;                                   //  Data
+                cSendCmd[2] = 0x01;                                   //  Function Code (1B)
+                cSendCmd[3] = 0x55;                                   //  Data
             }
             else if (m_nMotor == (int)nMotorizedBET.BeamExpansionMotor)
             {
-                m_cSendCmd[2] = 0x02;                                   //  Function Code (1B)
-                m_cSendCmd[3] = 0x55;                                   //  Data
+                cSendCmd[2] = 0x02;                                   //  Function Code (1B)
+                cSendCmd[3] = 0x55;                                   //  Data
             }
 
-
-            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
-
+            nCheckSum = cSendCmd[2] + cSendCmd[3];            //  CheckSum
             // 상위 바이트와 하위 바이트 계산
-            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
-            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
-
-            m_cSendCmd[4] = highByte;
-            m_cSendCmd[5] = lowByte;
-            m_cSendCmd[6] = chrFooter;
-
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
-
+            byte highByte = (byte)((nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(nCheckSum & 0xFF);              // 하위 바이트
+            cSendCmd[4] = highByte;
+            cSendCmd[5] = lowByte;
+            cSendCmd[6] = chrFooter;
+            strSendData = Encoding.Default.GetString(cSendCmd);
 
             if (m_beamExpander_Comm.IsOpen)
             {
-                m_beamExpander_Comm.Send(m_cSendCmd);
-                m_bRet = true;
+                m_beamExpander_Comm.Send(cSendCmd);
+                bRet = true;
             }
 
-            return m_bRet;
+            return bRet;
         }
 
         //  Motor Reverse (Zoom / Expander)
         public bool BeamExpander_Send_Motor_Reverse(int m_nMotor)
         {
-            bool m_bRet = false;
+            bool bRet = false;
 
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
+            int DataNum = 0;
+            int nCheckSum = 0;
+            string strSendData = "";
+            byte[] cSendCmd = null;
 
 
-            m_DataNum = 7;
-            m_cSendCmd = new byte[m_DataNum];
+            DataNum = 7;
+            cSendCmd = new byte[DataNum];
 
-            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
-            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
-
+            cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            cSendCmd[1] = 0x02;                                   //  Data Length (1B)
 
             if (m_nMotor == (int)nMotorizedBET.ZoomMotor)
             {
-                m_cSendCmd[2] = 0x01;                                   //  Function Code (1B)
-                m_cSendCmd[3] = 0xAA;                                   //  Data
+                cSendCmd[2] = 0x01;                                   //  Function Code (1B)
+                cSendCmd[3] = 0xAA;                                   //  Data
             }
             else if (m_nMotor == (int)nMotorizedBET.BeamExpansionMotor)
             {
-                m_cSendCmd[2] = 0x02;                                   //  Function Code (1B)
-                m_cSendCmd[3] = 0xAA;                                   //  Data
+                cSendCmd[2] = 0x02;                                   //  Function Code (1B)
+                cSendCmd[3] = 0xAA;                                   //  Data
             }
 
-
-            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
-
+            nCheckSum = cSendCmd[2] + cSendCmd[3];            //  CheckSum
             // 상위 바이트와 하위 바이트 계산
-            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
-            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+            byte highByte = (byte)((nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(nCheckSum & 0xFF);              // 하위 바이트
 
-            m_cSendCmd[4] = highByte;
-            m_cSendCmd[5] = lowByte;
-            m_cSendCmd[6] = chrFooter;
+            cSendCmd[4] = highByte;
+            cSendCmd[5] = lowByte;
+            cSendCmd[6] = chrFooter;
 
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
-
-
+            strSendData = Encoding.Default.GetString(cSendCmd);
             if (m_beamExpander_Comm.IsOpen)
             {
-                m_beamExpander_Comm.Send(m_cSendCmd);
-                m_bRet = true;
+                m_beamExpander_Comm.Send(cSendCmd);
+                bRet = true;
             }
 
-            return m_bRet;
+            return bRet;
         }
 
         //  Motor Stop (Zoom / Expander)
         public bool BeamExpander_Send_Motor_Stop(int m_nMotor)
         {
-            bool m_bRet = false;
+            bool bRet = false;
 
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
-
-
-            m_DataNum = 7;
-            m_cSendCmd = new byte[m_DataNum];
-
-            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
-            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
-
+            int DataNum = 0;
+            int nCheckSum = 0;
+            string strSendData = "";
+            byte[] cSendCmd = null;
+            DataNum = 7;
+            cSendCmd = new byte[DataNum];
+            cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            cSendCmd[1] = 0x02;                                   //  Data Length (1B)
 
             if (m_nMotor == (int)nMotorizedBET.ZoomMotor)
             {
-                m_cSendCmd[2] = 0x01;                                   //  Function Code (1B)
-                m_cSendCmd[3] = 0x00;                                   //  Data
+                cSendCmd[2] = 0x01;                                   //  Function Code (1B)
+                cSendCmd[3] = 0x00;                                   //  Data
             }
             else if (m_nMotor == (int)nMotorizedBET.BeamExpansionMotor)
             {
-                m_cSendCmd[2] = 0x02;                                   //  Function Code (1B)
-                m_cSendCmd[3] = 0x00;                                   //  Data
+                cSendCmd[2] = 0x02;                                   //  Function Code (1B)
+                cSendCmd[3] = 0x00;                                   //  Data
             }
-
-
-            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
-
+            nCheckSum = cSendCmd[2] + cSendCmd[3];            //  CheckSum
             // 상위 바이트와 하위 바이트 계산
-            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
-            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+            byte highByte = (byte)((nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(nCheckSum & 0xFF);              // 하위 바이트
 
-            m_cSendCmd[4] = highByte;
-            m_cSendCmd[5] = lowByte;
-            m_cSendCmd[6] = chrFooter;
+            cSendCmd[4] = highByte;
+            cSendCmd[5] = lowByte;
+            cSendCmd[6] = chrFooter;
 
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
-
-
+            strSendData = Encoding.Default.GetString(cSendCmd);
             if (m_beamExpander_Comm.IsOpen)
             {
-                m_beamExpander_Comm.Send(m_cSendCmd);
-                m_bRet = true;
+                m_beamExpander_Comm.Send(cSendCmd);
+                bRet = true;
             }
 
-            return m_bRet;
+            return bRet;
         }
 
         //  Zoom Motor Initial Pos.
         public bool BeamExpander_Send_Motor_InitialPosition(int m_nMotor)
         {
-            bool m_bRet = false;
+            bool bRet = false;
 
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
+            int DataNum = 0;
+            int nCheckSum = 0;
+            string strSendData = "";
+            byte[] cSendCmd = null;
 
+            DataNum = 7;
+            cSendCmd = new byte[DataNum];
 
-            m_DataNum = 7;
-            m_cSendCmd = new byte[m_DataNum];
-
-            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
-            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
+            cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            cSendCmd[1] = 0x02;                                   //  Data Length (1B)
 
 
             if (m_nMotor == (int)nMotorizedBET.ZoomMotor)
             {
-                m_cSendCmd[2] = 0x01;                                   //  Function Code (1B)
-                m_cSendCmd[3] = 0x0C;                                   //  Data
+                cSendCmd[2] = 0x01;                                   //  Function Code (1B)
+                cSendCmd[3] = 0x0C;                                   //  Data
             }
             else if (m_nMotor == (int)nMotorizedBET.BeamExpansionMotor)
             {
-                m_cSendCmd[2] = 0x02;                                   //  Function Code (1B)
-                m_cSendCmd[3] = 0x0C;                                   //  Data
+                cSendCmd[2] = 0x02;                                   //  Function Code (1B)
+                cSendCmd[3] = 0x0C;                                   //  Data
             }
 
 
-            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
+            nCheckSum = cSendCmd[2] + cSendCmd[3];            //  CheckSum
 
             // 상위 바이트와 하위 바이트 계산
-            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
-            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+            byte highByte = (byte)((nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(nCheckSum & 0xFF);              // 하위 바이트
 
-            m_cSendCmd[4] = highByte;
-            m_cSendCmd[5] = lowByte;
-            m_cSendCmd[6] = chrFooter;
+            cSendCmd[4] = highByte;
+            cSendCmd[5] = lowByte;
+            cSendCmd[6] = chrFooter;
 
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+            strSendData = Encoding.Default.GetString(cSendCmd);
 
 
             if (m_beamExpander_Comm.IsOpen)
             {
-                m_beamExpander_Comm.Send(m_cSendCmd);
-                m_bRet = true;
+                m_beamExpander_Comm.Send(cSendCmd);
+                bRet = true;
             }
 
-            return m_bRet;
+            return bRet;
         }
 
         //  Get Current Status and Position
         public bool BeamExpander_Send_GetCurrentStatusPosition()
         {
-            bool m_bRet = false;
+            bool bRet = false;
 
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
+            int DataNum = 0;
+            int nCheckSum = 0;
+            string strSendData = "";
+            byte[] cSendCmd = null;
 
+            DataNum = 7;
+            cSendCmd = new byte[DataNum];
 
-            m_DataNum = 7;
-            m_cSendCmd = new byte[m_DataNum];
+            cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            cSendCmd[1] = 0x02;                                   //  Data Length (1B)
+            cSendCmd[2] = 0x06;                                   //  Function Code (1B)
+            cSendCmd[3] = 0x00;                                   //  Data
 
-            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
-            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
-            m_cSendCmd[2] = 0x06;                                   //  Function Code (1B)
-            m_cSendCmd[3] = 0x00;                                   //  Data
-
-            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
+            nCheckSum = cSendCmd[2] + cSendCmd[3];            //  CheckSum
 
             // 상위 바이트와 하위 바이트 계산
-            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
-            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+            byte highByte = (byte)((nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(nCheckSum & 0xFF);              // 하위 바이트
 
-            m_cSendCmd[4] = 0x00;       // highByte;
-            m_cSendCmd[5] = 0x06;       // lowByte;
-            m_cSendCmd[6] = chrFooter;
+            cSendCmd[4] = 0x00;       // highByte;
+            cSendCmd[5] = 0x06;       // lowByte;
+            cSendCmd[6] = chrFooter;
 
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+            strSendData = Encoding.Default.GetString(cSendCmd);
 
 
             if (m_beamExpander_Comm.IsOpen)
             {
-                m_beamExpander_Comm.Send(m_cSendCmd);
-                m_bRet = true;
+                m_beamExpander_Comm.Send(cSendCmd);
+                bRet = true;
             }
 
-            return m_bRet;
+            return bRet;
         }
 
         //  Get Current Status, Magnification, divergence angle
@@ -5894,23 +5707,6 @@ namespace QMC.Common.Modules
                     m_bDustCollector_LowerPos_CommData_Received = true;
                 }
             }
-
-            //m_strDustCollector_LowerPos_Comm_ReceivedData += @string;
-            //if (m_strDustCollector_LowerPos_Comm_ReceivedData.Length >= 1)
-            //{
-            //    if (m_strDustCollector_LowerPos_Comm_ReceivedData[m_strDustCollector_LowerPos_Comm_ReceivedData.Length - 1] == '\r')
-            //    {
-            //        m_bDustCollector_LowerPos_CommData_Received = true;
-            //    }
-            //    else if (m_strDustCollector_LowerPos_Comm_ReceivedData.Length >= 2 && m_strDustCollector_LowerPos_Comm_ReceivedData[m_strDustCollector_LowerPos_Comm_ReceivedData.Length - 2] == '\r' && m_strDustCollector_LowerPos_Comm_ReceivedData[m_strDustCollector_LowerPos_Comm_ReceivedData.Length - 1] == '\n')
-            //    {
-            //        m_bDustCollector_LowerPos_CommData_Received = true;
-
-            //        MessageBox.Show(m_strDustCollector_LowerPos_Comm_ReceivedData);
-
-            //        m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-            //    }
-            //}
         }
         private void DustCollector_UpperPos_DisconnectedHandler()
         {
@@ -5920,62 +5716,6 @@ namespace QMC.Common.Modules
         {
             Console.WriteLine("Dust Collector serial COM6 disconnected");
         }
-
-        /// <summary>
-        /// 
-        /// 집진기 인버터 통신 프로토콜 - 시작
-        /// 
-        /// </summary>
-
-        //  ENQ : 0x05
-        //  ACK : 0x06
-        //  NAK : 0x15
-        //  EOT : 0x04
-        //  국번 : 0x01 ~ 0xFA
-        //  명령어 : 읽기(0x52), 쓰기(0x57), 모니터 등록 요구(0x58), 모니터 등록 실행 요구(0x59)
-        //  번지 : 0x00000000 ~ 0xFFFFFFFF
-        //  데이터 : (n X 0x00000000) ~ (n x 0xFFFFFFFF)
-        //  번지 개수 : '1'(0x31) ~ '8'(0x38)
-        //  SUM : 국번 + 명령어 + 데이터(번지, 번지 개수, 데이터, 에러코드) 의 하위 2바이트
-
-
-        //  읽기 요구
-        //  ENQ(1 byte) + 국번(2 bytes) + 명령어(1 byte) + 번지(4 bytes) + 번지 개수(1 byte) + SUM(2 bytes) + EOT(1 byte)
-
-        //  읽기 응답
-        //  ACK(1 byte) + 국번(2 bytes) + 명령어(1 byte) + 데이터(n x 4 bytes) + SUM(2 bytes) + EOT(1 byte)      --> 정상
-        //  NAK(1 byte) + 국번(2 bytes) + 명령어(1 byte) + 에러 코드(2 bytes) + SUM(2 bytes) + EOT(1 byte)       --> 에러
-
-
-        //  쓰기 요구
-        //  ENQ(1 byte) + 국번(2 bytes) + 명령어(1 byte) + 번지(4 bytes) + 번지 개수(1 byte) + 데이터(n x 4 bytes) + SUM(2 bytes) + EOT(1 byte)
-
-        //  쓰기 응답
-        //  ACK(1 byte) + 국번(2 bytes) + 명령어(1 byte) + 데이터(n x 4 bytes) + SUM(2 bytes) + EOT(1 byte)      --> 정상
-        //  NAK(1 byte) + 국번(2 bytes) + 명령어(1 byte) + 에러 코드(2 bytes) + SUM(2 bytes) + EOT(1 byte)       --> 에러
-
-
-        //  모니터 등록 요구
-        //  ENQ(1 byte) + 국번(2 bytes) + 명령어(1 byte) + 번지 개수(1 byte) + 번지(n x 4 bytes) + SUM(2 bytes) + EOT(1 byte)
-
-        //  모니터 등록 응답
-        //  ACK(1 byte) + 국번(2 bytes) + 명령어(1 byte) + SUM(2 bytes) + EOT(1 byte)                            --> 정상
-        //  NAK(1 byte) + 국번(2 bytes) + 명령어(1 byte) + 에러 코드(2 bytes) + SUM(2 bytes) + EOT(1 byte)       --> 에러
-
-
-        //  모니터 등록 실행 요구
-        //  ENQ(1 byte) + 국번(2 bytes) + 명령어(1 byte) + SUM(2 bytes) + EOT(1 byte)
-
-        //  모니터 등록 실행 응답
-        //  ACK(1 byte) + 국번(2 bytes) + 명령어(1 byte) + 데이터(n x 4 bytes) + SUM(2 bytes) + EOT(1 byte)      --> 정상
-        //  NAK(1 byte) + 국번(2 bytes) + 명령어(1 byte) + 에러 코드(2 bytes) + SUM(2 bytes) + EOT(1 byte)       --> 에러
-
-        /// <summary>
-        /// 
-        /// 집진기 인버터 통신 프로토콜 - 끝
-        /// 
-        /// </summary>
-
         public bool DustCollectorComm_Send_Read(int m_nDustCollector, string m_strAddr, int m_nAddrCount)
         {
             bool m_bRet = false;
@@ -5983,179 +5723,6 @@ namespace QMC.Common.Modules
             int m_DataNum = 0;
             int m_nCheckSum = 0;
             byte m_btTemp;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
-
-            m_DataNum = 12;                                         //  길이 고정
-            m_cSendCmd = new byte[m_DataNum];
-
-            m_cSendCmd[0] = chrENQ;                                 //  ENQ 1자리
-            m_cSendCmd[1] = (byte)'0';                              //  국번 2자리 (앞)
-            m_cSendCmd[2] = (byte)'1';                              //  국번 2자리 (뒤)
-            m_cSendCmd[3] = chrR;                                   //  CMD 1자리
-            m_nCheckSum = m_cSendCmd[1] + m_cSendCmd[2] + m_cSendCmd[3];    //  CheckSum
-
-            for (int i = 0; i < m_strAddr.Length; i++)
-            {
-                m_cSendCmd[4 + i] = (byte)m_strAddr[i];             //  번지 4자리
-                m_nCheckSum += m_cSendCmd[4 + i];                           //  CheckSum
-            }
-
-            m_cSendCmd[8] = (byte)(char)(m_nAddrCount + '0');      //  번지 개수 1자리
-            m_nCheckSum += m_cSendCmd[8];                                   //  CheckSum
-
-            int m_nTemp = m_nCheckSum & 0xFF;                       //  CheckSum 계산 (하위 1바이트)
-            m_btTemp = (byte)m_nTemp;
-            string m_strCheckSum = m_btTemp.ToString("x2");
-
-            m_cSendCmd[9] = (byte)m_strCheckSum[0];                 //  CheckSum 2자리 중 앞자리
-            m_cSendCmd[10] = (byte)m_strCheckSum[1];                //  CheckSum 2자리 중 뒷자리
-            m_cSendCmd[11] = chrEOT;
-
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
-
-            if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
-            {
-                if (m_dustCollector_UpperPos_Comm.IsOpen)
-                {
-                    m_dustCollector_UpperPos_Comm.Send(m_strSendData);
-                    m_bRet = true;
-                }
-            }
-            else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
-            {
-                if (m_dustCollector_LowerPos_Comm.IsOpen)
-                {
-                    m_dustCollector_LowerPos_Comm.Send(m_strSendData);
-                    m_bRet = true;
-                }
-            }
-
-            return m_bRet;
-        }
-        public bool DustCollectorComm_Send_MonitorReg(int m_nDustCollector, int m_nAddrCount, string m_strAddr)
-        {
-            bool m_bRet = false;
-
-            int m_nIndex = 0;
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            byte m_btTemp;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
-
-
-
-            m_DataNum = 8 + (4 * m_nAddrCount);                     //  데이터 개수에 따라 길이 가변
-            m_cSendCmd = new byte[m_DataNum];
-
-            m_cSendCmd[0] = chrENQ;                                 //  ENQ 1자리
-            m_cSendCmd[1] = (byte)'0';                              //  국번 2자리 (앞)
-            m_cSendCmd[2] = (byte)'1';                              //  국번 2자리 (뒤)
-            m_cSendCmd[3] = chrX;                                   //  CMD 1자리
-            m_nCheckSum = m_cSendCmd[1] + m_cSendCmd[2] + m_cSendCmd[3];    //  CheckSum
-
-            m_cSendCmd[4] = (byte)(char)(m_nAddrCount + '0');       //  번지 개수 1자리
-            m_nCheckSum += m_cSendCmd[4];                                   //  CheckSum
-
-            for (int i = 0; i < m_strAddr.Length; i++)
-            {
-                m_nIndex = 5 + i;
-                m_cSendCmd[m_nIndex] = (byte)m_strAddr[i];          //  번지 (번지 개수 * 4자리)
-                m_nCheckSum += m_cSendCmd[m_nIndex];                        //  CheckSum
-            }
-
-            int m_nTemp = m_nCheckSum & 0xFF;                       //  CheckSum 계산 (하위 1바이트)
-            m_btTemp = (byte)m_nTemp;
-            string m_strCheckSum = m_btTemp.ToString("x2");
-
-            m_cSendCmd[m_nIndex + 1] = (byte)m_strCheckSum[0];              //  CheckSum 2자리 중 앞자리
-            m_cSendCmd[m_nIndex + 2] = (byte)m_strCheckSum[1];              //  CheckSum 2자리 중 뒷자리
-            m_cSendCmd[m_nIndex + 3] = chrEOT;
-
-
-
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
-
-            if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
-            {
-                if (m_dustCollector_UpperPos_Comm.IsOpen)
-                {
-                    m_dustCollector_UpperPos_Comm.Send(m_strSendData);
-                    m_bRet = true;
-                }
-            }
-            else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
-            {
-                if (m_dustCollector_LowerPos_Comm.IsOpen)
-                {
-                    m_dustCollector_LowerPos_Comm.Send(m_strSendData);
-                    m_bRet = true;
-                }
-            }
-
-            return m_bRet;
-        }
-        public bool DustCollectorComm_Send_MonitorRead(int m_nDustCollector)
-        {
-            bool m_bRet = false;
-
-            int m_nIndex = 0;
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            byte m_btTemp;
-            string m_strSendData = "";
-            byte[] m_cSendCmd = null;
-
-            m_DataNum = 7;                                          //  데이터 길이 고정
-            m_cSendCmd = new byte[m_DataNum];
-
-            m_cSendCmd[0] = chrENQ;                                 //  ENQ 1자리
-            m_cSendCmd[1] = (byte)'0';                              //  국번 2자리 (앞)
-            m_cSendCmd[2] = (byte)'1';                              //  국번 2자리 (뒤)
-            m_cSendCmd[3] = chrY;                                   //  CMD 1자리
-            m_nCheckSum = m_cSendCmd[1] + m_cSendCmd[2] + m_cSendCmd[3];    //  CheckSum
-
-            int m_nTemp = m_nCheckSum & 0xFF;                       //  CheckSum 계산 (하위 1바이트)
-            m_btTemp = (byte)m_nTemp;
-            string m_strCheckSum = m_btTemp.ToString("x2");
-
-            m_cSendCmd[4] = (byte)m_strCheckSum[0];                 //  CheckSum 2자리 중 앞자리
-            m_cSendCmd[5] = (byte)m_strCheckSum[1];                 //  CheckSum 2자리 중 뒷자리
-            m_cSendCmd[6] = chrEOT;
-
-
-
-            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
-
-            if (m_nDustCollector == (int)nDustCollector.DustCollector_Upper)
-            {
-                if (m_dustCollector_UpperPos_Comm.IsOpen)
-                {
-                    m_dustCollector_UpperPos_Comm.Send(m_strSendData);
-                    m_bRet = true;
-                }
-            }
-            else if (m_nDustCollector == (int)nDustCollector.DustCollector_Lower)
-            {
-                if (m_dustCollector_LowerPos_Comm.IsOpen)
-                {
-                    m_dustCollector_LowerPos_Comm.Send(m_strSendData);
-                    m_bRet = true;
-                }
-            }
-
-            return m_bRet;
-        }
-        public bool DustCollector_Read_Frequency(int m_nDustCollector)
-        {
-            bool m_bRet = false;
-
-            int m_DataNum = 0;
-            int m_nCheckSum = 0;
-            byte m_btTemp;
-            string m_strAddr = "000A";                            //  출력 주파수 Address            //  출력 주파수 0311 번지도 읽어보자
-            int m_nAddrCount = 1;                                 //  번지 개수
             string m_strSendData = "";
             byte[] m_cSendCmd = null;
 
@@ -6254,20 +5821,6 @@ namespace QMC.Common.Modules
                     break;
             }
             return m_bRet;
-
-            //this.DustCollectorComm_Send_SetFrequency((int)WorkStage.nDustCollector.DustCollector_Lower, dRet_Freq);
-            //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            //dRet_Freq *= 100.0;
-            ////  숫자를 4자리 숫자로 고정
-            //string strFreq = dRet_Freq.ToString("0000");
-            //string strRet = this.ConvertDecimalToHex(strFreq);
-            //if (strRet != "NG")
-            //{
-            //    this.m_bDustCollector_LowerPos_CommData_Received = false;
-            //    this.m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-            //}
-
-            //return dRet_Freq;
         }
         public bool DustCollectorComm_Send_SetFrequency(int m_nDustCollector, double dFreq)
         {
@@ -6290,7 +5843,6 @@ namespace QMC.Common.Modules
         public string ConvertDecimalToHex(string m_strDecimalNumber)
         {
             int decimalNumber = 0;
-            //decimalNumber = Convert.ToInt32(m_strDecimalNumber);
             decimalNumber = Equipment.ToInt(m_strDecimalNumber);
 
             if (decimalNumber < 0 || decimalNumber > 9999)
@@ -6422,10 +5974,6 @@ namespace QMC.Common.Modules
                 if (m_strElectroRegulator_Comm_ReceivedData.Length >= 2 && m_strElectroRegulator_Comm_ReceivedData[m_strElectroRegulator_Comm_ReceivedData.Length - 2] == '\r' && m_strElectroRegulator_Comm_ReceivedData[m_strElectroRegulator_Comm_ReceivedData.Length - 1] == '\n')
                 {
                     m_bElectroRegulator_CommData_Received = true;
-
-                    //MessageBox.Show(m_strElectroRegulator_Comm_ReceivedData);
-
-                    //m_strElectroRegulator_Comm_ReceivedData = "";
                 }
             }
         }
@@ -7489,11 +7037,6 @@ namespace QMC.Common.Modules
                 if (m_strLaserSensorSocket_ReceivedData[m_strLaserSensorSocket_ReceivedData.Length - 1] == '\r')
                 {
                     m_bLaserSensorSocket_Received = true;
-
-                    //MessageBox.Show(m_strLaserSensorSocket_ReceivedData);
-
-
-                    //m_strLaserSensorSocket_ReceivedData = "";
                 }
             }
         }
@@ -7501,10 +7044,7 @@ namespace QMC.Common.Modules
         {
             //  설정 모드로 변경
             //  Q0\r
-
             bool m_bRet = false;
-
-            string m_strSendData = "";
             byte[] m_cSendCmd = null;
 
             m_cSendCmd = new byte[3];
@@ -7525,10 +7065,7 @@ namespace QMC.Common.Modules
         {
             //  측정 모드로 변경
             //  R0\r
-
             bool m_bRet = false;
-
-            string m_strSendData = "";
             byte[] m_cSendCmd = null;
 
             m_cSendCmd = new byte[3];
@@ -7547,28 +7084,8 @@ namespace QMC.Common.Modules
         }
         public bool LaserSensor_Socket_ReadValue()             //  측정값 출력
         {
-            //  측정값 출력
-            //  지정한 한 개의 OUT 측정값을 출력.
-            //  MS,m,x\r
-
-            //  m : 측정값 취득 요구 옵션
-            //  0 : 측정값만
-            //  1 : 측정값 + 측정 결과 정보
-            //  2 : 측정값 + 판정 결과
-            //  3 : 측정값 + 측정 결과 정보+판정 결과
-            //  4 : 카운트 값＋측정 값
-            //  5 : 카운트 값＋측정 값＋측정 결과 정보
-            //  6 : 카운트 값＋측정 값＋판정 결과
-            //  7 : 카운트 값＋측정 값＋측정 결과 정보＋판정 결과
-
-            //  x : 측정값 취득 대상 OUT 번호
-            //  OUT 번호 : 1 ~ 8
-
             bool m_bRet = false;
-
-            string m_strSendData = "";
             byte[] m_cSendCmd = null;
-
             m_cSendCmd = new byte[7];
 
             m_cSendCmd[0] = (byte)'M';
@@ -7591,7 +7108,6 @@ namespace QMC.Common.Modules
 
 
         #region Teaching Position List Save / Load
-
         public bool Teaching_Position_Load()
         {
             string strTemp = "";
@@ -7773,10 +7289,8 @@ namespace QMC.Common.Modules
                 //return;
             }
 
-            //Equipment.Scanner_Calibration_PosX_Last = m_dScannerCalPosX_Last;
-            //Equipment.Scanner_Calibration_PosY_Last = m_dScannerCalPosY_Last;
-            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", Equipment.Scanner_Calibration_PosX_Last.ToString(), strFIle);
-            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", Equipment.Scanner_Calibration_PosY_Last.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", Equipment.Scanner_VerifyCameraOffset_PosX_Last.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", Equipment.Scanner_VerifyCameraOffset_PosY_Last.ToString(), strFIle);
         }
 
         public void Scanner_Calibration_Vision_Save()
@@ -7843,9 +7357,6 @@ namespace QMC.Common.Modules
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Polarity", Equipment.Scanner_Calibration_BlobVisionToolParameter.Polarity.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "RepeatCount", Equipment.Scanner_Calibration_BlobVisionToolParameter.RepeatCount.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "HasChanged", Equipment.Scanner_Calibration_BlobVisionToolParameter.HasChanged.ToString(), strFIle);
-
-
-
 
         }
 
@@ -14790,194 +14301,6 @@ namespace QMC.Common.Modules
                     //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2;
                     //}
                     break;
-
-                //아래는 나중에 필요하면 사용하자.
-                //case (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2:                                                 //  Satge Z 축, 대기위치(높이)로 이동                       --> 자동운전 중이면 pass
-
-                //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축, 대기위치로 이동 시작");
-
-                //    //  속도 설정 (스트로크 짧은 Z축은 느리게)
-                //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-                //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-
-                //    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z,
-                //                          lfVelocity, lfAccDec, lfAccDec);
-
-                //    TickCount_Start((int)TickType.TICK_ALIGN);
-
-                //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2DoneCheck;
-                //    break;
-
-                //case (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos2DoneCheck:                                        //  Stage Z 축, 대기위치(높이)로 이동 완료 확인
-                //    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
-                //        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z))
-                //    {
-                //        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축, 대기위치로 이동 완료");
-
-                //        m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignXY_MoveReadyPos;
-                //    }
-                //    else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) >= 60000)
-                //    {
-                //        strTemp = string.Format("Z 축 비전 안전 위치로 이동 실패. (Timeout) [AlignMode: {0}]", alignMode);
-                //        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
-
-                //        return AlarmPost(AlarmKey.SocketAlignZMoveFail);
-                //    }
-                //    break;
-
-                //case (int)SocketAlign_Step.SocketAlignXY_MoveReadyPos:                                               //  Stage XY 축, 대기위치로 이동                             --> 자동운전 중이면 pass
-
-                //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "XY 축, 대기위치로 이동 시작");
-
-                //    //  속도 설정
-                //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-                //    xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_SafetyPos].Stage_X;
-                //    xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_SafetyPos].Stage_Y;
-                //    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-                //    TickCount_Start((int)TickType.TICK_ALIGN);
-
-                //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignXY_MoveReadyPosDoneCheck;
-                //    break;
-
-                //case (int)SocketAlign_Step.SocketAlignXY_MoveReadyPosDoneCheck:                                      //  Stage XY 축, 대기위치로 이동 완료 확인
-
-                //    tempStep = m_nSocketAlign_MainStep;
-                //    if (CheckAxesMotionDoneWithRetry(
-                //        xyInterpolatedCoordinate.X,                                                             /// <param name="targetX">X 목표 위치. 사용하지 않으면 null</param>
-                //        xyInterpolatedCoordinate.Y,                                                             /// <param name="targetY">Y 목표 위치. 사용하지 않으면 null</param>
-                //        null,               // Z 없음                                                           /// <param name="targetZ">Z 목표 위치. 사용하지 않으면 null</param>
-                //        60000,                                                                                  /// <param name="timeoutMs">타임아웃 (ms)</param>
-                //        ref m_nStage_RetryCount,                                                                /// <param name="retryCount">ref 재시도 횟수 변수</param>
-                //        3,                                                                                      /// <param name="maxRetry">최대 재시도 횟수</param>
-                //        ref tempStep,
-                //        (int)SocketAlign_Step.SocketAlignXY_MoveReadyPos))                         /// <param name="jumpBackStep">재시도 시 되돌아갈 Step</param>
-                //    {
-                //        strTemp = string.Format("XY 축, SocketAlign 대기위치로 이동 완료 [AlignMode: {0}]", alignMode);
-                //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-                //        m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RotAndOffsetMove;
-                //    }
-                //    else
-                //    {
-                //        m_nSocketAlign_MainStep = tempStep;
-                //    }
-                //        break;
-
-                //case (int)SocketAlign_Step.SocketAlign_RotAndOffsetMove:                                        //  가공 데이터 회전 및 Offset 이동
-
-                //    m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  전체 가공 도면 회전 중심 X
-                //    m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  전체 가공 도면 회전 중심 Y
-                //    m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  전체 가공 도면 이동 Offset X
-                //    m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  전체 가공 도면 이동 Offset Y
-                //    m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
-
-                //    AlignedDrillingData_Select_and_OffsetMove(m_nSocketNum_forAlign, m_dALIGN_FACTOR_RotationCenter_X, 
-                //        m_dALIGN_FACTOR_RotationCenter_Y, m_dALIGN_FACTOR_Offset_X, m_dALIGN_FACTOR_Offset_Y, m_dALIGN_FACTOR_Theta);
-
-                //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Socket 각도 보정 완료");
-
-                //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_Reload;
-                //    break;
-
-                //case (int)SocketAlign_Step.SocketAlign_Reload:                                                  //  가공 데이터를 회전했으면 데이터를 다시 불러온다.
-
-                //    //  Get Data
-                //    int m_nReturn = (int)WorkStage.nGetDataResult.GETDATA_FAIL;
-
-                //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 후 가공 데이터 다시 Parsing 시작");
-
-                //    //GetDrillingData(); -> 사용 변수들 전부 초기화하고 도면 데이터를 다시 읽어온다. (원본!)
-                //    //
-                //    // 변위센서 Data 저장( 소캣 갯수) ( 전체 / 선택 된 소켓 번호만 ( 1, 2, 3 )
-                //    // 
-                //    // 프리얼라인 1번 하고 소켓 얼라인 수행.
-                //    //
-                //    // -> 얼라인 데이터 저장( 소켓 갯수) ( 전체 / 선택 된 소켓 번호만 ( 1, 2, 3 )
-                //    //
-                //    // -> AlignedDrillingData_Select_and_OffsetMove <- 여기서 도면에 얼라인 정보 입력.
-                //    //
-                //    // -> ReGetDrillingData();에서는 도면만 업데이트 하여 각 소켓에 정보 전달. (얼라인 후 도면)
-
-
-                //    m_nReturn = GetDrillingData(); 
-                //    switch (m_nReturn)
-                //    {
-                //        case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
-                //            Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "가공 데이터 Parsing 성공");
-
-                //            m_nLaserDrilling_LayerCount = 0;
-                //            m_bAlignCompleted = true;
-                //            timer_VisionAlign.Enabled = false;
-                //            m_nSocketAlign_MainStep = (int)SocketAlign_Step.Complete;
-                //            break;
-
-                //        case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
-                //            Log.Write("SLD-200", "Socket Align", "가공 데이터가 정상적으로 로드 되지 않았습니다.");
-                //            return AlarmPost(AlarmKey.eGetDataFaile);
-                            
-                //        case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
-                //            Log.Write("SLD-200", "Socket Align", "가공 데이터가 Group 이 아닙니다.");
-                //            return AlarmPost(AlarmKey.eGetdata_Drildata_not_group);
-
-                //        case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
-                //            Log.Write("SLD-200", "Socket Align", "가공 데이터를 Group 해제 해야 합니다.");
-                //            return AlarmPost(AlarmKey.eGetdata_Ungroup);
-
-                //        case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
-                //            Log.Write("SLD-200", "Socket Align", "가공 데이터 Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.");
-                //            return AlarmPost(AlarmKey.eGetdata_Layername_ng);
-
-                //        case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
-                //            Log.Write("SLD-200", "Socket Align", "가공 데이터 Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.");
-                //            return AlarmPost(AlarmKey.eGetdata_Motiontype_ng);
-
-                //        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
-                //            Log.Write("SLD-200", "Socket Align", "가공 데이터 중 Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지로만 구성되어야 합니다.");
-                //            return AlarmPost(AlarmKey.eGetdata_Drildata_ng);
-
-                //        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
-                //            Log.Write("SLD-200", "Socket Align", "가공 데이터 중 Drilling Data 의 Line 데이터 개수가 4의 배수가 아닙니다.");
-                //            return AlarmPost(AlarmKey.eGetdata_Drildata_linecnt);
-
-                //        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
-                //            Log.Write("SLD-200", "Socket Align", "가공 데이터 중 Drilling Data 의 Line 이 닫힌 도형이 아닙니다.");
-                //            return AlarmPost(AlarmKey.eGetdata_Drildata_not_closed);
-
-                //        case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
-                //            Log.Write("SLD-200", "Socket Align", "RTC 보드가 초기화 되지 않았습니다.");
-                //            return AlarmPost(AlarmKey.eGetdata_Rtcinit);
-                //    }
-                //    break;
-
-                //case (int)SocketAlign_Step.Complete:
-
-                //    m_bAlignCompleted = true;
-                //    timer_VisionAlign.Enabled = false; //필요한가?
-
-                //    if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) &&
-                //        (m_st4PointAlign_Result.dCenterOffsetY == 0.0) &&
-                //        (m_st4PointAlign_Result.dRotationAngle == 0.0))
-                //    {
-                //        m_bSocketAlign_OK = false;
-                //        strTemp = string.Format("Align 이동량 계산 실패. [AlignMode: {0}]", alignMode);
-                //        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
-                //        Log.Write("Fail", Equipment.User_Name, "Socket Align", strTemp);
-                //        return AlarmPost(AlarmKey.SocketAlignMovePositionCalcFail);
-                //    }
-                //    else
-                //    {
-                //        m_bSocketAlign_OK = true;
-                //        strTemp = "Align 이동량 계산 성공.\r\n\r\n" +
-                //                    "- Offset X : " + m_st4PointAlign_Result.dCenterOffsetX.ToString() + "\r\n" +
-                //                    "- Offset Y : " + m_st4PointAlign_Result.dCenterOffsetY.ToString() + "\r\n" +
-                //                    "- Angle : " + m_st4PointAlign_Result.dRotationAngle.ToString();
-                //        Log.Write("SLD-200", Equipment.User_Name, "Socket Align", strTemp);
-                //    }
-
-                //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
-                //    break;
             }
 
             if (currentStep != m_prevSocketAlignStep)
@@ -14998,20 +14321,15 @@ namespace QMC.Common.Modules
             m_bAlignCompleted = false;
             m_bSocketAlign_OK = false;
 
-
             // 굳이 첫번째 소켓일때만..m_bIsFirstAlign = false로 해야 하나?
             if (nSocketNum == 0)
-            //if (nSocketNum >= 0) // 모든 소켓일때 해도.. 상관없을거 같은데.. 밑에 구조상. 선택 가공할때도 문제가 되고.
             {
-                // TODO : 여기 변수 바꿔 주세요!! 구영남 부장님~~ 성공 실패..
-                // m_bFindLowerAlignMark_OK : 성공/실패 변수 추가.
                 if (m_bPreAlignCompleted && m_bFindLowerAlignMark_OK)
                 {
                     m_bIsFirstAlign = false;
                 }
             }
 
-            // 선택 가공할때는 무조건 m_bIsFirstAlign = false로 해보자.
             if (Equipment.SelectRunEnable_New || Equipment.SemiAutoEnable)
             {
                 if (m_bPreAlignCompleted && m_bFindLowerAlignMark_OK)
@@ -15058,7 +14376,6 @@ namespace QMC.Common.Modules
             m_nSocketAlign_Retry_Max = 3;
             m_nSocketAlign_Retry_Count = 0;
 
-
             if (m_LayerType == LayerType.LAYER_DRILLING)
                 m_nSocketAlign_FiducialCount_Total = m_stLaserDrilling_SocketData[nSocketNum].dFiducialPos.Length;
             else if(m_LayerType == LayerType.LAYER_OUTLINE)
@@ -15068,15 +14385,12 @@ namespace QMC.Common.Modules
             else if (m_LayerType == LayerType.LAYER_MARKING)
                 m_nSocketAlign_FiducialCount_Total = m_stMarking_SocketData.m_stMarking_ObjectData[nSocketNum].dFiducialPos.Length;
 
-
             m_nSocketAlign_FiducialCount = 0;
-
             if (Camera_HighRes != null)
             {
                // Camera_HighRes.StartLive();
             }
         }
-
 
         /// <summary>
         /// 4개의 마크 중 두 대각선의 교차점 중심 계산
@@ -15117,7 +14431,6 @@ namespace QMC.Common.Modules
         {
             int ret = -1;
             int lastSuccessfulMarkIndex = -1; // 마지막 성공한 마크 인덱스
-            
             try
             {
                 // 중심 좌표 설정
@@ -15335,7 +14648,6 @@ namespace QMC.Common.Modules
                                 break;
                             }
                         }
-
                     }
                     else
                     {
@@ -15783,8 +15095,6 @@ namespace QMC.Common.Modules
         }
         #endregion
 
-
-
         #region Laser Drilling Cycle Function
         public void WorkStage_Restart_Check()
         {
@@ -15846,7 +15156,6 @@ namespace QMC.Common.Modules
         public LayerList GetCurrentLayerEnum(LayerType type)
         {
             LayerList layerList = LayerList.Hole1;
-            
             try
             {
                 switch (type)
@@ -15882,9 +15191,7 @@ namespace QMC.Common.Modules
             {
                 Log.Write(ex);
             }
-
             return layerList;
-
         }
 
         private PointD[] ResizePoliLine(PointD[] Data,double dResize )
@@ -15892,22 +15199,20 @@ namespace QMC.Common.Modules
             XyCoordinate center = new XyCoordinate();
             XyCoordinate SourceLeftTop = new XyCoordinate();
             XyCoordinate SourceRightBottom = new XyCoordinate();
-
-
             XyCoordinate DestLeftTop = new XyCoordinate();
             XyCoordinate DestRightBottom = new XyCoordinate();
+
             center.X = (Data.Min(t => t.X) + Data.Max(t => t.X)) / 2;
             center.Y = (Data.Min(t => t.Y) + Data.Max(t => t.Y)) / 2;
-
             DestLeftTop.X = SourceLeftTop.X = Data.Min(t => t.X);
             DestLeftTop.Y = SourceLeftTop.Y = Data.Min(t => t.Y);
             DestRightBottom.X = SourceRightBottom.X = Data.Max(t => t.X);
             DestRightBottom.Y = SourceRightBottom.Y = Data.Max(t => t.Y);
-
             DestLeftTop.X -= dResize / 2;
             DestLeftTop.Y -= dResize / 2;
             DestRightBottom.X += dResize / 2;
             DestRightBottom.Y += dResize / 2;
+
             DrawingResizeForPerspectiveProjection drpp = new DrawingResizeForPerspectiveProjection();
             drpp.MakeCorrectionMatrix(SourceLeftTop, SourceRightBottom, DestLeftTop, DestRightBottom);
             var rData = drpp.Resize(Data);
@@ -15950,7 +15255,6 @@ namespace QMC.Common.Modules
                     rtc.ListJump(new Vector2((float)(center.X + StartX), (float)(center.Y + StartY))); 
                 }
 
-                
                 double dShiftX = (dLastX - StartX);
                 double dshiftY = dLastY - StartY;
 
@@ -15967,7 +15271,6 @@ namespace QMC.Common.Modules
                 dLastX = currentRadius * Math.Cos((i ) * Math.PI / 180);
                 dLastY = currentRadius * Math.Sin((i ) / 180 * Math.PI);
                 
-
                 //if (m_dTemp_AngleFactor > 2.1)
                 {
                     sweepAngle = (rnd.Next(1, 1000) * 15.0 / 1000) + 4;
@@ -30152,7 +29455,6 @@ namespace QMC.Common.Modules
             return m_st4PointAlign_Result;
         }
 
-
         public int DrillingData_RotationOffset_Move(double m_dRotCenter_X, double m_dRotCenter_Y, double m_dAngle, double m_dOffsetX, double m_dOffsetY)
         {
             double m_dTemp_RotationCenter_X;
@@ -30171,153 +29473,12 @@ namespace QMC.Common.Modules
                 return (int)nGetDataResult.GETDATA_FAIL;
             }
 
-           
-
-            //if (Equipment.GetEqpSiriusViewerDocument() == null)
-            //{
-            //    MessageBox.Show("도면 데이터 임시 저장용 Document 가 준비되지 않았습니다.", "Information!!");
-            //    return (int)nGetDataResult.GETDATA_FAIL;
-            //}
-
             //  전체 가공 객체 개수
             int m_nTotalCount = 0;
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nTotalCount += layer.Count;
             }
-
-            ////  Align Mark 위치 확인
-            //foreach (var layer in siriusEditor.Document.InternalData.Layers)
-            //{
-            //    ///////////////////////
-            //    ///                 ///
-            //    ///     쓰루홀      ///
-            //    ///                 ///
-            //    ///////////////////////
-            //    if (layer.Name == "쓰루홀")
-            //    {
-            //        foreach (var entity in layer)
-            //        {
-            //            switch (entity.EntityType)
-            //            {
-            //                case EType.Point:
-            //                    var point = entity as SpiralLab.Sirius.Point;
-            //                    //point.Location 
-            //                    //point.DwellTime
-            //                    //success &= point.Mark(markerArg);
-            //                    break;
-
-            //                case EType.Points:
-            //                    var points = entity as Points;
-            //                    foreach (var vertex in points)
-            //                    {
-            //                        //vertex.X
-            //                        //vertex.Y
-            //                    }
-            //                    //points.DwellTime
-            //                    //success &= points.Mark(markerArg);
-            //                    break;
-
-            //                case EType.Line:
-            //                    var line = entity as Line;
-            //                    //line.Start
-            //                    //line.End
-            //                    //success &= line.Mark(markerArg);
-            //                    break;
-
-            //                case EType.Arc:
-            //                    var arc = entity as Arc;
-            //                    //arc.Radius
-            //                    //arc.Center
-            //                    //arc.StartAngle
-            //                    //arc.SweepAngle
-            //                    //success &= arc.Mark(markerArg);
-            //                    break;
-
-            //                case EType.Circle:
-            //                    var circle = entity as Circle;
-
-            //                    if (circle.Description != null)
-            //                    {
-            //                        if (circle.Description.ToUpper() == "ALIGN1")
-            //                        {
-            //                            m_stTemp_AlignMark.dAlignMark1.X = circle.Center.X;
-            //                            m_stTemp_AlignMark.dAlignMark1.Y = circle.Center.Y;
-
-            //                            m_stTemp_AlignMark.dRotationCenter = m_stTemp_AlignMark.dAlignMark1;
-            //                        }
-            //                        else if (circle.Description.ToUpper() == "ALIGN2")
-            //                        {
-            //                            m_stTemp_AlignMark.dAlignMark2.X = circle.Center.X;
-            //                            m_stTemp_AlignMark.dAlignMark2.Y = circle.Center.Y;
-            //                        }
-            //                        else if (circle.Description.ToUpper() == "ALIGN3")
-            //                        {
-            //                            m_stTemp_AlignMark.dAlignMark3.X = circle.Center.X;
-            //                            m_stTemp_AlignMark.dAlignMark3.Y = circle.Center.Y;
-            //                        }
-            //                        else if (circle.Description.ToUpper() == "ALIGN4")
-            //                        {
-            //                            m_stTemp_AlignMark.dAlignMark4.X = circle.Center.X;
-            //                            m_stTemp_AlignMark.dAlignMark4.Y = circle.Center.Y;
-            //                        }
-            //                    }
-            //                    break;
-
-            //                case EType.Rectangle:
-            //                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
-            //                    //rectangle.Width
-            //                    //rectangle.Height
-            //                    //rectangle.Align
-            //                    //rectangle.Location
-            //                    //success &= rectangle.Mark(markerArg);
-            //                    break;
-
-            //                case EType.LWPolyline:
-            //                    var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
-            //                    //lwPolyline.IsClosed
-            //                    //foreach (var vertex in lwPolyline)
-            //                    //{
-            //                    //    //vertex.X
-            //                    //    //vertex.Y
-            //                    //    //vertex.Bulge
-            //                    //}
-            //                    //success &= lwPolyline.Mark(markerArg);
-            //                    break;
-
-            //                case EType.Spiral:
-            //                    var spiral = entity as Spiral;
-            //                    //spiral.OutterDiameter 
-            //                    //spiral.InnerDiameter
-            //                    //spiral.RadialPitch
-            //                    //spiral.Revolutions
-            //                    //spiral.Center
-            //                    //success &= spiral.Mark(markerArg);
-            //                    break;
-
-            //                case EType.Group:
-            //                default:
-            //                    var group = entity as Group;
-
-            //                    //success &= group.Mark(markerArg);
-            //                    break;
-            //                    // case EType....
-            //                    // ...
-
-            //                    //default:
-            //                    //    if (entity is IMarkerable markerable)
-            //                    //    {
-            //                    //        // mark entity
-            //                    //        // 해당 개체(Entity) 가공 
-            //                    //        //success &= markerable.Mark(markerArg);
-            //                    //    }
-            //                    //    break;
-            //            }
-            //            if (!success)
-            //                break;
-            //        }
-            //    }
-            //}
 
             //  가공 도면의 Align Mark 1번과 2번간의 각도 계산
             double aX = m_stTemp_AlignMark.dAlignMark1.X;
@@ -30375,8 +29536,8 @@ namespace QMC.Common.Modules
         double m_dCurrentCalPosZ = 0; //1. 캘 위치의 높이가 다르기때문에 변경 필요. 2. 정밀하게 하기 위하여 변위 측정 후 지정.
                                       //
                                       //마지막 캘 위치를 가지고 온다.
-        double m_dScannerCalPosX_Last = Equipment.Scanner_Calibration_PosX_Last;
-        double m_dScannerCalPosY_Last = Equipment.Scanner_Calibration_PosY_Last;
+        double m_dScannerCalPosX_Last = Equipment.Scanner_VerifyCameraOffset_PosX_Last;
+        double m_dScannerCalPosY_Last = Equipment.Scanner_VerifyCameraOffset_PosY_Last;
         private const int LaserScannerCalTimeout = 5000; // 5초
 
         int Run_Scanner_Calibration_Func()
@@ -37973,8 +37134,6 @@ namespace QMC.Common.Modules
                         m_bFindLowerAlignMark_OK = false;
                         m_bPreAlignCompleted = false;
                         m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
-                        //return AlarmPost(AlarmKey.PreAlignFail);
-
                         Log.Write("Fail", Equipment.User_Name, "PreAlign", strTemp);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                     }
@@ -37995,7 +37154,6 @@ namespace QMC.Common.Modules
                         _semiAutoRequest == SemiAutoStep.PreAlign)
                     {
                         Equipment.SemiAutoEnable = false;
-
                         m_LaserDrillingWork_Start = false;
                         m_MainWork_Start = false;
                         m_SubWork_Start = false;
@@ -38030,8 +37188,6 @@ namespace QMC.Common.Modules
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
                             }
                         }
-                        //m_bPreAlignCompleted = true;
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
                     }
                     break;
 

@@ -42,7 +42,6 @@ using NativeMethods = QMC.Core.NativeMethods;
 using Point = System.Drawing.Point;
 using RichTextBox = System.Windows.Forms.RichTextBox;
 using TextBox = System.Windows.Forms.TextBox;
-//using OpenCvSharp;
 
 namespace SLD200_MSL
 {
@@ -272,6 +271,8 @@ namespace SLD200_MSL
             textBox_Setup_ScannerCal_CalPitch.Text = Equipment.Scanner_Calibration_CalPitch.ToString();
             ////Scanner_Calibration_VisionZOffset
             textBox_Setup_ScannerCal_VisionZOffset.Text = Equipment.Scanner_Calibration_VisionZOffset.ToString();
+            textBox_Setup_ScannerCal_VisionZOffset3D.Text = Equipment.Scanner_Calibration_VarioScanZ.ToString();
+            textBox_Setup_ScannerCal_VisionZDefocus3D.Text = Equipment.Scanner_Calibration_VarioScanZ_Defocus.ToString();
 
             comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.SelectedIndex = Equipment.Scanner_Calibration_MaskIndex;
             comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.Scanner_Calibration_BETPositionIndex;
@@ -281,25 +282,13 @@ namespace SLD200_MSL
             string FormatValue(double val) =>
                    (double.IsNaN(val) || double.IsInfinity(val)) ? "-" : val.ToString("F5");
 
-            label_Setup_ScannerCal_LastPosX.Text = FormatValue(Equipment.Scanner_Calibration_PosX_Last);//.ToString();
-            label_Setup_ScannerCal_LastPosY.Text = FormatValue(Equipment.Scanner_Calibration_PosY_Last);//.ToString();
+            label_Setup_ScannerCal_LastPosX.Text = FormatValue(Equipment.Scanner_VerifyCameraOffset_PosX_Last);//.ToString();
+            label_Setup_ScannerCal_LastPosY.Text = FormatValue(Equipment.Scanner_VerifyCameraOffset_PosY_Last);//.ToString();
             label_Setup_ScannerCal_OffsetX.Text = FormatValue(Equipment.Scanner_Vision_Offset_Setting_X);//.ToString();
             label_Setup_ScannerCal_OffsetY.Text = FormatValue(Equipment.Scanner_Vision_Offset_Setting_Y);//.ToString();
             label_Setup_S_V_OffsetX.Text = FormatValue(Equipment.stOffsetDistance.FromScannerToFineCam.X);//.ToString();
             label_Setup_S_V_OffsetY.Text = FormatValue(Equipment.stOffsetDistance.FromScannerToFineCam.Y);//.ToString();
 
-            //기존코드
-            {
-                //label_Setup_ScannerCal_LastPosX.Text = Equipment.Scanner_Calibration_PosX_Last.ToString();
-                //label_Setup_ScannerCal_LastPosY.Text = Equipment.Scanner_Calibration_PosY_Last.ToString();
-                //label_Setup_ScannerCal_OffsetX.Text = Equipment.Scanner_Vision_Offset_Setting_X.ToString();
-                //label_Setup_ScannerCal_OffsetY.Text = Equipment.Scanner_Vision_Offset_Setting_Y.ToString();
-                //label_Setup_S_V_OffsetX.Text = Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString();
-                //label_Setup_S_V_OffsetY.Text = Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString();
-            }
-            
-
-            //m_fieldSize = Equipment.Scanner_Calibration_FieldSize;
             m_srcFile = Equipment.Scanner_Calibration_srcFilePath;
             m_targetFile = Equipment.Scanner_Calibration_targetFilePath;
             m_rowInterval = (float)Equipment.Scanner_Calibration_rowInterval;
@@ -546,41 +535,13 @@ namespace SLD200_MSL
                 {
                     label_Setup_ScannerCal_OffsetY.Text = FormatValue(Equipment.Scanner_Vision_Offset_Setting_Y);
                 }
-                if (label_Setup_ScannerCal_LastPosX.Text != FormatValue(Equipment.Scanner_Calibration_PosX_Last))
+                if (label_Setup_ScannerCal_LastPosX.Text != FormatValue(Equipment.Scanner_VerifyCameraOffset_PosX_Last))
                 {
-                    label_Setup_ScannerCal_LastPosX.Text = FormatValue(Equipment.Scanner_Calibration_PosX_Last);
+                    label_Setup_ScannerCal_LastPosX.Text = FormatValue(Equipment.Scanner_VerifyCameraOffset_PosX_Last);
                 }
-                if (label_Setup_ScannerCal_LastPosY.Text != FormatValue(Equipment.Scanner_Calibration_PosY_Last))
+                if (label_Setup_ScannerCal_LastPosY.Text != FormatValue(Equipment.Scanner_VerifyCameraOffset_PosY_Last))
                 {
-                    label_Setup_ScannerCal_LastPosY.Text = FormatValue(Equipment.Scanner_Calibration_PosY_Last);
-                }
-
-                //기존코드
-                {
-                    //if (label_Setup_S_V_OffsetX.Text != Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString())
-                    //{
-                    //    label_Setup_S_V_OffsetX.Text = Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString();
-                    //}
-                    //if (label_Setup_S_V_OffsetY.Text != Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString())
-                    //{
-                    //    label_Setup_S_V_OffsetY.Text = Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString();
-                    //}
-                    //if (label_Setup_ScannerCal_OffsetX.Text != Equipment.Scanner_Vision_Offset_Setting_X.ToString())
-                    //{
-                    //    label_Setup_ScannerCal_OffsetX.Text = Equipment.Scanner_Vision_Offset_Setting_X.ToString();
-                    //}
-                    //if (label_Setup_ScannerCal_OffsetY.Text != Equipment.Scanner_Vision_Offset_Setting_Y.ToString())
-                    //{
-                    //    label_Setup_ScannerCal_OffsetY.Text = Equipment.Scanner_Vision_Offset_Setting_Y.ToString();
-                    //}
-                    //if (label_Setup_ScannerCal_LastPosX.Text != Equipment.Scanner_Calibration_PosX_Last.ToString())
-                    //{
-                    //    label_Setup_ScannerCal_LastPosX.Text = Equipment.Scanner_Calibration_PosX_Last.ToString();
-                    //}
-                    //if (label_Setup_ScannerCal_LastPosY.Text != Equipment.Scanner_Calibration_PosY_Last.ToString())
-                    //{
-                    //    label_Setup_ScannerCal_LastPosY.Text = Equipment.Scanner_Calibration_PosY_Last.ToString();
-                    //}
+                    label_Setup_ScannerCal_LastPosY.Text = FormatValue(Equipment.Scanner_VerifyCameraOffset_PosY_Last);
                 }
 
                 this.radioButton_Setup_ScannerCal_Light_IR.Checked = true;
@@ -771,43 +732,15 @@ namespace SLD200_MSL
                 {
                     label_Setup_ScannerCal_OffsetY.Text = FormatValue(Equipment.Scanner_Vision_Offset_Setting_Y);//.ToString();
                 }
-                if (label_Setup_ScannerCal_LastPosX.Text != FormatValue(Equipment.Scanner_Calibration_PosX_Last))//.ToString())
+                if (label_Setup_ScannerCal_LastPosX.Text != FormatValue(Equipment.Scanner_VerifyCameraOffset_PosX_Last))//.ToString())
                 {
-                    label_Setup_ScannerCal_LastPosX.Text = FormatValue(Equipment.Scanner_Calibration_PosX_Last);//.ToString();
+                    label_Setup_ScannerCal_LastPosX.Text = FormatValue(Equipment.Scanner_VerifyCameraOffset_PosX_Last);//.ToString();
                 }
-                if (label_Setup_ScannerCal_LastPosY.Text != FormatValue(Equipment.Scanner_Calibration_PosY_Last))//.ToString())
+                if (label_Setup_ScannerCal_LastPosY.Text != FormatValue(Equipment.Scanner_VerifyCameraOffset_PosY_Last))//.ToString())
                 {
-                    label_Setup_ScannerCal_LastPosY.Text = FormatValue(Equipment.Scanner_Calibration_PosY_Last);//.ToString();
+                    label_Setup_ScannerCal_LastPosY.Text = FormatValue(Equipment.Scanner_VerifyCameraOffset_PosY_Last);//.ToString();
                 }
 
-                //기존코드
-                {
-                    //if (label_Setup_S_V_OffsetX.Text != Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString())
-                    //{
-                    //    label_Setup_S_V_OffsetX.Text = Equipment.stOffsetDistance.FromScannerToFineCam.X.ToString();
-                    //}
-                    //if (label_Setup_S_V_OffsetY.Text != Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString())
-                    //{
-                    //    label_Setup_S_V_OffsetY.Text = Equipment.stOffsetDistance.FromScannerToFineCam.Y.ToString();
-                    //}
-                    //if (label_Setup_ScannerCal_OffsetX.Text != Equipment.Scanner_Vision_Offset_Setting_X.ToString())
-                    //{
-                    //    label_Setup_ScannerCal_OffsetX.Text = Equipment.Scanner_Vision_Offset_Setting_X.ToString();
-                    //}
-                    //if (label_Setup_ScannerCal_OffsetY.Text != Equipment.Scanner_Vision_Offset_Setting_Y.ToString())
-                    //{
-                    //    label_Setup_ScannerCal_OffsetY.Text = Equipment.Scanner_Vision_Offset_Setting_Y.ToString();
-                    //}
-                    //if (label_Setup_ScannerCal_LastPosX.Text != Equipment.Scanner_Calibration_PosX_Last.ToString())
-                    //{
-                    //    label_Setup_ScannerCal_LastPosX.Text = Equipment.Scanner_Calibration_PosX_Last.ToString();
-                    //}
-                    //if (label_Setup_ScannerCal_LastPosY.Text != Equipment.Scanner_Calibration_PosY_Last.ToString())
-                    //{
-                    //    label_Setup_ScannerCal_LastPosY.Text = Equipment.Scanner_Calibration_PosY_Last.ToString();
-                    //}
-                }
-                
                 timer_Status.Enabled = true;
             }
             catch (Exception ex)
@@ -2991,13 +2924,6 @@ namespace SLD200_MSL
                 workStage.m_ScannerCalibration_Start = false;
                 workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
             }
-
-            workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
-            workStage.m_ScannerCalibration_Start = false;
-            workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
-
-
-
         }
 
         private void btnCalStart_Vision_Click(object sender, EventArgs e)
@@ -3016,21 +2942,21 @@ namespace SLD200_MSL
             }
 
             //TEST
-            //if (!workStage.m_bHomeOK)
-            //{
-            //    var mb2 = new MessageBoxOk();
-            //    mb2.ShowDialog("Information !", "장비 초기화를 해야 합니다.");
-            //    return;
-            //}
-            //if (workStage.rtc == null)
-            //{
-            //    var mb2 = new MessageBoxOk();
-            //    mb2.ShowDialog("Information !", "Scanner Board 를 초기화 해야 합니다.");
-            //    return;
-            //}
+            if (!workStage.m_bHomeOK)
+            {
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "장비 초기화를 해야 합니다.");
+                return;
+            }
+            if (workStage.rtc == null)
+            {
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "Scanner Board 를 초기화 해야 합니다.");
+                return;
+            }
 
             //카메라 초기화만 봐야 할 듯.
-            if(!workStage.Camera_HighRes.Opened)
+            if (!workStage.Camera_HighRes.Opened)
             {
                 var mb2 = new MessageBoxOk();
                 mb2.ShowDialog("Information !", "카메라 초기화를 해야 합니다.");
@@ -3046,7 +2972,8 @@ namespace SLD200_MSL
                     workStage.m_ScannerCalibrationSequence.Start();
                     workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run);
 
-                    workStage.m_ScannerCalibrationSequence.m_ScannerCalibrationStep = Sequence_ScannerCalibration.ScannerCalibrationSeq_Step.ScannerCompensation_StartPosition_Set;
+                    workStage.m_ScannerCalibrationSequence.m_ScannerCalibrationStep = 
+                        Sequence_ScannerCalibration.ScannerCalibrationSeq_Step.ScannerCompensation_StartPosition_Set;
 
                     workStage.m_ScannerCalibrationSequence.m_MainTick_Start = true;
                 }
@@ -4660,12 +4587,34 @@ namespace SLD200_MSL
 
         private void M_Owner_UpdateResult(PatternMatchingResult result)
         {
-            Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Clear();
-            foreach (var overlay in result.ResultOverlays)
+            if (this.IsDisposed || Box_Setup_ScannerCal_ImageViewer == null) return;
+
+            if (this.InvokeRequired)
             {
-                Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Add(overlay);
+                this.BeginInvoke(new System.Action(() => M_Owner_UpdateResult(result)));
+                return;
             }
+
+            Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Clear();
+
+            if (result?.ResultOverlays != null)
+            {
+                foreach (var overlay in result.ResultOverlays)
+                {
+                    Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Add(overlay);
+                }
+            }
+
+            Box_Setup_ScannerCal_ImageViewer.Display();   // 반드시 호출
         }
+        //private void M_Owner_UpdateResult(PatternMatchingResult result)
+        //{
+        //    Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Clear();
+        //    foreach (var overlay in result.ResultOverlays)
+        //    {
+        //        Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Add(overlay);
+        //    }
+        //}
 
 
         private ScannerCalConfigData GetScannerCalConfigDataFromUI()
@@ -4687,6 +4636,8 @@ namespace SLD200_MSL
             config.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaHeight.Text);
             config.Scanner_Calibration_CalPitch = Equipment.ToDouble(textBox_Setup_ScannerCal_CalPitch.Text);
             config.Scanner_Calibration_VisionZOffset = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset.Text);
+            config.Scanner_Calibration_VarioScanZ = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
+            config.Scanner_Calibration_VarioScanZ_Defocus = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZDefocus3D.Text);
 
             // RTC 및 correction 관련 정보
             config.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile;

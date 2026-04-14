@@ -1,24 +1,18 @@
-﻿using QMC.Common;
-using QMC.Common.Modules;
-using static QMC.Common.Equipment;
-using static QMC.Common.Modules.WorkStage;
-using static QMC.Common.Modules.Bds;
-using static QMC.Common.Modules.Vision;
+﻿using QMC.Common.Modules;
 using QMC.Common.Parts;
 using QMC.Common.Q_Config;
-using static QMC.Common.Part;
+using QMC.Common.Vision.Tools;
 using SpiralLab.Sirius;
 using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using QMC.Common.Vision.Tools;
 using System.Collections.Generic;
-using System.Timers;
 using System.IO;
 using System.Text;
-using QMC.Common.Vision.Cameras;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Forms;
+using static QMC.Common.Equipment;
+using static QMC.Common.Modules.WorkStage;
 
 
 namespace QMC.Common.Q_Sequence
@@ -1069,14 +1063,14 @@ namespace QMC.Common.Q_Sequence
                                 $"Y Range = {dScannerCalAreaPosY_Min:F3} ~ {dScannerCalAreaPosY_Max:F3}");
 
                         Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset",
-                                $"[Last 위치] X = {Equipment.Scanner_Calibration_PosX_Last:F3}, Y = {Equipment.Scanner_Calibration_PosY_Last:F3}");
+                                $"[Last 위치] X = {Equipment.Scanner_VerifyCameraOffset_PosX_Last:F3}, Y = {Equipment.Scanner_VerifyCameraOffset_PosY_Last:F3}");
 
                         if (bCalChagne)
                         {
                             if (bCalPosition)
                             {
-                                Equipment.Scanner_Calibration_PosX_Last = 0.0;
-                                Equipment.Scanner_Calibration_PosY_Last = 0.0;
+                                Equipment.Scanner_VerifyCameraOffset_PosX_Last = 0.0;
+                                Equipment.Scanner_VerifyCameraOffset_PosY_Last = 0.0;
 
                                 m_dCurrentCalPosX = dScannerCalAreaPosX_Max; // dScannerCalAreaPosX_Min;
                                 m_dCurrentCalPosY = dScannerCalAreaPosY_Max; // dScannerCalAreaPosY_Min;
@@ -1099,15 +1093,15 @@ namespace QMC.Common.Q_Sequence
                         {
                             if (bCalPosition)
                             {
-                                m_dCurrentCalPosX = Equipment.Scanner_Calibration_PosX_Last - (dCalWidth + dCalPitchOffset);
-                                m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last;
+                                m_dCurrentCalPosX = Equipment.Scanner_VerifyCameraOffset_PosX_Last - (dCalWidth + dCalPitchOffset);
+                                m_dCurrentCalPosY = Equipment.Scanner_VerifyCameraOffset_PosY_Last;
                             }
 
                             if (m_dCurrentCalPosX < dScannerCalAreaPosX_Min)
                             //if (m_dCurrentCalPosX > dScannerCalAreaPosX_Max)
                             {
                                 // 다음 Y 줄로 이동
-                                m_dCurrentCalPosY = Equipment.Scanner_Calibration_PosY_Last - dCalPitchOffset;
+                                m_dCurrentCalPosY = Equipment.Scanner_VerifyCameraOffset_PosY_Last - dCalPitchOffset;
 
                                 // Zigzag 방향 전환
                                 bIsLeftToRight = !bIsLeftToRight;
@@ -1596,8 +1590,8 @@ namespace QMC.Common.Q_Sequence
                         {
                             if (bCalPosition)
                             {
-                                Equipment.Scanner_Calibration_PosX_Last = m_dCurrentCalPosX;
-                                Equipment.Scanner_Calibration_PosY_Last = m_dCurrentCalPosY;
+                                Equipment.Scanner_VerifyCameraOffset_PosX_Last = m_dCurrentCalPosX;
+                                Equipment.Scanner_VerifyCameraOffset_PosY_Last = m_dCurrentCalPosY;
                                 workStage.Scanner_Calibration_Option_Save();
                             }
                             Log.Write("VerifyScannerCameraOffset", "VerifyScannerCameraOffset", "VerifyScannerCameraOffset, Cross Mark 가공 완료");

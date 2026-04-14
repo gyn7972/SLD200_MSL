@@ -693,16 +693,33 @@ namespace QMC.Common.Parts
                                     pmrv.Y = pmr.Values[0].Y;
                                     pmrv.R = pmr.Values[0].R;
                                     pmrv.Score = pmr.Values[0].Score;
-
                                     pmrAll.Values.Add(pmrv);
 
-                                    //Test 필요.
-                                    FireUpdateResult(pmrAll);
+                                    var ok = new TextVisionImageOverlay("OK", new Point(20, 20));
+                                    ok.Color = Color.Green;
+                                    pmrAll.ResultOverlays.Add(ok);
 
+                                    FireUpdateResult(pmrAll);
                                     Log.Write("SLD-200", Equipment.User_Name, "Scanner Cal.", "OnSearch OK.");
                                 }
                                 else
                                 {
+                                    // 실패 결과 생성 (센터점 기준)
+                                    PatternMatchingResult failResult = new PatternMatchingResult();
+                                    PatternMatchingResult.PatternMatchingResultValue failValue = new PatternMatchingResult.PatternMatchingResultValue();
+                                    failValue.X = 0;
+                                    failValue.Y = 0;
+                                    failValue.R = 0.0;
+                                    failValue.Score = 0.0;   // 실패 점수
+                                    failResult.Values.Add(failValue);
+
+                                    // 필요하면 실패 표시용 오버레이 추가(프로젝트 overlay 타입에 맞게)
+                                    // 예: 빨간 박스/문자
+                                    var ng = new TextVisionImageOverlay("NG", new Point(20, 20));
+                                    ng.Color = Color.Red;
+                                    failResult.ResultOverlays.Add(ng);
+
+                                    FireUpdateResult(failResult);
                                     Log.Write("SLD-200", Equipment.User_Name, "Scanner Cal.", "OnSearch Fail.");
                                 }
 
