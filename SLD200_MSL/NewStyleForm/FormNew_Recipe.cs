@@ -5298,200 +5298,208 @@ namespace SLD200_MSL
                 bBeforeSave = true;
             }
 
-            if (bBeforeSave)
+            try
             {
-                m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[nIndexBefore].ToString();
-                m_strLayer = m_strLayerName.Length > 4 ? m_strLayerName.Substring(0, 4) : m_strLayerName;
-                if (m_strLayer == "Hole")                   //  Layer 가 Hole 이면?
+                if (bBeforeSave)
                 {
-                    //  Hole 로 시작하는 Layer 이면, 뒤에 숫자를 가져온다.
-                    string m_strHoleLayer_Number = m_strLayerName.Substring(4);
-                    if (IsNumeric(m_strHoleLayer_Number))
+                    m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[nIndexBefore].ToString();
+                    m_strLayer = m_strLayerName.Length > 4 ? m_strLayerName.Substring(0, 4) : m_strLayerName;
+                    if (m_strLayer == "Hole")                   //  Layer 가 Hole 이면?
                     {
-                        int m_nHoleLayer_Index = Equipment.ToInt(m_strHoleLayer_Number);
-                        if ((m_nHoleLayer_Index >= 1) && (m_nHoleLayer_Index <= 50))
+                        //  Hole 로 시작하는 Layer 이면, 뒤에 숫자를 가져온다.
+                        string m_strHoleLayer_Number = m_strLayerName.Substring(4);
+                        if (IsNumeric(m_strHoleLayer_Number))
                         {
-                            nLayerIndex = m_nHoleLayer_Index - 1;             //  Hole Layer 의 Index 는 0부터 시작
-                        }
-                        else
-                        {
-                            nLayerIndex = (int)LayerList.Hole1;
+                            int m_nHoleLayer_Index = Equipment.ToInt(m_strHoleLayer_Number);
+                            if ((m_nHoleLayer_Index >= 1) && (m_nHoleLayer_Index <= 50))
+                            {
+                                nLayerIndex = m_nHoleLayer_Index - 1;             //  Hole Layer 의 Index 는 0부터 시작
+                            }
+                            else
+                            {
+                                nLayerIndex = (int)LayerList.Hole1;
+                            }
                         }
                     }
-                }
-                else if (m_strLayerName == "Rect")
-                {
-                    nLayerIndex = (int)LayerList.Rect;
-                }
-                else if (m_strLayerName == "Outline")
-                {
-                    nLayerIndex = (int)LayerList.Outline;
-                }
-                else if (m_strLayerName == "Marking")
-                {
-                    nLayerIndex = (int)LayerList.Marking;
-                }
-                else if (m_strLayerName == "Fiducial")
-                {
-                    nLayerIndex = (int)LayerList.Fiducial;
-                }
-                else if (m_strLayerName == "Thruhole")
-                {
-                    nLayerIndex = (int)LayerList.Thruhole;
-                }
-                else if (m_strLayerName == "PreAlign")
-                {
-                    nLayerIndex = (int)LayerList.PreAlign;
-                }
-                else
-                {
-                    Log.Write("SLD200", $"Recipe_Apply → 잘못된 Layer Name={m_strLayerName}");
-                    return;
-                }
-                if (nLayerIndex == -1)
-                {
-                    Log.Write("SLD200", $"Recipe_Apply → Layer Index 계산 실패, Name={m_strLayerName}");
-                    return;
+                    else if (m_strLayerName == "Rect")
+                    {
+                        nLayerIndex = (int)LayerList.Rect;
+                    }
+                    else if (m_strLayerName == "Outline")
+                    {
+                        nLayerIndex = (int)LayerList.Outline;
+                    }
+                    else if (m_strLayerName == "Marking")
+                    {
+                        nLayerIndex = (int)LayerList.Marking;
+                    }
+                    else if (m_strLayerName == "Fiducial")
+                    {
+                        nLayerIndex = (int)LayerList.Fiducial;
+                    }
+                    else if (m_strLayerName == "Thruhole")
+                    {
+                        nLayerIndex = (int)LayerList.Thruhole;
+                    }
+                    else if (m_strLayerName == "PreAlign")
+                    {
+                        nLayerIndex = (int)LayerList.PreAlign;
+                    }
+                    else
+                    {
+                        Log.Write("SLD200", $"Recipe_Apply → 잘못된 Layer Name={m_strLayerName}");
+                        return;
+                    }
+                    if (nLayerIndex == -1)
+                    {
+                        Log.Write("SLD200", $"Recipe_Apply → Layer Index 계산 실패, Name={m_strLayerName}");
+                        return;
+                    }
+
+                    //  Drawing File
+                    Equipment.stLayerRecipeSet[0].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
+                    Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_PulseWidth =
+                            textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 1;
+                        Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_PulsePeriod =
+                            textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
+                        Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_Frequency =
+                            textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 7000;
+                        Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_DutyCycle =
+                            textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
+                    }
+                    else
+                    {
+                        Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_PulseWidth =
+                            textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 1;
+                        Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_PulsePeriod =
+                            textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
+                        Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_Frequency =
+                            textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 500000;
+                        Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_DutyCycle =
+                            textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
+                    }
+
+                    //  Process Priority
+                    Equipment.stLayerRecipeSet[nLayerIndex].ProcessPriority_P2P = radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked;
+                    //  Miscellaneous
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_ReferenceLayer = textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_DefocusingDistance = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text);
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_DefocusingDistance_Use = checkBox_VarioScan.Checked;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_Resizing = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_HoleSize = Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text);//Miscellaneous_HoleSize
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_HoleDrilling_StartPosDivision = comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text.Length > 0 ? Equipment.ToInt(comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_GroupSplitSize = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text) : 4.0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_GroupSplitSize_Height = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text) : 4.0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_ScannerDrillingSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_ScannerJumpSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_LaserOnDelay = textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_LaserOffDelay = textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_MarkDelay = textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_JumpDelay = textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_PolygonDelay = textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_Drilling_Power = textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_DrillingRepetition = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_DrillingRepetitionBundle = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text) : 100;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_RotationAngleArc = textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text) : 360.0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_CircleStartAngleCircle1time = textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text) : 0.0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_P2PDistance = textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text) : 0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_MaskIndex = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
+                    Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_HoleProcessingType = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
+
+                    //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
+                    Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use = checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked;                                                                                             //  Hole Data Sort by Distance Use
+                    Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance = textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text) : 0.5;     //  Hole Data Sorting Distance
+
+                    //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
+                    //  Process Options
+                    Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use = checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked;                         //  Socket Align 기능 사용 여부
+                    Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use = checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck.Checked;             //  Socket Height Check 기능 사용 여부
+                    Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX = textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text) : 0.0;     //  Socket Height Check Position Offset X
+                    Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY = textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text) : 0.0;     //  Socket Height Check Position Offset Y
+
+                    Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use = checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Checked;
+
+                    //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
+                    //  Module Information
+                    Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width = textBox_Recipe_TabRecipe_ModuleInformation_Width.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Width.Text) : 125.0;
+                    Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height = textBox_Recipe_TabRecipe_ModuleInformation_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Height.Text) : 120.0;
+                    Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text) : 0.0;
+                    Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text) : 0.0;
+                    Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text) : 0.0;
+                    Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text) : 0.0;
+
+                    //  Spiral Parameter
+                    Equipment.stLayerRecipeSet[nLayerIndex].SpiralParam_OuterDiameter = textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text) : 0.0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].SpiralParam_InnerDiameter = textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text) : 0.0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].SpiralParam_Revolutions = textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text) : 10;
+                    Equipment.stLayerRecipeSet[nLayerIndex].SpiralParam_AngleFactor = textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text) : 10.0;
+
+                    //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
+                    //  EPRO Module Absorption Level
+                    Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel = textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text) : -40.0;
+
+                    //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
+                    //  M-Aligner Vacuum Use
+                    Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore = checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked;         //  Ignore
+                    Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center = checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked;     //  Center
+                    Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner = checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked;       //  Inner
+                    Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer = checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked;       //  Outer
+
+                    //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
+                    //  집진기 주파수
+                    Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use = checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked;                         //  집진기 Remote Mode 사용 여부
+                    Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper = textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text) : 20.0;
+                    Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower = textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text) : 20.0;
+                    Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable = checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked;                                        //  하부 집진기 사용 여부
+
+                    //  Marking Template
+                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingData_SiriusTemplate_Use = checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked;
+                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_DataType = comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex;
+                    //Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_Width = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text) : 5.0;
+                    //Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_Height = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text) : 5.0;
+                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_TextType = radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked;                         //  true : Fixed Text, false : Serial Number
+                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_PrefixData = textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text;
+                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_StartNumber = textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text) : 1;
+                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_Digits = textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text) : 3;
+                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_IncreaseStep = textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text) : 1;
+                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_SuffixData = textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text;
+                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_Hatch_Use = checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked;
+                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_Hatch_Spacing = textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text) : 0.2;
+
+                    if (radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked)
+                    {
+                        Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachModule;
+                    }
+                    else if (radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked)
+                    {
+                        Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket;
+                    }
+                    else
+                    {
+                        Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous;
+                    }
+
+                    Equipment.stLayerRecipeSet[nLayerIndex].CalfileOffsetZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text) : 0.0;     //  Z-Axis Offset mm
+                    Equipment.stLayerRecipeSet[nLayerIndex].CalfileOffsetDefocusZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text) : 0.0;     //  Z-Axis Offset Percent
+                    Equipment.stLayerRecipeSet[0].ChuckMSL_Enable = checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked; //  Chuck MSL 사용 여부
+                    Equipment.stLayerRecipeSet[0].Align3Point_Enable = checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked; //  3-Point Align 사용 여부
+
                 }
 
-                //  Drawing File
-                Equipment.stLayerRecipeSet[0].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
-                Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
-                if (Equipment.Machine_LaserType_CO2)
-                {
-                    Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_PulseWidth =
-                        textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 1;
-                    Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_PulsePeriod =
-                        textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
-                    Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_Frequency =
-                        textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 7000;
-                    Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_DutyCycle =
-                        textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
-                }
-                else
-                {
-                    Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_PulseWidth =
-                        textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 1;
-                    Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_PulsePeriod =
-                        textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
-                    Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_Frequency =
-                        textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 500000;
-                    Equipment.stLayerRecipeSet[nLayerIndex].LaserParam_DutyCycle =
-                        textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 1;
-                }
-
-                //  Process Priority
-                Equipment.stLayerRecipeSet[nLayerIndex].ProcessPriority_P2P = radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked;
-                //  Miscellaneous
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_ReferenceLayer = textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_DefocusingDistance = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text);
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_DefocusingDistance_Use = checkBox_VarioScan.Checked;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_Resizing = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_HoleSize = Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text);//Miscellaneous_HoleSize
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_HoleDrilling_StartPosDivision = comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text.Length > 0 ? Equipment.ToInt(comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_GroupSplitSize = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text) : 4.0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_GroupSplitSize_Height = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text) : 4.0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_ScannerDrillingSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_ScannerJumpSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_LaserOnDelay = textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_LaserOffDelay = textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_MarkDelay = textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_JumpDelay = textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_PolygonDelay = textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_Drilling_Power = textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_DrillingRepetition = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_DrillingRepetitionBundle = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text) : 100;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_RotationAngleArc = textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text) : 360.0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_CircleStartAngleCircle1time = textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text) : 0.0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_P2PDistance = textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text) : 0;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_MaskIndex = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
-                Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
-                Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_HoleProcessingType = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
-
-                //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
-                Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use = checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked;                                                                                             //  Hole Data Sort by Distance Use
-                Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance = textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text) : 0.5;     //  Hole Data Sorting Distance
-
-                //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
-                //  Process Options
-                Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use = checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked;                         //  Socket Align 기능 사용 여부
-                Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use = checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck.Checked;             //  Socket Height Check 기능 사용 여부
-                Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX = textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text) : 0.0;     //  Socket Height Check Position Offset X
-                Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY = textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text) : 0.0;     //  Socket Height Check Position Offset Y
-
-                Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use = checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Checked;
-
-                //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
-                //  Module Information
-                Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width = textBox_Recipe_TabRecipe_ModuleInformation_Width.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Width.Text) : 125.0;
-                Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height = textBox_Recipe_TabRecipe_ModuleInformation_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Height.Text) : 120.0;
-                Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text) : 0.0;
-                Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text) : 0.0;
-                Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Percent = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderPercent.Text) : 0.0;
-                Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Limit = textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderLimit.Text) : 0.0;
-
-                //  Spiral Parameter
-                Equipment.stLayerRecipeSet[nLayerIndex].SpiralParam_OuterDiameter = textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text) : 0.0;
-                Equipment.stLayerRecipeSet[nLayerIndex].SpiralParam_InnerDiameter = textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text) : 0.0;
-                Equipment.stLayerRecipeSet[nLayerIndex].SpiralParam_Revolutions = textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text) : 10;
-                Equipment.stLayerRecipeSet[nLayerIndex].SpiralParam_AngleFactor = textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text) : 10.0;
-
-                //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
-                //  EPRO Module Absorption Level
-                Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel = textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text) : -40.0;
-
-                //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
-                //  M-Aligner Vacuum Use
-                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Ignore = checkBox_Recipe_TabRecipe_MAlignVacuum_Ignore.Checked;         //  Ignore
-                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center = checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked;     //  Center
-                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner = checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked;       //  Inner
-                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer = checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked;       //  Outer
-
-                //  m_nLayerIndex 를 하던 것에서 0번 index 만 사용하도록 변경
-                //  집진기 주파수
-                Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use = checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked;                         //  집진기 Remote Mode 사용 여부
-                Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper = textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text) : 20.0;
-                Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower = textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text) : 20.0;
-                Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable = checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked;                                        //  하부 집진기 사용 여부
-
-                //  Marking Template
-                Equipment.stLayerRecipeSet[nLayerIndex].MarkingData_SiriusTemplate_Use = checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked;
-                Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_DataType = comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex;
-                //Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_Width = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text) : 5.0;
-                //Equipment.stLayerRecipeSet[m_nLayerIndex].MarkingTemplate_EntityData_Height = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text) : 5.0;
-                Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_TextType = radioButton_Recipe_TabRecipe_CustomMarking_TextType_FixedText.Checked;                         //  true : Fixed Text, false : Serial Number
-                Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_PrefixData = textBox_Recipe_TabRecipe_CustomMarking_Data_Prefix.Text;
-                Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_StartNumber = textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_StartNumber.Text) : 1;
-                Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_Digits = textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Digits.Text) : 3;
-                Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_IncreaseStep = textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_CustomMarking_Data_Increase.Text) : 1;
-                Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_SuffixData = textBox_Recipe_TabRecipe_CustomMarking_Data_Suffix.Text;
-                Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_Hatch_Use = checkBox_Recipe_TabRecipe_CustomMarking_Hatch_Enable.Checked;
-                Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_Hatch_Spacing = textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_Hatch_Spacing.Text) : 0.2;
-
-                if (radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Module.Checked)
-                {
-                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachModule;
-                }
-                else if (radioButton_Recipe_TabRecipe_CustomMarking_SerialIncreaseType_Socket.Checked)
-                {
-                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket;
-                }
-                else
-                {
-                    Equipment.stLayerRecipeSet[nLayerIndex].MarkingTemplate_EntityData_SerialNumberIncreaseType = (int)WorkStage.nSerialNumber_IncreaseType.forEachSocket_Continuous;
-                }
-
-                Equipment.stLayerRecipeSet[nLayerIndex].CalfileOffsetZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text) : 0.0;     //  Z-Axis Offset mm
-                Equipment.stLayerRecipeSet[nLayerIndex].CalfileOffsetDefocusZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text) : 0.0;     //  Z-Axis Offset Percent
-                Equipment.stLayerRecipeSet[0].ChuckMSL_Enable = checkBox_Recipe_TabRecipe_ChuckMSL_Enable.Checked; //  Chuck MSL 사용 여부
-                Equipment.stLayerRecipeSet[0].Align3Point_Enable = checkBox_Recipe_TabRecipe_3PointAlign_Enable.Checked; //  3-Point Align 사용 여부
-
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("ERROR", "Recipe_Apply() Error (Exception)");
             }
             
             //*중요 바로 전 Selected Index 를 저장한다.
             SelectedIndexOld = nIndex;
-
-            
         }
 
         private void checkBox_VarioScan_CheckedChanged(object sender, EventArgs e)

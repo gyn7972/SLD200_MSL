@@ -895,8 +895,8 @@ namespace QMC.Common.Q_Sequence
 
                 case ScannerCalibrationSeq_Step.VerifyCalibrationAreaPos:
                     {
-                        double dScannerCalTeachingPosX;
-                        double dScannerCalTeachingPosY;
+                        double dScannerCalTeachingPosX = 0.0;
+                        double dScannerCalTeachingPosY = 0.0;
 
                         if (bCalPosition)
                         {
@@ -929,26 +929,13 @@ namespace QMC.Common.Q_Sequence
 
                         double dScannerCalAreaPosY_Min = AreaCenterY - (dScannerCalAreaheight / 2) + dCalPitchOffset;
                         double dScannerCalAreaPosY_Max = AreaCenterY + (dScannerCalAreaheight / 2) - dCalPitchOffset;
-                        //double dScannerCalAreaPosX_Min = dScannerCalTeachingPosX - Equipment.Scanner_Calibration_X_Distance;
-                        //double dScannerCalAreaPosX_Max = dScannerCalTeachingPosX + Equipment.Scanner_Calibration_X_Distance;
-                        //double dScannerCalAreaPosY_Min = dScannerCalTeachingPosY - Equipment.Scanner_Calibration_Y_Distance;
-                        //double dScannerCalAreaPosY_Max = dScannerCalTeachingPosY + Equipment.Scanner_Calibration_Y_Distance;
-
+                        
                         int nRow = Equipment.Scanner_Calibration_rowCount;
                         int nCol = Equipment.Scanner_Calibration_colCount;
                         float fRowInterval = (float)Equipment.Scanner_Calibration_rowInterval;
                         float fColInterval = (float)Equipment.Scanner_Calibration_colInterval;
 
-                        if (Equipment.Scanner_Vision_Offset_Setting_Use)
-                        {
-                            nRow = 1;
-                            nCol = 1;
-                            fRowInterval = 1;
-                            fColInterval = 1;
-                        }
-
                         double dCalWidth = (nCol - 1) * fColInterval;
-
                         if (bCalChagne)
                         {
                             if (bCalPosition)
@@ -1037,7 +1024,7 @@ namespace QMC.Common.Q_Sequence
                         if (bCalPosition)
                             nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos;
                         else
-                            nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            nZPos = (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
 
                         double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z;
                         workStage.MovetoWorkStage_ABS_PositionsZ(dPosZ, Type_Motor_Speed.Fine);
@@ -1051,7 +1038,7 @@ namespace QMC.Common.Q_Sequence
                     {
                         int nZPos = bCalPosition
                             ? (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos
-                            : (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            : (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
 
                         double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z;
                         if (workStage.IsWorkStage_Positions(WorkStage.nAxis.Z, dPosZ))
@@ -1069,6 +1056,33 @@ namespace QMC.Common.Q_Sequence
                     {
                         xyInterpolatedCoordinate.X = m_dCurrentCalPosX;
                         xyInterpolatedCoordinate.Y = m_dCurrentCalPosY;
+
+                        XyCoordinate result = new XyCoordinate(0, 0);
+                        result.X += m_dCurrentCalPosX;
+                        result.Y += m_dCurrentCalPosY;
+                        //  좌표계 변환 (Scanner 위치 --> Fine Camera 위치)
+                        double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                        double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                        if (Machine_ScannerToFineCamOffset)
+                        {
+                            result.X -= dScannerToFineCamX;
+                            result.Y -= dScannerToFineCamY;
+                        }
+                        else
+                        {
+                            result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                            result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                        }
+
+                        //  좌표계 변환 (Fine Camera 위치 --> Laser Height Sensor 위치)
+                        result.X += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
+                        result.Y += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
+                        //  좌표계 변환 (Laser Height Sensor 위치 --> 높이 측정 위치에 XY Offset 반영)
+                        result.X += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX;
+                        result.Y += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY;
+
+                        xyInterpolatedCoordinate = result;
+
                         workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
 
                         TickCount_Start((int)TickType.TICK_SCANNER_CALIBRATION);
@@ -1130,9 +1144,12 @@ namespace QMC.Common.Q_Sequence
 
                 case ScannerCalibrationSeq_Step.ScannerCalHeight_ZOffset_Move:
                     {
+                        //  Scanner Cal 진행 시 Z Offset 값이 있으면 적용하자.
+                        m_dHeightOffsetScanner = 0;
+
                         int basePos = bCalPosition
                             ? (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos
-                            : (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            : (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
 
                         double dPosZ =
                             vision.stVisionTeachingPos[basePos].Vision_Z +
@@ -1150,7 +1167,7 @@ namespace QMC.Common.Q_Sequence
                     {
                         int basePos = bCalPosition
                             ? (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos
-                            : (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            : (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
 
                         double dPosZ =
                             vision.stVisionTeachingPos[basePos].Vision_Z +
@@ -1276,8 +1293,34 @@ namespace QMC.Common.Q_Sequence
 
                 case ScannerCalibrationSeq_Step.StageXY_Move_CrossMarkCenterPos:
                     {
-                        xyInterpolatedCoordinate.X = m_dCurrentCalPosX;
-                        xyInterpolatedCoordinate.Y = m_dCurrentCalPosY;
+                        double dScannerToFineCamX = Equipment.stOffsetDistance.FromScannerToFineCam.X + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.X;
+                        double dScannerToFineCamY = Equipment.stOffsetDistance.FromScannerToFineCam.Y + Equipment.stOffsetDistance.FromScannerToFineCam_Offset.Y;
+                        if (Machine_ScannerToFineCamOffset)
+                        {
+                            xyInterpolatedCoordinate.X =
+                            workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - dScannerToFineCamX;
+                            xyInterpolatedCoordinate.Y =
+                            workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - dScannerToFineCamY;
+                        }
+                        else
+                        {
+                            xyInterpolatedCoordinate.X =
+                            workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                            xyInterpolatedCoordinate.Y =
+                            workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                        }
+
+                        if (bCalPosition)
+                        {
+                            workStage.MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_FineCam);
+                        }
+                        else
+                        {
+                            workStage.MapData_Apply((int)nMapData_Type.MapData_Stage_FineCam);
+                        }
+
+                        //xyInterpolatedCoordinate.X = m_dCurrentCalPosX;
+                        //xyInterpolatedCoordinate.Y = m_dCurrentCalPosY;
                         workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Process);
 
                         TickCount_Start((int)TickType.TICK_SCANNER_CALIBRATION);
@@ -1316,7 +1359,7 @@ namespace QMC.Common.Q_Sequence
                     {
                         int nZPos = bCalPosition
                             ? (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos
-                            : (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            : (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
 
                         double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z + m_dHeightOffsetVision;
                         workStage.MovetoWorkStage_ABS_PositionsZ(dPosZ, Type_Motor_Speed.Fine);
@@ -1330,7 +1373,7 @@ namespace QMC.Common.Q_Sequence
                     {
                         int nZPos = bCalPosition
                             ? (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_CalPos
-                            : (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos;
+                            : (int)QMC.Common.Modules.Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheck_StagePos;
 
                         double dPosZ = vision.stVisionTeachingPos[nZPos].Vision_Z + m_dHeightOffsetVision;
 

@@ -2892,12 +2892,12 @@ namespace SLD200_MSL
             }
 
             //TEST
-            //if (!workStage.m_bHomeOK)
-            //{
-            //    var mb2 = new MessageBoxOk();
-            //    mb2.ShowDialog("Information !", "장비 초기화를 해야 합니다.");
-            //    return;
-            //}
+            if (!workStage.m_bHomeOK)
+            {
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "장비 초기화를 해야 합니다.");
+                return;
+            }
 
             if (workStage.rtc == null)
             {
