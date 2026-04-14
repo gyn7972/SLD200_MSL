@@ -2758,7 +2758,6 @@ namespace QMC.Common.Modules
 
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
-
                             return AlarmPost(AlarmKey.UL_Staker1_Too_Many_Module);
                         }
                         else

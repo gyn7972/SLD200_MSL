@@ -12829,11 +12829,9 @@ namespace QMC.Common.Modules
                         case (int)MainWorkCycleType.Cycle_LaserDrilling:
 
                             Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling Cycle 완료");
-                            int nCycleTime = TickCount_Elapsed((int)TickType.TICK_MAIN_CYCLE_CHECK);
-                            //MainForm으로 Time 전달
+                            int nCycleTime = TickCount_Elapsed((int)TickType.TICK_MAIN_CYCLE_CHECK); //MainForm으로 Time 전달
 
                             m_bMainWorkCycle_Complete = true;
-
                             bool bSocketAlignOK = false;
                             if(Equipment.Machine_VisionNG_OKPort_Enable)
                             {
@@ -12841,29 +12839,37 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                if (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount)
+                                if (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_VisionNG_OKPort_ReferenceCount)
                                 {
                                     bSocketAlignOK = false;
                                 }
                                 else
                                 {
                                     bSocketAlignOK = true;
-                                }   
-                            }
+                                }
 
-                            // Gold Powder Align 사용 시, Offset이 0,0 이라도,
-                            // NG Power가 아닌 OK로 처리.
-                            if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
-                            {
-                                
-                                //하나라도 0 이면 true이다.
-                                bool allZeroX = DrillingManager.HasAnyGoldOffsetXZero();
-                                bool allZeroY = DrillingManager.HasAnyGoldOffsetYZero();
-                                Log.Write("DrillStatus", $"GoldPowder Align 사용, OffsetX AllZero: {allZeroX}, OffsetY AllZero: {allZeroY}");
-
-                                if (allZeroX && allZeroY)
+                                // Gold Powder Align 사용 시, Offset이 0,0 이라도,
+                                // NG Power가 아닌 OK로 처리.
+                                if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                                 {
-                                    bSocketAlignOK = true;
+                                    //하나라도 0 이면 true이다.
+                                    bool allZeroX = DrillingManager.HasAnyGoldOffsetXZero();
+                                    bool allZeroY = DrillingManager.HasAnyGoldOffsetYZero();
+                                    Log.Write("DrillStatus", $"GoldPowder Align 사용, OffsetX AllZero: {allZeroX}, OffsetY AllZero: {allZeroY}");
+
+                                    if (allZeroX && allZeroY)
+                                    {
+                                        bSocketAlignOK = true;
+                                    }
+
+                                    if (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_VisionNG_OKPort_ReferenceCount)
+                                    {
+                                        bSocketAlignOK = false;
+                                    }
+                                    else
+                                    {
+                                        bSocketAlignOK = true;
+                                    }
                                 }
                             }
 
@@ -19375,41 +19381,19 @@ namespace QMC.Common.Modules
         /// </summary>
         public bool AlignedDrillingData_Select_and_OffsetMove(int m_nSocketNum, double m_dRotCenterX, double m_dRotCenterY, double m_dOffsetX, double m_dOffsetY, double m_dAngle)
         {
-            string m_strTemp;
-            bool success = true;
-            bool LayerIsGroup = false;
-            bool m_bSelected = false;
+            bool bSuccess = true;
+            bool bSelected = false;
 
             //  SLD-200 에서 사용할 변수
             //  도면 데이터 개수 초기화
-            int m_nHole1_ObjectCount = 0;                                       //  Hole1 데이터 개수
-            int m_nHole2_ObjectCount = 0;                                       //  Hole2 데이터 개수
-            int m_nHole3_ObjectCount = 0;                                       //  Hole3 데이터 개수
-            int m_nHole4_ObjectCount = 0;                                       //  Hole4 데이터 개수
-            int m_nHole5_ObjectCount = 0;                                       //  Hole5 데이터 개수
-            int m_nHole6_ObjectCount = 0;                                       //  Hole6 데이터 개수
-            int m_nHole7_ObjectCount = 0;                                       //  Hole7 데이터 개수
-            int m_nHole8_ObjectCount = 0;                                       //  Hole8 데이터 개수
-            int m_nHole9_ObjectCount = 0;                                       //  Hole9 데이터 개수
-            int m_nHole10_ObjectCount = 0;                                      //  Hole10 데이터 개수
-            int m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
-            int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
-            int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
-            int m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
-            int m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
+            int nHole1_ObjectCount = 0;                                       //  Hole1 데이터 개수
+            int nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
+            int nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            int nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
+            int nLayerCount = 0;
 
-            int m_nLayerCount = 0;
-
-            //  글자 개수 카운트
-            int m_nTextCount = 0;
-
-            //  글자를 구성하는 요소 개수 카운트
-            int m_nTextItemCount = 0;
-
-            int m_nMarkingEntity_TotalCount = 0;
-            bool m_bMarkingEntity_Select = false;                               //  마킹 Entity 도 얼라인 해줘야 하는가?
-
-            
+            int nMarkingEntity_TotalCount = 0;
+            bool bMarkingEntity_Select = false;                               //  마킹 Entity 도 얼라인 해줘야 하는가?
             if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 //MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
@@ -19419,26 +19403,19 @@ namespace QMC.Common.Modules
             m_nGroupCount = 0;
 
             //  Layer 개수 체크
-            m_nLayerCount = 0;
-            //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
-                m_nLayerCount++;
+                nLayerCount++;
             }
 
-            if (m_nLayerCount == 0)
+            if (nLayerCount == 0)
             {
                 //MessageBox.Show("Layer 개수가 0 입니다.", "Information!!");
                 return false;
             }
 
-            //  회전을 위한 데이터 개수
-            int m_nTotalCount = 0;
-
-
             //  List 를 몇개를 만들어야 할지
-            int m_nListCount = 0;
-
+            int nListCount = 0;
             //  Layer 종류별 Count
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
@@ -19453,125 +19430,25 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
                                     break;
-
                                 case EType.Rectangle:
-                                    //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
-
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.ModelTranslate.X;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.ModelTranslate.Y;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
-
                                 case EType.Group:
                                     var group = entity as Group;
-
-                                    if (m_nHole1_ObjectCount++ == m_nSocketNum)
+                                    if (nHole1_ObjectCount++ == m_nSocketNum)
                                     {
-                                        m_nListCount++;
-                                        break;
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                    else if (layer.Name == "Rect")
-                    {
-                        //  데이터 넣기
-                        foreach (var entity in layer)
-                        {
-                            switch (entity.EntityType)
-                            {
-                                case EType.Point:
-                                    var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
-                                    break;
-
-                                case EType.Points:
-                                    var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
-                                    break;
-
-                                case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
-                                    break;
-
-                                case EType.Arc:
-                                    var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
-                                    break;
-
-                                case EType.Circle:
-                                    var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
-                                    break;
-
-                                case EType.Rectangle:
-                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
-                                    break;
-
-                                case EType.Group:
-                                    var group = entity as Group;
-
-                                    if (m_nRect_ObjectCount++ == m_nSocketNum)
-                                    {
-                                        m_nListCount++;
+                                        nListCount++;
                                         break;
                                     }
                                     break;
@@ -19580,65 +19457,33 @@ namespace QMC.Common.Modules
                     }
                     else if (layer.Name == "Thruhole")
                     {
-                        //  데이터 넣기
                         foreach (var entity in layer)
                         {
                             switch (entity.EntityType)
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
                                     break;
-
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
-
                                 case EType.Group:
                                     var group = entity as Group;
 
-                                    if (m_nThruhole_ObjectCount++ == m_nSocketNum)
+                                    if (nThruhole_ObjectCount++ == m_nSocketNum)
                                     {
-                                        m_nListCount++;
+                                        nListCount++;
                                         break;
                                     }
                                     break;
@@ -19654,58 +19499,27 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
                                     break;
-
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
-
                                 case EType.Group:
                                     var group = entity as Group;
 
-                                    if (m_nOutline_ObjectCount++ == m_nSocketNum)
+                                    if (nOutline_ObjectCount++ == m_nSocketNum)
                                     {
-                                        m_nListCount++;
+                                        nListCount++;
                                         break;
                                     }
                                     break;
@@ -19721,71 +19535,36 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
                                     break;
-
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
-
                                 case EType.Text:
                                     var text = entity as SpiralLab.Sirius.Text;
-
                                     //  여기는 Hole Socket 번호와 동일한 위치의 마킹 데이터를 선택해서 얼라인 보정하려는 목적이 아니라,
                                     //  마킹 데이터가 몇개가 들어있는지 확인하는 용도이다.
                                     //  여러개의 소켓으로 이루어진 모듈이라도, 마킹은 1개만 존재하는 경우가 있다.
-                                    //
                                     //  마킹 데이터가 1개인 경우에는, 최초에 얼라인 성공하는 소켓과 함께 얼라인 보정을 해 둔다.
                                     //  얼라인 보정이 끝난 마킹 데이터는 다시 보정하지 않도록 한다.
-                                    if (m_nMarking_ObjectCount++ == m_nSocketNum)
+                                    if (nMarking_ObjectCount++ == m_nSocketNum)
                                     {
                                         //m_nListCount++;
                                         break;
                                     }
                                     break;
-
                                 case EType.Group:
-                                    var group = entity as Group;
-                                                                        
+                                    var group = entity as Group;    
                                     break;
                             }
                         }
@@ -19854,24 +19633,24 @@ namespace QMC.Common.Modules
             }
 
             //  마킹 Entity 의 총 개수 
-            m_nMarkingEntity_TotalCount = m_nMarking_ObjectCount;
+            nMarkingEntity_TotalCount = nMarking_ObjectCount;
 
             //  마킹 Entity 개수와 Hole1 Layer 의 소켓 개수와 동일한지 체크
-            if (m_nHole1_ObjectCount == m_nMarking_ObjectCount)
+            if (nHole1_ObjectCount == nMarking_ObjectCount)
             {
                 //  소켓 개수와 마킹 개수가 동일하므로 Marking Entity 도 얼라인 해주기 위해 Liat 개수 +1
-                m_nListCount++;      
-                m_bMarkingEntity_Select = true;
+                nListCount++;      
+                bMarkingEntity_Select = true;
             }
-            else if ((m_nHole1_ObjectCount != m_nMarking_ObjectCount) && (m_nMarking_ObjectCount == 1) &&
+            else if ((nHole1_ObjectCount != nMarking_ObjectCount) && (nMarking_ObjectCount == 1) &&
                 //!m_stMarking_SocketData.m_stMarking_ObjectData[0].bAlignCompleted)                            //  요건 계속 초기화 되어서 무쓸모
                 !Equipment.m_bOneMarkingData_AlignCompleted)                                                    //  마킹 데이터 얼라인이 완료되지 않은 경우에만 얼라인 시켜준다.
             {
                 //  소켓 개수와 마킹 개수가 다르고, 마킹 개수가 1개이고, 아직 얼라인이 안된 경우
                 //  현재 얼라인 한 소켓과 같이 묶어서 얼라인 해준다.
                 
-                m_nListCount++;
-                m_bMarkingEntity_Select = true;
+                nListCount++;
+                bMarkingEntity_Select = true;
             }
             else
             {
@@ -19880,24 +19659,13 @@ namespace QMC.Common.Modules
             }
 
             //  선택해야 할 List 초기화
-            var list = new List<IEntity>(m_nListCount);
+            var list = new List<IEntity>(nListCount);
 
             //  도면 데이터 개수 초기화
-            m_nHole1_ObjectCount = 0;                                       //  Hole1 데이터 개수
-            m_nHole2_ObjectCount = 0;                                       //  Hole2 데이터 개수
-            m_nHole3_ObjectCount = 0;                                       //  Hole3 데이터 개수
-            m_nHole4_ObjectCount = 0;                                       //  Hole4 데이터 개수
-            m_nHole5_ObjectCount = 0;                                       //  Hole5 데이터 개수
-            m_nHole6_ObjectCount = 0;                                       //  Hole6 데이터 개수
-            m_nHole7_ObjectCount = 0;                                       //  Hole7 데이터 개수
-            m_nHole8_ObjectCount = 0;                                       //  Hole8 데이터 개수
-            m_nHole9_ObjectCount = 0;                                       //  Hole9 데이터 개수
-            m_nHole10_ObjectCount = 0;                                      //  Hole10 데이터 개수
-            m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
-            m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
-            m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
-            m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
-            m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
+            nHole1_ObjectCount = 0;                                       //  Hole1 데이터 개수
+            nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
+            nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
 
 
             //  Layer 종류별 Count
@@ -19963,74 +19731,7 @@ namespace QMC.Common.Modules
                                 case EType.Group:
                                     var group = entity as Group;
 
-                                    if (m_nHole1_ObjectCount++ == m_nSocketNum)
-                                    {
-                                        //  선택한 소켓의 가공 객체를 List 로 등록
-                                        list.Add(group);
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                    else if (layer.Name == "Rect")
-                    {
-                        //  데이터 넣기
-                        foreach (var entity in layer)
-                        {
-                            switch (entity.EntityType)
-                            {
-                                case EType.Point:
-                                    var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
-                                    break;
-
-                                case EType.Points:
-                                    var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
-                                    break;
-
-                                case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
-                                    break;
-
-                                case EType.Arc:
-                                    var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
-                                    break;
-
-                                case EType.Circle:
-                                    var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
-                                    break;
-
-                                case EType.Rectangle:
-                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
-                                    break;
-
-                                case EType.Group:
-                                    var group = entity as Group;
-
-                                    if (m_nRect_ObjectCount++ == m_nSocketNum)
+                                    if (nHole1_ObjectCount++ == m_nSocketNum)
                                     {
                                         //  선택한 소켓의 가공 객체를 List 로 등록
                                         list.Add(group);
@@ -20097,7 +19798,7 @@ namespace QMC.Common.Modules
                                 case EType.Group:
                                     var group = entity as Group;
 
-                                    if (m_nOutline_ObjectCount++ == m_nSocketNum)
+                                    if (nOutline_ObjectCount++ == m_nSocketNum)
                                     {
                                         //  선택한 소켓의 가공 객체를 List 로 등록
                                         list.Add(group);
@@ -20164,7 +19865,7 @@ namespace QMC.Common.Modules
                                 case EType.Group:
                                     var group = entity as Group;
 
-                                    if (m_nThruhole_ObjectCount++ == m_nSocketNum)
+                                    if (nThruhole_ObjectCount++ == m_nSocketNum)
                                     {
                                         //  선택한 소켓의 가공 객체를 List 로 등록
                                         list.Add(group);
@@ -20231,9 +19932,9 @@ namespace QMC.Common.Modules
                                 case EType.Text:
                                     var text = entity as SpiralLab.Sirius.Text;
 
-                                    if (m_bMarkingEntity_Select)
+                                    if (bMarkingEntity_Select)
                                     {
-                                        if (m_nMarkingEntity_TotalCount == 1)               //  마킹 Entity 가 1개이면? -> 처음 얼라인 성공한 Socket 과 함께 얼라인 해준다.
+                                        if (nMarkingEntity_TotalCount == 1)               //  마킹 Entity 가 1개이면? -> 처음 얼라인 성공한 Socket 과 함께 얼라인 해준다.
                                         {
                                             //  마킹 데이터가 1개인 경우에는, 최초에 얼라인 성공하는 소켓과 함께 얼라인 보정을 해 둔다.
                                             if (!Equipment.m_bOneMarkingData_AlignCompleted)
@@ -20246,7 +19947,7 @@ namespace QMC.Common.Modules
                                         }
                                         else                                                //  마킹 Entity 개수가 Socket 개수와 같을 경우
                                         {
-                                            if (m_nMarking_ObjectCount++ == m_nSocketNum)
+                                            if (nMarking_ObjectCount++ == m_nSocketNum)
                                             {
                                                 //  선택한 소켓의 가공 객체를 List 로 등록
                                                 list.Add(text);
@@ -20328,16 +20029,16 @@ namespace QMC.Common.Modules
                 //1차로 죽어서 수정. 2차 시 에러코드 확인 요망.
                 //  List 에 등록된 가공 객체 Select
                 SiriusViewObjectEntitySelect(list);
-                m_bSelected = true;
+                bSelected = true;
             }
 
             //  Select 된 객체가 있으면 회전 Offset 이동
-            if (m_bSelected)
+            if (bSelected)
             {
                 SiriusViewObjectRotateNOffset(m_dRotCenterX, m_dRotCenterY, m_dOffsetX, m_dOffsetY, m_dAngle);
             }
 
-            return success;
+            return bSuccess;
         }
 
         /// <summary>
@@ -21325,76 +21026,40 @@ namespace QMC.Common.Modules
         /// <summary>
         /// Socket 얼라인 실패한 것들 객체 회전 이동을 위한 데이터 Select 함수
         /// </summary>
-        public bool AlignedDrillingData_FailedSocket_Select_and_OffsetMove(double m_dRotCenterX, double m_dRotCenterY, double m_dOffsetX, double m_dOffsetY, double m_dAngle)
+        public bool AlignedDrillingData_FailedSocket_Select_and_OffsetMove(double dRotCenterX, double dRotCenterY, double dOffsetX, double dOffsetY, double dAngle)
         {
-            string m_strTemp;
-            bool success = true;
-            bool LayerIsGroup = false;
-            bool m_bSelected = false;
-
-            //  SLD-200 에서 사용할 변수
-            //  도면 데이터 개수 초기화
-            int m_nHole1_ObjectCount = 0;                                       //  Hole1 데이터 개수
-            int m_nHole2_ObjectCount = 0;                                       //  Hole2 데이터 개수
-            int m_nHole3_ObjectCount = 0;                                       //  Hole3 데이터 개수
-            int m_nHole4_ObjectCount = 0;                                       //  Hole4 데이터 개수
-            int m_nHole5_ObjectCount = 0;                                       //  Hole5 데이터 개수
-            int m_nHole6_ObjectCount = 0;                                       //  Hole6 데이터 개수
-            int m_nHole7_ObjectCount = 0;                                       //  Hole7 데이터 개수
-            int m_nHole8_ObjectCount = 0;                                       //  Hole8 데이터 개수
-            int m_nHole9_ObjectCount = 0;                                       //  Hole9 데이터 개수
-            int m_nHole10_ObjectCount = 0;                                      //  Hole10 데이터 개수
-            int m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
-            int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
-            int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
-            int m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
-            int m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
-
-            int m_nLayerCount = 0;
-
-            //  글자 개수 카운트
-            int m_nTextCount = 0;
-
-            //  글자를 구성하는 요소 개수 카운트
-            int m_nTextItemCount = 0;
-
-            int m_nMarkingEntity_TotalCount = 0;
-            bool m_bMarkingEntity_Select = false;                               //  마킹 Entity 도 얼라인 해줘야 하는가?
-
-
+            string strTemp;
+            bool bSuccess = true;
+            bool bSelected = false;
+            int nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
+            int nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            int nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
+            int nLayerCount = 0;
+            
             if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return false;
             }
-
             m_nGroupCount = 0;
-
-            //  Layer 개수 체크
-            m_nLayerCount = 0;
-            //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
+            
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
-                m_nLayerCount++;
+                nLayerCount++;
             }
-
-            if (m_nLayerCount == 0)
+            if (nLayerCount == 0)
             {
                 MessageBox.Show("Layer 개수가 0 입니다.", "Information!!");
                 return false;
             }
-
-            //  회전을 위한 데이터 개수
-            int m_nTotalCount = 0;
-
-            //  List 를 몇개를 만들어야 할지
-            int m_nListCount = 0;
-
-            //  소켓 얼라인 실패한 것의 Thruhole, Outline, Marking 등의 그룹 데이터를 Select 하기 위함.
-            m_nListCount = 0;
+            
+            int nListCount = 0;
+            //int nThruHoleListCount = 0;   //  List 를 몇개를 만들어야 할지
+            //int nOutlineListCount = 0;
+            // 소켓 얼라인 실패한 것의 Thruhole, Outline, Marking 등의 그룹 데이터를 Select 하기 위함.
 
             //  Thruhole 소켓 
-            if(m_stThruHole_SocketData_ProcessingFlag != null)
+            if (m_stThruHole_SocketData_ProcessingFlag != null)
             {
                 if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
                 {
@@ -21407,18 +21072,17 @@ namespace QMC.Common.Modules
                             {
                                 if (i >= m_nSocketAlign_StartIndex)
                                 {
-                                    m_nListCount++;
+                                    nListCount++;
                                 }
                             }
                             else                                                                                                                                        //  전체 가공 모드일 경우
                             {
-                                m_nListCount++;
+                                nListCount++;
                             }
                         }
                     }
                 }
             }
-            
 
             //  Outline 소켓
             if(m_stOutLine_SocketData_ProcessingFlag != null)
@@ -21434,18 +21098,17 @@ namespace QMC.Common.Modules
                             {
                                 if (i >= m_nSocketAlign_StartIndex)
                                 {
-                                    m_nListCount++;
+                                    nListCount++;
                                 }
                             }
                             else                                                                                                                                        //  전체 가공 모드일 경우
                             {
-                                m_nListCount++;
+                                nListCount++;
                             }
                         }
                     }
                 }
             }
-
 
             {
                 ////  Marking 소켓 --> 마킹은 일단 보류. 모듈 단위 마킹일 경우는, Hole1 의 소켓 얼라인할 때 같이 얼라인 해주기 때문에, 여기서 또 얼라인 하면 문제가 될 수 있다.
@@ -21471,185 +21134,69 @@ namespace QMC.Common.Modules
                 //}
             }
 
-            m_strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, Align 이 필요한 Thruhole 개수 : {0}", m_nListCount);
-            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
-            //  선택해야 할 List 초기화
-            var list = new List<IEntity>(m_nListCount);
-
-            //  도면 데이터 개수 초기화
-            m_nHole1_ObjectCount = 0;                                       //  Hole1 데이터 개수
-            m_nHole2_ObjectCount = 0;                                       //  Hole2 데이터 개수
-            m_nHole3_ObjectCount = 0;                                       //  Hole3 데이터 개수
-            m_nHole4_ObjectCount = 0;                                       //  Hole4 데이터 개수
-            m_nHole5_ObjectCount = 0;                                       //  Hole5 데이터 개수
-            m_nHole6_ObjectCount = 0;                                       //  Hole6 데이터 개수
-            m_nHole7_ObjectCount = 0;                                       //  Hole7 데이터 개수
-            m_nHole8_ObjectCount = 0;                                       //  Hole8 데이터 개수
-            m_nHole9_ObjectCount = 0;                                       //  Hole9 데이터 개수
-            m_nHole10_ObjectCount = 0;                                      //  Hole10 데이터 개수
-            m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
-            m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
-            m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
-            m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
-            m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
-
+            strTemp = string.Format("Failed Align Socket 의 Thruhole, Outline가공, Align 이 필요한 Thruhole, Outline 개수 : {0}", nListCount);
+            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
+            
+            var list = new List<IEntity>(nListCount);
+            //var listThruHole = new List<IEntity>(nThruHoleListCount);     //  선택해야 할 List 초기화
+            //var listOutlineHole = new List<IEntity>(nOutlineListCount);   //  선택해야 할 List 초기화
+            nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
+            nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
 
             //  Layer 종류별 Count
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
-                    if (layer.Name == "Rect")
+                    if (layer.Name == "Outline")
                     {
-                        //  데이터 넣기
                         foreach (var entity in layer)
                         {
                             switch (entity.EntityType)
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
 
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
                                     break;
-
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
-
                                 case EType.Group:
                                     var group = entity as Group;
-
-                                    //if (m_nRect_ObjectCount++ == m_nSocketNum)
-                                    //{
-                                    //    //  선택한 소켓의 가공 객체를 List 로 등록
-                                    //    list.Add(group);
-                                    //}
-                                    break;
-                            }
-                        }
-                    }
-                    else if (layer.Name == "Outline")
-                    {
-                        //  데이터 넣기
-                        foreach (var entity in layer)
-                        {
-                            switch (entity.EntityType)
-                            {
-                                case EType.Point:
-                                    var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
-                                    break;
-
-                                case EType.Points:
-                                    var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
-                                    break;
-
-                                case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
-                                    break;
-
-                                case EType.Arc:
-                                    var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
-                                    break;
-
-                                case EType.Circle:
-                                    var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
-                                    break;
-
-                                case EType.Rectangle:
-                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
-                                    break;
-
-                                case EType.Group:
-                                    var group = entity as Group;
-
-                                    if (m_stOutLine_SocketData_ProcessingFlag[m_nOutline_ObjectCount].bProcessing == false)
+                                    if (m_stOutLine_SocketData_ProcessingFlag[nOutline_ObjectCount].bProcessing == false)
                                     {
                                         if (Equipment.SelectRunEnable && 
                                             Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
                                         {
-                                            if (m_nOutline_ObjectCount >= m_nSocketAlign_StartIndex)
+                                            if (nOutline_ObjectCount >= m_nSocketAlign_StartIndex)
                                             {
                                                 //  선택한 소켓의 가공 객체를 List 로 등록
                                                 list.Add(group);
 
-                                                m_strTemp = string.Format("Failed Align Socket 의 Outline 가공, 선택 소켓 이후로 연속 가공 모드일 경우, Selected Outline Socket Number : {0}", m_nOutline_ObjectCount);
-                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                                                strTemp = string.Format("Failed Align Socket 의 Outline 가공, 선택 소켓 이후로 연속 가공 모드일 경우, Selected Outline Socket Number : {0}", nOutline_ObjectCount);
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
                                             }
                                         }
                                         else
                                         {
-                                            //  선택한 소켓의 가공 객체를 List 로 등록
-                                            list.Add(group);
-
-                                            m_strTemp = string.Format("Failed Align Socket 의 Outline 가공, 전체 가공 모드일 경우, Selected Outline Socket Number : {0}", m_nOutline_ObjectCount);
-                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                                            list.Add(group);    //  선택한 소켓의 가공 객체를 List 로 등록
+                                            strTemp = string.Format("Failed Align Socket 의 Outline 가공, 전체 가공 모드일 경우, Selected Outline Socket Number : {0}", nOutline_ObjectCount);
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
                                         }
                                     }
-
-                                    m_nOutline_ObjectCount++;
+                                    nOutline_ObjectCount++;
                                     break;
                             }
                         }
@@ -21663,64 +21210,44 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
                                     break;
-
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
                                     break;
-
                                 case EType.Group:
                                     var group = entity as Group;
-
-                                    if (m_stThruHole_SocketData_ProcessingFlag[m_nThruhole_ObjectCount].bProcessing == false)
+                                    if (m_stThruHole_SocketData_ProcessingFlag[nThruhole_ObjectCount].bProcessing == false)
                                     {
                                         if (Equipment.SelectRunEnable && 
                                             Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
                                         {
-                                            if (m_nThruhole_ObjectCount >= m_nSocketAlign_StartIndex)
+                                            if (nThruhole_ObjectCount >= m_nSocketAlign_StartIndex)
                                             {
-                                                //  선택한 소켓의 가공 객체를 List 로 등록
-                                                list.Add(group);
-
-                                                m_strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, 선택 소켓 이후로 연속 가공 모드일 경우, Selected Thruhole Socket Number : {0}", m_nThruhole_ObjectCount);
-                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                                                list.Add(group); //  선택한 소켓의 가공 객체를 List 로 등록
+                                                strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, 선택 소켓 이후로 연속 가공 모드일 경우, Selected Thruhole Socket Number : {0}", nThruhole_ObjectCount);
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
                                             }
                                         }
                                         else
                                         {
-                                            //  선택한 소켓의 가공 객체를 List 로 등록
-                                            list.Add(group);
-
-                                            m_strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, 전체 가공 모드일 경우, Selected Thruhole Socket Number : {0}", m_nThruhole_ObjectCount);
-                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                                            list.Add(group); //  선택한 소켓의 가공 객체를 List 로 등록
+                                            strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, 전체 가공 모드일 경우, Selected Thruhole Socket Number : {0}", nThruhole_ObjectCount);
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
                                         }
                                     }
 
-                                    m_nThruhole_ObjectCount++;
+                                    nThruhole_ObjectCount++;
                                     break;
                             }
                         }
@@ -21734,39 +21261,23 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
                                     break;
-
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
                                     break;
-
                                 case EType.Text:
                                     var text = entity as SpiralLab.Sirius.Text;
-
                                     //if (m_stMarking_SocketData_ProcessingFlag.m_stMarking_ObjectData[m_nMarking_ObjectCount].bProcessing == false)
                                     //{
                                     //    if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
@@ -21784,18 +21295,14 @@ namespace QMC.Common.Modules
                                     //    {
                                     //        //  선택한 소켓의 가공 객체를 List 로 등록
                                     //        list.Add(entity);
-
                                     //        m_strTemp = string.Format("Failed Align Socket 의 Marking 가공, 전체 가공 모드일 경우, Selected Marking Socket Number : {0}", m_nMarking_ObjectCount);
                                     //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                                     //    }
                                     //}
-
                                     //m_nMarking_ObjectCount++;
                                     break;
-
                                 case EType.Group:
                                     var group = entity as Group;
-                                    
                                     break;
                             }
                         }
@@ -21803,30 +21310,29 @@ namespace QMC.Common.Modules
                 }
             }
 
-
             if (list.Count > 0)
             {
                 //1차로 죽어서 수정. 2차 시 에러코드 확인 요망.
                 //  List 에 등록된 가공 객체 Select
                 SiriusViewObjectEntitySelect(list);
-                m_bSelected = true;
+                bSelected = true;
 
-                m_strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, Selected Thruhole Socket Total Number : {0}", list.Count);
-                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, Selected Thruhole Socket Total Number : {0}", list.Count);
+                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
             }
 
 
             //  Select 된 객체가 있으면 회전 Offset 이동
-            if (m_bSelected)
+            if (bSelected)
             {
-                SiriusViewObjectRotateNOffset(m_dRotCenterX, m_dRotCenterY, m_dOffsetX, m_dOffsetY, m_dAngle);
+                SiriusViewObjectRotateNOffset(dRotCenterX, dRotCenterY, dOffsetX, dOffsetY, dAngle);
 
-                m_strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, Selected Thruhole Socket Align, RotCenterX:{0:0.000}, RotCenterY: {1:0.000}, OffsetX:{2:0.000}, OffsetY: {3:0.000}, Angle: {4:0.000}", 
-                                                                            m_dRotCenterX, m_dRotCenterY, m_dOffsetX, m_dOffsetY, m_dAngle);
-                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+                strTemp = string.Format("Failed Align Socket 의 Thruhole 가공, Selected Thruhole Socket Align, RotCenterX:{0:0.000}, RotCenterY: {1:0.000}, OffsetX:{2:0.000}, OffsetY: {3:0.000}, Angle: {4:0.000}", 
+                                                                            dRotCenterX, dRotCenterY, dOffsetX, dOffsetY, dAngle);
+                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
             }
 
-            return success;
+            return bSuccess;
         }
 
         private static void SiriusViewObjectRotateNOffset(double m_dRotCenterX, double m_dRotCenterY, double m_dOffsetX, double m_dOffsetY, double m_dAngle)
@@ -40439,9 +39945,6 @@ namespace QMC.Common.Modules
 
                     if (m_nDrillingWork_Group_Count < m_stLaserDrilling_SocketData[0].nGroup_Num)
                     {
-                        //아래 로그 한 번만 써야한다.. 소켓일시정지시에
-                        //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
-
                         if (Equipment.SelectRunEnable_New)
                         {
                             // 흠.. 여기서 hole1인경우에 Skip되면.. 얼라인을 안하니깐..
@@ -40475,15 +39978,6 @@ namespace QMC.Common.Modules
                             (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole50))
                         {
                             Log.Write("SLD-200", "Auto Run", "Hole Layer 2 ~ 50 은 Socket Align 이나 Height Check 를 다시 하지 않음.");
-
-                            // 여기서 Layer를 증가는 시켰어야 함...
-                            // 그리고 홀 공정 시. m_nLaserDrilling_LayerCount : 이걸로 되어 있는거 
-                            // m_nHoleLayer_ProcessIndex 이걸로 전부 변경해야 할 듯 싶다.
-                            // 그래야 Hole Layer 파라미터 별로 공정을 진행한다.
-
-                            // 20250710 - 여기서 이거 해야 하는데...
-                            //m_nLaserDrilling_LayerCount++;
-
                             nextStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;
                         }
                         else
@@ -40760,7 +40254,6 @@ namespace QMC.Common.Modules
                         if (m_nDrillingWork_Group_Count < m_stOutLine_SocketData[0].nSocket_Num)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 가공할 Socket 이 남아 있음");
-
                             if (Equipment.SelectRunEnable_New)
                             {
                                 var layerEnum = GetCurrentLayerEnum(m_LayerType);
@@ -40779,9 +40272,7 @@ namespace QMC.Common.Modules
 
                             m_nDrillingWork_Repeat_Count = 0;
                             m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
-
                             m_nOutLine_ObjectDataCount = 0;
-
                             m_nOutLine_SocketCount = m_nDrillingWork_Group_Count;
 
                             //  Hole1 Layer 가 있는 경우는, Hole1 Align 시 해당 Socket 의 모든 Layer 데이터가 Align 적용 되기 때문에 바로 가공 진행하도록 한다.
@@ -40810,7 +40301,6 @@ namespace QMC.Common.Modules
                             {
                                 var layerEnum = GetCurrentLayerEnum(m_LayerType);
                                 var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
-
                                 if (socket == null || !socket.IsSelected)
                                 {
                                     Log.Write("선택_가공", $"LaserDrilling_StepDrillingData_SocketRemainedCheck_SelectMode:LAYER_OUTLINE:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
@@ -40824,9 +40314,7 @@ namespace QMC.Common.Modules
 
                             m_nDrillingWork_Repeat_Count = 0;
                             m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
-
                             m_nOutLine_ObjectDataCount = 0;
-
                             m_nOutLine_SocketCount = m_nDrillingWork_Group_Count;
 
                             if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
@@ -40863,7 +40351,6 @@ namespace QMC.Common.Modules
                                         else
                                         {
                                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
-
                                             m_dZOffset_SocketHeightCheck = 0.0;
                                             nextStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
                                         }
@@ -40936,18 +40423,6 @@ namespace QMC.Common.Modules
                                     return (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                                 }
                             }
-
-                            //생각 좀 해보자.
-                            //var layerEnum1 = GetCurrentLayerEnum(m_LayerType);
-                            //var socket1 = DrillingManager.GetSocket(layerEnum1, m_nDrillingWork_Group_Count);
-                            //if (socket1 == null || !socket1.IsSocketAligned)
-                            //{
-                            //    // 선택되지 않은 소켓이면 건너뜀
-                            //    m_nDrillingWork_Group_Count++;
-
-                            //    nextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                            //    return (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                            //}
 
                             m_nDrillingWork_Repeat_Count = 0;
                             m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?

@@ -539,41 +539,6 @@ namespace QMC.Common.Global
             }
             return false;
         }
-
-        public bool HasAnyGoldOffsetXZero(string layerName, double epsilon = 1e-6, bool onlyUsedSockets = false)
-        {
-            var layer = GetLayer(layerName);
-            if (layer == null)
-                return false;
-
-            foreach (var socket in layer.SocketList)
-            {
-                if (onlyUsedSockets && !socket.IsUsedInThisLayer)
-                    continue;
-
-                if (Math.Abs(socket.GoldOffsetX) <= epsilon)
-                    return true;
-            }
-            return false;
-        }
-
-        public bool HasAnyGoldOffsetXZero(Equipment.LayerList layerEnum, double epsilon = 1e-6, bool onlyUsedSockets = false)
-        {
-            var layer = GetLayer(layerEnum);
-            if (layer == null)
-                return false;
-
-            foreach (var socket in layer.SocketList)
-            {
-                if (onlyUsedSockets && !socket.IsUsedInThisLayer)
-                    continue;
-
-                if (Math.Abs(socket.GoldOffsetX) <= epsilon)
-                    return true;
-            }
-            return false;
-        }
-
         public bool HasAnyGoldOffsetYZero(double epsilon = 1e-6, bool onlyUsedSockets = false)
         {
             foreach (var layer in LayerList)

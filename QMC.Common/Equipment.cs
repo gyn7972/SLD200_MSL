@@ -644,8 +644,6 @@ namespace QMC.Common
         public static bool Machine_FiducialImageSave_Always { set; get; } = false;              //  Fiducial Image Save Always
         public static bool Machine_VacuumBlowTime_Enable { set; get; } = true;                //  Vacuum Stabilization Time Enable
         public static int Machine_VacuumBlowTime { set; get; } = 500;                         //  Vacuum Signal Stabilization Time (ms)
-        public static bool Machine_SocketAlignNG_toNgBox_Enable { set; get; } = true;           //  Vacuum Stabilization Time Enable
-        public static int Machine_SocketAlignNG_toNgBox_ReferenceCount { set; get; } = 1;       //  Vacuum Signal Stabilization Time (ms)
         public static bool Machine_LoaderTransfer_Vibration_Enable { set; get; } = false;       //  Loader Transfer Vibration Enable
         public static double Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio { set; get; } = 2.0;        //  Vibration 시 가감속 속도 비율
         public static int Machine_LoaderTransfer_NumberOfVibrations { set; get; } = 2;                      //  Vibration 횟수
@@ -683,6 +681,7 @@ namespace QMC.Common
 
         public static bool Machine_PreAlign_First_Enable { set; get; } = false;    
         public static bool Machine_VisionNG_OKPort_Enable { set; get; } = false;
+        public static int Machine_VisionNG_OKPort_ReferenceCount { set; get; } = 1;
 
         public static bool Machine_ScannerToFineCamOffset { set; get; } = true;           //  Scanner to Fine Camera Offset 사용 여부 (true: 사용, false: 미사용)
 
@@ -3223,7 +3222,9 @@ namespace QMC.Common
             Equipment.Machine_PreAlign_First_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "VisionNG_OKPort_Enable", "false", temp, 255, strFIle);
             Equipment.Machine_VisionNG_OKPort_Enable = temp.ToString() == "False" ? false : true;
-            //
+            //Machine_VisionNG_OKPort_ReferenceCount
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VisionNG_OKPort_ReferenceCount", "1", temp, 255, strFIle);
+            Equipment.Machine_VisionNG_OKPort_ReferenceCount = Equipment.ToInt(temp.ToString());
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

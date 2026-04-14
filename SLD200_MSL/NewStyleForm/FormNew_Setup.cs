@@ -1555,6 +1555,7 @@ namespace SLD200_MSL
             checkBox_Setup_Option_PreAlign_First_Enable.Checked = Equipment.Machine_PreAlign_First_Enable;
 
             checkBox_Setup_Option_VisionNG_OKPort.Checked = Equipment.Machine_VisionNG_OKPort_Enable;
+            textBox_Setup_Option_VisionNG_OKPort_Count.Text = Equipment.Machine_VisionNG_OKPort_ReferenceCount.ToString();
 
             if (Equipment.Machine_FiducialImageSave_Always)
             {
@@ -2042,6 +2043,9 @@ namespace SLD200_MSL
 
             Equipment.Machine_VisionNG_OKPort_Enable = checkBox_Setup_Option_VisionNG_OKPort.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "VisionNG_OKPort_Enable", checkBox_Setup_Option_VisionNG_OKPort.Checked.ToString(), strFIle);
+
+            Equipment.Machine_VisionNG_OKPort_ReferenceCount = Equipment.ToInt(textBox_Setup_Option_VisionNG_OKPort_Count.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "VisionNG_OKPort_ReferenceCount", textBox_Setup_Option_VisionNG_OKPort_Count.Text.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
