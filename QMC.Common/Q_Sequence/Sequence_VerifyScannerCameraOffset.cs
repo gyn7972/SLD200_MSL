@@ -13,6 +13,7 @@ using System.Timers;
 using System.Windows.Forms;
 using static QMC.Common.Equipment;
 using static QMC.Common.Modules.WorkStage;
+using static QMC.Common.Q_Sequence.Sequence_ScannerCalibration;
 
 
 namespace QMC.Common.Q_Sequence
@@ -933,34 +934,38 @@ namespace QMC.Common.Q_Sequence
 
                 case (int)VerifyScannerCameraOffset_Step.Vario_Change:
 
-                    if(true)
+                    if(false)
                     {
                         m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.StageXY_Move_CenterPos;
                     }
                     else
                     {
-                        bds.spiralLabVario.fSetZOffset = 0;
-                        bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                        // 여기에서.. 현재 지정한 Z축으로 이동해한다. 
+                        // 0 기준으로 이동해야 한다. 
+                        bds.spiralLabVario.fSetZOffset = (float)Equipment.Scanner_Calibration_VarioScanZ;
+                        bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);
+                        double dDefocus = Equipment.Scanner_Calibration_VarioScanZ_Defocus;
+                        bds.spiralLabVario.SetZDefocus((float)dDefocus);
 
-                        TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
                         m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.Vario_Change_Check;
                     }
+
+
 
                     break;
 
                 case (int)VerifyScannerCameraOffset_Step.Vario_Change_Check:
 
-                    if (bds.spiralLabVario.GetCurrentZOffset() == bds.spiralLabVario.fSetZOffset)
+                    if (bds.spiralLabVario == null ||
+                           bds.spiralLabVario.GetCurrentZOffset() == bds.spiralLabVario.fSetZOffset)
                     {
-                        TickCount_Start((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET);
                         m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.StageXY_Move_CenterPos;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > nVerifyScannerCameraOffsetTimeout)
+                    else if (TickCount_Elapsed((int)TickType.TICK_VERIFY_SCANNER_CAMERA_OFFSET) > 50000)
                     {
-                        Log.Write("VerifyScannerCameraOffset", Equipment.User_Name, "VerifyScannerCameraOffset", "Vario 이동 실패. (Timeout)");
-
-                        m_VerifyScannerCameraOffsetStep = (int)VerifyScannerCameraOffset_Step.None;
+                        m_VerifyScannerCameraOffsetStep = VerifyScannerCameraOffset_Step.None;
                         return workStage.AlarmPost(AlarmKey.Vario_Scan_Fail);
+                        //return AlarmAndStop(AlarmKey.Vario_Scan_Fail, "Vario 이동 실패");
                     }
                     break;
 

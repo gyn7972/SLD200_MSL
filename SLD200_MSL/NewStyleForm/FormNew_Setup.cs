@@ -271,8 +271,13 @@ namespace SLD200_MSL
             textBox_Setup_ScannerCal_CalPitch.Text = Equipment.Scanner_Calibration_CalPitch.ToString();
             ////Scanner_Calibration_VisionZOffset
             textBox_Setup_ScannerCal_VisionZOffset.Text = Equipment.Scanner_Calibration_VisionZOffset.ToString();
-            textBox_Setup_ScannerCal_VisionZOffset3D.Text = Equipment.Scanner_Calibration_VarioScanZ.ToString();
-            textBox_Setup_ScannerCal_VisionZDefocus3D.Text = Equipment.Scanner_Calibration_VarioScanZ_Defocus.ToString();
+
+            double mm = Equipment.Scanner_Calibration_VarioScanZ;
+            double value = (mm / 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
+            textBox_Setup_ScannerCal_VisionZOffset3D.Text = value.ToString();
+            mm = Equipment.Scanner_Calibration_VarioScanZ_Defocus;
+            value = (mm / 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
+            textBox_Setup_ScannerCal_VisionZDefocus3D.Text = value.ToString();
 
             comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.SelectedIndex = Equipment.Scanner_Calibration_MaskIndex;
             comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.Scanner_Calibration_BETPositionIndex;
@@ -2197,6 +2202,14 @@ namespace SLD200_MSL
             Equipment.Scanner_Calibration_MaskIndex = comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.SelectedIndex;
             Equipment.Scanner_Calibration_BETPositionIndex = comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.SelectedIndex;
 
+
+            double mm = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
+            double value = (mm * 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
+            Equipment.Scanner_Calibration_VarioScanZ = value;
+            mm = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZDefocus3D.Text);
+            value = (mm * 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
+            Equipment.Scanner_Calibration_VarioScanZ_Defocus = value;
+
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", textBox_Setup_ScannerCal_LaserFrequency.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Pulse_Width", textBox_Setup_ScannerCal_PulseWidth.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Energy", textBox_Setup_ScannerCal_LaserEnergy.Text, strFIle);
@@ -2215,7 +2228,12 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "MaskIndex", comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.SelectedIndex.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "BETPositionIndex", comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.SelectedIndex.ToString(), strFIle);
 
-
+            mm = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
+            value = (mm * 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "VarioScanZ", value.ToString(), strFIle);
+            mm = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZDefocus3D.Text);
+            value = (mm * 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "VarioScanZ_Defocus", value.ToString(), strFIle);
 
             Equipment.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile; // m_srcFile;
             Equipment.Scanner_Calibration_targetFilePath = m_correction2DRtc.TargetCorrectionFile;  // m_targetFile;
@@ -2239,9 +2257,6 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colInterval", m_colInterval.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowCount", m_row.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colCount", m_col.ToString(), strFIle);
-
-
-
 
          }
 
@@ -3125,7 +3140,9 @@ namespace SLD200_MSL
             {
                 // UI에서 Z값 입력받는 textbox가 있다면 그걸 사용
                 // 예: textBox_Setup_ScannerCal_CurrentZ
-                float zMm = (float)Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
+                double mm = Equipment.Scanner_Calibration_VarioScanZ;
+                double value = (mm / 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
+                float zMm = (float)value;   // Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
                     sfd.Filter = "Json File (*.json)|*.json";
@@ -4588,7 +4605,6 @@ namespace SLD200_MSL
             }
         }
 
-
         private void M_Owner_UpdateResult(PatternMatchingResult result)
         {
             if (this.IsDisposed || Box_Setup_ScannerCal_ImageViewer == null) return;
@@ -4610,51 +4626,6 @@ namespace SLD200_MSL
             }
 
             Box_Setup_ScannerCal_ImageViewer.Display();   // 반드시 호출
-        }
-        //private void M_Owner_UpdateResult(PatternMatchingResult result)
-        //{
-        //    Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Clear();
-        //    foreach (var overlay in result.ResultOverlays)
-        //    {
-        //        Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Add(overlay);
-        //    }
-        //}
-
-
-        private ScannerCalConfigData GetScannerCalConfigDataFromUI()
-        {
-            var config = new ScannerCalConfigData();
-
-            config.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserFrequency.Text);
-            config.Scanner_Calibration_LaserPulseWidth = Equipment.ToDouble(textBox_Setup_ScannerCal_PulseWidth.Text);
-            config.Scanner_Calibration_LaserEnergy = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserEnergy.Text);
-            config.Scanner_Calibration_CrossMarkLength = Equipment.ToDouble(textBox_Setup_ScannerCal_CrossMarkLength.Text);
-            config.Scanner_Calibration_LaserMarkSpeed = Equipment.ToDouble(textBox_Setup_ScannerCal_MarkingSpeed.Text);
-            config.Scanner_Calibration_LaserJumpSpeed = Equipment.ToDouble(textBox_Setup_ScannerCal_JumpSpeed.Text);
-            config.Scanner_Calibration_LaserOnDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserOnDelay.Text);
-            config.Scanner_Calibration_LaserOffDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserOffDelay.Text);
-            config.Scanner_Calibration_MarkDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_MarkDelay.Text);
-            config.Scanner_Calibration_JumpDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_JumpDelay.Text);
-            config.Scanner_Calibration_PolygonDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_PolygonDelay.Text);
-            config.Scanner_Calibration_CalAreaWidth = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaWidth.Text);
-            config.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaHeight.Text);
-            config.Scanner_Calibration_CalPitch = Equipment.ToDouble(textBox_Setup_ScannerCal_CalPitch.Text);
-            config.Scanner_Calibration_VisionZOffset = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset.Text);
-            config.Scanner_Calibration_VarioScanZ = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
-            config.Scanner_Calibration_VarioScanZ_Defocus = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZDefocus3D.Text);
-
-            // RTC 및 correction 관련 정보
-            config.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile;
-            config.Scanner_Calibration_targetFilePath = m_correction2DRtc.TargetCorrectionFile;
-            config.Scanner_Calibration_FieldSize = m_fieldSize;
-            config.Scanner_Calibration_rowInterval = m_correction2DRtc.RowInterval;
-            config.Scanner_Calibration_colInterval = m_correction2DRtc.ColInterval;
-            config.Scanner_Calibration_rowCount = m_correction2DRtc.Rows;
-            config.Scanner_Calibration_colCount = m_correction2DRtc.Cols;
-
-            //config.ConfigPath = System.IO.Path.Combine(ConfigManager.GetConfigPath(), "Machine ScannerCalibration (Do not delete or modify).ini");
-
-            return config;
         }
 
         private void button_ScannerCal_Illuminator_Camera_ExposureTime_High_Click(object sender, EventArgs e)

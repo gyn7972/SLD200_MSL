@@ -756,8 +756,11 @@ namespace QMC.Common.Q_Sequence
                         lfVelocity = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Speed_Coarse;
                         lfAccDec = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Acceleration_Coarse;
 
+                        //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y] =
+                        //    bds.stBDSTeachingPos[(int)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_MaskIndex].Mask_Y;
+
                         workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y] =
-                            bds.stBDSTeachingPos[(int)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_MaskIndex].Mask_Y;
+                             bds.stBDSTeachingPos[Equipment.Scanner_Calibration_MaskIndex].Mask_Y; 
 
                         workStage.MC_Func.MC_MovePosition(
                             (int)Bds.nAxis.MASK_Y,
@@ -787,7 +790,8 @@ namespace QMC.Common.Q_Sequence
 
                 case ScannerCalibrationSeq_Step.BETA_Change:
                     {
-                        int betIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
+                        int betIndex = Equipment.Scanner_Calibration_BETPositionIndex;
+                        //int betIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
                         if (betIndex < 0 || betIndex >= 5)
                             return AlarmAndStop(AlarmKey.eBETIndexFail, "BET Index 범위 오류");
 
@@ -803,7 +807,8 @@ namespace QMC.Common.Q_Sequence
                         if (TickCount_Elapsed((int)TickType.TICK_SCANNER_CALIBRATION) <= 500)
                             break;
 
-                        int betIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
+                        int betIndex = Equipment.Scanner_Calibration_BETPositionIndex;
+                        //int betIndex = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex;
                         double targetZoom = 0.0;
                         double targetMrad = 0.0;
 
