@@ -574,8 +574,6 @@ namespace QMC.Common.Modules
             public double[] dPreAlignWidth;             //  PreAlign 마크 가로 크기
             public double[] dPreAlignHeight;            //  PreAlign 마크 세로 크기
         }
-        //public stThruHole_SocketData m_stThruHole_SocketData;
-        //public stThruHole_SocketData[] m_stThruHole_LayerData;                    //  Socket Data 를 저장한다.
         public stThruHole_SocketData[] m_stThruHole_SocketData;                     //  Socket Data 를 저장한다.
         public stThruHole_SocketData[] m_stThruHole_SocketData_ProcessingFlag;      //  Socket Data 를 저장한다. (가공 여부 Flag)
         public bool m_bPassedSocket_Exist;
@@ -19552,11 +19550,6 @@ namespace QMC.Common.Modules
                                     break;
                                 case EType.Text:
                                     var text = entity as SpiralLab.Sirius.Text;
-                                    //  여기는 Hole Socket 번호와 동일한 위치의 마킹 데이터를 선택해서 얼라인 보정하려는 목적이 아니라,
-                                    //  마킹 데이터가 몇개가 들어있는지 확인하는 용도이다.
-                                    //  여러개의 소켓으로 이루어진 모듈이라도, 마킹은 1개만 존재하는 경우가 있다.
-                                    //  마킹 데이터가 1개인 경우에는, 최초에 얼라인 성공하는 소켓과 함께 얼라인 보정을 해 둔다.
-                                    //  얼라인 보정이 끝난 마킹 데이터는 다시 보정하지 않도록 한다.
                                     if (nMarking_ObjectCount++ == m_nSocketNum)
                                     {
                                         //m_nListCount++;
@@ -19581,50 +19574,24 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
 
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
 
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
 
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount++].radius = (double)arc.Radius;
                                     break;
 
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount++].radius = (double)circle.Radius;
                                     break;
 
                                 case EType.Rectangle:
-                                    //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
-
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.ModelTranslate.X;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.ModelTranslate.Y;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
                             }
                         }
@@ -19634,7 +19601,6 @@ namespace QMC.Common.Modules
 
             //  마킹 Entity 의 총 개수 
             nMarkingEntity_TotalCount = nMarking_ObjectCount;
-
             //  마킹 Entity 개수와 Hole1 Layer 의 소켓 개수와 동일한지 체크
             if (nHole1_ObjectCount == nMarking_ObjectCount)
             {
@@ -19648,7 +19614,6 @@ namespace QMC.Common.Modules
             {
                 //  소켓 개수와 마킹 개수가 다르고, 마킹 개수가 1개이고, 아직 얼라인이 안된 경우
                 //  현재 얼라인 한 소켓과 같이 묶어서 얼라인 해준다.
-                
                 nListCount++;
                 bMarkingEntity_Select = true;
             }
@@ -19667,7 +19632,6 @@ namespace QMC.Common.Modules
             nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
             nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
 
-
             //  Layer 종류별 Count
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
@@ -19682,52 +19646,20 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
                                     break;
-
                                 case EType.Rectangle:
-                                    //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
-
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.ModelTranslate.X;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.ModelTranslate.Y;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
-
                                 case EType.Group:
                                     var group = entity as Group;
 
@@ -19749,55 +19681,23 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
                                     break;
-
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
-
                                 case EType.Group:
                                     var group = entity as Group;
-
                                     if (nOutline_ObjectCount++ == m_nSocketNum)
                                     {
                                         //  선택한 소켓의 가공 객체를 List 로 등록
@@ -19816,52 +19716,21 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
                                     break;
-
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
-
                                 case EType.Group:
                                     var group = entity as Group;
 
@@ -19883,55 +19752,23 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
                                     break;
-
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
-
                                 case EType.Text:
                                     var text = entity as SpiralLab.Sirius.Text;
-
                                     if (bMarkingEntity_Select)
                                     {
                                         if (nMarkingEntity_TotalCount == 1)               //  마킹 Entity 가 1개이면? -> 처음 얼라인 성공한 Socket 과 함께 얼라인 해준다.
@@ -19941,7 +19778,6 @@ namespace QMC.Common.Modules
                                             {
                                                 //  선택한 소켓의 가공 객체를 List 로 등록
                                                 list.Add(text);
-
                                                 Equipment.m_bOneMarkingData_AlignCompleted = true;            //  다음번엔 얼라인 하지않도록 하기 위한 Flag
                                             }
                                         }
@@ -19955,7 +19791,6 @@ namespace QMC.Common.Modules
                                         }
                                     }
                                     break;
-
                                 case EType.Group:
                                     var group = entity as Group;
 
@@ -19972,50 +19807,19 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
-
                                 case EType.Points:
                                     var points = entity as SpiralLab.Sirius.Points;
-                                    //foreach (var vertex in points)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //}
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
-
                                 case EType.Line:
-                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
-
                                     break;
-
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterX = (double)arc.Center.X;
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount++].radius = (double)arc.Radius;
                                     break;
-
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterX = (double)circle.Center.X;
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount++].radius = (double)circle.Radius;
                                     break;
-
                                 case EType.Rectangle:
-                                    //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
-
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.ModelTranslate.X;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.ModelTranslate.Y;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
-                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
                             }
                         }
@@ -40219,7 +40023,6 @@ namespace QMC.Common.Modules
                         {
                             string m_strTemp = string.Format("Socket Align 실패한 Socket 없음. 다음 Layer 확인.");
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
-
                             // 공통 자동 완료 마킹.
                             {
                                 var layerEnum = GetCurrentLayerEnum(m_LayerType);
@@ -40258,7 +40061,6 @@ namespace QMC.Common.Modules
                             {
                                 var layerEnum = GetCurrentLayerEnum(m_LayerType);
                                 var socket = DrillingManager.GetSocket(layerEnum, m_nDrillingWork_Group_Count);
-
                                 if (socket == null || !socket.IsSelected)
                                 {
                                     Log.Write("선택_가공", $"LaserDrilling_StepDrillingData_SocketRemainedCheck_SelectMode:LAYER_OUTLINE:소켓 {m_nDrillingWork_Group_Count + 1} 은 선택되지 않음 → SKIP");
@@ -40274,7 +40076,6 @@ namespace QMC.Common.Modules
                             m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
                             m_nOutLine_ObjectDataCount = 0;
                             m_nOutLine_SocketCount = m_nDrillingWork_Group_Count;
-
                             //  Hole1 Layer 가 있는 경우는, Hole1 Align 시 해당 Socket 의 모든 Layer 데이터가 Align 적용 되기 때문에 바로 가공 진행하도록 한다.
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Hole1 Layer 가 있음. 이미 Align 이 완료된 상태이므로 가공 진행.");
                             nextStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;        //-->  여기가 맞는지 체크 필요
@@ -40282,7 +40083,6 @@ namespace QMC.Common.Modules
                         else
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Marking Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
-
                             if (Equipment.SelectRunEnable_New)
                             {
                                 m_nDrillingWork_Group_Count = 0;
@@ -40296,7 +40096,6 @@ namespace QMC.Common.Modules
                         if (m_nDrillingWork_Group_Count < m_stOutLine_SocketData[0].nSocket_Num)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
-
                             if (Equipment.SelectRunEnable_New)
                             {
                                 var layerEnum = GetCurrentLayerEnum(m_LayerType);
@@ -40316,7 +40115,6 @@ namespace QMC.Common.Modules
                             m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
                             m_nOutLine_ObjectDataCount = 0;
                             m_nOutLine_SocketCount = m_nDrillingWork_Group_Count;
-
                             if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
                             {
                                 Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : On");

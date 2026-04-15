@@ -3224,8 +3224,13 @@ namespace SLD200_MSL
                                 dResizing = dResizing / 2;
                                 strResizing = dResizing.ToString("0.###");
 
-                                double dHoleSize = workStage.m_stLaserDrilling_SocketData[0].
+                                double dHoleSize = 0;
+                                if (workStage.m_stLaserDrilling_SocketData != null)
+                                {
+                                    dHoleSize = workStage.m_stLaserDrilling_SocketData[0].
                                     m_stDividedRegion_RegionData[0].m_stDividedRegion_ObjectData[0].dEdgePoint[1].X;
+                                }
+                                
                                 label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = dHoleSize.ToString("0.###");
 
                                 label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = (dHoleSize + dResizing).ToString("0.###");

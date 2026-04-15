@@ -756,9 +756,6 @@ namespace QMC.Common.Q_Sequence
                         lfVelocity = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Speed_Coarse;
                         lfAccDec = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Acceleration_Coarse;
 
-                        //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y] =
-                        //    bds.stBDSTeachingPos[(int)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_MaskIndex].Mask_Y;
-
                         workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y] =
                              bds.stBDSTeachingPos[Equipment.Scanner_Calibration_MaskIndex].Mask_Y; 
 
