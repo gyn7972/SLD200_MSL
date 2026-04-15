@@ -1845,11 +1845,51 @@ namespace SLD200_MSL
                             }
                         }
                     }
-                    else if (workStage.CurrentLayerName == "Thruhole")
+                    else if (workStage.CurrentLayerName == "Thruhole" || workStage.CurrentLayerName == "Thruhole_1")
                     {
                         for (int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
                         {
-                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Thruhole)
+                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Thruhole_1)
+                            {
+                                workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Thruhole" 인 Layer 의 Index 를 넣어줌
+
+                                break;
+                            }
+                        }
+
+                        workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
+
+                        if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
+                        {
+                            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
+                            {
+                                strTemp = string.Format("선택한 {0}번 소켓 단일 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                            }
+                            else if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)
+                            {
+                                strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                            }
+
+                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                            checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
+
+                            var mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes == mb.ShowDialog("Question ?", strTemp))
+                            {
+                                workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 취소");
+                                return;
+                            }
+                        }
+                    }
+                    else if (workStage.CurrentLayerName == "Thruhole_2")
+                    {
+                        for (int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
+                        {
+                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Thruhole_2)
                             {
                                 workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Thruhole" 인 Layer 의 Index 를 넣어줌
 
@@ -4518,7 +4558,7 @@ namespace SLD200_MSL
             double m_dHoleLayer_Defocusing = 0;
             String strTemp = string.Empty;
 
-            if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance_Use == false)
+            if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_VarioScan_Use == false)
             {
                 m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
             }
@@ -4553,7 +4593,7 @@ namespace SLD200_MSL
                 }
             }
 
-            if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance_Use)
+            if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_VarioScan_Use)
             {
                 //VarioScan 이동.
                 double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
@@ -4653,282 +4693,7 @@ namespace SLD200_MSL
             dlg.ShowDialog();
 
             return;
-            //AutoRunTracker.OnAutoStart();
-            //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
-            Thread.Sleep(1000);
-            AutoRunTracker.OnAutoStop();
-            workStage.DrillingManager.CycleTimer_LaserDrilling.End();
 
-            workStage.DrillingManager.SaveLotLog();                     // 최신 로그 저장
-
-            return;
-
-            //string strTemp = string.Empty;
-            strTemp = string.Empty;
-            float fMeasuredPower = workStage.m_Sequence_LaserPowerMeasure.m_fMeasuredPower;
-            float fPowerLimitMin = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMin_Stage;
-            float fPowerLimitMax = workStage.m_Sequence_LaserPowerMeasure.m_fPowerLimitMax_Stage;
-            if (fMeasuredPower < fPowerLimitMin || fMeasuredPower > fPowerLimitMax)
-            {
-                strTemp = "m_Sequence_LaserPowerMeasure 실패.";
-                Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Step_LaserPowerMeasure_Check", strTemp);
-                //return AlarmPost(AlarmKey.LaserPowerMeasureLimitFail);
-            }
-
-            return;
-            workStage.m_dStageheight = 1.567;
-            workStage.m_dModuleHeight = 0.590;
-
-            return;
-            workStage.SetStageComplete(WorkStage.SemiAutoStep.PreAlign, false);
-            workStage.SetSemiAutoRequest(WorkStage.SemiAutoStep.PreAlign);
-
-            return;
-
-            int nSocket = 0;
-            int nHoleLayer = 0;
-
-            if (!workStage.IsCurrentSocketSelected(LayerType.LAYER_DRILLING, nHoleLayer, nSocket))
-            {
-                Log.Write("선택 가공", $"LAYER_DRILLING: 소켓 {nSocket + 1}, LAYER Hole:{nHoleLayer + 1} 은 선택되지 않음 → SKIP");
-                //nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                //return nNextStep;
-            }
-
-            if (!workStage.IsCurrentSocketSelected(LayerType.LAYER_THRUHOLE, nSocket))
-            {
-                Log.Write("선택 가공", $"LAYER_THRUHOLE: 소켓 {nSocket + 1}은 선택되지 않음 → SKIP");
-                //nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                //return nNextStep;
-            }
-
-            if (!workStage.IsCurrentSocketSelected(LayerType.LAYER_MARKING, nSocket))
-            {
-                Log.Write("선택 가공", $"LAYER_MARKING: 소켓 {nSocket + 1}은 선택되지 않음 → SKIP");
-                //nNextStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                //return nNextStep;
-            }
-
-            return;
-
-            int m_nMainWorkCycle_ResultOKNG = 1;
-
-            string message = string.Format(
-                                                        "[생산완료] 결과 = {0}, MarkingNumber = {1}",
-                                                        m_nMainWorkCycle_ResultOKNG,
-                                                        Equipment.m_nSerialNumberMarkingCount);
-            Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", message);
-
-
-            return;
-            do
-            {
-                if (workStage.ShouldRaiseAlarm(WorkStage.AlarmKey.Main_CDA_Alarm, !workStage.workStageParameter.DI_Main_CDA_Check()))
-                    workStage.AlarmPost(WorkStage.AlarmKey.Main_CDA_Alarm);
-                if (workStage.ShouldRaiseAlarm(WorkStage.AlarmKey.Main_Purge_Alarm, !workStage.workStageParameter.DI_Main_Purge_Check()))
-                    workStage.AlarmPost(WorkStage.AlarmKey.Main_Purge_Alarm);
-
-                Thread.Sleep(100);
-            } while (false);
-
-
-            //string strTemp = "15.25";
-            int na = ToInt(strTemp);
-
-            return;
-            workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
-            Thread.Sleep(1000);
-            workStage.DrillingManager.CycleTimer_LaserDrilling.End();
-
-            workStage.DrillingManager.SaveLotLog();                     // 최신 로그 저장
-            return;
-            Equipment.Scanner_Vision_Offset_Setting_X = 0.0015;
-            Equipment.Scanner_Vision_Offset_Setting_Y = -0.0023;
-
-            workStage.m_ScannerCameraOffsetSequence.SaveScannerCameraOffsetLog("OK",  // 또는 "NG"
-                                    Equipment.stOffsetDistance.FromScannerToFineCam.X,
-                                    Equipment.stOffsetDistance.FromScannerToFineCam.Y,
-                                    Equipment.Scanner_Vision_Offset_Setting_X,
-                                    Equipment.Scanner_Vision_Offset_Setting_Y
-                                    );
-
-            return;
-            strTemp = string.Empty;
-            var markingLayer = workStage.DrillingManager.GetLayer(LayerList.Marking);
-            if (markingLayer != null && markingLayer.SocketList.Count > 0)
-            {
-                //if ((!Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_TextType) &&                                                                     //  마킹이 고정 Text 가 아닌 Serial Number 마킹인 경우
-                //    (Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType == (int)nSerialNumber_IncreaseType.forEachModule))       //  모듈이 바뀔 때마다 Serial Number 를 다시 초기화 하는 경우
-                
-                if(Equipment.stLayerRecipeSet[(int)LayerList.Marking].MarkingTemplate_EntityData_SerialNumberIncreaseType == (int)nSerialNumber_IncreaseType.forEachModule)
-                {
-                    int nCount = Equipment.m_nSerialNumberMarkingCount;
-                    strTemp = string.Format("Module Number : {0} 부터 시작합니다.", nCount);
-                    //var mb = new MessageBoxOk();
-                    mb.ShowDialog("Information !", strTemp);
-                }
-                //string message = $"Marking 레이어가 존재하며, {markingLayer.SocketList.Count}개의 소켓이 포함되어 있습니다.";
-                //var mb = new MessageBoxOk();
-                //mb.ShowDialog("Information", message);
-            }
-
-            return;
-
-            nSocket = 0;
-
-            m_LayerType = LayerType.LAYER_MARKING;
-
-            if (Equipment.SelectRunEnable_New)
-            {
-                // 선택된 소켓 중에서 Hole1 Layer에 해당하는 소켓이 있는지 확인
-                if (!workStage.IsCurrentSocketSelected(LayerType.LAYER_DRILLING, nSocket))
-                {
-                    Log.Write("선택 가공", $"소켓 {nSocket + 1} 은 선택되지 않음 → SKIP");
-                    nSocket++;
-                    return;
-                }
-            }
-
-
-            if (Equipment.SelectRunEnable_New)
-            {
-                var layerEnum = workStage.GetCurrentLayerEnum(m_LayerType);
-                var socket = workStage.DrillingManager.GetSocket(layerEnum, nSocket);
-
-                if (socket == null || !socket.IsSelected)
-                {
-                    // 선택되지 않은 소켓이면 건너뜀
-                    nSocket++;
-                    return;
-                }
-            }
-
-            return;
-            //workStage.DrillingManager.CycleTimer_LaserDrilling.Start();
-
-            //Thread.Sleep(1000);
-
-            //workStage.DrillingManager.CycleTimer_DoneModuleCount++;
-            //workStage.DrillingManager.CycleTimer_LaserDrilling.End();
-
-            //workStage.DrillingManager.SaveLotLog();                     // 최신 로그 저장
-            
-
-            try
-            {
-                //FormSemiAuto.Show();  // 모달리스
-                //FormMotorMove.Show();  // 모달리스
-
-                FormSelectProcess.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
-                FormSelectProcess.Show();
-
-                FormModuleMonitor.LoadDrillingManager(workStage.DrillingManager);  // 외부에서 주입
-                //FormModuleMonitor.Show();  // 모달리스
-            }
-            catch (Exception ex)
-            {
-                //Log.Write("UI", $"FormNewSub_SemiAuto 창 열기 실패: {ex.Message}");
-                MessageBox.Show("모듈 상태 창 열기 실패:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            //loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
-
-            //Equipment.m_bCheckAxesMotionDoneWithRetry = true;
-            //double dPoscurX = 0.0;
-            //double dPoscurY = 0.0;
-            ////dPoscurX = MC_Func.MC_GetEncPos((int)nAxis.X);
-            ////dPoscurY = MC_Func.MC_GetEncPos((int)nAxis.Y);
-            //dPoscurX = -234.854353;
-            //dPoscurY = 100.125245734673567;
-            //Log.Write("StageScannerPos",
-            //            "Socket NO : " + dPoscurX.ToString() +
-            //            "  FieldSize NO : " + dPoscurX.ToString() +
-            //            "  Fail Pos (X: " + dPoscurX.ToString("F3") +
-            //            ", Y: " + dPoscurY.ToString("F3") + ")");
-
-            //if (Equipment.m_bCheckAxesMotionDoneWithRetry)
-            //{
-            //    if (double.IsNaN(dPoscurX) || double.IsInfinity(dPoscurX) || Math.Abs(dPoscurX) > 9999) // 범위는 상황에 맞게 조정
-            //    {
-            //        Log.Write("StageScannerPos", "MC_GetEncPos", $"[경고] 보정된 위치가 비정상적입니다 → X: {dPoscurX}");
-            //    }
-            //    else
-            //    {
-            //        Log.Write("StageScannerPos", "MC_GetEncPos", $"XAxis:Interpolator Pos:[X: {dPoscurX:F3}].");
-            //    }
-
-            //    Equipment.m_bCheckAxesMotionDoneWithRetry = false;
-            //}
-            //Machine_MAligner_WidenDistance <- 벌어지는 거리.
-            //double dPosX = 100 + Equipment.Machine_MAligner_WidenDistance;
-            //double dPosY = 100 + Equipment.Machine_MAligner_WidenDistance;
-            //  Target Position 변경 : 입력한 자재 크기로 변경
-            //loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = m_dMAlign_CalculatedModuleSize_ALN_X;
-            //loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = m_dMAlign_CalculatedModuleSize_ALN_Y;
-            //loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = dPosX;
-            //loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = dPosY;
-
-            //Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", $"MAlignerX-TargetPos: " +
-            //    $"{dPosX:F3} mm" + $"MAlignerY-TargetPos: " + $"{dPosY:F3} mm");
-
-            //loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
-            //unloader.AlarmPost(Unloader.AlarmKey.UL_Transfer_Picker_Module_NotExist);
-            //workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);
-
-            return;
-            
-            Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
-            // 시작 Test
-            workStage.timer_Motion_Home.Enabled = true;
-            workStage.m_btimer_Motion_Home_Stop = false;
-            workStage.m_MotionHome_Start = true;
-            workStage._currentHomeMode = (int)WorkStage.HomeMode.StageXYOnly;
-            workStage.m_nStageXY_HomeStep = (int)WorkStage.StageXY_HomeStep.Start;
-            return;
-
-            workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
-
-            //workStage.AlarmPost(WorkStage.AlarmKey.Scan_Area_Fail);
-            //unloader.AlarmPost(Unloader.AlarmKey.UL_Transfer_Picker_Module_NotExist);
-            //loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail);
-
-            return;
-
-            //workStage.workStageParameter.DO_AirCurtain_Purge(true);
-
-            //double freq = 0.0;
-            //bds.DustCollector_Upper.GetFrequency(out freq);
-
-
-            //string strTemp = "";
-            double offsetX = 0.0, offsetY = 0.0;
-
-            for (int i = 0; i < 20; i++)
-            {
-                strTemp = $"Fiducial Makr No: " + "0" + "," +
-                            $"도면_Hole_Pos{i}, X: {offsetX + i:F4}, Y: {offsetY + i:F4}, " +
-                          $"측정_Hole_Pos{i}, X: {offsetX + i*2:F4}, Y: {offsetX + i * 2:F4}, " +
-                          $"Offset - X: {offsetX + i * 3:F4}, Y: {offsetX + i * 3:F4}";
-                Log.Write("Goldpowder", "Result", strTemp);
-            }
-
-            strTemp = $"Fiducial Makr No: " + "0" + "," +
-                      $"검출 갯수: {20}, finalOffsetX: {offsetX+22.45:F4}, finalOffsetY: {offsetX + 22.45:F4}";
-            Log.Write("Goldpowder", "Result", strTemp);
-
-            strTemp = "Align이동량계산성공.\r\n\r\n" +
-                    "- Final_Offset X : " + "0.008" + "\r\n" +
-                    "- Final_Offset Y : " + "0.003" + "\r\n" +
-                    "- Angle : " + "0";
-            Log.Write("Goldpowder", "Result", strTemp);
-
-            
-
-            //Test
-            workStage.UpdateLastDrillTime();
-
-            workStage.DrillingManager.CycleTimer_DoneModuleCount++;
-            workStage.DrillingManager.CycleTimer_LaserDrilling.End();
         }
 
         private void SetColor(System.Windows.Forms.Control control, Color Backcolor,Color foreColor)

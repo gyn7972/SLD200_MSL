@@ -439,7 +439,8 @@ namespace QMC.Common
             Outline,
             Marking,
             Fiducial,
-            Thruhole,
+            Thruhole_1,
+            Thruhole_2,
             PreAlign,
         }
 
@@ -447,11 +448,13 @@ namespace QMC.Common
         {
             LAYER_DRILLING = 0,
             LAYER_OUTLINE = 1,
-            LAYER_THRUHOLE = 2,
-            LAYER_MARKING = 3,
-            LAYER_FIDUCIAL = 4,
-            LAYER_RECTANGLE = 5,
-            LAYER_PREALIGN = 6,
+            //LAYER_THRUHOLE = 2,
+            LAYER_THRUHOLE_1 = 2,
+            LAYER_THRUHOLE_2 = 3,
+            LAYER_MARKING = 4,
+            LAYER_FIDUCIAL = 5,
+            LAYER_RECTANGLE = 6,
+            LAYER_PREALIGN = 7,
         }
         public static LayerType m_LayerType = LayerType.LAYER_DRILLING;
 
@@ -484,7 +487,6 @@ namespace QMC.Common
 
             public string Miscellaneous_ReferenceLayer;                 //  Reference Layer
             public double Miscellaneous_DefocusingDistance;             //  Defocusing Distance (mm)
-            public bool Miscellaneous_DefocusingDistance_Use;              //  Defocusing Distance Use (true: Use, false: Not Use)
             public double Miscellaneous_Resizing;                       //  Resizing (mm)
 
             //Add
@@ -563,6 +565,7 @@ namespace QMC.Common
             public double MarkingTemplate_EntityData_Hatch_Spacing;     //  Marking Template Entity Hatch Spacing
             public int MarkingTemplate_EntityData_SerialNumberIncreaseType;            //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
+            public bool Miscellaneous_VarioScan_Use;              //  Defocusing Distance Use (true: Use, false: Not Use)
             public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
             public double CalfileOffsetDefocusZAxismm;                 //  Defocus Z Axis Offset Calibration File (mm)
             public bool ChuckMSL_Enable;                                   //  Chuck 사용 여부 (true: 사용, false: 미사용)
@@ -570,14 +573,12 @@ namespace QMC.Common
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
 
-
         public struct LayerRecipeResult
         {
             public int Index;                              // 현재 레이어 Index
             public stLayerRecipeParameter LayerData;       // 해당 레이어 전용 데이터
             public stLayerRecipeParameter CommonData;      // Hole1(0번) 공통 데이터
         }
-
 
         public enum VisionAlgorithmType
         {
@@ -587,10 +588,8 @@ namespace QMC.Common
         }
         //  Recipe 파라미터 - PreAlign 
         public static VisionRecipeData stVisionRecipeSet = new VisionRecipeData();
-
         //  Recipe - Z Axis에 따른 Calibration File
         public static ScannerCalManager stConfigScannerCalData = new ScannerCalManager();
-
         //PreAlign Data
         public class PreAlignData
         {
@@ -1289,7 +1288,7 @@ namespace QMC.Common
                 //  Miscellaneous
                 stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = "";                              //  어떤 Layer 의 데이터를 사용할 것인지
                 stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = 0.0;                         //  가공 시 초점 위치에서 얼마나 이동해서 가공할 것인지
-                stLayerRecipeSet[i].Miscellaneous_DefocusingDistance_Use = false;                     //  Defocusing Distance Use (true: Use, false: Not Use)
+                stLayerRecipeSet[i].Miscellaneous_VarioScan_Use = false;                     //  Defocusing Distance Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].Miscellaneous_Resizing = 0.0;                                   //  가공 시 데이터를 얼마나 확대/축소할 것인지 (전체 길이를 입력하면 2등분 하여 양방향으로 크기 조정)
                 stLayerRecipeSet[i].Miscellaneous_HoleSize = 0.0; //Miscellaneous_HoleSize
                 stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = 1;                //  Hole Drilling 가공 시 시작 위치를 몇개로 나눌 것인지 (Only 1, 2, 3, 4, 5, 6, 8, 9, 10, 12)

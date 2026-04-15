@@ -244,10 +244,15 @@ namespace QMC.Common.Global
                     layerEnum = Equipment.LayerList.Outline;
                     layerType = Equipment.LayerType.LAYER_OUTLINE;
                 }
-                else if (layerName == "Thruhole")
+                else if (layerName == "Thruhole" || layerName == "Thruhole_1")
                 {
-                    layerEnum = Equipment.LayerList.Thruhole;
-                    layerType = Equipment.LayerType.LAYER_THRUHOLE;
+                    layerEnum = Equipment.LayerList.Thruhole_1;
+                    layerType = Equipment.LayerType.LAYER_THRUHOLE_1;
+                }
+                else if (layerName == "Thruhole2")
+                {
+                    layerEnum = Equipment.LayerList.Thruhole_2;
+                    layerType = Equipment.LayerType.LAYER_THRUHOLE_2;
                 }
                 else if (layerName == "Marking")
                 {
@@ -377,7 +382,8 @@ namespace QMC.Common.Global
             {
                 // 필요한 레이어만 필터링
                 if (layer.LayerType != Equipment.LayerType.LAYER_DRILLING &&
-                    layer.LayerType != Equipment.LayerType.LAYER_THRUHOLE &&
+                    layer.LayerType != Equipment.LayerType.LAYER_THRUHOLE_1 &&
+                    layer.LayerType != Equipment.LayerType.LAYER_THRUHOLE_2 &&
                     layer.LayerType != Equipment.LayerType.LAYER_OUTLINE &&
                     layer.LayerType != Equipment.LayerType.LAYER_MARKING)
                     continue;
