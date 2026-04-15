@@ -85,12 +85,7 @@ namespace SLD200_MSL
             checkBox_SiriusEditor_Divided.Checked = false;
 
             m_formUserGuide = new FormNew_QMCSiriusEditorStatus();
-
-
             InitRecipeUI_KeyPad();
-
-            //HookEditorToolbarButtons();
-            //this.Load += (s, e) => HookEditorToolbarButtons(); // Load 이후 실행
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -1387,7 +1382,7 @@ namespace SLD200_MSL
                             }
                         }
                     }
-                    else if (layer.Name == "Thruhole")
+                    else if (layer.Name == "Thruhole" || layer.Name == "Thruhole_1")
                     {
                         //m_nDrawing_OutlineCount = layer.Count;
                         //m_stDrawing_Outline = new stDrawingOutlineParam[m_nDrawing_OutlineCount];                   //  Outline 데이터
@@ -1859,7 +1854,7 @@ namespace SLD200_MSL
                             }
                         }
                     }
-                    else if (layer.Name == "Thruhole")
+                    else if (layer.Name == "Thruhole" || layer.Name == "Thruhole_1")
                     {
                         //m_nDrawing_OutlineCount = layer.Count;
                         //m_stDrawing_Outline = new stDrawingOutlineParam[m_nDrawing_OutlineCount];                   //  Outline 데이터
@@ -2213,7 +2208,7 @@ namespace SLD200_MSL
                             }
                         }
                     }
-                    else if (layer.Name == "Thruhole")
+                    else if (layer.Name == "Thruhole" || layer.Name == "Thruhole_1")
                     {
                         foreach (var entity in layer)
                         {

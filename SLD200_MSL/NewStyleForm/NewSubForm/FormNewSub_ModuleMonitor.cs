@@ -206,7 +206,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 var layerMap = new Dictionary<LayerType, Rectangle>
                 {
                     { LayerType.LAYER_DRILLING, GetTopLeftQuad(socketRect) },
-                    { LayerType.LAYER_THRUHOLE, GetTopRightQuad(socketRect) },
+                    { LayerType.LAYER_THRUHOLE_1, GetTopRightQuad(socketRect) },
+                    { LayerType.LAYER_THRUHOLE_2, GetTopRightQuad(socketRect) },
                     { LayerType.LAYER_OUTLINE, GetBottomLeftQuad(socketRect) },
                     { LayerType.LAYER_MARKING, GetBottomRightQuad(socketRect) },
                 };
@@ -305,7 +306,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             switch (type)
             {
                 case LayerType.LAYER_DRILLING: return "H";
-                case LayerType.LAYER_THRUHOLE: return "T";
+                case LayerType.LAYER_THRUHOLE_1: return "T";
+                case LayerType.LAYER_THRUHOLE_2: return "T";
                 case LayerType.LAYER_OUTLINE: return "O";
                 case LayerType.LAYER_MARKING: return "M";
                 default: return "";

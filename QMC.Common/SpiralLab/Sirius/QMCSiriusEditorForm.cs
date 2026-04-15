@@ -184,8 +184,6 @@ namespace SpiralLab.Sirius
         {
             MoveToGroup("Thruhole");
             SortToLayer("Thruhole");
-
-
         }
 
         private void MoveToPreAlign()

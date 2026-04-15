@@ -564,15 +564,17 @@ namespace SLD200.NewStyleForm.NewSubForm
             var layerMap = new Dictionary<LayerType, Rectangle>
             {
                 { LayerType.LAYER_DRILLING, GetTopLeftQuad(rect) },
-                { LayerType.LAYER_THRUHOLE, GetTopRightQuad(rect) },
+                { LayerType.LAYER_THRUHOLE_1, GetTopRightQuad(rect) },
+                { LayerType.LAYER_THRUHOLE_2, GetTopRightQuad(rect) },
                 { LayerType.LAYER_OUTLINE, GetBottomLeftQuad(rect) },
                 { LayerType.LAYER_MARKING, GetBottomRightQuad(rect) }
             };
 
-                    var textMap = new Dictionary<LayerType, string>
+            var textMap = new Dictionary<LayerType, string>
             {
                 { LayerType.LAYER_DRILLING, "H" },
-                { LayerType.LAYER_THRUHOLE, "T" },
+                { LayerType.LAYER_THRUHOLE_1, "T" },
+                { LayerType.LAYER_THRUHOLE_2, "T" },
                 { LayerType.LAYER_OUTLINE, "O" },
                 { LayerType.LAYER_MARKING, "M" }
             };

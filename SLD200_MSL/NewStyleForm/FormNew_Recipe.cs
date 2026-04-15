@@ -621,6 +621,8 @@ namespace SLD200_MSL
                 (strLayerName == "Hole9") ||
                 (strLayerName == "Hole10") ||
                 (strLayerName == "Thruhole") ||
+                (strLayerName == "Thruhole_1") ||
+                (strLayerName == "Thruhole_2") ||
                 (strLayerName == "Fiducial"))
             {
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
@@ -813,7 +815,7 @@ namespace SLD200_MSL
                 }
                 SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (strLayerName == "Thruhole")
+            else if (strLayerName == "Thruhole" || strLayerName == "Thruhole_1")
             {
                 //if (workStage.m_nDrawing_Hole8Count > 0)
                 {
@@ -976,7 +978,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = Equipment.ToDouble(temp.ToString());
 
                 NativeMethods.GetPrivateProfileString(strTemp, "Defocusing_Distance_Use", "false", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance_Use = Convert.ToBoolean(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_VarioScan_Use = Convert.ToBoolean(temp.ToString());
 
                 //  Resizing (mm)
                 NativeMethods.GetPrivateProfileString(strTemp, "Resizing", "0", temp, 255, strFIle);
@@ -1209,7 +1211,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].ProcessPriority_P2P = ReadBool(data, "P2P", true);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = ReadValue(data, "Reference_Layer", "");
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = ReadDouble(data, "Defocusing_Distance", 0.0);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance_Use = ReadBool(data, "Defocusing_Distance_Use", false);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_VarioScan_Use = ReadBool(data, "Defocusing_Distance_Use", false);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing = ReadDouble(data, "Resizing", 0.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSize = ReadDouble(data, "HoleSize", 0.0);   //Miscellaneous_HoleSize
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = ReadInt(data, "HoleDrilling_StartPosDivision", 0);
@@ -1331,9 +1333,13 @@ namespace SLD200_MSL
             {
                 nIndex = (int)LayerList.Fiducial;
             }
-            else if (strLayerName == "Thruhole")
+            else if (strLayerName == "Thruhole" || strLayerName == "Thruhole_1")
             {
-                nIndex = (int)LayerList.Thruhole;
+                nIndex = (int)LayerList.Thruhole_1;
+            }
+            else if (strLayerName == "Thruhole_2")
+            {
+                nIndex = (int)LayerList.Thruhole_2;
             }
             else if (strLayerName == "PreAlign")
             {
@@ -1370,7 +1376,7 @@ namespace SLD200_MSL
                     Equipment.stLayerRecipeSet[nIndex].ProcessPriority_P2P = Equipment.stLayerRecipeSet[nIndex - 1].ProcessPriority_P2P;
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_ReferenceLayer = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_ReferenceLayer;
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DefocusingDistance = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_DefocusingDistance;
-                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DefocusingDistance_Use = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_DefocusingDistance_Use;
+                    Equipment.stLayerRecipeSet[nIndex].Miscellaneous_VarioScan_Use = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_VarioScan_Use;
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_Resizing = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_Resizing;
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleSize = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_HoleSize;////Miscellaneous_HoleSize
                     Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleDrilling_StartPosDivision = Equipment.stLayerRecipeSet[nIndex - 1].Miscellaneous_HoleDrilling_StartPosDivision;
@@ -1491,7 +1497,7 @@ namespace SLD200_MSL
             //  Miscellaneous
             textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_ReferenceLayer;
             textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DefocusingDistance.ToString();
-            checkBox_VarioScan.Checked = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DefocusingDistance_Use;
+            checkBox_VarioScan.Checked = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_VarioScan_Use;
             textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_Resizing.ToString();
             richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleSize.ToString();////Miscellaneous_HoleSize
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[nIndex].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
@@ -1878,7 +1884,7 @@ namespace SLD200_MSL
             //  Miscellaneous
             textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = layerData.Miscellaneous_ReferenceLayer;
             textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = layerData.Miscellaneous_DefocusingDistance.ToString();
-            checkBox_VarioScan.Checked = layerData.Miscellaneous_DefocusingDistance_Use;
+            checkBox_VarioScan.Checked = layerData.Miscellaneous_VarioScan_Use;
             textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = layerData.Miscellaneous_Resizing.ToString();
             richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = layerData.Miscellaneous_HoleSize.ToString(); ////Miscellaneous_HoleSize
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = layerData.Miscellaneous_HoleDrilling_StartPosDivision.ToString();
@@ -2103,7 +2109,7 @@ namespace SLD200_MSL
                 //  Miscellaneous
                 textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ReferenceLayer;
                 textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DefocusingDistance.ToString();
-                checkBox_VarioScan.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_DefocusingDistance_Use;
+                checkBox_VarioScan.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_VarioScan_Use;
                 textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_Resizing.ToString();
                 richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSize.ToString(); //Miscellaneous_HoleSize
                 comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
@@ -2499,7 +2505,7 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "Reference_Layer", Equipment.stLayerRecipeSet[i].Miscellaneous_ReferenceLayer, strFIle);
                 //  Defocusing Distance (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "Defocusing_Distance", Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "Defocusing_Distance_Use", Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance_Use.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Defocusing_Distance_Use", Equipment.stLayerRecipeSet[i].Miscellaneous_VarioScan_Use.ToString(), strFIle);
                 //  Resizing (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "Resizing", Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing.ToString(), strFIle);
                 ////Miscellaneous_HoleSize
@@ -2650,7 +2656,7 @@ namespace SLD200_MSL
 
                 layerDict["Reference_Layer"] = Equipment.stLayerRecipeSet[i].Miscellaneous_ReferenceLayer;
                 layerDict["Defocusing_Distance"] = Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance.ToString();
-                layerDict["Defocusing_Distance_Use"] = Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance_Use.ToString();
+                layerDict["Defocusing_Distance_Use"] = Equipment.stLayerRecipeSet[i].Miscellaneous_VarioScan_Use.ToString();
                 layerDict["Resizing"] = Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing.ToString();
                 layerDict["HoleSize"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSize.ToString(); ////Miscellaneous_HoleSize
                 layerDict["HoleDrilling_StartPosDivision"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
@@ -2941,7 +2947,7 @@ namespace SLD200_MSL
                     //  Miscellaneous
                     textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ReferenceLayer;
                     textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DefocusingDistance.ToString();
-                    checkBox_VarioScan.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_DefocusingDistance_Use;
+                    checkBox_VarioScan.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_VarioScan_Use;
                     textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_Resizing.ToString();
                     richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSize.ToString(); //Miscellaneous_HoleSize
                     comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
@@ -3224,8 +3230,13 @@ namespace SLD200_MSL
                                 dResizing = dResizing / 2;
                                 strResizing = dResizing.ToString("0.###");
 
-                                double dHoleSize = workStage.m_stLaserDrilling_SocketData[0].
+                                double dHoleSize = 0;
+                                if (workStage.m_stLaserDrilling_SocketData != null)
+                                {
+                                    dHoleSize = workStage.m_stLaserDrilling_SocketData[0].
                                     m_stDividedRegion_RegionData[0].m_stDividedRegion_ObjectData[0].dEdgePoint[1].X;
+                                }
+                                
                                 label_Recipe_TabRecipe_Miscellaneous_HoleSize.Text = dHoleSize.ToString("0.###");
 
                                 label_Recipe_TabRecipe_Miscellaneous_Resizing.Text = (dHoleSize + dResizing).ToString("0.###");
@@ -3344,9 +3355,13 @@ namespace SLD200_MSL
             {
                 m_nLayerIndex = (int)LayerList.Fiducial;
             }
-            else if (m_strLayerName == "Thruhole")
+            else if (m_strLayerName == "Thruhole" || m_strLayerName == "Thruhole_1")
             {
-                m_nLayerIndex = (int)LayerList.Thruhole;
+                m_nLayerIndex = (int)LayerList.Thruhole_1;
+            }
+            else if (m_strLayerName == "Thruhole_2")
+            {
+                m_nLayerIndex = (int)LayerList.Thruhole_2;
             }
             else if (m_strLayerName == "PreAlign")
             {
@@ -3399,7 +3414,7 @@ namespace SLD200_MSL
             //  Miscellaneous
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ReferenceLayer = textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DefocusingDistance = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text);
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DefocusingDistance_Use = checkBox_VarioScan.Checked;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_VarioScan_Use = checkBox_VarioScan.Checked;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_Resizing = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleSize = Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text);//Miscellaneous_HoleSize
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleDrilling_StartPosDivision = comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text.Length > 0 ? Equipment.ToInt(comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text) : 0;
@@ -3512,12 +3527,20 @@ namespace SLD200_MSL
                     mb3.ShowDialog("Information !", "\"Hole1\" Layer 의 Frequency 가 0 입니다.");
                 }
             }
-            if (m_nLayerIndex == (int)LayerList.Thruhole)
+            if (m_nLayerIndex == (int)LayerList.Thruhole_1)
             {
-                if (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].LaserParam_Frequency <= 0)
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole_1].LaserParam_Frequency <= 0)
                 {
                     var mb3 = new MessageBoxOk();
-                    mb3.ShowDialog("Information !", "\"Thruhole\" Layer 의 Frequency 가 0 입니다.");
+                    mb3.ShowDialog("Information !", "\"Thruhole_1\" Layer 의 Frequency 가 0 입니다.");
+                }
+            }
+            if (m_nLayerIndex == (int)LayerList.Thruhole_2)
+            {
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole_2].LaserParam_Frequency <= 0)
+                {
+                    var mb3 = new MessageBoxOk();
+                    mb3.ShowDialog("Information !", "\"Thruhole_2\" Layer 의 Frequency 가 0 입니다.");
                 }
             }
             if (m_nLayerIndex == (int)LayerList.Outline)
@@ -4301,6 +4324,8 @@ namespace SLD200_MSL
                 (strLayerName == "Hole9") ||
                 (strLayerName == "Hole10") ||
                 (strLayerName == "Thruhole") ||
+                (strLayerName == "Thruhole_1") ||
+                (strLayerName == "Thruhole_2") ||
                 (strLayerName == "Rect") ||
                 (strLayerName == "Outline"))
             {
@@ -5111,7 +5136,8 @@ namespace SLD200_MSL
                         }
                     }
                 }
-                else if (string.Equals(layerName, "Thruhole", StringComparison.OrdinalIgnoreCase))
+                else if (string.Equals(layerName, "Thruhole", StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(layerName, "Thruhole_1", StringComparison.OrdinalIgnoreCase))
                 {
                     rawRadius = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
                 }
@@ -5240,10 +5266,15 @@ namespace SLD200_MSL
                         }
                     }
                 }
-                else if (string.Equals(layerName, "Thruhole", StringComparison.OrdinalIgnoreCase))
+                else if (string.Equals(layerName, "Thruhole", StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(layerName, "Thruhole_1", StringComparison.OrdinalIgnoreCase))
+                {
                     rawHole = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
+                }
                 else if (string.Equals(layerName, "Outline", StringComparison.OrdinalIgnoreCase))
+                {
                     rawHole = TryExtractFirstEdgePointX_Generic(workStage.m_stOutLine_SocketData);
+                }
             }
             catch { rawHole = null; }
 
@@ -5337,9 +5368,13 @@ namespace SLD200_MSL
                     {
                         nLayerIndex = (int)LayerList.Fiducial;
                     }
-                    else if (m_strLayerName == "Thruhole")
+                    else if (m_strLayerName == "Thruhole" || m_strLayerName == "Thruhole_1")
                     {
-                        nLayerIndex = (int)LayerList.Thruhole;
+                        nLayerIndex = (int)LayerList.Thruhole_1;
+                    }
+                    else if (m_strLayerName == "Thruhole_2")
+                    {
+                        nLayerIndex = (int)LayerList.Thruhole_2;
                     }
                     else if (m_strLayerName == "PreAlign")
                     {
@@ -5387,7 +5422,7 @@ namespace SLD200_MSL
                     //  Miscellaneous
                     Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_ReferenceLayer = textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text;
                     Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_DefocusingDistance = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text);
-                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_DefocusingDistance_Use = checkBox_VarioScan.Checked;
+                    Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_VarioScan_Use = checkBox_VarioScan.Checked;
                     Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_Resizing = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
                     Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_HoleSize = Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Miscellaneous_HoleSize.Text);//Miscellaneous_HoleSize
                     Equipment.stLayerRecipeSet[nLayerIndex].Miscellaneous_HoleDrilling_StartPosDivision = comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text.Length > 0 ? Equipment.ToInt(comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text) : 0;
@@ -5516,7 +5551,7 @@ namespace SLD200_MSL
                 {
                     for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
                     {
-                        Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance_Use = true;
+                        Equipment.stLayerRecipeSet[i].Miscellaneous_VarioScan_Use = true;
                     }
                     //MessageBox.Show("Hole1 ~ Hole50 레이어에 VarioScan 사용으로 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -5524,7 +5559,7 @@ namespace SLD200_MSL
                 {
                     for (int i = (int)LayerList.Hole1; i <= (int)LayerList.Hole50; i++)
                     {
-                        Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance_Use = false;
+                        Equipment.stLayerRecipeSet[i].Miscellaneous_VarioScan_Use = false;
                     }
                     //MessageBox.Show("Hole1 ~ Hole50 레이어에 VarioScan 미사용으로 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -5548,9 +5583,13 @@ namespace SLD200_MSL
                 {
                     nIndex = (int)LayerList.Fiducial;
                 }
-                else if (m_strLayer == "Thru")
+                else if (m_strLayer == "Thruhole" || m_strLayer == "Thruhole_1")
                 {
-                    nIndex = (int)LayerList.Thruhole;
+                    nIndex = (int)LayerList.Thruhole_1;
+                }
+                else if (m_strLayer == "Thruhole_2")
+                {
+                    nIndex = (int)LayerList.Thruhole_2;
                 }
                 else if (m_strLayer == "PreAlign")
                 {
@@ -5563,7 +5602,7 @@ namespace SLD200_MSL
                     return;
                 }
 
-                Equipment.stLayerRecipeSet[nIndex].Miscellaneous_DefocusingDistance_Use = isChecked;
+                Equipment.stLayerRecipeSet[nIndex].Miscellaneous_VarioScan_Use = isChecked;
             }
         }
 
