@@ -2758,7 +2758,6 @@ namespace QMC.Common.Modules
 
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
-
                             return AlarmPost(AlarmKey.UL_Staker1_Too_Many_Module);
                         }
                         else
@@ -2934,9 +2933,6 @@ namespace QMC.Common.Modules
                             m_strTemp = "동작 타입 목록에 없음";
                             Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Transfer_Error);
-                            //Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "동작 타입 목록에 없음");
-                            //m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Complete;
-                            break;
                     }
                     break;
 

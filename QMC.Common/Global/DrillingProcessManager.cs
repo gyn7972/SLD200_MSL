@@ -244,10 +244,15 @@ namespace QMC.Common.Global
                     layerEnum = Equipment.LayerList.Outline;
                     layerType = Equipment.LayerType.LAYER_OUTLINE;
                 }
-                else if (layerName == "Thruhole")
+                else if (layerName == "Thruhole" || layerName == "Thruhole_1")
                 {
-                    layerEnum = Equipment.LayerList.Thruhole;
-                    layerType = Equipment.LayerType.LAYER_THRUHOLE;
+                    layerEnum = Equipment.LayerList.Thruhole_1;
+                    layerType = Equipment.LayerType.LAYER_THRUHOLE_1;
+                }
+                else if (layerName == "Thruhole2")
+                {
+                    layerEnum = Equipment.LayerList.Thruhole_2;
+                    layerType = Equipment.LayerType.LAYER_THRUHOLE_2;
                 }
                 else if (layerName == "Marking")
                 {
@@ -377,7 +382,8 @@ namespace QMC.Common.Global
             {
                 // 필요한 레이어만 필터링
                 if (layer.LayerType != Equipment.LayerType.LAYER_DRILLING &&
-                    layer.LayerType != Equipment.LayerType.LAYER_THRUHOLE &&
+                    layer.LayerType != Equipment.LayerType.LAYER_THRUHOLE_1 &&
+                    layer.LayerType != Equipment.LayerType.LAYER_THRUHOLE_2 &&
                     layer.LayerType != Equipment.LayerType.LAYER_OUTLINE &&
                     layer.LayerType != Equipment.LayerType.LAYER_MARKING)
                     continue;
@@ -539,41 +545,6 @@ namespace QMC.Common.Global
             }
             return false;
         }
-
-        public bool HasAnyGoldOffsetXZero(string layerName, double epsilon = 1e-6, bool onlyUsedSockets = false)
-        {
-            var layer = GetLayer(layerName);
-            if (layer == null)
-                return false;
-
-            foreach (var socket in layer.SocketList)
-            {
-                if (onlyUsedSockets && !socket.IsUsedInThisLayer)
-                    continue;
-
-                if (Math.Abs(socket.GoldOffsetX) <= epsilon)
-                    return true;
-            }
-            return false;
-        }
-
-        public bool HasAnyGoldOffsetXZero(Equipment.LayerList layerEnum, double epsilon = 1e-6, bool onlyUsedSockets = false)
-        {
-            var layer = GetLayer(layerEnum);
-            if (layer == null)
-                return false;
-
-            foreach (var socket in layer.SocketList)
-            {
-                if (onlyUsedSockets && !socket.IsUsedInThisLayer)
-                    continue;
-
-                if (Math.Abs(socket.GoldOffsetX) <= epsilon)
-                    return true;
-            }
-            return false;
-        }
-
         public bool HasAnyGoldOffsetYZero(double epsilon = 1e-6, bool onlyUsedSockets = false)
         {
             foreach (var layer in LayerList)

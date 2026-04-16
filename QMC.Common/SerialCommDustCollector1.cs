@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows.Forms;
+using QMC.Common;
 
 namespace SerialCommDustCollector1
 {
@@ -61,9 +62,10 @@ namespace SerialCommDustCollector1
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
                 return false;
             }
+            return false;
         }
 
         public void CloseComm()
@@ -79,7 +81,7 @@ namespace SerialCommDustCollector1
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
         }
 
@@ -95,7 +97,7 @@ namespace SerialCommDustCollector1
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
             return false;
         }
@@ -112,9 +114,11 @@ namespace SerialCommDustCollector1
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
+                return false;
             }
             return false;
+
         }
 
         public bool Send(byte[] sendData, int offset, int count)
@@ -129,7 +133,7 @@ namespace SerialCommDustCollector1
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
             }
             return false;
         }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows.Forms;
+using QMC.Common;
 
 namespace SerialCommLaserPowerMeter1
 {
@@ -61,7 +62,7 @@ namespace SerialCommLaserPowerMeter1
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine(ex.ToString());
+                Log.Write(ex);
                 return false;
             }
         }

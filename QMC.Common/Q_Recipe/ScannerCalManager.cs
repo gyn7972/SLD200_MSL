@@ -53,14 +53,14 @@ namespace QMC.Common.Recipe
             ZCalFileList.RemoveAll(f => f.Index == index);
         }
 
-        public CalibrationFileInfo GetNearestCalFile(double currentZ_um, double threshold_um = 100.0)
+        public CalibrationFileInfo GetNearestCalFile(double currentZ_mm, double threshold_um = 100.0)
         {
             if (ZCalFileList == null || ZCalFileList.Count == 0)
                 return null;
 
             var nearest = ZCalFileList
-                .Where(c => Math.Abs(c.OffsetZ_mm - currentZ_um) <= threshold_um)
-                .OrderBy(c => Math.Abs(c.OffsetZ_mm - currentZ_um))
+                .Where(c => Math.Abs(c.OffsetZ_mm - currentZ_mm) <= threshold_um)
+                .OrderBy(c => Math.Abs(c.OffsetZ_mm - currentZ_mm))
                 .FirstOrDefault();
 
             CurrentCalFile = nearest; // 현재 Cal 파일로 저장

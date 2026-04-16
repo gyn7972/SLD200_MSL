@@ -203,9 +203,9 @@ namespace SLD200.NewStyleForm
 
                 // 마지막 위치
                 label_VerifyScannerCameraOffset_LastPosX_Disp.Text =
-                    _scannerCalConfig.Scanner_Calibration_PosX_Last.ToString("F3");
+                    _scannerCalConfig.Scanner_VerifyCameraOffset_PosX_Last.ToString("F3");
                 label_VerifyScannerCameraOffset_LastPosY_Disp.Text =
-                    _scannerCalConfig.Scanner_Calibration_PosY_Last.ToString("F3");
+                    _scannerCalConfig.Scanner_VerifyCameraOffset_PosY_Last.ToString("F3");
 
                 // 마크 타입
                 radioButton_VerifyScannerCameraOffset_Cross.Checked =

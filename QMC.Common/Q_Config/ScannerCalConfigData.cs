@@ -37,8 +37,8 @@ namespace QMC.Common.Q_Config
         public double Scanner_Calibration_CalAreaWidth;
         public double Scanner_Calibration_CalAreaHeight;
         public double Scanner_Calibration_CalPitch;
-        public double Scanner_Calibration_PosX_Last;
-        public double Scanner_Calibration_PosY_Last;
+        public double Scanner_VerifyCameraOffset_PosX_Last;
+        public double Scanner_VerifyCameraOffset_PosY_Last;
         public int Scanner_Calibration_Illumination_Red_Value;
         public int Scanner_Calibration_Illumination_IR_Value;
         public int Scanner_Calibration_ExposureTime_High; //  Scanner Calibration Exposure Time High (ms)
@@ -55,6 +55,8 @@ namespace QMC.Common.Q_Config
         public double Scanner_Vision_Offset_Setting_X;            //  Scanner Calibration OffsetX(mm) (X축 Offset)
         public double Scanner_Vision_Offset_Setting_Y;            //  Scanner Calibration OffsetY(mm) (Y축 Offset)
         public double Scanner_Calibration_VisionZOffset;
+        public double Scanner_Calibration_VarioScanZ;   
+        public double Scanner_Calibration_VarioScanZ_Defocus;
         //  Scalibration RTC 및 구동 변수
         public string Scanner_Calibration_srcFilePath;            //  Scanner Calibration Source File Path
         public string Scanner_Calibration_targetFilePath;            //  Scanner Calibration Destination File Path
@@ -90,8 +92,8 @@ namespace QMC.Common.Q_Config
             Scanner_Calibration_CalAreaWidth = 0.0;
             Scanner_Calibration_CalAreaHeight = 0.0;
             Scanner_Calibration_CalPitch = 0.0;
-            Scanner_Calibration_PosX_Last = 0.0;
-            Scanner_Calibration_PosY_Last = 0.0;
+            Scanner_VerifyCameraOffset_PosX_Last = 0.0;
+            Scanner_VerifyCameraOffset_PosY_Last = 0.0;
             Scanner_Calibration_Illumination_Red_Value = 0;
             Scanner_Calibration_Illumination_IR_Value = 0;
             Scanner_Calibration_ExposureTime_High = 0;
@@ -106,6 +108,8 @@ namespace QMC.Common.Q_Config
             Scanner_Vision_Offset_Setting_X = 0.0;            //  Scanner Calibration OffsetX(mm) (X축 Offset)
             Scanner_Vision_Offset_Setting_Y = 0.0;            //  Scanner Calibration OffsetY(mm) (Y축 Offset)
             Scanner_Calibration_VisionZOffset = 0.0;
+            Scanner_Calibration_VarioScanZ = 0.0;
+            Scanner_Calibration_VarioScanZ_Defocus = 0.0;
             Scanner_Calibration_srcFilePath = string.Empty;            //  Scanner Calibration Source File Path
             Scanner_Calibration_targetFilePath = string.Empty;            //  Scanner Calibration Destination File Path
             Scanner_Calibration_FieldSize = 0.0;            //  Scanner Calibration Field Size (mm)
@@ -155,11 +159,14 @@ namespace QMC.Common.Q_Config
                 NativeMethods.WritePrivateProfileString("Area", "Height", Scanner_Calibration_CalAreaHeight.ToString(), savePath);
                 NativeMethods.WritePrivateProfileString("Area", "Pitch", Scanner_Calibration_CalPitch.ToString(), savePath);
 
-                NativeMethods.WritePrivateProfileString("Position", "LastX", Scanner_Calibration_PosX_Last.ToString(), savePath);
-                NativeMethods.WritePrivateProfileString("Position", "LastY", Scanner_Calibration_PosY_Last.ToString(), savePath);
+                NativeMethods.WritePrivateProfileString("Position", "LastX", Scanner_VerifyCameraOffset_PosX_Last.ToString(), savePath);
+                NativeMethods.WritePrivateProfileString("Position", "LastY", Scanner_VerifyCameraOffset_PosY_Last.ToString(), savePath);
                 NativeMethods.WritePrivateProfileString("Position", "VisionOffsetX", Scanner_Vision_Offset_Setting_X.ToString(), savePath);
                 NativeMethods.WritePrivateProfileString("Position", "VisionOffsetY", Scanner_Vision_Offset_Setting_Y.ToString(), savePath);
                 NativeMethods.WritePrivateProfileString("Position", "VisionOffsetZ", Scanner_Calibration_VisionZOffset.ToString(), savePath);
+                NativeMethods.WritePrivateProfileString("Position", "VarioScanZ", Scanner_Calibration_VarioScanZ.ToString(), savePath);
+                NativeMethods.WritePrivateProfileString("Position", "VarioScanZ_Defocus", Scanner_Calibration_VarioScanZ_Defocus.ToString(), savePath);
+
                 NativeMethods.WritePrivateProfileString("Position", "Enable", Scanner_Calibration_Position_Enable.ToString(), savePath);
 
                 NativeMethods.WritePrivateProfileString("Illumination", "Ch1", Scanner_Calibration_Illumination_Red_Value.ToString(), savePath);
@@ -241,11 +248,13 @@ namespace QMC.Common.Q_Config
                 data.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(Read("Area", "Height", "0"));
                 data.Scanner_Calibration_CalPitch = Equipment.ToDouble(Read("Area", "Pitch", "0"));
 
-                data.Scanner_Calibration_PosX_Last = Equipment.ToDouble(Read("Position", "LastX", "0"));
-                data.Scanner_Calibration_PosY_Last = Equipment.ToDouble(Read("Position", "LastY", "0"));
+                data.Scanner_VerifyCameraOffset_PosX_Last = Equipment.ToDouble(Read("Position", "LastX", "0"));
+                data.Scanner_VerifyCameraOffset_PosY_Last = Equipment.ToDouble(Read("Position", "LastY", "0"));
                 data.Scanner_Vision_Offset_Setting_X = Equipment.ToDouble(Read("Position", "VisionOffsetX", "0"));
                 data.Scanner_Vision_Offset_Setting_Y = Equipment.ToDouble(Read("Position", "VisionOffsetY", "0"));
                 data.Scanner_Calibration_VisionZOffset = Equipment.ToDouble(Read("Position", "VisionOffsetZ", "0"));
+                data.Scanner_Calibration_VarioScanZ = Equipment.ToDouble(Read("Position", "VarioScanZ", "0"));
+                data.Scanner_Calibration_VarioScanZ_Defocus = Equipment.ToDouble(Read("Position", "VarioScanZ_Defocus", "0"));
                 data.Scanner_Calibration_Position_Enable = Equipment.ToBoolean(Read("Position", "Enable", "False"));
 
                 data.Scanner_Calibration_Illumination_Red_Value = Equipment.ToInt(Read("Illumination", "Ch1", "0"));

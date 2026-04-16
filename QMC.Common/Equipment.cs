@@ -439,7 +439,8 @@ namespace QMC.Common
             Outline,
             Marking,
             Fiducial,
-            Thruhole,
+            Thruhole_1,
+            Thruhole_2,
             PreAlign,
         }
 
@@ -447,11 +448,13 @@ namespace QMC.Common
         {
             LAYER_DRILLING = 0,
             LAYER_OUTLINE = 1,
-            LAYER_THRUHOLE = 2,
-            LAYER_MARKING = 3,
-            LAYER_FIDUCIAL = 4,
-            LAYER_RECTANGLE = 5,
-            LAYER_PREALIGN = 6,
+            //LAYER_THRUHOLE = 2,
+            LAYER_THRUHOLE_1 = 2,
+            LAYER_THRUHOLE_2 = 3,
+            LAYER_MARKING = 4,
+            LAYER_FIDUCIAL = 5,
+            LAYER_RECTANGLE = 6,
+            LAYER_PREALIGN = 7,
         }
         public static LayerType m_LayerType = LayerType.LAYER_DRILLING;
 
@@ -562,12 +565,13 @@ namespace QMC.Common
             public double MarkingTemplate_EntityData_Hatch_Spacing;     //  Marking Template Entity Hatch Spacing
             public int MarkingTemplate_EntityData_SerialNumberIncreaseType;            //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
+            public bool Miscellaneous_VarioScan_Use;              //  Defocusing Distance Use (true: Use, false: Not Use)
             public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
+            public double CalfileOffsetDefocusZAxismm;                 //  Defocus Z Axis Offset Calibration File (mm)
             public bool ChuckMSL_Enable;                                   //  Chuck 사용 여부 (true: 사용, false: 미사용)
             public bool Align3Point_Enable;                             //  3-Point Align Enable (true: Enable, false: Disable)
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
-
 
         public struct LayerRecipeResult
         {
@@ -575,7 +579,6 @@ namespace QMC.Common
             public stLayerRecipeParameter LayerData;       // 해당 레이어 전용 데이터
             public stLayerRecipeParameter CommonData;      // Hole1(0번) 공통 데이터
         }
-
 
         public enum VisionAlgorithmType
         {
@@ -585,10 +588,8 @@ namespace QMC.Common
         }
         //  Recipe 파라미터 - PreAlign 
         public static VisionRecipeData stVisionRecipeSet = new VisionRecipeData();
-
         //  Recipe - Z Axis에 따른 Calibration File
         public static ScannerCalManager stConfigScannerCalData = new ScannerCalManager();
-
         //PreAlign Data
         public class PreAlignData
         {
@@ -642,8 +643,6 @@ namespace QMC.Common
         public static bool Machine_FiducialImageSave_Always { set; get; } = false;              //  Fiducial Image Save Always
         public static bool Machine_VacuumBlowTime_Enable { set; get; } = true;                //  Vacuum Stabilization Time Enable
         public static int Machine_VacuumBlowTime { set; get; } = 500;                         //  Vacuum Signal Stabilization Time (ms)
-        public static bool Machine_SocketAlignNG_toNgBox_Enable { set; get; } = true;           //  Vacuum Stabilization Time Enable
-        public static int Machine_SocketAlignNG_toNgBox_ReferenceCount { set; get; } = 1;       //  Vacuum Signal Stabilization Time (ms)
         public static bool Machine_LoaderTransfer_Vibration_Enable { set; get; } = false;       //  Loader Transfer Vibration Enable
         public static double Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio { set; get; } = 2.0;        //  Vibration 시 가감속 속도 비율
         public static int Machine_LoaderTransfer_NumberOfVibrations { set; get; } = 2;                      //  Vibration 횟수
@@ -681,6 +680,7 @@ namespace QMC.Common
 
         public static bool Machine_PreAlign_First_Enable { set; get; } = false;    
         public static bool Machine_VisionNG_OKPort_Enable { set; get; } = false;
+        public static int Machine_VisionNG_OKPort_ReferenceCount { set; get; } = 1;
 
         public static bool Machine_ScannerToFineCamOffset { set; get; } = true;           //  Scanner to Fine Camera Offset 사용 여부 (true: 사용, false: 미사용)
 
@@ -772,8 +772,8 @@ namespace QMC.Common
         public static double Scanner_Calibration_CalAreaWidth { set; get; } = 0.0;
         public static double Scanner_Calibration_CalAreaHeight { set; get; } = 0.0;
         public static double Scanner_Calibration_CalPitch   { set; get; } = 0.0;
-        public static double Scanner_Calibration_PosX_Last { set; get; } = 0.0;
-        public static double Scanner_Calibration_PosY_Last { set; get; } = 0.0;
+        public static double Scanner_VerifyCameraOffset_PosX_Last { set; get; } = 0.0;
+        public static double Scanner_VerifyCameraOffset_PosY_Last { set; get; } = 0.0;
         public static int Scanner_Calibration_MaskIndex { set; get; } = 0;
         public static int Scanner_Calibration_BETPositionIndex { set; get; } = 0;         //  Scanner Calibration Miscellaneous BET Position Index (0:0.8x, 1:0.9x, 2:1.0x, 3:1.1x, 4:1.2x)
 
@@ -818,6 +818,9 @@ namespace QMC.Common
         public static double Scanner_Vision_Offset_Setting_Y { set; get; } = 0.0;            //  Scanner Calibration OffsetY(mm) (Y축 Offset)
         public static double Scanner_Calibration_VisionZOffset { set; get; } = 0.0;
         
+        public static double Scanner_Calibration_VarioScanZ { set; get; } = 0.0;
+        public static double Scanner_Calibration_VarioScanZ_Defocus { set; get; } = 0.0;
+
         //  Scanner Calibration RTC 및 구동 변수
         public static string Scanner_Calibration_srcFilePath { set; get; } = "";            //  Scanner Calibration Source File Path
         public static string Scanner_Calibration_targetFilePath { set; get; } = "";            //  Scanner Calibration Destination File Path
@@ -1285,6 +1288,7 @@ namespace QMC.Common
                 //  Miscellaneous
                 stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = "";                              //  어떤 Layer 의 데이터를 사용할 것인지
                 stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = 0.0;                         //  가공 시 초점 위치에서 얼마나 이동해서 가공할 것인지
+                stLayerRecipeSet[i].Miscellaneous_VarioScan_Use = false;                     //  Defocusing Distance Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].Miscellaneous_Resizing = 0.0;                                   //  가공 시 데이터를 얼마나 확대/축소할 것인지 (전체 길이를 입력하면 2등분 하여 양방향으로 크기 조정)
                 stLayerRecipeSet[i].Miscellaneous_HoleSize = 0.0; //Miscellaneous_HoleSize
                 stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = 1;                //  Hole Drilling 가공 시 시작 위치를 몇개로 나눌 것인지 (Only 1, 2, 3, 4, 5, 6, 8, 9, 10, 12)
@@ -1366,6 +1370,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;        //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
+                stLayerRecipeSet[i].CalfileOffsetDefocusZAxismm = 0.0;
                 stLayerRecipeSet[i].ChuckMSL_Enable = false;
                 stLayerRecipeSet[i].Align3Point_Enable = false;
             }
@@ -1441,8 +1446,8 @@ namespace QMC.Common
             Scanner_Calibration_CalAreaWidth = 0.0;           //  Scanner Calibration Area Width (mm)
             Scanner_Calibration_CalAreaHeight = 0.0;          //  Scanner Calibration Area Height (mm)
             Scanner_Calibration_CalPitch = 0.0;               //  Scanner Calibration Area Pitch (mm)
-            Scanner_Calibration_PosX_Last = 0.0;
-            Scanner_Calibration_PosY_Last = 0.0;
+            Scanner_VerifyCameraOffset_PosX_Last = 0.0;
+            Scanner_VerifyCameraOffset_PosY_Last = 0.0;
             Scanner_Calibration_MaskIndex = 0;
             Scanner_Calibration_BETPositionIndex = 0;
 
@@ -1542,6 +1547,17 @@ namespace QMC.Common
             {
                 MessageBox.Show("모터 파라미터 폴더가 없거나, 모터 파라미터 파일이 없습니다.\r\n\r\n[D:\\SLD-200_Parameter\\SLD-200.mot]", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+
+            //
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\ScannerCalFile(Do not delete or modify).ini";
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("ScannerCalFile 파일이 없습니다.\r\n\r\n[Default값(CO₂)으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            Equipment.stConfigScannerCalData.LoadFromIni(strFIle);
         }
 
         private static void CreateModules()
@@ -1580,6 +1596,7 @@ namespace QMC.Common
 
 
             //전부 생성한 후 Init하자
+            workStage.m_ScannerCalibrationSequence.Init();
             workStage.m_ScannerCameraOffsetSequence.Init();
             workStage.m_Sequence_LaserPowerMeasure.Init();
             workStage.m_Sequence_FlatnessMeasure.Init();
@@ -2990,12 +3007,17 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", "2.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_PosX_Last = Equipment.ToDouble(temp.ToString());
+            Equipment.Scanner_VerifyCameraOffset_PosX_Last = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_PosY_Last = Equipment.ToDouble(temp.ToString());
+            Equipment.Scanner_VerifyCameraOffset_PosY_Last = Equipment.ToDouble(temp.ToString());
             
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "VisionZOffset", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_VisionZOffset = Equipment.ToDouble(temp.ToString());
+
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "VarioScanZ", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_VarioScanZ = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "VarioScanZ_Defocus", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_VarioScanZ_Defocus = Equipment.ToDouble(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "MaskIndex", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_MaskIndex = Equipment.ToInt(temp.ToString());
@@ -3199,7 +3221,9 @@ namespace QMC.Common
             Equipment.Machine_PreAlign_First_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "VisionNG_OKPort_Enable", "false", temp, 255, strFIle);
             Equipment.Machine_VisionNG_OKPort_Enable = temp.ToString() == "False" ? false : true;
-            //
+            //Machine_VisionNG_OKPort_ReferenceCount
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VisionNG_OKPort_ReferenceCount", "1", temp, 255, strFIle);
+            Equipment.Machine_VisionNG_OKPort_ReferenceCount = Equipment.ToInt(temp.ToString());
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);
