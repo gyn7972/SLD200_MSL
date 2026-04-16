@@ -621,12 +621,9 @@ namespace SLD200_MSL
             /////////////////////////////////////////////////////////////////////////////////////
             /// VarioScan
             float? zOffset = bds.CurrentRtcZOffset;
-            float? value = (zOffset / 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-            label_VarioScan_Z_Offset_Pos.Text = string.Format("{0:0.00000}", value.HasValue ? value.Value : 0.0f);
-
+            label_VarioScan_Z_Offset_Pos.Text = string.Format("{0:0.00000}", zOffset.HasValue ? zOffset.Value : 0.0f);
             float? zDefocus = bds.CurrentRtcZDefocus;
-            value = (zDefocus / 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-            label_VarioScan_Z_Defocus_Pos.Text = string.Format("{0:0.00000}", value.HasValue ? value.Value : 0.0f);
+            label_VarioScan_Z_Defocus_Pos.Text = string.Format("{0:0.00000}", zDefocus.HasValue ? zDefocus.Value : 0.0f);
 
             //  Laser Height Sensor
             label_Config_WorkStage_LaserHeightSensorValue.Text = string.Format("{0:0.00000}", workStage.m_dLaserHeightSensorSocket_Value);
@@ -6799,12 +6796,7 @@ namespace SLD200_MSL
         {
             //  Vario Scan - Z Offset Setting
             float zOffset = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZOffset.Text);
-            float mm = zOffset;
-            float value = (mm * 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-            bds.spiralLabVario.SetZOffset(value);
-
-            //var rtc3D = workStage.rtc as IRtc3D;
-            //rtc3D.CtlZOffset(zOffset);
+            bds.spiralLabVario.SetZOffset(zOffset);
 
             MessageBox.Show($"Vario Scan - Z Offset 설정 값 : {zOffset} mm", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -6813,12 +6805,7 @@ namespace SLD200_MSL
         {
             //  Vario Scan - Z Defocus Setting
             float zDefocus = (float)Equipment.ToDouble(textBox_Config_TabLaser_VarioScan_ZDefocus.Text);
-            float mm = zDefocus;
-            float value = (mm * 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-            bds.spiralLabVario.SetZDefocus(value);
-
-            //var rtc3D = workStage.rtc as IRtc3D;
-            //rtc3D.CtlZDefocus(zDefocus);
+            bds.spiralLabVario.SetZDefocus(zDefocus);
 
             MessageBox.Show($"Vario Scan - Z Defocus 설정 값 : {zDefocus} mm", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

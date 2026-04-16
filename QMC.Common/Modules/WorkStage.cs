@@ -575,8 +575,15 @@ namespace QMC.Common.Modules
             public double[] dPreAlignWidth;             //  PreAlign 마크 가로 크기
             public double[] dPreAlignHeight;            //  PreAlign 마크 세로 크기
         }
-        public stThruHole_SocketData[] m_stThruHole_SocketData;                     //  Socket Data 를 저장한다.
-        public stThruHole_SocketData[] m_stThruHole_SocketData_ProcessingFlag;      //  Socket Data 를 저장한다. (가공 여부 Flag)
+        //1번파라미터 ThruHole Index, 2번파라미터 ThruHole Data
+        //LAYER_THRUHOLE_INDEX.THRUHOLE_1, m_stThruHole_SocketData[0]
+        public stThruHole_SocketData[][] m_stThruHole_SocketData;                     //  Socket Data 를 저장한다.
+        public stThruHole_SocketData[][] m_stThruHole_SocketData_ProcessingFlag;      //  Socket Data 를 저장한다. (가공 여부 Flag)
+        //public stThruHole_SocketData[] m_stThruHole_SocketData;                     //  Socket Data 를 저장한다.
+        //public stThruHole_SocketData[] m_stThruHole_SocketData_ProcessingFlag;      //  Socket Data 를 저장한다. (가공 여부 Flag)
+
+
+
         public bool m_bPassedSocket_Exist;
         public bool m_bRetryAlignSucess;
         ///
@@ -13255,17 +13262,17 @@ namespace QMC.Common.Modules
                         else if (m_LayerType == LayerType.LAYER_THRUHOLE_1)
                         {
                             //  얼라인 할 소켓의 데이터를 로드
-                            if (m_stThruHole_SocketData != null)
+                            if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null)
                             {
-                                if ((nSocketNum >= 0) && (nSocketNum < m_stThruHole_SocketData[0].nSocket_Num))
+                                if ((nSocketNum >= 0) && (nSocketNum < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].nSocket_Num))
                                 {
                                     for (int i = 0; i < 4; i++)
                                     {
                                         //  4-Point 의 도면상 위치 데이터
-                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stThruHole_SocketData[nSocketNum].dFiducialPos[i].X;
-                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stThruHole_SocketData[nSocketNum].dFiducialPos[i].Y;
-                                        m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stThruHole_SocketData[nSocketNum].dFiducialWidth[i];
-                                        m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stThruHole_SocketData[nSocketNum].dFiducialHeight[i];
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][nSocketNum].dFiducialPos[i].X;
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][nSocketNum].dFiducialPos[i].Y;
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][nSocketNum].dFiducialWidth[i];
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][nSocketNum].dFiducialHeight[i];
                                     }
                                     //m_nProductAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos;
                                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.__SocketAlign_Start;
@@ -13289,17 +13296,17 @@ namespace QMC.Common.Modules
                         else if (m_LayerType == LayerType.LAYER_THRUHOLE_2)
                         {
                             //  얼라인 할 소켓의 데이터를 로드
-                            if (m_stThruHole_SocketData != null)
+                            if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] != null)
                             {
-                                if ((nSocketNum >= 0) && (nSocketNum < m_stThruHole_SocketData[0].nSocket_Num))
+                                if ((nSocketNum >= 0) && (nSocketNum < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].nSocket_Num))
                                 {
                                     for (int i = 0; i < 4; i++)
                                     {
                                         //  4-Point 의 도면상 위치 데이터
-                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stThruHole_SocketData[nSocketNum].dFiducialPos[i].X;
-                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stThruHole_SocketData[nSocketNum].dFiducialPos[i].Y;
-                                        m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stThruHole_SocketData[nSocketNum].dFiducialWidth[i];
-                                        m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stThruHole_SocketData[nSocketNum].dFiducialHeight[i];
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][nSocketNum].dFiducialPos[i].X;
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][nSocketNum].dFiducialPos[i].Y;
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][nSocketNum].dFiducialWidth[i];
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][nSocketNum].dFiducialHeight[i];
                                     }
                                     //m_nProductAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos;
                                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.__SocketAlign_Start;
@@ -14410,9 +14417,9 @@ namespace QMC.Common.Modules
             else if(m_LayerType == LayerType.LAYER_OUTLINE)
                 m_nSocketAlign_FiducialCount_Total = m_stOutLine_SocketData[nSocketNum].dFiducialPos.Length;
             else if (m_LayerType == LayerType.LAYER_THRUHOLE_1)
-                m_nSocketAlign_FiducialCount_Total = m_stThruHole_SocketData[nSocketNum].dFiducialPos.Length;
+                m_nSocketAlign_FiducialCount_Total = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][nSocketNum].dFiducialPos.Length;
             else if (m_LayerType == LayerType.LAYER_THRUHOLE_2)
-                m_nSocketAlign_FiducialCount_Total = m_stThruHole_SocketData[nSocketNum].dFiducialPos.Length;
+                m_nSocketAlign_FiducialCount_Total = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][nSocketNum].dFiducialPos.Length;
             else if (m_LayerType == LayerType.LAYER_MARKING)
                 m_nSocketAlign_FiducialCount_Total = m_stMarking_SocketData.m_stMarking_ObjectData[nSocketNum].dFiducialPos.Length;
 
@@ -16701,13 +16708,13 @@ namespace QMC.Common.Modules
                     break;
 
                 case LayerType.LAYER_THRUHOLE_1:
-                    dTargetX = m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dSocketCenter.X;
-                    dTargetY = m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dSocketCenter.Y;
+                    dTargetX = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].dSocketCenter.X;
+                    dTargetY = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].dSocketCenter.Y;
                     break;
 
                 case LayerType.LAYER_THRUHOLE_2:
-                    dTargetX = m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dSocketCenter.X;
-                    dTargetY = m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dSocketCenter.Y;
+                    dTargetX = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nDrillingWork_Group_Count].dSocketCenter.X;
+                    dTargetY = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nDrillingWork_Group_Count].dSocketCenter.Y;
                     break;
                 case LayerType.LAYER_MARKING:  //m_nMarking_SocketCount  //??
                     dTargetX = m_stMarking_SocketData.m_stMarking_ObjectData[m_nDrillingWork_Group_Count].dObjectCenter.X;
@@ -17352,93 +17359,98 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
-        private void LaserDrillingStepListDataAddArc()
+        private void LaserDrillingStepListDataAddArc(int nThruHoleIndex)
         {
-            entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X -
-                                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-            entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y -
-                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+
+            entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X -
+                                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+            entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y -
+                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
             //  Start Angle 각도에 따른 Jump 위치 계산
-            if (m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle == 0.0)            //  0 도 위치
+            if (m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle == 0.0)            //  0 도 위치
             {
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X + m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X + 
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
             }
-            else if (m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle == 90.0)       //  90 도 위치
+            else if (m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle == 90.0)       //  90 도 위치
             {
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y + m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+                entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y +
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
             }
-            else if (m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle == 180.0)      //  180 도 위치
+            else if (m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle == 180.0)      //  180 도 위치
             {
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X - m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X - 
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
             }
-            else if (m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle == 270.0)      //  270 도 위치
+            else if (m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle == 270.0)      //  270 도 위치
             {
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y - m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+                entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y - 
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
             }
-            else if ((m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle > 0.0) &&
-                (m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle < 90.0))           //  0 도 ~ 90 도 사이 위치
+            else if ((m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle > 0.0) &&
+                    (m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle < 90.0))           //  0 도 ~ 90 도 사이 위치
             {
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X +
-                                    (Math.Cos(m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle * (Math.PI / 180.0)) *
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y +
-                                    (Math.Sin(m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle * (Math.PI / 180.0)) *
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+                entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X +
+                                    (Math.Cos(m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle * (Math.PI / 180.0)) *
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y +
+                                    (Math.Sin(m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle * (Math.PI / 180.0)) *
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
             }
-            else if ((m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle > 90.0) &&
-                (m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle < 180.0))          //  90 도 ~ 180 도 사이 위치
+            else if ((m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle > 90.0) &&
+                (m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle < 180.0))          //  90 도 ~ 180 도 사이 위치
             {
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X -
-                                    (Math.Cos((180.0 - m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y +
-                                    (Math.Sin((180.0 - m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+                entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X -
+                                    (Math.Cos((180.0 - m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y +
+                                    (Math.Sin((180.0 - m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
             }
-            else if ((m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle > 180.0) &&
-                (m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle < 270.0))          //  180 도 ~ 270 도 사이 위치
+            else if ((m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle > 180.0) &&
+                (m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle < 270.0))          //  180 도 ~ 270 도 사이 위치
             {
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X -
-                                    (Math.Cos((m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle - 180.0) * (Math.PI / 180.0)) *
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y -
-                                    (Math.Sin((m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle - 180.0) * (Math.PI / 180.0)) *
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+                entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X -
+                                    (Math.Cos((m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle - 180.0) * (Math.PI / 180.0)) *
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y -
+                                    (Math.Sin((m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle - 180.0) * (Math.PI / 180.0)) *
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
             }
-            else if ((m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle > 270.0) &&
-                (m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle <= 360.0))          //  270 도 ~ 360 도 사이 위치
+            else if ((m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle > 270.0) &&
+                (m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle <= 360.0))          //  270 도 ~ 360 도 사이 위치
             {
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X +
-                                    (Math.Cos((360.0 - m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y -
-                                    (Math.Sin((360.0 - m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+                entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X +
+                                    (Math.Cos((360.0 - m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y -
+                                    (Math.Sin((360.0 - m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dRadius) -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
             }
-
 
             //  사각형 돌릴 때 쓰던거
             entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
             m_bThruHoleList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
 
-
             //  이어서 오는 Sweep Angle 만큼 Arc 로 Mark 이동
-            entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X - (float)m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-            entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y - (float)m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+            entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.X - 
+                                (float)m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+            entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y - 
+                                (float)m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
             //  사각형 돌릴 때 쓰던거
             entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
@@ -17447,15 +17459,15 @@ namespace QMC.Common.Modules
             //                                                    (float)m_stThruHole_LayerData[m_nThruHole_LayerCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dCenter.Y - (float)m_stThruHole_LayerData[m_nThruHole_LayerCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y),
             //                                                    (float)m_stThruHole_LayerData[m_nThruHole_LayerCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dSweepAngle);
             m_bThruHoleList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y),
-                                                                (float)m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dSweepAngle);
+                                                                (float)m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].stArcData.dSweepAngle);
         }
 
-        private void LaserDrillingStepListDataAddLine()
+        private void LaserDrillingStepListDataAddLine(int nThruHoleIndex)
         {
-            entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X -
-                                                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-            entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
-                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+            entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X -
+                                                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+            entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
+                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
             //  사각형 돌릴 때 쓰던거
             entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
@@ -17463,10 +17475,10 @@ namespace QMC.Common.Modules
             m_bThruHoleList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
 
             //  이어서 오는 Edge Point 로 Mark 이동 (End)
-            entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[1].X -
-                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-            entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[1].Y -
-                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+            entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[1].X -
+                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+            entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[1].Y -
+                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
             //  사각형 돌릴 때 쓰던거
             entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
@@ -17474,12 +17486,12 @@ namespace QMC.Common.Modules
             m_bThruHoleList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
         }
 
-        private void LaserDrillingStepListDataAddRect()
+        private void LaserDrillingStepListDataAddRect(int nThruHoleIndex)
         {
-            entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X -
-                                                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-            entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
-                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+            entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X -
+                                                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+            entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
+                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
             //  사각형 돌릴 때 쓰던거
             entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
@@ -17487,21 +17499,19 @@ namespace QMC.Common.Modules
             m_bThruHoleList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
 
             //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Polyline 완성
-            for (int nEntity = 1; nEntity < m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].nEdgePointNum; nEntity++)
+            for (int nEntity = 1; nEntity < m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].nEdgePointNum; nEntity++)
             {
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[nEntity].X -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[nEntity].Y -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+                entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[nEntity].X -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[nEntity].Y -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
-                //  사각형 돌릴 때 쓰던거
                 entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
-
                 m_bThruHoleList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
             }
         }
 
-        private void LaserDrillingStepListDataAddCircle()
+        private void LaserDrillingStepListDataAddCircle(int nThruHoleIndex)
         {
             //if (Config.ParamConfig.bThruholeSizeReduce_Enable)
             if (Math.Abs(m_dThruholeLayer_Resizing) > 0.0)
@@ -17509,18 +17519,22 @@ namespace QMC.Common.Modules
                 //  지름에서 Reduce Size 만큼 줄임
 
                 //  첫 번째 Edge Point 로 Jump 이동. (원 모양이므로 반지름 만큼 왼쪽으로)
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X + m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[1].X -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X + (m_dThruholeLayer_Resizing / 2.0);
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+                entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X + 
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[1].X -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X + (m_dThruholeLayer_Resizing / 2.0);
+
+                entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
             }
             else
             {
                 //  첫 번째 Edge Point 로 Jump 이동. (원 모양이므로 반지름 만큼 왼쪽으로)
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X + m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[1].X -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+                entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X + 
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[1].X -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+
+                entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
             }
 
             //  사각형 돌릴 때 쓰던거
@@ -17529,10 +17543,10 @@ namespace QMC.Common.Modules
             m_bThruHoleList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
 
             //  Arc 구동 
-            entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X -
-                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-            entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
-                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+            entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X -
+                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+            entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
+                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
             //  사각형 돌릴 때 쓰던거
             entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
@@ -17540,23 +17554,21 @@ namespace QMC.Common.Modules
             //m_bThruHoleList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
             m_bThruHoleList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 
                 (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
-
-            //
         }
 
-        private void LaserDrillingStepListDataAddPoli()
+        private void LaserDrillingStepListDataAddPoli(int nThruHoleIndex)
         {
-            var Data = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint;
+            var Data = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint;
             PointD[] rData = ResizePoliLine(Data, m_dThruholeLayer_Resizing);
 
-            m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling = rData;
+            m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling = rData;
             //  Rectangle 이고, 가공 사이즈 줄이기 옵션이 활성화 되어 있는 경우, Edge Point 를 줄여서 가공
 
             //  첫 번째 Edge Point 로 Jump 이동
-            entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[0].X -
-                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-            entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[0].Y -
-                                m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+            entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[0].X -
+                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+            entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[0].Y -
+                                m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
             //  사각형 돌릴 때 쓰던거
             entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
@@ -17564,12 +17576,12 @@ namespace QMC.Common.Modules
             m_bThruHoleList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
 
             //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Polyline 완성
-            for (int nEntity = 1; nEntity < m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].nEdgePointNum; nEntity++)
+            for (int nEntity = 1; nEntity < m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].nEdgePointNum; nEntity++)
             {
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[nEntity].X -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[nEntity].Y -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+                entity_Position.X = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[nEntity].X -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                entity_Position.Y = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[nEntity].Y -
+                                    m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
                 //  사각형 돌릴 때 쓰던거
                 entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
@@ -17585,7 +17597,7 @@ namespace QMC.Common.Modules
             var rtcMode = rtc as IRtc;
             switch (nThruHoleIndex)
             {
-                case 1:
+                case 0:
                     m_bThruHoleList_Success = true;
                     m_bScannerLib_Success = true;
                     m_bThruHoleList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
@@ -17602,7 +17614,6 @@ namespace QMC.Common.Modules
                         {
                             //  Spot Distance Control
                             var alc = rtc as IRtcAutoLaserControl;
-
                             m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
                                 (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole_1].Miscellaneous_P2PDistance,                              //  Percentage100
                                 (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole_1].Miscellaneous_P2PDistance * 0.8),                      //  Min
@@ -17696,7 +17707,7 @@ namespace QMC.Common.Modules
                     m_nListBeginRetry_Count = 0;                    //  데이터 추가할 때도 안되는 경우가 있는 듯 하여, 데이터 집어넣기 재시도 Count 용 변수로 사용
                     break;
 
-                case 2:
+                case 1:
                     m_bThruHoleList_Success = true;
                     m_bScannerLib_Success = true;
                     m_bThruHoleList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
@@ -17814,15 +17825,27 @@ namespace QMC.Common.Modules
         private void NewMethodLaserDrillingStepThruHole_ScannerOnlyStageXYMoveObjectCenterPos(out double lfVelocity, out double lfAccDec)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 시작");
-
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
 
             //  좌표계 (기존)
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
 
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = -m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+            if(m_LayerType == LayerType.LAYER_THRUHOLE_1)
+            {
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = -m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+            }
+            else if(m_LayerType == LayerType.LAYER_THRUHOLE_2)
+            {
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = -m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+            }
+            else
+            {
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = -m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
+                workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
+            }
 
             //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
             //공용척 사용시.
@@ -17960,7 +17983,7 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
-        private void LaserDrillingStepSetThruHoleLayerParameterZOffsetMove()
+        private void LaserDrillingStepSetThruHoleLayerParameterZOffsetMove(int nThruHoleIndex)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 시작");
 
@@ -18018,19 +18041,19 @@ namespace QMC.Common.Modules
             }
             else
             {
-                dZOffset_ThruholeSocketHeight = m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue;
+                dZOffset_ThruholeSocketHeight = m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].dLaserHeightValue;
             }
 
-            if ((m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue < -5.0) || (m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue > 5.0))
+            if ((m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].dLaserHeightValue < -5.0) || (m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].dLaserHeightValue > 5.0))
             {
-                string m_strTemp = string.Format("Thruhole 가공을 위한 Z Offset 이동, Laser Height Check 값 이상. 범위 밖이므로 0으로 재설정(-5 < x < 5). Laser Height Check ({0:0.000})", m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue);
+                string m_strTemp = string.Format("Thruhole 가공을 위한 Z Offset 이동, Laser Height Check 값 이상. 범위 밖이므로 0으로 재설정(-5 < x < 5). Laser Height Check ({0:0.000})", m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].dLaserHeightValue);
                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
                 dZOffset_ThruholeSocketHeight = 0.0;
             }
             else
             {
-                string m_strTemp = string.Format("Thruhole 가공을 위한 Z Offset 이동, Laser Height Check 값 정상. Laser Height Check ({0:0.000})", m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue);
+                string m_strTemp = string.Format("Thruhole 가공을 위한 Z Offset 이동, Laser Height Check 값 정상. Laser Height Check ({0:0.000})", m_stThruHole_SocketData[nThruHoleIndex][m_nThruHole_SocketCount].dLaserHeightValue);
                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
             }
 
@@ -20754,7 +20777,6 @@ namespace QMC.Common.Modules
             bool bSelected = false;
             int nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             int nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
-            int nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
             int nLayerCount = 0;
             
             if (Equipment.GetEqpSiriusViewerDocument() == null)
@@ -20779,14 +20801,14 @@ namespace QMC.Common.Modules
             //int nOutlineListCount = 0;
             // 소켓 얼라인 실패한 것의 Thruhole, Outline, Marking 등의 그룹 데이터를 Select 하기 위함.
 
-            //  Thruhole 소켓 
-            if (m_stThruHole_SocketData_ProcessingFlag != null)
+            //  Thruhole1 소켓 
+            if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null)
             {
-                if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
+                if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length > 0)
                 {
-                    for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag.Length; i++)
+                    for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length; i++)
                     {
-                        if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == false)
+                        if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].bProcessing == false)
                         {
                             if (Equipment.SelectRunEnable && 
                                 Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
@@ -20805,8 +20827,34 @@ namespace QMC.Common.Modules
                 }
             }
 
+            //  Thruhole2 소켓 
+            if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] != null)
+            {
+                if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2].Length > 0)
+                {
+                    for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2].Length; i++)
+                    {
+                        if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].bProcessing == false)
+                        {
+                            if (Equipment.SelectRunEnable &&
+                                Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                            {
+                                if (i >= m_nSocketAlign_StartIndex)
+                                {
+                                    nListCount++;
+                                }
+                            }
+                            else                                                                                                                                        //  전체 가공 모드일 경우
+                            {
+                                nListCount++;
+                            }
+                        }
+                    }
+                }
+            }
+
             //  Outline 소켓
-            if(m_stOutLine_SocketData_ProcessingFlag != null)
+            if (m_stOutLine_SocketData_ProcessingFlag != null)
             {
                 if (m_stOutLine_SocketData_ProcessingFlag.Length > 0)
                 {
@@ -20863,8 +20911,7 @@ namespace QMC.Common.Modules
             //var listOutlineHole = new List<IEntity>(nOutlineListCount);   //  선택해야 할 List 초기화
             nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
             nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
-            nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
-
+            
             //  Layer 종류별 Count
             foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
@@ -20948,7 +20995,7 @@ namespace QMC.Common.Modules
                                     break;
                                 case EType.Group:
                                     var group = entity as Group;
-                                    if (m_stThruHole_SocketData_ProcessingFlag[nThruhole_ObjectCount].bProcessing == false)
+                                    if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][nThruhole_ObjectCount].bProcessing == false)
                                     {
                                         if (Equipment.SelectRunEnable && 
                                             Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
@@ -20999,7 +21046,7 @@ namespace QMC.Common.Modules
                                     break;
                                 case EType.Group:
                                     var group = entity as Group;
-                                    if (m_stThruHole_SocketData_ProcessingFlag[nThruhole_ObjectCount].bProcessing == false)
+                                    if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][nThruhole_ObjectCount].bProcessing == false)
                                     {
                                         if (Equipment.SelectRunEnable &&
                                             Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
@@ -22114,8 +22161,9 @@ namespace QMC.Common.Modules
             int m_nLayerMarking_Count = 0;
             int m_nLayerFiducial_Count = 0;
             int m_nLayerPreAlign_Count = 0;
-            int m_nLayerThruhole_Count = 0;             //  드릴링 Hole 은 아니지만, 드문드문 존재하는 가공 Hole
-            
+            int nLayerThruhole_Count_1 = 0;             //  드릴링 Hole 은 아니지만, 드문드문 존재하는 가공 Hole
+            int nLayerThruhole_Count_2 = 0;             //  드릴링 Hole 은 아니지만, 드문드문 존재하는 가공 Hole
+
             int m_nThruholeSocket_Count = 0;              //  드릴링 Hole 은 아니지만, 드문드문 존재하는 기구 Hole        --> MSL 에서 Socket 단위로 존재
             int m_nOutlineSocket_Count = 0;               //  소켓 외곽선을 라우팅 가공        --> MSL 은 소켓 단위로 존재
 
@@ -22244,11 +22292,11 @@ namespace QMC.Common.Modules
                     }
                     else if (layer.Name == "Thruhole" || layer.Name == "Thruhole_1")
                     {
-                        m_nLayerThruhole_Count++;
+                        nLayerThruhole_Count_1++;
                     }
                     else if (layer.Name == "Thruhole_2")
                     {
-                        m_nLayerThruhole_Count++;
+                        nLayerThruhole_Count_2++;
                     }
                     else if (layer.Name == "Outline")
                     {
@@ -24824,13 +24872,22 @@ namespace QMC.Common.Modules
                             m_stLaserDrilling_SocketData[0].dPreAlignHeight = new double[m_nCount];
                         }
 
-                        if ((m_nLayerThruhole_Count > 0) && (m_stThruHole_SocketData != null))
+                        if ((nLayerThruhole_Count_1 > 0) && (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null))
                         {
                             //  PreAlign 위치 저장 공간 할당 (모듈 당 1개. GroupData 의 0번 인덱스만 사용)
-                            m_stThruHole_SocketData[0].m_nPreAlign_TotalCount = m_nCount;
-                            m_stThruHole_SocketData[0].dPreAlignPos = new PointD[m_nCount];
-                            m_stThruHole_SocketData[0].dPreAlignWidth = new double[m_nCount];
-                            m_stThruHole_SocketData[0].dPreAlignHeight = new double[m_nCount];
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].m_nPreAlign_TotalCount = m_nCount;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignPos = new PointD[m_nCount];
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignWidth = new double[m_nCount];
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignHeight = new double[m_nCount];
+                        }
+
+                        if ((nLayerThruhole_Count_2 > 0) && (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] != null))
+                        {
+                            //  PreAlign 위치 저장 공간 할당 (모듈 당 1개. GroupData 의 0번 인덱스만 사용)
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].m_nPreAlign_TotalCount = m_nCount;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignPos = new PointD[m_nCount];
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignWidth = new double[m_nCount];
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignHeight = new double[m_nCount];
                         }
 
                         if ((m_nLayerOutline_Count > 0) && (m_stOutLine_SocketData != null))
@@ -24857,37 +24914,18 @@ namespace QMC.Common.Modules
                             {
                                 case EType.Point:
                                     var point = entity as SpiralLab.Sirius.Point;
-                                    //point.Location 
-                                    //point.DwellTime
-                                    //success &= point.Mark(markerArg);
                                     break;
 
                                 case EType.Points:
                                     var points = entity as Points;
-                                    foreach (var vertex in points)
-                                    {
-                                        //vertex.X
-                                        //vertex.Y
-                                    }
-                                    //points.DwellTime
-                                    //success &= points.Mark(markerArg);
                                     break;
 
                                 case EType.Line:
                                     var line = entity as SpiralLab.Sirius.Line;
-
-                                    //line.Start
-                                    //line.End
-                                    //success &= line.Mark(markerArg);
                                     break;
 
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
-                                    //arc.Radius
-                                    //arc.Center
-                                    //arc.StartAngle
-                                    //arc.SweepAngle
-                                    //success &= arc.Mark(markerArg);
 
                                     m_ptPreAlign[m_nItemCount].X = (double)arc.Center.X;
                                     m_ptPreAlign[m_nItemCount].Y = (double)arc.Center.Y;
@@ -24902,10 +24940,6 @@ namespace QMC.Common.Modules
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
 
-                                    //circle.Center 
-                                    //circle.Radius
-                                    //success &= circle.Mark(markerArg);
-
                                     m_ptPreAlign[m_nItemCount].X = (double)circle.Center.X;
                                     m_ptPreAlign[m_nItemCount].Y = (double)circle.Center.Y;
                                     m_dPreAlignWidth[m_nItemCount] = (double)circle.Radius;
@@ -24918,35 +24952,14 @@ namespace QMC.Common.Modules
 
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
-
-                                    //rectangle.Width
-                                    //rectangle.Height
-                                    //rectangle.Align
-                                    //rectangle.Location
-                                    //success &= rectangle.Mark(markerArg);
                                     break;
 
                                 case EType.LWPolyline:
                                     var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
-                                    //lwPolyline.IsClosed
-
-                                    //foreach (var vertex in lwPolyline)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //    //vertex.Bulge
-                                    //}
-                                    //success &= lwPolyline.Mark(markerArg);
                                     break;
 
                                 case EType.Spiral:
                                     var spiral = entity as Spiral;
-                                    //spiral.OutterDiameter 
-                                    //spiral.InnerDiameter
-                                    //spiral.RadialPitch
-                                    //spiral.Revolutions
-                                    //spiral.Center
-                                    //success &= spiral.Mark(markerArg);
                                     break;
 
                                 case EType.Group:
@@ -24957,8 +24970,6 @@ namespace QMC.Common.Modules
                                     m_nGroupData_Count = 0;
                                     foreach (var subEntity in group)
                                     {
-                                        //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_nGroupData_Count].bAssigned = false;
-
                                         Type t = subEntity.GetType();
                                         if (t.Name == "LwPolyline")
                                         {
@@ -25038,21 +25049,38 @@ namespace QMC.Common.Modules
 
                         if (LayerIsGroup)               //  MSL 은 Thruhole 을 Group 으로 해야 한다. 
                         {
+                            // [핵심] jagged 외부 배열 먼저 생성
+                            int thruholeTotal = (int)LAYER_THRUHOLE_INDEX.THRUHOLE_TOTAL;
+                            if (m_stThruHole_SocketData == null || m_stThruHole_SocketData.Length < thruholeTotal)
+                            {
+                                m_stThruHole_SocketData = new stThruHole_SocketData[thruholeTotal][];
+
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] = null;
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] = null;
+                            }
+
+                            // 방어 코드
+                            if (layer.Count <= 0)
+                            {
+                                return (int)nGetDataResult.GETDATA_FAIL;
+                            }
+
                             //  전체 Socket 개수만큼 공간 할당
-                            m_stThruHole_SocketData = new stThruHole_SocketData[layer.Count];  //layer.Count
-                            m_stThruHole_SocketData[0].nSocket_Num = layer.Count;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] = new stThruHole_SocketData[layer.Count];  //layer.Count
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].nSocket_Num = layer.Count;
 
                             //  Thruhole Fiducial 마크 공간 할당
                             for (int i = 0; i < layer.Count; i++)
                             {
-                                m_stThruHole_SocketData[i].dFiducialPos = new PointD[4];
-                                m_stThruHole_SocketData[i].dFiducialWidth = new double[4];
-                                m_stThruHole_SocketData[i].dFiducialHeight = new double[4];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialPos = new PointD[4];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialWidth = new double[4];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialHeight = new double[4];
                             }
                         }
 
                         //  세부 데이터 저장
                         m_nGroupData_Count = 0;
+                        int Region_ObjectCount = 0;// m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
                         foreach (var entity in layer)
                         {
                             switch (entity.EntityType)
@@ -25065,405 +25093,282 @@ namespace QMC.Common.Modules
                                     break;
                                 case EType.Line:
                                     var line = entity as SpiralLab.Sirius.Line;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : End
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : End
+                                    Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
-                                    //  객체 Type
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
-
-                                    //  객체 Edge 좌표 개수
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
-
-                                    //  객체 Center 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)line.Start.X + (double)line.End.X != 0.0 ? ((double)line.Start.X + (double)line.End.X) / 2.0 : 0.0;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)line.Start.Y + (double)line.End.Y != 0.0 ? ((double)line.Start.Y + (double)line.End.Y) / 2.0 : 0.0;
-
-                                    //  객체 Edge 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)line.Start.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)line.Start.Y;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)line.End.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)line.End.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : End
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : End
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;                                                                                                           
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.X = (double)line.Start.X + (double)line.End.X != 0.0 ? ((double)line.Start.X + (double)line.End.X) / 2.0 : 0.0;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.Y = (double)line.Start.Y + (double)line.End.Y != 0.0 ? ((double)line.Start.Y + (double)line.End.Y) / 2.0 : 0.0;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].X = (double)line.Start.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].Y = (double)line.Start.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].X = (double)line.End.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].Y = (double)line.End.Y;
 
                                     //  마지막 좌표 위치 저장
                                     m_ptLast.X = (double)line.End.X;
                                     m_ptLast.Y = (double)line.End.Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
-
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                     break;
 
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
+                                    Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                    //  객체 Type
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
-
-                                    //  객체 Radius
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dRadius = (double)arc.Radius;
-
-                                    //  객체 Center 좌표
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)arc.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)arc.Center.Y;
-
-                                    //  객체 Center 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)arc.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)arc.Center.Y;
-
-                                    //  객체 Start Angle
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)arc.StartAngle;
-
-                                    //  객체 Sweep Angle
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)arc.SweepAngle;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].stArcData.dRadius = (double)arc.Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].stArcData.dCenter.X = (double)arc.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].stArcData.dCenter.Y = (double)arc.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.X = (double)arc.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.Y = (double)arc.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].stArcData.dStartAngle = (double)arc.StartAngle;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].stArcData.dSweepAngle = (double)arc.SweepAngle;
 
                                     //  마지막 좌표 위치 저장
                                     m_ptLast.X = (double)arc.Center.X;
                                     m_ptLast.Y = (double)arc.Center.Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
-
-                                    //arc.Radius
-                                    //arc.Center
-                                    //arc.StartAngle
-                                    //arc.SweepAngle
-                                    //success &= arc.Mark(markerArg);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                     break;
 
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
+                                    Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                    //  객체 Type
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
-
-                                    //  객체 Edge 좌표 개수
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 1;
-
-                                    //  객체 Center 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)circle.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)circle.Center.Y;
-
-                                    //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)circle.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)circle.Center.Y;
-
-                                    //  Circle 의 경우, 두 번째 데이터는 Radius 값
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)circle.Radius;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)circle.Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nEdgePointNum = 1;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.X = (double)circle.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.Y = (double)circle.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].X = (double)circle.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].Y = (double)circle.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].X = (double)circle.Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].Y = (double)circle.Radius;
 
                                     //  마지막 좌표 위치 저장
                                     m_ptLast.X = (double)circle.Center.X;
                                     m_ptLast.Y = (double)circle.Center.Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                     break;
 
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
+                                    Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-
-                                    //  객체 Type
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
-
-                                    //  객체 Edge 좌표 개수
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 5;
-
-                                    //  객체 Center 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)rectangle.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)rectangle.Center.Y;
-
-                                    //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
-
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
-
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
-
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
-
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
-
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nEdgePointNum = 5;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.X = (double)rectangle.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.Y = (double)rectangle.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[2].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[2].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[3].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[3].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[4].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[4].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
                                     //  마지막 좌표 위치 저장
-                                    m_ptLast.X = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                    m_ptLast.Y = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                    m_ptLast.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].X;
+                                    m_ptLast.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
-
-                                    //rectangle.Width
-                                    //rectangle.Height
-                                    //rectangle.Align
-                                    //rectangle.Location
-                                    //success &= rectangle.Mark(markerArg);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                     break;
 
                                 case EType.LWPolyline:
                                     var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
-                                    //lwPolyline.IsClosed
+                                    Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-
-                                    //  객체 Type
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
-
-                                    //  객체 Edge 좌표 개수
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count;
-
-                                    //  객체 Center 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)lwPolyline.BoundRect.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)lwPolyline.BoundRect.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint_PreDrilling = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nEdgePointNum = lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.X = (double)lwPolyline.BoundRect.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.Y = (double)lwPolyline.BoundRect.Center.Y;
 
                                     //  객체 Edge 좌표 데이터 저장
                                     for (int n_pl = 0; n_pl < lwPolyline.Count; n_pl++)
                                     {
-                                        m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)lwPolyline.Items[n_pl].X;
-                                        m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)lwPolyline.Items[n_pl].Y;
+                                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[n_pl].X = (double)lwPolyline.Items[n_pl].X;
+                                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[n_pl].Y = (double)lwPolyline.Items[n_pl].Y;
                                     }
-
                                     //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
                                     if (lwPolyline.IsClosed)
                                     {
-                                        m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].X = (double)lwPolyline.Items[0].X;
-                                        m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].Y = (double)lwPolyline.Items[0].Y;
+                                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[lwPolyline.Count].X = (double)lwPolyline.Items[0].X;
+                                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[lwPolyline.Count].Y = (double)lwPolyline.Items[0].Y;
                                     }
-
                                     //  마지막 좌표 위치 저장
-                                    m_ptLast.X = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                    m_ptLast.Y = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                    m_ptLast.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].X;
+                                    m_ptLast.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
-
-                                    //foreach (var vertex in lwPolyline)
-                                    //{
-                                    //    //vertex.X
-                                    //    //vertex.Y
-                                    //    //vertex.Bulge
-                                    //}
-                                    //success &= lwPolyline.Mark(markerArg);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                     break;
 
                                 case EType.Spiral:
                                     var spiral = entity as Spiral;
-                                    //spiral.OutterDiameter 
-                                    //spiral.InnerDiameter
-                                    //spiral.RadialPitch
-                                    //spiral.Revolutions
-                                    //spiral.Center
-                                    //success &= spiral.Mark(markerArg);
                                     break;
 
                                 case EType.Group:
                                 default:
                                     var group = entity as Group;
+                                    Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
                                     //  전체 Object 개수
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectTotalNum = group.Count;
-
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectTotalNum = group.Count;
                                     //  Socket Center 좌표 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].dSocketCenter.X = group.Location.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].dSocketCenter.Y = group.Location.Y;
-
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].dSocketCenter.X = group.Location.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].dSocketCenter.Y = group.Location.Y;
                                     //  Object 별 데이터 공간 메모리 할당
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData = new stThruHole_ObjectData[group.Count];
-
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData = new stThruHole_ObjectData[group.Count];
                                     //  세부 데이터 저장
                                     m_nGroupData_Count = 0;
                                     foreach (var subEntity in group)
                                     {
-                                        m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_nGroupData_Count].bAssigned = false;
+                                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_nGroupData_Count].bAssigned = false;
+
 
                                         Type t = subEntity.GetType();
                                         if (t.Name == "LwPolyline")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.LwPolyline;
+                                            Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-
-                                            //  객체 Type
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
-
-                                            //  객체 Edge 좌표 개수
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
-
-                                            //  객체 Center 좌표 데이터 저장
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint_PreDrilling = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
 
                                             //  객체 Edge 좌표 데이터 저장
                                             for (int n_pl = 0; n_pl < pl.Count; n_pl++)
                                             {
-                                                m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
-                                                m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
+                                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
+                                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
                                             }
-
-                                            //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
                                             if (pl.IsClosed)
                                             {
-                                                m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
-                                                m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
+                                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
+                                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
                                             }
-
-                                            //  마지막 좌표 위치 저장
-                                            m_ptLast.X = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                            m_ptLast.Y = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                            m_ptLast.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].X;
+                                            m_ptLast.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Circle")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Circle;
+                                            Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                            //  객체 Type
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
-
-                                            //  객체 Edge 좌표 개수
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 1;
-
-                                            //  객체 Center 좌표 데이터 저장
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
-
-                                            //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
-
-                                            //  Circle 의 경우, 두 번째 데이터는 Radius 값
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nEdgePointNum = 1;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
 
                                             //  마지막 좌표 위치 저장
                                             m_ptLast.X = (double)pl.Center.X;
                                             m_ptLast.Y = (double)pl.Center.Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Rectangle")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Rectangle;
+                                            Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-
-                                            //  객체 Type
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
-
-                                            //  객체 Edge 좌표 개수
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 5;
-
-                                            //  객체 Center 좌표 데이터 저장
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
-
-                                            //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
-
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
-
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
-
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
-
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nEdgePointNum = 5;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
 
                                             //  마지막 좌표 위치 저장
-                                            m_ptLast.X = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                            m_ptLast.Y = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                            m_ptLast.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].X;
+                                            m_ptLast.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Line")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Line;
+                                            Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
-
-                                            //  객체 Type
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
-
-                                            //  객체 Edge 좌표 개수
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
-
-                                            //  객체 Center 좌표 데이터 저장
-                                            //m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Start.X + (double)pl.End.X != 0.0 ? ((double)pl.Start.X + (double)pl.End.X) / 2.0 : 0.0;
-                                            //m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Start.Y + (double)pl.End.Y != 0.0 ? ((double)pl.Start.Y + (double)pl.End.Y) / 2.0 : 0.0;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
-
-                                            //  객체 Edge 좌표 데이터 저장
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Start.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Start.Y;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.End.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.End.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].X = (double)pl.Start.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[0].Y = (double)pl.Start.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].X = (double)pl.End.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint[1].Y = (double)pl.End.Y;
 
                                             //  마지막 좌표 위치 저장
                                             m_ptLast.X = (double)pl.End.X;
                                             m_ptLast.Y = (double)pl.End.Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Arc")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Arc;
+                                            Region_ObjectCount = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount;
 
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                            //  객체 Type
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
-
-                                            //  객체 Radius
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dRadius = (double)pl.Radius;
-
-                                            //  객체 Center 좌표
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)pl.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)pl.Center.Y;
-
-                                            //  객체 Center 좌표 데이터 저장
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
-
-                                            //  객체 Start Angle
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)pl.StartAngle;
-
-                                            //  객체 Sweep Angle
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)pl.SweepAngle;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].stArcData.dRadius = (double)pl.Radius;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].stArcData.dCenter.X = (double)pl.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].stArcData.dCenter.Y = (double)pl.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].stArcData.dStartAngle = (double)pl.StartAngle;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].m_stThruHole_ObjectData[Region_ObjectCount].stArcData.dSweepAngle = (double)pl.SweepAngle;
 
                                             //  마지막 좌표 위치 저장
                                             m_ptLast.X = (double)pl.Center.X;
                                             m_ptLast.Y = (double)pl.Center.Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                         }
                                         else        //  또 뭐가 있나...
                                         {
@@ -25488,8 +25393,8 @@ namespace QMC.Common.Modules
                         m_ptLast.Y = 0.0;
 
                         m_nThruholeSocket_Count = 0;
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_THRUHOLE_2;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Thruhole_2;
+                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_THRUHOLE_1;
+                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Thruhole_1;
 
                         //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
                         int m_nCount = 0;
@@ -25513,16 +25418,30 @@ namespace QMC.Common.Modules
 
                         if (LayerIsGroup)               //  MSL 은 Thruhole 을 Group 으로 해야 한다. 
                         {
+                            // [핵심] jagged 외부 배열 먼저 생성
+                            int thruholeTotal = (int)LAYER_THRUHOLE_INDEX.THRUHOLE_TOTAL;
+                            if (m_stThruHole_SocketData == null || m_stThruHole_SocketData.Length < thruholeTotal)
+                            {
+                                m_stThruHole_SocketData = new stThruHole_SocketData[thruholeTotal][];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] = null; 
+                            }
+
+                            // 방어 코드
+                            if (layer.Count <= 0)
+                            {
+                                return (int)nGetDataResult.GETDATA_FAIL;
+                            }
+
                             //  전체 Socket 개수만큼 공간 할당
-                            m_stThruHole_SocketData = new stThruHole_SocketData[layer.Count];  //layer.Count
-                            m_stThruHole_SocketData[0].nSocket_Num = layer.Count;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] = new stThruHole_SocketData[layer.Count];  //layer.Count
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].nSocket_Num = layer.Count;
 
                             //  Thruhole Fiducial 마크 공간 할당
                             for (int i = 0; i < layer.Count; i++)
                             {
-                                m_stThruHole_SocketData[i].dFiducialPos = new PointD[4];
-                                m_stThruHole_SocketData[i].dFiducialWidth = new double[4];
-                                m_stThruHole_SocketData[i].dFiducialHeight = new double[4];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialPos = new PointD[4];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialWidth = new double[4];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialHeight = new double[4];
                             }
                         }
 
@@ -25540,66 +25459,46 @@ namespace QMC.Common.Modules
                                     break;
                                 case EType.Line:
                                     var line = entity as SpiralLab.Sirius.Line;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : End
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : End
-
-                                    //  객체 Type
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
-
-                                    //  객체 Edge 좌표 개수
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
-
-                                    //  객체 Center 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)line.Start.X + (double)line.End.X != 0.0 ? ((double)line.Start.X + (double)line.End.X) / 2.0 : 0.0;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)line.Start.Y + (double)line.End.Y != 0.0 ? ((double)line.Start.Y + (double)line.End.Y) / 2.0 : 0.0;
-
-                                    //  객체 Edge 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)line.Start.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)line.Start.Y;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)line.End.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)line.End.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : End
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : End
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)line.Start.X + (double)line.End.X != 0.0 ? ((double)line.Start.X + (double)line.End.X) / 2.0 : 0.0;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)line.Start.Y + (double)line.End.Y != 0.0 ? ((double)line.Start.Y + (double)line.End.Y) / 2.0 : 0.0;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)line.Start.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)line.Start.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)line.End.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)line.End.Y;
 
                                     //  마지막 좌표 위치 저장
                                     m_ptLast.X = (double)line.End.X;
                                     m_ptLast.Y = (double)line.End.Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount++;
 
                                     break;
 
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
 
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                    //  객체 Type
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
-
-                                    //  객체 Radius
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dRadius = (double)arc.Radius;
-
-                                    //  객체 Center 좌표
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)arc.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)arc.Center.Y;
-
-                                    //  객체 Center 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)arc.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)arc.Center.Y;
-
-                                    //  객체 Start Angle
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)arc.StartAngle;
-
-                                    //  객체 Sweep Angle
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)arc.SweepAngle;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dRadius = (double)arc.Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)arc.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)arc.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)arc.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)arc.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)arc.StartAngle;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)arc.SweepAngle;
 
                                     //  마지막 좌표 위치 저장
                                     m_ptLast.X = (double)arc.Center.X;
                                     m_ptLast.Y = (double)arc.Center.Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount++;
 
                                     //arc.Radius
                                     //arc.Center
@@ -25611,111 +25510,86 @@ namespace QMC.Common.Modules
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
 
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                    //  객체 Type
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
-
-                                    //  객체 Edge 좌표 개수
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 1;
-
-                                    //  객체 Center 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)circle.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)circle.Center.Y;
-
-                                    //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)circle.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)circle.Center.Y;
-
-                                    //  Circle 의 경우, 두 번째 데이터는 Radius 값
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)circle.Radius;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)circle.Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 1;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)circle.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)circle.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)circle.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)circle.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)circle.Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)circle.Radius;
 
                                     //  마지막 좌표 위치 저장
                                     m_ptLast.X = (double)circle.Center.X;
                                     m_ptLast.Y = (double)circle.Center.Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                     break;
 
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
 
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-
-                                    //  객체 Type
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
-
-                                    //  객체 Edge 좌표 개수
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 5;
-
-                                    //  객체 Center 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)rectangle.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)rectangle.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 5;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)rectangle.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)rectangle.Center.Y;
 
                                     //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
-
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
-
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
-
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
-
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
 
                                     //  마지막 좌표 위치 저장
-                                    m_ptLast.X = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                    m_ptLast.Y = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                    m_ptLast.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                                    m_ptLast.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                     break;
 
                                 case EType.LWPolyline:
                                     var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                    //lwPolyline.IsClosed
 
-                                    //  객체 Type
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
-
-                                    //  객체 Edge 좌표 개수
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count;
-
-                                    //  객체 Center 좌표 데이터 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)lwPolyline.BoundRect.Center.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)lwPolyline.BoundRect.Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)lwPolyline.BoundRect.Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)lwPolyline.BoundRect.Center.Y;
 
                                     //  객체 Edge 좌표 데이터 저장
                                     for (int n_pl = 0; n_pl < lwPolyline.Count; n_pl++)
                                     {
-                                        m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)lwPolyline.Items[n_pl].X;
-                                        m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)lwPolyline.Items[n_pl].Y;
+                                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)lwPolyline.Items[n_pl].X;
+                                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)lwPolyline.Items[n_pl].Y;
                                     }
 
                                     //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
                                     if (lwPolyline.IsClosed)
                                     {
-                                        m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].X = (double)lwPolyline.Items[0].X;
-                                        m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].Y = (double)lwPolyline.Items[0].Y;
+                                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].X = (double)lwPolyline.Items[0].X;
+                                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].Y = (double)lwPolyline.Items[0].Y;
                                     }
 
                                     //  마지막 좌표 위치 저장
-                                    m_ptLast.X = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                    m_ptLast.Y = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                    m_ptLast.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                                    m_ptLast.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
-
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                     break;
 
                                 case EType.Spiral:
@@ -25725,197 +25599,161 @@ namespace QMC.Common.Modules
                                 case EType.Group:
                                 default:
                                     var group = entity as Group;
+
                                     //  전체 Object 개수
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectTotalNum = group.Count;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectTotalNum = group.Count;
 
                                     //  Socket Center 좌표 저장
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].dSocketCenter.X = group.Location.X;
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].dSocketCenter.Y = group.Location.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].dSocketCenter.X = group.Location.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].dSocketCenter.Y = group.Location.Y;
 
                                     //  Object 별 데이터 공간 메모리 할당
-                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData = new stThruHole_ObjectData[group.Count];
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData = new stThruHole_ObjectData[group.Count];
 
                                     //  세부 데이터 저장
                                     m_nGroupData_Count = 0;
                                     foreach (var subEntity in group)
                                     {
-                                        m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_nGroupData_Count].bAssigned = false;
+                                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_nGroupData_Count].bAssigned = false;
+
                                         Type t = subEntity.GetType();
                                         if (t.Name == "LwPolyline")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.LwPolyline;
 
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-
-                                            //  객체 Type
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
-
-                                            //  객체 Edge 좌표 개수
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
-
-                                            //  객체 Center 좌표 데이터 저장
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
 
                                             //  객체 Edge 좌표 데이터 저장
                                             for (int n_pl = 0; n_pl < pl.Count; n_pl++)
                                             {
-                                                m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
-                                                m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
+                                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
+                                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
                                             }
 
                                             //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
                                             if (pl.IsClosed)
                                             {
-                                                m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
-                                                m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
+                                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
+                                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
                                             }
 
                                             //  마지막 좌표 위치 저장
-                                            m_ptLast.X = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                            m_ptLast.Y = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                            m_ptLast.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                                            m_ptLast.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Circle")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Circle;
 
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                            //  객체 Type
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
-
-                                            //  객체 Edge 좌표 개수
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 1;
-
-                                            //  객체 Center 좌표 데이터 저장
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
-
-                                            //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
-
-                                            //  Circle 의 경우, 두 번째 데이터는 Radius 값
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값                                                                                                                     [(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2]
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 1;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
 
                                             //  마지막 좌표 위치 저장
                                             m_ptLast.X = (double)pl.Center.X;
                                             m_ptLast.Y = (double)pl.Center.Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Rectangle")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Rectangle;
 
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-
-                                            //  객체 Type
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
-
-                                            //  객체 Edge 좌표 개수
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 5;
-
-                                            //  객체 Center 좌표 데이터 저장
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
-
-                                            //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
-
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
-
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
-
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
-
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 5;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
 
                                             //  마지막 좌표 위치 저장
-                                            m_ptLast.X = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                            m_ptLast.Y = m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                            m_ptLast.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                                            m_ptLast.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Line")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Line;
 
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
-
-                                            //  객체 Type
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
-
-                                            //  객체 Edge 좌표 개수
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
-
-                                            //  객체 Center 좌표 데이터 저장
-                                            //m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Start.X + (double)pl.End.X != 0.0 ? ((double)pl.Start.X + (double)pl.End.X) / 2.0 : 0.0;
-                                            //m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Start.Y + (double)pl.End.Y != 0.0 ? ((double)pl.Start.Y + (double)pl.End.Y) / 2.0 : 0.0;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
-
-                                            //  객체 Edge 좌표 데이터 저장
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Start.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Start.Y;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.End.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.End.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Start.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Start.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.End.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.End.Y;
 
                                             //  마지막 좌표 위치 저장
                                             m_ptLast.X = (double)pl.End.X;
                                             m_ptLast.Y = (double)pl.End.Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Arc")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Arc;
 
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                             //  객체 Type
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
 
                                             //  객체 Radius
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dRadius = (double)pl.Radius;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dRadius = (double)pl.Radius;
 
                                             //  객체 Center 좌표
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)pl.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)pl.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)pl.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)pl.Center.Y;
 
                                             //  객체 Center 좌표 데이터 저장
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
 
                                             //  객체 Start Angle
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)pl.StartAngle;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)pl.StartAngle;
 
                                             //  객체 Sweep Angle
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)pl.SweepAngle;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)pl.SweepAngle;
 
                                             //  마지막 좌표 위치 저장
                                             m_ptLast.X = (double)pl.Center.X;
                                             m_ptLast.Y = (double)pl.Center.Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount++;
+                                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nThruholeSocket_Count].nRegion_ObjectCount++;
                                         }
                                         else        //  또 뭐가 있나...
                                         {
@@ -25924,8 +25762,8 @@ namespace QMC.Common.Modules
                                     }
 
                                     m_nThruholeSocket_Count++;                   //  Socket 카운트 +1
-
                                     break;
+
                             }
                             if (!success)
                                 break;
@@ -27594,16 +27432,26 @@ namespace QMC.Common.Modules
                         }
                     }
 
-                    if (m_stThruHole_SocketData != null)                                                     //  ThruHole Layer 가 있으면 여기에도 넣고
-                    {
-                        if ((m_ptFiducial.Length >= 4) && (m_stThruHole_SocketData.Length > 0))
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole Layer, Socket 별 Fiducial 데이터 할당, Hole1 Layer 없음, Fiducial 데이터 개수가 4개 이상입니다.");
 
-                            for (int i = 0; i < m_stThruHole_SocketData[0].nSocket_Num; i++)
+                    //TEST 필요.
+                    if (m_stThruHole_SocketData == null)
+                    {
+                        m_stThruHole_SocketData = new stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_TOTAL][];
+                    }
+
+
+                    if (m_stThruHole_SocketData != null &&
+                        m_stThruHole_SocketData.Length > (int)LAYER_THRUHOLE_INDEX.THRUHOLE_1 &&
+                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null)
+                    {
+                        if ((m_ptFiducial.Length >= 4) && (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length > 0))
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole1 Layer, Socket 별 Fiducial 데이터 할당, Hole1 Layer 없음, Fiducial 데이터 개수가 4개 이상입니다.");
+
+                            for (int i = 0; i < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].nSocket_Num; i++)
                             {
-                                m_ptSocketCenter.X = m_stThruHole_SocketData[i].dSocketCenter.X;
-                                m_ptSocketCenter.Y = m_stThruHole_SocketData[i].dSocketCenter.Y;
+                                m_ptSocketCenter.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dSocketCenter.X;
+                                m_ptSocketCenter.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dSocketCenter.Y;
 
                                 //PointD[] m_ptResult = GetClosestCircles(m_ptSocketCenter);                        //  Socket Center 와 가장 가까운 Fiducial 위치를 찾는다.
                                 FiducialCircle[] m_ptResult = GetClosestCircles(m_ptSocketCenter);                  //  Socket Center 와 가장 가까운 Fiducial 위치를 찾는다.
@@ -27612,40 +27460,96 @@ namespace QMC.Common.Modules
                                 {
                                     FiducialCircle[] m_ptSortedResult = SortCircles(m_ptResult);                   //  Fiducial 위치를 정렬한다.
 
-                                    m_stThruHole_SocketData[i].dFiducialPos[0].X = m_ptSortedResult[0].Center.X;
-                                    m_stThruHole_SocketData[i].dFiducialPos[0].Y = m_ptSortedResult[0].Center.Y;
-                                    m_stThruHole_SocketData[i].dFiducialWidth[0] = m_ptSortedResult[0].Radius;
-                                    m_stThruHole_SocketData[i].dFiducialHeight[0] = m_ptSortedResult[0].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialPos[0].X = m_ptSortedResult[0].Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialPos[0].Y = m_ptSortedResult[0].Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialWidth[0] = m_ptSortedResult[0].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialHeight[0] = m_ptSortedResult[0].Radius;
 
-                                    m_stThruHole_SocketData[i].dFiducialPos[1].X = m_ptSortedResult[1].Center.X;
-                                    m_stThruHole_SocketData[i].dFiducialPos[1].Y = m_ptSortedResult[1].Center.Y;
-                                    m_stThruHole_SocketData[i].dFiducialWidth[1] = m_ptSortedResult[1].Radius;
-                                    m_stThruHole_SocketData[i].dFiducialHeight[1] = m_ptSortedResult[1].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialPos[1].X = m_ptSortedResult[1].Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialPos[1].Y = m_ptSortedResult[1].Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialWidth[1] = m_ptSortedResult[1].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialHeight[1] = m_ptSortedResult[1].Radius;
 
-                                    m_stThruHole_SocketData[i].dFiducialPos[2].X = m_ptSortedResult[2].Center.X;
-                                    m_stThruHole_SocketData[i].dFiducialPos[2].Y = m_ptSortedResult[2].Center.Y;
-                                    m_stThruHole_SocketData[i].dFiducialWidth[2] = m_ptSortedResult[2].Radius;
-                                    m_stThruHole_SocketData[i].dFiducialHeight[2] = m_ptSortedResult[2].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialPos[2].X = m_ptSortedResult[2].Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialPos[2].Y = m_ptSortedResult[2].Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialWidth[2] = m_ptSortedResult[2].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialHeight[2] = m_ptSortedResult[2].Radius;
 
-                                    m_stThruHole_SocketData[i].dFiducialPos[3].X = m_ptSortedResult[3].Center.X;
-                                    m_stThruHole_SocketData[i].dFiducialPos[3].Y = m_ptSortedResult[3].Center.Y;
-                                    m_stThruHole_SocketData[i].dFiducialWidth[3] = m_ptSortedResult[3].Radius;
-                                    m_stThruHole_SocketData[i].dFiducialHeight[3] = m_ptSortedResult[3].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialPos[3].X = m_ptSortedResult[3].Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialPos[3].Y = m_ptSortedResult[3].Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialWidth[3] = m_ptSortedResult[3].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].dFiducialHeight[3] = m_ptSortedResult[3].Radius;
                                 }
                                 else
                                 {
-                                    Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole Layer, Socket 별 Fiducial 데이터 할당, 현재 Socket Center 와 가장 가까운 위치의 Fiducial 개수가 4개가 아닙니다.");
+                                    Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole1 Layer, Socket 별 Fiducial 데이터 할당, 현재 Socket Center 와 가장 가까운 위치의 Fiducial 개수가 4개가 아닙니다.");
                                 }
                             }
                         }
                         else
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole Layer, Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 Socket 개수의 4배수가 아니거나, Align 마크 데이터가 없습니다.");
+                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole1 Layer, Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 Socket 개수의 4배수가 아니거나, Align 마크 데이터가 없습니다.");
                         }
                     }
                     else
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole Layer, Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 Socket 개수의 4배수가 아니거나, Hole 가공 데이터와 Align 마크 데이터가 없습니다.");
+                        Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole1 Layer, Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 Socket 개수의 4배수가 아니거나, Hole 가공 데이터와 Align 마크 데이터가 없습니다.");
+                    }
+
+                    if (m_stThruHole_SocketData != null &&
+                        m_stThruHole_SocketData.Length > (int)LAYER_THRUHOLE_INDEX.THRUHOLE_2 &&
+                        m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] != null)
+                    {
+                        if ((m_ptFiducial.Length >= 4) && (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2].Length > 0))
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole2 Layer, Socket 별 Fiducial 데이터 할당, Hole1 Layer 없음, Fiducial 데이터 개수가 4개 이상입니다.");
+
+                            for (int i = 0; i < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].nSocket_Num; i++)
+                            {
+                                m_ptSocketCenter.X = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dSocketCenter.X;
+                                m_ptSocketCenter.Y = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dSocketCenter.Y;
+
+                                //PointD[] m_ptResult = GetClosestCircles(m_ptSocketCenter);                        //  Socket Center 와 가장 가까운 Fiducial 위치를 찾는다.
+                                FiducialCircle[] m_ptResult = GetClosestCircles(m_ptSocketCenter);                  //  Socket Center 와 가장 가까운 Fiducial 위치를 찾는다.
+
+                                if (m_ptResult.Length == 4)
+                                {
+                                    FiducialCircle[] m_ptSortedResult = SortCircles(m_ptResult);                   //  Fiducial 위치를 정렬한다.
+
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialPos[0].X = m_ptSortedResult[0].Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialPos[0].Y = m_ptSortedResult[0].Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialWidth[0] = m_ptSortedResult[0].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialHeight[0] = m_ptSortedResult[0].Radius;
+
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialPos[1].X = m_ptSortedResult[1].Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialPos[1].Y = m_ptSortedResult[1].Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialWidth[1] = m_ptSortedResult[1].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialHeight[1] = m_ptSortedResult[1].Radius;
+
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialPos[2].X = m_ptSortedResult[2].Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialPos[2].Y = m_ptSortedResult[2].Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialWidth[2] = m_ptSortedResult[2].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialHeight[2] = m_ptSortedResult[2].Radius;
+
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialPos[3].X = m_ptSortedResult[3].Center.X;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialPos[3].Y = m_ptSortedResult[3].Center.Y;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialWidth[3] = m_ptSortedResult[3].Radius;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].dFiducialHeight[3] = m_ptSortedResult[3].Radius;
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole2 Layer, Socket 별 Fiducial 데이터 할당, 현재 Socket Center 와 가장 가까운 위치의 Fiducial 개수가 4개가 아닙니다.");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole2 Layer, Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 Socket 개수의 4배수가 아니거나, Align 마크 데이터가 없습니다.");
+                        }
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole2 Layer, Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 Socket 개수의 4배수가 아니거나, Hole 가공 데이터와 Align 마크 데이터가 없습니다.");
                     }
 
                     if (m_stOutLine_SocketData != null)                                                     //  Outline Layer 가 있으면 여기에도 넣고
@@ -27797,25 +27701,56 @@ namespace QMC.Common.Modules
                     }
                 }
 
-                if (m_stThruHole_SocketData != null)                                                     //  Thruhole Layer 가 있으면 여기에도 넣고
+                if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null)                                                     //  Thruhole Layer 가 있으면 여기에도 넣고
                 {
-                    if ((m_ptPreAlign.Length >= 2) && (m_stThruHole_SocketData.Length > 0) && (m_nLayerThruhole_Count > 0))
+                    if ((m_ptPreAlign.Length >= 2) && (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length > 0) && (nLayerThruhole_Count_1 > 0))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole Layer, Pre-Align 데이터 할당, Pre-Align 마크 개수가 2개 이상입니다.");
 
                         for (int i = 0; i < m_ptPreAlign.Length; i++)
                         {
-                            if(m_stThruHole_SocketData[0].dPreAlignPos[i] == null)
+                            if(m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignPos[i] == null)
                             {
-                                m_stThruHole_SocketData[0].dPreAlignPos = new PointD[m_ptPreAlign.Length];
-                                m_stThruHole_SocketData[0].dPreAlignWidth = new double[m_ptPreAlign.Length];
-                                m_stThruHole_SocketData[0].dPreAlignHeight = new double[m_ptPreAlign.Length];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignPos = new PointD[m_ptPreAlign.Length];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignWidth = new double[m_ptPreAlign.Length];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignHeight = new double[m_ptPreAlign.Length];
                             }
 
-                            m_stThruHole_SocketData[0].dPreAlignPos[i].X = preAlignCircles[i].Center.X;
-                            m_stThruHole_SocketData[0].dPreAlignPos[i].Y = preAlignCircles[i].Center.Y;
-                            m_stThruHole_SocketData[0].dPreAlignWidth[i] = preAlignCircles[i].Radius;
-                            m_stThruHole_SocketData[0].dPreAlignHeight[i] = preAlignCircles[i].Radius;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignPos[i].X = preAlignCircles[i].Center.X;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignPos[i].Y = preAlignCircles[i].Center.Y;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignWidth[i] = preAlignCircles[i].Radius;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignHeight[i] = preAlignCircles[i].Radius;
+                        }
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole Layer, Pre-Align 데이터 할당, Pre-Align 마크 개수가 2개 미만이거나 Outline 가공 데이터가 없습니다.");
+                    }
+                }
+                else
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole Layer, Pre-Align 데이터 할당, Pre-Align 데이터를 이용할 가공 데이터가 없습니다.");
+                }
+
+                if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] != null)                                                     //  Thruhole Layer 가 있으면 여기에도 넣고
+                {
+                    if ((m_ptPreAlign.Length >= 2) && (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2].Length > 0) && (nLayerThruhole_Count_2 > 0))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole Layer, Pre-Align 데이터 할당, Pre-Align 마크 개수가 2개 이상입니다.");
+
+                        for (int i = 0; i < m_ptPreAlign.Length; i++)
+                        {
+                            if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignPos[i] == null)
+                            {
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignPos = new PointD[m_ptPreAlign.Length];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignWidth = new double[m_ptPreAlign.Length];
+                                m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignHeight = new double[m_ptPreAlign.Length];
+                            }
+
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignPos[i].X = preAlignCircles[i].Center.X;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignPos[i].Y = preAlignCircles[i].Center.Y;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignWidth[i] = preAlignCircles[i].Radius;
+                            m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignHeight[i] = preAlignCircles[i].Radius;
                         }
                     }
                     else
@@ -28058,6 +27993,12 @@ namespace QMC.Common.Modules
 
             // 초기화
             m_stThruHole_SocketData_ProcessingFlag = null;
+            if (m_stThruHole_SocketData_ProcessingFlag == null)
+            {
+                m_stThruHole_SocketData_ProcessingFlag = new stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_TOTAL][];
+                m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] = null;
+                m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] = null;
+            }
             m_stOutLine_SocketData_ProcessingFlag = null;
             m_stMarking_SocketData_ProcessingFlag = new stMarking_SocketData();
 
@@ -28079,19 +28020,19 @@ namespace QMC.Common.Modules
                     if (layer.Count <= 0) continue;
 
                     // 필요한 길이만큼 확보
-                    if (m_stThruHole_SocketData_ProcessingFlag == null ||
-                        m_stThruHole_SocketData_ProcessingFlag.Length < layer.Count)
+                    if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] == null ||
+                        m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length < layer.Count)
                     {
-                        m_stThruHole_SocketData_ProcessingFlag = new stThruHole_SocketData[layer.Count];
+                        m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] = new stThruHole_SocketData[layer.Count];
                     }
 
                     for (int i = 0; i < layer.Count; i++)
                     {
                         string desc = layer.Items[i].Description;
-                        m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = IsProcessEnabled(desc);
+                        m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].bProcessing = IsProcessEnabled(desc);
 
                         Log.Write("Test",
-                            $"ThruHoleFlag[{i}]={(m_stThruHole_SocketData_ProcessingFlag[i].bProcessing ? "true" : "false")} ({layer.Name})");
+                            $"ThruHoleFlag[{i}]={(m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].bProcessing ? "true" : "false")} ({layer.Name})");
                     }
                 }
                 // ---------------------------
@@ -28102,19 +28043,19 @@ namespace QMC.Common.Modules
                     if (layer.Count <= 0) continue;
 
                     // 필요한 길이만큼 확보
-                    if (m_stThruHole_SocketData_ProcessingFlag == null ||
-                        m_stThruHole_SocketData_ProcessingFlag.Length < layer.Count)
+                    if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] == null ||
+                        m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2].Length < layer.Count)
                     {
-                        m_stThruHole_SocketData_ProcessingFlag = new stThruHole_SocketData[layer.Count];
+                        m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] = new stThruHole_SocketData[layer.Count];
                     }
 
                     for (int i = 0; i < layer.Count; i++)
                     {
                         string desc = layer.Items[i].Description;
-                        m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = IsProcessEnabled(desc);
+                        m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].bProcessing = IsProcessEnabled(desc);
 
                         Log.Write("Test",
-                            $"ThruHoleFlag[{i}]={(m_stThruHole_SocketData_ProcessingFlag[i].bProcessing ? "true" : "false")} ({layer.Name})");
+                            $"ThruHoleFlag[{i}]={(m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][i].bProcessing ? "true" : "false")} ({layer.Name})");
                     }
                 }
                 // ---------------------------
@@ -34116,7 +34057,7 @@ namespace QMC.Common.Modules
                 #region 쓰루홀 가공
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move:                              //  ThruHole 가공 Layer 파라미터, Z Offset 이동
 
-                    LaserDrillingStepSetThruHoleLayerParameterZOffsetMove();
+                    LaserDrillingStepSetThruHoleLayerParameterZOffsetMove(0);
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck;
                     break;
@@ -34180,12 +34121,25 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck:
 
-                    if (m_nThruHole_ObjectDataCount < m_stThruHole_SocketData[m_nThruHole_SocketCount].nRegion_ObjectTotalNum)
+                    int nLayerIndex = 0;
+                    if(m_LayerType == LayerType.LAYER_THRUHOLE_1)
+                    {
+                        nLayerIndex = 0;
+                    }
+                    else if (m_LayerType == LayerType.LAYER_THRUHOLE_2)
+                    {
+                        nLayerIndex = 1;
+                    }
+                    else
+                    {
+                        nLayerIndex = 0;
+                    }
+
+                    if (m_nThruHole_ObjectDataCount < m_stThruHole_SocketData[nLayerIndex][m_nThruHole_SocketCount].nRegion_ObjectTotalNum)
                     {
                         Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, 가공할 Object 가 남아있음");
 
                         m_nDrillingWork_Repeat_Count = 0;
-
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos;
                     }
                     else
@@ -34199,7 +34153,7 @@ namespace QMC.Common.Modules
                             if (layer != null && socket != null)
                             {
                                 SetDrillResult(layer.LayerName, socket.SocketNumber, true);
-                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber+1} 가공 완료됨");
+                                Log.Write("DrillStatus", $"[AutoComplete] {layerEnum} 소켓 {socket.SocketNumber + 1} 가공 완료됨");
                             }
                         }
 
@@ -34259,37 +34213,51 @@ namespace QMC.Common.Modules
                     break;
 
                 case (int)LaserDrilling_Step.ThruHole_ScannerOnly_ListData_Add:                                  //  List 에 데이터 추가
-                    //for (int nObject = 0; nObject < m_stThruHole_LayerData.nRegion_ObjectTotalNum; nObject++)
+
+                    int nListDataIndex = 0;
+                    if(m_LayerType == LayerType.LAYER_THRUHOLE_1)
+                    {
+                        nListDataIndex = 0;
+                    }
+                    else if (m_LayerType == LayerType.LAYER_THRUHOLE_2)
+                    {
+                        nListDataIndex = 1;
+                    }
+                    else
+                    {
+                        nListDataIndex = 0;
+                    }
+
                     for (m_nDrillingWork_Repeat_Count = 0; m_nDrillingWork_Repeat_Count < m_nDrillingWork_Repeat_Count_Total; m_nDrillingWork_Repeat_Count++)
                     {
-                        switch (m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].nObjectType)
+                        switch (m_stThruHole_SocketData[nListDataIndex][m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].nObjectType)
                         {
                             case (int)ObjectType.OBJECT_POLY:
-                                LaserDrillingStepListDataAddPoli();
+                                LaserDrillingStepListDataAddPoli(nListDataIndex);
                                 break;
 
 
                             case (int)ObjectType.OBJECT_CIR:
 
-                                LaserDrillingStepListDataAddCircle();
+                                LaserDrillingStepListDataAddCircle(nListDataIndex);
                                 break;
 
 
                             case (int)ObjectType.OBJECT_RECT:
                                 //  첫 번째 Edge Point 로 Jump 이동
-                                LaserDrillingStepListDataAddRect();
+                                LaserDrillingStepListDataAddRect(nListDataIndex);
                                 break;
 
 
                             case (int)ObjectType.OBJECT_LINE:
                                 //  첫 번째 Edge Point 로 Jump 이동 (Start)
-                                LaserDrillingStepListDataAddLine();
+                                LaserDrillingStepListDataAddLine(nListDataIndex);
                                 break;
 
 
                             case (int)ObjectType.OBJECT_ARC:
                                 //  Center 위치에서 Start Angle 만큼 회전한 위치로 Jump 이동
-                                LaserDrillingStepListDataAddArc();
+                                LaserDrillingStepListDataAddArc(nListDataIndex);
                                 break;
                         }
 
@@ -36272,14 +36240,34 @@ namespace QMC.Common.Modules
                                 }
                             }
 
-                            if (m_stThruHole_SocketData != null)
+                            if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null)
                             {
-                                if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData.Length)
+                                if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length)
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DrillingData_SocketHeightValue_Get:LAYER_DRILLING");
-                                    m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
 
                                     var drillingLayerEnum = GetCurrentLayerEnum(LayerType.LAYER_THRUHOLE_1);
+                                    int socketIndex = m_nDrillingWork_Group_Count;
+                                    socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
+                                    if (socket != null)
+                                    {
+                                        socket.IsSocketDisplacement = true;
+                                        socket.DisplacementZ = m_dZOffset_SocketHeightCheck;
+                                        DrillingManager.MarkAsChanged();
+                                        Log.Write("DrillStatus", $"[{drillingLayerEnum}][{socketIndex + 1}] 저장 완료: ZOffset = {m_dZOffset_SocketHeightCheck:F3}");
+                                    }
+                                }
+                            }
+
+                            if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] != null)
+                            {
+                                if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2].Length)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DrillingData_SocketHeightValue_Get:LAYER_DRILLING");
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+
+                                    var drillingLayerEnum = GetCurrentLayerEnum(LayerType.LAYER_THRUHOLE_2);
                                     int socketIndex = m_nDrillingWork_Group_Count;
                                     socket = DrillingManager.GetSocket(drillingLayerEnum, socketIndex);
                                     if (socket != null)
@@ -36336,12 +36324,12 @@ namespace QMC.Common.Modules
                             break;
 
                         case LayerType.LAYER_THRUHOLE_1:
-                            if (m_stThruHole_SocketData != null)
+                            if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null)
                             {
-                                if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData.Length)
+                                if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length)
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
-                                    m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
 
                                     var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
                                     int socketIndex = m_nDrillingWork_Group_Count;
@@ -36358,12 +36346,12 @@ namespace QMC.Common.Modules
                             break;
 
                         case LayerType.LAYER_THRUHOLE_2:
-                            if (m_stThruHole_SocketData != null)
+                            if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] != null)
                             {
-                                if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData.Length)
+                                if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2].Length)
                                 {
                                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
-                                    m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                                    m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
 
                                     var drillingLayerEnum = GetCurrentLayerEnum(m_LayerType);
                                     int socketIndex = m_nDrillingWork_Group_Count;
@@ -36751,10 +36739,10 @@ namespace QMC.Common.Modules
 
                             case LayerType.LAYER_THRUHOLE_1:
                                 //  성부장 작업
-                                if (m_stThruHole_SocketData != null)
+                                if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null)
                                 {
                                     stPreAlignList.Clear();
-                                    m_nPreAlignMarkNumMax = m_stThruHole_SocketData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
+                                    m_nPreAlignMarkNumMax = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
 
                                     double dFiducialPosX = 0.0;
                                     double dFiducialPosY = 0.0;
@@ -36762,10 +36750,10 @@ namespace QMC.Common.Modules
                                     double dFiducialHeight = 0.0;
                                     for (int i = 0; i < m_nPreAlignMarkNumMax; i++)
                                     {
-                                        dFiducialPosX = m_stThruHole_SocketData[0].dPreAlignPos[i].X;
-                                        dFiducialPosY = m_stThruHole_SocketData[0].dPreAlignPos[i].Y;
-                                        dFiducialWidth = m_stThruHole_SocketData[0].dPreAlignWidth[i];
-                                        dFiducialHeight = m_stThruHole_SocketData[0].dPreAlignHeight[i];
+                                        dFiducialPosX = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignPos[i].X;
+                                        dFiducialPosY = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignPos[i].Y;
+                                        dFiducialWidth = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignWidth[i];
+                                        dFiducialHeight = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].dPreAlignHeight[i];
 
                                         stPreAlignList.Add(new Equipment.PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
                                     }
@@ -36810,10 +36798,10 @@ namespace QMC.Common.Modules
                                 break;
 
                             case LayerType.LAYER_THRUHOLE_2:
-                                if (m_stThruHole_SocketData != null)
+                                if (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2] != null)
                                 {
                                     stPreAlignList.Clear();
-                                    m_nPreAlignMarkNumMax = m_stThruHole_SocketData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
+                                    m_nPreAlignMarkNumMax = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
 
                                     double dFiducialPosX = 0.0;
                                     double dFiducialPosY = 0.0;
@@ -36821,10 +36809,10 @@ namespace QMC.Common.Modules
                                     double dFiducialHeight = 0.0;
                                     for (int i = 0; i < m_nPreAlignMarkNumMax; i++)
                                     {
-                                        dFiducialPosX = m_stThruHole_SocketData[0].dPreAlignPos[i].X;
-                                        dFiducialPosY = m_stThruHole_SocketData[0].dPreAlignPos[i].Y;
-                                        dFiducialWidth = m_stThruHole_SocketData[0].dPreAlignWidth[i];
-                                        dFiducialHeight = m_stThruHole_SocketData[0].dPreAlignHeight[i];
+                                        dFiducialPosX = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignPos[i].X;
+                                        dFiducialPosY = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignPos[i].Y;
+                                        dFiducialWidth = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignWidth[i];
+                                        dFiducialHeight = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].dPreAlignHeight[i];
 
                                         stPreAlignList.Add(new Equipment.PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
                                     }
@@ -37437,14 +37425,14 @@ namespace QMC.Common.Modules
                                             Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag //  단일 선택 가공이면, Align 실패 시 Out
                                             {
                                                 //  Thruhole Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
-                                                if (m_stThruHole_SocketData_ProcessingFlag != null)
+                                                if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null)
                                                 {
                                                     if (m_AlignMode == AlignMode.Socket)
                                                     {
-                                                        if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stLaserDrilling_SocketData.Length)
+                                                        if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length == m_stLaserDrilling_SocketData.Length)
                                                         {
-                                                            m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;//  true:가공, false:Skip
-                                                            Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false __4");
+                                                            m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].bProcessing = false;//  true:가공, false:Skip
+                                                            Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].bProcessing = false __4");
                                                         }
                                                         //else if(m_stThruHole_SocketData_ProcessingFlag.Length < m_stLaserDrilling_SocketData.Length)
                                                         //{
@@ -37453,13 +37441,13 @@ namespace QMC.Common.Modules
                                                         //                "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
                                                         //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
                                                         //}
-                                                        else if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData_ProcessingFlag.Length)
+                                                        else if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length)
                                                         {
-                                                            m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                                            m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
                                                             strTemp = "Thruhole 과 Hole 의 Socket 개수가 작습니다." +
                                                                         "- m_nDrillingWork_Group_Count: " + m_nDrillingWork_Group_Count.ToString();
                                                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", strTemp);
-                                                            Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false __5");
+                                                            Log.Write("Test", "m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].bProcessing = false __5");
                                                         }
                                                         else
                                                         {
@@ -40619,14 +40607,14 @@ namespace QMC.Common.Modules
                             // (Socket 모드) 실패/건너뛴 소켓 재정렬 대상 탐색
                             m_bPassedSocket_Exist = false;
                             m_nSocketNum_forFailedSocket_Align = -1;
-                            if (m_stThruHole_SocketData_ProcessingFlag != null)
+                            if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null)
                             {
-                                if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
+                                if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length > 0)
                                 {
                                     // 가장 마지막에 Align 성공한 Socket 위치에서 얼라인을 한다.
-                                    for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag.Length; i++)
+                                    for (int i = 0; i < m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length; i++)
                                     {
-                                        if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == true)
+                                        if (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][i].bProcessing == true)
                                         {
                                             m_nSocketNum_forFailedSocket_Align = i;
                                         }
@@ -40653,9 +40641,9 @@ namespace QMC.Common.Modules
                             nextStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;                 //  분할 영역 Drilling 작업 시작
                         }
                         else if (m_AlignMode == AlignMode.Socket && 
-                                (m_stThruHole_SocketData_ProcessingFlag != null) &&
-                                m_stThruHole_SocketData_ProcessingFlag.Length == 1 &&   // 한개가 아니고... hole이랑 갯수가 같을 수도 있는데.
-                                m_stThruHole_SocketData_ProcessingFlag[0].bProcessing == false &&
+                                (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null) &&
+                                m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length == 1 &&   // 한개가 아니고... hole이랑 갯수가 같을 수도 있는데.
+                                m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].bProcessing == false &&
                                 m_bRetryAlignSucess == false)
                         {
                             var layerEnum = GetCurrentLayerEnum(m_LayerType);
@@ -40691,9 +40679,9 @@ namespace QMC.Common.Modules
                             }
                         }
                         else if (m_AlignMode == AlignMode.Socket && 
-                                (m_stThruHole_SocketData_ProcessingFlag != null) &&
-                                m_stThruHole_SocketData_ProcessingFlag.Length == m_stLaserDrilling_SocketData[0].nGroup_Num &&   
-                                m_stThruHole_SocketData_ProcessingFlag[0].bProcessing == false &&
+                                (m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1] != null) &&
+                                m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1].Length == m_stLaserDrilling_SocketData[0].nGroup_Num &&   
+                                m_stThruHole_SocketData_ProcessingFlag[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].bProcessing == false &&
                                 m_bRetryAlignSucess == false)
                         {
                             // 한개가 아니고... hole이랑 갯수가 같을 수도 있는데..
@@ -40915,7 +40903,7 @@ namespace QMC.Common.Modules
                     
                     if (m_bDrillingWork_Hole1_Exist)
                     {
-                        if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[0].nSocket_Num)
+                        if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].nSocket_Num)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 가공할 Socket 이 남아 있음");
 
@@ -40958,7 +40946,7 @@ namespace QMC.Common.Modules
                     }
                     else
                     {
-                        if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[0].nSocket_Num)
+                        if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][0].nSocket_Num)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
 
@@ -40987,14 +40975,14 @@ namespace QMC.Common.Modules
                             {
                                 Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : On");
 
-                                int m_nFiducial_Num = m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dFiducialPos.Length; //Fiducial 개수를 뜻함.
+                                int m_nFiducial_Num = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].dFiducialPos.Length; //Fiducial 개수를 뜻함.
                                 bool m_bFiducial_Exist = false;
                                 if (m_nFiducial_Num > 0)
                                 {
                                     for (int i = 0; i < m_nFiducial_Num; i++)
                                     {
-                                        if ((m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dFiducialPos[i].X != 0.0) ||
-                                            (m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dFiducialPos[i].Y != 0.0))
+                                        if ((m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].dFiducialPos[i].X != 0.0) ||
+                                            (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_1][m_nDrillingWork_Group_Count].dFiducialPos[i].Y != 0.0))
                                         {
                                             m_bFiducial_Exist = true;
                                         }
@@ -41071,7 +41059,7 @@ namespace QMC.Common.Modules
 
                     if (m_bDrillingWork_Hole1_Exist)
                     {
-                        if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[0].nSocket_Num)
+                        if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].nSocket_Num)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 가공할 Socket 이 남아 있음");
 
@@ -41114,7 +41102,7 @@ namespace QMC.Common.Modules
                     }
                     else
                     {
-                        if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[0].nSocket_Num)
+                        if (m_nDrillingWork_Group_Count < m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][0].nSocket_Num)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
 
@@ -41143,14 +41131,14 @@ namespace QMC.Common.Modules
                             {
                                 Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : On");
 
-                                int m_nFiducial_Num = m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dFiducialPos.Length; //Fiducial 개수를 뜻함.
+                                int m_nFiducial_Num = m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nDrillingWork_Group_Count].dFiducialPos.Length; //Fiducial 개수를 뜻함.
                                 bool m_bFiducial_Exist = false;
                                 if (m_nFiducial_Num > 0)
                                 {
                                     for (int i = 0; i < m_nFiducial_Num; i++)
                                     {
-                                        if ((m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dFiducialPos[i].X != 0.0) ||
-                                            (m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dFiducialPos[i].Y != 0.0))
+                                        if ((m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nDrillingWork_Group_Count].dFiducialPos[i].X != 0.0) ||
+                                            (m_stThruHole_SocketData[(int)LAYER_THRUHOLE_INDEX.THRUHOLE_2][m_nDrillingWork_Group_Count].dFiducialPos[i].Y != 0.0))
                                         {
                                             m_bFiducial_Exist = true;
                                         }

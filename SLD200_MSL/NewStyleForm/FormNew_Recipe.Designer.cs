@@ -1990,31 +1990,31 @@
             // richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus
             // 
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Location = new System.Drawing.Point(245, 711);
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Location = new System.Drawing.Point(245, 714);
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Multiline = false;
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Name = "richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus";
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Size = new System.Drawing.Size(100, 25);
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.TabIndex = 173;
-            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Tag = "KeyPad;Min=-99;Max=99;Format=0.000";
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Text = "0.0";
             // 
             // label5
             // 
-            this.label5.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label5.Location = new System.Drawing.Point(11, 709);
+            this.label5.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(11, 714);
             this.label5.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(230, 25);
             this.label5.TabIndex = 171;
-            this.label5.Text = "Cal_ZAxis Defocus Offset (mm) :";
+            this.label5.Text = "VarioScanZ Defocus Offset (mm) :";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // checkBox_VarioScan
             // 
             this.checkBox_VarioScan.AutoSize = true;
             this.checkBox_VarioScan.Font = new System.Drawing.Font("Tahoma", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox_VarioScan.Location = new System.Drawing.Point(388, 49);
+            this.checkBox_VarioScan.Location = new System.Drawing.Point(392, 682);
             this.checkBox_VarioScan.Name = "checkBox_VarioScan";
             this.checkBox_VarioScan.Size = new System.Drawing.Size(105, 25);
             this.checkBox_VarioScan.TabIndex = 170;
@@ -2164,18 +2164,18 @@
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Name = "richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset";
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Size = new System.Drawing.Size(100, 25);
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.TabIndex = 160;
-            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Tag = "KeyPad;Min=0;Max=9999999;Format=0.000";
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Tag = "KeyPad;Min=-99;Max=99;Format=0.000";
             this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = "0.0";
             // 
             // label_Recipe_TabRecipe_Cal_ZAxisOffset
             // 
             this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Location = new System.Drawing.Point(11, 680);
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Location = new System.Drawing.Point(11, 682);
             this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Name = "label_Recipe_TabRecipe_Cal_ZAxisOffset";
             this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Size = new System.Drawing.Size(230, 25);
             this.label_Recipe_TabRecipe_Cal_ZAxisOffset.TabIndex = 158;
-            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Text = "Cal_ZAxisOffset (mm) :";
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Text = "VarioScanZ Offset (mm) :";
             this.label_Recipe_TabRecipe_Cal_ZAxisOffset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time

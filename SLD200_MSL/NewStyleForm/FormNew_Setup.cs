@@ -269,16 +269,9 @@ namespace SLD200_MSL
             textBox_Setup_ScannerCal_CalAreaWidth.Text = Equipment.Scanner_Calibration_CalAreaWidth.ToString();
             textBox_Setup_ScannerCal_CalAreaHeight.Text = Equipment.Scanner_Calibration_CalAreaHeight.ToString();
             textBox_Setup_ScannerCal_CalPitch.Text = Equipment.Scanner_Calibration_CalPitch.ToString();
-            ////Scanner_Calibration_VisionZOffset
             textBox_Setup_ScannerCal_VisionZOffset.Text = Equipment.Scanner_Calibration_VisionZOffset.ToString();
-
-            double mm = Equipment.Scanner_Calibration_VarioScanZ;
-            double value = (mm / 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-            textBox_Setup_ScannerCal_VisionZOffset3D.Text = value.ToString();
-            mm = Equipment.Scanner_Calibration_VarioScanZ_Defocus;
-            value = (mm / 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-            textBox_Setup_ScannerCal_VisionZDefocus3D.Text = value.ToString();
-
+            textBox_Setup_ScannerCal_VisionZOffset3D.Text = Equipment.Scanner_Calibration_VarioScanZ.ToString();
+            textBox_Setup_ScannerCal_VisionZDefocus3D.Text = Equipment.Scanner_Calibration_VarioScanZ_Defocus.ToString();
             comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.SelectedIndex = Equipment.Scanner_Calibration_MaskIndex;
             comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.Scanner_Calibration_BETPositionIndex;
 
@@ -2201,14 +2194,8 @@ namespace SLD200_MSL
             Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(textBox_Setup_ScannerCal_CalPitch.Text);
             Equipment.Scanner_Calibration_MaskIndex = comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.SelectedIndex;
             Equipment.Scanner_Calibration_BETPositionIndex = comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.SelectedIndex;
-
-
-            double mm = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
-            double value = (mm * 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-            Equipment.Scanner_Calibration_VarioScanZ = value;
-            mm = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZDefocus3D.Text);
-            value = (mm * 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-            Equipment.Scanner_Calibration_VarioScanZ_Defocus = value;
+            Equipment.Scanner_Calibration_VarioScanZ = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
+            Equipment.Scanner_Calibration_VarioScanZ_Defocus = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZDefocus3D.Text);
 
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", textBox_Setup_ScannerCal_LaserFrequency.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Pulse_Width", textBox_Setup_ScannerCal_PulseWidth.Text, strFIle);
@@ -2227,13 +2214,8 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Vision_Z_Offset", textBox_Setup_ScannerCal_VisionZOffset.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "MaskIndex", comboBox_Setup_ScannerCal_Miscellaneous_MaskIndex.SelectedIndex.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "BETPositionIndex", comboBox_Setup_ScannerCal_Miscellaneous_BETPositionIndex.SelectedIndex.ToString(), strFIle);
-
-            mm = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
-            value = (mm * 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "VarioScanZ", value.ToString(), strFIle);
-            mm = Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZDefocus3D.Text);
-            value = (mm * 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "VarioScanZ_Defocus", value.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "VarioScanZ", Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text).ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "VarioScanZ_Defocus", Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZDefocus3D.Text).ToString(), strFIle);
 
             Equipment.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile; // m_srcFile;
             Equipment.Scanner_Calibration_targetFilePath = m_correction2DRtc.TargetCorrectionFile;  // m_targetFile;
@@ -3138,11 +3120,7 @@ namespace SLD200_MSL
             //여기에 3D Cal을 위한 Data도 저장.
             try
             {
-                // UI에서 Z값 입력받는 textbox가 있다면 그걸 사용
-                // 예: textBox_Setup_ScannerCal_CurrentZ
-                double mm = Equipment.Scanner_Calibration_VarioScanZ;
-                double value = (mm / 10);  //결과: 0.5 -> 5 로 전달. VarioScan  단위가 100um.
-                float zMm = (float)value;   // Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
+                float zMm = (float)Equipment.Scanner_Calibration_VarioScanZ;   // Equipment.ToDouble(textBox_Setup_ScannerCal_VisionZOffset3D.Text);
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
                     sfd.Filter = "Json File (*.json)|*.json";
