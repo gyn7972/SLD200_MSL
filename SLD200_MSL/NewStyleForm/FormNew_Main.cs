@@ -1851,8 +1851,7 @@ namespace SLD200_MSL
                         {
                             if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Thruhole_1)
                             {
-                                workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Thruhole" 인 Layer 의 Index 를 넣어줌
-
+                                workStage.m_nLaserDrilling_LayerCount = i;
                                 break;
                             }
                         }
@@ -2793,7 +2792,7 @@ namespace SLD200_MSL
             }
 
             Log.Write("SLD-200", Equipment.User_Name, "CheckBox Click", "Socket Stop 체크박스 : " + Equipment.CycleSocketStop.ToString());
-        }
+        } 
 
         private void checkBox_Main_CycleStop_CheckedChanged(object sender, EventArgs e)
         {
@@ -2819,12 +2818,6 @@ namespace SLD200_MSL
             }
 
             Log.Write("SLD-200", Equipment.User_Name, "CheckBox Click", "Cycle Stop 체크박스 : " + Equipment.CycleModuleStop.ToString());
-        }
-
-        
-        private void checkBox_Main_Loader_Transfer_Pause_CheckedChanged(object sender, EventArgs e)
-        {
-            //Equipment.Loader_Transfer_Pause = checkBox_Main_Loader_Transfer_Pause.Checked;
         }
 
         private void button_Main_Pause_Click(object sender, EventArgs e)
@@ -2854,178 +2847,6 @@ namespace SLD200_MSL
 
             workStage.Camera_HighRes.Initialize();
             workStage.Camera_LowRes.Initialize();
-        }
-
-        private void button_Main_Loader_Continue_Click(object sender, EventArgs e)
-        {
-            //  테스트용 코드
-            //workStage.m_bPreAlignCompleted = true;
-            //return;
-
-
-            //  Loader Cycle Continue
-
-            if (Equipment.MachineStop_byTimeout_Loader)
-            {
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "Loader Cycle Continue...");
-
-                loader.Loader_Transfer_Restart_MoveType_Check();
-
-                //  Timeout 이 발생하여 Cycle Stop 상태인 경우
-                Equipment.MachineStop_byTimeout_Loader = false;                
-            }
-        }
-
-        private void button_Main_Unloader_Continue_Click(object sender, EventArgs e)
-        {
-            //  테스트용 코드
-            ////string m_strTemp = "";
-            ////m_strTemp = string.Format("선택한 소켓 번호 : {0}", workStage.m_nSocketAlign_StartIndex);
-            ////MessageBox.Show(m_strTemp);
-
-            //workStage.Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;            
-            //workStage.Main_SocketPositions_ProcessingSocket = 1;                          //  완료된 소켓 번호
-
-            //workStage.Main_SocketPositions_ProcessingStatus_Region = (int)Socket_Process_Status.Processing;
-            //workStage.Main_SocketPositions_ProcessingSocket_Region = 1;
-
-
-            //workStage.Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
-
-            ////workStage.Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
-            ////workStage.Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
-            ////workStage.Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
-            ///
-
-            //workStage.GlobalSocketStatus_Set("Hole1", 0, 1, "Hole1 가공 시작");
-            //workStage.GlobalSocketStatus_Set("Thruhole", 0, 0, "Hole1 가공 시작");
-
-
-            return;
-
-
-
-
-            //  Unloader Cycle Continue
-
-            if (Equipment.MachineStop_byTimeout_Unloader)
-            {
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "Unloader Cycle Continue...");
-
-                unloader.Unloader_Transfer_Restart_MoveType_Check();
-
-                //  Timeout 이 발생하여 Cycle Stop 상태인 경우
-                Equipment.MachineStop_byTimeout_Unloader = false;
-            }
-        }
-
-        private void button_Main_WorkStage_Continue_Click(object sender, EventArgs e)
-        {
-            ////  테스트용 코드
-            //if (workStage.m_stDividedRegion_GroupData != null)
-            //{
-            //    //  메인 화면에 가공위치 표시용
-            //    workStage.Main_SocketPositions = new List<PointD>();
-
-            //    for (int i = 0; i < workStage.m_stDividedRegion_GroupData[0].nGroup_Num; i++)
-            //    {
-            //        workStage.Main_SocketPositions.Add(new PointD(workStage.m_stDividedRegion_GroupData[i].dGroupCenter.X, workStage.m_stDividedRegion_GroupData[i].dGroupCenter.Y));
-            //    }
-
-            //    if (workStage.Main_SocketPositions.Count > 0)
-            //    {
-            //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
-
-            //        //  메인 화면에 그려지는 가공위치의 개수
-            //        (workStage.Main_SocketPositions_RowCount, workStage.Main_SocketPositions_ColumnCount) = workStage.CalculateArraySize(workStage.Main_SocketPositions);
-
-            //        //  가공 소켓이 몇개의 영역으로 나눠지는지
-            //        workStage.Main_SocketPositions_SubRowCount = workStage.m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? workStage.m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
-            //        workStage.Main_SocketPositions_SubColumnCount = workStage.m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? workStage.m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
-
-            //        workStage.Main_SocketPositions_Draw = true;
-            //    }
-            //    else
-            //    {
-            //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
-            //    }
-
-
-            //    //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
-            //    workStage.GlobalSocketStatus_Init();
-            //}
-            //return;
-
-
-
-            //  Laser Drilling Cycle Continue
-
-            if (Equipment.SocketStopped)
-            {
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "Laser Drilling Cycle Continue...");
-
-                workStage.WorkStage_Restart_Check();
-
-                Equipment.SocketStopped = false;
-            }
-        }
-
-
-        public void Main_FiducialAlignData_Clear()
-        {
-            listView_Main_FiducialAlignData.BeginUpdate();
-
-            //  ListView Column 삭제
-            listView_Main_FiducialAlignData.Items.Clear();
-            foreach (ColumnHeader header in listView_Main_FiducialAlignData.Columns)
-            {
-                listView_Main_FiducialAlignData.Columns.Remove(header);
-            }
-
-            //  ListView Column 설정
-            listView_Main_FiducialAlignData.Columns.Add("No", 50, System.Windows.Forms.HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Socket", 55, System.Windows.Forms.HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Devi. X", 70, System.Windows.Forms.HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Devi. Y", 70, System.Windows.Forms.HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Hole Size", 70, System.Windows.Forms.HorizontalAlignment.Center);
-
-            listView_Main_FiducialAlignData.EndUpdate();
-        }
-
-
-        public void Main_FiducialAlignData_Add()
-        {
-            listView_Main_FiducialAlignData.BeginUpdate();
-
-            ////  ListView Column 삭제
-            //listView_Main_FiducialAlignData.Items.Clear();
-            //foreach (ColumnHeader header in listView_Main_FiducialAlignData.Columns)
-            //{
-            //    listView_Main_FiducialAlignData.Columns.Remove(header);
-            //}
-
-            ////  ListView Column 설정
-            //listView_Main_FiducialAlignData.Columns.Add("No", 50, HorizontalAlignment.Center);
-            //listView_Main_FiducialAlignData.Columns.Add("Socket", 55, HorizontalAlignment.Center);
-            //listView_Main_FiducialAlignData.Columns.Add("Devi. X", 70, HorizontalAlignment.Center);
-            //listView_Main_FiducialAlignData.Columns.Add("Devi. Y", 70, HorizontalAlignment.Center);
-            //listView_Main_FiducialAlignData.Columns.Add("Hole Size", 70, HorizontalAlignment.Center);
-
-            //  Fiducial Data를 ListView에 표시
-            for (int i = 0; i < workStage.m_nDrawing_Hole1Count; i++)
-            {
-                ListViewItem item = new ListViewItem();
-                item.Text = (i + 1).ToString();
-                item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].CenterX));
-                item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].CenterY));
-                item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].radius));
-            listView_Main_FiducialAlignData.Items.Add(item);
-            }
-
-            listView_Main_FiducialAlignData.EndUpdate();
         }
 
         private void buttonForceMaterialOut_Click(object sender, EventArgs e)

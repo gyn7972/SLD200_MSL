@@ -611,15 +611,6 @@ namespace SLD200_MSL
 
             //  ListView Column 설정
             if ((strLayerName == "Hole1") ||
-                (strLayerName == "Hole2") ||
-                (strLayerName == "Hole3") ||
-                (strLayerName == "Hole4") ||
-                (strLayerName == "Hole5") ||
-                (strLayerName == "Hole6") ||
-                (strLayerName == "Hole7") ||
-                (strLayerName == "Hole8") ||
-                (strLayerName == "Hole9") ||
-                (strLayerName == "Hole10") ||
                 (strLayerName == "Thruhole") ||
                 (strLayerName == "Thruhole_1") ||
                 (strLayerName == "Thruhole_2") ||
@@ -630,8 +621,7 @@ namespace SLD200_MSL
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Center Y", 80, HorizontalAlignment.Center);
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("radius", 60, HorizontalAlignment.Center);
             }
-            else if ((strLayerName == "Rect") ||
-                    (strLayerName == "Outline"))
+            else if ((strLayerName == "Outline"))
             {
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Center X", 80, HorizontalAlignment.Center);
@@ -832,19 +822,18 @@ namespace SLD200_MSL
                 }
                 SetRecipeTabControlsVisible(strLayerName, true);
             }
-            else if (strLayerName == "Rect")
+            else if (strLayerName == "Thruhole_2")
             {
-                //if (workStage.m_nDrawing_RectCount > 0)
+                //if (workStage.m_nDrawing_Hole8Count > 0)
                 {
                     //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_RectCount; i++)
+                    for (int i = 0; i < workStage.m_nDrawing_ThruholeCount; i++)
                     {
                         ListViewItem item = new ListViewItem();
                         item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Rect[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Rect[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Rect[i].Width));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Rect[i].Height));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].CenterX));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].CenterY));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].radius));
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
@@ -1351,16 +1340,6 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", Equipment.User_Name, "Recipe_Data_Refresh - Fail.");
                 return;
             }
-
-            // m_nIndex 여기서 Hole Index 내부에 data가 0이거나 없으면.. 
-            // 값을 넣어줘야함.
-            // 신규로 Layer가 만들어졌을때.
-            // 신규 Hole 레이어(값 비었으면) → 이전 Hole 데이터 복사
-            //if ((m_strLayer == "Hole" && m_nIndex > (int)LayerList.Hole1) &&
-            //    m_strLayerName == "Outline" && m_strLayerName == "Marking" &&
-            //    m_strLayerName == "Thruhole")
-            //{
-            //}
 
             //  Laser Parameter
             if (Equipment.stLayerRecipeSet[nIndex].LaserParam_Frequency <= 0 ||
@@ -4314,16 +4293,7 @@ namespace SLD200_MSL
                 }
                 MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
             }
-            else if ((strLayerName == "Hole2") ||
-                (strLayerName == "Hole3") ||
-                (strLayerName == "Hole4") ||
-                (strLayerName == "Hole5") ||
-                (strLayerName == "Hole6") ||
-                (strLayerName == "Hole7") ||
-                (strLayerName == "Hole8") ||
-                (strLayerName == "Hole9") ||
-                (strLayerName == "Hole10") ||
-                (strLayerName == "Thruhole") ||
+            else if ((strLayerName == "Thruhole") ||
                 (strLayerName == "Thruhole_1") ||
                 (strLayerName == "Thruhole_2") ||
                 (strLayerName == "Rect") ||
@@ -5141,6 +5111,10 @@ namespace SLD200_MSL
                 {
                     rawRadius = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
                 }
+                else if (string.Equals(layerName, "Thruhole_2", StringComparison.OrdinalIgnoreCase))
+                {
+                    rawRadius = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
+                }
                 else if (string.Equals(layerName, "Outline", StringComparison.OrdinalIgnoreCase))
                 {
                     rawRadius = TryExtractFirstEdgePointX_Generic(workStage.m_stOutLine_SocketData);
@@ -5268,6 +5242,10 @@ namespace SLD200_MSL
                 }
                 else if (string.Equals(layerName, "Thruhole", StringComparison.OrdinalIgnoreCase) ||
                         string.Equals(layerName, "Thruhole_1", StringComparison.OrdinalIgnoreCase))
+                {
+                    rawHole = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
+                }
+                else if (string.Equals(layerName, "Thruhole_2", StringComparison.OrdinalIgnoreCase))
                 {
                     rawHole = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
                 }

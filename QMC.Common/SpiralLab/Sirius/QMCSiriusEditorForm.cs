@@ -53,6 +53,9 @@ namespace SpiralLab.Sirius
             if (Count >= 6)
                 list.Add("Marking");
 
+            if (Count >= 7)
+                list.Add("Thruhole_2");
+
             list.Add("Fiducial");
             list.Add("PreAlign");
 
@@ -144,6 +147,12 @@ namespace SpiralLab.Sirius
 
                     }
                     break;
+                case Keys.Alt | Keys.Y:
+                    {
+                        ThruholeGroup2();
+
+                    }
+                    break;
                 case Keys.Alt | Keys.F:
                     {
                         MoveToFiducial();
@@ -184,6 +193,12 @@ namespace SpiralLab.Sirius
         {
             MoveToGroup("Thruhole");
             SortToLayer("Thruhole");
+        }
+
+        private void ThruholeGroup2()
+        {
+            MoveToGroup("Thruhole_2");
+            SortToLayer("Thruhole_2");
         }
 
         private void MoveToPreAlign()
@@ -241,7 +256,6 @@ namespace SpiralLab.Sirius
         {
             Document.Action.ActEntityCut(Document.Action.SelectedEntity);
             Document.Action.ActEntityPasteClone(layer);
-
         }
 
         private void UnGroup()
