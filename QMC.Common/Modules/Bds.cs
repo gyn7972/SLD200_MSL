@@ -505,17 +505,7 @@ namespace QMC.Common.Modules
                     if (now - _lastScannerCheckTime > _scannerCheckInterval)
                     {
                         _lastScannerCheckTime = now;
-                        if (workStage.m_bLaserBusy == false 
-                          &&  (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
-                        {
-                            //double dPosX = 0.0, dPosY = 0.0;
-                            //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
-                            if (spiralLabVario != null && spiralLabVario.IsInitialized)
-                            {
-                                CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();
-                                CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
-                            }
-                        }
+                        
                         
                         //밖으로 이동
                         //if(workStage.rtc.CtlGetStatus(RtcStatus.Busy) == false)
@@ -526,6 +516,18 @@ namespace QMC.Common.Modules
                         //{
                         //    workStage.m_bLaserBusy = true;
                         //}
+                    }
+
+                    if (workStage.m_bLaserBusy == false
+                          && (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))
+                    {
+                        //double dPosX = 0.0, dPosY = 0.0;
+                        //spiralLabScanner.GetScannerPosition(out dPosX, out dPosY);
+                        if (spiralLabVario != null && spiralLabVario.IsInitialized)
+                        {
+                            CurrentRtcZOffset = spiralLabVario.GetCurrentZOffset();
+                            CurrentRtcZDefocus = spiralLabVario.GetCurrentZDefocus();
+                        }
                     }
                 }
 
@@ -559,7 +561,6 @@ namespace QMC.Common.Modules
                     //Log.Write("LaserBusy", $"누적 발진 시간: {current.TotalSeconds:F1} sec");
                 }
                 _prevLaserBusy = laserBusy;
-
 
                 if(Equipment.Machine_LaserType_CO2)
                 {
@@ -600,34 +601,35 @@ namespace QMC.Common.Modules
                                 }
                             }
                         }
-                        else
-                        {
-                            // 재연결은 일정 간격으로만 시도
-                            if (now - _lastLaserCO2ReconnectTryTime > _LaserCO2ReconnectInterval)
-                            {
-                                _lastLaserCO2ReconnectTryTime = now;
-                                try
-                                {
-                                    if (LaserCO2Manager.Connect())
-                                    {
-                                        Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
-                                        // 다음 폴링을 즉시 수행할 수 있도록 초기화
-                                        _lastLaserCO2CheckTime = DateTime.MinValue;
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Log.Write("LaserCO2", "Reconnect", $"재연결 실패: {ex.Message}");
-                                }
-                            }
+                        //재연결하지말아보자. 여기서 쥐고 있는거 같다.
+                        //else
+                        //{
+                        //    // 재연결은 일정 간격으로만 시도
+                        //    if (now - _lastLaserCO2ReconnectTryTime > _LaserCO2ReconnectInterval)
+                        //    {
+                        //        _lastLaserCO2ReconnectTryTime = now;
+                        //        try
+                        //        {
+                        //            if (LaserCO2Manager.Connect())
+                        //            {
+                        //                Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
+                        //                // 다음 폴링을 즉시 수행할 수 있도록 초기화
+                        //                _lastLaserCO2CheckTime = DateTime.MinValue;
+                        //            }
+                        //        }
+                        //        catch (Exception ex)
+                        //        {
+                        //            Log.Write("LaserCO2", "Reconnect", $"재연결 실패: {ex.Message}");
+                        //        }
+                        //    }
 
-                            //// 연결이 끊어졌으면 재시도
-                            //if (LaserCO2Manager.Connect())
-                            //{
-                            //    Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
+                        //    //// 연결이 끊어졌으면 재시도
+                        //    //if (LaserCO2Manager.Connect())
+                        //    //{
+                        //    //    Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
 
-                            //}
-                        }
+                        //    //}
+                        //}
                     }
                 }
             }
