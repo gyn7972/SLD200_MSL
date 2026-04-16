@@ -16,20 +16,7 @@ using QMC.Common.Modules;
 using QMC.Common.Motion.ACS.Motions;
 using System.Windows.Forms;
 using System.Security.Policy;
-
 using SpiralLab.Sirius;
-
-//using OpenTK;
-//using OpenTK.Graphics.OpenGL;
-//using SpiralLab.Sirius2;
-//using SpiralLab.Sirius2.Laser;
-//using SpiralLab.Sirius2.PowerMeter;
-//using SpiralLab.Sirius2.Scanner;
-//using SpiralLab.Sirius2.Scanner.Rtc;
-//using SpiralLab.Sirius2.Winforms;
-//using SpiralLab.Sirius2.Winforms.Entity;
-//using SpiralLab.Sirius2.Winforms.Marker;
-//using SpiralLab.Sirius2.Winforms.UI;
 
 using MessageBox = System.Windows.Forms.MessageBox;
 using QMC.Core;
@@ -127,18 +114,6 @@ namespace QMC.Common
                 Log.Write(ex);
             }
             return nValue;
-
-            //int nValue = 0;
-            //try
-            //{
-            //    int.TryParse(str, out nValue);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Write(ex);
-            //    //Debug.WriteLine(ex.Message);
-            //}
-            //return nValue;
         }
 
         public static bool ToBoolean(string str)
@@ -471,6 +446,13 @@ namespace QMC.Common
             Spiral_Polyline,
             Spiral_Arc,
             Spiral_Circle,
+        }
+
+        public enum LAYER_THRUHOLE_INDEX : int
+        {
+            THRUHOLE_1 = 0,
+            THRUHOLE_2 = 1,      
+            THRUHOLE_TOTAL = 2,
         }
 
         public struct stLayerRecipeParameter

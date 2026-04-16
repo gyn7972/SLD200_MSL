@@ -151,17 +151,38 @@ namespace SLD200_MSL
 
         }
 
-        private void MachineType_Component_Enable(bool m_bLaserType)
+        private void MachineType_Component_Enable(bool bLaserType)
         {
             //  Laser Type (true:CO2, false:UV)
-            label_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
-            textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
-            button_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
+            if(bLaserType) //CO2
+            {
+                label_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = false;
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = false;
+                button_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = false;
 
-            label_Recipe_TabRecipe_Miscellaneous_Mask.Enabled = m_bLaserType;
-            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Enabled = m_bLaserType;
-            label_Recipe_TabRecipe_Miscellaneous_BETPosition.Enabled = m_bLaserType;
-            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Enabled = m_bLaserType;            
+                checkBox_VarioScan.Enabled = true;
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Enabled = true;
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Enabled = true;
+                label_Recipe_TabRecipe_Miscellaneous_Mask.Enabled = true;
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Enabled = true;
+                label_Recipe_TabRecipe_Miscellaneous_BETPosition.Enabled = true;
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Enabled = true;
+            }
+            else //UV
+            {
+                label_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = true;
+                textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = true;
+                button_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = true;
+
+                checkBox_VarioScan.Enabled = false;
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Enabled = false;
+                richTextBox_Recipe_TabRecipe_Cal_ZAxisOffsetDefocus.Enabled = false;
+                label_Recipe_TabRecipe_Miscellaneous_Mask.Enabled = false;
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Enabled = false;
+                label_Recipe_TabRecipe_Miscellaneous_BETPosition.Enabled = false;
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Enabled = false;
+            }
+                
         }
 
         private void LoadSubForm()
@@ -591,339 +612,467 @@ namespace SLD200_MSL
             }
         }
 
+        private bool IsHoleLayer(string layerName, out int holeNo)
+        {
+            holeNo = -1;
+            if (string.IsNullOrEmpty(layerName) || !layerName.StartsWith("Hole")) return false;
+
+            string n = layerName.Substring(4);
+            if (!int.TryParse(n, out holeNo)) return false;
+
+            return holeNo >= 1 && holeNo <= 50;
+        }
+
+        private void FillHoleLayerData(int holeNo)
+        {
+            // m_nDrawing_Hole1Count, m_stDrawing_Hole1 ... 형태를 reflection으로 공통 처리
+            var wsType = workStage.GetType();
+
+            var countField = wsType.GetField($"m_nDrawing_Hole{holeNo}Count");
+            var dataField = wsType.GetField($"m_stDrawing_Hole{holeNo}");
+
+            if (countField == null || dataField == null) return;
+
+            int count = Convert.ToInt32(countField.GetValue(workStage));
+            var arr = dataField.GetValue(workStage) as Array;
+            if (arr == null) return;
+
+            for (int i = 0; i < count && i < arr.Length; i++)
+            {
+                var row = arr.GetValue(i);
+                if (row == null) continue;
+
+                var t = row.GetType();
+                double cx = Convert.ToDouble(t.GetField("CenterX")?.GetValue(row) ?? 0.0);
+                double cy = Convert.ToDouble(t.GetField("CenterY")?.GetValue(row) ?? 0.0);
+                double r = Convert.ToDouble(t.GetField("radius")?.GetValue(row) ?? 0.0);
+
+                var item = new ListViewItem((i + 1).ToString());
+                item.SubItems.Add($"{cx:0.000}");
+                item.SubItems.Add($"{cy:0.000}");
+                item.SubItems.Add($"{r:0.000}");
+                listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            }
+        }
+
         private void listBox_Recipe_TabRecipe_ListOfDrawingLayer_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //  선택된 Layer 데이터를 ListView 에 표시
-            int m_nIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
-            string strLayerName = "";
+            int nSelectedIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
+            if (nSelectedIndex < 0) return;
 
-            if (m_nIndex < 0)
-                return;
-
-            strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
+            string strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[nSelectedIndex].ToString();
 
             listView_Recipe_TabRecipe_LayerData.BeginUpdate();
-            listView_Recipe_TabRecipe_LayerData.Items.Clear();
-            foreach (ColumnHeader header in listView_Recipe_TabRecipe_LayerData.Columns)
+            try
             {
-                listView_Recipe_TabRecipe_LayerData.Columns.Remove(header);
-            }
+                listView_Recipe_TabRecipe_LayerData.Items.Clear();
+                listView_Recipe_TabRecipe_LayerData.Columns.Clear(); // 기존 foreach remove 대신 안전
 
-            //  ListView Column 설정
-            if ((strLayerName == "Hole1") ||
-                (strLayerName == "Hole2") ||
-                (strLayerName == "Hole3") ||
-                (strLayerName == "Hole4") ||
-                (strLayerName == "Hole5") ||
-                (strLayerName == "Hole6") ||
-                (strLayerName == "Hole7") ||
-                (strLayerName == "Hole8") ||
-                (strLayerName == "Hole9") ||
-                (strLayerName == "Hole10") ||
-                (strLayerName == "Thruhole") ||
-                (strLayerName == "Thruhole_1") ||
-                (strLayerName == "Thruhole_2") ||
-                (strLayerName == "Fiducial"))
-            {
-                listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
-                listView_Recipe_TabRecipe_LayerData.Columns.Add("Center X", 80, HorizontalAlignment.Center);
-                listView_Recipe_TabRecipe_LayerData.Columns.Add("Center Y", 80, HorizontalAlignment.Center);
-                listView_Recipe_TabRecipe_LayerData.Columns.Add("radius", 60, HorizontalAlignment.Center);
-            }
-            else if ((strLayerName == "Rect") ||
-                    (strLayerName == "Outline"))
-            {
-                listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
-                listView_Recipe_TabRecipe_LayerData.Columns.Add("Center X", 80, HorizontalAlignment.Center);
-                listView_Recipe_TabRecipe_LayerData.Columns.Add("Center Y", 80, HorizontalAlignment.Center);
-                listView_Recipe_TabRecipe_LayerData.Columns.Add("Width", 60, HorizontalAlignment.Center);
-                listView_Recipe_TabRecipe_LayerData.Columns.Add("Height", 60, HorizontalAlignment.Center);
-            }
-            else if (strLayerName == "Marking")
-            {
+                bool isHoleLayer = IsHoleLayer(strLayerName, out int holeNo); // Hole1~Hole50
+                bool isThru = (strLayerName == "Thruhole" || strLayerName == "Thruhole_1" || strLayerName == "Thruhole_2");
+                bool isFid = (strLayerName == "Fiducial");
+                bool isOutline = (strLayerName == "Outline");
+                bool isMarking = (strLayerName == "Marking");
+                bool isPreAlign = (strLayerName == "PreAlign");
 
-            }
+                // Column 설정
+                if (isHoleLayer || isThru || isFid)
+                {
+                    listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
+                    listView_Recipe_TabRecipe_LayerData.Columns.Add("Center X", 80, HorizontalAlignment.Center);
+                    listView_Recipe_TabRecipe_LayerData.Columns.Add("Center Y", 80, HorizontalAlignment.Center);
+                    listView_Recipe_TabRecipe_LayerData.Columns.Add("radius", 60, HorizontalAlignment.Center);
+                }
+                else if (isOutline)
+                {
+                    listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
+                    listView_Recipe_TabRecipe_LayerData.Columns.Add("Center X", 80, HorizontalAlignment.Center);
+                    listView_Recipe_TabRecipe_LayerData.Columns.Add("Center Y", 80, HorizontalAlignment.Center);
+                    listView_Recipe_TabRecipe_LayerData.Columns.Add("Width", 60, HorizontalAlignment.Center);
+                    listView_Recipe_TabRecipe_LayerData.Columns.Add("Height", 60, HorizontalAlignment.Center);
+                }
 
-            //  ListView Data 표시
-            if (strLayerName == "Hole1")
-            {
-                //if (workStage.m_nDrawing_Hole1Count > 0)
+                // Data 표시
+                if (isHoleLayer)
                 {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole1Count; i++)
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].radius));
-                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                    }
+                    FillHoleLayerData(holeNo);
+                    SetRecipeTabControlsVisible(strLayerName, true);
                 }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Hole2")
-            {
-                //if (workStage.m_nDrawing_Hole2Count > 0)
+                else if (isThru)
                 {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole2Count; i++)
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole2[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole2[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole2[i].radius));
-                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                    }
-                }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Hole3")
-            {
-                //if (workStage.m_nDrawing_Hole3Count > 0)
-                {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole3Count; i++)
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole3[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole3[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole3[i].radius));
-                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                    }
-                }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Hole4")
-            {
-                //if (workStage.m_nDrawing_Hole4Count > 0)
-                {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole4Count; i++)
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole4[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole4[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole4[i].radius));
-                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                    }
-                }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Hole5")
-            {
-                //if (workStage.m_nDrawing_Hole5Count > 0)
-                {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole5Count; i++)
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole5[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole5[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole5[i].radius));
-                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                    }
-                }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Hole6")
-            {
-                //if (workStage.m_nDrawing_Hole6Count > 0)
-                {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole6Count; i++)
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole6[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole6[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole6[i].radius));
-                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                    }
-                }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Hole7")
-            {
-                //if (workStage.m_nDrawing_Hole7Count > 0)
-                {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole7Count; i++)
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole7[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole7[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole7[i].radius));
-                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                    }
-                }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Hole8")
-            {
-                //if (workStage.m_nDrawing_Hole8Count > 0)
-                {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole8[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole8[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole8[i].radius));
-                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                    }
-                }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Hole9")
-            {
-                //if (workStage.m_nDrawing_Hole8Count > 0)
-                {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole9[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole9[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole9[i].radius));
-                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                    }
-                }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Hole10")
-            {
-                //if (workStage.m_nDrawing_Hole8Count > 0)
-                {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
-                    {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole10[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole10[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole10[i].radius));
-                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                    }
-                }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Thruhole" || strLayerName == "Thruhole_1")
-            {
-                //if (workStage.m_nDrawing_Hole8Count > 0)
-                {
-                    //  Fiducial Data를 ListView에 표시
                     for (int i = 0; i < workStage.m_nDrawing_ThruholeCount; i++)
                     {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].radius));
+                        var item = new ListViewItem((i + 1).ToString());
+                        item.SubItems.Add($"{workStage.m_stDrawing_Thruhole[i].CenterX:0.000}");
+                        item.SubItems.Add($"{workStage.m_stDrawing_Thruhole[i].CenterY:0.000}");
+                        item.SubItems.Add($"{workStage.m_stDrawing_Thruhole[i].radius:0.000}");
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
+                    SetRecipeTabControlsVisible(strLayerName, true);
                 }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Rect")
-            {
-                //if (workStage.m_nDrawing_RectCount > 0)
+                else if (isOutline)
                 {
-                    //  Fiducial Data를 ListView에 표시
-                    for (int i = 0; i < workStage.m_nDrawing_RectCount; i++)
+                    for (int i = 0; i < workStage.m_nDrawing_OutlineCount; i++)
                     {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Rect[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Rect[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Rect[i].Width));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Rect[i].Height));
+                        var item = new ListViewItem((i + 1).ToString());
+                        item.SubItems.Add($"{workStage.m_stDrawing_Outline[i].CenterX:0.000}");
+                        item.SubItems.Add($"{workStage.m_stDrawing_Outline[i].CenterY:0.000}");
+                        item.SubItems.Add($"{workStage.m_stDrawing_Outline[i].Width:0.000}");
+                        item.SubItems.Add($"{workStage.m_stDrawing_Outline[i].Height:0.000}");
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
+                    SetRecipeTabControlsVisible(strLayerName, true);
                 }
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Outline")
-            {
-                for (int i = 0; i < workStage.m_nDrawing_OutlineCount; i++)
+                else if (isMarking)
                 {
-                    ListViewItem item = new ListViewItem();
-                    item.Text = (i + 1).ToString();
-                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].CenterX));
-                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].CenterY));
-                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].Width));
-                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].Height));
-                    listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                    for (int i = 0; i < workStage.m_nMarking_SocketCount; i++)
+                    {
+                        var item = new ListViewItem((i + 1).ToString());
+                        item.SubItems.Add($"{workStage.m_stMarking_SocketData.m_stMarking_ObjectData[i].dObjectCenter.X:0.000}");
+                        item.SubItems.Add($"{workStage.m_stMarking_SocketData.m_stMarking_ObjectData[i].dObjectCenter.Y:0.000}");
+                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                    }
+                    SetRecipeTabControlsVisible(strLayerName, true);
                 }
-
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Marking")
-            {
-                for (int i = 0; i < workStage.m_nMarking_SocketCount; i++)
+                else if (isFid || isPreAlign)
                 {
-                    ListViewItem item = new ListViewItem();
-                    item.Text = (i + 1).ToString();
-                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stMarking_SocketData.m_stMarking_ObjectData[i].dObjectCenter.X));
-                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stMarking_SocketData.m_stMarking_ObjectData[i].dObjectCenter.Y));
-                    listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                }
-
-                SetRecipeTabControlsVisible(strLayerName, true);
-            }
-            else if (strLayerName == "Fiducial")
-            {
-                //if (workStage.m_nDrawing_FiducialCount > 0)
-                {
-                    //  Fiducial Data를 ListView에 표시
                     for (int i = 0; i < workStage.m_nDrawing_FiducialCount; i++)
                     {
-                        ListViewItem item = new ListViewItem();
-                        item.Text = (i + 1).ToString();
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].CenterX));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].CenterY));
-                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].radius));
+                        var item = new ListViewItem((i + 1).ToString());
+                        item.SubItems.Add($"{workStage.m_stDrawing_Fiducial[i].CenterX:0.000}");
+                        item.SubItems.Add($"{workStage.m_stDrawing_Fiducial[i].CenterY:0.000}");
+                        item.SubItems.Add($"{workStage.m_stDrawing_Fiducial[i].radius:0.000}");
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
+                    SetRecipeTabControlsVisible(strLayerName, false);
                 }
-
-                SetRecipeTabControlsVisible(strLayerName, false);
             }
-            else if (strLayerName == "PreAlign")
+            finally
             {
-                for (int i = 0; i < workStage.m_nDrawing_FiducialCount; i++)
-                {
-                    ListViewItem item = new ListViewItem();
-                    item.Text = (i + 1).ToString();
-                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].CenterX));
-                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].CenterY));
-                    item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].radius));
-                    listView_Recipe_TabRecipe_LayerData.Items.Add(item);
-                }
-
-                SetRecipeTabControlsVisible(strLayerName, false);
+                listView_Recipe_TabRecipe_LayerData.EndUpdate();
             }
-            else
-            {
 
-            }
-            // 리스트뷰를 Refresh하여 보여줌
-            listView_Recipe_TabRecipe_LayerData.EndUpdate();
-
-
-            
-            //
             Recipe_Apply();
-            // Layer 에 대한 Miscellaneous Data 표시
             Recipe_Data_Refresh(strLayerName);
             UpdateHoleSizeAndResizingDisplay(strLayerName);
+
+            //기존 코드.
+            //int nSelecteIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
+            //string strLayerName = "";
+
+            //if (nSelecteIndex < 0)
+            //    return;
+
+            //strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[nSelecteIndex].ToString();
+            //listView_Recipe_TabRecipe_LayerData.Items.Clear();
+            //listView_Recipe_TabRecipe_LayerData.BeginUpdate();
+
+            //foreach (ColumnHeader header in listView_Recipe_TabRecipe_LayerData.Columns)
+            //{
+            //    listView_Recipe_TabRecipe_LayerData.Columns.Remove(header);
+            //}
+
+            ////  ListView Column 설정
+            //if ((strLayerName == "Hole1") ||
+            //    (strLayerName == "Thruhole") ||
+            //    (strLayerName == "Thruhole_1") ||
+            //    (strLayerName == "Thruhole_2") ||
+            //    (strLayerName == "Fiducial"))
+            //{
+            //    listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
+            //    listView_Recipe_TabRecipe_LayerData.Columns.Add("Center X", 80, HorizontalAlignment.Center);
+            //    listView_Recipe_TabRecipe_LayerData.Columns.Add("Center Y", 80, HorizontalAlignment.Center);
+            //    listView_Recipe_TabRecipe_LayerData.Columns.Add("radius", 60, HorizontalAlignment.Center);
+            //}
+            //else if ((strLayerName == "Outline"))
+            //{
+            //    listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
+            //    listView_Recipe_TabRecipe_LayerData.Columns.Add("Center X", 80, HorizontalAlignment.Center);
+            //    listView_Recipe_TabRecipe_LayerData.Columns.Add("Center Y", 80, HorizontalAlignment.Center);
+            //    listView_Recipe_TabRecipe_LayerData.Columns.Add("Width", 60, HorizontalAlignment.Center);
+            //    listView_Recipe_TabRecipe_LayerData.Columns.Add("Height", 60, HorizontalAlignment.Center);
+            //}
+            //else if (strLayerName == "Marking")
+            //{
+
+            //}
+
+            ////  ListView Data 표시
+            //if (strLayerName == "Hole1")
+            //{
+            //    //if (workStage.m_nDrawing_Hole1Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_Hole1Count; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Hole2")
+            //{
+            //    //if (workStage.m_nDrawing_Hole2Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_Hole2Count; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole2[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole2[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole2[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Hole3")
+            //{
+            //    //if (workStage.m_nDrawing_Hole3Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_Hole3Count; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole3[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole3[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole3[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Hole4")
+            //{
+            //    //if (workStage.m_nDrawing_Hole4Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_Hole4Count; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole4[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole4[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole4[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Hole5")
+            //{
+            //    //if (workStage.m_nDrawing_Hole5Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_Hole5Count; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole5[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole5[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole5[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Hole6")
+            //{
+            //    //if (workStage.m_nDrawing_Hole6Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_Hole6Count; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole6[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole6[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole6[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Hole7")
+            //{
+            //    //if (workStage.m_nDrawing_Hole7Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_Hole7Count; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole7[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole7[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole7[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Hole8")
+            //{
+            //    //if (workStage.m_nDrawing_Hole8Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole8[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole8[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole8[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Hole9")
+            //{
+            //    //if (workStage.m_nDrawing_Hole8Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole9[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole9[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole9[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Hole10")
+            //{
+            //    //if (workStage.m_nDrawing_Hole8Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole10[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole10[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole10[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Thruhole" || strLayerName == "Thruhole_1")
+            //{
+            //    //if (workStage.m_nDrawing_Hole8Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_ThruholeCount; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Thruhole_2")
+            //{
+            //    //if (workStage.m_nDrawing_Hole8Count > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_ThruholeCount; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Outline")
+            //{
+            //    for (int i = 0; i < workStage.m_nDrawing_OutlineCount; i++)
+            //    {
+            //        ListViewItem item = new ListViewItem();
+            //        item.Text = (i + 1).ToString();
+            //        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].CenterX));
+            //        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].CenterY));
+            //        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].Width));
+            //        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Outline[i].Height));
+            //        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //    }
+
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Marking")
+            //{
+            //    for (int i = 0; i < workStage.m_nMarking_SocketCount; i++)
+            //    {
+            //        ListViewItem item = new ListViewItem();
+            //        item.Text = (i + 1).ToString();
+            //        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stMarking_SocketData.m_stMarking_ObjectData[i].dObjectCenter.X));
+            //        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stMarking_SocketData.m_stMarking_ObjectData[i].dObjectCenter.Y));
+            //        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //    }
+
+            //    SetRecipeTabControlsVisible(strLayerName, true);
+            //}
+            //else if (strLayerName == "Fiducial")
+            //{
+            //    //if (workStage.m_nDrawing_FiducialCount > 0)
+            //    {
+            //        //  Fiducial Data를 ListView에 표시
+            //        for (int i = 0; i < workStage.m_nDrawing_FiducialCount; i++)
+            //        {
+            //            ListViewItem item = new ListViewItem();
+            //            item.Text = (i + 1).ToString();
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].CenterX));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].CenterY));
+            //            item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].radius));
+            //            listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //        }
+            //    }
+
+            //    SetRecipeTabControlsVisible(strLayerName, false);
+            //}
+            //else if (strLayerName == "PreAlign")
+            //{
+            //    for (int i = 0; i < workStage.m_nDrawing_FiducialCount; i++)
+            //    {
+            //        ListViewItem item = new ListViewItem();
+            //        item.Text = (i + 1).ToString();
+            //        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].CenterX));
+            //        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].CenterY));
+            //        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Fiducial[i].radius));
+            //        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+            //    }
+
+            //    SetRecipeTabControlsVisible(strLayerName, false);
+            //}
+            //else
+            //{
+
+            //}
+            //// 리스트뷰를 Refresh하여 보여줌
+            //listView_Recipe_TabRecipe_LayerData.EndUpdate();
+
+            //Recipe_Apply();
+            //// Layer 에 대한 Miscellaneous Data 표시
+            //Recipe_Data_Refresh(strLayerName);
+            //UpdateHoleSizeAndResizingDisplay(strLayerName);
         }
 
 
@@ -1351,16 +1500,6 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", Equipment.User_Name, "Recipe_Data_Refresh - Fail.");
                 return;
             }
-
-            // m_nIndex 여기서 Hole Index 내부에 data가 0이거나 없으면.. 
-            // 값을 넣어줘야함.
-            // 신규로 Layer가 만들어졌을때.
-            // 신규 Hole 레이어(값 비었으면) → 이전 Hole 데이터 복사
-            //if ((m_strLayer == "Hole" && m_nIndex > (int)LayerList.Hole1) &&
-            //    m_strLayerName == "Outline" && m_strLayerName == "Marking" &&
-            //    m_strLayerName == "Thruhole")
-            //{
-            //}
 
             //  Laser Parameter
             if (Equipment.stLayerRecipeSet[nIndex].LaserParam_Frequency <= 0 ||
@@ -4314,16 +4453,15 @@ namespace SLD200_MSL
                 }
                 MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
             }
-            else if ((strLayerName == "Hole2") ||
-                (strLayerName == "Hole3") ||
-                (strLayerName == "Hole4") ||
-                (strLayerName == "Hole5") ||
-                (strLayerName == "Hole6") ||
-                (strLayerName == "Hole7") ||
-                (strLayerName == "Hole8") ||
-                (strLayerName == "Hole9") ||
-                (strLayerName == "Hole10") ||
-                (strLayerName == "Thruhole") ||
+            else if(IsHoleLayer(strLayerName))
+            {
+                foreach (var control in targetControlsThruhole)
+                {
+                    control.Enabled = bEnabled;
+                }
+                MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+            }
+            else if ((strLayerName == "Thruhole") ||
                 (strLayerName == "Thruhole_1") ||
                 (strLayerName == "Thruhole_2") ||
                 (strLayerName == "Rect") ||
@@ -4351,10 +4489,19 @@ namespace SLD200_MSL
                     control.Enabled = bEnabled;
                 }
             }
-
-            
         }
-        
+
+        private bool IsHoleLayer(string layerName)
+        {
+            if (string.IsNullOrWhiteSpace(layerName)) return false;
+            if (!layerName.StartsWith("Hole", StringComparison.OrdinalIgnoreCase)) return false;
+
+            string numberPart = layerName.Substring(4); // "Hole" 뒤 숫자
+            if (!int.TryParse(numberPart, out int holeNo)) return false;
+
+            return holeNo >= 1 && holeNo <= 50;
+        }
+
 
         // 이거 각각 폼에 만들어야함.
         private void InitRecipeUI_KeyPad()
@@ -5141,6 +5288,10 @@ namespace SLD200_MSL
                 {
                     rawRadius = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
                 }
+                else if (string.Equals(layerName, "Thruhole_2", StringComparison.OrdinalIgnoreCase))
+                {
+                    rawRadius = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
+                }
                 else if (string.Equals(layerName, "Outline", StringComparison.OrdinalIgnoreCase))
                 {
                     rawRadius = TryExtractFirstEdgePointX_Generic(workStage.m_stOutLine_SocketData);
@@ -5268,6 +5419,10 @@ namespace SLD200_MSL
                 }
                 else if (string.Equals(layerName, "Thruhole", StringComparison.OrdinalIgnoreCase) ||
                         string.Equals(layerName, "Thruhole_1", StringComparison.OrdinalIgnoreCase))
+                {
+                    rawHole = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
+                }
+                else if (string.Equals(layerName, "Thruhole_2", StringComparison.OrdinalIgnoreCase))
                 {
                     rawHole = TryExtractFirstEdgePointX_Generic(workStage.m_stThruHole_SocketData);
                 }
@@ -5553,7 +5708,6 @@ namespace SLD200_MSL
                     {
                         Equipment.stLayerRecipeSet[i].Miscellaneous_VarioScan_Use = true;
                     }
-                    //MessageBox.Show("Hole1 ~ Hole50 레이어에 VarioScan 사용으로 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -5561,10 +5715,9 @@ namespace SLD200_MSL
                     {
                         Equipment.stLayerRecipeSet[i].Miscellaneous_VarioScan_Use = false;
                     }
-                    //MessageBox.Show("Hole1 ~ Hole50 레이어에 VarioScan 미사용으로 일괄 적용되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-            else //if(m_strLayer == "Thru" )
+            else
             {
                 int nIndex = -1;
                 if (m_strLayer == "Rect")
@@ -5604,8 +5757,16 @@ namespace SLD200_MSL
 
                 Equipment.stLayerRecipeSet[nIndex].Miscellaneous_VarioScan_Use = isChecked;
             }
-        }
 
+            if (isChecked)
+            {
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Enabled = false;
+            }
+            else
+            {
+                textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Enabled = true;
+            }
+        }
         
     }
 }
