@@ -1807,9 +1807,9 @@ namespace SLD200_MSL
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행할 것이 있음");
                     if (workStage.CurrentLayerName == "Hole1")
                     {
-                        for ( int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
+                        for ( int i = 0; i < workStage.m_stLayerType.nLayerCount; i++)
                         {
-                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Hole1)
+                            if (workStage.m_stLayerType.nLayerIndex[i] == (int)LayerList.Hole1)
                             {
                                 workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Hole1" 인 Layer 의 Index 를 넣어줌
                                 break;
@@ -1847,9 +1847,9 @@ namespace SLD200_MSL
                     }
                     else if (workStage.CurrentLayerName == "Thruhole" || workStage.CurrentLayerName == "Thruhole_1")
                     {
-                        for (int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
+                        for (int i = 0; i < workStage.m_stLayerType.nLayerCount; i++)
                         {
-                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Thruhole_1)
+                            if (workStage.m_stLayerType.nLayerIndex[i] == (int)LayerList.Thruhole_1)
                             {
                                 workStage.m_nLaserDrilling_LayerCount = i;
                                 break;
@@ -1886,9 +1886,9 @@ namespace SLD200_MSL
                     }
                     else if (workStage.CurrentLayerName == "Thruhole_2")
                     {
-                        for (int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
+                        for (int i = 0; i < workStage.m_stLayerType.nLayerCount; i++)
                         {
-                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Thruhole_2)
+                            if (workStage.m_stLayerType.nLayerIndex[i] == (int)LayerList.Thruhole_2)
                             {
                                 workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Thruhole" 인 Layer 의 Index 를 넣어줌
 
@@ -1926,9 +1926,9 @@ namespace SLD200_MSL
                     }
                     else if (workStage.CurrentLayerName == "Outline")
                     {
-                        for (int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
+                        for (int i = 0; i < workStage.m_stLayerType.nLayerCount; i++)
                         {
-                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Outline)
+                            if (workStage.m_stLayerType.nLayerIndex[i] == (int)LayerList.Outline)
                             {
                                 workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Outline" 인 Layer 의 Index 를 넣어줌
 
@@ -1967,9 +1967,9 @@ namespace SLD200_MSL
                     }
                     else if (workStage.CurrentLayerName == "Marking")
                     {
-                        for (int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
+                        for (int i = 0; i < workStage.m_stLayerType.nLayerCount; i++)
                         {
-                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Marking)
+                            if (workStage.m_stLayerType.nLayerIndex[i] == (int)LayerList.Marking)
                             {
                                 workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Marking" 인 Layer 의 Index 를 넣어줌
 
@@ -4447,8 +4447,8 @@ namespace SLD200_MSL
 
             workStage.LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck_Selectmode(ref nNextStep, ref nNextStep, ref nNextStep, ref nNextStep);
 
-            double dwtwd = Equipment.stLayerRecipeSet[workStage.m_stLayerType.m_nLayerIndex[workStage.m_nHoleLayer_ProcessIndex]].LaserParam_PulseWidth;
-            bool   btest = Equipment.stLayerRecipeSet[workStage.m_stLayerType.m_nLayerIndex[workStage.m_nHoleLayer_ProcessIndex]].ProcessPriority_P2P;
+            double dwtwd = Equipment.stLayerRecipeSet[workStage.m_stLayerType.nLayerIndex[workStage.m_nHoleLayer_ProcessIndex]].LaserParam_PulseWidth;
+            bool   btest = Equipment.stLayerRecipeSet[workStage.m_stLayerType.nLayerIndex[workStage.m_nHoleLayer_ProcessIndex]].ProcessPriority_P2P;
 
             dwtwd = Equipment.stLayerRecipeSet[workStage.m_nHoleLayer_ProcessIndex].LaserParam_PulseWidth;
             btest = Equipment.stLayerRecipeSet[workStage.m_nHoleLayer_ProcessIndex].ProcessPriority_P2P;

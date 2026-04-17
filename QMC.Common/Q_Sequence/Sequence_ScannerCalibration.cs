@@ -220,7 +220,7 @@ namespace QMC.Common.Q_Sequence
                 var th = Thread.CurrentThread;
                 if (th.Name == null)
                 {
-                    try { th.Name = "m_taskTimer_ScannerCalibration_Tick"; } catch { }
+                    try { th.Name = "m_taskTimer_Main_Tick"; } catch { }
                 }
 
                 while (!token.IsCancellationRequested)

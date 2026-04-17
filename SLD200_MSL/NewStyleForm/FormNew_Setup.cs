@@ -2860,70 +2860,44 @@ namespace SLD200_MSL
             }
 
             Equipment.Scanner_Vision_Offset_Setting_Use = false;
-
-            workStage.m_ScannerCalibration_Start = false;
-            if (true)
+            if (workStage.m_ScannerCalibrationSequence != null)
             {
-                if (workStage.m_ScannerCalibrationSequence != null)
-                {
-                    workStage.m_ScannerCalibrationSequence.Reset();
-                    workStage.m_ScannerCalibrationSequence.Start();
-                    workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run);
-                    workStage.m_ScannerCalibrationSequence.m_MainTick_Start = true;
-                }
-                else
-                {
-                    MessageBox.Show("ScannerCalibrationSequence이 선언되지 않았습니다.", "Information!!");
-                    return;
-                }
+                workStage.m_ScannerCalibrationSequence.Reset();
+                workStage.m_ScannerCalibrationSequence.Start();
+                workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run);
+                workStage.m_ScannerCalibrationSequence.m_MainTick_Start = true;
             }
             else
             {
-                if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
-                {
-                    workStage.m_ScannerCalibration_Start = true;
-                    Equipment.Scanner_Vision_Offset_Setting_Use = false;
-                    workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
-                    workStage.SetRunStatus(RunStatus.Run);
-                }
+                MessageBox.Show("ScannerCalibrationSequence이 선언되지 않았습니다.", "Information!!");
+                return;
             }
         }
 
         private void btnCalStop_Click(object sender, EventArgs e)
         {
-            if(true)
+            if (workStage.m_ScannerCalibrationSequence != null)
             {
-                if (workStage.m_ScannerCalibrationSequence != null)
-                {
-                    workStage.m_ScannerCalibration_Start = false;
-                    workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
-                    workStage.m_ScannerCalibrationSequence.Reset();
-                    workStage.m_ScannerCalibrationSequence.m_MainTick_Start = false;
-                }
-                else
-                {
-                    MessageBox.Show("ScannerCalibrationSequence이 선언되지 않았습니다.", "Information!!");
-                    return;
-                }
-
-                if (workStage.m_ScannerCameraOffsetSequence != null)
-                {
-                    workStage.m_ScannerCalibration_Start = false;
-                    workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
-                    workStage.m_ScannerCameraOffsetSequence.Reset();
-                    workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
-                }
-                else
-                {
-                    MessageBox.Show("ScannerCameraOffsetSequence 선언되지 않았습니다.", "Information!!");
-                    return;
-                }
+                workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+                workStage.m_ScannerCalibrationSequence.Reset();
+                workStage.m_ScannerCalibrationSequence.m_MainTick_Start = false;
             }
             else
             {
+                MessageBox.Show("ScannerCalibrationSequence이 선언되지 않았습니다.", "Information!!");
+                return;
+            }
+
+            if (workStage.m_ScannerCameraOffsetSequence != null)
+            {
                 workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
-                workStage.m_ScannerCalibration_Start = false;
-                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
+                workStage.m_ScannerCameraOffsetSequence.Reset();
+                workStage.m_ScannerCameraOffsetSequence.m_MainTick_Start = false;
+            }
+            else
+            {
+                MessageBox.Show("ScannerCameraOffsetSequence 선언되지 않았습니다.", "Information!!");
+                return;
             }
         }
 
@@ -2964,43 +2938,21 @@ namespace SLD200_MSL
                 return;
             }
 
-            workStage.m_ScannerCalibration_Start = false;
-            if (true)
+            if (workStage.m_ScannerCalibrationSequence != null)
             {
-                if (workStage.m_ScannerCalibrationSequence != null)
-                {
-                    workStage.m_ScannerCalibrationSequence.Reset();
-                    workStage.m_ScannerCalibrationSequence.Start();
-                    workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run);
+                workStage.m_ScannerCalibrationSequence.Reset();
+                workStage.m_ScannerCalibrationSequence.Start();
+                workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run);
 
-                    workStage.m_ScannerCalibrationSequence.m_ScannerCalibrationStep = 
-                        Sequence_ScannerCalibration.ScannerCalibrationSeq_Step.ScannerCompensation_StartPosition_Set;
+                workStage.m_ScannerCalibrationSequence.m_ScannerCalibrationStep = 
+                    Sequence_ScannerCalibration.ScannerCalibrationSeq_Step.ScannerCompensation_StartPosition_Set;
 
-                    workStage.m_ScannerCalibrationSequence.m_MainTick_Start = true;
-                }
-                else
-                {
-                    MessageBox.Show("ScannerCalibrationSequence이 선언되지 않았습니다.", "Information!!");
-                    return;
-                }
-
+                workStage.m_ScannerCalibrationSequence.m_MainTick_Start = true;
             }
             else
             {
-                if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
-                {
-                    workStage.m_ScannerCalibration_Start = true;
-                    Equipment.Scanner_Vision_Offset_Setting_Use = false;
-                    workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run);
-                    //workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos; //고민 필요. 
-                    workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
-                }
-                else
-                {
-                    var mb2 = new MessageBoxOk();
-                    mb2.ShowDialog("Information !", "캘리브레이션이 진행중입니다.");
-                    return;
-                }
+                MessageBox.Show("ScannerCalibrationSequence이 선언되지 않았습니다.", "Information!!");
+                return;
             }
         }
 
@@ -3739,7 +3691,6 @@ namespace SLD200_MSL
             Equipment.Scanner_Vision_Offset_Setting_Use = true;
             if (workStage.m_ScannerCameraOffsetSequence != null)
             {
-                workStage.m_ScannerCalibration_Start = false;
                 workStage.m_ScannerCameraOffsetSequence.Reset();
                 workStage.m_ScannerCameraOffsetSequence.Start();
                 workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run);

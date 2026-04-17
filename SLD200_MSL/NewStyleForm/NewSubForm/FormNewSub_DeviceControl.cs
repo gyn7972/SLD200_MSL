@@ -511,13 +511,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
             }
 
-
-            //  Laser X -> 이거 안쓰는데?
-            //if (workStage.m_SocketLaser == null)
-            //{
-            //    workStage.Laser_Socket_Connect();
-            //}
-
             //  Laser Height Sensor
             if (workStage.m_SocketLaserHeightSensor == null)
             {

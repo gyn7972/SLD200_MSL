@@ -470,7 +470,6 @@ namespace SLD200_MSL
                 case 4: workStage.DustCollector_UpperPos_Comm_Init();   break;
                 case 5: workStage.DustCollector_LowerPos_Comm_Init();   break;
                 case 6: workStage.ElectroPneumaticRegulator_Comm_Init();break;
-                //case 7: workStage.Laser_Socket_Connect();               break;
                 case 7: workStage.RapidLxLaser_Comm_Init();             break;
                 case 8: workStage.LaserSensor_Socket_Connect();         break;
                 case 9: bds.InitDustCollector(DustCollectorController.CollectorPosition.Upper); break;
