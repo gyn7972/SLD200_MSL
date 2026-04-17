@@ -16389,7 +16389,7 @@ namespace QMC.Common.Modules
                     {
                         m_dHoleLayer_Defocusing = 0;
                         //VarioScan 적용.
-                        double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].VarioScanOffsetZAxismm;
                         var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
                         if (nearest != null)
                         {
@@ -16497,10 +16497,10 @@ namespace QMC.Common.Modules
             if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_VarioScan_Use)
             {
                 //VarioScan 이동.
-                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
-                double dZDefocuseOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetDefocusZAxismm;
+                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].VarioScanOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].VarioScanOffsetDefocusZAxismm;
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
-                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset, false);    // 설정값 받아와서 셋팅 필요.
                 bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
@@ -16593,10 +16593,10 @@ namespace QMC.Common.Modules
             if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_VarioScan_Use)
             {
                 //VarioScan 이동.
-                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
-                double dZDefocuseOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetDefocusZAxismm;
+                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].VarioScanOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].VarioScanOffsetDefocusZAxismm;
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
-                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset, false);    // 설정값 받아와서 셋팅 필요.
                 bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
@@ -17972,11 +17972,11 @@ namespace QMC.Common.Modules
             if (Equipment.stLayerRecipeSet[(int)LayerType.LAYER_OUTLINE].Miscellaneous_VarioScan_Use)
             {
                 //VarioScan 이동.
-                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_OUTLINE].CalfileOffsetZAxismm;
-                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_OUTLINE].CalfileOffsetDefocusZAxismm;
+                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_OUTLINE].VarioScanOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_OUTLINE].VarioScanOffsetDefocusZAxismm;
 
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
-                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset, false);    // 설정값 받아와서 셋팅 필요.
                 bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
@@ -18067,20 +18067,20 @@ namespace QMC.Common.Modules
             if (Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE_1].Miscellaneous_VarioScan_Use)
             {
                 //VarioScan 이동.
-                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE_1].CalfileOffsetZAxismm;
-                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE_1].CalfileOffsetDefocusZAxismm;
+                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE_1].VarioScanOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE_1].VarioScanOffsetDefocusZAxismm;
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
-                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset, false);    // 설정값 받아와서 셋팅 필요.
                 bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
             if (Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE_2].Miscellaneous_VarioScan_Use)
             {
                 //VarioScan 이동.
-                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE_2].CalfileOffsetZAxismm;
-                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE_2].CalfileOffsetDefocusZAxismm;
+                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE_2].VarioScanOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_THRUHOLE_2].VarioScanOffsetDefocusZAxismm;
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
-                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset, false);    // 설정값 받아와서 셋팅 필요.
                 bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
@@ -18160,11 +18160,11 @@ namespace QMC.Common.Modules
             if (Equipment.stLayerRecipeSet[(int)LayerType.LAYER_MARKING].Miscellaneous_VarioScan_Use)
             {
                 //VarioScan 이동.
-                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_MARKING].CalfileOffsetZAxismm;
-                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_MARKING].CalfileOffsetDefocusZAxismm;
+                double dZAxisOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_MARKING].VarioScanOffsetZAxismm;
+                double dZDefocuseOffset = Equipment.stLayerRecipeSet[(int)LayerType.LAYER_MARKING].VarioScanOffsetDefocusZAxismm;
 
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
-                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
+                bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset, false);    // 설정값 받아와서 셋팅 필요.
                 bds.spiralLabVario.SetZDefocus((float)dZDefocuseOffset);
             }
 
@@ -29756,7 +29756,7 @@ namespace QMC.Common.Modules
                     break;
                 case (int)ScannerCalibration_Step.Vario_Change_Check:
 
-                    if(bds.spiralLabVario.GetCurrentZOffset() == bds.spiralLabVario.fSetZOffset)
+                    if(bds.spiralLabVario.GetCurrentZOffset(false) == bds.spiralLabVario.fSetZOffset)
                     {
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_CenterPos;
@@ -34077,7 +34077,7 @@ namespace QMC.Common.Modules
                         {
                             if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole_1].Miscellaneous_VarioScan_Use)
                             {
-                                if (bds.spiralLabVario.GetCurrentZOffset() == bds.spiralLabVario.fSetZOffset)
+                                if (bds.spiralLabVario.GetCurrentZOffset(false) == bds.spiralLabVario.fSetZOffset)
                                 {
                                     //  가공할 차례의 Socket 위치에 왔으니 Object 카운트 변수를 초기화 한다. 
                                     m_nThruHole_ObjectDataCount = 0;
@@ -34466,7 +34466,7 @@ namespace QMC.Common.Modules
                         {
                             if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_VarioScan_Use)
                             {
-                                if (bds.spiralLabVario.GetCurrentZOffset() == bds.spiralLabVario.fSetZOffset)
+                                if (bds.spiralLabVario.GetCurrentZOffset(false) == bds.spiralLabVario.fSetZOffset)
                                 {
                                     //  가공할 차례의 Socket 위치에 왔으니 Object 카운트 변수를 초기화 한다. 
                                     m_nOutLine_ObjectDataCount = 0;
@@ -34833,7 +34833,7 @@ namespace QMC.Common.Modules
                         {
                             if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_VarioScan_Use)
                             {
-                                if (bds.spiralLabVario.GetCurrentZOffset() == bds.spiralLabVario.fSetZOffset)
+                                if (bds.spiralLabVario.GetCurrentZOffset(false) == bds.spiralLabVario.fSetZOffset)
                                 {
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_StageXY_MoveObjectCenterPos;
                                 }
@@ -38484,7 +38484,7 @@ namespace QMC.Common.Modules
                         {
                             if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_VarioScan_Use)
                             {
-                                if (bds.spiralLabVario.GetCurrentZOffset() == bds.spiralLabVario.fSetZOffset)
+                                if (bds.spiralLabVario.GetCurrentZOffset(false) == bds.spiralLabVario.fSetZOffset)
                                 {
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRepeatStart;
 
@@ -38587,7 +38587,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run",
                             $"Stage Z 축, Z Offset 이동 완료 확인 (Target Z: {targetZ:F3})");
 
-                        //  UV Laser 일 경우만
                         if (Equipment.Machine_LaserType_CO2)
                         {
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Complete;
@@ -41448,7 +41447,7 @@ namespace QMC.Common.Modules
                     {
                         m_dHoleLayer_Defocusing = 0;
                         //VarioScan 적용.
-                        double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].VarioScanOffsetZAxismm;
                         var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
                         if (nearest != null)
                         {
@@ -41536,7 +41535,7 @@ namespace QMC.Common.Modules
                     {
                         m_dOutlineLayer_Defocusing = 0;
                         //VarioScan 적용.
-                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].CalfileOffsetZAxismm;
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].VarioScanOffsetZAxismm;
                         var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
                         if (nearest != null)
                         {
@@ -41600,7 +41599,7 @@ namespace QMC.Common.Modules
                     {
                         m_dThruholeLayer_Defocusing = 0;
                         //VarioScan 적용.
-                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole_1].CalfileOffsetZAxismm;
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole_1].VarioScanOffsetZAxismm;
                         var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
                         if (nearest != null)
                         {
@@ -41664,7 +41663,7 @@ namespace QMC.Common.Modules
                     {
                         m_dThruholeLayer_Defocusing = 0;
                         //VarioScan 적용.
-                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole_2].CalfileOffsetZAxismm;
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole_2].VarioScanOffsetZAxismm;
                         var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
                         if (nearest != null)
                         {
@@ -41731,7 +41730,7 @@ namespace QMC.Common.Modules
                     {
                         m_dMarkingLayer_Defocusing = 0;
                         //VarioScan 적용.
-                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].CalfileOffsetZAxismm;
+                        double dZAxisOffset = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].VarioScanOffsetZAxismm;
                         var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
                         if (nearest != null)
                         {

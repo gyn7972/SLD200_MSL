@@ -157,7 +157,7 @@ namespace QMC.Common.Q_Recipe
                     sb.AppendLine($"DustCollector_Lower_Disable={p.DustCollectorLower_Disable.ToString(inv)}");
 
                     // === Cal / Options ===
-                    sb.AppendLine($"ZCalFile_OffsetZ={p.CalfileOffsetZAxismm.ToString(inv)}");
+                    sb.AppendLine($"ZCalFile_OffsetZ={p.VarioScanOffsetZAxismm.ToString(inv)}");
                     sb.AppendLine($"ChuckMSL_Use={p.ChuckMSL_Enable.ToString(inv)}");
                     sb.AppendLine($"Align3Point_Enable={p.Align3Point_Enable.ToString(inv)}");
 
@@ -328,7 +328,7 @@ namespace QMC.Common.Q_Recipe
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper = ReadDouble(data, "DustCollector_Frequency_Upper", 20.0);
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = ReadDouble(data, "DustCollector_Frequency_Lower", 20.0);
                 Equipment.stLayerRecipeSet[i].DustCollectorLower_Disable = ReadBool(data, "DustCollector_Lower_Disable", false);
-                Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm = ReadDouble(data, "ZCalFile_OffsetZ", 0.0);
+                Equipment.stLayerRecipeSet[i].VarioScanOffsetZAxismm = ReadDouble(data, "ZCalFile_OffsetZ", 0.0);
                 Equipment.stLayerRecipeSet[i].ChuckMSL_Enable = ReadBool(data, "ChuckMSL_Use", false);
                 Equipment.stLayerRecipeSet[i].Align3Point_Enable = ReadBool(data, "Align3Point_Enable", false);
 

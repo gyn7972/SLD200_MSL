@@ -4387,7 +4387,7 @@ namespace SLD200_MSL
             {
                 m_dHoleLayer_Defocusing = 0;
                 //VarioScan 적용.
-                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
+                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].VarioScanOffsetZAxismm;
                 var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(dZAxisOffset);
                 if (nearest != null)
                 {
@@ -4417,7 +4417,7 @@ namespace SLD200_MSL
             if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_VarioScan_Use)
             {
                 //VarioScan 이동.
-                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].CalfileOffsetZAxismm;
+                double dZAxisOffset = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].VarioScanOffsetZAxismm;
                 bds.spiralLabVario.fSetZOffset = (float)dZAxisOffset;
                 bds.spiralLabVario.SetZOffset(bds.spiralLabVario.fSetZOffset);    // 설정값 받아와서 셋팅 필요.
             }

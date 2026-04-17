@@ -548,8 +548,8 @@ namespace QMC.Common
             public int MarkingTemplate_EntityData_SerialNumberIncreaseType;            //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
             public bool Miscellaneous_VarioScan_Use;              //  Defocusing Distance Use (true: Use, false: Not Use)
-            public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
-            public double CalfileOffsetDefocusZAxismm;                 //  Defocus Z Axis Offset Calibration File (mm)
+            public double VarioScanOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
+            public double VarioScanOffsetDefocusZAxismm;                 //  Defocus Z Axis Offset Calibration File (mm)
             public bool ChuckMSL_Enable;                                   //  Chuck 사용 여부 (true: 사용, false: 미사용)
             public bool Align3Point_Enable;                             //  3-Point Align Enable (true: Enable, false: Disable)
         }
@@ -1351,8 +1351,8 @@ namespace QMC.Common
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_Hatch_Spacing = 0.1;                 //  Marking Template Entity Hatch Spacing
                 stLayerRecipeSet[i].MarkingTemplate_EntityData_SerialNumberIncreaseType = 0;        //  Marking Template Entity Data Serial Number Increase Type (0: for Each Module, 1: for Each Socket, 2:Continuous)
 
-                stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
-                stLayerRecipeSet[i].CalfileOffsetDefocusZAxismm = 0.0;
+                stLayerRecipeSet[i].VarioScanOffsetZAxismm = 0.0;
+                stLayerRecipeSet[i].VarioScanOffsetDefocusZAxismm = 0.0;
                 stLayerRecipeSet[i].ChuckMSL_Enable = false;
                 stLayerRecipeSet[i].Align3Point_Enable = false;
             }

@@ -562,76 +562,76 @@ namespace QMC.Common.Modules
                 }
                 _prevLaserBusy = laserBusy;
 
-                if(Equipment.Machine_LaserType_CO2)
-                {
-                    if (Equipment.Machine_LaserType_CO2 && LaserCO2Manager != null)
-                    {
-                        var now = DateTime.Now;
+                //if(Equipment.Machine_LaserType_CO2)
+                //{
+                //    if (Equipment.Machine_LaserType_CO2 && LaserCO2Manager != null)
+                //    {
+                //        var now = DateTime.Now;
 
-                        if (LaserCO2Manager.IsConnected)
-                        {
-                            if (now - _lastLaserCO2CheckTime > _LaserCO2CheckInterval)
-                            {
-                                _lastLaserCO2CheckTime = now;
-                                var status = LaserCO2Manager.GetStatus(); // ✅ 기존 RequestControllerStatus → GetStatus()
+                //        if (LaserCO2Manager.IsConnected)
+                //        {
+                //            if (now - _lastLaserCO2CheckTime > _LaserCO2CheckInterval)
+                //            {
+                //                _lastLaserCO2CheckTime = now;
+                //                var status = LaserCO2Manager.GetStatus(); // ✅ 기존 RequestControllerStatus → GetStatus()
 
-                                if (status != null)
-                                {
-                                    //Log.Write("LaserCO2", "Status", status.ToString());
-                                    //if (status.SystemFault || status.Interlock || status.OverTemp)
-                                    if (status.SystemFault)// || status.OverTemp)
-                                    {
-                                        Log.Write("LaserCO2", "Status", status.ToString());
-                                        Log.Write("LaserCO2", "Status", "⚠ Fault Detected!");
-                                        // 예: AlarmPost(AlarmKey.LaserFaultDetected, "CO₂ Laser fault 발생");
-                                    }
+                //                if (status != null)
+                //                {
+                //                    //Log.Write("LaserCO2", "Status", status.ToString());
+                //                    //if (status.SystemFault || status.Interlock || status.OverTemp)
+                //                    if (status.SystemFault)// || status.OverTemp)
+                //                    {
+                //                        Log.Write("LaserCO2", "Status", status.ToString());
+                //                        Log.Write("LaserCO2", "Status", "⚠ Fault Detected!");
+                //                        // 예: AlarmPost(AlarmKey.LaserFaultDetected, "CO₂ Laser fault 발생");
+                //                    }
 
-                                    LaserCO2Status = status;
-                                }
+                //                    LaserCO2Status = status;
+                //                }
 
-                                var faults = LaserCO2Manager.GetFaults();
-                                if (faults != null && faults.Count > 0)
-                                {
-                                    LaserCO2Faults = faults;
-                                    foreach (var f in faults)
-                                    {
-                                        Log.Write("LaserCO2", "Fault", f.ToString());
-                                        // AlarmPost(AlarmKey.Laser_Fault_Generic, f.Description);
-                                    }
-                                }
-                            }
-                        }
-                        //재연결하지말아보자. 여기서 쥐고 있는거 같다.
-                        //else
-                        //{
-                        //    // 재연결은 일정 간격으로만 시도
-                        //    if (now - _lastLaserCO2ReconnectTryTime > _LaserCO2ReconnectInterval)
-                        //    {
-                        //        _lastLaserCO2ReconnectTryTime = now;
-                        //        try
-                        //        {
-                        //            if (LaserCO2Manager.Connect())
-                        //            {
-                        //                Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
-                        //                // 다음 폴링을 즉시 수행할 수 있도록 초기화
-                        //                _lastLaserCO2CheckTime = DateTime.MinValue;
-                        //            }
-                        //        }
-                        //        catch (Exception ex)
-                        //        {
-                        //            Log.Write("LaserCO2", "Reconnect", $"재연결 실패: {ex.Message}");
-                        //        }
-                        //    }
+                //                var faults = LaserCO2Manager.GetFaults();
+                //                if (faults != null && faults.Count > 0)
+                //                {
+                //                    LaserCO2Faults = faults;
+                //                    foreach (var f in faults)
+                //                    {
+                //                        Log.Write("LaserCO2", "Fault", f.ToString());
+                //                        // AlarmPost(AlarmKey.Laser_Fault_Generic, f.Description);
+                //                    }
+                //                }
+                //            }
+                //        }
+                //        //재연결하지말아보자. 여기서 쥐고 있는거 같다.
+                //        //else
+                //        //{
+                //        //    // 재연결은 일정 간격으로만 시도
+                //        //    if (now - _lastLaserCO2ReconnectTryTime > _LaserCO2ReconnectInterval)
+                //        //    {
+                //        //        _lastLaserCO2ReconnectTryTime = now;
+                //        //        try
+                //        //        {
+                //        //            if (LaserCO2Manager.Connect())
+                //        //            {
+                //        //                Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
+                //        //                // 다음 폴링을 즉시 수행할 수 있도록 초기화
+                //        //                _lastLaserCO2CheckTime = DateTime.MinValue;
+                //        //            }
+                //        //        }
+                //        //        catch (Exception ex)
+                //        //        {
+                //        //            Log.Write("LaserCO2", "Reconnect", $"재연결 실패: {ex.Message}");
+                //        //        }
+                //        //    }
 
-                        //    //// 연결이 끊어졌으면 재시도
-                        //    //if (LaserCO2Manager.Connect())
-                        //    //{
-                        //    //    Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
+                //        //    //// 연결이 끊어졌으면 재시도
+                //        //    //if (LaserCO2Manager.Connect())
+                //        //    //{
+                //        //    //    Log.Write("LaserCO2", "Reconnect", "TCP 연결 재성공");
 
-                        //    //}
-                        //}
-                    }
-                }
+                //        //    //}
+                //        //}
+                //    }
+                //}
             }
             catch (Exception ex)
             {

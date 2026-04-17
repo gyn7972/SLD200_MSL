@@ -127,35 +127,52 @@ namespace QMC.Common.Parts
 
         //실제 가공면 높이 보정 개념
         //표면 높이, 평탄도, plane 차이 보정
-        public bool SetZOffset(float zOffset)
+        public bool SetZOffset(float zOffset, bool bScale = true)
         {
             float mm = zOffset;
             float value = (mm * 10) * -1; 
+            if(bScale == false)
+            {
+                value = zOffset * -1;
+            }
 
             return Rtc3D.CtlZOffset(value);
         }
 
         // 초점 깊이 보정 개념. Z Offset과 달리 실제 Z 위치는 안 바뀌고,
         // 초점 품질/크기 조정용. 표면 상태에 따른 품질 보정이나 Z Table 보정에도 활용 가능
-        public bool SetZDefocus(float zOffset)
+        public bool SetZDefocus(float zOffset, bool bScale = true)
         {
             float mm = zOffset;
             float value = (mm * 10) * -1;
+            if (bScale == false)
+            {
+                value = zOffset * -1;
+            }
 
             return Rtc3D.CtlZDefocus(value);
         }
 
-        public float GetCurrentZOffset()
+        public float GetCurrentZOffset(bool bScale = true)
         {
             float mm = Rtc3D.ZOffset;
             float value = (mm / 10) * -1;
+            if (bScale == false)
+            {
+                value = Rtc3D.ZOffset * -1;
+            }
 
             return value;
         }
-        public float GetCurrentZDefocus()
+        public float GetCurrentZDefocus(bool bScale = true)
         {
             float mm = Rtc3D.ZDefocus;
             float value = (mm / 10) * -1;
+            if (bScale == false)
+            {
+                value = Rtc3D.ZDefocus * -1;
+            }
+
             return value;
         }
 
